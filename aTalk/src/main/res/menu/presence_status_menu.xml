@@ -5,12 +5,12 @@
     <item
         android:id="@+id/remove"
         android:icon="@drawable/ic_account_delete_dark"
-        android:title="@string/service_gui_REMOVE_ACCOUNT"
+        android:title="@string/remove_account"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/account_settings"
         android:icon="@drawable/ic_account_edit_dark"
-        android:title="@string/service_gui_ACCOUNT_SETTINGS"
+        android:title="@string/account_settings"
         app:showAsAction="ifRoom" />
 </menu>

@@ -991,7 +991,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         Contact sender = request.getSender();
         String senderName = sender.getAddress();
         String msgUuid = request.getID();
-        String msgContent = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, date.toString(), senderName);
+        String msgContent = aTalkApp.getResString(R.string.file_transfer_request_received, date.toString(), senderName);
 
         int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
         int encType = IMessage.ENCODE_PLAIN;
@@ -1112,28 +1112,28 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         switch (evt.getErrorCode()) {
             case MessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED:
                 errorMsg = aTalkApp.getResString(
-                        R.string.service_gui_MSG_DELIVERY_NOT_SUPPORTED, contactJid);
+                        R.string.message_delivery_not_supported, contactJid);
                 break;
             case MessageDeliveryFailedEvent.NETWORK_FAILURE:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_NOT_DELIVERED);
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_network_error);
                 break;
             case MessageDeliveryFailedEvent.PROVIDER_NOT_REGISTERED:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_not_registered);
                 break;
             case MessageDeliveryFailedEvent.INTERNAL_ERROR:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_internal_error);
                 break;
             case MessageDeliveryFailedEvent.OMEMO_SEND_ERROR:
                 errorMsg = evt.getReason();
                 mergeMessage = false;
                 break;
             default:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_ERROR);
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_error);
         }
 
         String reason = evt.getReason();
         if (!TextUtils.isEmpty(reason) && mergeMessage) {
-            errorMsg += " " + aTalkApp.getResString(R.string.service_gui_ERROR_WAS, reason);
+            errorMsg += " " + aTalkApp.getResString(R.string.error_was_, reason);
         }
         addMessage(contactJid, new Date(), ChatMessage.MESSAGE_OUT, srcMessage.getMimeType(), srcMessage.getContent());
         addMessage(contactJid, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN, errorMsg);
@@ -1187,7 +1187,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
             //        aTalkApp.getResString(R.string.service_gui_STATUS_CHANGED_CHAT_MESSAGE, chatTransport.getStatus().getStatusName()),
             //        IMessage.ENCRYPTION_NONE, null, null);
             addMessage(contactName, new Date(), ChatMessage.MESSAGE_STATUS, IMessage.ENCODE_PLAIN,
-                    aTalkApp.getResString(R.string.service_gui_STATUS_CHANGED_CHAT_MESSAGE, chatTransport.getStatus().getStatusName()));
+                    aTalkApp.getResString(R.string.status_change_message, chatTransport.getStatus().getStatusName()));
         }
     }
 
@@ -1231,7 +1231,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
             // Do not display change subject message if this is the original subject
             if (!TextUtils.isEmpty(oldSubject))
                 this.addMessage(mChatSession.getChatEntity(), new Date(), ChatMessage.MESSAGE_STATUS, IMessage.ENCODE_PLAIN,
-                        aTalkApp.getResString(R.string.service_gui_CHATROOM_SUBJECT_CHANGED, oldSubject, subject));
+                        aTalkApp.getResString(R.string.chatroom_subject_changed, oldSubject, subject));
         }
     }
 

@@ -4,40 +4,40 @@
 
     <PreferenceCategory
         android:key="pref.cat.jbr.ice.general"
-        android:title="@string/service_gui_JBR_ICE_GENERAL">
+        android:title="@string/general">
 
         <CheckBoxPreference
             android:key="pref_key_ice_enabled"
-            android:title="@string/service_gui_JBR_USE_ICE" />
+            android:title="@string/jbr_use_ice" />
 
         <CheckBoxPreference
             android:key="pref_key_upnp_enabled"
-            android:title="@string/service_gui_JBR_USE_UPNP" />
+            android:title="@string/jbr_use_upnp" />
 
         <CheckBoxPreference
             android:key="pref_key_auto_discover_stun"
-            android:title="@string/service_gui_JBR_AUTO_STUN_DICOVERY" />
+            android:title="@string/jbr_auto_stun_discovery" />
 
         <Preference
             android:key="pref_key_stun_turn_servers"
-            android:summary="@string/service_gui_JBR_STUN_LIST_SUMMARY"
-            android:title="@string/service_gui_JBR_STUN_LIST" />
+            android:summary="@string/jbr_stun_list_summary"
+            android:title="@string/jbr_stun_list" />
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="pref.cat.jbr.jinglenodes"
-        android:title="@string/service_gui_JBR_JINGLE_NODES">
+        android:title="@string/jbr_jingle_nodes">
         <CheckBoxPreference
             android:key="pref_key_use_jingle_nodes"
-            android:title="@string/service_gui_JBR_JINGLE_SUMMARY" />
+            android:title="@string/jbr_jingle_use" />
 
         <CheckBoxPreference
             android:key="pref_key_auto_relay_discovery"
-            android:title="@string/service_gui_JBR_JINGLE_AUTO" />
+            android:title="@string/jbr_jingle_auto" />
 
         <Preference
             android:key="pref_key_jingle_node_list"
-            android:summary="@string/service_gui_JBR_JINGLE_LIST_SUMMARY"
-            android:title="@string/service_gui_JBR_JINGLE_LIST" />
+            android:summary="@string/jbr_jingle_list_summary"
+            android:title="@string/jbr_jingle_list" />
     </PreferenceCategory>
 </PreferenceScreen>

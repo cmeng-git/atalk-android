@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.atalk.android.gui.share;
 
 import android.content.Intent;
@@ -44,8 +43,7 @@ import org.atalk.service.osgi.OSGiActivity;
  *
  * @author Eng Chong Meng
  */
-public class ShareActivity extends OSGiActivity
-{
+public class ShareActivity extends OSGiActivity {
     /**
      * A reference of the share object
      */
@@ -54,16 +52,14 @@ public class ShareActivity extends OSGiActivity
     /**
      * mCategories is used in aTalk to sore msgContent if multiple type sharing is requested by user
      */
-    private static class Share
-    {
+    private static class Share {
         Set<String> mCategories;
         ArrayList<Uri> uris = new ArrayList<>();
         public String action;
         public String type;
         public String text;
 
-        public void clear()
-        {
+        public void clear() {
             mCategories = null;
             uris = new ArrayList<>();
             action = null;
@@ -80,8 +76,7 @@ public class ShareActivity extends OSGiActivity
      * Note: Otherwise it is null.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frame_container);
         // configureToolBar();
@@ -89,10 +84,10 @@ public class ShareActivity extends OSGiActivity
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             TextView tv = findViewById(R.id.actionBarTitle);
-            tv.setText(R.string.APPLICATION_NAME);
+            tv.setText(R.string.application_name);
 
             tv = findViewById(R.id.actionBarStatus);
-            tv.setText(R.string.service_gui_SHARE);
+            tv.setText(R.string.share);
             actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.color_bg_share)));
         }
 
@@ -111,8 +106,7 @@ public class ShareActivity extends OSGiActivity
      * @param intent new <code>Intent</code> data.
      */
     @Override
-    protected void onNewIntent(Intent intent)
-    {
+    protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
     }
@@ -122,8 +116,7 @@ public class ShareActivity extends OSGiActivity
      *
      * @param intent <code>Activity</code> <code>Intent</code>.
      */
-    private void handleIntent(Intent intent)
-    {
+    private void handleIntent(Intent intent) {
         // super.onStart();
         if (intent == null) {
             return;
@@ -157,22 +150,19 @@ public class ShareActivity extends OSGiActivity
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
         mShare.clear();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.share_with, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_done) {
             finish();
             return true;
@@ -184,10 +174,10 @@ public class ShareActivity extends OSGiActivity
      * Retrieve the earlier saved Share object parameters for use with chatIntent
      *
      * @param shareIntent Sharable Intent
+     *
      * @return a reference copy of the update chatIntent
      */
-    public static Intent getShareIntent(Intent shareIntent)
-    {
+    public static Intent getShareIntent(Intent shareIntent) {
         if (mShare == null) {
             return null;
         }

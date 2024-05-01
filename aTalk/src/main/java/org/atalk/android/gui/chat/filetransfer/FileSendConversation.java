@@ -27,6 +27,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.util.Date;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -49,10 +53,6 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.persistance.FileBackend;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.util.Date;
 
 import timber.log.Timber;
 
@@ -131,7 +131,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
         if (status != FileTransferStatusChangeEvent.CANCELED
                 && status != FileTransferStatusChangeEvent.COMPLETED) {
             updateXferFileViewState(FileTransferStatusChangeEvent.PREPARING,
-                    aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSendTo));
+                    aTalkApp.getResString(R.string.file_transfer_preparing, mSendTo));
             sendFileWithThumbnail();
         }
         else {
@@ -150,15 +150,15 @@ public class FileSendConversation extends FileTransferConversation implements Fi
 
         switch (status) {
             case FileTransferStatusChangeEvent.PREPARING:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSendTo);
+                statusText = aTalkApp.getResString(R.string.file_transfer_preparing, mSendTo);
                 break;
 
             case FileTransferStatusChangeEvent.WAITING:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_WAITING_TO_ACCEPT, mSendTo);
+                statusText = aTalkApp.getResString(R.string.file_transfer_waiting_acceptance, mSendTo);
                 break;
 
             case FileTransferStatusChangeEvent.IN_PROGRESS:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_SENDING_TO, mSendTo);
+                statusText = aTalkApp.getResString(R.string.file_sending_to, mSendTo);
                 // Transfer file record creation only after mEntityJid is known.
                 if (mEntityJid != null && !mUpdateDB) {
                     createFileSendRecord();
@@ -168,16 +168,16 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                 break;
 
             case FileTransferStatusChangeEvent.COMPLETED:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_SEND_COMPLETED, mSendTo);
+                statusText = aTalkApp.getResString(R.string.file_send_completed, mSendTo);
                 break;
 
             case FileTransferStatusChangeEvent.DECLINED:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_SEND_DECLINED, mSendTo);
+                statusText = aTalkApp.getResString(R.string.file_send_declined, mSendTo);
                 break;
 
             // not offer to retry - smack replied as failed when recipient rejects on some devices
             case FileTransferStatusChangeEvent.FAILED:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_UNABLE_TO_SEND, mSendTo);
+                statusText = aTalkApp.getResString(R.string.file_transfer_send_error, mSendTo);
                 if (!TextUtils.isEmpty(reason)) {
                     statusText += "\n" + reason;
                 }
@@ -185,7 +185,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
 
             case FileTransferStatusChangeEvent.CANCELED:
                 // Inform remote user if sender canceled; not in standard legacy file xfer protocol event
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
+                statusText = aTalkApp.getResString(R.string.file_transfer_canceled);
                 if (!TextUtils.isEmpty(reason)) {
                     statusText += "\n" + reason;
                 }
@@ -215,15 +215,14 @@ public class FileSendConversation extends FileTransferConversation implements Fi
      * is true; update also the msgCache (and ChatSession UI) to ensure the file send request will not
      * get trigger again. The msgCache record will be used for view display on chat session resume.
      *
-     * @param msgUuid The message UUID
      * @param status File transfer status
      */
     private void updateFTStatus(int status) {
         String fileName = mXferFile.getPath();
-//        if (mUpdateDB) {
-//            Timber.e("updateFTStatusToDB on status: %s; row count: %s", status,
-//                    mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY));
-//        }
+        if (mUpdateDB) {
+            int count = mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
+            Timber.d("updateFTStatusToDB on status: %s; row count: %s", status, count);
+        }
         mChatFragment.updateFTStatus(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
     }
 
@@ -282,7 +281,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
      */
     @Override
     protected String getProgressLabel(long bytesString) {
-        return aTalkApp.getResString(R.string.xFile_FILE_BYTE_SENT, bytesString);
+        return aTalkApp.getResString(R.string.file_byte_sent, bytesString);
     }
 
     /**

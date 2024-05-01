@@ -67,7 +67,7 @@ public class QuietTimeFragment extends OSGiPreferenceFragment
     @Override
     public void onResume() {
         super.onResume();
-        setPrefTitle(R.string.title_pref_quiet_hours);
+        setPrefTitle(R.string.quiet_hours);
 
         mPreferenceScreen = getPreferenceScreen();
         shPrefs = getPreferenceManager().getSharedPreferences();

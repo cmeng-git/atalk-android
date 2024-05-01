@@ -146,7 +146,7 @@ public abstract class AbstractFileTransfer implements FileTransfer {
                 fireStatusChangeEvent(FileTransferStatusChangeEvent.COMPLETED, reasonText);
                 break;
             default: {
-                reasonText = aTalkApp.getResString(R.string.service_gui_FILE_SEND_CLIENT_ERROR, reasonText);
+                reasonText = aTalkApp.getResString(R.string.file_send_client_error, reasonText);
                 fireStatusChangeEvent(FileTransferStatusChangeEvent.FAILED, reasonText);
             }
         }

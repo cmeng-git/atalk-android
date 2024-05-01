@@ -58,7 +58,7 @@ public class GeoLocationActivity extends GeoLocationBase implements OnMapsSdkIni
     protected void onResume()
     {
         super.onResume();
-        setMainTitle(R.string.service_gui_GEO_SMAP);
+        setMainTitle(R.string.geo_street_views_map);
         mSVP = null;
     }
 

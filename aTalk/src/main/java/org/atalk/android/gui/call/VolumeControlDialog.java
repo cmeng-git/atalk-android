@@ -111,9 +111,9 @@ public class VolumeControlDialog extends OSGiDialogFragment implements VolumeCha
 		SeekBar bar = (SeekBar) content.findViewById(R.id.seekBar);
 		bar.setOnSeekBarChangeListener(this);
 
-		int titleStrId = R.string.service_gui_VOLUME_CONTROL_TITLE;
+		int titleStrId = R.string.volume_control_title;
 		if (getArguments().getInt(ARG_DIRECTION) == DIRECTION_INPUT) {
-			titleStrId = R.string.service_gui_MIC_CONTROL_TITLE;
+			titleStrId = R.string.mic_control_title;
 		}
 		getDialog().setTitle(titleStrId);
 

@@ -28,6 +28,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
@@ -42,6 +43,10 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -50,8 +55,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28"
-        tools:ignore="ScopedStorage" />
+        android:maxSdkVersion="29" />
 
     <queries>
         <package android:name="android.content.pm" />
@@ -62,7 +66,7 @@
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@drawable/ic_logo"
-        android:label="@string/APPLICATION_NAME"
+        android:label="@string/application_name"
         android:logo="@drawable/ic_notification"
         android:networkSecurityConfig="@xml/network_security_config"
         android:preserveLegacyExternalStorage="true"
@@ -162,7 +166,7 @@
             android:parentActivityName="org.atalk.android.gui.aTalk" />
         <activity
             android:name="org.atalk.android.gui.account.AccountInfoPresenceActivity"
-            android:label="@string/plugin_accountinfo_TITLE"
+            android:label="@string/accountinfo_title"
             android:parentActivityName="org.atalk.android.gui.account.AccountsListActivity" />
         <activity
             android:name="org.atalk.android.gui.account.AccountLoginActivity" />
@@ -172,7 +176,7 @@
             android:name="org.atalk.android.gui.contactlist.AddContactActivity" />
         <activity
             android:name="org.atalk.android.gui.contactlist.ContactInfoActivity"
-            android:label="@string/plugin_connectioninfo_TITLE" />
+            android:label="@string/connectioninfo_title" />
         <!-- Dialog Activity -->
         <activity
             android:name="org.atalk.android.gui.dialogs.DialogActivity"
@@ -186,7 +190,7 @@
         <activity
             android:name="org.atalk.android.gui.authorization.AuthorizationRequestedDialog"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/service_gui_AUTHORIZATION_REQUEST" />
+            android:label="@string/authorization_request" />
         <!-- Authentication window service Activity -->
         <activity
             android:name="org.atalk.impl.androidauthwindow.AuthWindowActivity"
@@ -195,7 +199,7 @@
         <activity
             android:name="org.atalk.android.gui.authorization.RequestAuthorizationDialog"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/service_gui_REQUEST_AUTHORIZATION" />
+            android:label="@string/request_authorization" />
         <activity
             android:name="org.atalk.android.gui.call.CallContactActivity"
             android:exported="false"
@@ -228,7 +232,7 @@
         <activity
             android:name="org.atalk.crypto.omemo.OmemoRegenerateDialog"
             android:exported="true"
-            android:label="@string/service_gui_settings_OMEMO_REGENERATE_TITLE">
+            android:label="@string/omemo_regenerate_title">
             <intent-filter>
                 <action android:name="org.atalk.crypto.omemo.OmemoRegenerateDialog" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -237,7 +241,7 @@
         <activity
             android:name="org.atalk.crypto.omemo.OmemoDeviceDeleteDialog"
             android:exported="true"
-            android:label="@string/service_gui_settings_OMEMO_PURGE_DEVICE_TITLE">
+            android:label="@string/omemo_purge_device">
             <intent-filter>
                 <action android:name="org.atalk.crypto.omemo.OmemoDeviceDeleteDialog" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -248,7 +252,7 @@
         <activity
             android:name="org.atalk.crypto.CryptoPrivateKeys"
             android:exported="true"
-            android:label="@string/service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">
+            android:label="@string/settings_crypto_priv_key">
             <intent-filter>
                 <action android:name="org.atalk.crypto.CryptoPrivateKeys" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -257,7 +261,7 @@
         <activity
             android:name="org.atalk.crypto.CryptoDeviceFingerPrints"
             android:exported="true"
-            android:label="@string/service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">
+            android:label="@string/settings_fingerprint_title">
             <intent-filter>
                 <action android:name="org.atalk.crypto.CryptoDeviceFingerPrints" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -291,13 +295,13 @@
         <!-- Chat Security and SSL Certificate -->
         <activity
             android:name="org.atalk.android.gui.settings.ChatSecuritySettings"
-            android:label="@string/service_gui_settings_MESSAGING_SECURITY_TITLE" />
+            android:label="@string/settings_messaging_security" />
         <activity
             android:name="org.atalk.impl.androidcertdialog.ConnectionInfo"
-            android:label="@string/service_gui_settings_SSL_CERTIFICATE" />
+            android:label="@string/settings_ssl_certificate" />
         <activity
             android:name="org.atalk.android.gui.settings.notification.NotificationSettings"
-            android:label="@string/service_gui_settings_EVENTS_TITLE" />
+            android:label="@string/settings_event_title" />
         <activity android:name="org.atalk.android.gui.settings.notification.NotificationDetails" />
         <!-- Basic settings -->
         <activity
@@ -340,7 +344,7 @@
 
         <activity
             android:name="org.atalk.android.gui.About"
-            android:label="@string/About_action" />
+            android:label="@string/About" />
 
         <!--Text Speech Features -->
         <activity

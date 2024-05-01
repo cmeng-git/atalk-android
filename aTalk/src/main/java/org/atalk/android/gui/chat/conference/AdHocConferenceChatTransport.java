@@ -172,7 +172,7 @@ public class AdHocConferenceChatTransport implements ChatTransport {
     public void sendInstantMessage(String messageText, int encType) {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
-            aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, getName());
+            aTalkApp.showToastMessage(R.string.send_message_not_supported, getName());
             return;
         }
 
@@ -306,7 +306,7 @@ public class AdHocConferenceChatTransport implements ChatTransport {
             }
         }
         else
-            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_supported));
     }
 
     /**

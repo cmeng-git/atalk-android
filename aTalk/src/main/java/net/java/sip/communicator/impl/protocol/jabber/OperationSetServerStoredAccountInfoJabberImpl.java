@@ -54,7 +54,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
-import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 
 import timber.log.Timber;
@@ -462,7 +461,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      */
     private boolean assertConnected() {
         if (((jabberProvider == null) || !jabberProvider.isRegistered())) {
-            Timber.w(aTalkApp.getResString(R.string.service_gui_NETOWRK_ASSERTION_ERROR));
+            Timber.w(aTalkApp.getResString(R.string.network_assert_error));
             return false;
         }
         return true;

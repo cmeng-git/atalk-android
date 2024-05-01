@@ -12,7 +12,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="30dp"
         android:gravity="left|center"
-        android:text="@string/service_gui_REMOVE_GROUP"
+        android:text="@string/remove_group"
         android:textColor="@color/textColorWhite"
         android:textStyle="bold" />
 

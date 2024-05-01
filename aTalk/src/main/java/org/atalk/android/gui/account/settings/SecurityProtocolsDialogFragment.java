@@ -34,12 +34,11 @@ import java.util.Map;
  * The dialog that displays a list of security protocols in {@link SecurityActivity}.
  * It allows user to enable/disable each protocol and set their priority.
  */
-public class SecurityProtocolsDialogFragment extends DialogFragment
-{
+public class SecurityProtocolsDialogFragment extends DialogFragment {
     /**
      * The encryption protocols managed by this dialog.
      */
-   // public static final String[] encryptionProtocols = {"ZRTP", "SDES"};
+    // public static final String[] encryptionProtocols = {"ZRTP", "SDES"};
 
     public static final String ARG_ENCRYPTION = "arg_encryption";
 
@@ -66,8 +65,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
     private boolean hasChanges = false;
 
     @Override
-    public void onAttach(@NonNull Context context)
-    {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mActivity = (AppCompatActivity) context;
         mListener = (DialogClosedListener) context;
@@ -75,8 +73,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             mProtocolsAdapter = new ProtocolsAdapter((Map<String, Integer>) getArguments().get(ARG_ENCRYPTION),
                     (Map<String, Boolean>) getArguments().get(ARG_ENCRYPTION_STATUS));
@@ -91,11 +88,11 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
 
         // Builds the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder = builder.setTitle(R.string.service_gui_SEC_PROTOCOLS_TITLE);
-        builder.setView(contentView).setPositiveButton(R.string.service_gui_SEC_PROTOCOLS_OK, (dialog, i) -> {
+        builder = builder.setTitle(R.string.sec_protocols_title);
+        builder.setView(contentView).setPositiveButton(R.string.save, (dialog, i) -> {
             hasChanges = true;
             dismiss();
-        }).setNegativeButton(R.string.service_gui_SEC_PROTOCOLS_CANCEL, (dialog, i) -> {
+        }).setNegativeButton(R.string.discard, (dialog, i) -> {
             hasChanges = false;
             dismiss();
         });
@@ -108,8 +105,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState)
-    {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putSerializable(STATE_ENCRYPTION, mProtocolsAdapter.mEncryption);
@@ -121,8 +117,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
      *
      * @param securityReg the registration object that will hold new security preferences
      */
-    public void commit(SecurityAccountRegistration securityReg)
-    {
+    public void commit(SecurityAccountRegistration securityReg) {
         Map<String, Integer> protocol = new HashMap<>();
         for (int i = 0; i < mProtocolsAdapter.mEncryption.length; i++) {
             protocol.put(mProtocolsAdapter.mEncryption[i], i);
@@ -134,14 +129,12 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
     /**
      * The interface that will be notified when this dialog is closed
      */
-    public interface DialogClosedListener
-    {
+    public interface DialogClosedListener {
         void onDialogClosed(SecurityProtocolsDialogFragment dialog);
     }
 
     @Override
-    public void onDismiss(@NonNull DialogInterface dialog)
-    {
+    public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if (mListener != null) {
             mListener.onDialogClosed(this);
@@ -153,16 +146,14 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
      *
      * @return <code>true</code> if any changes have been made
      */
-    public boolean hasChanges()
-    {
+    public boolean hasChanges() {
         return hasChanges;
     }
 
     /**
      * List model for security protocols and their priorities
      */
-    class ProtocolsAdapter extends BaseAdapter implements TouchInterceptor.DropListener
-    {
+    class ProtocolsAdapter extends BaseAdapter implements TouchInterceptor.DropListener {
         /**
          * The array of encryption protocol names and their on/off status in mEncryptionStatus
          */
@@ -175,8 +166,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
          * @param encryption reference copy
          * @param encryptionStatus reference copy
          */
-        ProtocolsAdapter(final Map<String, Integer> encryption, final Map<String, Boolean> encryptionStatus)
-        {
+        ProtocolsAdapter(final Map<String, Integer> encryption, final Map<String, Boolean> encryptionStatus) {
             mEncryption = (String[]) SecurityAccountRegistration.loadEncryptionProtocol(encryption, encryptionStatus)[0];
             // Fill missing entries
             for (String enc : encryption.keySet()) {
@@ -192,29 +182,24 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
          * @param encryption reference copy
          * @param encryptionStatus reference copy
          */
-        ProtocolsAdapter(String[] encryption, Map<String, Boolean> encryptionStatus)
-        {
+        ProtocolsAdapter(String[] encryption, Map<String, Boolean> encryptionStatus) {
             this.mEncryption = encryption;
             this.mEncryptionStatus = encryptionStatus;
         }
 
-        public int getCount()
-        {
+        public int getCount() {
             return mEncryption.length;
         }
 
-        public Object getItem(int i)
-        {
+        public Object getItem(int i) {
             return mEncryption[i];
         }
 
-        public long getItemId(int i)
-        {
+        public long getItemId(int i) {
             return i;
         }
 
-        public View getView(int i, View view, ViewGroup viewGroup)
-        {
+        public View getView(int i, View view, ViewGroup viewGroup) {
             final String encryption = (String) getItem(i);
 
             LayoutInflater li = requireActivity().getLayoutInflater();
@@ -238,8 +223,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
          * @param from source item index
          * @param to destination item index
          */
-        public void drop(int from, int to)
-        {
+        public void drop(int from, int to) {
             hasChanges = true;
             String swap = mEncryption[to];
             mEncryption[to] = mEncryption[from];

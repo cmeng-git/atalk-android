@@ -461,7 +461,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             if (!body.matches(ChatMessage.HTML_MARKUP)) {
                 body = body.replace("\n", "<br/>");
             }
-            quotedMessage = aTalkApp.getResString(R.string.service_gui_CHAT_REPLY,
+            quotedMessage = aTalkApp.getResString(R.string.chat_reply_quote,
                     replyMessage.getSender(), body);
             chatMessageReply.setText(Html.fromHtml(quotedMessage, imageGetter, null));
         }
@@ -494,7 +494,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                                             chatPanel.addFTSendRequest(filePath, ChatMessage.MESSAGE_FILE_TRANSFER_SEND);
                                         }
                                         else {
-                                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                                            aTalkApp.showToastMessage(R.string.file_does_not_exist);
                                         }
                                     }
                                 }
@@ -518,7 +518,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                         }
                         // Send http link as xhtml to avoid being interpreted by the receiver as http file download link
                         else if (textEdit.matches("(?s)^http[s]:.*") && !textEdit.contains("\\s")) {
-                            textEdit = aTalkApp.getResString(R.string.service_gui_CHAT_LINK, textEdit, textEdit);
+                            textEdit = aTalkApp.getResString(R.string.chat_url_link, textEdit, textEdit);
                         }
 
                         // if text contains markup tag then send message as ENCODE_HTML mode
@@ -533,7 +533,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                     updateSendModeState();
                 }
                 else {
-                    aTalkApp.showToastMessage(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
+                    aTalkApp.showToastMessage(R.string.message_delivery_not_registered);
                 }
                 if (quotedMessage == null)
                     break;
@@ -990,10 +990,10 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 sendSticker(filePath);
             }
             else
-                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                aTalkApp.showToastMessage(R.string.file_does_not_exist);
         }
         else {
-            aTalkApp.showToastMessage(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
+            aTalkApp.showToastMessage(R.string.message_delivery_not_registered);
         }
     }
 

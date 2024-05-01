@@ -183,8 +183,8 @@ public class MediaRecorderSystem extends DeviceSystem
 
                 // Create display name
                 String name = (facing == CameraCharacteristics.LENS_FACING_FRONT)
-                        ? aTalkApp.getResString(R.string.service_gui_settings_CAMERA_FRONT)
-                        : aTalkApp.getResString(R.string.service_gui_settings_CAMERA_BACK);
+                        ? aTalkApp.getResString(R.string.settings_camera_front)
+                        : aTalkApp.getResString(R.string.settings_camera_back);
                 name += " (MediaRecoder#" + cameraId + ")";
 
                 // XXX Prefer the front-facing camera over the back-facing one.

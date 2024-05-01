@@ -2,15 +2,15 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/distrust"
-          android:title="@string/crypto_menu_DISTRUST_FINGERPRINT">
+          android:title="@string/crypto_menu_fingerprint_distrust">
     </item>
     <item android:id="@+id/trust"
-          android:title="@string/crypto_menu_TRUST_FINGERPRINT">
+          android:title="@string/crypto_menu_fingerprint_trust">
     </item>
     <item android:id="@+id/copy"
-          android:title="@string/crypto_menu_COPY_FINGERPRINT">
+          android:title="@string/crypto_menu_fingerprint_copy">
     </item>
     <item android:id="@+id/cancel"
-        android:title="@string/service_gui_CANCEL">
+        android:title="@string/cancel">
     </item>
 </menu>

@@ -28,8 +28,7 @@ import org.atalk.android.aTalkApp;
  * @author Yana Stamcheva
  * @author Lubomir Marinov
  */
-public class MetaContactChatContact extends ChatContact<MetaContact>
-{
+public class MetaContactChatContact extends ChatContact<MetaContact> {
 
     /**
      * Creates an instance of <code>ChatContact</code> by passing to it the
@@ -37,8 +36,7 @@ public class MetaContactChatContact extends ChatContact<MetaContact>
      *
      * @param metaContact the <code>MetaContact</code> encapsulating the given <code>Contact</code>
      */
-    public MetaContactChatContact(MetaContact metaContact)
-    {
+    public MetaContactChatContact(MetaContact metaContact) {
         super(metaContact);
     }
 
@@ -46,8 +44,7 @@ public class MetaContactChatContact extends ChatContact<MetaContact>
      * Implements ChatContact#getAvatarBytes(). Delegates to metaContact.
      */
     @Override
-    public byte[] getAvatarBytes()
-    {
+    public byte[] getAvatarBytes() {
         return descriptor.getAvatar();
     }
 
@@ -57,12 +54,11 @@ public class MetaContactChatContact extends ChatContact<MetaContact>
      * @return the contact name
      */
     @Override
-    public String getName()
-    {
+    public String getName() {
         String name = descriptor.getDisplayName();
 
         if (StringUtils.isEmpty(name))
-            name = aTalkApp.getResString(R.string.service_gui_UNKNOWN_USER);
+            name = aTalkApp.getResString(R.string.unknown_user);
 
         return name;
     }
@@ -72,8 +68,7 @@ public class MetaContactChatContact extends ChatContact<MetaContact>
      * because it's known to be unique.
      */
     @Override
-    public String getUID()
-    {
+    public String getUID() {
         return descriptor.getMetaUID();
     }
 }

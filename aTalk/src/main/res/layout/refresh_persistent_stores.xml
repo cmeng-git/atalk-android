@@ -9,51 +9,51 @@
         android:id="@+id/textHint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_REFRESH_STORES_HINT"
+        android:text="@string/refresh_store_hint"
         android:textAppearance="@style/MediumFont" />
 
     <CheckBox
         android:id="@+id/cb_roster"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_REFRESH_STORES_ROSTER" />
+        android:text="@string/refresh_store_roster" />
 
     <CheckBox
         android:id="@+id/cb_caps"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_REFRESH_STORES_CAPS" />
+        android:text="@string/refresh_store_caps" />
 
     <CheckBox
         android:id="@+id/cb_avatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_REFRESH_STORES_AVATAR" />
+        android:text="@string/refresh_store_avatar" />
 
     <CheckBox
         android:id="@+id/cb_omemo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_REFRESH_STORES_OMEMO" />
+        android:text="@string/refresh_store_omemo" />
 
     <CheckBox
         android:id="@+id/cb_export_database"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_EXPORT_SQL_DB"
+        android:text="@string/export_sql_db"
         android:visibility="gone" />
 
     <CheckBox
         android:id="@+id/cb_del_database"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_PURGE_SQL_DB"
+        android:text="@string/purge_sql_db"
         android:visibility="gone" />
 
     <CheckBox
         android:id="@+id/cb_debug_log"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_PURGE_DEBUG_LOG" />
+        android:text="@string/purge_debug_log" />
 
 </LinearLayout>

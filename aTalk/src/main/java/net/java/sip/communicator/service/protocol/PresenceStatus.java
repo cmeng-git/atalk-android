@@ -11,11 +11,11 @@ package net.java.sip.communicator.service.protocol;
  * through. An IM provider for example might go through states like, CONNECTING, ON-LINE, AWAY, etc,
  * A status instance is represented by an integer varying from 0 to 100, a Status Name and a Status
  * Description.
- *
+ * <p>
  * The integer status variable is used so that the users of the service get the notion of whether or
  * not a given Status instance represents a state that allows communication (above 20) and so that
  * it could compare instances between themselves (e.g. for sorting a ContactList for example).
- *
+ * <p>
  * A state may not be created by the user. User may request a status change giving parameters
  * requested by the ProtocolProvider. Once a statue is successfully entered by the provider, a
  * ConnectivityStatus instance is conveyed to the user through a notification event.

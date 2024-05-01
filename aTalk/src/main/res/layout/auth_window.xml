@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical|end"
-            android:text="@string/service_gui_USERNAME" />
+            android:text="@string/username_" />
 
         <EditText
             android:id="@+id/username"
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical|end"
-            android:text="@string/service_gui_PASSWORD" />
+            android:text="@string/password_" />
 
         <EditText
             android:id="@+id/password"
@@ -70,7 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/list_padding"
-        android:text="@string/store_password" />
+        android:text="@string/save_password" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -81,13 +81,13 @@
             android:id="@+id/cancelButton"
             style="@style/ButtonTop"
             android:onClick="onCancelClicked"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/okButton"
             style="@style/ButtonTop"
             android:layout_marginStart="4dp"
             android:onClick="onOkClicked"
-            android:text="@string/service_gui_OK" />
+            android:text="@string/ok" />
     </LinearLayout>
 </LinearLayout>

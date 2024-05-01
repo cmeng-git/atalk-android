@@ -9,12 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="@string/service_gui_CREATE_GROUP_NAME"
+        android:text="@string/create_group_name"
         android:textAppearance="@style/MediumFont" />
 
     <EditText
         android:id="@+id/editText"
         style="@style/EntryTextView"
         android:layout_width="match_parent"
-        android:hint="@string/service_gui_ADD_GROUP_HINT" />
+        android:hint="@string/add_group_name" />
 </LinearLayout>

@@ -23,22 +23,19 @@ import java.util.List;
  *
  * @author Eng Chong Meng
  */
-public class AttachOptionDialog extends Dialog
-{
+public class AttachOptionDialog extends Dialog {
     private AttachOptionModeAdapter mAttachOptionAdapter = null;
     private AttachOptionItem mSelectedItem = null;
     private final ChatActivity mParent;
 
-    public AttachOptionDialog(Context context)
-    {
+    public AttachOptionDialog(Context context) {
         super(context);
         mParent = (ChatActivity) context;
-        setTitle(R.string.service_gui_FILE_ATTACHMENT);
+        setTitle(R.string.file_attachment);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attach_option_dialog);
 
@@ -53,19 +50,16 @@ public class AttachOptionDialog extends Dialog
         });
     }
 
-    public void closeDialog()
-    {
+    public void closeDialog() {
         this.cancel();
     }
 
-    public class AttachOptionModeAdapter extends ArrayAdapter<AttachOptionItem>
-    {
+    public class AttachOptionModeAdapter extends ArrayAdapter<AttachOptionItem> {
         int layoutResourceId;
         List<AttachOptionItem> data;
         Context context;
 
-        public AttachOptionModeAdapter(Context context, int textViewResourceId, List<AttachOptionItem> modes)
-        {
+        public AttachOptionModeAdapter(Context context, int textViewResourceId, List<AttachOptionItem> modes) {
             super(context, textViewResourceId, modes);
 
             this.context = context;
@@ -74,8 +68,7 @@ public class AttachOptionDialog extends Dialog
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
+        public View getView(int position, View convertView, ViewGroup parent) {
             View row = convertView;
             AttachOptionHolder holder;
             if (row == null) {
@@ -99,8 +92,7 @@ public class AttachOptionDialog extends Dialog
         }
     }
 
-    static class AttachOptionHolder
-    {
+    static class AttachOptionHolder {
         ImageView imgIcon;
         TextView txtTitle;
     }

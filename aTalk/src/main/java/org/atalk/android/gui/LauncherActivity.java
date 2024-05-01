@@ -79,7 +79,7 @@ public class LauncherActivity extends OSGiActivity {
         setContentView(R.layout.splash);
         TextView stateText = findViewById(R.id.stateInfo);
         if (restoreIntent != null)
-            stateText.setText(R.string.service_gui_RESTORING);
+            stateText.setText(R.string.restoring_);
 
         mProgressBar = findViewById(R.id.progressBar);
         mProgressBar.setVisibility(ProgressBar.VISIBLE);
@@ -116,8 +116,11 @@ public class LauncherActivity extends OSGiActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mProgressBar.clearAnimation();
-        myImageView.clearAnimation();
+        // Null if user re-launch aTalk while it is in shutting down cycle.
+        if (mProgressBar != null)
+            mProgressBar.clearAnimation();
+        if (myImageView != null)
+            myImageView.clearAnimation();
     }
 
     private void setupStrictMode() {

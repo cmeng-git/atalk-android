@@ -269,7 +269,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener {
 
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         notificationService.fireNotification(NotificationManager.INCOMING_CALL, msgType,
-                aTalkApp.getResString(R.string.service_gui_CALL_INCOMING, caller.asBareJid()),
+                aTalkApp.getResString(R.string.call_incoming, caller.asBareJid()),
                 message, contactIcon, extras);
     }
 
@@ -327,6 +327,6 @@ public class AndroidCallListener implements CallListener, CallChangeListener {
         String message = contact.getDisplayName() + " " + GuiUtils.formatDateTime(new Date());
 
         notificationService.fireNotification(NotificationManager.MISSED_CALL, SystrayService.MISSED_CALL_MESSAGE_TYPE,
-                aTalkApp.getResString(R.string.service_gui_CALL_MISSED_CALL), message, contactIcon, extras);
+                aTalkApp.getResString(R.string.call_missed), message, contactIcon, extras);
     }
 }

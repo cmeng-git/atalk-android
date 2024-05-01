@@ -18,6 +18,10 @@ package net.java.sip.communicator.impl.muc;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
 import net.java.sip.communicator.service.muc.ChatRoomListChangeEvent;
 import net.java.sip.communicator.service.muc.ChatRoomListChangeListener;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
@@ -45,10 +49,6 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
 import timber.log.Timber;
 
 /**
@@ -58,8 +58,7 @@ import timber.log.Timber;
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-public class ChatRoomListImpl implements RegistrationStateChangeListener, ServiceListener
-{
+public class ChatRoomListImpl implements RegistrationStateChangeListener, ServiceListener {
     /**
      * The list containing all chat servers and rooms.
      */
@@ -81,8 +80,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      * Constructs and initializes new <code>ChatRoomListImpl</code> objects. Adds the created object
      * as service lister to the bundle context.
      */
-    public ChatRoomListImpl()
-    {
+    public ChatRoomListImpl() {
         mDB = DatabaseBackend.getWritableDB();
         loadList();
         MUCActivator.bundleContext.addServiceListener(this);
@@ -91,8 +89,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     /**
      * Initializes the list of chat rooms.
      */
-    private void loadList()
-    {
+    private void loadList() {
         try {
             ServiceReference[] serRefs
                     = MUCActivator.bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
@@ -119,8 +116,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param l the listener to add.
      */
-    public void addChatRoomListChangeListener(ChatRoomListChangeListener l)
-    {
+    public void addChatRoomListChangeListener(ChatRoomListChangeListener l) {
         synchronized (listChangeListeners) {
             listChangeListeners.add(l);
         }
@@ -131,8 +127,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param l the listener to remove.
      */
-    public void removeChatRoomListChangeListener(ChatRoomListChangeListener l)
-    {
+    public void removeChatRoomListChangeListener(ChatRoomListChangeListener l) {
         synchronized (listChangeListeners) {
             listChangeListeners.remove(l);
         }
@@ -144,8 +139,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      * @param chatRoomWrapper the chat room wrapper that identifies the chat room
      * @param eventID the identifier of the event
      */
-    public void fireChatRoomListChangedEvent(ChatRoomWrapper chatRoomWrapper, int eventID)
-    {
+    public void fireChatRoomListChangedEvent(ChatRoomWrapper chatRoomWrapper, int eventID) {
         ChatRoomListChangeEvent evt = new ChatRoomListChangeEvent(chatRoomWrapper, eventID);
         for (ChatRoomListChangeListener l : listChangeListeners) {
             l.contentChanged(evt);
@@ -157,8 +151,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param pps the <code>ProtocolProviderService</code> corresponding to the chat server
      */
-    ChatRoomProviderWrapper addRegisteredChatProvider(ProtocolProviderService pps)
-    {
+    ChatRoomProviderWrapper addRegisteredChatProvider(ProtocolProviderService pps) {
         ChatRoomProviderWrapper chatRoomProvider = new ChatRoomProviderWrapperImpl(pps);
         providersList.add(chatRoomProvider);
 
@@ -187,8 +180,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param pps the <code>ProtocolProviderService</code> corresponding to the chat server
      */
-    private void addChatProvider(ProtocolProviderService pps)
-    {
+    private void addChatProvider(ProtocolProviderService pps) {
         if (pps.isRegistered())
             addRegisteredChatProvider(pps);
         else
@@ -200,8 +192,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param pps the <code>ProtocolProviderService</code> corresponding to the server to remove
      */
-    private void removeChatProvider(ProtocolProviderService pps)
-    {
+    private void removeChatProvider(ProtocolProviderService pps) {
         ChatRoomProviderWrapper wrapper = findServerWrapperFromProvider(pps);
         if (wrapper != null)
             removeChatProvider(wrapper, true);
@@ -213,8 +204,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      * @param chatRoomProvider the <code>ChatRoomProviderWrapper</code> corresponding to the server to remove
      * @param permanently whether to remove any listener and stored configuration
      */
-    private void removeChatProvider(ChatRoomProviderWrapper chatRoomProvider, boolean permanently)
-    {
+    private void removeChatProvider(ChatRoomProviderWrapper chatRoomProvider, boolean permanently) {
         providersList.remove(chatRoomProvider);
         if (permanently) {
             chatRoomProvider.getProtocolProvider().removeRegistrationStateChangeListener(this);
@@ -249,8 +239,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param chatRoomWrapper the <code>ChatRoom</code> to add
      */
-    public void addChatRoom(ChatRoomWrapper chatRoomWrapper)
-    {
+    public void addChatRoom(ChatRoomWrapper chatRoomWrapper) {
         ChatRoomProviderWrapper chatRoomProvider = chatRoomWrapper.getParentProvider();
         if (!chatRoomProvider.containsChatRoom(chatRoomWrapper))
             chatRoomProvider.addChatRoom(chatRoomWrapper);
@@ -267,8 +256,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param chatRoomWrapper the <code>ChatRoomWrapper</code> to remove
      */
-    public void removeChatRoom(ChatRoomWrapper chatRoomWrapper)
-    {
+    public void removeChatRoom(ChatRoomWrapper chatRoomWrapper) {
         ChatRoomProviderWrapper chatRoomProvider = chatRoomWrapper.getParentProvider();
 
         if (providersList.contains(chatRoomProvider)) {
@@ -281,7 +269,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
             try {
                 bookmarkManager.removeBookmarkedConference(entityBareJid);
             } catch (SmackException.NoResponseException | SmackException.NotConnectedException
-                    | XMPPException.XMPPErrorException | InterruptedException e) {
+                     | XMPPException.XMPPErrorException | InterruptedException e) {
                 Timber.w("Failed to remove Bookmarks: %s", e.getMessage());
             }
 
@@ -298,10 +286,10 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      * list of chat rooms doesn't contain a corresponding wrapper - returns null.
      *
      * @param chatRoom the <code>ChatRoom</code> that we're looking for
+     *
      * @return the <code>ChatRoomWrapper</code> object corresponding to the given <code>ChatRoom</code>
      */
-    public ChatRoomWrapper findChatRoomWrapperFromChatRoom(ChatRoom chatRoom)
-    {
+    public ChatRoomWrapper findChatRoomWrapperFromChatRoom(ChatRoom chatRoom) {
         for (ChatRoomProviderWrapper provider : providersList) {
             // check only for the right PP
             if (!chatRoom.getParentProvider().equals(provider.getProtocolProvider()))
@@ -337,10 +325,10 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param chatRoomID the id of <code>ChatRoom</code> that we're looking for
      * @param pps the protocol provider associated with the chat room.
+     *
      * @return the <code>ChatRoomWrapper</code> object corresponding to the given id of the chat room
      */
-    public ChatRoomWrapper findChatRoomWrapperFromChatRoomID(String chatRoomID, ProtocolProviderService pps)
-    {
+    public ChatRoomWrapper findChatRoomWrapperFromChatRoomID(String chatRoomID, ProtocolProviderService pps) {
         for (ChatRoomProviderWrapper provider : providersList) {
             // check all pps OR only for the right pps if provided (cmeng)
             if ((pps != null) && !pps.equals(provider.getProtocolProvider()))
@@ -366,10 +354,10 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      * <code>ProtocolProviderService</code>. If the list doesn't contain a corresponding wrapper - returns null.
      *
      * @param protocolProvider the protocol provider that we're looking for
+     *
      * @return the <code>ChatRoomProvider</code> object corresponding to the given <code>ProtocolProviderService</code>
      */
-    public ChatRoomProviderWrapper findServerWrapperFromProvider(ProtocolProviderService protocolProvider)
-    {
+    public ChatRoomProviderWrapper findServerWrapperFromProvider(ProtocolProviderService protocolProvider) {
         for (ChatRoomProviderWrapper chatRoomProvider : providersList) {
             if ((chatRoomProvider != null) && chatRoomProvider.getProtocolProvider().equals(protocolProvider)) {
                 return chatRoomProvider;
@@ -383,8 +371,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @return an iterator to the list of chat room providers.
      */
-    public List<ChatRoomProviderWrapper> getChatRoomProviders()
-    {
+    public List<ChatRoomProviderWrapper> getChatRoomProviders() {
         return providersList;
     }
 
@@ -393,8 +380,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param listener the ChatRoomProviderWrapperListener to be added
      */
-    public synchronized void addChatRoomProviderWrapperListener(ChatRoomProviderWrapperListener listener)
-    {
+    public synchronized void addChatRoomProviderWrapperListener(ChatRoomProviderWrapperListener listener) {
         providerChangeListeners.add(listener);
     }
 
@@ -403,8 +389,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param listener the ChatRoomProviderWrapperListener to be removed
      */
-    public synchronized void removeChatRoomProviderWrapperListener(ChatRoomProviderWrapperListener listener)
-    {
+    public synchronized void removeChatRoomProviderWrapperListener(ChatRoomProviderWrapperListener listener) {
         providerChangeListeners.remove(listener);
     }
 
@@ -413,8 +398,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param provider which was added.
      */
-    private void fireProviderWrapperAdded(ChatRoomProviderWrapper provider)
-    {
+    private void fireProviderWrapperAdded(ChatRoomProviderWrapper provider) {
         if (providerChangeListeners != null) {
             for (ChatRoomProviderWrapperListener target : providerChangeListeners) {
                 target.chatRoomProviderWrapperAdded(provider);
@@ -427,8 +411,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param provider which was removed.
      */
-    private void fireProviderWrapperRemoved(ChatRoomProviderWrapper provider)
-    {
+    private void fireProviderWrapperRemoved(ChatRoomProviderWrapper provider) {
         if (providerChangeListeners != null) {
             for (ChatRoomProviderWrapperListener target : providerChangeListeners) {
                 target.chatRoomProviderWrapperRemoved(provider);
@@ -442,8 +425,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      * @param evt a <code>RegistrationStateChangeEvent</code> which describes the event that occurred.
      */
     @Override
-    public void registrationStateChanged(RegistrationStateChangeEvent evt)
-    {
+    public void registrationStateChanged(RegistrationStateChangeEvent evt) {
         ProtocolProviderService pps = evt.getProvider();
         if (evt.getNewState() == RegistrationState.REGISTERED) {
             // Must use MUCServiceImpl#synchronizeOpSetWithLocalContactList to avoid duplication entry
@@ -459,8 +441,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     }
 
     @Override
-    public void serviceChanged(ServiceEvent event)
-    {
+    public void serviceChanged(ServiceEvent event) {
         // if the event is caused by a bundle being stopped, we don't want to know
         if (event.getServiceReference().getBundle().getState() == Bundle.STOPPING)
             return;
@@ -486,10 +467,10 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      * Returns existing chatRooms in store for the given <code>ProtocolProviderService</code>.
      *
      * @param pps the <code>ProtocolProviderService</code>, whom chatRooms we're looking for
+     *
      * @return existing chatRooms in store for the given <code>ProtocolProviderService</code>
      */
-    public List<String> getExistingChatRooms(ProtocolProviderService pps)
-    {
+    public List<String> getExistingChatRooms(ProtocolProviderService pps) {
         List<String> chatRooms = new ArrayList<>(0);
 
         String accountUid = pps.getAccountID().getAccountUid();

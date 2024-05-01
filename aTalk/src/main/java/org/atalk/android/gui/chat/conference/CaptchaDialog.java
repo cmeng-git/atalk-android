@@ -107,7 +107,7 @@ public class CaptchaDialog extends Dialog {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.captcha_challenge);
-        setTitle(R.string.service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE);
+        setTitle(R.string.captcha_challenge);
 
         mImageView = findViewById(R.id.captcha);
         mCaptchaText = findViewById(R.id.input);
@@ -158,7 +158,7 @@ public class CaptchaDialog extends Dialog {
 
         mAcceptButton.setOnClickListener(v -> {
             if (TextUtils.isEmpty(ViewUtil.toString(mCaptchaText))) {
-                aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_CAPTCHA_TEXT_EMPTY);
+                aTalkApp.showToastMessage(R.string.captcha_text_empty);
             } else {
                 showResult(onAcceptClicked(false));
             }
@@ -219,7 +219,7 @@ public class CaptchaDialog extends Dialog {
             createStanzaCollectorAndSend(iqCaptcha).nextResultOrThrow();
             callBack.onResult(validated);
 
-            mReasonText = mContext.getString(R.string.service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID);
+            mReasonText = mContext.getString(R.string.captcha_verification_valid);
             callBack.addMessage(mReasonText, ChatMessage.MESSAGE_SYSTEM);
             return true;
         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException

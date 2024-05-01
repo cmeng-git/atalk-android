@@ -5,6 +5,12 @@
  */
 package org.atalk.android.gui.chat;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.contactlist.event.MetaContactAvatarUpdateEvent;
@@ -36,12 +42,6 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * An implementation of the <code>ChatSession</code> interface that represents a user-to-user chat session.
  *
@@ -51,7 +51,6 @@ import java.util.List;
  */
 public class MetaContactChatSession extends ChatSession
         implements MetaContactListListener, ContactResourceListener {
-
     private final MetaContact metaContact;
     private final MetaContactListService metaContactListService;
 
@@ -102,7 +101,7 @@ public class MetaContactChatSession extends ChatSession
     public String getChatEntity() {
         String entityJid = metaContact.getDefaultContact().getAddress();
         if (StringUtils.isEmpty(entityJid))
-            entityJid = aTalkApp.getResString(R.string.service_gui_UNKNOWN);
+            entityJid = aTalkApp.getResString(R.string.unknown);
         return entityJid;
     }
 
@@ -191,10 +190,12 @@ public class MetaContactChatSession extends ChatSession
             if (o instanceof MessageDeliveredEvent) {
                 MessageDeliveredEvent evt = (MessageDeliveredEvent) o;
                 startHistoryDate = evt.getTimestamp();
-            } else if (o instanceof MessageReceivedEvent) {
+            }
+            else if (o instanceof MessageReceivedEvent) {
                 MessageReceivedEvent evt = (MessageReceivedEvent) o;
                 startHistoryDate = evt.getTimestamp();
-            } else if (o instanceof FileRecord) {
+            }
+            else if (o instanceof FileRecord) {
                 FileRecord fileRecord = (FileRecord) o;
                 startHistoryDate = fileRecord.getDate();
             }
@@ -226,10 +227,12 @@ public class MetaContactChatSession extends ChatSession
             if (o1 instanceof MessageDeliveredEvent) {
                 MessageDeliveredEvent evt = (MessageDeliveredEvent) o1;
                 endHistoryDate = evt.getTimestamp();
-            } else if (o1 instanceof MessageReceivedEvent) {
+            }
+            else if (o1 instanceof MessageReceivedEvent) {
                 MessageReceivedEvent evt = (MessageReceivedEvent) o1;
                 endHistoryDate = evt.getTimestamp();
-            } else if (o1 instanceof FileRecord) {
+            }
+            else if (o1 instanceof FileRecord) {
                 FileRecord fileRecord = (FileRecord) o1;
                 endHistoryDate = fileRecord.getDate();
             }
@@ -371,7 +374,8 @@ public class MetaContactChatSession extends ChatSession
     public void protoContactMoved(ProtoContactEvent evt) {
         if (evt.getOldParent().equals(metaContact)) {
             protoContactRemoved(evt);
-        } else if (evt.getNewParent().equals(metaContact)) {
+        }
+        else if (evt.getNewParent().equals(metaContact)) {
             protoContactAdded(evt);
         }
     }
@@ -411,7 +415,8 @@ public class MetaContactChatSession extends ChatSession
                 MetaContact metaChatContact = (MetaContact) chatSourceContact;
                 if (metaChatContact.equals(metaContact))
                     return chatContact;
-            } else {
+            }
+            else {
                 ChatRoomMember metaChatContact = (ChatRoomMember) chatSourceContact;
                 Contact contact = metaChatContact.getContact();
                 MetaContact parentMetaContact
@@ -569,7 +574,8 @@ public class MetaContactChatSession extends ChatSession
                     chatTransport = resourceTransport;
                 }
             }
-        } else {
+        }
+        else {
             chatTransport = new MetaContactChatTransport(this, contact);
             addChatTransport(chatTransport);
         }

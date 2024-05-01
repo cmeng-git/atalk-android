@@ -439,7 +439,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
     }
 
     private void setTitle() {
-        String title = aTalkApp.getResString(R.string.service_gui_RECENT_MESSAGES)
+        String title = aTalkApp.getResString(R.string.recent_messages)
                 + " (" + sessionRecords.size() + ")";
         mTitle.setText(title);
     }
@@ -507,7 +507,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
 
     @Override
     public void onTaskComplete(int msgCount, List<String> deletedUUIDs) {
-        aTalkApp.showToastMessage(R.string.service_gui_HISTORY_REMOVE_COUNT, msgCount);
+        aTalkApp.showToastMessage(R.string.history_purge_count, msgCount);
         if (msgCount > 0) {
             chatSessionAdapter.new getChatSessionRecords(new Date()).execute();
         }
@@ -575,7 +575,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
         if (chatSessionRecord.getChatMode() == ChatSession.MODE_SINGLE) {
             MetaContact metaContact = mMetaContacts.get(entityJid);
             if (metaContact == null) {
-                aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, entityJid);
+                aTalkApp.showToastMessage(R.string.contact_invalid, entityJid);
                 return;
             }
 
@@ -690,7 +690,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
      */
     public void startChat(MetaContact metaContact) {
         if (metaContact.getDefaultContact() == null) {
-            aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, metaContact.getDisplayName());
+            aTalkApp.showToastMessage(R.string.contact_invalid, metaContact.getDisplayName());
             return;
         }
 
@@ -744,7 +744,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
 
             // Return without open the chat room, the protocol failed to create a chat room (null)
             if ((chatRoomWrapper == null) || (chatRoomWrapper.getChatRoom() == null)) {
-                aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_CREATE_ERROR, chatRoomID);
+                aTalkApp.showToastMessage(R.string.chatroom_create_error, chatRoomID);
                 return;
             }
 

@@ -34,6 +34,15 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.plugin.otr.OtrContactManager;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
@@ -60,22 +69,12 @@ import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.trust.TrustState;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 /**
  * Settings screen with known user account and its associated fingerprints
  *
  * @author Eng Chong Meng
  */
-public class CryptoDeviceFingerPrints extends OSGiActivity
-{
+public class CryptoDeviceFingerPrints extends OSGiActivity {
     private static final String OTR = "OTR:";
     private static final String OMEMO = "OMEMO:";
 
@@ -97,12 +96,10 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
 
     /* Map contains bareJid and its associated Contact */
     private final HashMap<String, Contact> contactList = new HashMap<>();
-
     private Contact contact;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDB = DatabaseBackend.getReadableDB();
         mOmemoStore = (SQLiteOmemoStore) SignalOmemoService.getInstance().getOmemoStoreBackend();
@@ -119,8 +116,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
      *
      * @return a map of all known Map<bareJid, fingerPrints>.
      */
-    Map<String, String> getDeviceFingerPrints()
-    {
+    Map<String, String> getDeviceFingerPrints() {
         // Get the protocol providers and meta-contactList service
         Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
         MetaContactListService mclService = AndroidGUIActivator.getContactListService();
@@ -165,8 +161,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
-    {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         boolean isVerified = false;
         boolean keyExists = true;
 
@@ -204,8 +199,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public boolean onContextItemSelected(MenuItem item)
-    {
+    public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         int pos = info.position;
@@ -219,7 +213,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
             case R.id.trust:
                 if (bareJid.startsWith(OMEMO)) {
                     trustOmemoFingerPrint(bareJid, remoteFingerprint);
-                    String msg = getString(R.string.crypto_toast_OMEMO_TRUST_MESSAGE_RESUME, bareJid);
+                    String msg = getString(R.string.crypto_omemo_trust_messaging_resume, bareJid);
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -231,7 +225,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
             case R.id.distrust:
                 if (bareJid.startsWith(OMEMO)) {
                     distrustOmemoFingerPrint(bareJid, remoteFingerprint);
-                    String msg = getString(R.string.crypto_toast_OMEMO_DISTRUST_MESSAGE_STOP, bareJid);
+                    String msg = getString(R.string.crypto_omemo_distrust_messaging_stop, bareJid);
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -245,7 +239,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
                 if (cbManager != null) {
                     cbManager.setPrimaryClip(ClipData.newPlainText(null,
                             CryptoHelper.prettifyFingerprint(remoteFingerprint)));
-                    Toast.makeText(this, R.string.crypto_toast_FINGERPRINT_COPY, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.crypto_fingerprint_copy, Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case R.id.cancel:
@@ -260,8 +254,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
      * Fetch the OMEMO FingerPrints for all the device
      * Remove all those Devices has null fingerPrints
      */
-    private void getOmemoDeviceFingerprintStatus()
-    {
+    private void getOmemoDeviceFingerprintStatus() {
         FingerprintStatus fpStatus;
         Cursor cursor = mDB.query(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, null,
                 null, null, null, null, null);
@@ -283,28 +276,25 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
      *
      * @param userDevice OmemoDevice
      * @param fingerprint OmemoFingerPrint
+     *
      * @return boolean trust state
      */
-    private boolean isOmemoFPVerified(String userDevice, String fingerprint)
-    {
+    private boolean isOmemoFPVerified(String userDevice, String fingerprint) {
         OmemoDevice omemoDevice = getOmemoDevice(userDevice);
         FingerprintStatus fpStatus = mOmemoStore.getFingerprintStatus(omemoDevice, fingerprint);
         return ((fpStatus != null) && fpStatus.isTrusted());
     }
 
-    private boolean isOmemoDeviceActive(String userDevice)
-    {
+    private boolean isOmemoDeviceActive(String userDevice) {
         FingerprintStatus fpStatus = omemoDeviceFPStatus.get(userDevice);
         return ((fpStatus != null) && fpStatus.isActive());
     }
 
-    private boolean isOwnOmemoDevice(String userDevice)
-    {
+    private boolean isOwnOmemoDevice(String userDevice) {
         return ownOmemoDevice.contains(userDevice);
     }
 
-    private OmemoDevice getOmemoDevice(String userDevice)
-    {
+    private OmemoDevice getOmemoDevice(String userDevice) {
         FingerprintStatus fpStatus = omemoDeviceFPStatus.get(userDevice);
         return fpStatus.getOmemoDevice();
     }
@@ -315,8 +305,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
      * @param bareJid BareJid
      * @param remoteFingerprint fingerprint
      */
-    private void trustOmemoFingerPrint(String bareJid, String remoteFingerprint)
-    {
+    private void trustOmemoFingerPrint(String bareJid, String remoteFingerprint) {
         OmemoDevice omemoDevice = getOmemoDevice(bareJid);
         OmemoFingerprint omemoFingerprint = new OmemoFingerprint(remoteFingerprint);
         mOmemoStore.getTrustCallBack().setTrust(omemoDevice, omemoFingerprint, TrustState.trusted);
@@ -328,8 +317,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
      * @param bareJid bareJid
      * @param remoteFingerprint fingerprint
      */
-    private void distrustOmemoFingerPrint(String bareJid, String remoteFingerprint)
-    {
+    private void distrustOmemoFingerPrint(String bareJid, String remoteFingerprint) {
         OmemoDevice omemoDevice = getOmemoDevice(bareJid);
         OmemoFingerprint omemoFingerprint = new OmemoFingerprint(remoteFingerprint);
         mOmemoStore.getTrustCallBack().setTrust(omemoDevice, omemoFingerprint, TrustState.untrusted);
@@ -340,8 +328,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
     /**
      * Adapter displays fingerprints for given list of <code>omemoDevices</code>s and <code>contacts</code>.
      */
-    private class FingerprintListAdapter extends BaseAdapter
-    {
+    private class FingerprintListAdapter extends BaseAdapter {
         /**
          * The list of currently displayed devices and FingerPrints.
          */
@@ -353,8 +340,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
          *
          * @param linkedHashMap list of <code>device</code> for which OMEMO/OTR fingerprints will be displayed.
          */
-        FingerprintListAdapter(Map<String, String> linkedHashMap)
-        {
+        FingerprintListAdapter(Map<String, String> linkedHashMap) {
             deviceJid = new ArrayList<>(linkedHashMap.keySet());
             deviceFP = new ArrayList<>(linkedHashMap.values());
         }
@@ -363,8 +349,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return deviceFP.size();
         }
 
@@ -372,8 +357,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public Object getItem(int position)
-        {
+        public Object getItem(int position) {
             return getBareJidFromRow(position);
         }
 
@@ -381,8 +365,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public long getItemId(int position)
-        {
+        public long getItemId(int position) {
             return position;
         }
 
@@ -390,8 +373,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public View getView(int position, View rowView, ViewGroup parent)
-        {
+        public View getView(int position, View rowView, ViewGroup parent) {
             if (rowView == null)
                 rowView = getLayoutInflater().inflate(R.layout.crypto_fingerprint_row, parent, false);
 
@@ -419,8 +401,8 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
                 isVerified = keyManager.isVerified(contact, remoteFingerprint);
             }
 
-            int status = isVerified ? R.string.crypto_FINGERPRINT_VERIFIED : R.string.crypto_FINGERPRINT_NOT_VERIFIED;
-            String verifyStatus = getString(R.string.crypto_FINGERPRINT_STATUS, getString(status));
+            int status = isVerified ? R.string.yes : R.string.no;
+            String verifyStatus = getString(R.string.crypto_fingerprint_status, getString(status));
             ViewUtil.setTextViewValue(rowView, R.id.fingerprint_status, verifyStatus);
             ViewUtil.setTextViewColor(rowView, R.id.fingerprint_status, isVerified ?
                     (ThemeHelper.isAppTheme(Theme.DARK) ? R.color.textColorWhite : R.color.textColorBlack)
@@ -428,13 +410,11 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
             return rowView;
         }
 
-        String getBareJidFromRow(int row)
-        {
+        String getBareJidFromRow(int row) {
             return deviceJid.get(row);
         }
 
-        String getFingerprintFromRow(int row)
-        {
+        String getFingerprintFromRow(int row) {
             return deviceFP.get(row);
         }
     }

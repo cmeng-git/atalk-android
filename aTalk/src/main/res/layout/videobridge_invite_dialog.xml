@@ -40,7 +40,7 @@
             android:id="@+id/buttonCancel"
             style="@style/ButtonTop"
             android:enabled="true"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <View
             android:id="@+id/centerShim"
@@ -53,7 +53,7 @@
             android:id="@+id/button_invite"
             style="@style/ButtonTop"
             android:enabled="false"
-            android:text="@string/service_gui_INVITE" />
+            android:text="@string/invite" />
 
     </LinearLayout>
 

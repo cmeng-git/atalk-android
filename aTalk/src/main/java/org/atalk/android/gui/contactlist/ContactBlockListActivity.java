@@ -47,7 +47,6 @@ import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.service.osgi.OSGiActivity;
@@ -81,7 +80,7 @@ public class ContactBlockListActivity extends OSGiActivity
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             TextView tv = findViewById(R.id.actionBarTitle);
-            tv.setText(R.string.APPLICATION_NAME);
+            tv.setText(R.string.app_name);
 
             tv = findViewById(R.id.actionBarStatus);
             tv.setText(R.string.block_list_title);

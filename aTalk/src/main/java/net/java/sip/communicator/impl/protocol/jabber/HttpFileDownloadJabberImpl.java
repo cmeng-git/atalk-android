@@ -27,6 +27,15 @@ import android.os.Handler;
 
 import androidx.core.content.ContextCompat;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Hashtable;
+import java.util.Map;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
+
 import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.IMessage;
@@ -37,15 +46,6 @@ import org.atalk.android.aTalkApp;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.jivesoftware.smackx.omemo_media_sharing.AesgcmUrl;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.Hashtable;
-import java.util.Map;
-
-import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
 
 import timber.log.Timber;
 
@@ -238,7 +238,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(id);
 
-        // allow loop for 3 seconds for slow server. Server can return size == 0 ?
+        // allow loop for 3 seconds for slow server. Server may return size == 0 ?
         int wait = 3;
         while ((wait-- > 0) && (mFileSize <= 0)) {
             try {
@@ -284,7 +284,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
         } catch (SecurityException e) {
             aTalkApp.showToastMessage(e.getMessage());
         } catch (Exception e) {
-            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+            aTalkApp.showToastMessage(R.string.file_does_not_exist);
         }
     }
 
@@ -461,7 +461,8 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
 
         if (!cursor.moveToFirst()) {
             waitTime--;
-        } else {
+        }
+        else {
             do {
                 long progress = cursor.getLong(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
                 if (progress <= previousProgress)

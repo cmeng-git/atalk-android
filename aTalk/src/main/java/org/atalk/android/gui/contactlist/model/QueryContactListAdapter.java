@@ -7,6 +7,9 @@ package org.atalk.android.gui.contactlist.model;
 
 import android.os.Handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.java.sip.communicator.service.contactsource.ContactChangedEvent;
 import net.java.sip.communicator.service.contactsource.ContactQuery;
 import net.java.sip.communicator.service.contactsource.ContactQueryListener;
@@ -22,9 +25,6 @@ import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.ServiceReference;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import timber.log.Timber;
 
 /**
@@ -35,8 +35,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class QueryContactListAdapter extends BaseContactListAdapter
-        implements UIGroupRenderer, ContactQueryListener
-{
+        implements UIGroupRenderer, ContactQueryListener {
     /**
      * Handler used to execute stuff on UI thread.
      */
@@ -68,8 +67,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
      * @param fragment parent fragment.
      * @param contactListModel meta contact list model used as a base data model
      */
-    public QueryContactListAdapter(ContactListFragment fragment, MetaContactListAdapter contactListModel)
-    {
+    public QueryContactListAdapter(ContactListFragment fragment, MetaContactListAdapter contactListModel) {
         super(fragment, true);
         this.metaContactList = contactListModel;
     }
@@ -79,8 +77,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
      *
      * @return a list of all registered contact sources
      */
-    private List<ContactSourceService> getSources()
-    {
+    private List<ContactSourceService> getSources() {
         ServiceReference<ContactSourceService>[] serRefs
                 = ServiceUtils.getServiceReferences(AndroidGUIActivator.bundleContext, ContactSourceService.class);
 
@@ -97,8 +94,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     /**
      * {@inheritDoc}
      */
-    public void initModelData()
-    {
+    public void initModelData() {
         this.sources = getSources();
     }
 
@@ -106,21 +102,18 @@ public class QueryContactListAdapter extends BaseContactListAdapter
      * {@inheritDoc}
      */
     @Override
-    public void dispose()
-    {
+    public void dispose() {
         super.dispose();
         cancelQueries();
     }
 
     @Override
-    public int getGroupCount()
-    {
+    public int getGroupCount() {
         return metaContactList.getGroupCount() + results.size();
     }
 
     @Override
-    public Object getGroup(int position)
-    {
+    public Object getGroup(int position) {
         int metaGroupCount = metaContactList.getGroupCount();
         if ((position >= 0) && (position < metaGroupCount)) {
             return metaContactList.getGroup(position);
@@ -131,8 +124,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     }
 
     @Override
-    public UIGroupRenderer getGroupRenderer(int groupPosition)
-    {
+    public UIGroupRenderer getGroupRenderer(int groupPosition) {
         if (groupPosition < metaContactList.getGroupCount()) {
             return metaContactList.getGroupRenderer(groupPosition);
         }
@@ -142,8 +134,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     }
 
     @Override
-    public int getChildrenCount(int groupPosition)
-    {
+    public int getChildrenCount(int groupPosition) {
         int metaGroupCount = metaContactList.getGroupCount();
         if (groupPosition < metaGroupCount) {
             return metaContactList.getChildrenCount(groupPosition);
@@ -154,8 +145,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     }
 
     @Override
-    public Object getChild(int groupPosition, int childPosition)
-    {
+    public Object getChild(int groupPosition, int childPosition) {
         int metaGroupCount = metaContactList.getGroupCount();
         if (groupPosition < metaGroupCount) {
             return metaContactList.getChild(groupPosition, childPosition);
@@ -175,8 +165,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     }
 
     @Override
-    public UIContactRenderer getContactRenderer(int groupPosition)
-    {
+    public UIContactRenderer getContactRenderer(int groupPosition) {
         if (groupPosition < metaContactList.getGroupCount()) {
             return metaContactList.getContactRenderer(groupPosition);
         }
@@ -186,8 +175,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     }
 
     @Override
-    public void filterData(String queryStr)
-    {
+    public void filterData(String queryStr) {
         cancelQueries();
         for (ContactSourceService css : sources) {
             ContactQuery query = css.createContactQuery(queryStr);
@@ -201,8 +189,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
         notifyDataSetChanged();
     }
 
-    private void cancelQueries()
-    {
+    private void cancelQueries() {
         for (ContactQuery query : queries) {
             query.cancel();
         }
@@ -210,19 +197,16 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     }
 
     @Override
-    public String getDisplayName(Object groupImpl)
-    {
+    public String getDisplayName(Object groupImpl) {
         return ((ResultGroup) groupImpl).source.getDisplayName();
     }
 
     @Override
-    public void contactReceived(ContactReceivedEvent contactReceivedEvent)
-    {
+    public void contactReceived(ContactReceivedEvent contactReceivedEvent) {
     }
 
     @Override
-    public void queryStatusChanged(ContactQueryStatusEvent contactQueryStatusEvent)
-    {
+    public void queryStatusChanged(ContactQueryStatusEvent contactQueryStatusEvent) {
         if (contactQueryStatusEvent.getEventType() == ContactQuery.QUERY_COMPLETED) {
             final ContactQuery query = contactQueryStatusEvent.getQuerySource();
             final ResultGroup resultGroup = new ResultGroup(query.getContactSource(), query.getQueryResults());
@@ -243,30 +227,25 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     }
 
     @Override
-    public void contactRemoved(ContactRemovedEvent contactRemovedEvent)
-    {
+    public void contactRemoved(ContactRemovedEvent contactRemovedEvent) {
         Timber.e("CONTACT REMOVED NOT IMPLEMENTED");
     }
 
     @Override
-    public void contactChanged(ContactChangedEvent contactChangedEvent)
-    {
+    public void contactChanged(ContactChangedEvent contactChangedEvent) {
         Timber.e("CONTACT CHANGED NOT IMPLEMENTED");
     }
 
-    private static class ResultGroup
-    {
+    private static class ResultGroup {
         private final List<SourceContact> contacts;
         private final ContactSourceService source;
 
-        public ResultGroup(ContactSourceService source, List<SourceContact> results)
-        {
+        public ResultGroup(ContactSourceService source, List<SourceContact> results) {
             this.source = source;
             this.contacts = results;
         }
 
-        int getCount()
-        {
+        int getCount() {
             return contacts.size();
         }
     }

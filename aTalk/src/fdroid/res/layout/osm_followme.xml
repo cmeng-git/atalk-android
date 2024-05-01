@@ -20,7 +20,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:background="#00ffffff"
-        android:contentDescription="@string/btn_center_map_description"
+        android:contentDescription="@string/btn_center_map"
         android:cropToPadding="true" />
 
     <ImageButton
@@ -29,10 +29,10 @@
         android:id="@+id/ic_follow_me"
         android:src="@drawable/ic_follow_me"
         android:background="#00ffffff"
-        android:contentDescription="@string/btn_follow_me_description"
+        android:contentDescription="@string/btn_follow_me"
         android:cropToPadding="true"
-        android:layout_below="@+id/ic_center_map"
-        android:layout_alignStart="@+id/ic_center_map"
+        android:layout_below="@id/ic_center_map"
+        android:layout_alignStart="@id/ic_center_map"
         android:layout_marginTop="10dp" />
 
 </RelativeLayout>

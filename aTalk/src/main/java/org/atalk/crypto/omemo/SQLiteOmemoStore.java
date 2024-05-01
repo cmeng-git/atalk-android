@@ -151,13 +151,13 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
 
     /**
      * Get the fingerprint status for the specified device
-     *
      * Need to pass device to create(String fingerprint) for trustCache
      *
      * @param device omemoDevice for which its fingerprint status is to be retrieved
      * @param fingerprint fingerprint to check
      *
      * @return the fingerprint status for the specified device
+     *
      * @see LruCache#create(Object)
      */
     public FingerprintStatus getFingerprintStatus(OmemoDevice device, String fingerprint) {
@@ -347,6 +347,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
      * @param userDevice our OmemoDevice.
      *
      * @return identityKeyPair Omemo identityKeyPair
+     *
      * @throws CorruptedOmemoKeyException Thrown, if the stored key is damaged (*hands up* not my fault!)
      */
     @Override
@@ -397,6 +398,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
      * @param contactDevice the device of which we want to load the identityKey.
      *
      * @return identityKey - may be null
+     *
      * @throws CorruptedOmemoKeyException when the key in question is corrupted and cannot be deserialized.
      */
     @Override
@@ -881,7 +883,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
 
                 // remove the local inactive devices from identities table and all their associated data if any;
                 // add deviceId -1 to the list, found this on swan during testing???
-                Set<Integer> inactiveDevices =  deviceList.getInactiveDevices();
+                Set<Integer> inactiveDevices = deviceList.getInactiveDevices();
                 inactiveDevices.add(-1);
                 for (int deviceId : inactiveDevices) {
                     userDevice = new OmemoDevice(userJid, deviceId);
@@ -912,20 +914,22 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
      */
     public void purgeCorruptedOmemoKey(OmemoManager omemoManager, OmemoDevice omemoDevice) {
         Timber.d("Purging corrupted KeyIdentity for omemo device: %s", omemoDevice);
+        new Thread(() -> {
+            // remove the local corrupted device from db first; in case network access throws exception
+            purgeOwnDeviceKeys(omemoDevice);
 
-        // remove the local corrupted device from db first; in case network access throws exception
-        purgeOwnDeviceKeys(omemoDevice);
+            // Also delete all devices with null Identity key - omemoService will re-create them if needed
+            int count = mDB.deleteNullIdentityKeyDevices();
+            Timber.d("Number of null identities deleted: %s", count);
 
-        // Also delete all devices with null Identity key - omemoService will re-create them if needed
-        int count = mDB.deleteNullIdentityKeyDevices();
-        Timber.d("Number of null identities deleted: %s", count);
-
-        // publish a new device list with our own deviceId and cached active devices
-        try {
-            omemoManager.purgeDeviceList();
-        } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException | IOException e) {
-            aTalkApp.showToastMessage(R.string.omemo_purge_inactive_device_error, omemoDevice);
+            // publish a new device list with our own deviceId and cached active devices
+            try {
+                omemoManager.purgeDeviceList();
+            } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException | IOException e) {
+                aTalkApp.showToastMessage(R.string.omemo_purge_inactive_device_error, omemoDevice);
+            }
         }
+        ).start();
     }
 
     /**

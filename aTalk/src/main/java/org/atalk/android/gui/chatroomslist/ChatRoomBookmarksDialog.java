@@ -126,7 +126,7 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         ThemeHelper.setTheme(mParent);
         super.onCreate(savedInstanceState);
 
-        setTitle(R.string.service_gui_CHATROOM_BOOKMARK_TITLE);
+        setTitle(R.string.chatroom_bookmark_title);
         this.setContentView(R.layout.chatroom_bookmarks);
 
         accountsSpinner = this.findViewById(R.id.jid_Accounts_Spinner);
@@ -156,9 +156,9 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         mCancelButton.setOnClickListener(v -> {
             if (hasChanges) {
                 DialogActivity.showConfirmDialog(mParent,
-                        R.string.service_gui_CHATROOM_BOOKMARK_TITLE,
-                        R.string.service_gui_UNSAVED_CHANGES,
-                        R.string.service_gui_EXIT, this);
+                        R.string.chatroom_bookmark_title,
+                        R.string.unsaved_changes,
+                        R.string.exit, this);
             }
             else
                 closeDialog();
@@ -418,7 +418,7 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
                     // nickName cannot be null => exception
                     mBookmarkFocus.setNickname(Resourcepart.from(ViewUtil.toString(nicknameField)));
                 } catch (XmppStringprepException e) {
-                    aTalkApp.showToastMessage(R.string.service_gui_CHANGE_NICKNAME_ERROR,
+                    aTalkApp.showToastMessage(R.string.change_nickname_error,
                             mBookmarkFocus.getJid(), e.getMessage());
                     return false;
                 }
@@ -516,7 +516,7 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
                     }
                 } catch (SmackException.NoResponseException | SmackException.NotConnectedException
                         | XMPPException.XMPPErrorException | InterruptedException e) {
-                    String errMag = aTalkApp.getResString(R.string.service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED,
+                    String errMag = aTalkApp.getResString(R.string.chatroom_bookmark_update_failed,
                             chatRoomWrapper, e.getMessage());
                     Timber.w(errMag);
                     aTalkApp.showToastMessage(errMag);

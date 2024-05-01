@@ -34,13 +34,13 @@
         <Button
             android:id="@+id/rcb_Cancel"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/rcb_Submit"
             style="@style/ButtonTop"
             android:layout_marginStart="4dp"
-            android:text="@string/service_gui_SUBMIT" />
+            android:text="@string/submit" />
     </LinearLayout>
 
 </LinearLayout>

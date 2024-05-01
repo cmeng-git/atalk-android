@@ -23,8 +23,7 @@ import org.atalk.service.configuration.ConfigurationService;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ConfigListPreference extends ListPreference
-{
+public class ConfigListPreference extends ListPreference {
     /**
      * The optional attribute which contains value that disables all dependents.
      */
@@ -34,14 +33,12 @@ public class ConfigListPreference extends ListPreference
      */
     private boolean disableOnNotEqual;
 
-    public ConfigListPreference(Context context, AttributeSet attrs)
-    {
+    public ConfigListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         initAttributes(context, attrs);
     }
 
-    public ConfigListPreference(Context context)
-    {
+    public ConfigListPreference(Context context) {
         super(context);
     }
 
@@ -51,8 +48,7 @@ public class ConfigListPreference extends ListPreference
      * @param context Android context.
      * @param attrs attribute set.
      */
-    private void initAttributes(Context context, AttributeSet attrs)
-    {
+    private void initAttributes(Context context, AttributeSet attrs) {
         TypedArray attArray = context.obtainStyledAttributes(attrs, R.styleable.ConfigListPreference);
 
         for (int i = 0; i < attArray.getIndexCount(); i++) {
@@ -69,8 +65,7 @@ public class ConfigListPreference extends ListPreference
     }
 
     @Override
-    protected void onAttachedToHierarchy(PreferenceManager preferenceManager)
-    {
+    protected void onAttachedToHierarchy(PreferenceManager preferenceManager) {
         // Force load default value from configuration service
         setDefaultValue(getPersistedString(null));
         super.onAttachedToHierarchy(preferenceManager);
@@ -78,11 +73,10 @@ public class ConfigListPreference extends ListPreference
 
     /**
      * {@inheritDoc}
-     // Update summary every time the value is read
+     * // Update summary every time the value is read
      */
     @Override
-    protected void onSetInitialValue(Object defaultValue)
-    {
+    protected void onSetInitialValue(Object defaultValue) {
         super.onSetInitialValue(defaultValue);
         updateSummary(getValue());
     }
@@ -91,8 +85,7 @@ public class ConfigListPreference extends ListPreference
      * {@inheritDoc}
      */
     @Override
-    protected String getPersistedString(String defaultReturnValue)
-    {
+    protected String getPersistedString(String defaultReturnValue) {
         ConfigurationService configService = AndroidGUIActivator.getConfigurationService();
         if (configService == null)
             return defaultReturnValue;
@@ -104,8 +97,7 @@ public class ConfigListPreference extends ListPreference
      * {@inheritDoc}
      */
     @Override
-    protected boolean persistString(String value)
-    {
+    protected boolean persistString(String value) {
         super.persistString(value);
 
         ConfigurationService configService = AndroidGUIActivator.getConfigurationService();
@@ -123,8 +115,7 @@ public class ConfigListPreference extends ListPreference
      *
      * @param value the current value
      */
-    private void updateSummary(String value)
-    {
+    private void updateSummary(String value) {
         int idx = findIndexOfValue(value);
         if (idx != -1) {
             setSummary(getEntries()[idx]);
@@ -135,8 +126,7 @@ public class ConfigListPreference extends ListPreference
      * {@inheritDoc}
      */
     @Override
-    public void setValue(String value)
-    {
+    public void setValue(String value) {
         super.setValue(value);
 
         // Disables dependents
@@ -149,8 +139,7 @@ public class ConfigListPreference extends ListPreference
      * Additionally checks if current value is equal to disable dependents value.
      */
     @Override
-    public boolean shouldDisableDependents()
-    {
+    public boolean shouldDisableDependents() {
         return super.shouldDisableDependents()
                 || (dependentValue != null && disableOnNotEqual != dependentValue.equals(getValue()));
     }

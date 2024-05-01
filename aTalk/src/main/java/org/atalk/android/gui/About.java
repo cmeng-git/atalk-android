@@ -170,7 +170,7 @@ public class About extends BaseActivity implements View.OnClickListener {
         // crash if enabled under FragmentActivity
         // requestWindowFeature(Window.FEATURE_LEFT_ICON);
         // setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_info);
-        setMainTitle(R.string.AboutDialog_title);
+        setMainTitle(R.string.About);
 
         View atakUrl = findViewById(R.id.atalk_link);
         atakUrl.setOnClickListener(this);
@@ -199,7 +199,7 @@ public class About extends BaseActivity implements View.OnClickListener {
             PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
 
             TextView textView = findViewById(R.id.AboutDialog_Version);
-            textView.setText(String.format(getString(R.string.AboutDialog_Version), pi.versionName));
+            textView.setText(String.format(getString(R.string.version_), pi.versionName));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -267,7 +267,7 @@ public class About extends BaseActivity implements View.OnClickListener {
         }
         xeps.append("</ul>");
 
-        html.append(String.format(getString(R.string.app_xeps), xeps.toString()))
+        html.append(String.format(getString(R.string.app_xep), xeps.toString()))
                 .append("</p><hr/><p>");
 
         StringBuilder libs = new StringBuilder().append("<ul>");

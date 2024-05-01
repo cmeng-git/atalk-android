@@ -1091,7 +1091,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             iceAgent.removeStateChangeListener(stateChangeListener);
             /* check the state of ICE processing and throw exception if failed */
             if (IceProcessingState.FAILED.equals(iceAgent.getState())) {
-                String msg = aTalkApp.getResString(R.string.service_protocol_ICE_FAILED);
+                String msg = aTalkApp.getResString(R.string.protocol_ice_failed);
                 throw new OperationFailedException(msg, OperationFailedException.GENERAL_ERROR);
             }
         }

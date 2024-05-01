@@ -9,6 +9,10 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+
 import net.java.sip.communicator.service.metahistory.MetaHistoryService;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.muc.MUCService;
@@ -41,10 +45,6 @@ import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.ChatTransport;
 import org.atalk.android.gui.util.AndroidImageUtil;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-
 /**
  * An implementation of <code>ChatSession</code> for conference chatting.
  *
@@ -55,8 +55,7 @@ import java.util.Iterator;
  * @author Eng Chong Meng
  */
 public class ConferenceChatSession extends ChatSession implements ChatRoomMemberPresenceListener,
-        ChatRoomPropertyChangeListener, ChatRoomConferencePublishedListener
-{
+        ChatRoomPropertyChangeListener, ChatRoomConferencePublishedListener {
     /**
      * The current chat transport used for messaging.
      */
@@ -81,8 +80,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @param chatRoomWrapper the chat room corresponding to this conference session.
      */
 
-    public ConferenceChatSession(ChatPanel chatPanel, ChatRoomWrapper chatRoomWrapper)
-    {
+    public ConferenceChatSession(ChatPanel chatPanel, ChatRoomWrapper chatRoomWrapper) {
         this.sessionRenderer = chatPanel;
         this.chatRoomWrapper = chatRoomWrapper;
 
@@ -104,8 +102,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @return the descriptor i.e. ChatRoomWrapper of this chat session.
      */
     @Override
-    public Object getDescriptor()
-    {
+    public Object getDescriptor() {
         return chatRoomWrapper;
     }
 
@@ -114,8 +111,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      *
      * @return the chat identifier
      */
-    public String getChatId()
-    {
+    public String getChatId() {
         return chatRoomWrapper.getChatRoomID();
     }
 
@@ -123,8 +119,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * Disposes this chat session.
      */
     @Override
-    public void dispose()
-    {
+    public void dispose() {
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         chatRoom.removeMemberPresenceListener(this);
         chatRoom.removePropertyChangeListener(this);
@@ -141,8 +136,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @return the entityJid of the chat room.
      */
     @Override
-    public String getChatEntity()
-    {
+    public String getChatEntity() {
         return chatRoomWrapper.getChatRoomName();
     }
 
@@ -151,8 +145,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      *
      * @return the subject of the chat room.
      */
-    public String getChatSubject()
-    {
+    public String getChatSubject() {
         return chatRoomWrapper.getChatRoom().getSubject();
     }
 
@@ -160,11 +153,11 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * Returns the configuration form corresponding to the chat room.
      *
      * @return the configuration form corresponding to the chat room.
+     *
      * @throws OperationFailedException if no configuration form is available for the chat room.
      */
     public ChatRoomConfigurationForm getChatConfigurationForm()
-            throws OperationFailedException, InterruptedException
-    {
+            throws OperationFailedException, InterruptedException {
         return chatRoomWrapper.getChatRoom().getConfigurationForm();
     }
 
@@ -174,8 +167,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @return the currently used transport for all operation within this chat session.
      */
     @Override
-    public ChatTransport getCurrentChatTransport()
-    {
+    public ChatTransport getCurrentChatTransport() {
         return currentChatTransport;
     }
 
@@ -186,8 +178,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @return the default mobile number used to send sms-es in this session.
      */
     @Override
-    public String getDefaultSmsNumber()
-    {
+    public String getDefaultSmsNumber() {
         return null;
     }
 
@@ -195,11 +186,11 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * Returns a collection of the last N number of messages given by count.
      *
      * @param count The number of messages from history to return.
+     *
      * @return a collection of the last N number of messages given by count.
      */
     @Override
-    public Collection<Object> getHistory(int count)
-    {
+    public Collection<Object> getHistory(int count) {
         final MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
@@ -216,11 +207,11 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      *
      * @param date The date up to which we're looking for messages.
      * @param count The number of messages from history to return.
+     *
      * @return a collection of the last N number of messages given by count.
      */
     @Override
-    public Collection<Object> getHistoryBeforeDate(Date date, int count)
-    {
+    public Collection<Object> getHistoryBeforeDate(Date date, int count) {
         final MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
@@ -236,11 +227,11 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      *
      * @param date The date from which we're looking for messages.
      * @param count The number of messages from history to return.
+     *
      * @return a collection of the last N number of messages given by count.
      */
     @Override
-    public Collection<Object> getHistoryAfterDate(Date date, int count)
-    {
+    public Collection<Object> getHistoryAfterDate(Date date, int count) {
         final MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
@@ -258,8 +249,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @return the start date of the history of this chat session.
      */
     @Override
-    public Date getHistoryStartDate()
-    {
+    public Date getHistoryStartDate() {
         MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
@@ -292,8 +282,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @return the end date of the history of this chat session.
      */
     @Override
-    public Date getHistoryEndDate()
-    {
+    public Date getHistoryEndDate() {
         MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
@@ -326,8 +315,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @param chatTransport The transport to set as a default transport for this session.
      */
     @Override
-    public void setCurrentChatTransport(ChatTransport chatTransport)
-    {
+    public void setCurrentChatTransport(ChatTransport chatTransport) {
         this.currentChatTransport = chatTransport;
         fireCurrentChatTransportChange();
     }
@@ -338,8 +326,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @param smsPhoneNumber The default mobile number used to send sms-es in this session.
      */
     @Override
-    public void setDefaultSmsNumber(String smsPhoneNumber)
-    {
+    public void setDefaultSmsNumber(String smsPhoneNumber) {
     }
 
     /**
@@ -349,8 +336,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @return The <code>ChatSessionRenderer</code>.
      */
     @Override
-    public ChatPanel getChatSessionRenderer()
-    {
+    public ChatPanel getChatSessionRenderer() {
         return sessionRenderer;
     }
 
@@ -362,8 +348,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      *
      * @param evt the <code>ChatRoomMemberPresenceChangeEvent</code> that notified us
      */
-    public void memberPresenceChanged(final ChatRoomMemberPresenceChangeEvent evt)
-    {
+    public void memberPresenceChanged(final ChatRoomMemberPresenceChangeEvent evt) {
         new Handler(Looper.getMainLooper()).post(() -> {
             ChatRoom sourceChatRoom = evt.getChatRoom();
             ChatRoom room = chatRoomWrapper.getChatRoom();
@@ -396,7 +381,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
                  */
                 if (!evt.isReasonUserList()) {
                     statusMessage = aTalkApp.getResString(
-                            R.string.service_gui_CHATROOM_USER_JOINED, sourceChatRoom.getName());
+                            R.string.chatroom_user_joined, sourceChatRoom.getName());
                     sessionRenderer.updateChatContactStatus(chatContact, statusMessage);
                 }
             }
@@ -406,15 +391,15 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
                 switch (eventType) {
                     case ChatRoomMemberPresenceChangeEvent.MEMBER_LEFT:
                         statusMessage = aTalkApp.getResString(
-                                R.string.service_gui_CHATROOM_USER_LEFT, sourceChatRoom.getName());
+                                R.string.chatroom_user_left, sourceChatRoom.getName());
                         break;
                     case ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED:
                         statusMessage = aTalkApp.getResString(
-                                R.string.service_gui_CHATROOM_USER_KICKED, sourceChatRoom.getName());
+                                R.string.chatroom_user_kicked, sourceChatRoom.getName());
                         break;
                     case ChatRoomMemberPresenceChangeEvent.MEMBER_QUIT:
                         statusMessage = aTalkApp.getResString(
-                                R.string.service_gui_CHATROOM_USER_QUIT, sourceChatRoom.getName());
+                                R.string.chatroom_user_quit, sourceChatRoom.getName());
                         break;
                 }
 
@@ -438,8 +423,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
         });
     }
 
-    public void chatRoomPropertyChangeFailed(ChatRoomPropertyChangeFailedEvent event)
-    {
+    public void chatRoomPropertyChangeFailed(ChatRoomPropertyChangeFailedEvent event) {
     }
 
     /**
@@ -447,8 +431,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      *
      * @param evt the event containing information about the property change
      */
-    public void chatRoomPropertyChanged(ChatRoomPropertyChangeEvent evt)
-    {
+    public void chatRoomPropertyChanged(ChatRoomPropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(ChatRoomPropertyChangeEvent.CHAT_ROOM_SUBJECT)) {
             sessionRenderer.setChatSubject((String) evt.getNewValue(), (String) evt.getOldValue());
         }
@@ -462,8 +445,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * {@code false}.
      */
     @Override
-    public boolean isDescriptorPersistent()
-    {
+    public boolean isDescriptorPersistent() {
         return true;
     }
 
@@ -473,8 +455,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      *
      * @param chatRoom the <code>ChatRoom</code> to load
      */
-    public void loadChatRoom(ChatRoom chatRoom)
-    {
+    public void loadChatRoom(ChatRoom chatRoom) {
         // Re-init the chat transport, as we have a new chat room object.
         currentChatTransport = new ConferenceChatTransport(this, chatRoomWrapper.getChatRoom());
         chatTransports.clear();
@@ -503,10 +484,9 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @return the status icon corresponding to this chat room
      */
     @Override
-    public byte[] getChatStatusIcon()
-    {
+    public byte[] getChatStatusIcon() {
         boolean isJoined = (chatRoomWrapper.getChatRoom() != null) && chatRoomWrapper.getChatRoom().isJoined();
-        PresenceStatus status = isJoined ?  GlobalStatusEnum.ONLINE : GlobalStatusEnum.OFFLINE;
+        PresenceStatus status = isJoined ? GlobalStatusEnum.ONLINE : GlobalStatusEnum.OFFLINE;
         return status.getStatusIcon();
 
         // byte[] statusIcon = AndroidImageUtil.getImageBytes(this,
@@ -520,8 +500,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @return the avatar icon of this chat session.
      */
     @Override
-    public byte[] getChatAvatar()
-    {
+    public byte[] getChatAvatar() {
         return AndroidImageUtil.getImageBytes(aTalkApp.getInstance(), R.drawable.ic_chatroom);
     }
 
@@ -529,8 +508,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * Initializes the list of participants.(It is assumed that <code>chatParticipants</code> is
      * locked.)
      */
-    private void initChatParticipants()
-    {
+    private void initChatParticipants() {
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         if ((chatRoom != null) && chatRoom.isJoined()) {
             for (ChatRoomMember member : chatRoom.getMembers())
@@ -547,8 +525,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * otherwise.
      */
     @Override
-    public boolean isContactListSupported()
-    {
+    public boolean isContactListSupported() {
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         return !chatRoom.isSystem() && !MUCService.isPrivate(chatRoom);
     }
@@ -559,8 +536,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      *
      * @param l the listener to add
      */
-    public void addMemberRoleListener(ChatRoomMemberRoleListener l)
-    {
+    public void addMemberRoleListener(ChatRoomMemberRoleListener l) {
         chatRoomWrapper.getChatRoom().addMemberRoleListener(l);
     }
 
@@ -570,8 +546,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      *
      * @param l the listener to add
      */
-    public void addLocalUserRoleListener(ChatRoomLocalUserRoleListener l)
-    {
+    public void addLocalUserRoleListener(ChatRoomLocalUserRoleListener l) {
         chatRoomWrapper.getChatRoom().addLocalUserRoleListener(l);
     }
 
@@ -581,8 +556,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      *
      * @param l the listener to remove
      */
-    public void removeMemberRoleListener(ChatRoomMemberRoleListener l)
-    {
+    public void removeMemberRoleListener(ChatRoomMemberRoleListener l) {
         chatRoomWrapper.getChatRoom().removeMemberRoleListener(l);
     }
 
@@ -592,8 +566,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      *
      * @param l the listener to remove
      */
-    public void removeLocalUserRoleListener(ChatRoomLocalUserRoleListener l)
-    {
+    public void removeLocalUserRoleListener(ChatRoomLocalUserRoleListener l) {
         chatRoomWrapper.getChatRoom().removeLocalUserRoleListener(l);
     }
 
@@ -604,8 +577,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @param evt the event received, which contains the <code>ChatRoom</code>, <code>ChatRoomMember</code> and
      * <code>ConferenceDescription</code> involved.
      */
-    public void conferencePublished(final ChatRoomConferencePublishedEvent evt)
-    {
+    public void conferencePublished(final ChatRoomConferencePublishedEvent evt) {
         (new Activity()).runOnUiThread(() -> {
             ChatRoom room = evt.getChatRoom();
             if (!room.equals(chatRoomWrapper.getChatRoom()))
@@ -629,8 +601,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @param cd the <code>ConferenceDescription</code> instance which represents the conference.
      */
     private void updateChatConferences(ChatRoom chatRoom, ChatRoomMember chatRoomMember,
-            ConferenceDescription cd, int activeConferencesCount)
-    {
+            ConferenceDescription cd, int activeConferencesCount) {
         boolean isAvailable = cd.isAvailable();
         for (ChatContact<?> chatContact : chatParticipants) {
             if (chatContact.getDescriptor().equals(chatRoomMember)) {

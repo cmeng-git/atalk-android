@@ -6,6 +6,11 @@
  */
 package net.java.sip.communicator.util.call;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationSet;
@@ -19,13 +24,10 @@ import net.java.sip.communicator.service.protocol.ServerStoredDetails.MobilePhon
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.VideoDetail;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkPhoneDetail;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.UtilActivator;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 
 /**
  * Utility class used to check if there is a telephony service, video calls and
@@ -35,22 +37,21 @@ import java.util.List;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class MetaContactPhoneUtil
-{
+public class MetaContactPhoneUtil {
     /**
      * The metaContact we are working on.
      */
-    private MetaContact metaContact;
+    private final MetaContact metaContact;
 
     /**
      * The phones that have been discovered for metaContact child contacts.
      */
-    private Hashtable<Contact, List<String>> phones = new Hashtable<>();
+    private final Hashtable<Contact, List<String>> phones = new Hashtable<>();
 
     /**
      * The video phones that have been discovered for metaContact child contacts.
      */
-    private Hashtable<Contact, List<String>> videoPhones = new Hashtable<>();
+    private final Hashtable<Contact, List<String>> videoPhones = new Hashtable<>();
 
     /**
      * True if there is any phone found for the metaContact.
@@ -76,10 +77,10 @@ public class MetaContactPhoneUtil
      * Obtains the util for <code>metaContact</code>
      *
      * @param metaContact the metaContact.
+     *
      * @return ContactPhoneUtil for the <code>metaContact</code>.
      */
-    public static MetaContactPhoneUtil getPhoneUtil(MetaContact metaContact)
-    {
+    public static MetaContactPhoneUtil getPhoneUtil(MetaContact metaContact) {
         return new MetaContactPhoneUtil(metaContact);
     }
 
@@ -88,8 +89,7 @@ public class MetaContactPhoneUtil
      *
      * @param metaContact the metaContact checked in the utility.
      */
-    protected MetaContactPhoneUtil(MetaContact metaContact)
-    {
+    protected MetaContactPhoneUtil(MetaContact metaContact) {
         this.metaContact = metaContact;
     }
 
@@ -98,8 +98,7 @@ public class MetaContactPhoneUtil
      *
      * @return the metaContact we work on.
      */
-    public MetaContact getMetaContact()
-    {
+    public MetaContact getMetaContact() {
         return metaContact;
     }
 
@@ -108,10 +107,10 @@ public class MetaContactPhoneUtil
      * Return null if we have stopped searching and a listener is available and will be used to inform for results.
      *
      * @param contact the contact
+     *
      * @return localized addition phones list for contact, if any.
      */
-    public List<String> getPhones(Contact contact)
-    {
+    public List<String> getPhones(Contact contact) {
         return getPhones(contact, null, true);
     }
 
@@ -122,10 +121,10 @@ public class MetaContactPhoneUtil
      *
      * @param contact the contact to check for video phones.
      * @param listener the <code>DetailsResponseListener</code> to listen for result details
+     *
      * @return list of video phones for <code>contact</code>, localized.
      */
-    public List<String> getVideoPhones(Contact contact, DetailsResponseListener listener)
-    {
+    public List<String> getVideoPhones(Contact contact, DetailsResponseListener listener) {
         if (!this.metaContact.containsContact(contact)) {
             return new ArrayList<String>();
         }
@@ -159,10 +158,10 @@ public class MetaContactPhoneUtil
      * @param contact the contact to check for video phones.
      * @param listener the <code>DetailsResponseListener</code> to listen for result details
      * @param localized whether to localize the phones, put a description text.
+     *
      * @return list of phones for contact.
      */
-    public List<String> getPhones(Contact contact, DetailsResponseListener listener, boolean localized)
-    {
+    public List<String> getPhones(Contact contact, DetailsResponseListener listener, boolean localized) {
         if (!this.metaContact.containsContact(contact)) {
             return new ArrayList<>();
         }
@@ -185,10 +184,10 @@ public class MetaContactPhoneUtil
      * Is video called is enabled for metaContact. If any of the child contacts has video enabled.
      *
      * @param listener the <code>DetailsResponseListener</code> to listen for result details
+     *
      * @return is video called is enabled for metaContact.
      */
-    public boolean isVideoCallEnabled(DetailsResponseListener listener)
-    {
+    public boolean isVideoCallEnabled(DetailsResponseListener listener) {
         // make sure children are checked
         if (!checkMetaContactVideoPhones(listener))
             return false;
@@ -203,8 +202,7 @@ public class MetaContactPhoneUtil
      *
      * @return is video called is enabled for metaContact.
      */
-    public boolean isVideoCallEnabled()
-    {
+    public boolean isVideoCallEnabled() {
         return isVideoCallEnabled((DetailsResponseListener) null);
     }
 
@@ -212,10 +210,10 @@ public class MetaContactPhoneUtil
      * Is video call enabled for contact.
      *
      * @param contact to check for video capabilities.
+     *
      * @return is video call enabled for contact.
      */
-    public boolean isVideoCallEnabled(Contact contact)
-    {
+    public boolean isVideoCallEnabled(Contact contact) {
         if (!this.metaContact.containsContact(contact))
             return false;
 
@@ -238,10 +236,10 @@ public class MetaContactPhoneUtil
      * Is desktop sharing enabled for metaContact. If any of the child contacts has desktop sharing enabled.
      *
      * @param listener the <code>DetailsResponseListener</code> to listen for result details
+     *
      * @return is desktop share is enabled for metaContact.
      */
-    public boolean isDesktopSharingEnabled(DetailsResponseListener listener)
-    {
+    public boolean isDesktopSharingEnabled(DetailsResponseListener listener) {
         // make sure children are checked
         if (!checkMetaContactVideoPhones(listener))
             return false;
@@ -256,8 +254,7 @@ public class MetaContactPhoneUtil
      *
      * @return is desktop share is enabled for metaContact.
      */
-    public boolean isDesktopSharingEnabled()
-    {
+    public boolean isDesktopSharingEnabled() {
         return isDesktopSharingEnabled((DetailsResponseListener) null);
     }
 
@@ -265,10 +262,10 @@ public class MetaContactPhoneUtil
      * Is desktop sharing enabled for contact.
      *
      * @param contact to check for desktop sharing capabilities.
+     *
      * @return is desktop sharing enabled for contact.
      */
-    public boolean isDesktopSharingEnabled(Contact contact)
-    {
+    public boolean isDesktopSharingEnabled(Contact contact) {
         if (!this.metaContact.containsContact(contact))
             return false;
 
@@ -291,10 +288,10 @@ public class MetaContactPhoneUtil
      * Is call enabled for metaContact. If any of the child contacts has call enabled.
      *
      * @param listener the <code>DetailsResponseListener</code> to listen for result details
+     *
      * @return is call enabled for metaContact.
      */
-    public boolean isCallEnabled(DetailsResponseListener listener)
-    {
+    public boolean isCallEnabled(DetailsResponseListener listener) {
         return isCallEnabled(listener, true);
     }
 
@@ -305,10 +302,10 @@ public class MetaContactPhoneUtil
      * @param checkForTelephonyOpSet whether we should check for registered
      * telephony operation sets that can be used to dial out, can be used
      * in plugins dialing out using methods outside the provider.
+     *
      * @return is call enabled for metaContact.
      */
-    public boolean isCallEnabled(DetailsResponseListener listener, boolean checkForTelephonyOpSet)
-    {
+    public boolean isCallEnabled(DetailsResponseListener listener, boolean checkForTelephonyOpSet) {
         // make sure children are checked
         if (!checkMetaContactPhones(listener))
             return false;
@@ -326,8 +323,7 @@ public class MetaContactPhoneUtil
      *
      * @return is call enabled for metaContact.
      */
-    public boolean isCallEnabled()
-    {
+    public boolean isCallEnabled() {
         return isCallEnabled(null, true);
     }
 
@@ -337,10 +333,10 @@ public class MetaContactPhoneUtil
      * @param checkForTelephonyOpSet whether we should check for registered
      * telephony operation sets that can be used to dial out, can be used
      * in plugins dialing out using methods outside the provider.
+     *
      * @return is call enabled for metaContact.
      */
-    public boolean isCallEnabled(boolean checkForTelephonyOpSet)
-    {
+    public boolean isCallEnabled(boolean checkForTelephonyOpSet) {
         return isCallEnabled(null, checkForTelephonyOpSet);
     }
 
@@ -348,10 +344,10 @@ public class MetaContactPhoneUtil
      * Is call enabled for contact.
      *
      * @param contact to check for call capabilities.
+     *
      * @return is call enabled for contact.
      */
-    public boolean isCallEnabled(Contact contact)
-    {
+    public boolean isCallEnabled(Contact contact) {
         if (!checkContactPhones(contact))
             return false;
 
@@ -366,8 +362,7 @@ public class MetaContactPhoneUtil
      *
      * @return whether to continue or listeners present and will be informed for result.
      */
-    private boolean checkMetaContactPhones()
-    {
+    private boolean checkMetaContactPhones() {
         return checkMetaContactPhones(null);
     }
 
@@ -377,10 +372,10 @@ public class MetaContactPhoneUtil
      * and we need to stop executions cause listener will be used to be informed for result.
      *
      * @param l the <code>DetailsResponseListener</code> to listen for further details
+     *
      * @return whether to continue or listeners present and will be informed for result.
      */
-    private boolean checkMetaContactPhones(DetailsResponseListener l)
-    {
+    private boolean checkMetaContactPhones(DetailsResponseListener l) {
         Iterator<Contact> contactIterator = metaContact.getContacts();
         while (contactIterator.hasNext()) {
             Contact contact = contactIterator.next();
@@ -391,7 +386,6 @@ public class MetaContactPhoneUtil
             if (phones == null)
                 return false;
         }
-
         return true;
     }
 
@@ -401,10 +395,10 @@ public class MetaContactPhoneUtil
      * and we need to stop executions cause listener will be used to be informed for result.
      *
      * @param l the <code>DetailsResponseListener</code> to listen for further details
+     *
      * @return whether to continue or listeners present and will be informed for result.
      */
-    private boolean checkMetaContactVideoPhones(DetailsResponseListener l)
-    {
+    private boolean checkMetaContactVideoPhones(DetailsResponseListener l) {
         Iterator<Contact> contactIterator = metaContact.getContacts();
         while (contactIterator.hasNext()) {
             Contact contact = contactIterator.next();
@@ -415,7 +409,6 @@ public class MetaContactPhoneUtil
             if (phones == null)
                 return false;
         }
-
         return true;
     }
 
@@ -426,8 +419,7 @@ public class MetaContactPhoneUtil
      *
      * @return whether to continue or listeners present and will be informed for result.
      */
-    private boolean checkContactPhones(Contact contact)
-    {
+    private boolean checkContactPhones(Contact contact) {
         if (!phones.containsKey(contact)) {
             List<String> phones = getPhones(contact);
             if (phones == null)
@@ -438,7 +430,6 @@ public class MetaContactPhoneUtil
             // to check for routingForDesktopEnabled prop
             isDesktopSharingEnabled(contact);
         }
-
         return true;
     }
 
@@ -447,11 +438,11 @@ public class MetaContactPhoneUtil
      *
      * @param contact contact to check
      * @param opSet <code>OperationSet</code> to search for
+     *
      * @return Returns <code>true</code> if <code>Contact</code> supports the specified
      * <code>OperationSet</code>, <code>false</code> otherwise.
      */
-    private boolean hasContactCapabilities(Contact contact, Class<? extends OperationSet> opSet)
-    {
+    private boolean hasContactCapabilities(Contact contact, Class<? extends OperationSet> opSet) {
         OperationSetContactCapabilities capOpSet
                 = contact.getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
 
@@ -462,28 +453,27 @@ public class MetaContactPhoneUtil
         else {
             return capOpSet.getOperationSet(contact, opSet) != null;
         }
-
     }
 
     /**
      * Returns localized phone number.
      *
      * @param d the detail.
+     *
      * @return the localized phone number.
      */
-    protected String getLocalizedPhoneNumber(GenericDetail d)
-    {
+    protected String getLocalizedPhoneNumber(GenericDetail d) {
         if (d instanceof WorkPhoneDetail) {
-            return UtilActivator.getResources().getI18NString("service.gui.WORK_PHONE");
+            return aTalkApp.getResString(R.string.work);
         }
         else if (d instanceof MobilePhoneDetail) {
-            return UtilActivator.getResources().getI18NString("service.gui.MOBILE_PHONE");
+            return aTalkApp.getResString(R.string.mobile);
         }
         else if (d instanceof VideoDetail) {
-            return UtilActivator.getResources().getI18NString("service.gui.VIDEO_PHONE");
+            return aTalkApp.getResString(R.string.video);
         }
         else {
-            return UtilActivator.getResources().getI18NString("service.gui.HOME");
+            return aTalkApp.getResString(R.string.home);
         }
     }
 }

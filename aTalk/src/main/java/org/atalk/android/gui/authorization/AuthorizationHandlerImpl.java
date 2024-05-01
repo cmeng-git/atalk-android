@@ -114,10 +114,10 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
 
         AuthorizationResponse.AuthorizationResponseCode responseCode = response.getResponseCode();
         if (responseCode == AuthorizationResponse.ACCEPT) {
-            msg += ctx.getString(R.string.service_gui_AUTHORIZATION_ACCEPTED);
+            msg += ctx.getString(R.string.authorization_accepted);
         }
         else if (responseCode == AuthorizationResponse.REJECT) {
-            msg += ctx.getString(R.string.service_gui_AUTHENTICATION_REJECTED);
+            msg += ctx.getString(R.string.authorization_rejected);
         }
 
         String reason = response.getReason();
@@ -126,7 +126,7 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
         }
 
         DialogActivity.showConfirmDialog(ctx,
-                ctx.getString(R.string.service_gui_AUTHORIZATION_REQUEST), msg, null, null);
+                ctx.getString(R.string.authorization_request), msg, null, null);
     }
 
     /**

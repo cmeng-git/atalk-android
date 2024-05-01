@@ -16,6 +16,8 @@
  */
 package org.atalk.android.gui.chat.filetransfer;
 
+import java.util.Date;
+
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
 import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
@@ -35,8 +37,6 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
-import java.util.Date;
-
 import timber.log.Timber;
 
 /**
@@ -49,8 +49,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class FileTransferActivator implements BundleActivator, ServiceListener, ScFileTransferListener
-{
+public class FileTransferActivator implements BundleActivator, ServiceListener, ScFileTransferListener {
     /**
      * The BundleContext that we got from the OSGI bus.
      */
@@ -63,8 +62,7 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
      * @param bc BundleContext
      */
     public void start(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         bundleContext = bc;
         bundleContext.addServiceListener(this);
 
@@ -88,8 +86,7 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
      * @param bc BundleContext
      */
     public void stop(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         bundleContext = bc;
         bundleContext.removeServiceListener(this);
 
@@ -114,8 +111,7 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
      *
      * @param event ServiceEvent received when there is a service changed
      */
-    public void serviceChanged(ServiceEvent event)
-    {
+    public void serviceChanged(ServiceEvent event) {
         ServiceReference serviceRef = event.getServiceReference();
         // if the event is caused by a bundle being stopped, we don't want to know
         if (serviceRef.getBundle().getState() == Bundle.STOPPING)
@@ -142,8 +138,7 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
      *
      * @param provider ProtocolProviderService
      */
-    private void handleProviderAdded(ProtocolProviderService provider)
-    {
+    private void handleProviderAdded(ProtocolProviderService provider) {
         OperationSetFileTransfer opSetFileTransfer = provider.getOperationSet(OperationSetFileTransfer.class);
 
         if (opSetFileTransfer != null) {
@@ -159,8 +154,7 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
      *
      * @param provider the ProtocolProviderService that has been unregistered.
      */
-    private void handleProviderRemoved(ProtocolProviderService provider)
-    {
+    private void handleProviderRemoved(ProtocolProviderService provider) {
         OperationSetFileTransfer opSetFileTransfer = provider.getOperationSet(OperationSetFileTransfer.class);
 
         if (opSetFileTransfer != null) {
@@ -174,8 +168,7 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
      * @param event the <code>FileTransferRequestEvent</code> containing the newly received request and other details.
      */
     @Override
-    public void fileTransferRequestReceived(FileTransferRequestEvent event)
-    {
+    public void fileTransferRequestReceived(FileTransferRequestEvent event) {
         IncomingFileTransferRequest request = event.getRequest();
         OperationSetFileTransfer opSet = event.getFileTransferOperationSet();
 
@@ -192,8 +185,7 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
      *
      * @param event the <code>FileTransferCreatedEvent</code> that notified us
      */
-    public void fileTransferCreated(FileTransferCreatedEvent event)
-    {
+    public void fileTransferCreated(FileTransferCreatedEvent event) {
     }
 
     /**
@@ -202,8 +194,7 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
      *
      * @param event the <code>FileTransferRequestEvent</code> containing the received request which was rejected.
      */
-    public void fileTransferRequestRejected(FileTransferRequestEvent event)
-    {
+    public void fileTransferRequestRejected(FileTransferRequestEvent event) {
     }
 
     /**
@@ -211,7 +202,6 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
      *
      * @param event the <code>FileTransferRequestEvent</code> containing the request which was canceled.
      */
-    public void fileTransferRequestCanceled(FileTransferRequestEvent event)
-    {
+    public void fileTransferRequestCanceled(FileTransferRequestEvent event) {
     }
 }

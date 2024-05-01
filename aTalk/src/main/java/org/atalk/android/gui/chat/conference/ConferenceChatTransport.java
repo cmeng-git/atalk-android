@@ -192,7 +192,7 @@ public class ConferenceChatTransport implements ChatTransport {
             throws Exception {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
-            aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_NOT_JOINED);
+            aTalkApp.showToastMessage(R.string.chatroom_not_joined);
             return;
         }
 
@@ -348,7 +348,7 @@ public class ConferenceChatTransport implements ChatTransport {
             }
         }
         else
-            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_supported));
     }
 
     /**

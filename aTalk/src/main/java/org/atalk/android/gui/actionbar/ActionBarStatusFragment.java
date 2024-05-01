@@ -143,22 +143,22 @@ public class ActionBarStatusFragment extends OSGiFragment
     private GlobalStatusMenu createGlobalStatusMenu() {
         Resources res = getResources();
         ActionMenuItem ffcItem = new ActionMenuItem(FFC,
-                res.getString(R.string.service_gui_FFC_STATUS),
+                res.getString(R.string.free_for_chat),
                 ResourcesCompat.getDrawable(res, R.drawable.global_ffc, null));
         ActionMenuItem onlineItem = new ActionMenuItem(ONLINE,
-                res.getString(R.string.service_gui_ONLINE),
+                res.getString(R.string.online),
                 ResourcesCompat.getDrawable(res, R.drawable.global_online, null));
         ActionMenuItem offlineItem = new ActionMenuItem(OFFLINE,
-                res.getString(R.string.service_gui_OFFLINE),
+                res.getString(R.string.offline),
                 ResourcesCompat.getDrawable(res, R.drawable.global_offline, null));
         ActionMenuItem awayItem = new ActionMenuItem(AWAY,
-                res.getString(R.string.service_gui_AWAY_STATUS),
+                res.getString(R.string.away),
                 ResourcesCompat.getDrawable(res, R.drawable.global_away, null));
         ActionMenuItem extendedAwayItem = new ActionMenuItem(EXTENDED_AWAY,
-                res.getString(R.string.service_gui_EXTENDED_AWAY_STATUS),
+                res.getString(R.string.extended_away),
                 ResourcesCompat.getDrawable(res, R.drawable.global_extended_away, null));
         ActionMenuItem dndItem = new ActionMenuItem(DND,
-                res.getString(R.string.service_gui_DND_STATUS),
+                res.getString(R.string.do_not_disturb),
                 ResourcesCompat.getDrawable(res, R.drawable.global_dnd, null));
 
         final GlobalStatusMenu globalStatusMenu = new GlobalStatusMenu(mContext);
@@ -239,7 +239,7 @@ public class ActionBarStatusFragment extends OSGiFragment
             // Proceed only if mOnOffLine has been initialized
             if (mOnOffLine != null) {
                 boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(mStatus);
-                int itemId = isOffline ? R.string.service_gui_SIGN_IN : R.string.service_gui_SIGN_OUT;
+                int itemId = isOffline ? R.string.sign_in : R.string.sign_out;
                 mOnOffLine.setTitle(itemId);
                 mOnOffLine.setVisible(isOffline);
             }
@@ -289,7 +289,7 @@ public class ActionBarStatusFragment extends OSGiFragment
             displayName = pProviders.iterator().next().getAccountID().getUserID();
         }
         if (pProviders.size() > 1)
-            displayName = getString(R.string.service_gui_ACCOUNT_ME);
+            displayName = getString(R.string.account_me);
         ActionBarUtil.setTitle(mContext, displayName);
     }
 }

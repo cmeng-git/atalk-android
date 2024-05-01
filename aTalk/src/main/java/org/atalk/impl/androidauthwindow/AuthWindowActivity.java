@@ -63,14 +63,14 @@ public class AuthWindowActivity extends OSGiActivity
         // Title
         String title = mAuthWindow.getWindowTitle();
         if (title == null) {
-            title = getString(R.string.service_gui_AUTHENTICATION_WINDOW_TITLE, server);
+            title = getString(R.string.authentication_title, server);
         }
         setTitle(title);
 
         // Message
         String message = mAuthWindow.getWindowText();
         if (message == null) {
-            message = getString(R.string.service_gui_AUTHENTICATION_REQUESTED_SERVER, server);
+            message = getString(R.string.authentication_requested_by_server, server);
         }
         ViewUtil.setTextViewValue(contentView, R.id.text, message);
 
@@ -101,7 +101,7 @@ public class AuthWindowActivity extends OSGiActivity
         String userName = ViewUtil.getTextViewValue(contentView, R.id.username);
         String password = ViewUtil.getTextViewValue(contentView, R.id.password);
         if ((userName == null) || (password == null)) {
-            aTalkApp.showToastMessage(R.string.plugin_certconfig_INCOMPLETE);
+            aTalkApp.showToastMessage(R.string.certconfig_incomplete);
         }
         else {
             cancelled = false;

@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/between_padding"
-        android:text="@string/service_gui_SELECT_GROUP" />
+        android:text="@string/assign_group" />
 
     <Spinner
         android:id="@+id/selectGroupSpinner"
@@ -35,13 +35,13 @@
         <Button
             android:id="@+id/cancel"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/move"
             style="@style/ButtonTop"
             android:layout_marginStart="2dp"
-            android:text="@string/service_gui_MOVE" />
+            android:text="@string/move" />
     </LinearLayout>
 
 </LinearLayout>

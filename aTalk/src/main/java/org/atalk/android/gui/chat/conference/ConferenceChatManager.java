@@ -161,7 +161,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                     ChatRoomJabberImpl chatRoom = (ChatRoomJabberImpl) invitation.getTargetChatRoom();
                     chatRoom.join();
                     ChatSessionManager.setCurrentChatId(null);
-                    chatRoom.addMessage(aTalkApp.getResString(R.string.service_gui_JOIN_AUTOMATICALLY),
+                    chatRoom.addMessage(aTalkApp.getResString(R.string.join_automatically),
                             ChatMessage.MESSAGE_SYSTEM);
                 } catch (OperationFailedException e) {
                     Timber.w("Auto join group chat failed!");
@@ -300,22 +300,22 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         switch (evt.getErrorCode()) {
             case MessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_NOT_SUPPORTED, destMember.getNickName());
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_not_supported, destMember.getNickName());
                 break;
             case MessageDeliveryFailedEvent.NETWORK_FAILURE:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_NOT_DELIVERED);
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_network_error);
                 break;
             case MessageDeliveryFailedEvent.PROVIDER_NOT_REGISTERED:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_not_registered);
                 break;
             case MessageDeliveryFailedEvent.INTERNAL_ERROR:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_internal_error);
                 break;
             case MessageDeliveryFailedEvent.FORBIDDEN:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_CHATROOM_SEND_MSG_FORBIDDEN);
+                errorMsg = aTalkApp.getResString(R.string.chatroom_send_message_forbidden);
                 break;
             case MessageDeliveryFailedEvent.UNSUPPORTED_OPERATION:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_UNSUPPORTED_OPERATION);
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_unsupported_operation);
                 break;
             case MessageDeliveryFailedEvent.OMEMO_SEND_ERROR:
             case MessageDeliveryFailedEvent.NOT_ACCEPTABLE:
@@ -327,7 +327,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 resendLastMessage = false;
             default:
                 if (TextUtils.isEmpty(reason))
-                    errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_UNKNOWN_ERROR);
+                    errorMsg = aTalkApp.getResString(R.string.message_delivery_unknown_error);
                 else {
                     errorMsg = reason;
                     mergeMessage = false;
@@ -335,7 +335,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         }
 
         if (!TextUtils.isEmpty(reason) && mergeMessage)
-            errorMsg += " " + aTalkApp.getResString(R.string.service_gui_ERROR_WAS, reason);
+            errorMsg += " " + aTalkApp.getResString(R.string.error_was_, reason);
 
         // Error message sent from conference has no nickName i.e. contains ""
         String sender = ((destMember == null) || TextUtils.isEmpty(destMember.getNickName()))
@@ -383,8 +383,8 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             sourceAdHocChatRoom.addMessageListener(this);
         }
         else if (evt.getEventType().equals(LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_JOIN_FAILED)) {
-            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.service_gui_ERROR,
-                    R.string.service_gui_CHATROOM_JOIN_FAILED_REASON, sourceAdHocChatRoom.getName(), evt.getReason());
+            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.error,
+                    R.string.chatroom_join_failed_reason, sourceAdHocChatRoom.getName(), evt.getReason());
         }
         else if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
                 || LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_DROPPED.equals
@@ -445,8 +445,8 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             sourceChatRoom.addLocalUserRoleListener(this);
         }
         else if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOIN_FAILED.equals(eventType)) {
-            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.service_gui_ERROR,
-                    R.string.service_gui_CHATROOM_JOIN_FAILED_REASON, sourceChatRoom.getName(), evt.getReason());
+            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.error,
+                    R.string.chatroom_join_failed_reason, sourceChatRoom.getName(), evt.getReason());
         }
         else if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
                 || LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_KICKED.equals(eventType)
@@ -467,7 +467,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                         if (StringUtils.isNotEmpty(evt.getAlternateAddress())) {
                             chatPanel.addMessage(sourceChatRoom.getName(), new Date(),
                                     ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_PLAIN,
-                                    aTalkApp.getResString(R.string.service_gui_CHATROOM_ALTERNATE_ADDRESS,
+                                    aTalkApp.getResString(R.string.chatroom_alternate_address,
                                             evt.getAlternateAddress()));
                         }
                     }
@@ -533,8 +533,8 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             List<String> members = new LinkedList<>(contacts);
             chatRoom = groupChatOpSet.createAdHocChatRoom("chatroom-" + new Date().getTime(), members, reason);
         } catch (OperationFailedException | OperationNotSupportedException ex) {
-            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.service_gui_ERROR,
-                    R.string.service_gui_CHATROOM_CREATE_ERROR, protocolProvider.getProtocolDisplayName());
+            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.error,
+                    R.string.chatroom_create_error, protocolProvider.getProtocolDisplayName());
         }
 
         if (chatRoom != null) {
@@ -559,8 +559,8 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         AdHocChatRoom chatRoom = chatRoomWrapper.getAdHocChatRoom();
 
         if (chatRoom == null) {
-            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.service_gui_WARNING,
-                    R.string.service_gui_CHATROOM_NOT_CONNECTED, chatRoomWrapper.getAdHocChatRoomName());
+            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.warning,
+                    R.string.chatroom_not_connected, chatRoomWrapper.getAdHocChatRoomName());
             return;
         }
         new JoinAdHocChatRoomTask(chatRoomWrapper).execute();
@@ -628,7 +628,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         }
         else {
             DialogActivity.showDialog(aTalkApp.getInstance(),
-                    R.string.service_gui_WARNING, R.string.service_gui_CHATROOM_LEAVE_NOT_CONNECTED);
+                    R.string.warning, R.string.chatroom_leave_not_connected);
         }
     }
 
@@ -778,20 +778,20 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             String errorMessage;
             if (PROVIDER_NOT_REGISTERED.equals(returnCode)) {
                 errorMessage = aTalkApp.getResString(
-                        R.string.service_gui_CHATROOM_NOT_CONNECTED, adHocChatRoomWrapper.getAdHocChatRoomName());
+                        R.string.chatroom_not_connected, adHocChatRoomWrapper.getAdHocChatRoomName());
             }
             else if (SUBSCRIPTION_ALREADY_EXISTS.equals(returnCode)) {
-                errorMessage = aTalkApp.getResString(R.string.service_gui_CHATROOM_ALREADY_JOINED,
+                errorMessage = aTalkApp.getResString(R.string.chatroom_already_joined,
                         adHocChatRoomWrapper.getAdHocChatRoomName());
             }
             else {
-                errorMessage = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED_REASON,
+                errorMessage = aTalkApp.getResString(R.string.chatroom_join_failed_reason,
                         adHocChatRoomWrapper.getAdHocChatRoomName(), result);
             }
 
             if (!SUCCESS.equals(returnCode) && !AUTHENTICATION_FAILED.equals(returnCode)) {
                 DialogActivity.showDialog(aTalkApp.getInstance(),
-                        aTalkApp.getResString(R.string.service_gui_ERROR), errorMessage);
+                        aTalkApp.getResString(R.string.error), errorMessage);
             }
         }
     }
@@ -858,23 +858,23 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         String errorMsg;
         switch (evt.getErrorCode()) {
             case MessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_NOT_SUPPORTED,
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_not_supported,
                         destParticipant.getDisplayName());
                 break;
             case MessageDeliveryFailedEvent.NETWORK_FAILURE:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_NOT_DELIVERED);
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_network_error);
                 break;
             case MessageDeliveryFailedEvent.PROVIDER_NOT_REGISTERED:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_not_registered);
                 break;
             case MessageDeliveryFailedEvent.INTERNAL_ERROR:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_internal_error);
                 break;
             case MessageDeliveryFailedEvent.UNSUPPORTED_OPERATION:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_UNSUPPORTED_OPERATION);
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_unsupported_operation);
                 break;
             default:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_UNKNOWN_ERROR);
+                errorMsg = aTalkApp.getResString(R.string.message_delivery_unknown_error);
                 break;
         }
 

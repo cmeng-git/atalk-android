@@ -9,27 +9,27 @@
         android:id="@+id/button_accept"
         style="@style/ButtonTop"
         android:drawableStart="@drawable/ic_accept"
-        android:text="@string/service_gui_ACCEPT" />
+        android:text="@string/accept" />
 
     <Button
         android:id="@+id/button_decline"
         style="@style/ButtonTop"
         android:layout_marginStart="2dp"
         android:drawableStart="@drawable/ic_cancel"
-        android:text="@string/service_gui_DECLINE" />
+        android:text="@string/decline" />
 
     <Button
         android:id="@+id/button_retry"
         style="@style/ButtonTop"
         android:layout_marginStart="2dp"
         android:drawableStart="@drawable/ic_retry"
-        android:text="@string/service_gui_RETRY" />
+        android:text="@string/retry" />
 
     <Button
         android:id="@+id/buttonCancel"
         style="@style/ButtonTop"
         android:layout_marginStart="2dp"
         android:drawableStart="@drawable/ic_cancel"
-        android:text="@string/service_gui_CANCEL" />
+        android:text="@string/cancel" />
 
 </LinearLayout>

@@ -2,7 +2,6 @@ package com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.RestrictTo
@@ -18,7 +17,7 @@ open class SixteenByNineFrameLayout: FrameLayout {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         if (layoutParams.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
-            val sixteenNineHeight = View.MeasureSpec.makeMeasureSpec(View.MeasureSpec.getSize(widthMeasureSpec) * 9 / 16, View.MeasureSpec.EXACTLY)
+            val sixteenNineHeight = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec) * 9 / 16, MeasureSpec.EXACTLY)
             super.onMeasure(widthMeasureSpec, sixteenNineHeight)
         } else
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@color/background_dark"
         android:padding="5dp"
-        android:text="@string/service_gui_RECENT_MESSAGES"
+        android:text="@string/recent_messages"
         android:textColor="@color/textColorWhite" />
 
     <ListView

@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_map"
             android:hint="LatLng"
-            android:text="@string/service_gui_GEO_SMAP"
+            android:text="@string/geo_street_views_map"
             android:textAllCaps="false"
             android:visibility="gone" />
 

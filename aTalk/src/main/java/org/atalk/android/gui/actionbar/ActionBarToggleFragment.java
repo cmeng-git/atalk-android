@@ -25,8 +25,7 @@ import org.atalk.service.osgi.OSGiFragment;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ActionBarToggleFragment extends OSGiFragment
-{
+public class ActionBarToggleFragment extends OSGiFragment {
     /**
      * Text description's argument key
      */
@@ -45,8 +44,7 @@ public class ActionBarToggleFragment extends OSGiFragment
     /**
      * Creates new instance of <code>ActionBarToggleFragment</code>
      */
-    public ActionBarToggleFragment()
-    {
+    public ActionBarToggleFragment() {
         setHasOptionsMenu(true);
     }
 
@@ -55,10 +53,10 @@ public class ActionBarToggleFragment extends OSGiFragment
      * empty but not <code>null</code>).
      *
      * @param labelText toggle button's description(can be empty, but not <code>null</code>).
+     *
      * @return new instance of <code>ActionBarToggleFragment</code> parametrized with description argument.
      */
-    static public ActionBarToggleFragment newInstance(String labelText)
-    {
+    static public ActionBarToggleFragment newInstance(String labelText) {
         ActionBarToggleFragment fragment = new ActionBarToggleFragment();
         Bundle args = new Bundle();
         args.putString(ARG_LABEL_TEXT, labelText);
@@ -71,8 +69,7 @@ public class ActionBarToggleFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(@NonNull Context context)
-    {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.model = (ActionBarToggleModel) context;
     }
@@ -81,8 +78,7 @@ public class ActionBarToggleFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.actionbar_toggle_menu, menu);
 
@@ -100,8 +96,7 @@ public class ActionBarToggleFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         updateChecked();
     }
@@ -109,8 +104,7 @@ public class ActionBarToggleFragment extends OSGiFragment
     /**
      * {@inheritDoc}
      */
-    private void updateChecked()
-    {
+    private void updateChecked() {
         if (mToggleCB != null) {
             mToggleCB.setChecked(model.isChecked());
         }
@@ -119,8 +113,7 @@ public class ActionBarToggleFragment extends OSGiFragment
     /**
      * Toggle button's model that has to be implemented by parent <code>Activity</code>.
      */
-    public interface ActionBarToggleModel
-    {
+    public interface ActionBarToggleModel {
         /**
          * Return <code>true</code> if button's model is currently in checked state.
          *

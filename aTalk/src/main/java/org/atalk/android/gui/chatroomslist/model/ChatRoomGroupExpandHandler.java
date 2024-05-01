@@ -26,77 +26,68 @@ import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
  * @author Eng Chong Meng
  */
 public class ChatRoomGroupExpandHandler implements ExpandableListView.OnGroupExpandListener,
-	ExpandableListView.OnGroupCollapseListener
+        ExpandableListView.OnGroupCollapseListener {
+    /**
+     * Data key used to remember group state.
+     */
+    private static final String KEY_EXPAND_MEMORY = "key.expand.memory";
 
-{
-	/**
-	 * Data key used to remember group state.
-	 */
-	private static final String KEY_EXPAND_MEMORY = "key.expand.memory";
+    /**
+     * Meta contact list adapter used by this instance.
+     */
+    private final ChatRoomListAdapter chatRoomList;
 
-	/**
-	 * Meta contact list adapter used by this instance.
-	 */
-	private final ChatRoomListAdapter chatRoomList;
+    /**
+     * The contact list view.
+     */
+    private final ExpandableListView chatRoomListView;
 
-	/**
-	 * The contact list view.
-	 */
-	private final ExpandableListView chatRoomListView;
+    /**
+     * Creates new instance of <code>MetaGroupExpandHandler</code>.
+     *
+     * @param chatRoomList contact list data model.
+     * @param chatRoomListView contact list view.
+     */
+    public ChatRoomGroupExpandHandler(ChatRoomListAdapter chatRoomList, ExpandableListView chatRoomListView) {
+        this.chatRoomList = chatRoomList;
+        this.chatRoomListView = chatRoomListView;
+    }
 
-	/**
-	 * Creates new instance of <code>MetaGroupExpandHandler</code>.
-	 *
-	 * @param chatRoomList
-	 *        contact list data model.
-	 * @param chatRoomListView
-	 *        contact list view.
-	 */
-	public ChatRoomGroupExpandHandler(ChatRoomListAdapter chatRoomList, ExpandableListView chatRoomListView)
-	{
-		this.chatRoomList = chatRoomList;
-		this.chatRoomListView = chatRoomListView;
-	}
+    /**
+     * Binds the listener and restores previous groups expanded/collapsed state.
+     */
+    public void bindAndRestore() {
+        for (int gIdx = 0; gIdx < chatRoomList.getGroupCount(); gIdx++) {
+            ChatRoomProviderWrapper chatRoomProviderWrapperGroup
+                    = (ChatRoomProviderWrapper) chatRoomList.getGroup(gIdx);
+            if (Boolean.FALSE.equals(chatRoomProviderWrapperGroup.getData(KEY_EXPAND_MEMORY))) {
+                chatRoomListView.collapseGroup(gIdx);
+            }
+            else {
+                // Will expand by default
+                chatRoomListView.expandGroup(gIdx);
+            }
+        }
+        chatRoomListView.setOnGroupExpandListener(this);
+        chatRoomListView.setOnGroupCollapseListener(this);
+    }
 
-	/**
-	 * Binds the listener and restores previous groups expanded/collapsed state.
-	 */
-	public void bindAndRestore()
-	{
-		for (int gIdx = 0; gIdx < chatRoomList.getGroupCount(); gIdx++) {
-			ChatRoomProviderWrapper chatRoomProviderWrapperGroup
-					= (ChatRoomProviderWrapper) chatRoomList.getGroup(gIdx);
-			if (Boolean.FALSE.equals(chatRoomProviderWrapperGroup.getData(KEY_EXPAND_MEMORY))) {
-				chatRoomListView.collapseGroup(gIdx);
-			}
-			else {
-				// Will expand by default
-				chatRoomListView.expandGroup(gIdx);
-			}
-		}
-		chatRoomListView.setOnGroupExpandListener(this);
-		chatRoomListView.setOnGroupCollapseListener(this);
-	}
+    /**
+     * Unbinds the listener.
+     */
+    public void unbind() {
+        chatRoomListView.setOnGroupExpandListener(null);
+        chatRoomListView.setOnGroupCollapseListener(null);
+    }
 
-	/**
-	 * Unbinds the listener.
-	 */
-	public void unbind()
-	{
-		chatRoomListView.setOnGroupExpandListener(null);
-		chatRoomListView.setOnGroupCollapseListener(null);
-	}
+    @Override
+    public void onGroupCollapse(int groupPosition) {
+        ((ChatRoomProviderWrapper) chatRoomList.getGroup(groupPosition)).setData(KEY_EXPAND_MEMORY, false);
+    }
 
-	@Override
-	public void onGroupCollapse(int groupPosition)
-	{
-		((ChatRoomProviderWrapper) chatRoomList.getGroup(groupPosition)).setData(KEY_EXPAND_MEMORY, false);
-	}
-
-	@Override
-	public void onGroupExpand(int groupPosition)
-	{
-		((ChatRoomProviderWrapper) chatRoomList.getGroup(groupPosition))
-				.setData(KEY_EXPAND_MEMORY, true);
-	}
+    @Override
+    public void onGroupExpand(int groupPosition) {
+        ((ChatRoomProviderWrapper) chatRoomList.getGroup(groupPosition))
+                .setData(KEY_EXPAND_MEMORY, true);
+    }
 }

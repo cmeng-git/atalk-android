@@ -28,14 +28,12 @@ import java.util.List;
  * will be passed it will include "create new group" functionality. That means extra item "create group.."
  * will be appended on the last position and when selected create group dialog will popup automatically.
  * When a new group is created, it is implicitly included into this adapter.
- *
  * Use setItemLayout and setDropDownLayout to change the spinner style if need to.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class MetaContactGroupAdapter extends CollectionAdapter<Object>
-{
+public class MetaContactGroupAdapter extends CollectionAdapter<Object> {
     /**
      * Object instance used to identify "Create group..." item.
      */
@@ -65,8 +63,7 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
      * @param includeRoot <code>true</code> if "No group" item should be included
      * @param includeCreate <code>true</code> if "Create group" item should be included
      */
-    public MetaContactGroupAdapter(Activity parent, int adapterViewId, boolean includeRoot, boolean includeCreate)
-    {
+    public MetaContactGroupAdapter(Activity parent, int adapterViewId, boolean includeRoot, boolean includeCreate) {
         super(parent, getAllContactGroups(includeRoot, includeCreate).iterator());
 
         if (adapterViewId != -1)
@@ -82,30 +79,25 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
      * @param includeRoot <code>true</code> if "No group" item should be included
      * @param includeCreate <code>true</code> if "Create group" item should be included
      */
-    public MetaContactGroupAdapter(Activity parent, AdapterView adapterView, boolean includeRoot, boolean includeCreate)
-    {
+    public MetaContactGroupAdapter(Activity parent, AdapterView adapterView, boolean includeRoot, boolean includeCreate) {
         super(parent, getAllContactGroups(includeRoot, includeCreate).iterator());
         init(adapterView);
     }
 
-    private void init(int adapterViewId)
-    {
+    private void init(int adapterViewId) {
         AdapterView aView = getParentActivity().findViewById(adapterViewId);
         init(aView);
     }
 
-    private void init(AdapterView adapterView)
-    {
+    private void init(AdapterView adapterView) {
         this.adapterView = adapterView;
         this.itemLayout = R.layout.simple_spinner_item;
         this.dropDownLayout = R.layout.simple_spinner_dropdown_item;
 
         // Handle add new group action
-        adapterView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
+        adapterView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Object item = parent.getAdapter().getItem(position);
                 if (item == MetaContactGroupAdapter.ADD_NEW_OBJECT) {
                     AddGroupDialog.showCreateGroupDialog(getParentActivity(), newGroup -> onNewGroupCreated(newGroup));
@@ -113,8 +105,7 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
+            public void onNothingSelected(AdapterView<?> parent) {
             }
 
         });
@@ -125,10 +116,10 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
      *
      * @param includeRoot indicates whether "No group" item should be included in the list.
      * @param includeCreateNew indicates whether "create new group" item should be included in the list.
+     *
      * @return the list of all currently available <code>MetaContactGroup</code>.
      */
-    private static List<Object> getAllContactGroups(boolean includeRoot, boolean includeCreateNew)
-    {
+    private static List<Object> getAllContactGroups(boolean includeRoot, boolean includeCreateNew) {
         MetaContactListService contactListService = AndroidGUIActivator.getContactListService();
 
         MetaContactGroup root = contactListService.getRoot();
@@ -153,19 +144,17 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
      * {@inheritDoc}
      */
     @Override
-    protected View getView(boolean isDropDown, Object item, ViewGroup parent, LayoutInflater
-            inflater)
-    {
+    protected View getView(boolean isDropDown, Object item, ViewGroup parent, LayoutInflater inflater) {
         int rowResId = isDropDown ? dropDownLayout : itemLayout;
         View rowView = inflater.inflate(rowResId, parent, false);
         TextView tv = rowView.findViewById(android.R.id.text1);
 
         if (item.equals(ADD_NEW_OBJECT)) {
-            tv.setText(R.string.service_gui_CREATE_GROUP);
+            tv.setText(R.string.create_group);
         }
         else if (item.equals(AndroidGUIActivator.getContactListService().getRoot())) {
             // Root - Contacts
-            tv.setText(R.string.service_gui_SELECT_NO_GROUP);
+            tv.setText(R.string.no_group);
         }
         else {
             tv.setText(((MetaContactGroup) item).getGroupName());
@@ -178,8 +167,7 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
      *
      * @param newGroup new contact group if was created or <code>null</code> if user cancelled the dialog.
      */
-    private void onNewGroupCreated(MetaContactGroup newGroup)
-    {
+    private void onNewGroupCreated(MetaContactGroup newGroup) {
         if (newGroup == null)
             return;
 
@@ -195,8 +183,7 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
      *
      * @param itemLayout the item layout resource id to set.
      */
-    public void setItemLayout(int itemLayout)
-    {
+    public void setItemLayout(int itemLayout) {
         this.itemLayout = itemLayout;
     }
 
@@ -205,8 +192,7 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
      *
      * @param dropDownLayout the drop down item layout resource id to set.
      */
-    public void setDropDownLayout(int dropDownLayout)
-    {
+    public void setDropDownLayout(int dropDownLayout) {
         this.dropDownLayout = dropDownLayout;
     }
 }

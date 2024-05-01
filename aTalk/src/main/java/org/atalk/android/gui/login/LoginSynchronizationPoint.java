@@ -29,8 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
-public class LoginSynchronizationPoint<E extends Exception>
-{
+public class LoginSynchronizationPoint<E extends Exception> {
     private final XMPPConnection mConnect;
     private final Lock loginInitLock;
     private final Condition condition;
@@ -47,8 +46,7 @@ public class LoginSynchronizationPoint<E extends Exception>
      * @param pps the ProtocolServiceProvider of this synchronization point.
      * @param waitFor a description of the event this synchronization point handles.
      */
-    public LoginSynchronizationPoint(ProtocolProviderServiceJabberImpl pps, String waitFor)
-    {
+    public LoginSynchronizationPoint(ProtocolProviderServiceJabberImpl pps, String waitFor) {
         mConnect = pps.getConnection();
         this.loginInitLock = pps.getLoginInitLock();
         this.condition = pps.getLoginInitLock().newCondition();
@@ -59,8 +57,7 @@ public class LoginSynchronizationPoint<E extends Exception>
     /**
      * Initialize (or reset) this synchronization point.
      */
-    public void init()
-    {
+    public void init() {
         loginInitLock.lock();
         state = State.Initial;
         failureException = null;
@@ -71,13 +68,14 @@ public class LoginSynchronizationPoint<E extends Exception>
      * Send the given top level stream element and wait for a response.
      *
      * @param request the plain stream element to send.
+     *
      * @return {@code null} if synchronization point was successful, or the failure Exception.
+     *
      * @throws NoResponseException if no response was received.
      * @throws NotConnectedException if the connection is not connected.
      */
     public E sendAndWaitForResponse(TopLevelStreamElement request)
-            throws NoResponseException, NotConnectedException, InterruptedException
-    {
+            throws NoResponseException, NotConnectedException, InterruptedException {
         assert (state == State.Initial);
         loginInitLock.lock();
         try {
@@ -104,13 +102,13 @@ public class LoginSynchronizationPoint<E extends Exception>
      * Send the given plain stream element and wait for a response.
      *
      * @param request the plain stream element to send.
+     *
      * @throws E if an failure was reported.
      * @throws NoResponseException if no response was received.
      * @throws NotConnectedException if the connection is not connected.
      */
     public void sendAndWaitForResponseOrThrow(Nonza request)
-            throws E, NoResponseException, NotConnectedException, InterruptedException
-    {
+            throws E, NoResponseException, NotConnectedException, InterruptedException {
         sendAndWaitForResponse(request);
         // For State.Success, do nothing
         if (state == State.Failure) {
@@ -128,8 +126,7 @@ public class LoginSynchronizationPoint<E extends Exception>
      * @throws InterruptedException Interrupted Exception
      */
     public void checkIfSuccessOrWaitOrThrow()
-            throws NoResponseException, E, InterruptedException
-    {
+            throws NoResponseException, E, InterruptedException {
         checkIfSuccessOrWait();
         if (state == State.Failure) {
             throw failureException;
@@ -140,12 +137,12 @@ public class LoginSynchronizationPoint<E extends Exception>
      * Check if this synchronization point is successful or wait the connections reply timeout.
      *
      * @return {@code null} if synchronization point was successful, or the failure Exception.
+     *
      * @throws NoResponseException if there was no response marking the synchronization point as success or failed.
      * @throws InterruptedException Interrupted Exception
      */
     public E checkIfSuccessOrWait()
-            throws NoResponseException, InterruptedException
-    {
+            throws NoResponseException, InterruptedException {
         loginInitLock.lock();
         try {
             switch (state) {
@@ -168,8 +165,7 @@ public class LoginSynchronizationPoint<E extends Exception>
     /**
      * Report this synchronization point as successful.
      */
-    public void reportSuccess()
-    {
+    public void reportSuccess() {
         loginInitLock.lock();
         try {
             state = State.Success;
@@ -185,8 +181,7 @@ public class LoginSynchronizationPoint<E extends Exception>
      *
      * @param failureException the exception causing this synchronization point to fail.
      */
-    public void reportFailure(E failureException)
-    {
+    public void reportFailure(E failureException) {
         assert failureException != null;
         loginInitLock.lock();
         try {
@@ -203,8 +198,7 @@ public class LoginSynchronizationPoint<E extends Exception>
      *
      * @return true if the synchronization point was successful, false otherwise.
      */
-    public boolean wasSuccessful()
-    {
+    public boolean wasSuccessful() {
         loginInitLock.lock();
         try {
             return state == State.Success;
@@ -218,8 +212,7 @@ public class LoginSynchronizationPoint<E extends Exception>
      *
      * @return true if the request was already sent, false otherwise.
      */
-    public boolean requestSent()
-    {
+    public boolean requestSent() {
         loginInitLock.lock();
         try {
             return state == State.RequestSent;
@@ -238,8 +231,7 @@ public class LoginSynchronizationPoint<E extends Exception>
      * @throws InterruptedException Interrupted Exception
      */
     private void waitForConditionOrTimeout()
-            throws InterruptedException
-    {
+            throws InterruptedException {
         long time_ms = mConnect.getReplyTimeout();
         long remainingWait = TimeUnit.MILLISECONDS.toNanos(time_ms);
         while (state == State.RequestSent || state == State.Initial) {
@@ -256,11 +248,11 @@ public class LoginSynchronizationPoint<E extends Exception>
      * The exception is thrown, if state is one of 'Initial', 'NoResponse' or 'RequestSent'
      *
      * @return {@code true</code> if synchronization point was successful, <code>false} on failure.
+     *
      * @throws NoResponseException No Response Exception
      */
     private E checkForResponse()
-            throws NoResponseException
-    {
+            throws NoResponseException {
         switch (state) {
             case Initial:
             case NoResponse:
@@ -278,8 +270,7 @@ public class LoginSynchronizationPoint<E extends Exception>
     }
 
     /* RequestSent and No Response currently not use by aTalk */
-    private enum State
-    {
+    private enum State {
         Initial,
         RequestSent,
         NoResponse,

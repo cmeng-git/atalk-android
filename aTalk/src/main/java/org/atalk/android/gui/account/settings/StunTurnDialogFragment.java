@@ -34,15 +34,14 @@ import timber.log.Timber;
 
 /**
  * The dialog fragment that allows user to edit the STUN server descriptor.
- * @link https://github.com/MilanKral/atalk-android/commit/d61d5165dda4d290280ebb3e93075e8846e255ad
- * Enhance TURN with TCP, TLS, DTLS transport
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
  * @author MilanKral
+ * @link https://github.com/MilanKral/atalk-android/commit/d61d5165dda4d290280ebb3e93075e8846e255ad
+ * Enhance TURN with TCP, TLS, DTLS transport
  */
-public class StunTurnDialogFragment extends DialogFragment
-{
+public class StunTurnDialogFragment extends DialogFragment {
     /**
      * The edited descriptor
      */
@@ -55,8 +54,7 @@ public class StunTurnDialogFragment extends DialogFragment
 
     private EditText turnPassword;
 
-    public StunTurnDialogFragment()
-    {
+    public StunTurnDialogFragment() {
     }
 
     /**
@@ -66,8 +64,7 @@ public class StunTurnDialogFragment extends DialogFragment
      * @param descriptor the descriptor to edit or <code>null</code> if new one shall be created
      */
 
-    public static StunTurnDialogFragment newInstance(StunServerAdapter parentAdapter, StunServerDescriptor descriptor)
-    {
+    public static StunTurnDialogFragment newInstance(StunServerAdapter parentAdapter, StunServerDescriptor descriptor) {
         if (parentAdapter == null)
             throw new NullPointerException();
 
@@ -79,20 +76,19 @@ public class StunTurnDialogFragment extends DialogFragment
 
     @NotNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the layout inflater
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View contentView = inflater.inflate(R.layout.stun_turn_dialog, null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder = builder.setTitle(R.string.service_gui_STUN_TURN_SERVER);
+        builder = builder.setTitle(R.string.stun_turn_server);
 
         builder = builder.setView(contentView)
-                .setPositiveButton(R.string.service_gui_SAVE, null)
-                .setNeutralButton(R.string.service_gui_SERVERS_LIST_CANCEL, null);
+                .setPositiveButton(R.string.save, null)
+                .setNeutralButton(R.string.cancel, null);
         if (descriptor != null) {
-            builder = builder.setNegativeButton(R.string.service_gui_SERVERS_LIST_REMOVE, null);
+            builder = builder.setNegativeButton(R.string.remove, null);
         }
 
         EditText ipAddress = contentView.findViewById(R.id.ipAddress);
@@ -160,8 +156,7 @@ public class StunTurnDialogFragment extends DialogFragment
      *
      * @return <code>true</code> if all field are correct and changes have been submitted to the parent adapter.
      */
-    boolean saveChanges()
-    {
+    boolean saveChanges() {
         Dialog dialog = getDialog();
         boolean useTurn = ((CheckBox) dialog.findViewById(R.id.useTurnCheckbox)).isChecked();
         String ipAddress = ViewUtil.toString(dialog.findViewById(R.id.ipAddress));
@@ -174,7 +169,7 @@ public class StunTurnDialogFragment extends DialogFragment
         final String protocol = convertTURNProtocolTextToType((String) protocolSpinner.getSelectedItem());
 
         if ((ipAddress == null) || !isValidIpAddress(ipAddress) || (portStr == null)) {
-            aTalkApp.showToastMessage(R.string.service_gui_INVALID_ADDRESS, ipAddress + ":" + portStr);
+            aTalkApp.showToastMessage(R.string.invalid_address, ipAddress + ":" + portStr);
             return false;
         }
         int port = Integer.parseInt(portStr);
@@ -201,20 +196,20 @@ public class StunTurnDialogFragment extends DialogFragment
         try {
             // triggers exception for invalid
             host.validate();
-            if(host.isAddress()) {
+            if (host.isAddress()) {
                 IPAddress address = host.asAddress();
                 Timber.d("%s address: %s", address.getIPVersion(), address);
-            } else {
+            }
+            else {
                 Timber.d("Host name: %s", host);
             }
-        } catch(HostNameException e) {
+        } catch (HostNameException e) {
             return false;
         }
         return true;
     }
 
-    private static String convertTURNProtocolTypeToText(final String type)
-    {
+    private static String convertTURNProtocolTypeToText(final String type) {
         switch (type) {
             case StunServerDescriptor.PROTOCOL_UDP:
                 return "UDP";
@@ -229,8 +224,7 @@ public class StunTurnDialogFragment extends DialogFragment
         }
     }
 
-    private static String convertTURNProtocolTextToType(final String protocolText)
-    {
+    private static String convertTURNProtocolTextToType(final String protocolText) {
         switch (protocolText) {
             case "UDP":
                 return StunServerDescriptor.PROTOCOL_UDP;

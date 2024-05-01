@@ -34,53 +34,45 @@ import java.util.Date;
  * @author Eng Chong Meng
  */
 public class TimePreference extends DialogPreference
-        implements Preference.OnPreferenceChangeListener
-{
+        implements Preference.OnPreferenceChangeListener {
     public final static long DEFAULT_VALUE = 0L;
 
-    public TimePreference(final Context context, final AttributeSet attrs)
-    {
+    public TimePreference(final Context context, final AttributeSet attrs) {
         super(context, attrs, 0);
         this.setOnPreferenceChangeListener(this);
     }
 
-    protected void setTime(final long time)
-    {
+    protected void setTime(final long time) {
         persistLong(time);
         notifyDependencyChange(shouldDisableDependents());
         notifyChanged();
         updateSummary(time);
     }
 
-    private void updateSummary(final long time)
-    {
+    private void updateSummary(final long time) {
         final DateFormat dateFormat = android.text.format.DateFormat.getTimeFormat(getContext());
         final Date date = minutesToCalender(time).getTime();
         setSummary(dateFormat.format(date.getTime()));
     }
 
-    private static Calendar minutesToCalender(long time)
-    {
+    private static Calendar minutesToCalender(long time) {
         final Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, (int) ((time % (24 * 60)) / 60));
         c.set(Calendar.MINUTE, (int) ((time % (24 * 60)) % 60));
         return c;
     }
 
-    public static long minutesToTimestamp(long time)
-    {
+    public static long minutesToTimestamp(long time) {
         return minutesToCalender(time).getTimeInMillis();
     }
 
     @Override
-    protected Object onGetDefaultValue(final TypedArray a, final int index)
-    {
+    protected Object onGetDefaultValue(final TypedArray a, final int index) {
         return a.getInteger(index, 0);
     }
 
     @Override
-    protected void onSetInitialValue(final Object defaultValue)
-    {
+    protected void onSetInitialValue(final Object defaultValue) {
         long time = (defaultValue instanceof Long) ? (Long) defaultValue : DEFAULT_VALUE;
         setTime(time);
     }
@@ -88,14 +80,12 @@ public class TimePreference extends DialogPreference
     /**
      * get the TimePreference persistent value the timePicker value update
      */
-    public Long getPersistedValue()
-    {
+    public Long getPersistedValue() {
         return (long) getPersistedLong(DEFAULT_VALUE);
     }
 
     @Override
-    public boolean onPreferenceChange(final Preference preference, final Object newValue)
-    {
+    public boolean onPreferenceChange(final Preference preference, final Object newValue) {
         ((TimePreference) preference).updateSummary((Long) newValue);
         return true;
     }

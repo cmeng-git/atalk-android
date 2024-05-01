@@ -26,22 +26,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation" >
 
-    <string name="APPLICATION_NAME">aTalk</string>
-    <string name="account_server_port">5222</string>
+    <string name="application_name">aTalk</string>
+    <string name="xmpp_server_port">5222</string>
     <string name="chatroom_hint">chatroom@example.com</string>
-    <string name="encryption_choice_omemo">OMEMO</string>
-    <string name="encryption_choice_otr">OTR</string>
+    <string name="encryption_omemo">OMEMO</string>
+    <string name="encryption_otr">OTR</string>
     <string name="otr_session">OTR Sessions</string>
-    <string name="encryption_choice_pgp">OpenPGP</string>
-    <string name="ACCOUNT_TYPE">org.atalk.android.account</string>
-    <string name="service_gui_URL_MEDIA_SHARE">&lt;html>&lt;a href=\'%3$s\'>&lt;img src=\'%1$s\' alt=\'url image\'/>&lt;/a>&lt;br/>%2$s&lt;br/>&lt;a href=\'%3$s\'>%3$s&lt;/a>&lt;/html></string>
+    <string name="encryption_pgp">OpenPGP</string>
+    <string name="aTalk_account_type">org.atalk.android.account</string>
+    <string name="url_media_share">&lt;html>&lt;a href=\'%3$s\'>&lt;img src=\'%1$s\' alt=\'url image\'/>&lt;/a>&lt;br/>%2$s&lt;br/>&lt;a href=\'%3$s\'>%3$s&lt;/a>&lt;/html></string>
 
     <!-- Conference Chat -->
-    <string name="service_gui_CHAT_REPLY">&lt;blockquote>&lt;small>
+    <string name="chat_reply_quote">&lt;blockquote>&lt;small>
         &lt;span style="color:purple">%1$s&lt;/span>&lt;br/>
         &lt;span style="color:grey">&lt;em>%2$s&lt;/em>&lt;/span>
         &lt;/small>&lt;/blockquote></string>
-    <string name="service_gui_CHAT_LINK">&lt;a href="%1$s">%2$s&lt;/a></string>
+    <string name="chat_url_link">&lt;a href="%1$s">%2$s&lt;/a></string>
 
     <!-- About Dialog -->
     <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\n(GNU General Public License v3.0)\nAll rights reserved.</string>
@@ -52,45 +52,45 @@
     <string name="chat_dbZero">00.00dB</string>
     <string name="chat_timeZero">00:00</string>
 
-    <string name="service_gui_IM">IM</string>
-    <string name="service_gui_INSTANT_MESSAGINGS">IMs</string>
+    <string name="im">IM</string>
+    <string name="instant_messaging">IMs</string>
 
     <!-- account info -->
-    <string name="plugin_accountinfo_URL">URL:</string>
-    <string name="plugin_otr_authbuddydialog_HELP_URI">https://cmeng-git.github.io/atalk</string>
+    <string name="contact_url">URL:</string>
+    <string name="otr_authbuddydialog_help_uri">https://cmeng-git.github.io/atalk</string>
 
     <!-- Account proxy settings -->
-    <string name="service_gui_PROXY_BOSH_URL_HINT">https://example.org:4443/http-bind</string>
+    <string name="bosh_url_hint">https://example.org:4443/http-bind</string>
 
     <!-- Provisioning Plugin-->
-    <string name="plugin_provisioning_DHCP">DHCP</string>
-    <string name="plugin_provisioning_DNS">DNS</string>
-    <string name="plugin_provisioning_URI">URI</string>
-    <string name="plugin_provisioning_UUID">UUID</string>
+    <string name="provisioning_DHCP">DHCP</string>
+    <string name="provisioning_DNS">DNS</string>
+    <string name="provisioning_URI">URI</string>
+    <string name="provisioning_UUID">UUID</string>
 
     <!-- STUN/Jingle Nodes list -->
-    <string name="service_gui_SERVERS_STUN_DESCRIPTOR">%1$s:%2$s %3$s</string>
+    <string name="server_stun_descriptor">%1$s:%2$s %3$s</string>
 
     <!-- Jabber preferences -->
-    <string name="service_gui_JBR_ICE">ICE</string>
+    <string name="ice">ICE</string>
 
     <!-- WebView default Page -->
-    <string name="service_gui_settings_WEBVIEW_SUMMARY">file:///android_asset/movim/index.html</string>
+    <string name="settings_webView_summary">file:///android_asset/movim/index.html</string>
 
     <!-- Auto accept downloadable max file size -->
     <string name="auto_accept_filesize">524288</string>
 
     <!-- Convert letters in phone numbers -->
-    <string name="service_gui_settings_ALLOW_ALPHA_ON"><![CDATA[*e.g. +1–800–MYPHONE –>+1–800–694663]]></string>
+    <string name="settings_phone_allow_alpha"><![CDATA[*e.g. +1–800–MYPHONE –>+1–800–694663]]></string>
 
     <!-- Camera used -->
-    <string name="service_gui_settings_CAMERA_BACK">Back</string>
-    <string name="service_gui_settings_CAMERA_FRONT">Front</string>
+    <string name="settings_camera_back">Back</string>
+    <string name="settings_camera_front">Front</string>
 
     <!-- Android Notification Channels -->
-    <string name="noti_channel_MESSAGE_GROUP">Chat Message Notification</string>
-    <string name="noti_channel_FILE_GROUP">File Transfer Notification</string>
-    <string name="noti_channel_CALL_GROUP">Call Notification</string>
-    <string name="noti_channel_DEFAULT_GROUP">General Notification</string>
-    <string name="noti_channel_SILENT_GROUP">Silent Notification</string>
+    <string name="noti_channel_message_group">Chat Message Notification</string>
+    <string name="noti_channel_file_group">File Transfer Notification</string>
+    <string name="noti_channel_call_group">Call Notification</string>
+    <string name="noti_channel_default_group">General Notification</string>
+    <string name="noti_channel_silent_group">Silent Notification</string>
 </resources>

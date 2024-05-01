@@ -5,43 +5,43 @@
     <item
         android:id="@+id/chat_message_edit"
         android:icon="@drawable/ic_edit_dark"
-        android:title="@string/service_gui_EDIT"
+        android:title="@string/edit"
         app:showAsAction="always">
     </item>
     <item
         android:id="@+id/chat_message_quote"
         android:icon="@drawable/ic_quote_dark"
-        android:title="@string/service_gui_QUOTE"
+        android:title="@string/quote"
         app:showAsAction="always">
     </item>
     <item
         android:id="@+id/chat_message_forward"
         android:icon="@drawable/ic_forward_dark"
-        android:title="@string/service_gui_FORWARD"
+        android:title="@string/forward"
         app:showAsAction="always">
     </item>
     <item
         android:id="@+id/chat_message_del"
         android:icon="@drawable/ic_delete_dark"
-        android:title="@string/service_gui_DELETE"
+        android:title="@string/delete"
         app:showAsAction="always">
     </item>
     <item
         android:id="@+id/chat_message_share"
         android:icon="@drawable/ic_share_dark"
-        android:title="@string/service_gui_SHARE"
+        android:title="@string/share"
         app:showAsAction="ifRoom">
     </item>
     <item
         android:id="@+id/chat_message_copy"
         android:icon="@drawable/ic_copy_dark"
-        android:title="@string/service_gui_COPY"
+        android:title="@string/copy"
         app:showAsAction="ifRoom">
     </item>
     <item
         android:id="@+id/select_all"
         android:icon="@drawable/ic_select_all_dark"
-        android:title="@string/service_gui_SELECT_ALL"
+        android:title="@string/select_all"
         app:showAsAction="ifRoom">
     </item>
 

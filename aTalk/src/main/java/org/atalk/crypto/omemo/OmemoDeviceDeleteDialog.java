@@ -65,7 +65,7 @@ public class OmemoDeviceDeleteDialog extends OSGiActivity
 
         final boolean[] checkedItems = new boolean[accountMap.size()];
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.pref_omemo_purge_devices_title);
+        builder.setTitle(R.string.omemo_purge_device_unused);
         builder.setMultiChoiceItems(accounts.toArray(new CharSequence[0]), checkedItems, (dialog, which, isChecked) -> {
             checkedItems[which] = isChecked;
             final AlertDialog multiChoiceDialog = (AlertDialog) dialog;
@@ -78,8 +78,8 @@ public class OmemoDeviceDeleteDialog extends OSGiActivity
             multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
         });
 
-        builder.setNegativeButton(R.string.service_gui_CANCEL, (dialog, which) -> finish());
-        builder.setPositiveButton(R.string.crypto_dialog_button_DELETE, (dialog, which) -> {
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> finish());
+        builder.setPositiveButton(R.string.delete_selected, (dialog, which) -> {
             SQLiteOmemoStore mOmemoStore = (SQLiteOmemoStore) OmemoService.getInstance().getOmemoStoreBackend();
             for (int i = 0; i < checkedItems.length; ++i) {
                 if (checkedItems[i]) {

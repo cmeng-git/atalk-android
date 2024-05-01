@@ -7,6 +7,8 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.text.TextUtils;
 
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolNames;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
@@ -19,8 +21,6 @@ import org.jxmpp.stringprep.XmppStringprepException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -29,8 +29,7 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
-{
+public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory {
     /**
      * Indicates if ICE should be used.
      */
@@ -39,8 +38,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
     /**
      * Creates an instance of the ProtocolProviderFactoryJabberImpl.
      */
-    public ProtocolProviderFactoryJabberImpl()
-    {
+    public ProtocolProviderFactoryJabberImpl() {
         super(JabberActivator.getBundleContext(), ProtocolNames.JABBER);
     }
 
@@ -50,8 +48,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
      * @param accountID the account identifier.
      */
     @Override
-    protected void storeAccount(AccountID accountID)
-    {
+    protected void storeAccount(AccountID accountID) {
         super.storeAccount(accountID);
     }
 
@@ -63,12 +60,12 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
      *
      * @param userID the user identifier for the new account
      * @param accountProperties a set of protocol (or implementation) specific properties defining the new account.
+     *
      * @return the AccountID of the newly created account
      */
     @Override
     public AccountID installAccount(String userID, Map<String, String> accountProperties)
-            throws IllegalArgumentException, NullPointerException
-    {
+            throws IllegalArgumentException, NullPointerException {
         BundleContext context = JabberActivator.getBundleContext();
         if (context == null)
             throw new NullPointerException("The specified BundleContext is null");
@@ -107,17 +104,16 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
      *
      * @param userID the user ID
      * @param accountProperties the properties associated with the user ID
+     *
      * @return new <code>AccountID</code>
      */
     @Override
-    protected AccountID createAccountID(String userID, Map<String, String> accountProperties)
-    {
+    protected AccountID createAccountID(String userID, Map<String, String> accountProperties) {
         return new JabberAccountIDImpl(userID, accountProperties);
     }
 
     @Override
-    protected ProtocolProviderService createService(String userID, AccountID accountID)
-    {
+    protected ProtocolProviderService createService(String userID, AccountID accountID) {
         ProtocolProviderServiceJabberImpl service = new ProtocolProviderServiceJabberImpl();
         try {
             EntityBareJid jid = JidCreate.entityBareFrom(userID);
@@ -137,8 +133,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
      */
     @Override
     public void modifyAccount(ProtocolProviderService protocolProvider, Map<String, String> accountProperties)
-            throws IllegalArgumentException, NullPointerException
-    {
+            throws IllegalArgumentException, NullPointerException {
         BundleContext context = JabberActivator.getBundleContext();
         if (context == null)
             throw new NullPointerException("The specified BundleContext is null");

@@ -37,7 +37,7 @@ import org.jxmpp.jid.Jid;
 /**
  * The process to handle the incoming and outgoing call for <code>Jingle Message</code> states changes.
  * Note: incoming call is via ReceivedCallActivity instead due to android-12 constraint.
- *
+ * <p>
  * Implementation for aTalk v3.0.5:
  * Starting with Android 12 notifications will not work if they do not start activities directly
  * NotificationService: Indirect notification activity start (trampoline) from org.atalk.android blocked

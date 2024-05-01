@@ -5,68 +5,68 @@
 
     <PreferenceCategory
         android:key="pref_cat_account"
-        android:title="@string/service_gui_JBR_USER_CATEGORY">
+        android:title="@string/jbr_user_name_password">
         <EditTextPreference
             android:enabled="true"
             android:key="pref_key_user_id"
-            android:title="@string/service_gui_JBR_USER" />
+            android:title="@string/jbr_user_id" />
 
         <EditTextPreference
             android:inputType="textPassword"
             android:key="pref_key_password"
-            android:title="@string/service_gui_JBR_PASSWORD" />
+            android:title="@string/jbr_password" />
 
         <CheckBoxPreference
             android:key="pref_key_store_password"
-            android:summary="@string/service_gui_JBR_STORE_PASSWORD_SUMMARY"
-            android:title="@string/service_gui_JBR_STORE_PASSWORD" />
+            android:summary="@string/jbr_store_password_summary"
+            android:title="@string/jbr_store_password" />
 
         <ListPreference
             android:entries="@array/dnssec_Mode_name"
             android:entryValues="@array/dnssec_Mode_value"
             android:key="dns.DNSSEC_MODE"
-            android:title="@string/service_gui_settings_DNSSEC_DANE" />
+            android:title="@string/settings_dnssec_dane" />
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="pref.cat.jbr.advanced"
-        android:title="@string/service_gui_JBR_ADVANCED">
+        android:title="@string/advanced">
         <Preference
             android:key="pref_key_enable_encryption"
-            android:title="@string/service_gui_PREF_ENCRYPTION" />
+            android:title="@string/call_encryption" />
 
         <Preference
             android:key="pref.screen.jbr.connection"
-            android:summary="@string/service_gui_JBR_CONN_SUMMARY"
-            android:title="@string/service_gui_JBR_CONNECTION"
+            android:summary="@string/jbr_connection_summary"
+            android:title="@string/jbr_connection"
             app:fragment="org.atalk.android.gui.account.settings.XmppConnectionFragment" />
 
         <Preference
             android:key="Bosh_Configuration"
-            android:summary="@string/service_gui_settings_BOSH_PROXY_SUMMARY"
-            android:title="@string/service_gui_settings_BOSH_PROXY" />
+            android:summary="@string/settings_bosh_proxy_summary"
+            android:title="@string/settings_bosh_proxy" />
 
         <Preference
             android:key="pref.screen.jbr.ice"
-            android:summary="@string/service_gui_JBR_ICE_SUMMARY"
-            android:title="@string/service_gui_JBR_ICE"
+            android:summary="@string/jbr_ice_summary"
+            android:title="@string/ice"
             app:fragment="org.atalk.android.gui.account.settings.IceFragment" />
 
         <Preference
             android:key="pref.screen.jbr.telephony"
-            android:summary="@string/service_gui_JBR_TELEPHONY_SUMMARY"
-            android:title="@string/service_gui_JBR_TELEPHONY"
+            android:summary="@string/jbr_telephony_summary"
+            android:title="@string/jbr_telephony_voip_pbx"
             app:fragment="org.atalk.android.gui.account.settings.TelephonyFragment" />
 
         <Preference
             android:key="pref_cat_enc_video"
-            android:summary="@string/service_gui_PREF_VIDEO_ENC_SUMMARY"
-            android:title="@string/service_gui_PREF_VIDEO_ENCODING" />
+            android:summary="@string/video_enc_global_override_summary"
+            android:title="@string/video_encoding" />
 
         <Preference
             android:key="pref_cat_enc_audio"
-            android:summary="@string/service_gui_PREF_AUDIO_ENC_SUMMARY"
-            android:title="@string/service_gui_PREF_AUDIO_ENCODING" />
+            android:summary="@string/audio_enc_global_override_summary"
+            android:title="@string/audio_encoding" />
     </PreferenceCategory>
 </PreferenceScreen>
 

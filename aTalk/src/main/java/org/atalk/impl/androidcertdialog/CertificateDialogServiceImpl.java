@@ -37,7 +37,7 @@ class CertificateDialogServiceImpl implements VerifyCertificateDialogService
     public VerifyCertificateDialog createDialog(Certificate[] certs, String title, String message)
     {
         if (title == null)
-            title = aTalkApp.getResString(R.string.service_gui_CERT_DIALOG_TITLE);
+            title = aTalkApp.getResString(R.string.cert_dialog_title);
 
         Long requestId = System.currentTimeMillis();
         VerifyCertDialog verifyCertDialog = new VerifyCertDialog(requestId, certs[0], title, message);

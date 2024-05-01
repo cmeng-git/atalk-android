@@ -18,6 +18,14 @@ import androidx.preference.ListPreference;
 import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 import net.java.sip.communicator.util.UtilActivator;
 
@@ -28,15 +36,6 @@ import org.atalk.service.neomedia.SDesControl;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiPreferenceFragment;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import ch.imvs.sdes4j.srtp.SrtpCryptoSuite;
 
 /**
@@ -46,8 +45,7 @@ import ch.imvs.sdes4j.srtp.SrtpCryptoSuite;
  * @author Eng Chong Meng
  * @author MilanKral
  */
-public class SecurityActivity extends OSGiActivity implements SecurityProtocolsDialogFragment.DialogClosedListener
-{
+public class SecurityActivity extends OSGiActivity implements SecurityProtocolsDialogFragment.DialogClosedListener {
     /**
      * The intent's extra key for passing the {@link SecurityAccountRegistration}
      */
@@ -99,8 +97,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
      * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             securityFragment = new SecurityPreferenceFragment();
@@ -113,13 +110,11 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         }
     }
 
-    public void onDialogClosed(SecurityProtocolsDialogFragment dialog)
-    {
+    public void onDialogClosed(SecurityProtocolsDialogFragment dialog) {
         securityFragment.onDialogClosed(dialog);
     }
 
-    public boolean onKeyUp(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent result = new Intent();
             result.putExtra(EXTR_KEY_SEC_REGISTRATION, securityFragment.securityReg);
@@ -135,8 +130,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
      * Fragment handles {@link Preference}s used for manipulating security settings.
      */
     public static class SecurityPreferenceFragment extends OSGiPreferenceFragment
-            implements SharedPreferences.OnSharedPreferenceChangeListener
-    {
+            implements SharedPreferences.OnSharedPreferenceChangeListener {
         private static final String STATE_SEC_REG = "security_reg";
 
         private final SummaryMapper summaryMapper = new SummaryMapper();
@@ -149,9 +143,8 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         protected SecurityAccountRegistration securityReg;
 
         @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
-        {
-            setPrefTitle(R.string.service_gui_settings_MESSAGING_SECURITY_TITLE);
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPrefTitle(R.string.settings_messaging_security);
             if (savedInstanceState == null) {
                 Intent intent = getActivity().getIntent();
                 securityReg = (SecurityAccountRegistration) intent.getSerializableExtra(EXTR_KEY_SEC_REGISTRATION);
@@ -191,15 +184,13 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         }
 
         @Override
-        public void onSaveInstanceState(Bundle outState)
-        {
+        public void onSaveInstanceState(Bundle outState) {
             super.onSaveInstanceState(outState);
             outState.putSerializable(STATE_SEC_REG, securityReg);
         }
 
         @Override
-        public void onResume()
-        {
+        public void onResume() {
             super.onResume();
             updatePreferences();
             SharedPreferences shPrefs = getPreferenceScreen().getSharedPreferences();
@@ -208,21 +199,19 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         }
 
         @Override
-        public void onPause()
-        {
+        public void onPause() {
             SharedPreferences shPrefs = getPreferenceScreen().getSharedPreferences();
             shPrefs.unregisterOnSharedPreferenceChangeListener(this);
             shPrefs.unregisterOnSharedPreferenceChangeListener(summaryMapper);
             super.onPause();
         }
 
-        private void initResetZID()
-        {
+        private void initResetZID() {
             findPreference(PREF_KEY_SEC_RESET_ZID).setOnPreferenceClickListener(
                     preference -> {
                         securityReg.randomZIDSalt();
                         hasChanges = true;
-                        Toast.makeText(getActivity(), R.string.ZID_has_been_reset_toast, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.zid_reset_done, Toast.LENGTH_SHORT).show();
                         return true;
                     }
             );
@@ -231,8 +220,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         /**
          * Loads cipher suites
          */
-        private void loadCipherSuites()
-        {
+        private void loadCipherSuites() {
             // TODO: fix static values initialization and default ciphers
             String ciphers = securityReg.getSDesCipherSuites();
             if (ciphers == null)
@@ -257,8 +245,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         /**
          * Shows the dialog that will allow user to edit security protocols settings
          */
-        private void showEditSecurityProtocolsDialog()
-        {
+        private void showEditSecurityProtocolsDialog() {
             SecurityProtocolsDialogFragment securityDialog = new SecurityProtocolsDialogFragment();
 
             Map<String, Integer> encryption = securityReg.getEncryptionProtocol();
@@ -273,8 +260,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             securityDialog.show(ft, "SecProtocolsDlgFragment");
         }
 
-        void onDialogClosed(SecurityProtocolsDialogFragment dialog)
-        {
+        void onDialogClosed(SecurityProtocolsDialogFragment dialog) {
             if (dialog.hasChanges()) {
                 hasChanges = true;
                 dialog.commit(securityReg);
@@ -285,8 +271,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         /**
          * Refresh specifics summaries
          */
-        private void updatePreferences()
-        {
+        private void updatePreferences() {
             updateUsedProtocolsSummary();
             updateZRTpOptionSummary();
             updateCipherSuitesSummary();
@@ -295,8 +280,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         /**
          * Sets the summary for protocols preference
          */
-        private void updateUsedProtocolsSummary()
-        {
+        private void updateUsedProtocolsSummary() {
             final Map<String, Integer> encMap = securityReg.getEncryptionProtocol();
             List<String> encryptionsInOrder = new ArrayList<>(encMap.keySet());
 
@@ -315,7 +299,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
 
             String summaryStr = summary.toString();
             if (summaryStr.isEmpty()) {
-                summaryStr = aTalkApp.getResString(R.string.service_gui_LIST_NONE);
+                summaryStr = aTalkApp.getResString(R.string.none);
             }
 
             Preference preference = findPreference(PREF_KEY_SEC_PROTO_DIALOG);
@@ -325,14 +309,13 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         /**
          * Sets the ZRTP signaling preference summary
          */
-        private void updateZRTpOptionSummary()
-        {
+        private void updateZRTpOptionSummary() {
             Preference pref = findPreference(PREF_KEY_SEC_SIPZRTP_ATTR);
             boolean isOn = pref.getSharedPreferences().getBoolean(PREF_KEY_SEC_SIPZRTP_ATTR, true);
 
             String sumary = isOn
-                    ? aTalkApp.getResString(R.string.service_gui_SEC_ZRTP_SIGNALING_ON)
-                    : aTalkApp.getResString(R.string.service_gui_SEC_ZRTP_SIGNALING_OFF);
+                    ? aTalkApp.getResString(R.string.sec_zrtp_signalling_on)
+                    : aTalkApp.getResString(R.string.sec_zrtp_signalling_off);
 
             pref.setSummary(sumary);
         }
@@ -340,8 +323,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         /**
          * Sets the cipher suites preference summary
          */
-        private void updateCipherSuitesSummary()
-        {
+        private void updateCipherSuitesSummary() {
             MultiSelectListPreference ml = (MultiSelectListPreference) findPreference(PREF_KEY_SEC_CIPHER_SUITES);
             String summary = getCipherSuitesSummary(ml);
             ml.setSummary(summary);
@@ -351,10 +333,10 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
          * Gets the summary text for given cipher suites preference
          *
          * @param ml the preference used for cipher suites setup
+         *
          * @return the summary text describing currently selected cipher suites
          */
-        private String getCipherSuitesSummary(MultiSelectListPreference ml)
-        {
+        private String getCipherSuitesSummary(MultiSelectListPreference ml) {
             Set<String> selected = ml.getValues();
             StringBuilder sb = new StringBuilder();
 
@@ -374,12 +356,11 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             }
 
             if (selected.isEmpty())
-                sb.append(aTalkApp.getResString(R.string.service_gui_LIST_NONE));
+                sb.append(aTalkApp.getResString(R.string.none));
             return sb.toString();
         }
 
-        public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key)
-        {
+        public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key) {
             hasChanges = true;
             if (key.equals(PREF_KEY_SEC_ENABLED)) {
                 securityReg.setCallEncryption(shPreferences.getBoolean(PREF_KEY_SEC_ENABLED, true));

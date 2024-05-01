@@ -12,7 +12,7 @@
         style="@style/MediumFont"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_USERNAME" />
+        android:text="@string/username_" />
 
     <ImageView
         android:id="@+id/star"

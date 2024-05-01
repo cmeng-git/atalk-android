@@ -41,11 +41,11 @@ import org.jivesoftware.smackx.omemo.OmemoService;
  */
 public class AccountDeleteDialog {
     public static void create(Context ctx, final Account account, final OnAccountRemovedListener listener) {
-        String title = ctx.getString(R.string.service_gui_REMOVE_ACCOUNT);
+        String title = ctx.getString(R.string.remove_account);
 
-        String message = ctx.getString(R.string.service_gui_REMOVE_ACCOUNT_MESSAGE, account.getAccountID());
+        String message = ctx.getString(R.string.remove_account_prompt, account.getAccountID());
         String cbMessage = ctx.getString(R.string.account_delete_on_server);
-        String btnText = ctx.getString(R.string.service_gui_DELETE);
+        String btnText = ctx.getString(R.string.delete);
 
         Bundle args = new Bundle();
         args.putString(CustomDialogCbox.ARG_MESSAGE, message);

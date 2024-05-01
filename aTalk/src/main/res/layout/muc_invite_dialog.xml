@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="5dp"
-            android:text="@string/service_gui_INVITE_REASON_INVITE"
+            android:text="@string/invite_reason"
             android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:singleLine="true"
-            android:text="@string/service_gui_INVITE_REASON"
+            android:text="@string/invite_group_chat"
             android:textColor="@color/black"
             android:textSize="14sp" />
     </LinearLayout>
@@ -69,7 +69,7 @@
             android:id="@+id/buttonCancel"
             style="@style/ButtonTop"
             android:enabled="true"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <View
             android:id="@+id/centerShim"
@@ -82,7 +82,7 @@
             android:id="@+id/button_invite"
             style="@style/ButtonTop"
             android:enabled="false"
-            android:text="@string/service_gui_INVITE" />
+            android:text="@string/invite" />
     </LinearLayout>
 
 </LinearLayout>

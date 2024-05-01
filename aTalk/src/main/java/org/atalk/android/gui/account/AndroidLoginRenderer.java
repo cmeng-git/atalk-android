@@ -203,9 +203,9 @@ public class AndroidLoginRenderer implements LoginRenderer
     {
         AccountID accountID = protocolProvider.getAccountID();
         DialogActivity.showConfirmDialog(aTalkApp.getInstance(),
-                R.string.service_gui_ERROR,
-                R.string.service_gui_CONNECTION_FAILED_MSG,
-                R.string.service_gui_RETRY,
+                R.string.error,
+                R.string.connection_failed_message,
+                R.string.retry,
                 new DialogActivity.DialogListener()
                 {
                     public boolean onConfirmClicked(DialogActivity dialog)
@@ -240,12 +240,12 @@ public class AndroidLoginRenderer implements LoginRenderer
         String status;
         if (getGlobalStatus().isOnline()) {
             // At least one provider is online
-            status = aTalkApp.getResString(R.string.service_gui_ONLINE);
+            status = aTalkApp.getResString(R.string.online);
 
         }
         else {
             // There are no active providers, so we consider to be in the offline state
-            status = aTalkApp.getResString(R.string.service_gui_OFFLINE);
+            status = aTalkApp.getResString(R.string.offline);
         }
 
         int notificationID = OSGiService.getGeneralNotificationId();
@@ -254,7 +254,7 @@ public class AndroidLoginRenderer implements LoginRenderer
         }
 
         AndroidUtils.updateGeneralNotification(aTalkApp.getInstance(), notificationID,
-                aTalkApp.getResString(R.string.APPLICATION_NAME), status, System.currentTimeMillis());
+                aTalkApp.getResString(R.string.application_name), status, System.currentTimeMillis());
     }
 
     /**

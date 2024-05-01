@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/erase_contact_chat_history"
-        android:title="@string/service_gui_HISTORY_ERASE_PER_CONTACT"
+        android:title="@string/history_erase_for_contact"
         android:visible="false" />
     <item
         android:id="@+id/erase_chatroom_history"
-        android:title="@string/service_gui_CHATROOM_HISTORY_ERASE_PER"
+        android:title="@string/chatroom_history_erase_per"
         android:visible="false" />
     <item
         android:id="@+id/ctx_menu_exit"

@@ -27,7 +27,6 @@ import timber.log.Timber;
 
 /**
  * Android <code>SecurityAuthority</code> implementation.
- *
  * The method checks for valid reason based on given reasonCode. Pending on the given reason, it
  * either launches a user login dialog or displays an error message.
  * When launching a login dialog, it will waits until the right activity is in view before
@@ -37,8 +36,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AndroidSecurityAuthority implements SecurityAuthority
-{
+public class AndroidSecurityAuthority implements SecurityAuthority {
     /**
      * If user name should be editable when asked for credentials.
      */
@@ -56,20 +54,20 @@ public class AndroidSecurityAuthority implements SecurityAuthority
      * @param accountID The realm (accountID) that the credentials are needed for.
      * @param defaultValues the values to propose the user by default
      * @param reasonCode indicates the reason for which we're obtaining the credentials.
+     *
      * @return The credentials associated with the specified realm or null if none could be obtained.
      */
     public UserCredentials obtainCredentials(AccountID accountID, UserCredentials defaultValues,
-            int reasonCode, Boolean isShowServerOption)
-    {
+            int reasonCode, Boolean isShowServerOption) {
         if (reasonCode != SecurityAuthority.REASON_UNKNOWN) {
             return obtainCredentials(accountID, defaultValues, isShowServerOption);
         }
 
         Context ctx = aTalkApp.getInstance();
-        String errorMessage = aTalkApp.getResString(R.string.service_gui_CONNECTION_FAILED_MSG,
+        String errorMessage = aTalkApp.getResString(R.string.connection_failed_message,
                 defaultValues.getUserName(), defaultValues.getServerAddress());
 
-        DialogActivity.showDialog(ctx, aTalkApp.getResString(R.string.service_gui_LOGIN_FAILED), errorMessage);
+        DialogActivity.showDialog(ctx, aTalkApp.getResString(R.string.login_failed), errorMessage);
         return defaultValues;
     }
 
@@ -79,11 +77,11 @@ public class AndroidSecurityAuthority implements SecurityAuthority
      *
      * @param accountID The accountId / realm that the credentials are needed for.
      * @param credentials the values to propose the user by default
+     *
      * @return The credentials associated with the specified realm or null if none could be obtained.
      */
     public UserCredentials obtainCredentials(final AccountID accountID,
-            final UserCredentials credentials, final Boolean isShowServerOption)
-    {
+            final UserCredentials credentials, final Boolean isShowServerOption) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             Timber.e("Cannot obtain credentials from the main thread!");
             return credentials;
@@ -128,11 +126,9 @@ public class AndroidSecurityAuthority implements SecurityAuthority
 
         // Displays the credentials dialog and waits for it to complete
         DialogActivity.showCustomDialog(aTalkApp.getInstance(),
-                aTalkApp.getResString(R.string.service_gui_LOGIN_CREDENTIAL), CredentialsFragment.class.getName(),
-                args, aTalkApp.getResString(R.string.service_gui_SIGN_IN), new DialogActivity.DialogListener()
-                {
-                    public boolean onConfirmClicked(DialogActivity dialog)
-                    {
+                aTalkApp.getResString(R.string.login_credential), CredentialsFragment.class.getName(),
+                args, aTalkApp.getResString(R.string.sign_in), new DialogActivity.DialogListener() {
+                    public boolean onConfirmClicked(DialogActivity dialog) {
                         View dialogContent = dialog.findViewById(R.id.alertContent);
                         String userNameEntered = ViewUtil.getTextViewValue(dialogContent, R.id.username);
                         String password = ViewUtil.getTextViewValue(dialogContent, R.id.password);
@@ -145,11 +141,11 @@ public class AndroidSecurityAuthority implements SecurityAuthority
                             if (msgCount < 0) {
                                 userNameLastEdited = userName;
                                 ViewUtil.setTextViewValue(dialogContent, R.id.reason_field,
-                                        aTalkApp.getResString(R.string.service_gui_USERNAME_NULL));
+                                        aTalkApp.getResString(R.string.username_password_null));
                                 return false;
                             }
                             else if (msgCount > 0) {
-                                String msgReason = aTalkApp.getResString(R.string.service_gui_USERNAME_CHANGE_WARN,
+                                String msgReason = aTalkApp.getResString(R.string.username_change_warning,
                                         userNameEntered, msgCount, userName);
                                 ViewUtil.setTextViewValue(dialogContent, R.id.reason_field, msgReason);
                                 ViewUtil.setTextViewColor(dialogContent, R.id.reason_field, R.color.red);
@@ -175,7 +171,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
                             String serverAddress = ViewUtil.getTextViewValue(dialogContent, R.id.serverIpField);
                             String serverPort = ViewUtil.getTextViewValue(dialogContent, R.id.serverPortField);
                             if (serverAddress == null || serverPort == null) {
-                                aTalkApp.showToastMessage(R.string.plugin_certconfig_INCOMPLETE);
+                                aTalkApp.showToastMessage(R.string.certconfig_incomplete);
                                 return false;
                             }
 
@@ -190,8 +186,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
                         return true;
                     }
 
-                    public void onDialogCancelled(DialogActivity dialog)
-                    {
+                    public void onDialogCancelled(DialogActivity dialog) {
                         credentials.setUserCancel(true);
                         synchronized (credentialsLock) {
                             credentialsLock.notify();
@@ -214,10 +209,10 @@ public class AndroidSecurityAuthority implements SecurityAuthority
      *
      * @param editedAccUid current edited account Uid
      * @param userName new userName
+     *
      * @return count of old messages belong to editedAccUid which are to be purged or -1 if userName entered is invalid
      */
-    private int checkPurgedMsgCount(String editedAccUid, String userName)
-    {
+    private int checkPurgedMsgCount(String editedAccUid, String userName) {
         if (!TextUtils.isEmpty(userName) && userName.contains("@")) {
             if (!editedAccUid.split(":")[1].equals(userName)) {
                 MessageHistoryServiceImpl mhs = MessageHistoryActivator.getMessageHistoryService();
@@ -238,8 +233,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
      * @param isUserNameEditable indicates if the user name could be changed by user in the
      * implementation of this interface.
      */
-    public void setUserNameEditable(boolean isUserNameEditable)
-    {
+    public void setUserNameEditable(boolean isUserNameEditable) {
         this.isUserNameEditable = isUserNameEditable;
     }
 
@@ -248,8 +242,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
      *
      * @return {@code true</code> if the user name could be changed, <code>false} - otherwise.
      */
-    public boolean isUserNameEditable()
-    {
+    public boolean isUserNameEditable() {
         return isUserNameEditable;
     }
 }

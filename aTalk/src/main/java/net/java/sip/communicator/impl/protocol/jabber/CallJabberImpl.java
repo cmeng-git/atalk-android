@@ -7,6 +7,14 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import static org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl.DEFAULT_SIGNATURE_AND_HASH_ALGORITHM;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
@@ -53,14 +61,6 @@ import org.jivesoftware.smackx.jingle_rtp.element.SrtpFingerprint;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -73,8 +73,7 @@ import timber.log.Timber;
  * @author MilanKral
  */
 public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
-        OperationSetBasicTelephonyJabberImpl, ProtocolProviderServiceJabberImpl>
-{
+        OperationSetBasicTelephonyJabberImpl, ProtocolProviderServiceJabberImpl> {
     /**
      * The Jitsi Videobridge conference which the local peer represented by this instance is a focus of.
      */
@@ -110,8 +109,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * of which this call has been created.
      * @param sid the Jingle session-initiate id if provided.
      */
-    public CallJabberImpl(OperationSetBasicTelephonyJabberImpl parentOpSet, String sid)
-    {
+    public CallJabberImpl(OperationSetBasicTelephonyJabberImpl parentOpSet, String sid) {
         super(parentOpSet, sid);
 
         int mediaTypeValueCount = MediaType.values().length;
@@ -134,8 +132,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @param colibriStreamConnector the <code>ColibriStreamConnector</code> to close on behalf of the specified <code>peer</code>
      */
     public void closeColibriStreamConnector(CallPeerJabberImpl peer, MediaType mediaType,
-            ColibriStreamConnector colibriStreamConnector)
-    {
+            ColibriStreamConnector colibriStreamConnector) {
         colibriStreamConnector.close();
         synchronized (colibriStreamConnectors) {
             int index = mediaType.ordinal();
@@ -153,8 +150,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * <code>CallJabberImpl</code> in order to include/exclude the &quot;isfocus&quot; attribute.
      */
     @Override
-    protected void conferenceFocusChanged(boolean oldValue, boolean newValue)
-    {
+    protected void conferenceFocusChanged(boolean oldValue, boolean newValue) {
         try {
             Iterator<CallPeerJabberImpl> peers = getCallPeers();
             while (peers.hasNext()) {
@@ -176,14 +172,14 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @param peer the <code>CallPeer</code> which is to use the allocated colibri (conference) channels
      * @param contentMap the local and remote <code>JingleContent</code>s which specify the
      * <code>MediaType</code>s for which colibri (conference) channels are to be allocated
+     *
      * @return a <code>ColibriConferenceIQ</code> which describes the allocated colibri (conference)
      * channels for the specified <code>mediaTypes</code> which are to be used by the specified
      * <code>peer</code>; otherwise, <code>null</code>
      */
     public ColibriConferenceIQ createColibriChannels(CallPeerJabberImpl peer,
             Map<JingleContent, JingleContent> contentMap)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         if (!peer.isJitsiVideobridge())
             return null;
 
@@ -395,12 +391,12 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * and from which such traffic is to be received via the initialized <code>ColibriStreamConnector</code>
      * @param factory a <code>StreamConnectorFactory</code> implementation which is to allocate the sockets to
      * be used for RTP and RTCP traffic
+     *
      * @return a <code>ColibriStreamConnector</code> to be used for RTP and RTCP traffic associated
      * with the specified <code>channel</code>
      */
     public ColibriStreamConnector createColibriStreamConnector(CallPeerJabberImpl peer,
-            MediaType mediaType, ColibriConferenceIQ.Channel channel, StreamConnectorFactory factory)
-    {
+            MediaType mediaType, ColibriConferenceIQ.Channel channel, StreamConnectorFactory factory) {
         String channelID = channel.getID();
         if (channelID == null)
             throw new IllegalArgumentException("channel");
@@ -442,8 +438,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @param conference a <code>ColibriConferenceIQ</code> which specifies the (colibri) conference channels to be expired
      */
     public void expireColibriChannels(CallPeerJabberImpl peer, ColibriConferenceIQ conference)
-            throws SmackException.NotConnectedException, InterruptedException
-    {
+            throws SmackException.NotConnectedException, InterruptedException {
         // Formulate the ColibriConferenceIQ request which is to be sent.
         if (colibri != null) {
             String conferenceID = colibri.getID();
@@ -522,8 +517,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @param direction the <code>MediaDirection</code> to set.
      */
     public void setChannelDirection(String channelID, MediaType mediaType, MediaDirection direction)
-            throws SmackException.NotConnectedException, InterruptedException
-    {
+            throws SmackException.NotConnectedException, InterruptedException {
         if ((colibri != null) && (channelID != null)) {
             ColibriConferenceIQ.Content content = colibri.getContent(mediaType.toString());
 
@@ -569,14 +563,15 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @param sessionInitiateExtensions a collection of additional and optional <code>ExtensionElement</code>s to be
      * added to the <code>session-initiate</code> {@link Jingle} which is to init this <code>CallJabberImpl</code>
      * @param supportedTransports the XML namespaces of the jingle transports to use.
+     *
      * @return the newly created <code>CallPeerJabberImpl</code> corresponding to <code>calleeJID</code>.
      * All following state change events will be delivered through this call peer.
+     *
      * @throws OperationFailedException with the corresponding code if we fail to create the call.
      */
     public CallPeerJabberImpl initiateSession(FullJid calleeJid, DiscoverInfo discoverInfo,
             Iterable<ExtensionElement> sessionInitiateExtensions, Collection<String> supportedTransports)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         // create the session-initiate IQ
         CallPeerJabberImpl callPeer = new CallPeerJabberImpl(calleeJid, this);
         callPeer.setDiscoveryInfo(discoverInfo);
@@ -623,7 +618,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * Updates the Jingle sessions for the <code>CallPeer</code>s of this <code>Call</code>, to reflect the
      * current state of the video contents of this <code>Call</code>. Sends a <code>content-modify</code>,
      * <code>content-add</code> or <code>content-remove</code> message to each of the current <code>CallPeer</code>s.
-     *
+     * <p>
      * cmeng (20210321): Approach aborted due to complexity and NewReceiveStreamEvent not alway gets triggered:
      * - content-remove/content-add are not used on device orientation changed - use blocking impl is aborted due
      * to its complexity.
@@ -632,8 +627,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @throws OperationFailedException if a problem occurred during message generation or there was a network problem
      */
     public void modifyVideoContent()
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         Timber.d("Updating video content for %s", this);
         boolean change = false;
         for (CallPeerJabberImpl peer : getCallPeerList()) {
@@ -653,6 +647,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * Notifies this instance that a specific <code>ColibriConferenceIQ</code> has been received.
      *
      * @param conferenceIQ the <code>ColibriConferenceIQ</code> which has been received
+     *
      * @return <code>true</code> if the specified <code>conferenceIQ</code> was processed by this instance
      * and no further processing is to be performed by other possible processors of
      * <code>ColibriConferenceIQ</code>s; otherwise, <code>false</code>. Because a
@@ -661,8 +656,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * no further processing by other <code>CallJabberImpl</code> instances is necessary once
      * the <code>ColibriConferenceIQ</code> is processed by the associated <code>CallJabberImpl</code> instance.
      */
-    boolean processColibriConferenceIQ(ColibriConferenceIQ conferenceIQ)
-    {
+    boolean processColibriConferenceIQ(ColibriConferenceIQ conferenceIQ) {
         if (colibri == null) {
             /*
              * This instance has not set up any conference using the Jitsi Videobridge server-side
@@ -711,16 +705,15 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
 
     /**
      * Creates a new call peer upon receiving session-initiate, and sends a RINGING response if required.
-     *
      * Handle addCallPeer() in caller to avoid race condition as code here is handled on a new thread;
      * required when transport-info is sent separately
-     * @see OperationSetBasicTelephonyJabberImpl#processJingleSynchronize(Jingle) in session-initiate
      *
      * @param callPeer the {@link CallPeerJabberImpl}: the one that sent the INVITE.
      * @param jingle the {@link Jingle} that created the session.
+     *
+     * @see OperationSetBasicTelephonyJabberImpl#processJingleSynchronize(Jingle) in session-initiate
      */
-    public void processSessionInitiate(final CallPeerJabberImpl callPeer, Jingle jingle, JingleCallSessionImpl session)
-    {
+    public void processSessionInitiate(final CallPeerJabberImpl callPeer, Jingle jingle, JingleCallSessionImpl session) {
         /* cmeng (20200528): Must handle addCallPeer() in caller to handle transport-info sent separately */
         // FullJid remoteParty = jingle.getFrom().asFullJidIfPossible();
         // CallPeerJabberImpl callPeer = new CallPeerJabberImpl(remoteParty, this, jingle);
@@ -773,7 +766,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                 && callPeer.getMediaHandler().getAdvertisedEncryptionMethods().length == 0) {
 
             // send an error response;
-            String reasonText = aTalkApp.getResString(R.string.service_gui_security_ENCRYPTION_REQUIRED);
+            String reasonText = aTalkApp.getResString(R.string.security_encryption_required);
             callPeer.setState(CallPeerState.FAILED, reasonText);
             session.terminateSessionAndUnregister(JingleReason.Reason.security_error, reasonText);
             return;
@@ -849,8 +842,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @param mediaType the <code>MediaType</code> of the media to be transmitted over the DTLS-SRTP session
      */
     private boolean addDtlsAdvertisedEncryptions(CallPeerJabberImpl peer,
-            ColibriConferenceIQ.Channel channel, MediaType mediaType)
-    {
+            ColibriConferenceIQ.Channel channel, MediaType mediaType) {
         CallPeerMediaHandlerJabberImpl peerMediaHandler = peer.getMediaHandler();
         DtlsControl dtlsControl
                 = (DtlsControl) peerMediaHandler.getSrtpControls().get(mediaType, SrtpControlType.DTLS_SRTP);
@@ -883,8 +875,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * DTLS-SRTP endpoint.
      */
     private void setDtlsEncryptionOnChannel(MediaType mediaType, JingleContent localContent, JingleContent remoteContent,
-            CallPeerJabberImpl peer, ColibriConferenceIQ.Channel channel)
-    {
+            CallPeerJabberImpl peer, ColibriConferenceIQ.Channel channel) {
         AccountID accountID = getProtocolProvider().getAccountID();
 
         if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
@@ -930,8 +921,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * DTLS-SRTP endpoint.
      */
     private void setDtlsEncryptionOnChannel(Jid jvb, CallPeerJabberImpl peer,
-            MediaType mediaType, ColibriConferenceIQ.Channel channel)
-    {
+            MediaType mediaType, ColibriConferenceIQ.Channel channel) {
         ProtocolProviderServiceJabberImpl protocolProvider = getProtocolProvider();
         AccountID accountID = protocolProvider.getAccountID();
 
@@ -963,8 +953,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @param localTransport the <code>IceUdpTransport</code> on which the properties of the specified
      * <code>dtlsControl</code> are to be set
      */
-    static void setDtlsEncryptionOnTransport(DtlsControl dtlsControl, IceUdpTransport localTransport)
-    {
+    static void setDtlsEncryptionOnTransport(DtlsControl dtlsControl, IceUdpTransport localTransport) {
         String fingerprint = dtlsControl.getLocalFingerprint();
         String hash = dtlsControl.getLocalFingerprintHashFunction();
         String setup = ((DtlsControlImpl) dtlsControl).getSetup().toString();
@@ -978,8 +967,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
     }
 
     private void setTransportOnChannel(CallPeerJabberImpl peer, String media, ColibriConferenceIQ.Channel channel)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         ExtensionElement transport = peer.getMediaHandler().getTransportManager().createTransport(media);
         if (transport instanceof IceUdpTransport)
             channel.setTransport((IceUdpTransport) transport);
@@ -987,8 +975,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
 
     private void setTransportOnChannel(String media, JingleContent localContent,
             JingleContent remoteContent, CallPeerJabberImpl peer, ColibriConferenceIQ.Channel channel)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         if (remoteContent != null) {
             IceUdpTransport transport = remoteContent.getFirstChildElement(IceUdpTransport.class);
             channel.setTransport(TransportManagerJabberImpl.cloneTransportAndCandidates(transport));
@@ -1005,10 +992,10 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @param peer the <code>CallPeerJabberImpl</code> which is associated with the specified
      * <code>channel</code> and which specifies the <code>TransportManager</code> to be described in
      * the specified <code>channel</code>
+     *
      * @return the <code>transport</code> of the specified <code>channel</code>
      */
-    private IceUdpTransport ensureTransportOnChannel(ColibriConferenceIQ.Channel channel, CallPeerJabberImpl peer)
-    {
+    private IceUdpTransport ensureTransportOnChannel(ColibriConferenceIQ.Channel channel, CallPeerJabberImpl peer) {
         IceUdpTransport transport = channel.getTransport();
 
         if (transport == null) {
@@ -1028,8 +1015,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @return the entity ID of the Jitsi Videobridge to be utilized by this <code>Call</code> for the
      * purposes of establishing a server-assisted telephony conference.
      */
-    public Jid getJitsiVideobridge()
-    {
+    public Jid getJitsiVideobridge() {
         if ((mJitsiVideobridge == null) &&
                 (getConference() != null) && getConference().isJitsiVideobridge()) {
             Jid jvb = getProtocolProvider().getJitsiVideobridge();
@@ -1049,8 +1035,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * Forwards DTMF events to the <code>IncomingDTMF</code> operation set, setting this <code>Call</code> as the source.
      */
     @Override
-    public void toneReceived(DTMFReceivedEvent evt)
-    {
+    public void toneReceived(DTMFReceivedEvent evt) {
         OperationSetIncomingDTMF opSet = getProtocolProvider().getOperationSet(OperationSetIncomingDTMF.class);
         if (opSet instanceof OperationSetIncomingDTMFJabberImpl) {
             // Re-fire the event using this Call as the source.
@@ -1064,8 +1049,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      *
      * @param enable new state of inputevt support
      */
-    public void setLocalInputEvtAware(boolean enable)
-    {
+    public void setLocalInputEvtAware(boolean enable) {
         localInputEvtAware = enable;
     }
 
@@ -1074,8 +1058,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      *
      * @return true if the call support <code>inputevt</code>, false otherwise
      */
-    public boolean getLocalInputEvtAware()
-    {
+    public boolean getLocalInputEvtAware() {
         return localInputEvtAware;
     }
 
@@ -1083,11 +1066,11 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * Returns the peer whose corresponding session has the specified <code>sid</code>.
      *
      * @param sid the ID of the session whose peer we are looking for.
+     *
      * @return the {@link CallPeerJabberImpl} with the specified jingle
      * <code>sid</code> and <code>null</code> if no such peer exists in this call.
      */
-    public CallPeerJabberImpl getPeerBySid(String sid)
-    {
+    public CallPeerJabberImpl getPeerBySid(String sid) {
         if (sid == null)
             return null;
 
@@ -1102,10 +1085,10 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * Determines if this call contains a peer whose corresponding session has the specified <code>sid</code>.
      *
      * @param sid the ID of the session whose peer we are looking for.
+     *
      * @return <code>true</code> if this call contains a peer with the specified jingle <code>sid</code> and false otherwise.
      */
-    public boolean containsSid(String sid)
-    {
+    public boolean containsSid(String sid) {
         return (getPeerBySid(sid) != null);
     }
 
@@ -1113,11 +1096,11 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * Returns the peer associated session-initiate JingleIQ has the specified <code>stanzaId</code>.
      *
      * @param stanzaId the Stanza Id of the session-initiate JingleIQ whose peer we are looking for.
+     *
      * @return the {@link CallPeerJabberImpl} with the specified IQ <code>stanzaId</code>
      * and <code>null</code> if no such peer exists in this call.
      */
-    public CallPeerJabberImpl getPeerByJingleIQStanzaId(String stanzaId)
-    {
+    public CallPeerJabberImpl getPeerByJingleIQStanzaId(String stanzaId) {
         if (stanzaId == null)
             return null;
 

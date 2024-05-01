@@ -135,22 +135,22 @@ public class EntityListHelper {
         String title;
 
         Context context = aTalkApp.getInstance();
-        title = context.getString(R.string.service_gui_REMOVE_CONTACT);
+        title = context.getString(R.string.remove_contact);
         Contact contact = metaContact.getDefaultContact();
         Jid contactJid = contact.getJid();
 
         // Allow both contact or DomainBareJid to be remove
         if (contactJid != null) {
             Jid userJid = contact.getProtocolProvider().getAccountID().getEntityBareJid();
-            message = context.getString(R.string.service_gui_REMOVE_CONTACT_TEXT, userJid, contactJid);
+            message = context.getString(R.string.remove_contact_prompt, userJid, contactJid);
         }
         else {
-            aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contactJid);
+            aTalkApp.showToastMessage(R.string.contact_invalid, contactJid);
             return;
         }
 
         DialogActivity.showConfirmDialog(context, title, message,
-                context.getString(R.string.service_gui_REMOVE), new DialogActivity.DialogListener() {
+                context.getString(R.string.remove), new DialogActivity.DialogListener() {
                     @Override
                     public boolean onConfirmClicked(DialogActivity dialog) {
                         doRemoveContact(caller, metaContact);
@@ -183,7 +183,7 @@ public class EntityListHelper {
                 metaContactListService.removeMetaContact(metaContact);
             } catch (Exception ex) {
                 DialogActivity.showDialog(aTalkApp.getGlobalContext(),
-                        aTalkApp.getResString(R.string.service_gui_REMOVE_CONTACT), ex.getMessage());
+                        aTalkApp.getResString(R.string.remove_contact), ex.getMessage());
             }
         }).start();
     }
@@ -195,9 +195,9 @@ public class EntityListHelper {
      */
     public static void removeMetaContactGroup(final MetaContactGroup group) {
         Context ctx = aTalkApp.getInstance();
-        String message = ctx.getString(R.string.service_gui_REMOVE_GROUP_TEXT, group.getGroupName());
+        String message = ctx.getString(R.string.remove_group_prompt, group.getGroupName());
 
-        DialogActivity.showConfirmDialog(ctx, ctx.getString(R.string.service_gui_REMOVE), message, ctx.getString(R.string.service_gui_REMOVE_GROUP),
+        DialogActivity.showConfirmDialog(ctx, ctx.getString(R.string.remove), message, ctx.getString(R.string.remove_group),
                 new DialogActivity.DialogListener() {
                     @Override
                     public boolean onConfirmClicked(DialogActivity dialog) {
@@ -223,7 +223,7 @@ public class EntityListHelper {
             try {
                 AndroidGUIActivator.getContactListService().removeMetaContactGroup(group);
             } catch (Exception ex) {
-                DialogActivity.showDialog(ctx, ctx.getString(R.string.service_gui_REMOVE_GROUP), ex.getMessage());
+                DialogActivity.showDialog(ctx, ctx.getString(R.string.remove_group), ex.getMessage());
             }
         }).start();
     }
@@ -250,10 +250,10 @@ public class EntityListHelper {
         else
             return;
 
-        String title = aTalkApp.getResString(R.string.service_gui_HISTORY_CONTACT, entityJid);
-        String message = aTalkApp.getResString(R.string.service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING, entityJid);
-        String cbMessage = aTalkApp.getResString(R.string.service_gui_HISTORY_REMOVE_MEDIA);
-        String btnText = aTalkApp.getResString(R.string.service_gui_PURGE);
+        String title = aTalkApp.getResString(R.string.history_contact, entityJid);
+        String message = aTalkApp.getResString(R.string.history_purge_for_contact_warning, entityJid);
+        String cbMessage = aTalkApp.getResString(R.string.history_purge_media);
+        String btnText = aTalkApp.getResString(R.string.purge);
 
         Bundle args = new Bundle();
         args.putString(CustomDialogCbox.ARG_MESSAGE, message);
@@ -361,10 +361,10 @@ public class EntityListHelper {
      */
     public static void eraseAllEntityHistory(final TaskCompleteListener caller) {
         Context ctx = aTalkApp.getInstance();
-        String title = ctx.getString(R.string.service_gui_HISTORY);
-        String message = ctx.getString(R.string.service_gui_HISTORY_REMOVE_ALL_WARNING);
+        String title = ctx.getString(R.string.history);
+        String message = ctx.getString(R.string.history_purge_all_warning);
 
-        DialogActivity.showConfirmDialog(ctx, title, message, ctx.getString(R.string.service_gui_PURGE),
+        DialogActivity.showConfirmDialog(ctx, title, message, ctx.getString(R.string.purge),
                 new DialogActivity.DialogListener() {
                     @Override
                     public boolean onConfirmClicked(DialogActivity dialog) {
@@ -433,8 +433,8 @@ public class EntityListHelper {
      */
     public static void eraseEntityCallHistory(TaskCompleteListener caller, List<String> callUUIDs) {
         // Displays the call history delete dialog and waits for user
-        DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(), R.string.service_gui_CALL_HISTORY_GROUP_NAME,
-                R.string.service_gui_CALL_HISTORY_REMOVE_WARNING, R.string.service_gui_PURGE,
+        DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(), R.string.call_history_name,
+                R.string.call_history_remove_warning, R.string.purge,
                 new DialogActivity.DialogListener() {
 
                     public boolean onConfirmClicked(DialogActivity dialog) {

@@ -352,7 +352,7 @@ public class CallHistoryFragment extends OSGiFragment
     }
 
     private void setTitle() {
-        String title = aTalkApp.getResString(R.string.service_gui_CALL_HISTORY_GROUP_NAME)
+        String title = aTalkApp.getResString(R.string.call_history_name)
                 + " (" + callRecords.size() + ")";
         mTitle.setText(title);
     }
@@ -420,7 +420,7 @@ public class CallHistoryFragment extends OSGiFragment
 
     @Override
     public void onTaskComplete(int msgCount, List<String> deletedUUIDs) {
-        aTalkApp.showToastMessage(R.string.service_gui_HISTORY_REMOVE_COUNT, msgCount);
+        aTalkApp.showToastMessage(R.string.history_purge_count, msgCount);
         if (msgCount > 0) {
             callHistoryAdapter.new getCallRecords(new Date()).execute();
         }
@@ -533,7 +533,7 @@ public class CallHistoryFragment extends OSGiFragment
 
                 case R.id.cr_delete:
                     if (checkedList.size() == 0) {
-                        aTalkApp.showToastMessage(R.string.service_gui_CALL_HISTORY_REMOVE_NONE);
+                        aTalkApp.showToastMessage(R.string.call_history_remove_none);
                         return true;
                     }
 
@@ -597,7 +597,7 @@ public class CallHistoryFragment extends OSGiFragment
         mDay = calendar.get(Calendar.DAY_OF_MONTH);
         int mHourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
         int mMinute = calendar.get(Calendar.MINUTE);
-        callHistoryWarn.setText(getString(R.string.service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING, calendar.getTime()));
+        callHistoryWarn.setText(getString(R.string.call_history_remove_before_date_warning, calendar.getTime()));
 
         datePicker.init(mYear, mMonth, mDay, this);
         timePicker.setIs24HourView(true);
@@ -615,14 +615,14 @@ public class CallHistoryFragment extends OSGiFragment
     @Override
     public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         calendar.set(year, monthOfYear, dayOfMonth);
-        callHistoryWarn.setText(getString(R.string.service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING, calendar.getTime()));
+        callHistoryWarn.setText(getString(R.string.call_history_remove_before_date_warning, calendar.getTime()));
     }
 
     @Override
     public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
         // must also set year/month/day; these values may get messed up by onTimeChanged().
         calendar.set(mYear, mMonth, mDay, hourOfDay, minute);
-        callHistoryWarn.setText(getString(R.string.service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING, calendar.getTime()));
+        callHistoryWarn.setText(getString(R.string.call_history_remove_before_date_warning, calendar.getTime()));
     }
 
     private static class CallRecordViewHolder {

@@ -18,7 +18,7 @@
             android:layout_width="@dimen/avatar_height"
             android:layout_height="@dimen/avatar_height"
             android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/service_gui_CALL"
+            android:contentDescription="@string/call_audio"
             android:paddingBottom="@dimen/between_padding"
             android:scaleType="fitXY"
             android:src="@drawable/person_photo" />
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/service_gui_CALL"
+            android:contentDescription="@string/call_audio"
             android:focusable="true"
             android:src="@drawable/call_button" />
 
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/gui_call_hang_up"
+            android:contentDescription="@string/call_hang_up"
             android:focusable="true"
             android:src="@drawable/call_hangup" />
     </LinearLayout>

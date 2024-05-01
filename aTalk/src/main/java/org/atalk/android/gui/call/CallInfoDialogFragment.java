@@ -11,6 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.awt.Dimension;
+import java.net.InetSocketAddress;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallConference;
 import net.java.sip.communicator.service.protocol.CallPeer;
@@ -29,12 +35,6 @@ import org.atalk.service.neomedia.ZrtpControl;
 import org.atalk.service.osgi.OSGiDialogFragment;
 import org.atalk.util.MediaType;
 
-import java.awt.Dimension;
-import java.net.InetSocketAddress;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
 // Disambiguation
 
 /**
@@ -45,8 +45,7 @@ import java.util.Locale;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class CallInfoDialogFragment extends OSGiDialogFragment
-{
+public class CallInfoDialogFragment extends OSGiDialogFragment {
     /**
      * The extra key pointing to the "call key" that will be used to retrieve active call from {@link CallManager}.
      */
@@ -82,10 +81,10 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
      * bundle.
      *
      * @param callKey the key string that identifies active call in {@link CallManager}.
+     *
      * @return new, parametrized instance of {@link CallInfoDialogFragment}.
      */
-    public static CallInfoDialogFragment newInstance(String callKey)
-    {
+    public static CallInfoDialogFragment newInstance(String callKey) {
         CallInfoDialogFragment f = new CallInfoDialogFragment();
 
         Bundle args = new Bundle();
@@ -95,8 +94,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Retrieves the call from manager.
         String callKey = getArguments().getString(CALL_KEY_EXTRA);
         this.call = CallManager.getActiveCall(callKey);
@@ -108,15 +106,14 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
 
         // Sets the title.
         if (getDialog() != null)
-            getDialog().setTitle(R.string.service_gui_callinfo_TECHNICAL_CALL_INFO);
+            getDialog().setTitle(R.string.callinfo_details);
         return viewContainer;
     }
 
     /**
      * Triggers the view update on UI thread.
      */
-    private void updateView()
-    {
+    private void updateView() {
         runOnUiThread(() -> {
             if (getView() != null)
                 doUpdateView();
@@ -130,8 +127,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
      * @param id the id of <code>TextView</code> we want to edit.
      * @param text string value that will be set on the <code>TextView</code>.
      */
-    private void setTextViewValue(int id, String text)
-    {
+    private void setTextViewValue(int id, String text) {
         ViewUtil.setTextViewValue(viewContainer, id, text);
     }
 
@@ -143,8 +139,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
      * @param id the id of <code>TextView</code> we want to edit.
      * @param text string value that will be set on the <code>TextView</code>.
      */
-    private void setTextViewValue(View container, int id, String text)
-    {
+    private void setTextViewValue(View container, int id, String text) {
         ViewUtil.setTextViewValue(container, id, text);
     }
 
@@ -155,16 +150,14 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
      * @param viewId the id of <code>View</code> that will be shown/hidden.
      * @param isVisible flag telling whether the <code>View</code> has to be shown or hidden.
      */
-    private void ensureVisible(View container, int viewId, boolean isVisible)
-    {
+    private void ensureVisible(View container, int viewId, boolean isVisible) {
         ViewUtil.ensureVisible(container, viewId, isVisible);
     }
 
     /**
      * Updates the view to display actual call information.
      */
-    private void doUpdateView()
-    {
+    private void doUpdateView() {
         CallConference conference = call.getConference();
         List<Call> calls = conference.getCalls();
         if (calls.size() == 0)
@@ -192,8 +185,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
      *
      * @param callPeer the <code>CallPeer</code>, for which we'll construct the info.
      */
-    private void constructPeerInfo(CallPeer callPeer)
-    {
+    private void constructPeerInfo(CallPeer callPeer) {
         // Peer name.
         setTextViewValue(R.id.callPeer, callPeer.getAddress());
 
@@ -219,8 +211,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
      *
      * @param callPeerMediaHandler the call peer for which ICE information will be displayed.
      */
-    private void updateIceSection(CallPeerMediaHandler<?> callPeerMediaHandler)
-    {
+    private void updateIceSection(CallPeerMediaHandler<?> callPeerMediaHandler) {
         // ICE state.
         String iceState = null;
         if (callPeerMediaHandler != null) {
@@ -250,7 +241,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
         if (isTotalHarvestTime) {
             int harvestCount = callPeerMediaHandler.getNbHarvesting();
             setTextViewValue(viewContainer, R.id.totalHarvestTime,
-                    getString(R.string.service_gui_callinfo_HARVESTING_DATA, harvestingTime, harvestCount));
+                    getString(R.string.callinfo_harvesting_data, harvestingTime, harvestCount));
         }
 
         // Current harvester time if ICE agent is harvesting.
@@ -292,7 +283,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
             ensureVisible(viewContainer, harvesterValues[i], visible);
             if (visible) {
                 setTextViewValue(viewContainer, harvesterValues[i],
-                        getString(R.string.service_gui_callinfo_HARVESTING_DATA, harvestingTime,
+                        getString(R.string.callinfo_harvesting_data, harvestingTime,
                                 callPeerMediaHandler.getNbHarvesting()));
             }
         }
@@ -306,8 +297,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
      * @param mediaStream the <code>MediaStream</code> that gives us access to audio/video info.
      * @param mediaType The media type used to determine which stream of the media handler must returns it encryption method.
      */
-    private String getStreamEncryptionMethod(CallPeerMediaHandler<?> callPeerMediaHandler, MediaStream mediaStream, MediaType mediaType)
-    {
+    private String getStreamEncryptionMethod(CallPeerMediaHandler<?> callPeerMediaHandler, MediaStream mediaStream, MediaType mediaType) {
         Resources resources = getResources();
 
         String transportProtocolString = "";
@@ -327,12 +317,12 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
             else {
                 info = "SDES";
             }
-            rtpType = resources.getString(R.string.service_gui_callinfo_MEDIA_STREAM_SRTP) + " ("
-                    + resources.getString(R.string.service_gui_callinfo_KEY_EXCHANGE_PROTOCOL) + ": " + info + ")";
+            rtpType = resources.getString(R.string.callinfo_media_srtp) + " ("
+                    + resources.getString(R.string.callinfo_key_exchange_protocol) + ": " + info + ")";
         }
         // If the stream is not secured.
         else {
-            rtpType = resources.getString(R.string.service_gui_callinfo_MEDIA_STREAM_RTP);
+            rtpType = resources.getString(R.string.callinfo_media_stream_rip);
         }
         return transportProtocolString + " / " + rtpType;
     }
@@ -343,8 +333,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
      * @param callPeerMediaHandler The <code>CallPeerMadiaHandler</code> containing the AUDIO/VIDEO stream.
      * @param mediaType The media type used to determine which stream of the media handler will be used.
      */
-    private void updateAudioVideoInfo(CallPeerMediaHandler<?> callPeerMediaHandler, MediaType mediaType)
-    {
+    private void updateAudioVideoInfo(CallPeerMediaHandler<?> callPeerMediaHandler, MediaType mediaType) {
         View container = mediaType == MediaType.AUDIO ? viewContainer.findViewById(R.id.audioInfo) : viewContainer.findViewById(R.id.videoInfo);
 
         MediaStream mediaStream = callPeerMediaHandler.getStream(mediaType);
@@ -363,7 +352,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
         setTextViewValue(container, R.id.mediaTransport, getStreamEncryptionMethod(callPeerMediaHandler, mediaStream, mediaType));
         // Set the title label to Video info if it's a video stream.
         if (mediaType == MediaType.VIDEO) {
-            setTextViewValue(container, R.id.audioVideoLabel, getString(R.string.service_gui_callinfo_VIDEO_INFO));
+            setTextViewValue(container, R.id.audioVideoLabel, getString(R.string.callinfo_video_info));
         }
 
         boolean hasVideoSize = false;
@@ -515,7 +504,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
         setTextViewValue(container, R.id.jitterBuffer, jitterDelayStr);
 
         // RTT
-        String naStr = getString(R.string.service_gui_callinfo_NA);
+        String naStr = getString(R.string.callinfo_na);
         long rttMs = mediaStreamStats.getRttMs();
         String rttStr = rttMs != -1 ? rttMs + " ms" : naStr;
         setTextViewValue(container, R.id.RTT, rttStr);
@@ -529,20 +518,19 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
      * Converts a video size Dimension into its String representation.
      *
      * @param videoSize The video size Dimension, containing the width and the height of the video.
+     *
      * @return The String representation of the video width and height, or a String with "Not Available (N.A.)" if the
      * videoSize is null.
      */
-    private String videoSizeToString(Dimension videoSize)
-    {
+    private String videoSizeToString(Dimension videoSize) {
         if (videoSize == null) {
-            return getString(R.string.service_gui_callinfo_NA);
+            return getString(R.string.callinfo_na);
         }
         return ((int) videoSize.getWidth()) + " x " + ((int) videoSize.getHeight());
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         if (call == null) {
             dismiss();
@@ -552,8 +540,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         stopUpdateThread();
         super.onStop();
     }
@@ -561,8 +548,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
     /**
      * Starts the update thread.
      */
-    private void startUpdateThread()
-    {
+    private void startUpdateThread() {
         this.pollingThread = new InfoUpdateThread();
         pollingThread.start();
     }
@@ -570,8 +556,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
     /**
      * Stops the update thread ensuring that it has finished it's job.
      */
-    private void stopUpdateThread()
-    {
+    private void stopUpdateThread() {
         if (pollingThread != null) {
             pollingThread.ensureFinished();
             pollingThread = null;
@@ -582,8 +567,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
      * Calculates media statistics for all peers. This must be executed on non UI thread or the network on UI thread
      * exception will occur.
      */
-    private void updateMediaStats()
-    {
+    private void updateMediaStats() {
         CallConference conference = call.getConference();
 
         for (CallPeer callPeer : conference.getCallPeers()) {
@@ -605,8 +589,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
      *
      * @param mediaStream the media stream that will have it's statistics recalculated.
      */
-    private void calcStreamMediaStats(MediaStream mediaStream)
-    {
+    private void calcStreamMediaStats(MediaStream mediaStream) {
         if (mediaStream == null)
             return;
 
@@ -619,8 +602,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
     /**
      * The thread that periodically recalculates media stream statistics and triggers view updates.
      */
-    class InfoUpdateThread extends Thread
-    {
+    class InfoUpdateThread extends Thread {
         /**
          * The polling loop flag.
          */
@@ -629,8 +611,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
         /**
          * Stops and joins the thread.
          */
-        public void ensureFinished()
-        {
+        public void ensureFinished() {
             try {
                 // Immediately stop any further update attempt
                 run = false;
@@ -644,8 +625,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
         }
 
         @Override
-        public void run()
-        {
+        public void run() {
             synchronized (this) {
                 while (run) {
                     try {

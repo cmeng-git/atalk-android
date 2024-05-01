@@ -28,8 +28,7 @@ import org.atalk.android.aTalkApp;
  * @author Eng Chong Meng
  * See {@link ServerListActivity}
  */
-public class StunServerAdapter extends ServerItemAdapter
-{
+public class StunServerAdapter extends ServerItemAdapter {
     /**
      * The {@link JabberAccountRegistration} that contains the original list
      */
@@ -41,30 +40,26 @@ public class StunServerAdapter extends ServerItemAdapter
      * @param parent the parent {@link android.app.Activity} used as a context
      * @param registration the registration object that holds the STUN server list
      */
-    public StunServerAdapter(Activity parent, JabberAccountRegistration registration)
-    {
+    public StunServerAdapter(Activity parent, JabberAccountRegistration registration) {
         super(parent);
         this.registration = registration;
     }
 
-    public int getCount()
-    {
+    public int getCount() {
         return registration.getAdditionalStunServers().size();
     }
 
-    public Object getItem(int i)
-    {
+    public Object getItem(int i) {
         return registration.getAdditionalStunServers().get(i);
     }
 
-    public View getView(int i, View view, ViewGroup viewGroup)
-    {
+    public View getView(int i, View view, ViewGroup viewGroup) {
         LayoutInflater li = parent.getLayoutInflater();
         View rowView = li.inflate(android.R.layout.simple_list_item_1, viewGroup, false);
         TextView tv = rowView.findViewById(android.R.id.text1);
 
         StunServerDescriptor server = (StunServerDescriptor) getItem(i);
-        String descriptor = aTalkApp.getResString(R.string.service_gui_SERVERS_STUN_DESCRIPTOR,
+        String descriptor = aTalkApp.getResString(R.string.server_stun_descriptor,
                 server.getAddress(), server.getPort(), (server.isTurnSupported() ? "(+TURN)" : ""));
         tv.setText(descriptor);
 
@@ -76,8 +71,7 @@ public class StunServerAdapter extends ServerItemAdapter
      *
      * @param descriptor the server descriptor to be removed
      */
-    void removeServer(StunServerDescriptor descriptor)
-    {
+    void removeServer(StunServerDescriptor descriptor) {
         registration.getAdditionalStunServers().remove(descriptor);
         refresh();
     }
@@ -87,8 +81,7 @@ public class StunServerAdapter extends ServerItemAdapter
      *
      * @param descriptor the server descriptor
      */
-    void addServer(StunServerDescriptor descriptor)
-    {
+    void addServer(StunServerDescriptor descriptor) {
         registration.addStunServer(descriptor);
         refresh();
     }
@@ -98,13 +91,11 @@ public class StunServerAdapter extends ServerItemAdapter
      *
      * @param descriptor the server to be updated
      */
-    void updateServer(StunServerDescriptor descriptor)
-    {
+    void updateServer(StunServerDescriptor descriptor) {
         refresh();
     }
 
-    DialogFragment createItemEditDialogFragment(int position)
-    {
+    DialogFragment createItemEditDialogFragment(int position) {
         DialogFragment dialogFragment;
         if (position < 0)
             dialogFragment = StunTurnDialogFragment.newInstance(this, null);

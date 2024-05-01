@@ -158,26 +158,24 @@ public abstract class AbstractOperationSetTelephonyConferencing<
      * The <code>ProtocolProviderService</code> implementation which created this instance and for which
      * telephony conferencing services are being provided by this instance.
      */
-    protected final ProtocolProviderServiceT parentProvider;
+    protected final ProtocolProviderServiceT mPPS;
 
     /**
      * Initializes a new <code>AbstractOperationSetTelephonyConferencing</code> instance which is to
      * provide telephony conferencing services for the specified <code>ProtocolProviderService</code>
      * implementation.
      *
-     * @param parentProvider the <code>ProtocolProviderService</code> implementation which has requested the creation
-     * of the new instance and for which the new instance is to provide telephony
-     * conferencing services
+     * @param pps the <code>ProtocolProviderService</code> implementation which has requested the creation
+     * of the new instance and for which the new instance is to provide telephony conferencing services
      */
-    protected AbstractOperationSetTelephonyConferencing(ProtocolProviderServiceT parentProvider) {
-        this.parentProvider = parentProvider;
-        this.parentProvider.addRegistrationStateChangeListener(this);
+    protected AbstractOperationSetTelephonyConferencing(ProtocolProviderServiceT pps) {
+        this.mPPS = pps;
+        this.mPPS.addRegistrationStateChangeListener(this);
     }
 
     /**
      * Notifies this <code>OperationSetTelephonyConferencing</code> that its <code>basicTelephony</code>
-     * property has changed its value from a specific <code>oldValue</code> to a specific
-     * <code>newValue</code>
+     * property has changed its value from a specific <code>oldValue</code> to a specific <code>newValue</code>
      *
      * @param oldValue the old value of the <code>basicTelephony</code> property
      * @param newValue the new value of the <code>basicTelephony</code> property
@@ -609,7 +607,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<
         if (RegistrationState.REGISTERED.equals(newState)) {
             @SuppressWarnings("unchecked")
             OperationSetBasicTelephonyT basicTelephony = (OperationSetBasicTelephonyT)
-                    parentProvider.getOperationSet(OperationSetBasicTelephony.class);
+                    mPPS.getOperationSet(OperationSetBasicTelephony.class);
 
             if (this.basicTelephony != basicTelephony) {
                 OperationSetBasicTelephonyT oldValue = this.basicTelephony;
@@ -1339,7 +1337,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<
      * configuration.
      */
     private boolean isPartialNotificationEnabled() {
-        String s = parentProvider.getAccountID().getAccountProperties().get(PARTIAL_NOTIFICATIONS_PROP_NAME);
+        String s = mPPS.getAccountID().getAccountProperties().get(PARTIAL_NOTIFICATIONS_PROP_NAME);
 
         return (s == null || Boolean.parseBoolean(s));
     }

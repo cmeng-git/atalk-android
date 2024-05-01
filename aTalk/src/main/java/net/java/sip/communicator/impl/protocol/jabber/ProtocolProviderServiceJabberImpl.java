@@ -383,19 +383,19 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * File transfer e.g. IBB across server can take more than 5 seconds
      * Note: Android console FFR on ANR at smack.StanzaCollector.nextResult (StanzaCollector.java:206)
      * when server is not responding; UI may get hold for the set value.
+     * Note: Must implemented in OmemoManager and OmemoService directory due to Async.go()
+     * <a href="https://discourse.igniterealtime.org/t/smack-4-4-7-xmppconnection-setreplytimeout-value-is-not-guaranteed-when-the-stanza-is-sent-asynchronously/93636">...</a>
      */
     public static final int SMACK_DEFAULT_REPLY_TIMEOUT = 10000;  // 10 seconds
 
-    /*
-     * Must implemented in OmemoManager and OmemoService directory due to Async.go()
-     * <a href="https://discourse.igniterealtime.org/t/smack-4-4-7-xmppconnection-setreplytimeout-value-is-not-guaranteed-when-the-stanza-is-sent-asynchronously/93636">...</a>
+    /**
+     * This is to take care for some servers' response.
+     * Disco#info (20 seconds). Some client e.g. Samsung SII may take up to 30, ignore else ANR
      */
-    // public static final int SMACK_REPLY_OMEMO_INIT_TIMEOUT = 15000;  // 15 seconds
+    public static final int SMACK_REPLY_EXTENDED_TIMEOUT_20 = 20000;  // 20 seconds
 
     /**
-     * This is to take care for some servers' response on some packages
-     * e.g. disco#info (30 seconds). Also on some slow client e.g. Samsung SII takes up to 30
-     * Sec to response to sasl authentication challenge on first login
+     * Response to sasl authentication challenge on first login.
      */
     public static final int SMACK_REPLY_EXTENDED_TIMEOUT_30 = 30000;  // 30 seconds
 
@@ -1231,7 +1231,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 //            if (ex.getCause() instanceof SSLHandshakeException) {
 //                Timber.e(ex.getCause());
 //            }
-            String errMsg = aTalkApp.getResString(R.string.service_gui_XMPP_EXCEPTION, ex.getMessage());
+            String errMsg = aTalkApp.getResString(R.string.xmpp_connection_error, ex.getMessage());
             Timber.e("%s", errMsg);
             StanzaError stanzaError = StanzaError.from(Condition.remote_server_timeout, errMsg).build();
             throw new XMPPErrorException(null, stanzaError);
@@ -1315,7 +1315,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
                         errMsg = err.getMessage();
                         if (StringUtils.isNotEmpty(errMsg) && !errMsg.contains("registration-required")) {
-                            errMsg = aTalkApp.getResString(R.string.service_gui_REGISTRATION_REQUIRED, errMsg);
+                            errMsg = aTalkApp.getResString(R.string.registration_required, errMsg);
                             Timber.e("%s", errMsg);
                             StanzaError stanzaError = StanzaError.from(Condition.forbidden, errMsg).build();
                             throw new XMPPErrorException(null, stanzaError);
@@ -1331,7 +1331,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     if (el instanceof SASLErrorException) {
                         errMsg += ": " + ((SASLErrorException) el).getSASLFailure().getDescriptiveText();
                     }
-                    errMsg = aTalkApp.getResString(R.string.service_gui_NOT_AUTHORIZED_HINT, errMsg);
+                    errMsg = aTalkApp.getResString(R.string.not_authorized_hint, errMsg);
                     StanzaError stanzaError = StanzaError.from(Condition.not_authorized, errMsg).build();
                     throw new XMPPErrorException(null, stanzaError);
                 }
@@ -1600,25 +1600,29 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Enable or disable MAM service according per the give enable setting.
+     * Execute in new Thread to avoid ANR.
      *
      * @param connection XMPPConnection to act upon
      * @param enable set MAM service per the given value
      */
     public static void enableMam(XMPPConnection connection, boolean enable) {
-        MamManager mamManager = MamManager.getInstanceFor(connection, null);
-        try {
-            if (mamManager.isSupported()) {
-                if (enable) {
-                    mamManager.enableMamForAllMessages();
+        new Thread(() -> {
+            MamManager mamManager = MamManager.getInstanceFor(connection, null);
+            try {
+                if (mamManager.isSupported()) {
+                    if (enable) {
+                        mamManager.enableMamForAllMessages();
+                    }
+                    else {
+                        mamManager.setDefaultBehavior(MamPrefsIQ.DefaultBehavior.never);
+                    }
                 }
-                else {
-                    mamManager.setDefaultBehavior(MamPrefsIQ.DefaultBehavior.never);
-                }
+            } catch (NoResponseException | XMPPErrorException | NotConnectedException
+                     | SmackException.NotLoggedInException | InterruptedException e) {
+                Timber.e("Enable Mam For All Messages: %s", e.getMessage());
             }
-        } catch (NoResponseException | XMPPErrorException | NotConnectedException
-                 | SmackException.NotLoggedInException | InterruptedException e) {
-            Timber.e("Enable Mam For All Messages: %s", e.getMessage());
         }
+        ).start();
     }
 
     /**
@@ -1819,7 +1823,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 msg = aTalkApp.getResString(R.string.password_change_on_server_failed, e.getMessage());
                 passwordChange = false;
             }
-            DialogActivity.showDialog(aTalkApp.getInstance(), aTalkApp.getResString(R.string.service_gui_PASSWORD), msg);
+            DialogActivity.showDialog(aTalkApp.getInstance(), aTalkApp.getResString(R.string.password_), msg);
         }
         return passwordChange;
     }
@@ -1879,7 +1883,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Setup all the Smack Service Discovery and other features that can only be performed during
      * actual account registration stage (mConnection). For initial setup see:
      * {@link #initSmackDefaultSettings()} and {@link #initialize(EntityBareJid, JabberAccountID)}
-     *
+     * <p>
      * Note: For convenience, many of the OperationSets when supported will handle state and events changes on its own.
      */
     private void initServicesAndFeatures() {
@@ -2103,7 +2107,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         String[] featuresToRemove = new String[]{"http://jabber.org/protocol/commands"};
         String[] featuresToAdd = supportedFeatures.toArray(new String[0]);
 
-        scHelper = new ServiceDiscoveryHelper(mConnection, featuresToRemove, featuresToAdd);
+        scHelper = new ServiceDiscoveryHelper(this, mConnection, featuresToRemove, featuresToAdd);
         discoveryManager = ServiceDiscoveryManager.getInstanceFor(mConnection);
     }
 
@@ -2142,7 +2146,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
          * The CapsExtension reply to be included in the caps <Identity/>
          */
         String category = "client";
-        String appName = aTalkApp.getResString(R.string.APPLICATION_NAME);
+        String appName = aTalkApp.getResString(R.string.application_name);
         String type = "android";
 
         DiscoverInfo.Identity identity = new DiscoverInfo.Identity(category, appName, type);
@@ -2534,7 +2538,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             contactId = contactId.trim();
             // no suggestion for an empty id
             if (contactId.length() == 0) {
-                result.add(aTalkApp.getResString(R.string.service_gui_INVALID_ADDRESS, contactId));
+                result.add(aTalkApp.getResString(R.string.invalid_address, contactId));
                 return false;
             }
 
@@ -2565,14 +2569,14 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 }
             }
             if (!valid) {
-                result.add(aTalkApp.getResString(R.string.service_gui_INVALID_ADDRESS, contactId));
+                result.add(aTalkApp.getResString(R.string.invalid_address, contactId));
                 result.add(suggestion + remainder);
                 return false;
             }
 
             return true;
         } catch (Exception ex) {
-            result.add(aTalkApp.getResString(R.string.service_gui_INVALID_ADDRESS, contactId));
+            result.add(aTalkApp.getResString(R.string.invalid_address, contactId));
         }
         return false;
     }
@@ -2588,10 +2592,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Determines whether a specific <code>XMPPException</code> signals that attempted login has failed.
-     *
      * Calling method will trigger a re-login dialog if the return <code>failureMode</code> is not
      * <code>SecurityAuthority.REASON_UNKNOWN</code> etc
-     *
      * Add additional exMsg message if necessary to achieve this effect.
      *
      * @param ex the <code>Exception</code> which is to be determined whether it signals
@@ -2708,7 +2710,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             if (TextUtils.isEmpty(reason) && (ex.getCause() != null))
                 reason = ex.getCause().getMessage();
             DialogActivity.showDialog(aTalkApp.getInstance(),
-                    aTalkApp.getResString(R.string.service_gui_ERROR), reason);
+                    aTalkApp.getResString(R.string.error), reason);
         }
         else {
             // Try re-register and ask user for new credentials giving detail reason description.
@@ -2747,7 +2749,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * @return <code>true</code> if the list of features is supported; otherwise, <code>false</code>
      */
     public boolean isFeatureListSupported(Jid jid, String... features) {
-        DiscoverInfo featureInfo = scHelper.discoverInfo(jid);
+        DiscoverInfo featureInfo = scHelper.discoverInfoNonBlocking(jid);
         if (featureInfo == null)
             return false;
 
@@ -3099,8 +3101,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             try {
                 discoverItems = discoveryManager.discoverItems(serviceName);
-            } catch (NoResponseException | NotConnectedException | XMPPException
-                     | InterruptedException ex) {
+            } catch (NoResponseException | NotConnectedException | XMPPException | InterruptedException ex) {
                 Timber.d(ex, "Failed to discover the items associated with Jabber entity: %s", serviceName);
             }
 
@@ -3163,18 +3164,18 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         String authId = confirmExt.getId();
 
         if (StringUtils.isEmpty(instruction)) {
-            instruction = aTalkApp.getResString(R.string.service_gui_HTTP_REQUEST_INSTRUCTION,
+            instruction = aTalkApp.getResString(R.string.http_authorization_request_instruction,
                     confirmExt.getMethod(), confirmExt.getUrl(), authId, mAccountID.getAccountJid());
 
             // Show an headsUp notification for incoming IQ auth request when device is in locked state to alert user
             if (aTalkApp.isDeviceLocked()) {
                 NotificationManager.fireChatNotification(from, NotificationManager.INCOMING_MESSAGE,
-                        aTalkApp.getResString(R.string.service_gui_HTTP_REQUEST_TITLE), instruction, null);
+                        aTalkApp.getResString(R.string.http_authorization_request), instruction, null);
             }
         }
 
         long listenerId = DialogActivity.showConfirmDialog(aTalkApp.getInstance(),
-                aTalkApp.getResString(R.string.service_gui_HTTP_REQUEST_TITLE), instruction, aTalkApp.getResString(R.string.service_gui_ACCEPT),
+                aTalkApp.getResString(R.string.http_authorization_request), instruction, aTalkApp.getResString(R.string.accept),
                 new DialogActivity.DialogListener() {
                     @Override
                     public boolean onConfirmClicked(DialogActivity dialog) {

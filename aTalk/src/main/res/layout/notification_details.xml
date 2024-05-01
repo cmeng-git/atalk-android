@@ -22,7 +22,7 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
         android:onClick="onPopupClicked"
-        android:text="@string/plugin_notificationconfig_popup_notification"
+        android:text="@string/notificationconfig_popup_notification"
         android:textAppearance="@style/MediumFont" />
 
     <CheckBox
@@ -32,7 +32,7 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
         android:onClick="onSoundNotificationClicked"
-        android:text="@string/plugin_notificationconfig_notification_sound"
+        android:text="@string/notificationconfig_notification_sound"
         android:textAppearance="@style/MediumFont" />
 
     <CheckBox
@@ -42,7 +42,7 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
         android:onClick="onSoundPlaybackClicked"
-        android:text="@string/plugin_notificationconfig_playback_sound"
+        android:text="@string/notificationconfig_playback_sound"
         android:textAppearance="@style/MediumFont" />
 
     <CheckBox
@@ -52,7 +52,7 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
         android:onClick="onVibrateClicked"
-        android:text="@string/plugin_notificationconfig_vibration"
+        android:text="@string/notificationconfig_vibration"
         android:textAppearance="@style/MediumFont" />
 
     <LinearLayout
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
             android:layout_gravity="center_vertical"
-            android:text="@string/plugin_notificationconfig_sound_file" />
+            android:text="@string/notificationconfig_sound_file" />
 
         <LinearLayout
             android:layout_width="match_parent"

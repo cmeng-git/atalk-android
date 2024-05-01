@@ -47,8 +47,7 @@ import org.atalk.service.resources.ResourceManagementService;
  * @author Eng Chong Meng
  */
 public class NotificationDetails extends OSGiActivity
-        implements NotificationChangeListener, ActionBarToggleFragment.ActionBarToggleModel
-{
+        implements NotificationChangeListener, ActionBarToggleFragment.ActionBarToggleModel {
     /**
      * Event type extra key
      */
@@ -109,8 +108,7 @@ public class NotificationDetails extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.eventType = getIntent().getStringExtra(EVENT_TYPE_EXTRA);
         if (eventType == null)
@@ -152,8 +150,7 @@ public class NotificationDetails extends OSGiActivity
     /**
      * Initialize all the sound Notification parameters on entry
      */
-    private void initSoundNotification()
-    {
+    private void initSoundNotification() {
         soundHandler = (SoundNotificationAction)
                 notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
 
@@ -177,8 +174,7 @@ public class NotificationDetails extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         updateDisplay();
         notificationService.addNotificationChangeListener(this);
@@ -188,8 +184,7 @@ public class NotificationDetails extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
         notificationService.removeNotificationChangeListener(this);
         if (ringTone != null) {
@@ -201,8 +196,7 @@ public class NotificationDetails extends OSGiActivity
     /**
      * {@inheritDoc}
      */
-    private void updateDisplay()
-    {
+    private void updateDisplay() {
         boolean enable = notificationService.isActive(eventType);
 
         // Description
@@ -243,8 +237,7 @@ public class NotificationDetails extends OSGiActivity
      *
      * @param v popup checkbox <code>View</code>
      */
-    public void onPopupClicked(View v)
-    {
+    public void onPopupClicked(View v) {
         boolean enabled = ((CompoundButton) v).isChecked();
 
         NotificationAction action
@@ -258,8 +251,7 @@ public class NotificationDetails extends OSGiActivity
      *
      * @param v sound notification checkbox <code>View</code>
      */
-    public void onSoundNotificationClicked(View v)
-    {
+    public void onSoundNotificationClicked(View v) {
         boolean enabled = ((CompoundButton) v).isChecked();
         soundHandler.setSoundNotificationEnabled(enabled);
         notificationService.registerNotificationForEvent(eventType, soundHandler);
@@ -270,8 +262,7 @@ public class NotificationDetails extends OSGiActivity
      *
      * @param v sound playback checkbox <code>View</code>
      */
-    public void onSoundPlaybackClicked(View v)
-    {
+    public void onSoundPlaybackClicked(View v) {
         boolean enabled = ((CompoundButton) v).isChecked();
         soundHandler.setSoundPlaybackEnabled(enabled);
         notificationService.registerNotificationForEvent(eventType, soundHandler);
@@ -282,8 +273,7 @@ public class NotificationDetails extends OSGiActivity
      *
      * @param v vibrate notification checkbox <code>View</code>
      */
-    public void onVibrateClicked(View v)
-    {
+    public void onVibrateClicked(View v) {
         boolean enabled = ((CompoundButton) v).isChecked();
 
         NotificationAction action
@@ -297,8 +287,7 @@ public class NotificationDetails extends OSGiActivity
      *
      * @param v playback view
      */
-    public void onPlayBackClicked(View v)
-    {
+    public void onPlayBackClicked(View v) {
         if (ringTone == null) {
             ringTone = RingtoneManager.getRingtone(this, soundDescriptorUri);
         }
@@ -316,12 +305,10 @@ public class NotificationDetails extends OSGiActivity
      * 1. RingtoneManager.TYPE_NOTIFICATION
      * 2. RingtoneManager.TYPE_RINGTONE
      */
-    public class PickRingtone extends ActivityResultContract<Integer, Uri>
-    {
+    public class PickRingtone extends ActivityResultContract<Integer, Uri> {
         @NonNull
         @Override
-        public Intent createIntent(@NonNull Context context, @NonNull Integer ringtoneType)
-        {
+        public Intent createIntent(@NonNull Context context, @NonNull Integer ringtoneType) {
             final Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, eventTitle);
 
@@ -332,8 +319,7 @@ public class NotificationDetails extends OSGiActivity
         }
 
         @Override
-        public Uri parseResult(int resultCode, @Nullable Intent result)
-        {
+        public Uri parseResult(int resultCode, @Nullable Intent result) {
             if (resultCode != Activity.RESULT_OK || result == null) {
                 return null;
             }
@@ -344,8 +330,7 @@ public class NotificationDetails extends OSGiActivity
     /**
      * Opens a FileChooserDialog to let the user pick attachments
      */
-    private ActivityResultLauncher<Integer> pickRingTone()
-    {
+    private ActivityResultLauncher<Integer> pickRingTone() {
         return registerForActivityResult(new PickRingtone(), ringToneUri -> {
             if (ringToneUri == null) {
                 ringToneUri = soundDefaultUri;
@@ -359,8 +344,7 @@ public class NotificationDetails extends OSGiActivity
      *
      * @param ringToneUri user selected ringtone Uri
      */
-    private void updateSoundNotification(Uri ringToneUri)
-    {
+    private void updateSoundNotification(Uri ringToneUri) {
         String soundDescriptor;
         if (soundDefaultUri.equals(ringToneUri)) {
             ringToneTitle = eventTitle;
@@ -381,8 +365,7 @@ public class NotificationDetails extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public void actionAdded(NotificationActionTypeEvent event)
-    {
+    public void actionAdded(NotificationActionTypeEvent event) {
         handleActionEvent(event);
     }
 
@@ -390,8 +373,7 @@ public class NotificationDetails extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public void actionRemoved(NotificationActionTypeEvent event)
-    {
+    public void actionRemoved(NotificationActionTypeEvent event) {
         handleActionEvent(event);
     }
 
@@ -399,8 +381,7 @@ public class NotificationDetails extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public void actionChanged(NotificationActionTypeEvent event)
-    {
+    public void actionChanged(NotificationActionTypeEvent event) {
         handleActionEvent(event);
     }
 
@@ -410,8 +391,7 @@ public class NotificationDetails extends OSGiActivity
      *
      * @param event the event object
      */
-    private void handleActionEvent(NotificationActionTypeEvent event)
-    {
+    private void handleActionEvent(NotificationActionTypeEvent event) {
         if (event.getEventType().equals(eventType)) {
             runOnUiThread(this::updateDisplay);
         }
@@ -421,18 +401,16 @@ public class NotificationDetails extends OSGiActivity
      * {@inheritDoc} Not interested in type added event.
      */
     @Override
-    public void eventTypeAdded(NotificationEventTypeEvent event)
-    {
+    public void eventTypeAdded(NotificationEventTypeEvent event) {
     }
 
     /**
      * {@inheritDoc}
-     *
+     * <p>
      * If removed event is the one currently displayed, closes the <code>Activity</code>.
      */
     @Override
-    public void eventTypeRemoved(NotificationEventTypeEvent event)
-    {
+    public void eventTypeRemoved(NotificationEventTypeEvent event) {
         if (!event.getEventType().equals(eventType))
             return;
 
@@ -445,10 +423,10 @@ public class NotificationDetails extends OSGiActivity
      *
      * @param ctx the context
      * @param eventType name of the event that will be displayed by <code>NotificationDetails</code>.
+     *
      * @return the <code>Intent</code> for starting <code>NotificationDetails</code> <code>Activity</code>.
      */
-    public static Intent getIntent(Context ctx, String eventType)
-    {
+    public static Intent getIntent(Context ctx, String eventType) {
         Intent intent = new Intent(ctx, NotificationDetails.class);
         intent.putExtra(EVENT_TYPE_EXTRA, eventType);
         return intent;
@@ -458,8 +436,7 @@ public class NotificationDetails extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public boolean isChecked()
-    {
+    public boolean isChecked() {
         return notificationService.isActive(eventType);
     }
 
@@ -467,8 +444,7 @@ public class NotificationDetails extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public void setChecked(boolean isChecked)
-    {
+    public void setChecked(boolean isChecked) {
         notificationService.setActive(eventType, isChecked);
         updateDisplay();
     }

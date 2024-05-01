@@ -268,7 +268,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             isRegistered = protocolProvider.isRegistered();
             if (!isRegistered) {
                 setTextEditState(false);
-                Toast.makeText(this, R.string.plugin_accountinfo_NO_REGISTERED_MESSAGE, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.accountinfo_not_registered_message, Toast.LENGTH_LONG).show();
             }
             else {
                 loadDetails();
@@ -280,7 +280,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     protected void onResume() {
         super.onResume();
         // setPrefTitle(R.string.plugin_accountinfo_TITLE);
-        ActionBarUtil.setTitle(this, getString(R.string.plugin_accountinfo_TITLE));
+        ActionBarUtil.setTitle(this, getString(R.string.accountinfo_title));
 
     }
 
@@ -319,7 +319,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         // Check for presence support
         if (accountPresence == null) {
-            Toast.makeText(this, getString(R.string.service_gui_PRESENCE_NOT_SUPPORTED,
+            Toast.makeText(this, getString(R.string.presence_not_supported,
                     mAccount.getAccountName()), Toast.LENGTH_LONG).show();
             finish();
             return;
@@ -539,9 +539,9 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     private void checkUnsavedChanges() {
         if (hasChanges) {
             DialogActivity.showConfirmDialog(this,
-                    R.string.service_gui_UNSAVED_CHANGES_TITLE,
-                    R.string.service_gui_UNSAVED_CHANGES,
-                    R.string.service_gui_SAVE, this);
+                    R.string.unsaved_changes_title,
+                    R.string.unsaved_changes,
+                    R.string.save, this);
         }
         else {
             finish();
@@ -566,6 +566,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         finish();
     }
 
+    @Override
     public void onDateChanged(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
         Calendar mDate = Calendar.getInstance();
 
@@ -675,6 +676,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     /**
      * Loads a single <code>GenericDetail</code> obtained from the
      * <code>OperationSetServerStoredAccountInfo</code> into this plugin.
+     * <p>
      * If VcardTemp contains <photo/>, it will be converted to XEP-0084 avatarData &
      * avatarMetadata, and remove it from VCardTemp.
      *
@@ -1270,7 +1272,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
     private void showAvatarChangeError() {
         DialogActivity.showDialog(this,
-                R.string.service_gui_ERROR, R.string.service_gui_AVATAR_SET_ERROR, mAccount.getAccountName());
+                R.string.error, R.string.avatar_set_error, mAccount.getAccountName());
     }
 
     /**
@@ -1332,7 +1334,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 hasChanges = false;
 
                 if (progressDialog != null) {
-                    progressDialog.setMessage(getString(R.string.plugin_accountinfo_DISCARD_CHANGE));
+                    progressDialog.setMessage(getString(R.string.accountinfo_discard_change));
                 }
             }
             // Publish status in new thread
@@ -1345,8 +1347,8 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * Auto cancel the dialog at end of applying cycle
      */
     public void launchApplyProgressDialog() {
-        progressDialog = ProgressDialog.show(this, getString(R.string.service_gui_WAITING),
-                getString(R.string.service_gui_APPLY_CHANGES), true, true);
+        progressDialog = ProgressDialog.show(this, getString(R.string.please_wait),
+                getString(R.string.apply_changes), true, true);
         new Thread(() -> {
             try {
                 commitStatusChanges();

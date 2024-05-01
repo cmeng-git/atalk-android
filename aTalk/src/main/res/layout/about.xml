@@ -42,7 +42,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:padding="5sp"
-                        android:text="@string/APPLICATION_NAME"
+                        android:text="@string/application_name"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -52,7 +52,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
-                        android:text="@string/AboutDialog_Version" />
+                        android:text="@string/version_" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -72,7 +72,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center_horizontal"
-                android:text="@string/AboutDialog_help" />
+                android:text="@string/aboutDialog_help" />
 
             <WebView
                 android:id="@+id/AboutDialog_Info"
@@ -101,7 +101,7 @@
             android:id="@+id/submit_logs"
             style="@style/Button"
             android:layout_marginStart="2dp"
-            android:text="@string/service_gui_SEND_LOGS" />
+            android:text="@string/send_log" />
 
         <Button
             android:id="@+id/check_new_version"
@@ -115,6 +115,6 @@
             style="@style/Button"
             android:layout_height="match_parent"
             android:layout_marginStart="2dp"
-            android:text="@string/service_gui_OK" />
+            android:text="@string/ok" />
     </LinearLayout>
 </RelativeLayout>

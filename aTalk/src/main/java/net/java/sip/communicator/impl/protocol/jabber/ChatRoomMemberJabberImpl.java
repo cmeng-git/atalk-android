@@ -86,7 +86,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      */
     private Presence lastPresence = null;
 
-    private OperationSetPersistentPresenceJabberImpl presenceOpSet = null;
+    private final OperationSetPersistentPresenceJabberImpl presenceOpSet;
 
     /**
      * Creates a jabber chat room member with the specified containing chat room parent.

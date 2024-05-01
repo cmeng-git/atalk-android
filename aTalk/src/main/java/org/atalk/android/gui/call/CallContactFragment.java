@@ -147,7 +147,7 @@ public class CallContactFragment extends OSGiFragment {
                     CallManager.createCall(provider, destination, false);
                 } catch (Throwable t) {
                     Timber.e(t, "Error creating the call: %s", t.getMessage());
-                    DialogActivity.showDialog(getActivity(), getString(R.string.service_gui_ERROR), t.getMessage());
+                    DialogActivity.showDialog(getActivity(), getString(R.string.error), t.getMessage());
                 }
             }
         }.start();
@@ -160,7 +160,7 @@ public class CallContactFragment extends OSGiFragment {
         if (aTalk.hasPermission(getActivity(), true,
                 aTalk.PRC_GET_CONTACTS, Manifest.permission.GET_ACCOUNTS)) {
             android.accounts.AccountManager androidAccManager = android.accounts.AccountManager.get(getActivity());
-            Account[] androidAccounts = androidAccManager.getAccountsByType(getString(R.string.ACCOUNT_TYPE));
+            Account[] androidAccounts = androidAccManager.getAccountsByType(getString(R.string.aTalk_account_type));
             for (Account account : androidAccounts) {
                 System.err.println("ACCOUNT======" + account);
             }

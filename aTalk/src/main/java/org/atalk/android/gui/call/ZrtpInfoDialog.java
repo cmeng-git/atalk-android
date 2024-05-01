@@ -153,7 +153,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
         });
 
         if (getDialog() != null)
-            getDialog().setTitle(R.string.service_gui_SECURITY_INFO);
+            getDialog().setTitle(R.string.security_info);
         return viewContainer;
     }
 
@@ -181,7 +181,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
         ViewUtil.setTextViewValue(viewContainer, R.id.security_auth_str, getSecurityString());
 
         ViewUtil.setTextViewValue(viewContainer, R.id.security_cipher,
-                getString(R.string.service_gui_security_CIPHER, masterControl.getCipherString()));
+                getString(R.string.security_cipher, masterControl.getCipherString()));
 
         updateVerificationStatus();
         boolean isAudioSecure = masterControl != null && masterControl.getSecureCommunicationStatus();
@@ -199,10 +199,10 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
         boolean verified = masterControl.isSecurityVerified();
         Timber.d("Is sas verified? %s", verified);
 
-        String txt = verified ? getString(R.string.service_gui_security_STRING_COMPARED) : getString(R.string.service_gui_security_COMPARE_WITH_PARTNER_SHORT);
+        String txt = verified ? getString(R.string.security_string_compared) : getString(R.string.security_compare_with_partner_short);
         ViewUtil.setTextViewValue(viewContainer, R.id.security_compare, txt);
 
-        String confirmTxt = verified ? getString(R.string.service_gui_security_CLEAR) : getString(R.string.service_gui_security_CONFIRM);
+        String confirmTxt = verified ? getString(R.string.security_clear) : getString(R.string.confirm);
         ViewUtil.setTextViewValue(viewContainer, R.id.security_confirm, confirmTxt);
     }
 
@@ -258,7 +258,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      */
     private void updateAudioSecureStatus(boolean isSecure)
     {
-        String audioStr = isSecure ? getString(R.string.service_gui_security_SECURE_AUDIO) : getString(R.string.service_gui_security_AUDIO_NOT_SECURED);
+        String audioStr = isSecure ? getString(R.string.security_secure_audio) : getString(R.string.security_audio_not_secure);
 
         ViewUtil.setTextViewValue(viewContainer, R.id.secure_audio_text, audioStr);
         int iconId = isSecure ? R.drawable.secure_audio_on_light : R.drawable.secure_audio_off_light;
@@ -307,7 +307,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
         if (!isVideo)
             return;
 
-        String videoText = isSecure ? getString(R.string.service_gui_security_SECURE_VIDEO) : getString(R.string.service_gui_security_VIDEO_NOT_SECURED);
+        String videoText = isSecure ? getString(R.string.security_secure_video) : getString(R.string.security_video_not_secured);
         runOnUiThread(() -> {
             ViewUtil.setTextViewValue(viewContainer, R.id.secure_video_text, videoText);
 

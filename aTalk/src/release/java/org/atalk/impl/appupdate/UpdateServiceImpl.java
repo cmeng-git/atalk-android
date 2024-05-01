@@ -16,8 +16,9 @@
  */
 package org.atalk.impl.appupdate;
 
-import org.atalk.android.BuildConfig;
 import net.java.sip.communicator.service.update.UpdateService;
+
+import org.atalk.android.BuildConfig;
 
 /**
  * Dummy UpdateServiceImpl class for aTalk release version

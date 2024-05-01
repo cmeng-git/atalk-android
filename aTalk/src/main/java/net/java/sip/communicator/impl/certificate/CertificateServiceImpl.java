@@ -708,13 +708,13 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 String message;
                 List<String> propNames = new LinkedList<>();
                 List<String> storedCerts = new LinkedList<>();
-                String appName = aTalkApp.getResString(R.string.APPLICATION_NAME);
+                String appName = aTalkApp.getResString(R.string.application_name);
 
                 Timber.w("SSL certificate untrusted chain (Self-Generated Certificate) : %s", e.getMessage());
                 if ((identitiesToTest == null) || !identitiesToTest.iterator().hasNext()) {
                     String propName = PNAME_CERT_TRUST_PREFIX + CERT_TRUST_SERVER_SUBFIX + thumbprint;
                     propNames.add(propName);
-                    message = aTalkApp.getResString(R.string.service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST, appName);
+                    message = aTalkApp.getResString(R.string.cert_dialog_description_no_host, appName);
 
                     // get the thumbprints from the permanent allowances
                     String hashes = config.getString(propName);
@@ -728,11 +728,11 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 }
                 else {
                     if (serverCheck) {
-                        message = aTalkApp.getResString(R.string.service_gui_CERT_DIALOG_DESCRIPTION_TXT,
+                        message = aTalkApp.getResString(R.string.cert_dialog_description,
                                 appName, identitiesToTest.toString());
                     }
                     else {
-                        message = aTalkApp.getResString(R.string.service_gui_CERT_DIALOG_PEER_DESCRIPTION_TXT,
+                        message = aTalkApp.getResString(R.string.cert_dialog_peer_description,
                                 appName, identitiesToTest.toString());
                     }
                     for (String identity : identitiesToTest) {

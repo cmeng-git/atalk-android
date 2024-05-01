@@ -12,6 +12,9 @@
  */
 package org.atalk.android.gui.contactlist;
 
+import java.util.Iterator;
+import java.util.List;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
@@ -28,17 +31,13 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.gui.AndroidGUIActivator;
 
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * The <code>PresenceFilter</code> is used to filter offline contacts from the contact list.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class PresenceFilter implements ContactListFilter
-{
+public class PresenceFilter implements ContactListFilter {
     /**
      * Indicates if this presence filter shows or hides the offline contacts.
      */
@@ -53,8 +52,7 @@ public class PresenceFilter implements ContactListFilter
     /**
      * Creates an instance of <code>PresenceFilter</code>.
      */
-    public PresenceFilter()
-    {
+    public PresenceFilter() {
         isShowOffline = ConfigurationUtils.isShowOffline();
     }
 
@@ -63,8 +61,7 @@ public class PresenceFilter implements ContactListFilter
      *
      * @param filterQuery the query which keeps track of the filtering results
      */
-    public void applyFilter(FilterQuery filterQuery)
-    {
+    public void applyFilter(FilterQuery filterQuery) {
         // Create the query that will track filtering.
         MetaContactQuery query = new MetaContactQuery();
 
@@ -111,10 +108,10 @@ public class PresenceFilter implements ContactListFilter
      * Indicates if the given <code>uiContact</code> is matching this filter.
      *
      * @param uiContact the <code>UIContact</code> to check
+     *
      * @return <code>true</code> if the given <code>uiContact</code> is matching this filter, otherwise returns <code>false</code>
      */
-    public boolean isMatching(UIContact uiContact)
-    {
+    public boolean isMatching(UIContact uiContact) {
         Object descriptor = uiContact.getDescriptor();
 
         if (descriptor instanceof MetaContact)
@@ -129,10 +126,10 @@ public class PresenceFilter implements ContactListFilter
      * Indicates if the given <code>uiGroup</code> is matching this filter.
      *
      * @param uiGroup the <code>UIGroup</code> to check
+     *
      * @return <code>true</code> if the given <code>uiGroup</code> is matching this filter, otherwise returns <code>false</code>
      */
-    public boolean isMatching(UIGroup uiGroup)
-    {
+    public boolean isMatching(UIGroup uiGroup) {
         Object descriptor = uiGroup.getDescriptor();
 
         if (descriptor instanceof MetaContactGroup)
@@ -146,8 +143,7 @@ public class PresenceFilter implements ContactListFilter
      *
      * @param isShowOffline indicates if offline contacts are shown
      */
-    public void setShowOffline(boolean isShowOffline)
-    {
+    public void setShowOffline(boolean isShowOffline) {
         this.isShowOffline = isShowOffline;
         ConfigurationUtils.setShowOffline(isShowOffline);
     }
@@ -157,8 +153,7 @@ public class PresenceFilter implements ContactListFilter
      *
      * @return <code>true</code> if offline contacts are shown, otherwise returns <code>false</code>
      */
-    public boolean isShowOffline()
-    {
+    public boolean isShowOffline() {
         return isShowOffline;
     }
 
@@ -167,10 +162,10 @@ public class PresenceFilter implements ContactListFilter
      * otherwise returns false.
      *
      * @param metaContact the <code>MetaContact</code> to check
+     *
      * @return <code>true</code> if the given <code>MetaContact</code> is matching this filter
      */
-    public boolean isMatching(MetaContact metaContact)
-    {
+    public boolean isMatching(MetaContact metaContact) {
         return (isShowOffline || isContactOnline(metaContact));
     }
 
@@ -179,10 +174,10 @@ public class PresenceFilter implements ContactListFilter
      * otherwise returns false.
      *
      * @param contact the <code>MetaContact</code> to check
+     *
      * @return <code>true</code> if the given <code>MetaContact</code> is matching this filter
      */
-    public boolean isMatching(SourceContact contact)
-    {
+    public boolean isMatching(SourceContact contact) {
         // make sure we always show chat rooms and recent messages
         return (isShowOffline
                 || contact.getPresenceStatus().isOnline()
@@ -194,10 +189,10 @@ public class PresenceFilter implements ContactListFilter
      * contains online contacts.
      *
      * @param metaGroup the <code>MetaContactGroup</code> to check
+     *
      * @return <code>true</code> if the given <code>MetaContactGroup</code> is matching this filter
      */
-    public boolean isMatching(MetaContactGroup metaGroup)
-    {
+    public boolean isMatching(MetaContactGroup metaGroup) {
         return ((metaGroup.countChildContacts() > 0)
                 && (isShowOffline || (metaGroup.countOnlineChildContacts() > 0)));
     }
@@ -206,10 +201,10 @@ public class PresenceFilter implements ContactListFilter
      * Returns <code>true</code> if the given meta contact is online, <code>false</code> otherwise.
      *
      * @param contact the meta contact
+     *
      * @return <code>true</code> if the given meta contact is online, <code>false</code> otherwise
      */
-    private boolean isContactOnline(MetaContact contact)
-    {
+    private boolean isContactOnline(MetaContact contact) {
         // If for some reason the default contact is null we return false.
         Contact defaultContact = contact.getDefaultContact();
         if (defaultContact == null)
@@ -227,8 +222,7 @@ public class PresenceFilter implements ContactListFilter
      * @param query the <code>MetaContactQuery</code> that notifies interested listeners of the results of this matching
      * @param resultCount the initial result count we would insert directly to the contact list without firing events
      */
-    private void addMatching(MetaContactGroup metaGroup, MetaContactQuery query, int resultCount)
-    {
+    private void addMatching(MetaContactGroup metaGroup, MetaContactQuery query, int resultCount) {
         Iterator<MetaContact> childContacts = metaGroup.getChildContacts();
 
         //		while (childContacts.hasNext() && !query.isCanceled()) {

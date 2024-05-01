@@ -13,7 +13,9 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.iqregister.AccountManager;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 import timber.log.Timber;
 
@@ -23,34 +25,32 @@ import timber.log.Timber;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class OperationSetChangePasswordJabberImpl implements OperationSetChangePassword
-{
+public class OperationSetChangePasswordJabberImpl implements OperationSetChangePassword {
     /**
      * The <code>ProtocolProviderService</code> whose password we'll change.
      */
-    private ProtocolProviderServiceJabberImpl protocolProvider;
+    private final ProtocolProviderServiceJabberImpl mPPS;
 
     /**
      * Sets the object protocolProvider to the one given.
      *
      * @param protocolProvider the protocolProvider to use.
      */
-    OperationSetChangePasswordJabberImpl(ProtocolProviderServiceJabberImpl protocolProvider)
-    {
-        this.protocolProvider = protocolProvider;
+    OperationSetChangePasswordJabberImpl(ProtocolProviderServiceJabberImpl protocolProvider) {
+        mPPS = protocolProvider;
     }
 
     /**
      * Changes the jabber account password of protocolProvider to newPass.
      *
      * @param newPass the new password.
+     *
      * @throws IllegalStateException if the account is not registered.
      * @throws OperationFailedException if the server does not support password changes.
      */
     public void changePassword(String newPass)
-            throws IllegalStateException, OperationFailedException
-    {
-        AccountManager accountManager = AccountManager.getInstance(protocolProvider.getConnection());
+            throws IllegalStateException, OperationFailedException {
+        AccountManager accountManager = AccountManager.getInstance(mPPS.getConnection());
         try {
             try {
                 accountManager.changePassword(newPass);
@@ -65,24 +65,19 @@ public class OperationSetChangePasswordJabberImpl implements OperationSetChangeP
     }
 
     /**
-     * Returns true if the server supports password changes. Checks for XEP-0077 (inband
-     * registrations) support via disco#info.
+     * Returns true if the server supports password changes. Checks for XEP-0077 (inband registrations) support via discoInfo.
+     * It makes sense to return true if something goes wrong i.e. discoInfo == null, because failing later on is not fatal,
+     * and registrations are very likely to be supported.
      *
      * @return True if the server supports password changes, false otherwise.
      */
-    public boolean supportsPasswordChange()
-    {
+    public boolean supportsPasswordChange() {
         try {
-            DiscoverInfo discoverInfo = protocolProvider.getDiscoveryManager().discoverInfo(
-                    JidCreate.from(protocolProvider.getAccountID().getService()));
-            return discoverInfo.containsFeature(ProtocolProviderServiceJabberImpl.URN_REGISTER);
-        } catch (Exception e) {
-            Timber.i("Exception occurred while checking InBand registration is are supported. Returning true anyway.");
-            /*
-             * It makes sense to return true if something goes wrong, because failing later on is
-             * not fatal, and registrations are very likely to be supported.
-             */
-            return true;
+            Jid entityJid = JidCreate.from(mPPS.getAccountID().getService());
+            DiscoverInfo discoverInfo = mPPS.getScHelper().discoverInfo(entityJid);
+            return (discoverInfo == null) || discoverInfo.containsFeature(ProtocolProviderServiceJabberImpl.URN_REGISTER);
+        } catch (XmppStringprepException e) {
+            return false;
         }
     }
 }

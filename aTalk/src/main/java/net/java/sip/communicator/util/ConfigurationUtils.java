@@ -14,6 +14,18 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetContactCapabilitiesJabberImpl;
@@ -49,18 +61,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jxmpp.jid.Jid;
 import org.osgi.framework.ServiceReference;
-
-import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 
 import timber.log.Timber;
 
@@ -524,7 +524,7 @@ public class ConfigurationUtils {
         // Load the "webPage" property.
         mWebPage = mConfigService.getString(pWebPage);
         if (StringUtils.isEmpty(mWebPage))
-            mWebPage = aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY);
+            mWebPage = aTalkApp.getResString(R.string.settings_webView_summary);
 
         // Load the "auPopupNewMessage" property.
         String autoPopup = mConfigService.getString(pAutoPopupNewMessage);
@@ -1508,7 +1508,7 @@ public class ConfigurationUtils {
     public static String getWebPage() {
         WebViewFragment.initWebView();
         return StringUtils.isBlank(mWebPage)
-                ? aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY) : mWebPage;
+                ? aTalkApp.getResString(R.string.settings_webView_summary) : mWebPage;
     }
 
     /**

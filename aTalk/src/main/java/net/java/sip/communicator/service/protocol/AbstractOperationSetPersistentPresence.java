@@ -124,25 +124,24 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      * Notifies all registered listeners of the new event.
      *
      * @param source the contact that has caused the event.
-     * @param jid the specific contact FullJid that has caused the event.
+     * @param jid the contact FullJid (Jid for chatRoom) that has caused the event.
      * @param parentGroup the group that contains the source contact.
      * @param oldValue the status that the source contact detained before changing it.
      * @param newValue the status defined in source.getPresenceStatus().
      * @param isResourceChange true if event is for resource change.
      */
     public void fireContactPresenceStatusChangeEvent(Contact source, Jid jid, ContactGroup parentGroup,
-            PresenceStatus oldValue, PresenceStatus newValue, boolean isResourceChange)
+            PresenceStatus oldValue, PresenceStatus newValue, boolean isResourceChange, boolean capsExtension)
     {
         ContactPresenceStatusChangeEvent evt = new ContactPresenceStatusChangeEvent(source, jid,
-                mPPS, parentGroup, oldValue, newValue, isResourceChange);
+                mPPS, parentGroup, oldValue, newValue, isResourceChange, capsExtension);
 
         Collection<ContactPresenceStatusListener> listeners;
         synchronized (contactPresenceStatusListeners) {
             listeners = new ArrayList<>(contactPresenceStatusListeners);
         }
 
-        // Timber.w("Dispatching contact status change for %s: %s => %s listeners\n%s",
-        //         jid, newValue.getStatusName(), listeners.size(), listeners);
+        // Timber.w("Dispatching contact status change for %s: %s => %s listeners\n%s", jid, newValue.getStatusName(), listeners.size(), listeners);
         for (ContactPresenceStatusListener listener : listeners) {
             listener.contactPresenceStatusChanged(evt);
         }

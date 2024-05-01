@@ -14,6 +14,11 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
 import net.java.sip.communicator.service.notification.NotificationChangeListener;
 import net.java.sip.communicator.service.notification.NotificationService;
 import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
@@ -26,20 +31,14 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.resources.ResourceManagementService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-
 /**
  * The <code>Activity</code> lists all notification events. When user selects one of them the details screen is opened.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class NotificationSettings extends OSGiActivity
-{
-    public static final String NOTICE_PREFIX = "plugin.notificationconfig.event.";
+public class NotificationSettings extends OSGiActivity {
+    public static final String NOTICE_PREFIX = "notificationconfig.event.";
 
     /**
      * Notifications adapter.
@@ -55,8 +54,7 @@ public class NotificationSettings extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.notificationService = ServiceUtils.getService(AndroidGUIActivator.bundleContext, NotificationService.class);
         setContentView(R.layout.list_layout);
@@ -66,8 +64,7 @@ public class NotificationSettings extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         // Refresh the list each time is displayed
         adapter = new NotificationsAdapter();
@@ -81,8 +78,7 @@ public class NotificationSettings extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
         // Do not listen for changes when paused
         notificationService.removeNotificationChangeListener(adapter);
@@ -92,8 +88,7 @@ public class NotificationSettings extends OSGiActivity
     /**
      * Adapter lists all notification events.
      */
-    class NotificationsAdapter extends BaseAdapter implements NotificationChangeListener
-    {
+    class NotificationsAdapter extends BaseAdapter implements NotificationChangeListener {
         /**
          * List of event types
          */
@@ -108,8 +103,7 @@ public class NotificationSettings extends OSGiActivity
          * Creates new instance of <code>NotificationsAdapter</code>;
          * Values are sorted in ascending order by eventNames for user easy reference.
          */
-        NotificationsAdapter()
-        {
+        NotificationsAdapter() {
             ResourceManagementService rms = UtilActivator.getResources();
             Map<String, String> unSortedMap = new HashMap<>();
             for (String event : notificationService.getRegisteredEvents()) {
@@ -128,8 +122,7 @@ public class NotificationSettings extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return events.size();
         }
 
@@ -137,8 +130,7 @@ public class NotificationSettings extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public Object getItem(int position)
-        {
+        public Object getItem(int position) {
             return sortedEvents.get(events.get(position));
         }
 
@@ -146,8 +138,7 @@ public class NotificationSettings extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public long getItemId(int position)
-        {
+        public long getItemId(int position) {
             return position;
         }
 
@@ -155,8 +146,7 @@ public class NotificationSettings extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public View getView(final int position, View rowView, ViewGroup parent)
-        {
+        public View getView(final int position, View rowView, ViewGroup parent) {
             //if (rowView == null) cmeng would not update properly the status on enter/return
             rowView = getLayoutInflater().inflate(R.layout.notification_item, parent, false);
 
@@ -181,8 +171,7 @@ public class NotificationSettings extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public void eventTypeAdded(final NotificationEventTypeEvent event)
-        {
+        public void eventTypeAdded(final NotificationEventTypeEvent event) {
             runOnUiThread(() -> {
                 events.add(event.getEventType());
                 notifyDataSetChanged();
@@ -193,8 +182,7 @@ public class NotificationSettings extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public void eventTypeRemoved(final NotificationEventTypeEvent event)
-        {
+        public void eventTypeRemoved(final NotificationEventTypeEvent event) {
             runOnUiThread(() -> {
                 events.remove(event.getEventType());
                 notifyDataSetChanged();
@@ -205,24 +193,21 @@ public class NotificationSettings extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public void actionAdded(NotificationActionTypeEvent event)
-        {
+        public void actionAdded(NotificationActionTypeEvent event) {
         }
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public void actionRemoved(NotificationActionTypeEvent event)
-        {
+        public void actionRemoved(NotificationActionTypeEvent event) {
         }
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public void actionChanged(NotificationActionTypeEvent event)
-        {
+        public void actionChanged(NotificationActionTypeEvent event) {
         }
     }
 }

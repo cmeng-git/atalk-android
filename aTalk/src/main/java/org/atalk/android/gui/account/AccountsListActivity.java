@@ -22,6 +22,10 @@ import android.widget.ToggleButton;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.AccountManager;
@@ -44,10 +48,6 @@ import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
 
 import timber.log.Timber;
 
@@ -88,7 +88,7 @@ public class AccountsListActivity extends OSGiActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setMainTitle(R.string.service_gui_ACCOUNT);
+        setMainTitle(R.string.account);
 
         if (AndroidGUIActivator.bundleContext == null) {
             // No OSGi Exists
@@ -264,7 +264,7 @@ public class AccountsListActivity extends OSGiActivity
             try {
                 VCardAvatarManager.clearPersistentStorage(userJid);
             } catch (XmppStringprepException e) {
-                Timber.e("Failed to purge store for: %s", R.string.service_gui_REFRESH_STORES_AVATAR);
+                Timber.e("Failed to purge store for: %s", R.string.refresh_store_avatar);
             }
 
             File rosterStoreDirectory = jabberProvider.getRosterStoreDirectory();
@@ -272,7 +272,7 @@ public class AccountsListActivity extends OSGiActivity
                 if (rosterStoreDirectory != null)
                     FileBackend.deleteRecursive(rosterStoreDirectory);
             } catch (IOException e) {
-                Timber.e("Failed to purge store for: %s", R.string.service_gui_REFRESH_STORES_ROSTER);
+                Timber.e("Failed to purge store for: %s", R.string.refresh_store_roster);
             }
 
             // Account in unRegistering so discoveryInfoManager == null
@@ -283,7 +283,7 @@ public class AccountsListActivity extends OSGiActivity
             try {
                 FileBackend.deleteRecursive(discoInfoStoreDirectory);
             } catch (IOException e) {
-                Timber.e("Failed to purge store for: %s", R.string.service_gui_REFRESH_STORES_DISCINFO);
+                Timber.e("Failed to purge store for: %s", R.string.refresh_store_disc_info);
             }
         }
     }
@@ -324,7 +324,7 @@ public class AccountsListActivity extends OSGiActivity
                     startPreferenceActivity(account);
                 }
                 else {
-                    String msg = getString(R.string.service_gui_ACCOUNT_UNREGISTERED, account.getAccountName());
+                    String msg = getString(R.string.account_unregistered, account.getAccountName());
                     if (offlineToast == null) {
                         offlineToast = Toast.makeText(AccountsListActivity.this, msg, Toast.LENGTH_SHORT);
                     }
@@ -356,9 +356,9 @@ public class AccountsListActivity extends OSGiActivity
                 compoundButton.setChecked(account.isEnabled());
 
                 accEnableThread = new AccountEnableThread(account.getAccountID(), enable);
-                String message = enable ? getString(R.string.service_gui_CONNECTING_ACCOUNT, account.getAccountName())
-                        : getString(R.string.service_gui_DISCONNECTING_ACCOUNT, account.getAccountName());
-                progressDialog = ProgressDialog.showProgressDialog(getString(R.string.service_gui_INFO), message);
+                String message = enable ? getString(R.string.connecting_, account.getAccountName())
+                        : getString(R.string.disconnecting_, account.getAccountName());
+                progressDialog = ProgressDialog.showProgressDialog(getString(R.string.info), message);
                 accEnableThread.start();
             });
             return rowView;
@@ -404,9 +404,9 @@ public class AccountsListActivity extends OSGiActivity
                 String message = "Failed to " + (enable ? "load" : "unload") + " " + account;
                 new Handler(Looper.getMainLooper()).post(() ->
                         new AlertDialog.Builder(AccountsListActivity.this)
-                                .setTitle(R.string.service_gui_ERROR)
+                                .setTitle(R.string.error)
                                 .setMessage(message)
-                                .setPositiveButton(R.string.service_gui_OK, null)
+                                .setPositiveButton(R.string.ok, null)
                                 .show());
                 Timber.e("Account de/activate Exception: %s", e.getMessage());
             } finally {

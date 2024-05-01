@@ -34,8 +34,7 @@ import org.atalk.service.resources.ResourceManagementService;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class NotificationsTableSettings extends OSGiActivity implements NotificationChangeListener
-{
+public class NotificationsTableSettings extends OSGiActivity implements NotificationChangeListener {
     /**
      * Enable button's tag
      */
@@ -72,8 +71,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
     private NotificationService notificationService;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         this.notificationService = ServiceUtils.getService(AndroidGUIActivator.bundleContext, NotificationService.class);
@@ -85,8 +83,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
     /**
      * Builds the table of currently existing notification events.
      */
-    private void buildTable()
-    {
+    private void buildTable() {
         setContentView(R.layout.notifications_settings);
 
         TableLayout table = findViewById(R.id.table_body);
@@ -122,7 +119,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
                 ViewUtil.setCompoundChecked(tableRow, VIBRATE_TAG, vibrateHandler.isEnabled());
 
             // Description
-            String desc = rms.getI18NString("plugin.notificationconfig.event." + eventType);
+            String desc = rms.getI18NString(NotificationSettings.NOTICE_PREFIX + eventType);
 
             ViewUtil.setTextViewValue(tableRow, DESCRIPTION_TAG, desc);
 
@@ -142,8 +139,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
      *
      * @param enableColumnButton the button that enables whole event.
      */
-    private void ensureRowEnabled(CompoundButton enableColumnButton)
-    {
+    private void ensureRowEnabled(CompoundButton enableColumnButton) {
         boolean enable = enableColumnButton.isChecked();
 
         TableRow row = (TableRow) enableColumnButton.getParent();
@@ -177,8 +173,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
      *
      * @param v toggle button <code>View</code>
      */
-    public void onEnableItemClicked(View v)
-    {
+    public void onEnableItemClicked(View v) {
         View parent = (View) v.getParent();
         CompoundButton cb = (CompoundButton) v;
 
@@ -192,8 +187,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
      *
      * @param v the popup checkbox
      */
-    public void onPopupItemClicked(View v)
-    {
+    public void onPopupItemClicked(View v) {
         View parent = (View) v.getParent();
         CompoundButton cb = (CompoundButton) v;
 
@@ -220,8 +214,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
      *
      * @param v the sound notification checkbox
      */
-    public void onSoundNotificationItemClicked(View v)
-    {
+    public void onSoundNotificationItemClicked(View v) {
         View parent = (View) v.getParent();
         CompoundButton cb = (CompoundButton) v;
 
@@ -240,8 +233,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
      *
      * @param v sound playback checkbox
      */
-    public void onSoundPlaybackItemClicked(View v)
-    {
+    public void onSoundPlaybackItemClicked(View v) {
         View parent = (View) v.getParent();
         CompoundButton cb = (CompoundButton) v;
 
@@ -260,8 +252,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
      *
      * @param v the vibrate checkbox
      */
-    public void onVibrateItemClicked(View v)
-    {
+    public void onVibrateItemClicked(View v) {
         View parent = (View) v.getParent();
         CompoundButton cb = (CompoundButton) v;
 
@@ -278,8 +269,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
     /**
      * Rebuilds the whole table on UI thread
      */
-    private void rebuildTable()
-    {
+    private void rebuildTable() {
         runOnUiThread(this::buildTable);
     }
 
@@ -287,8 +277,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
      * {@inheritDoc}
      */
     @Override
-    public void actionAdded(NotificationActionTypeEvent event)
-    {
+    public void actionAdded(NotificationActionTypeEvent event) {
         // It should not happen that often and will be much easier to rebuild the whole table from scratch
         rebuildTable();
     }
@@ -297,8 +286,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
      * {@inheritDoc}
      */
     @Override
-    public void actionRemoved(NotificationActionTypeEvent event)
-    {
+    public void actionRemoved(NotificationActionTypeEvent event) {
         rebuildTable();
     }
 
@@ -306,8 +294,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
      * {@inheritDoc}
      */
     @Override
-    public void actionChanged(NotificationActionTypeEvent event)
-    {
+    public void actionChanged(NotificationActionTypeEvent event) {
         // rebuildTable();
     }
 
@@ -315,8 +302,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
      * {@inheritDoc}
      */
     @Override
-    public void eventTypeAdded(NotificationEventTypeEvent event)
-    {
+    public void eventTypeAdded(NotificationEventTypeEvent event) {
         rebuildTable();
     }
 
@@ -324,8 +310,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
      * {@inheritDoc}
      */
     @Override
-    public void eventTypeRemoved(NotificationEventTypeEvent event)
-    {
+    public void eventTypeRemoved(NotificationEventTypeEvent event) {
         rebuildTable();
     }
 }

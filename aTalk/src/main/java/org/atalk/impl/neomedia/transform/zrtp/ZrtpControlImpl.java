@@ -394,7 +394,7 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
             System.arraycopy(result, 0, zid, 0, 12);
 
         } catch (NumberFormatException e) {
-            aTalkApp.showToastMessage(R.string.reset_ZID_summary);
+            aTalkApp.showToastMessage(R.string.zid_reset_summary);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException("generateMyZid");
         }

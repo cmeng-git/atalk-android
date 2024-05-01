@@ -54,7 +54,7 @@ public class AdHocConferenceChatContact extends ChatContact<Contact>
     {
         String name = descriptor.getDisplayName();
         if (StringUtils.isEmpty(name))
-            name = aTalkApp.getResString(R.string.service_gui_UNKNOWN_USER);
+            name = aTalkApp.getResString(R.string.unknown_user);
         return name;
     }
 

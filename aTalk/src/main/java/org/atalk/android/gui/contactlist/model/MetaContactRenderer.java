@@ -8,6 +8,8 @@ package org.atalk.android.gui.contactlist.model;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import java.util.Iterator;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationSet;
@@ -28,57 +30,47 @@ import org.atalk.android.gui.util.DrawableCache;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.jxmpp.jid.DomainBareJid;
 
-import java.util.Iterator;
-
 /**
  * Class used to obtain UI specific data for <code>MetaContact</code> instances.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class MetaContactRenderer implements UIContactRenderer
-{
+public class MetaContactRenderer implements UIContactRenderer {
     @Override
-    public boolean isSelected(Object contactImpl)
-    {
+    public boolean isSelected(Object contactImpl) {
         return MetaContactListAdapter.isContactSelected((MetaContact) contactImpl);
     }
 
     @Override
-    public String getDisplayName(Object contactImpl)
-    {
+    public String getDisplayName(Object contactImpl) {
         return ((MetaContact) contactImpl).getDisplayName();
     }
 
     @Override
-    public String getStatusMessage(Object contactImpl)
-    {
+    public String getStatusMessage(Object contactImpl) {
         MetaContact metaContact = (MetaContact) contactImpl;
         String displayDetails = getDisplayDetails(metaContact);
         return displayDetails != null ? displayDetails : "";
     }
 
     @Override
-    public boolean isDisplayBold(Object contactImpl)
-    {
+    public boolean isDisplayBold(Object contactImpl) {
         return ChatSessionManager.getActiveChat((MetaContact) contactImpl) != null;
     }
 
     @Override
-    public Drawable getAvatarImage(Object contactImpl)
-    {
+    public Drawable getAvatarImage(Object contactImpl) {
         return getAvatarDrawable((MetaContact) contactImpl);
     }
 
     @Override
-    public Drawable getStatusImage(Object contactImpl)
-    {
+    public Drawable getStatusImage(Object contactImpl) {
         return getStatusDrawable((MetaContact) contactImpl);
     }
 
     @Override
-    public boolean isShowVideoCallBtn(Object contactImpl)
-    {
+    public boolean isShowVideoCallBtn(Object contactImpl) {
         // Disable video call option if there is no camera support on the device
         if (contactImpl instanceof MetaContact) {
             MetaContact metaContact = (MetaContact) contactImpl;
@@ -92,8 +84,7 @@ public class MetaContactRenderer implements UIContactRenderer
     }
 
     @Override
-    public boolean isShowCallBtn(Object contactImpl)
-    {
+    public boolean isShowCallBtn(Object contactImpl) {
         // Handle only if contactImpl instanceof MetaContact; DomainJid always show call button option
         if (contactImpl instanceof MetaContact) {
             MetaContact metaContact = (MetaContact) contactImpl;
@@ -105,25 +96,22 @@ public class MetaContactRenderer implements UIContactRenderer
                 isDomainJid = contact.getJid() instanceof DomainBareJid;
                 isBlocked = contact.isContactBlock();
             }
-            return !isBlocked && (isDomainJid || isShowButton(metaContact, OperationSetBasicTelephony.class) );
+            return !isBlocked && (isDomainJid || isShowButton(metaContact, OperationSetBasicTelephony.class));
         }
         return false;
     }
 
     @Override
-    public boolean isShowFileSendBtn(Object contactImpl)
-    {
+    public boolean isShowFileSendBtn(Object contactImpl) {
         return isShowButton((MetaContact) contactImpl, OperationSetFileTransfer.class);
     }
 
-    private boolean isShowButton(MetaContact metaContact, Class<? extends OperationSet> opSetClass)
-    {
+    private boolean isShowButton(MetaContact metaContact, Class<? extends OperationSet> opSetClass) {
         return (metaContact.getOpSetSupportedContact(opSetClass) != null);
     }
 
     @Override
-    public String getDefaultAddress(Object contactImpl)
-    {
+    public String getDefaultAddress(Object contactImpl) {
         return ((MetaContact) contactImpl).getDefaultContact().getAddress();
     }
 
@@ -131,10 +119,10 @@ public class MetaContactRenderer implements UIContactRenderer
      * Returns the display details for the underlying <code>MetaContact</code>.
      *
      * @param metaContact the <code>MetaContact</code>, which details we're looking for
+     *
      * @return the display details for the underlying <code>MetaContact</code>
      */
-    private static String getDisplayDetails(MetaContact metaContact)
-    {
+    private static String getDisplayDetails(MetaContact metaContact) {
         boolean subscribed = false;
         String displayDetails = null;
         String subscriptionDetails = null;
@@ -148,9 +136,9 @@ public class MetaContactRenderer implements UIContactRenderer
             SubscriptionStatus status = authOpSet.getSubscriptionStatus(protoContact);
             if (!SubscriptionStatus.Subscribed.equals(status)) {
                 if (SubscriptionStatus.SubscriptionPending.equals(status))
-                    subscriptionDetails = aTalkApp.getResString(R.string.service_gui_WAITING_AUTHORIZATION);
+                    subscriptionDetails = aTalkApp.getResString(R.string.waiting_for_authorization);
                 else if (SubscriptionStatus.NotSubscribed.equals(status))
-                    subscriptionDetails = aTalkApp.getResString(R.string.service_gui_NOT_AUTHORIZED);
+                    subscriptionDetails = aTalkApp.getResString(R.string.not_authorized);
             }
             else if (StringUtils.isNotEmpty(protoContact.getStatusMessage())) {
                 displayDetails = protoContact.getStatusMessage();
@@ -173,10 +161,10 @@ public class MetaContactRenderer implements UIContactRenderer
      * Returns the avatar <code>Drawable</code> for the given <code>MetaContact</code>.
      *
      * @param metaContact the <code>MetaContact</code>, which status drawable we're looking for
+     *
      * @return a <code>BitmapDrawable</code> object representing the status of the given <code>MetaContact</code>
      */
-    public static BitmapDrawable getAvatarDrawable(MetaContact metaContact)
-    {
+    public static BitmapDrawable getAvatarDrawable(MetaContact metaContact) {
         return getCachedAvatarFromBytes(metaContact.getAvatar());
     }
 
@@ -184,10 +172,10 @@ public class MetaContactRenderer implements UIContactRenderer
      * Returns avatar <code>BitmapDrawable</code> with rounded corners. Bitmap will be cached in app global drawable cache.
      *
      * @param avatar raw avatar image data.
+     *
      * @return avatar <code>BitmapDrawable</code> with rounded corners
      */
-    public static BitmapDrawable getCachedAvatarFromBytes(byte[] avatar)
-    {
+    public static BitmapDrawable getCachedAvatarFromBytes(byte[] avatar) {
         if (avatar == null)
             return null;
 
@@ -209,10 +197,10 @@ public class MetaContactRenderer implements UIContactRenderer
      * Returns the status <code>Drawable</code> for the given <code>MetaContact</code>.
      *
      * @param metaContact the <code>MetaContact</code>, which status drawable we're looking for
+     *
      * @return a <code>Drawable</code> object representing the status of the given <code>MetaContact</code>
      */
-    public static Drawable getStatusDrawable(MetaContact metaContact)
-    {
+    public static Drawable getStatusDrawable(MetaContact metaContact) {
         byte[] statusImage = getStatusImage(metaContact);
 
         if ((statusImage != null) && (statusImage.length > 0))
@@ -226,8 +214,7 @@ public class MetaContactRenderer implements UIContactRenderer
      *
      * @return the array of bytes representing the status image of the given <code>MetaContact</code>
      */
-    private static byte[] getStatusImage(MetaContact metaContact)
-    {
+    private static byte[] getStatusImage(MetaContact metaContact) {
         PresenceStatus status = null;
         Iterator<Contact> contactsIter = metaContact.getContacts();
         while (contactsIter.hasNext()) {

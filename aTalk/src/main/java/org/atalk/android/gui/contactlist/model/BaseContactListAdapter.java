@@ -506,6 +506,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * We keep one instance of view click listener to avoid unnecessary allocations.
      * Clicked positions are obtained from the view holder.
      */
+    @Override
     public void onClick(View view) {
         ContactViewHolder viewHolder = null;
 
@@ -566,6 +567,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * Retrieve the contact avatar from server when user longClick on the avatar in contact list.
      * Clicked position/contact is derived from the view holder group/child positions.
      */
+    @Override
     public boolean onLongClick(View view) {
         Object clicked = view.getTag();
 
@@ -583,10 +585,10 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
                         Jid contactJid = contact.getJid();
                         if (!(contactJid instanceof DomainBareJid)) {
                             ((ContactJabberImpl) contact).getAvatar(true);
-                            aTalkApp.showToastMessage(R.string.service_gui_AVATAR_RETRIEVING, contactJid);
+                            aTalkApp.showToastMessage(R.string.avatar_retrieving, contactJid);
                         }
                         else {
-                            aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contactJid);
+                            aTalkApp.showToastMessage(R.string.contact_invalid, contactJid);
                         }
                     }
                     return true;
@@ -597,7 +599,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
                 if (ContactGroup.ROOT_GROUP_UID.equals(((MetaContactGroup) clicked).getMetaUID())
                         || ContactGroup.VOLATILE_GROUP.equals(((MetaContactGroup) clicked).getGroupName())) {
                     Timber.w("No action allowed for Group Name: %s", ((MetaContactGroup) clicked).getGroupName());
-                    aTalkApp.showToastMessage(R.string.service_gui_UNSUPPORTED_OPERATION);
+                    aTalkApp.showToastMessage(R.string.message_delivery_unsupported_operation);
                 }
                 else {
                     contactListFragment.showPopUpMenuGroup(view, (MetaContactGroup) clicked);

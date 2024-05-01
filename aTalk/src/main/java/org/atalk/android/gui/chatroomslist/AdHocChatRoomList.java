@@ -8,6 +8,9 @@ package org.atalk.android.gui.chatroomslist;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.List;
+import java.util.Vector;
+
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.AdHocChatRoom;
 import net.java.sip.communicator.service.protocol.OperationSetAdHocMultiUserChat;
@@ -22,17 +25,13 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import java.util.List;
-import java.util.Vector;
-
 /**
  * The <code>AdHocChatRoomsList</code> is the list containing all ad-hoc chat rooms.
  *
  * @author Valentin Martinet
  * @author Eng Chong Meng
  */
-public class AdHocChatRoomList
-{
+public class AdHocChatRoomList {
     /**
      * The list containing all chat servers and ad-hoc rooms.
      */
@@ -43,8 +42,7 @@ public class AdHocChatRoomList
     /**
      * Initializes the list of ad-hoc chat rooms.
      */
-    public void loadList()
-    {
+    public void loadList() {
         BundleContext bundleContext = AndroidGUIActivator.bundleContext;
         mDB = DatabaseBackend.getWritableDB();
 
@@ -74,8 +72,7 @@ public class AdHocChatRoomList
      *
      * @param pps the <code>ProtocolProviderService</code> corresponding to the chat server
      */
-    public void addChatProvider(ProtocolProviderService pps)
-    {
+    public void addChatProvider(ProtocolProviderService pps) {
         AdHocChatRoomProviderWrapper chatRoomProvider = new AdHocChatRoomProviderWrapper(pps);
         providersList.add(chatRoomProvider);
 
@@ -100,8 +97,7 @@ public class AdHocChatRoomList
      *
      * @param pps the <code>ProtocolProviderService</code> corresponding to the server to remove
      */
-    public void removeChatProvider(ProtocolProviderService pps)
-    {
+    public void removeChatProvider(ProtocolProviderService pps) {
         AdHocChatRoomProviderWrapper wrapper = findServerWrapperFromProvider(pps);
         if (wrapper != null)
             removeChatProvider(wrapper);
@@ -112,8 +108,7 @@ public class AdHocChatRoomList
      *
      * @param adHocChatRoomProvider the <code>AdHocChatRoomProviderWrapper</code> corresponding to the server to remove
      */
-    private void removeChatProvider(AdHocChatRoomProviderWrapper adHocChatRoomProvider)
-    {
+    private void removeChatProvider(AdHocChatRoomProviderWrapper adHocChatRoomProvider) {
         providersList.remove(adHocChatRoomProvider);
 
         AccountID accountID = adHocChatRoomProvider.getProtocolProvider().getAccountID();
@@ -129,8 +124,7 @@ public class AdHocChatRoomList
      *
      * @param adHocChatRoomWrapper the <code>AdHocChatRoom</code> to add
      */
-    public void addAdHocChatRoom(AdHocChatRoomWrapper adHocChatRoomWrapper)
-    {
+    public void addAdHocChatRoom(AdHocChatRoomWrapper adHocChatRoomWrapper) {
         AdHocChatRoomProviderWrapper adHocChatRoomProvider
                 = adHocChatRoomWrapper.getParentProvider();
 
@@ -143,8 +137,7 @@ public class AdHocChatRoomList
      *
      * @param adHocChatRoomWrapper the <code>AdHocChatRoomWrapper</code> to remove
      */
-    public void removeChatRoom(AdHocChatRoomWrapper adHocChatRoomWrapper)
-    {
+    public void removeChatRoom(AdHocChatRoomWrapper adHocChatRoomWrapper) {
         AdHocChatRoomProviderWrapper adHocChatRoomProvider
                 = adHocChatRoomWrapper.getParentProvider();
 
@@ -159,10 +152,10 @@ public class AdHocChatRoomList
      * doesn't contain a corresponding wrapper - returns null.
      *
      * @param adHocChatRoom the <code>ChatRoom</code> that we're looking for
+     *
      * @return the <code>ChatRoomWrapper</code> object corresponding to the given <code>ChatRoom</code>
      */
-    public AdHocChatRoomWrapper findChatRoomWrapperFromAdHocChatRoom(AdHocChatRoom adHocChatRoom)
-    {
+    public AdHocChatRoomWrapper findChatRoomWrapperFromAdHocChatRoom(AdHocChatRoom adHocChatRoom) {
         for (AdHocChatRoomProviderWrapper provider : providersList) {
             AdHocChatRoomWrapper chatRoomWrapper = provider.findChatRoomWrapperForAdHocChatRoom(
                     adHocChatRoom);
@@ -185,12 +178,12 @@ public class AdHocChatRoomList
      * contain a corresponding wrapper - returns null.
      *
      * @param protocolProvider the protocol provider that we're looking for
+     *
      * @return the <code>AdHocChatRoomProvider</code> object corresponding to the given
      * <code>ProtocolProviderService</code>
      */
     public AdHocChatRoomProviderWrapper findServerWrapperFromProvider(
-            ProtocolProviderService protocolProvider)
-    {
+            ProtocolProviderService protocolProvider) {
         for (AdHocChatRoomProviderWrapper chatRoomProvider : providersList) {
             if (chatRoomProvider.getProtocolProvider().equals(protocolProvider)) {
                 return chatRoomProvider;

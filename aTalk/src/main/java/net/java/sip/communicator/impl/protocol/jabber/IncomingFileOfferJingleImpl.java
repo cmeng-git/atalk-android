@@ -223,7 +223,7 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest 
 
             mOffer.accept(mConnection, mFile);
         } catch (IOException | SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
-            aTalkApp.showToastMessage(R.string.xFile_FILE_RECEIVE_FAILED, e.getMessage());
+            aTalkApp.showToastMessage(R.string.file_receive_failed, e.getMessage());
             Timber.e("Receiving file failed; %s", e.getMessage());
         }
     }

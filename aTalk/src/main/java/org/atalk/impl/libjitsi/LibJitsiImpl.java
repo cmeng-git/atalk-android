@@ -176,7 +176,7 @@ public class LibJitsiImpl extends LibJitsi
                 Timber.d("Failed to initialize service implementation %s. Will continue without it: %s.",
                         implClassName, exception.getMessage());
                 if (implClassName.contains("MediaServiceImpl")) {
-                    aTalkApp.showGenericError(R.string.service_gui_CALL_DISABLE_ON_FAULT, implClassName,
+                    aTalkApp.showGenericError(R.string.call_disable_on_fault, implClassName,
                             exception.getMessage());
                     aTalk.disableMediaServiceOnFault = true;
                 }

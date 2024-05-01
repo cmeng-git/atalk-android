@@ -39,12 +39,11 @@ import org.jxmpp.jid.EntityJid;
  *
  * @author Eng Chong Meng
  */
-public class InvitationReceivedDialog extends Dialog
-{
+public class InvitationReceivedDialog extends Dialog {
     /**
      * The <code>MultiUserChatManager</code> is the one that deals with invitation events.
      */
-    private ConferenceChatManager mMultiUserChatManager;
+    private final ConferenceChatManager mMultiUserChatManager;
 
     /**
      * The operation set that would handle the rejection if the user choose to reject the
@@ -71,23 +70,20 @@ public class InvitationReceivedDialog extends Dialog
 
     private Context mContext;
     private EditText reasonTextArea;
-    private EntityJid mInviter;
-    private String mChatRoomName;
-    private String mReason;
+    private final EntityJid mInviter;
+    private final String mChatRoomName;
+    private final String mReason;
 
     /**
      * Constructs the <code>ChatInviteDialog</code>.
      *
-     * // @param multiUserChatManager
-     * the <code>MultiUserChatManager</code> is the one that deals with invitation events
-     *
-     * @param multiUserChatOpSet the operation set that would handle the rejection if the user choose to reject the
-     * invitation
+     * @param context Context
+     * @param multiUserChatManager the <code>MultiUserChatManager</code> is the one that deals with invitation events
+     * @param multiUserChatOpSet the operation set that would handle the rejection if the user choose to reject the invitation
      * @param invitation the invitation that this dialog represents
      */
     public InvitationReceivedDialog(Context context, ConferenceChatManager multiUserChatManager,
-            OperationSetMultiUserChat multiUserChatOpSet, ChatRoomInvitation invitation)
-    {
+            OperationSetMultiUserChat multiUserChatOpSet, ChatRoomInvitation invitation) {
         super(context);
         mContext = context;
         mMultiUserChatManager = multiUserChatManager;
@@ -101,17 +97,14 @@ public class InvitationReceivedDialog extends Dialog
     /**
      * Constructs the <code>ChatInviteDialog</code>, in case of an <code>AdHocChatRoom</code>.
      *
-     * // @param multiUserChatManager
-     * the <code>MultiUserChatManager</code> is the one that deals with invitation events
-     *
-     * @param multiUserChatAdHocOpSet the operation set that would handle the rejection if the user choose to reject the
-     * invitation
+     * @param context Context
+     * @param multiUserChatManager the <code>MultiUserChatManager</code> is the one that deals with invitation events
+     * @param multiUserChatAdHocOpSet the operation set that would handle the rejection if the user choose to reject the invitation
      * @param invitationAdHoc the invitation that this dialog represents
      */
-    public InvitationReceivedDialog(Context mContext, ConferenceChatManager multiUserChatManager,
-            OperationSetAdHocMultiUserChat multiUserChatAdHocOpSet, AdHocChatRoomInvitation invitationAdHoc)
-    {
-        super(mContext);
+    public InvitationReceivedDialog(Context context, ConferenceChatManager multiUserChatManager,
+            OperationSetAdHocMultiUserChat multiUserChatAdHocOpSet, AdHocChatRoomInvitation invitationAdHoc) {
+        super(context);
         mMultiUserChatManager = multiUserChatManager;
         mMultiUserChatAdHocOpSet = multiUserChatAdHocOpSet;
         mInvitationAdHoc = invitationAdHoc;
@@ -124,13 +117,12 @@ public class InvitationReceivedDialog extends Dialog
      * {@inheritDoc}
      */
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.muc_invitation_received_dialog);
-        setTitle(mContext.getString(R.string.service_gui_INVITATION_RECEIVED));
+        setTitle(mContext.getString(R.string.invitation_received));
 
         TextView infoTextArea = this.findViewById(R.id.textMsgView);
-        infoTextArea.setText(mContext.getString(R.string.service_gui_INVITATION_RECEIVED_MSG,
+        infoTextArea.setText(mContext.getString(R.string.invitation_received_message,
                 mInviter, mChatRoomName));
 
         EditText textInvitation = this.findViewById(R.id.textInvitation);
@@ -161,8 +153,7 @@ public class InvitationReceivedDialog extends Dialog
     /**
      * Handles the <code>ActionEvent</code> triggered when one user clicks on one of the buttons.
      */
-    private boolean onAcceptClicked()
-    {
+    private boolean onAcceptClicked() {
         if (mInvitationAdHoc == null) {
             MUCActivator.getMUCService().acceptInvitation(mInvitation);
         }
@@ -176,8 +167,7 @@ public class InvitationReceivedDialog extends Dialog
         return true;
     }
 
-    private void onRejectClicked()
-    {
+    private void onRejectClicked() {
         String reasonField = ViewUtil.toString(reasonTextArea);
         if (mMultiUserChatAdHocOpSet == null && mInvitationAdHoc == null) {
             try {
@@ -195,9 +185,8 @@ public class InvitationReceivedDialog extends Dialog
      *
      * @param errorMessage the error message to show.
      */
-    private void showErrorMessage(String errorMessage)
-    {
+    private void showErrorMessage(String errorMessage) {
         Context ctx = aTalkApp.getInstance();
-        DialogActivity.showDialog(ctx, ctx.getString(R.string.service_gui_ERROR), errorMessage);
+        DialogActivity.showDialog(ctx, ctx.getString(R.string.error), errorMessage);
     }
 }

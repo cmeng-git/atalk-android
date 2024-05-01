@@ -368,7 +368,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
     public static void showGenericError(final int id, final Object... arg) {
         new Handler(Looper.getMainLooper()).post(() -> {
             String msg = mInstance.getString(id, arg);
-            DialogActivity.showDialog(mInstance, mInstance.getString(R.string.service_gui_ERROR), msg);
+            DialogActivity.showDialog(mInstance, mInstance.getString(R.string.error), msg);
         });
     }
 
@@ -515,8 +515,8 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
 
         if (logUpload != null) {
             logUpload.sendLogs(new String[]{defaultEmail},
-                    getResString(R.string.service_gui_SEND_LOGS_SUBJECT),
-                    getResString(R.string.service_gui_SEND_LOGS_TITLE));
+                    getResString(R.string.send_log_subject),
+                    getResString(R.string.send_log_title));
         }
     }
 

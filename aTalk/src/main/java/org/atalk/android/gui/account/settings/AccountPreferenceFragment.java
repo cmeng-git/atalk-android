@@ -178,7 +178,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     {
         // Load the preferences from the given resource
         super.onCreatePreferences(savedInstanceState, rootKey);
-        setPrefTitle(R.string.service_gui_ACCOUNT_SETTINGS);
+        setPrefTitle(R.string.account_settings);
         setPreferencesFromResource(preferencesResourceId, rootKey);
 
         if (savedInstanceState != null) {
@@ -342,7 +342,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      */
     protected String getEmptyPreferenceStr()
     {
-        return getString(R.string.service_gui_SETTINGS_NOT_SET);
+        return getString(R.string.settings_not_set);
     }
 
     /**
@@ -397,8 +397,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     private void displayOperationInProgressDialog()
     {
         Context context = getView().getRootView().getContext();
-        CharSequence title = getResources().getText(R.string.service_gui_COMMIT_PROGRESS_TITLE);
-        CharSequence msg = getResources().getText(R.string.service_gui_COMMIT_PROGRESS_MSG);
+        CharSequence title = getResources().getText(R.string.commit_progress_title);
+        CharSequence msg = getResources().getText(R.string.commit_progress_message);
         mProgressDialog = ProgressDialog.show(context, title, msg, true, false);
 
         new Handler().postDelayed(() -> {

@@ -73,7 +73,7 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
         // Load the expert_preferences from an XML resource
         super.onCreatePreferences(savedInstanceState, rootKey);
         setPreferencesFromResource(R.xml.expert_preferences, rootKey);
-        setPrefTitle(R.string.service_gui_settings_EXPERT);
+        setPrefTitle(R.string.settings_expert);
     }
 
     /**

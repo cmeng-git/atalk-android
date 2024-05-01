@@ -43,7 +43,7 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:layout_centerVertical="true"
-                android:contentDescription="@string/service_gui_STATUS" />
+                android:contentDescription="@string/status" />
 
             <TextView
                 android:id="@+id/actionBarStatus"

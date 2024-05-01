@@ -45,8 +45,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
  *
  * @author Eng Chong Meng
  */
-public class ChatRoomDestroyDialog extends OSGiFragment
-{
+public class ChatRoomDestroyDialog extends OSGiFragment {
     private ChatRoomWrapper chatRoomWrapper;
     private ChatPanel chatPanel;
 
@@ -54,8 +53,7 @@ public class ChatRoomDestroyDialog extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.muc_room_destroy_dialog, container, false);
 
         Bundle bundle = getArguments();
@@ -73,31 +71,28 @@ public class ChatRoomDestroyDialog extends OSGiFragment
      * @param crWrapper chatRoom wrapper
      * @param cPanel the chatPanel to send message
      */
-    public void show(Context context, ChatRoomWrapper crWrapper, ChatPanel cPanel)
-    {
+    public void show(Context context, ChatRoomWrapper crWrapper, ChatPanel cPanel) {
         chatRoomWrapper = crWrapper;
         chatPanel = cPanel;
 
-        String msgWarn = context.getString(R.string.service_gui_CHATROOM_DESTROY_PROMPT,
+        String msgWarn = context.getString(R.string.chatroom_destroy_prompt,
                 chatRoomWrapper.getUser(), chatRoomWrapper.getChatRoomID());
         Bundle fragmentBundle = new Bundle();
         fragmentBundle.putString(DialogActivity.EXTRA_MESSAGE, msgWarn);
 
         DialogActivity.showCustomDialog(context,
-                context.getString(R.string.service_gui_CHATROOM_DESTROY_TITLE),
+                context.getString(R.string.chatroom_destroy_title),
                 ChatRoomDestroyDialog.class.getName(), fragmentBundle,
-                context.getString(R.string.service_gui_REMOVE),
+                context.getString(R.string.remove),
                 new DialogListenerImpl(), null);
     }
 
     /**
      * Implements <code>DialogActivity.DialogListener</code> interface and handles refresh stores process.
      */
-    public class DialogListenerImpl implements DialogActivity.DialogListener
-    {
+    public class DialogListenerImpl implements DialogActivity.DialogListener {
         @Override
-        public boolean onConfirmClicked(DialogActivity dialog)
-        {
+        public boolean onConfirmClicked(DialogActivity dialog) {
             View view = dialog.getContentFragment().getView();
             String reason = ViewUtil.toString(view.findViewById(R.id.ReasonDestroy));
             String venue = ViewUtil.toString(view.findViewById(R.id.VenueAlternate));
@@ -107,7 +102,7 @@ public class ChatRoomDestroyDialog extends OSGiFragment
                 try {
                     entityBareJid = JidCreate.entityBareFrom(venue);
                 } catch (XmppStringprepException ex) {
-                    aTalkApp.showToastMessage(R.string.service_gui_INVALID_ADDRESS, venue);
+                    aTalkApp.showToastMessage(R.string.invalid_address, venue);
                     return false;
                 }
             }
@@ -125,8 +120,7 @@ public class ChatRoomDestroyDialog extends OSGiFragment
         }
 
         @Override
-        public void onDialogCancelled(DialogActivity dialog)
-        {
+        public void onDialogCancelled(DialogActivity dialog) {
         }
     }
 

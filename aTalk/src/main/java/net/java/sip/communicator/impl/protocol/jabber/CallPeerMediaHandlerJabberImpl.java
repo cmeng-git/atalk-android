@@ -413,7 +413,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         // Fail if no media content/description element (e.g. all devices are inactive).
         if (mediaDescs.isEmpty()) {
             ProtocolProviderServiceJabberImpl.throwOperationFailedException(
-                    aTalkApp.getResString(R.string.service_gui_CALL_NO_ACTIVE_DEVICE),
+                    aTalkApp.getResString(R.string.call_no_active_device),
                     OperationFailedException.GENERAL_ERROR, null);
         }
 
@@ -447,7 +447,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         // Fail if no media is described (e.g. all devices are inactive).
         if (mediaDescs.isEmpty()) {
             ProtocolProviderServiceJabberImpl.throwOperationFailedException(
-                    aTalkApp.getResString(R.string.service_gui_CALL_NO_ACTIVE_DEVICE),
+                    aTalkApp.getResString(R.string.call_no_active_device),
                     OperationFailedException.GENERAL_ERROR, null);
         }
         // Describe the transport(s).
@@ -1369,8 +1369,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
         if (!atLeastOneValidDescription) {
             // don't just throw exception. Must inform user to take action
-            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.service_gui_CALL,
-                    R.string.service_gui_CALL_NO_MATCHING_FORMAT_H, remoteFormats.toString());
+            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.call_audio,
+                    R.string.call_no_matching_format, remoteFormats.toString());
 
             ProtocolProviderServiceJabberImpl.throwOperationFailedException(
                     "Offer contained no media formats or no valid media descriptions.",

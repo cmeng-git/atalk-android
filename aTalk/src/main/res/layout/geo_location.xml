@@ -17,7 +17,7 @@
             style="@style/MediumFont"
             android:layout_width="85dp"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_GEO_LATITUDE" />
+            android:text="@string/latitude" />
 
         <TextView
             android:id="@+id/latitude_textview"
@@ -36,7 +36,7 @@
             style="@style/MediumFont"
             android:layout_width="85dp"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_GEO_LONGITUDE" />
+            android:text="@string/longitude" />
 
         <TextView
             android:id="@+id/longitude_textview"
@@ -55,7 +55,7 @@
             style="@style/MediumFont"
             android:layout_width="85dp"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_GEO_ALTITUDE" />
+            android:text="@string/altitude" />
 
         <TextView
             android:id="@+id/altitude_textview"
@@ -74,7 +74,7 @@
             style="@style/MediumFont"
             android:layout_width="85dp"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_GEO_LOCATION" />
+            android:text="@string/location" />
 
         <TextView
             android:id="@+id/locationAddress_textview"
@@ -86,7 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
-        android:text="@string/service_gui_GPS_SHARE" />
+        android:text="@string/geo_share" />
 
     <Button
         android:id="@+id/btn_single_fix"
@@ -101,7 +101,7 @@
         style="@style/ButtonTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/start_follow_me"
+        android:text="@string/follow_me_start"
         android:textAllCaps="false" />
 
     <SeekBar

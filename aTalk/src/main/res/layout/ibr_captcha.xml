@@ -19,7 +19,7 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:text="@string/service_gui_USERNAME" />
+            android:text="@string/username_" />
 
         <ImageView
             android:id="@+id/star1"
@@ -56,7 +56,7 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="@string/service_gui_PASSWORD" />
+            android:text="@string/password_" />
 
         <ImageView
             android:id="@+id/star"
@@ -97,7 +97,7 @@
                 android:id="@+id/serverOverridden"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/account_override_server" />
+                android:text="@string/account_server_override" />
 
             <LinearLayout
                 android:id="@+id/serverField"
@@ -121,7 +121,7 @@
                     android:layout_marginStart="@dimen/between_padding"
                     android:layout_weight="3"
                     android:inputType="textNoSuggestions"
-                    android:text="@string/account_server_port" />
+                    android:text="@string/xmpp_server_port" />
             </LinearLayout>
 
             <TextView
@@ -129,7 +129,7 @@
                 style="@style/MediumFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/service_gui_REASON_LABEL" />
+                android:text="@string/reason" />
 
             <TextView
                 android:id="@+id/reason_field"
@@ -167,7 +167,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:hint="@string/captcha_hint"
+                    android:hint="@string/captcha_ibr_hint"
                     android:inputType="textNoSuggestions" />
             </LinearLayout>
         </LinearLayout>
@@ -183,17 +183,17 @@
             style="@style/ButtonTop"
             android:layout_marginEnd="2dp"
             android:layout_marginRight="2dp"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/button_Submit"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_SUBMIT" />
+            android:text="@string/submit" />
 
         <Button
             android:id="@+id/button_OK"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_OK" />
+            android:text="@string/ok" />
     </LinearLayout>
 
 </LinearLayout>

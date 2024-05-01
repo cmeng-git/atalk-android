@@ -6,6 +6,10 @@
  */
 package net.java.sip.communicator.util.call;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo;
 import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo.DetailsResponseListener;
@@ -20,10 +24,6 @@ import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkPhoneD
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import timber.log.Timber;
 
 /**
@@ -33,8 +33,7 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class ContactPhoneUtil
-{
+public class ContactPhoneUtil {
     /**
      * Searches for phones for the contact.
      * Return null if we have stopped searching and a listener is available
@@ -45,11 +44,11 @@ public class ContactPhoneUtil
      * in obtaining results that came later
      * @param onlyVideo whether to include only video phones.
      * @param localized whether to localize phones.
+     *
      * @return list of phones, or null if we will use the listeners for the result.
      */
     public static List<String> getContactAdditionalPhones(Contact contact, DetailsResponseListener listener,
-            boolean onlyVideo, boolean localized)
-    {
+            boolean onlyVideo, boolean localized) {
         OperationSetServerStoredContactInfo infoOpSet
                 = contact.getProtocolProvider().getOperationSet(OperationSetServerStoredContactInfo.class);
         Iterator<GenericDetail> details;
@@ -107,21 +106,21 @@ public class ContactPhoneUtil
      * Returns localized phone number.
      *
      * @param d the detail.
+     *
      * @return the localized phone number.
      */
-    protected static String getLocalizedPhoneNumber(GenericDetail d)
-    {
+    protected static String getLocalizedPhoneNumber(GenericDetail d) {
         if (d instanceof WorkPhoneDetail) {
-            return aTalkApp.getResString(R.string.service_gui_WORK_PHONE);
+            return aTalkApp.getResString(R.string.work);
         }
         else if (d instanceof MobilePhoneDetail) {
-            return aTalkApp.getResString(R.string.service_gui_MOBILE_PHONE);
+            return aTalkApp.getResString(R.string.mobile);
         }
         else if (d instanceof VideoDetail) {
-            return aTalkApp.getResString(R.string.service_gui_VIDEO_PHONE);
+            return aTalkApp.getResString(R.string.video);
         }
         else {
-            return aTalkApp.getResString(R.string.service_gui_HOME);
+            return aTalkApp.getResString(R.string.home);
         }
     }
 }

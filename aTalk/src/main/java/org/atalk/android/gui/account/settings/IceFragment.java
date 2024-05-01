@@ -30,8 +30,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class IceFragment extends OSGiPreferenceFragment
-        implements SharedPreferences.OnSharedPreferenceChangeListener
-{
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
     // ICE (General)
     private static final String P_KEY_ICE_ENABLED = "pref_key_ice_enabled";
     private static final String P_KEY_UPNP_ENABLED = "pref_key_upnp_enabled";
@@ -62,8 +61,7 @@ public class IceFragment extends OSGiPreferenceFragment
      * {@inheritDoc}
      */
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
-    {
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         String accountID = getArguments().getString(AccountPreferenceFragment.EXTRA_ACCOUNT_ID);
         AccountID account = AccountUtils.getAccountIDForUID(accountID);
 
@@ -75,7 +73,7 @@ public class IceFragment extends OSGiPreferenceFragment
 
         initPreferences();
         setPreferencesFromResource(R.xml.ice_preferences, rootKey);
-        setPrefTitle(R.string.service_gui_JBR_ICE_SUMMARY);
+        setPrefTitle(R.string.jbr_ice_summary);
 
         shPrefs.registerOnSharedPreferenceChangeListener(this);
         shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
@@ -90,14 +88,12 @@ public class IceFragment extends OSGiPreferenceFragment
             getJingleNodeList();
             return true;
         });
-
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void initPreferences()
-    {
+    protected void initPreferences() {
         // ICE options
         jbrReg = JabberPreferenceFragment.jbrReg;
         shPrefs = getPreferenceManager().getSharedPreferences();
@@ -117,8 +113,7 @@ public class IceFragment extends OSGiPreferenceFragment
     /**
      * Starts {@link ServerListActivity} in order to edit STUN servers list
      */
-    private void getStunServerList()
-    {
+    private void getStunServerList() {
         Intent intent = new Intent(mActivity, ServerListActivity.class);
         intent.putExtra(ServerListActivity.JABBER_REGISTRATION_KEY, jbrReg);
         intent.putExtra(ServerListActivity.REQUEST_CODE_KEY, ServerListActivity.RCODE_STUN_TURN);
@@ -147,8 +142,7 @@ public class IceFragment extends OSGiPreferenceFragment
     /**
      * Start {@link ServerListActivity} in order to edit Jingle Nodes list
      */
-    private void getJingleNodeList()
-    {
+    private void getJingleNodeList() {
         Intent intent = new Intent(mActivity, ServerListActivity.class);
         intent.putExtra(ServerListActivity.JABBER_REGISTRATION_KEY, jbrReg);
         intent.putExtra(ServerListActivity.REQUEST_CODE_KEY, ServerListActivity.RCODE_JINGLE_NODES);
@@ -176,8 +170,7 @@ public class IceFragment extends OSGiPreferenceFragment
     /**
      * {@inheritDoc}
      */
-    public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key)
-    {
+    public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key) {
         // Check to ensure a valid key before proceed
         if (findPreference(key) == null)
             return;

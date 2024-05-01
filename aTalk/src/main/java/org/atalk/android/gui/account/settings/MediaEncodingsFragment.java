@@ -14,13 +14,13 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.Serializable;
+import java.util.List;
+
 import org.atalk.android.R;
 import org.atalk.android.gui.widgets.TouchInterceptor;
 import org.atalk.service.osgi.OSGiPreferenceFragment;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * The fragment allows user to edit encodings and their priorities.
@@ -28,8 +28,7 @@ import java.util.List;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class MediaEncodingsFragment extends OSGiPreferenceFragment implements TouchInterceptor.DropListener
-{
+public class MediaEncodingsFragment extends OSGiPreferenceFragment implements TouchInterceptor.DropListener {
     /**
      * Argument key for list of encodings as strings (see {@link MediaEncodingActivity} for utility methods.)
      */
@@ -70,8 +69,7 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
      *
      * @param isEnabled <code>true</code> to enable the fragment.
      */
-    public void setEnabled(boolean isEnabled)
-    {
+    public void setEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
         adapter.invalidate();
     }
@@ -81,8 +79,7 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
      *
      * @return <code>true</code> if this fragment is holding any uncommitted changes
      */
-    public boolean hasChanges()
-    {
+    public boolean hasChanges() {
         return hasChanges;
     }
 
@@ -90,17 +87,16 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle bundle = savedInstanceState == null ? getArguments() : savedInstanceState;
 
         encodings = (List<String>) bundle.get(ARG_ENCODINGS);
         priorities = (List<Integer>) bundle.get(ARG_PRIORITIES);
 
         if (encodings.contains("VP8/90000"))
-            setPrefTitle(R.string.service_gui_settings_VIDEO_CODECS_TITLE);
+            setPrefTitle(R.string.settings_video_codec);
         else
-            setPrefTitle(R.string.service_gui_settings_AUDIO_CODECS_TITLE);
+            setPrefTitle(R.string.settings_audio_codecs);
 
         View content = inflater.inflate(R.layout.encoding, container, false);
 
@@ -119,8 +115,7 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
      * {@inheritDoc}
      */
     @Override
-    public void onSaveInstanceState(@NotNull Bundle outState)
-    {
+    public void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putSerializable(ARG_ENCODINGS, (Serializable) encodings);
@@ -133,8 +128,7 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
      * @param from index indicating source position
      * @param to index indicating destination position
      */
-    public void drop(int from, int to)
-    {
+    public void drop(int from, int to) {
         adapter.swapItems(from, to);
         hasChanges = true;
     }
@@ -143,10 +137,10 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
      * Function used to calculate priority based on item index
      *
      * @param idx the index of encoding on the list
+     *
      * @return encoding priority value for given <code>idx</code>
      */
-    static public int calcPriority(List<?> encodings, int idx)
-    {
+    static public int calcPriority(List<?> encodings, int idx) {
         return encodings.size() - idx;
     }
 
@@ -154,10 +148,10 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
      * Utility method for calculating encodings priorities.
      *
      * @param idx encoding index in the list
+     *
      * @return the priority value for given encoding index.
      */
-    private int calcPriority(int idx)
-    {
+    private int calcPriority(int idx) {
         return calcPriority(encodings, idx);
     }
 
@@ -166,10 +160,10 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
      *
      * @param encodings list of encodings as strings.
      * @param priorities list of encodings priorities.
+     *
      * @return parametrized instance of <code>EncodingsFragment</code>.
      */
-    static public MediaEncodingsFragment newInstance(List<String> encodings, List<Integer> priorities)
-    {
+    static public MediaEncodingsFragment newInstance(List<String> encodings, List<Integer> priorities) {
         MediaEncodingsFragment fragment = new MediaEncodingsFragment();
 
         Bundle args = new Bundle();
@@ -185,8 +179,7 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
      *
      * @return encodings strings list.
      */
-    public List<String> getEncodings()
-    {
+    public List<String> getEncodings() {
         return encodings;
     }
 
@@ -195,8 +188,7 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
      *
      * @return encodings priorities list.
      */
-    public List<Integer> getPriorities()
-    {
+    public List<Integer> getPriorities() {
         return priorities;
     }
 
@@ -204,8 +196,7 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
      * Class implements encodings model for the list widget. Enables/disables each encoding and sets its priority.
      * It is also responsible for creating Views for list rows.
      */
-    class OrderListAdapter extends BaseAdapter
-    {
+    class OrderListAdapter extends BaseAdapter {
         /**
          * ID of the list row layout
          */
@@ -216,8 +207,7 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
          *
          * @param viewResId ID of the list row layout
          */
-        public OrderListAdapter(int viewResId)
-        {
+        public OrderListAdapter(int viewResId) {
             this.viewResId = viewResId;
         }
 
@@ -227,8 +217,7 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
          * @param from source item position
          * @param to destination items position
          */
-        void swapItems(int from, int to)
-        {
+        void swapItems(int from, int to) {
             // Swap positions
             String swap = encodings.get(from);
             int swapPrior = priorities.get(from);
@@ -250,28 +239,23 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
         /**
          * Refresh the list on UI thread
          */
-        public void invalidate()
-        {
+        public void invalidate() {
             getActivity().runOnUiThread(this::notifyDataSetChanged);
         }
 
-        public int getCount()
-        {
+        public int getCount() {
             return encodings.size();
         }
 
-        public Object getItem(int i)
-        {
+        public Object getItem(int i) {
             return encodings.get(i);
         }
 
-        public long getItemId(int i)
-        {
+        public long getItemId(int i) {
             return i;
         }
 
-        public View getView(final int i, View view, ViewGroup viewGroup)
-        {
+        public View getView(final int i, View view, ViewGroup viewGroup) {
             // Creates the list row view
             ViewGroup gv = (ViewGroup) getActivity().getLayoutInflater().inflate(this.viewResId, viewGroup, false);
             // Creates the enable/disable button

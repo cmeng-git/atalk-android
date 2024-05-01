@@ -4,13 +4,12 @@
     <item
         android:id="@+id/online_help"
         android:icon="?attr/iconActionAbout"
-        android:title="@string/Online_help" />
+        android:title="@string/online_help" />
     <item
         android:id="@+id/about"
         android:icon="?attr/iconActionAbout"
-        android:title="@string/About_action" />
-    <item
-        android:id="@+id/menu_exit"
-        android:title="@string/service_gui_EXIT"
+        android:title="@string/About" />
+    <item android:id="@+id/menu_exit"
+          android:title="@string/exit"
         android:visible="false" />
 </menu>

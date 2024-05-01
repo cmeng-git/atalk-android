@@ -18,14 +18,14 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_CONTACT_RENAME"
+        android:text="@string/contact_rename"
         android:textAppearance="@style/MediumFont" />
 
     <EditText
         android:id="@+id/editName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/service_gui_CONTACT_RENAME_HINT" />
+        android:hint="@string/contact_rename_tooltip" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
         <Button
             android:id="@+id/cancel"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <View
             android:id="@+id/centerShim"
@@ -47,7 +47,7 @@
         <Button
             android:id="@+id/rename"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_RENAME" />
+            android:text="@string/rename" />
     </LinearLayout>
 
 </LinearLayout>

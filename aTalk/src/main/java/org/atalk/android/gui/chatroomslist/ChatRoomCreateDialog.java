@@ -107,7 +107,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.service_gui_CHATROOM_CREATE_JOIN);
+        setTitle(R.string.chatroom_create_join);
         this.setContentView(R.layout.muc_room_create_dialog);
 
         nicknameField = findViewById(R.id.NickName_Edit);
@@ -354,7 +354,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 
                 // Return without open the chat room, the protocol failed to create a chat room (null)
                 if ((chatRoomWrapper == null) || (chatRoomWrapper.getChatRoom() == null)) {
-                    aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_CREATE_ERROR, chatRoomID);
+                    aTalkApp.showToastMessage(R.string.chatroom_create_error, chatRoomID);
                     return false;
                 }
 
@@ -414,13 +414,13 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
             return true;
         }
         else if (TextUtils.isEmpty(chatRoomID)) {
-            aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_NAME);
+            aTalkApp.showToastMessage(R.string.chatroom_join_name);
         }
         else if (nickName == null) {
-            aTalkApp.showToastMessage(R.string.service_gui_CHANGE_NICKNAME_NULL);
+            aTalkApp.showToastMessage(R.string.change_nickname_null);
         }
         else {
-            aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_FAILED, nickName, chatRoomID);
+            aTalkApp.showToastMessage(R.string.chatroom_join_failed, nickName, chatRoomID);
         }
         return false;
     }

@@ -22,6 +22,17 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 
+import java.beans.PropertyChangeEvent;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EventObject;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.event.MetaContactListAdapter;
 import net.java.sip.communicator.service.contactlist.event.MetaContactRenamedEvent;
@@ -67,17 +78,6 @@ import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.jetbrains.annotations.NotNull;
 
-import java.beans.PropertyChangeEvent;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EventObject;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import timber.log.Timber;
 
 /**
@@ -89,8 +89,7 @@ import timber.log.Timber;
 public class MessageSourceService extends MetaContactListAdapter implements ContactSourceService,
         ContactPresenceStatusListener, ContactCapabilitiesListener, ProviderPresenceStatusListener,
         SubscriptionListener, LocalUserChatRoomPresenceListener, MessageListener,
-        ChatRoomMessageListener, AdHocChatRoomMessageListener
-{
+        ChatRoomMessageListener, AdHocChatRoomMessageListener {
     /* DB database column fields for call history */
     public static final String TABLE_NAME = "recentMessages";
     public static final String UUID = "uuid";    // unique identification for the recent message
@@ -167,8 +166,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     /**
      * Constructs MessageSourceService.
      */
-    public MessageSourceService(MessageHistoryServiceImpl messageHistoryService)
-    {
+    public MessageSourceService(MessageHistoryServiceImpl messageHistoryService) {
         this.messageHistoryService = messageHistoryService;
         mDB = DatabaseBackend.getWritableDB();
 
@@ -185,16 +183,14 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     @Override
-    public void providerStatusChanged(ProviderPresenceStatusChangeEvent evt)
-    {
+    public void providerStatusChanged(ProviderPresenceStatusChangeEvent evt) {
         if (!evt.getNewStatus().isOnline() || evt.getOldStatus().isOnline())
             return;
         handleProviderAdded(evt.getProvider(), true);
     }
 
     @Override
-    public void providerStatusMessageChanged(PropertyChangeEvent evt)
-    {
+    public void providerStatusMessageChanged(PropertyChangeEvent evt) {
     }
 
     /**
@@ -202,8 +198,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      *
      * @param provider ProtocolProviderService
      */
-    public void handleProviderAdded(final ProtocolProviderService provider, final boolean isStatusChanged)
-    {
+    public void handleProviderAdded(final ProtocolProviderService provider, final boolean isStatusChanged) {
         Timber.d("Handle new provider added and status changed to online: %s", provider.getAccountID().getUserID());
         new Thread(() -> handleProviderAddedInSeparateThread(provider, isStatusChanged)).start();
     }
@@ -215,8 +210,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      *
      * @param provider ProtocolProviderService
      */
-    private void handleProviderAddedInSeparateThread(ProtocolProviderService provider, boolean isStatusChanged)
-    {
+    private void handleProviderAddedInSeparateThread(ProtocolProviderService provider, boolean isStatusChanged) {
         // lets check if we have cached recent messages for this provider, and fire events if found and are newer
         synchronized (recentMessages) {
             List<ComparableEvtObj> cachedRecentMessages = getCachedRecentMessages(provider, isStatusChanged);
@@ -243,8 +237,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      *
      * @param provider the ProtocolProviderService that has been unregistered.
      */
-    public void handleProviderRemoved(ProtocolProviderService provider)
-    {
+    public void handleProviderRemoved(ProtocolProviderService provider) {
         // Remove the recent messages for this provider, and update with recent messages for the available providers
         synchronized (recentMessages) {
             if (provider != null) {
@@ -285,8 +278,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * @param evt the ContactPresenceStatusChangeEvent describing the status
      */
     @Override
-    public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt)
-    {
+    public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt) {
         if (recentQuery == null)
             return;
 
@@ -301,8 +293,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     @Override
-    public void localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent evt)
-    {
+    public void localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent evt) {
         if (recentQuery == null)
             return;
 
@@ -335,8 +326,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * recentMessages instance, and to check for already existing instances of contact sources.
      * Normally called from the query.
      */
-    public void updateRecentMessages()
-    {
+    public void updateRecentMessages() {
         if (recentQuery == null)
             return;
 
@@ -360,10 +350,10 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      *
      * @param provider the provider which contact messages we will search e.g Jabber:abc123@atalk.org
      * @param isStatusChanged is the search because of status changed
+     *
      * @return entries in cached recent messages in history.
      */
-    private List<ComparableEvtObj> getCachedRecentMessages(ProtocolProviderService provider, boolean isStatusChanged)
-    {
+    private List<ComparableEvtObj> getCachedRecentMessages(ProtocolProviderService provider, boolean isStatusChanged) {
         Collection<EventObject> res;
         String accountId = provider.getAccountID().getAccountUid();
         List<String> recentMessagesContactIDs = getRecentContactIDs(accountId,
@@ -396,8 +386,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * @param isStatusChanged whether provider status changed and we are processing
      */
     private void processEventObjects(Collection<EventObject> res,
-            List<ComparableEvtObj> cachedRecentMessages, boolean isStatusChanged)
-    {
+            List<ComparableEvtObj> cachedRecentMessages, boolean isStatusChanged) {
         for (EventObject eventObject : res) {
             // skip process any non-message FileRecord object
             if (eventObject instanceof FileRecord)
@@ -433,8 +422,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      *
      * @return isSMSEnabled
      */
-    boolean isSMSEnabled()
-    {
+    boolean isSMSEnabled() {
         return isSMSEnabled;
     }
 
@@ -444,8 +432,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      *
      * @param contactsToAdd List of contacts to add
      */
-    private void addNewRecentMessages(List<ComparableEvtObj> contactsToAdd)
-    {
+    private void addNewRecentMessages(List<ComparableEvtObj> contactsToAdd) {
         // now find object to fire new, and object to fire remove let us find duplicates and fire update
         List<ComparableEvtObj> duplicates = new ArrayList<>();
         for (ComparableEvtObj msgToAdd : contactsToAdd) {
@@ -504,10 +491,10 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      *
      * @param accountUid Account Uid
      * @param startDate start date to search; can be null if not applicable
+     *
      * @return List of found entityJid
      */
-    private List<String> getRecentContactIDs(String accountUid, Date startDate)
-    {
+    private List<String> getRecentContactIDs(String accountUid, Date startDate) {
         List<String> contacts = new ArrayList<>();
         List<String> argList = new ArrayList<>();
 
@@ -535,10 +522,9 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 
     /**
      * Adds recent message in history database;
-     * Remove excess of old records (+10) each time if db exceed NUMBER_OF_MSGS_IN_HISTORY.
+     * Remove excess of old records (+12) each time if db exceed NUMBER_OF_MSGS_IN_HISTORY.
      */
-    private void saveRecentMessageToHistory(ComparableEvtObj msc)
-    {
+    private void saveRecentMessageToHistory(ComparableEvtObj msc) {
         // Keep the record size to within the specified NUMBER_OF_MSGS_IN_HISTORY
         Cursor cursor = mDB.query(MessageSourceService.TABLE_NAME, null, null, null,
                 null, null, ORDER_DESC);
@@ -568,8 +554,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     /**
      * Updates recent message in history.
      */
-    private void updateRecentMessageToHistory(ComparableEvtObj msg)
-    {
+    private void updateRecentMessageToHistory(ComparableEvtObj msg) {
         contentValues.clear();
         contentValues.put(TIME_STAMP, msg.getTimestamp().getTime());
         contentValues.put(VERSION, RECENT_MSGS_VER);
@@ -584,8 +569,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     // ================ Message events handlers =======================
 
     @Override
-    public void messageReceived(MessageReceivedEvent evt)
-    {
+    public void messageReceived(MessageReceivedEvent evt) {
         if (isSMSEnabled && (evt.getEventType() != ChatMessage.MESSAGE_SMS_IN)) {
             return;
         }
@@ -593,8 +577,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     @Override
-    public void messageDelivered(MessageDeliveredEvent evt)
-    {
+    public void messageDelivered(MessageDeliveredEvent evt) {
         if (isSMSEnabled && !evt.isSmsMessage())
             return;
 
@@ -605,13 +588,11 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * @param evt the <code>MessageFailedEvent</code>
      */
     @Override
-    public void messageDeliveryFailed(MessageDeliveryFailedEvent evt)
-    {
+    public void messageDeliveryFailed(MessageDeliveryFailedEvent evt) {
     }
 
     @Override
-    public void messageReceived(ChatRoomMessageReceivedEvent evt)
-    {
+    public void messageReceived(ChatRoomMessageReceivedEvent evt) {
         if (isSMSEnabled)
             return;
 
@@ -623,8 +604,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     @Override
-    public void messageDelivered(ChatRoomMessageDeliveredEvent evt)
-    {
+    public void messageDelivered(ChatRoomMessageDeliveredEvent evt) {
         if (isSMSEnabled)
             return;
 
@@ -635,19 +615,16 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * @param evt the <code>ChatRoomMessageDeliveryFailedEvent</code>
      */
     @Override
-    public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt)
-    {
+    public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt) {
     }
 
     @Override
-    public void messageReceived(AdHocChatRoomMessageReceivedEvent evt)
-    {
+    public void messageReceived(AdHocChatRoomMessageReceivedEvent evt) {
         // TODO
     }
 
     @Override
-    public void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt)
-    {
+    public void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt) {
         // TODO
     }
 
@@ -655,33 +632,27 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * @param evt the <code>AdHocChatRoomMessageDeliveryFailedEvent</code>
      */
     @Override
-    public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt)
-    {
+    public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt) {
     }
 
     @Override
-    public void subscriptionCreated(SubscriptionEvent evt)
-    {
+    public void subscriptionCreated(SubscriptionEvent evt) {
     }
 
     @Override
-    public void subscriptionFailed(SubscriptionEvent evt)
-    {
+    public void subscriptionFailed(SubscriptionEvent evt) {
     }
 
     @Override
-    public void subscriptionRemoved(SubscriptionEvent evt)
-    {
+    public void subscriptionRemoved(SubscriptionEvent evt) {
     }
 
     @Override
-    public void subscriptionMoved(SubscriptionMovedEvent evt)
-    {
+    public void subscriptionMoved(SubscriptionMovedEvent evt) {
     }
 
     @Override
-    public void subscriptionResolved(SubscriptionEvent evt)
-    {
+    public void subscriptionResolved(SubscriptionEvent evt) {
     }
 
     /**
@@ -691,8 +662,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * @param provider the provider
      * @param id the id of the source of the event
      */
-    private void handle(EventObject obj, ProtocolProviderService provider, String id)
-    {
+    private void handle(EventObject obj, ProtocolProviderService provider, String id) {
         // check if provider - contact exist update message content
         synchronized (recentMessages) {
             ComparableEvtObj existingMsc = null;
@@ -754,8 +724,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * @param evt the <code>ContactPropertyChangeEvent</code> containing the source
      */
     @Override
-    public void contactModified(ContactPropertyChangeEvent evt)
-    {
+    public void contactModified(ContactPropertyChangeEvent evt) {
         if (!evt.getPropertyName().equals(ContactPropertyChangeEvent.PROPERTY_DISPLAY_NAME))
             return;
 
@@ -777,8 +746,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      *
      * @param evt the MetaContactListEvent containing the corresponding contact
      */
-    public void metaContactRenamed(MetaContactRenamedEvent evt)
-    {
+    public void metaContactRenamed(MetaContactRenamedEvent evt) {
         for (ComparableEvtObj msc : recentMessages) {
             if (evt.getSourceMetaContact().containsContact(msc.getContact())) {
                 if (recentQuery != null)
@@ -788,8 +756,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     @Override
-    public void supportedOperationSetsChanged(ContactCapabilitiesEvent event)
-    {
+    public void supportedOperationSetsChanged(ContactCapabilitiesEvent event) {
         Contact contact = event.getSourceContact();
         if (contact == null)
             return;
@@ -809,11 +776,11 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      *
      * @param obj the object that we will try to match.
      * @param list the list we will search in.
+     *
      * @return the found ComparableEvtObj
      */
     private static ComparableEvtObj findRecentMessage(EventObject obj,
-            List<ComparableEvtObj> list)
-    {
+            List<ComparableEvtObj> list) {
         Contact contact = null;
         ChatRoom chatRoom = null;
 
@@ -844,9 +811,8 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * @return the display name of this contact source
      */
     @Override
-    public String getDisplayName()
-    {
-        return aTalkApp.getResString(R.string.service_gui_RECENT_MESSAGES);
+    public String getDisplayName() {
+        return aTalkApp.getResString(R.string.recent_messages);
     }
 
     /**
@@ -855,8 +821,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * @return the type of this contact source
      */
     @Override
-    public int getType()
-    {
+    public int getType() {
         return sourceServiceType;
     }
 
@@ -866,8 +831,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * @return the index of the contact source in the result list
      */
     @Override
-    public int getIndex()
-    {
+    public int getIndex() {
         return 0;
     }
 
@@ -875,10 +839,10 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * Returns the index of the source contact, in the list of recent messages.
      *
      * @param messageSourceContact search item
+     *
      * @return index of recentMessages containing the messageSourceContact
      */
-    int getIndex(MessageSourceContact messageSourceContact)
-    {
+    int getIndex(MessageSourceContact messageSourceContact) {
         synchronized (recentMessages) {
             for (int i = 0; i < recentMessages.size(); i++)
                 if (recentMessages.get(i).getContact().equals(messageSourceContact.getContact()))
@@ -891,11 +855,11 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * Creates query for the given <code>searchString</code>.
      *
      * @param queryString the string to search for
+     *
      * @return the created query
      */
     @Override
-    public ContactQuery createContactQuery(String queryString)
-    {
+    public ContactQuery createContactQuery(String queryString) {
         recentQuery = (MessageSourceContactQuery) createContactQuery(queryString, numberOfMessages);
         return recentQuery;
     }
@@ -905,12 +869,12 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      *
      * @param queryString the string to search for
      * @param contactCount the maximum count of result contacts
+     *
      * @return the created query
      */
     @Override
-    public ContactQuery createContactQuery(String queryString, int contactCount)
-    {
-        if(StringUtils.isNotEmpty(queryString))
+    public ContactQuery createContactQuery(String queryString, int contactCount) {
+        if (StringUtils.isNotEmpty(queryString))
             return null;
         recentQuery = new MessageSourceContactQuery(MessageSourceService.this);
         return recentQuery;
@@ -919,8 +883,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     /**
      * Object used to cache recent messages.
      */
-    private class ComparableEvtObj implements Comparable<ComparableEvtObj>
-    {
+    private static class ComparableEvtObj implements Comparable<ComparableEvtObj> {
         private EventObject eventObject;
 
         /**
@@ -953,8 +916,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
          *
          * @param source used to extract initial values.
          */
-        ComparableEvtObj(EventObject source)
-        {
+        ComparableEvtObj(EventObject source) {
             update(source);
         }
 
@@ -963,8 +925,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
          *
          * @param source the eventObject to retrieve information
          */
-        public void update(EventObject source)
-        {
+        public void update(EventObject source) {
             this.eventObject = source;
 
             if (source instanceof MessageDeliveredEvent) {
@@ -1003,8 +964,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 
         @NotNull
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "ComparableEvtObj{" + "address='" + address + '\'' + "," + " ppService=" + ppService + '}';
         }
 
@@ -1013,8 +973,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
          *
          * @return the timestamp of the message.
          */
-        public Date getTimestamp()
-        {
+        public Date getTimestamp() {
             return timestamp;
         }
 
@@ -1023,8 +982,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
          *
          * @return the contact.
          */
-        public Contact getContact()
-        {
+        public Contact getContact() {
             return contact;
         }
 
@@ -1033,8 +991,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
          *
          * @return the room.
          */
-        public ChatRoom getRoom()
-        {
+        public ChatRoom getRoom() {
             return room;
         }
 
@@ -1043,8 +1000,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
          *
          * @return the protocol provider.
          */
-        public ProtocolProviderService getProtocolProviderService()
-        {
+        public ProtocolProviderService getProtocolProviderService() {
             return ppService;
         }
 
@@ -1053,8 +1009,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
          *
          * @return the address.
          */
-        public String getContactAddress()
-        {
+        public String getContactAddress() {
             return this.address;
         }
 
@@ -1063,8 +1018,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
          *
          * @return the event object.
          */
-        public EventObject getEventObject()
-        {
+        public EventObject getEventObject() {
             return eventObject;
         }
 
@@ -1072,11 +1026,11 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
          * Compares two ComparableEvtObj.
          *
          * @param o the object to compare with
+         *
          * @return 0, less than zero, greater than zero, if equals, less or greater.
          */
         @Override
-        public int compareTo(@NonNull ComparableEvtObj o)
-        {
+        public int compareTo(@NonNull ComparableEvtObj o) {
             if (o.getTimestamp() == null)
                 return 1;
 
@@ -1088,11 +1042,11 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
          * the supplied <code>Object</code> is instance of MessageSourceContact.
          *
          * @param o the object to check.
+         *
          * @return <code>true</code> if equals.
          */
         @Override
-        public boolean equals(Object o)
-        {
+        public boolean equals(Object o) {
             if (this == o)
                 return true;
             if (o == null || (!(o instanceof MessageSourceContact) && getClass() != o.getClass()))
@@ -1111,8 +1065,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             int result = address.hashCode();
             result = 31 * result + ppService.hashCode();
             return result;
@@ -1123,8 +1076,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * Permanently removes all locally stored message history, remove recent contacts.
      */
     public void eraseLocallyStoredHistory()
-            throws IOException
-    {
+            throws IOException {
         List<ComparableEvtObj> toRemove;
         synchronized (recentMessages) {
             toRemove = new ArrayList<>(recentMessages);
@@ -1142,8 +1094,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * Permanently removes locally stored message history for the metaContact, remove any recent contacts if any.
      */
     public void eraseLocallyStoredHistory(MetaContact metaContact, List<Date> mhsTimeStamp)
-            throws IOException
-    {
+            throws IOException {
         List<ComparableEvtObj> toRemove;
         synchronized (recentMessages) {
             toRemove = new ArrayList<>();
@@ -1183,8 +1134,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     /**
      * Permanently removes locally stored message history for the chatRoom, remove any recent contacts if any.
      */
-    public void eraseLocallyStoredHistory(ChatRoom room)
-    {
+    public void eraseLocallyStoredHistory(ChatRoom room) {
         ComparableEvtObj toRemove = null;
         synchronized (recentMessages) {
             for (ComparableEvtObj msg : recentMessages) {

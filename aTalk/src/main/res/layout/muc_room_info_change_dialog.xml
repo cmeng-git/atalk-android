@@ -9,13 +9,13 @@
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_CHATROOM" />
+        android:text="@string/chatroom" />
 
     <EditText
         android:id="@+id/chatRoom_Jid"
         style="@style/EntryTextView"
         android:layout_width="match_parent"
-        android:text="@string/service_gui_CHATROOM"
+        android:text="@string/chatroom"
         android:enabled="false" />
 
     <LinearLayout
@@ -30,7 +30,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_NICKNAME_LABEL" />
+            android:text="@string/nickname" />
 
         <EditText
             android:id="@+id/NickName_Edit"
@@ -50,12 +50,12 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/chatRoom_Subject" />
+            android:text="@string/subject" />
 
         <EditText
             android:id="@+id/chatRoom_Subject_Edit"
             style="@style/EntryTextView"
-            android:hint="@string/service_gui_GROUP_CHAT"
+            android:hint="@string/group_chat"
             android:layout_width="match_parent" />
     </LinearLayout>
 

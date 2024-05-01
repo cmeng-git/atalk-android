@@ -44,7 +44,7 @@
                 android:layout_width="@dimen/avatar_height"
                 android:layout_height="@dimen/avatar_height"
                 android:layout_gravity="center_horizontal"
-                android:contentDescription="@string/service_gui_CALL"
+                android:contentDescription="@string/call_audio"
                 android:paddingBottom="@dimen/between_padding"
                 android:scaleType="fitXY"
                 android:src="@drawable/person_photo" />
@@ -146,7 +146,7 @@
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/gui_call_hold"
+            android:contentDescription="@string/call_on_hold"
             android:focusable="true"
             android:src="@drawable/call_back_to_chat_dark" />
 
@@ -158,7 +158,7 @@
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/service_gui_VOLUME_CONTROL_TOOL_TIP"
+            android:contentDescription="@string/volume_control_tooltip"
             android:focusable="true"
             android:src="@drawable/call_receiver_on_dark" />
 
@@ -170,7 +170,7 @@
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/service_gui_MUTE_BUTTON_TOOL_TIP"
+            android:contentDescription="@string/btn_mute_tooltip"
             android:focusable="true"
             android:src="@drawable/call_microphone_dark" />
 
@@ -182,7 +182,7 @@
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP"
+            android:contentDescription="@string/btn_video_tooltip"
             android:focusable="true"
             android:src="@drawable/call_video_dark" />
 
@@ -194,7 +194,7 @@
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/gui_call_hold"
+            android:contentDescription="@string/call_on_hold"
             android:focusable="true"
             android:src="@drawable/call_hold_on_dark" />
 
@@ -206,7 +206,7 @@
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/gui_call_transfer_call"
+            android:contentDescription="@string/call_transfer_call"
             android:focusable="true"
             android:src="@drawable/call_transfer_dark" />
 
@@ -218,7 +218,7 @@
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/gui_call_hang_up"
+            android:contentDescription="@string/call_hang_up"
             android:focusable="true"
             android:src="@drawable/call_hangup" />
     </LinearLayout>

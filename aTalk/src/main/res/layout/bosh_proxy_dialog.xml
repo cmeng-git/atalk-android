@@ -16,7 +16,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/plugin_bosh_proxy_TYPE" />
+            android:text="@string/bosh_proxy_type" />
 
         <Spinner
             android:id="@+id/boshProxyType"
@@ -43,13 +43,13 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/plugin_proxy_PROXY_BOSH_URL" />
+                android:text="@string/bosh_proxy_url" />
 
             <EditText
                 android:id="@+id/boshURL"
                 style="@style/EntryTextView"
                 android:layout_width="match_parent"
-                android:hint="@string/service_gui_PROXY_BOSH_URL_HINT"/>
+                android:hint="@string/bosh_url_hint"/>
         </LinearLayout>
 
         <CheckBox
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
-            android:text="@string/plugin_proxy_PROXY_BOSH_USE_HTTP" />
+            android:text="@string/bosh_proxy_use_http" />
     </LinearLayout>
 
     <LinearLayout
@@ -72,7 +72,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/plugin_proxy_PROXY_HOST" />
+            android:text="@string/bosh_proxy_host" />
 
         <EditText
             android:id="@+id/proxyHost"
@@ -91,7 +91,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/plugin_proxy_PROXY_PORT" />
+            android:text="@string/bosh_proxy_port" />
 
         <EditText
             android:id="@+id/proxyPort"
@@ -110,7 +110,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_USERNAME" />
+            android:text="@string/username_" />
 
         <EditText
             android:id="@+id/proxyUsername"
@@ -129,7 +129,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_PASSWORD" />
+            android:text="@string/password_" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -166,12 +166,12 @@
         <Button
             android:id="@+id/button_Cancel"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/button_Apply"
             style="@style/ButtonTop"
             android:layout_marginLeft="2dp"
-            android:text="@string/service_gui_APPLY" />
+            android:text="@string/apply" />
     </LinearLayout>
 </LinearLayout>

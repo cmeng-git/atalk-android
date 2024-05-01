@@ -238,7 +238,7 @@ public class TelephonyFragment extends OSGiFragment
         }
         if (recipient == null) {
             // aTalkApp.showToastMessage(R.string.service_gui_NO_ONLINE_TELEPHONY_ACCOUNT);
-            aTalkApp.showToastMessage(R.string.service_gui_NO_CONTACT_PHONE);
+            aTalkApp.showToastMessage(R.string.contact_phone_empty);
             return;
         }
 

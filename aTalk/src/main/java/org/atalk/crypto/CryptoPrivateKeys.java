@@ -31,6 +31,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.plugin.otr.ScOtrKeyManager;
 import net.java.sip.communicator.service.protocol.AccountID;
@@ -52,13 +59,6 @@ import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import timber.log.Timber;
 
 /**
@@ -66,8 +66,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class CryptoPrivateKeys extends OSGiActivity
-{
+public class CryptoPrivateKeys extends OSGiActivity {
     private static final String OTR = "OTR:";
     private static final String OMEMO = "OMEMO:";
 
@@ -90,8 +89,7 @@ public class CryptoPrivateKeys extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_layout);
 
@@ -106,8 +104,7 @@ public class CryptoPrivateKeys extends OSGiActivity
      *
      * @return the map of all known accounts with bareJid as key.
      */
-    Map<String, String> getDeviceFingerPrints()
-    {
+    Map<String, String> getDeviceFingerPrints() {
         String deviceJid;
 
         // Get all the registered protocolProviders
@@ -144,7 +141,7 @@ public class CryptoPrivateKeys extends OSGiActivity
             accountList.put(deviceJid, accountId);
         }
         if (deviceFingerprints.isEmpty())
-            deviceFingerprints.put(aTalkApp.getResString(R.string.service_gui_settings_CRYPTO_PRIV_KEYS_EMPTY), "");
+            deviceFingerprints.put(aTalkApp.getResString(R.string.settings_crypto_priv_key_empty), "");
         return deviceFingerprints;
     }
 
@@ -152,8 +149,7 @@ public class CryptoPrivateKeys extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
-    {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         getMenuInflater().inflate(R.menu.crypto_key_ctx_menu, menu);
 
@@ -170,8 +166,7 @@ public class CryptoPrivateKeys extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public boolean onContextItemSelected(MenuItem item)
-    {
+    public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int pos = info.position;
         String bareJid = accountsAdapter.getBareJidFromRow(pos);
@@ -192,7 +187,7 @@ public class CryptoPrivateKeys extends OSGiActivity
                 String privateKey = accountsAdapter.getOwnKeyFromRow(pos);
                 ClipboardManager cbManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 cbManager.setPrimaryClip(ClipData.newPlainText(null, CryptoHelper.prettifyFingerprint(privateKey)));
-                Toast.makeText(this, R.string.crypto_toast_FINGERPRINT_COPY, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.crypto_fingerprint_copy, Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onContextItemSelected(item);
@@ -204,20 +199,19 @@ public class CryptoPrivateKeys extends OSGiActivity
      * @param bareJid the account bareJid
      * @param isKeyExist <code>true</code>if key exist
      */
-    private void showGenerateKeyAlert(final String bareJid, boolean isKeyExist)
-    {
+    private void showGenerateKeyAlert(final String bareJid, boolean isKeyExist) {
         final AccountID accountId = accountList.get(bareJid);
-        int getResStrId = isKeyExist ? R.string.crypto_dialog_KEY_REGENERATE_QUESTION
-                : R.string.crypto_dialog_KEY_GENERATE_QUESTION;
+        int getResStrId = isKeyExist ? R.string.crypto_key_regenerate_prompt
+                : R.string.crypto_key_generate_prompt;
 
         String warnMsg = bareJid.startsWith(OMEMO)
-                ? getString(R.string.pref_omemo_regenerate_identities_summary) : "";
+                ? getString(R.string.omemo_regenerate_identities_summary) : "";
         String message = getString(getResStrId, bareJid, warnMsg);
 
         AlertDialog.Builder b = new AlertDialog.Builder(this);
-        b.setTitle(R.string.crypto_dialog_KEY_GENERATE_TITLE)
+        b.setTitle(R.string.crypto_key_generate_title)
                 .setMessage(message)
-                .setPositiveButton(R.string.service_gui_PROCEED, (dialog, which) -> {
+                .setPositiveButton(R.string.proceed, (dialog, which) -> {
                     if (accountId != null) {
                         if (bareJid.startsWith(OMEMO))
                             regenerate(accountId);
@@ -226,7 +220,7 @@ public class CryptoPrivateKeys extends OSGiActivity
                     }
                     accountsAdapter.notifyDataSetChanged();
                 })
-                .setNegativeButton(R.string.service_gui_CANCEL, (dialog, which) -> dialog.dismiss()).show();
+                .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss()).show();
     }
 
     /**
@@ -234,8 +228,7 @@ public class CryptoPrivateKeys extends OSGiActivity
      *
      * @param accountId the accountID
      */
-    private void regenerate(AccountID accountId)
-    {
+    private void regenerate(AccountID accountId) {
         OmemoStore omemoStore = OmemoService.getInstance().getOmemoStoreBackend();
         ((SQLiteOmemoStore) omemoStore).regenerate(accountId);
     }
@@ -243,8 +236,7 @@ public class CryptoPrivateKeys extends OSGiActivity
     /**
      * Adapter which displays privateKeys for the given list of accounts.
      */
-    private class PrivateKeyListAdapter extends BaseAdapter
-    {
+    private class PrivateKeyListAdapter extends BaseAdapter {
         /**
          * The list of currently displayed devices and FingerPrints.
          */
@@ -256,8 +248,7 @@ public class CryptoPrivateKeys extends OSGiActivity
          *
          * @param fingerprintList list of <code>device</code> for which OMEMO/OTR fingerprints will be displayed.
          */
-        PrivateKeyListAdapter(Map<String, String> fingerprintList)
-        {
+        PrivateKeyListAdapter(Map<String, String> fingerprintList) {
             deviceJid = new ArrayList<>(fingerprintList.keySet());
             deviceFP = new ArrayList<>(fingerprintList.values());
         }
@@ -266,8 +257,7 @@ public class CryptoPrivateKeys extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return deviceFP.size();
         }
 
@@ -275,8 +265,7 @@ public class CryptoPrivateKeys extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public Object getItem(int position)
-        {
+        public Object getItem(int position) {
             return getBareJidFromRow(position);
         }
 
@@ -284,8 +273,7 @@ public class CryptoPrivateKeys extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public long getItemId(int position)
-        {
+        public long getItemId(int position) {
             return position;
         }
 
@@ -293,8 +281,7 @@ public class CryptoPrivateKeys extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public View getView(int position, View rowView, ViewGroup parent)
-        {
+        public View getView(int position, View rowView, ViewGroup parent) {
             if (rowView == null)
                 rowView = getLayoutInflater().inflate(R.layout.crypto_privkey_list_row, parent, false);
 
@@ -304,19 +291,17 @@ public class CryptoPrivateKeys extends OSGiActivity
             String fingerprint = getOwnKeyFromRow(position);
             String fingerprintStr = fingerprint;
             if (StringUtils.isEmpty(fingerprint)) {
-                fingerprintStr = getString(R.string.crypto_NO_KEY_PRESENT);
+                fingerprintStr = getString(R.string.crypto_no_key_present);
             }
             ViewUtil.setTextViewValue(rowView, R.id.fingerprint, CryptoHelper.prettifyFingerprint(fingerprintStr));
             return rowView;
         }
 
-        String getBareJidFromRow(int row)
-        {
+        String getBareJidFromRow(int row) {
             return deviceJid.get(row);
         }
 
-        String getOwnKeyFromRow(int row)
-        {
+        String getOwnKeyFromRow(int row) {
             return deviceFP.get(row);
         }
     }

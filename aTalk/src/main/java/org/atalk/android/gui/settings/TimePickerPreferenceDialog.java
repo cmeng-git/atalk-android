@@ -29,14 +29,12 @@ import androidx.preference.PreferenceDialogFragmentCompat;
  *
  * @author Eng Chong Meng
  */
-public class TimePickerPreferenceDialog extends PreferenceDialogFragmentCompat
-{
+public class TimePickerPreferenceDialog extends PreferenceDialogFragmentCompat {
     public final static String ARG_KEY = "key";
 
     private TimePicker timePicker = null;
 
-    public static TimePickerPreferenceDialog newInstance(TimePreference pref)
-    {
+    public static TimePickerPreferenceDialog newInstance(TimePreference pref) {
         TimePickerPreferenceDialog dialogFragment = new TimePickerPreferenceDialog();
         Bundle args = new Bundle(1);
         args.putString(ARG_KEY, pref.getKey());
@@ -46,13 +44,13 @@ public class TimePickerPreferenceDialog extends PreferenceDialogFragmentCompat
 
     /**
      * Generate the TimePicker to be displayed
+     *
      * @param context Context
      *
      * @return a reference copy of the TimePicker
      */
     @Override
-    protected View onCreateDialogView(Context context)
-    {
+    protected View onCreateDialogView(Context context) {
         timePicker = new TimePicker(context);
         timePicker.setIs24HourView(android.text.format.DateFormat.is24HourFormat(getContext()));
         return timePicker;
@@ -60,11 +58,11 @@ public class TimePickerPreferenceDialog extends PreferenceDialogFragmentCompat
 
     /**
      * Get the TimePreference to set that value into the TimePicker.
+     *
      * @param v View
      */
     @Override
-    protected void onBindDialogView(View v)
-    {
+    protected void onBindDialogView(View v) {
         super.onBindDialogView(v);
         TimePreference pref = (TimePreference) getPreference();
         long time = pref.getPersistedValue();
@@ -79,8 +77,7 @@ public class TimePickerPreferenceDialog extends PreferenceDialogFragmentCompat
      * @param positiveResult true if changed
      */
     @Override
-    public void onDialogClosed(boolean positiveResult)
-    {
+    public void onDialogClosed(boolean positiveResult) {
         // Save the user changed settings
         if (positiveResult) {
             TimePreference pref = (TimePreference) getPreference();

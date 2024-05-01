@@ -24,13 +24,11 @@ import net.java.sip.communicator.util.SimpleServiceActivator;
  *
  * @author Eng Chong Meng
  */
-public class UpdateActivator extends SimpleServiceActivator<UpdateService>
-{
+public class UpdateActivator extends SimpleServiceActivator<UpdateService> {
     /**
      * Creates new instance of <code>UpdateActivator</code>.
      */
-    public UpdateActivator()
-    {
+    public UpdateActivator() {
         super(UpdateService.class, "Android dummy update service");
     }
 
@@ -38,8 +36,7 @@ public class UpdateActivator extends SimpleServiceActivator<UpdateService>
      * {@inheritDoc}
      */
     @Override
-    protected UpdateService createServiceImpl()
-    {
+    protected UpdateService createServiceImpl() {
         return new UpdateServiceImpl();
     }
 }

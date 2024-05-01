@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <searchable xmlns:android="http://schemas.android.com/apk/res/android"
-    android:label="@string/APPLICATION_NAME"
-    android:hint="@string/service_gui_ENTER_NAME_OR_NUMBER" >
+    android:label="@string/application_name"
+    android:hint="@string/enter_name_or_number" >
 </searchable>

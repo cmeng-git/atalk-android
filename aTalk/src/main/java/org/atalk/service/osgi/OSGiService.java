@@ -32,7 +32,7 @@ public class OSGiService extends Service
     /**
      * The ID of aTalk notification icon
      */
-    private static int GENERAL_NOTIFICATION_ID = R.string.APPLICATION_NAME;
+    private static final int GENERAL_NOTIFICATION_ID = R.string.application_name;
 
     /**
      * Indicates that aTalk is running in foreground mode and its icon is being displayed on android notification tray.
@@ -140,7 +140,7 @@ public class OSGiService extends Service
      */
     private void showIcon()
     {
-        String title = getResources().getString(R.string.APPLICATION_NAME);
+        String title = getResources().getString(R.string.application_name);
         // The intent to launch when the user clicks the expanded notification
         PendingIntent pendIntent = aTalkApp.getaTalkIconIntent();
 

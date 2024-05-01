@@ -4,19 +4,19 @@
     <item
         android:id="@+id/remove"
         android:icon="@drawable/ic_account_delete_dark"
-        android:title="@string/service_gui_REMOVE_ACCOUNT" />
+        android:title="@string/remove_account" />
 
     <item
         android:id="@+id/account_settings"
         android:icon="@drawable/ic_account_edit_dark"
-        android:title="@string/service_gui_ACCOUNT_SETTINGS" />
+        android:title="@string/account_settings" />
 
     <item
         android:id="@+id/account_info"
         android:icon="@drawable/ic_account_edit_dark"
-        android:title="@string/plugin_accountinfo_TITLE" />
+        android:title="@string/accountinfo_title" />
 
     <item
         android:id="@+id/account_cancel"
-        android:title="@string/service_gui_CANCEL" />
+        android:title="@string/cancel" />
 </menu>

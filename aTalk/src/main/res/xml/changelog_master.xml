@@ -6,8 +6,23 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="4.0.1 (03/28/2024)" versioncode="400010">
+    <release version="4.0.2 (05/01/2024)" versioncode="400020">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Add new permissions required for API-34 and change UI to support</change>
+        <change>Add 'App Info' option in main menu to view/change aTalk permission settings; different android devices have own implementations</change>
+        <change>Check and skip process for duplicated presence with caps sent from server</change>
+        <change>Must handle userCapsNode Notify for contact going offline for fullJid; else call options on UI are not updated</change>
+        <change>ReImplement ServiceDiscoveryHelper discoverInfoNonBlocking() to minimize device ANR</change>
+        <change>Fix send file status not being updated to DB, and remain at STATUS_WAITING; accidentally commented out since v3.2.2</change>
+        <change>Http Download to proceed with auto-download only if the file size from server is known</change>
+        <change>Execute purgeCorruptedOmemoKey() in new Thread to avoid ANR</change>
+        <change>Upgrade smack libraries to 4.4.8</change>
+        <change>Migrate com.google.android.exoplayer:exoplayer:2.19.1 to androidx.media3:media3-exoplayer:1.3.1</change>
+        <change>Simplify String parameter names and clean up unused resources</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="4.0.1 (03/28/2024)" versioncode="400010">
         <change>Removal of a contact shall purge all its associated history messages, call records and its sessionUuid</change>
         <change>Update 'Recent conversations' interface to disable multi-item selection; and allow purge of orphan chat session</change>
         <change>Add support to delete history messages based on sessionUuid i.e. no associated contact or chatRoom</change>
@@ -85,7 +100,6 @@
         <change>JingleFile transfer AbstractMethodError remained; disabled for aTalk release. Awaiting Google time solution feedback</change>
         <change>Bug fixes and enhancements</change>
     </release>
-
 
     <release version="3.3.4 (02/03/2024)" versioncode="303040">
         <change>Drop butterknife-compiler:10.2.3 dependency and remove jdk-15 max restriction; use android View binding class instead</change>

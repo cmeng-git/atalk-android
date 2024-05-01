@@ -1249,7 +1249,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         String entityJid = chatSession.getChatEntity();
         AccountID accountUid = chatSession.getCurrentChatTransport().getProtocolProvider().getAccountID();
 
-        if (StringUtils.isEmpty(entityJid) || entityJid.equals(aTalkApp.getResString(R.string.service_gui_UNKNOWN))
+        if (StringUtils.isEmpty(entityJid) || entityJid.equals(aTalkApp.getResString(R.string.unknown))
                 || (accountUid == null))
             return 0;
 

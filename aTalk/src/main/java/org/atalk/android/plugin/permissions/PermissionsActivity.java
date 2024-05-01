@@ -28,7 +28,6 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -40,6 +39,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -58,12 +60,9 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.databinding.PermissionsActivityBinding;
+import org.atalk.android.databinding.PermissionsUiBinding;
 import org.atalk.android.gui.Splash;
 import org.atalk.service.SystemEventReceiver;
-
-import java.util.LinkedList;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -71,17 +70,19 @@ import timber.log.Timber;
  * Sample activity showing the permission request process with Dexter.
  */
 public class PermissionsActivity extends BaseActivity {
-    private PermissionsActivityBinding mBinding;
+    private PermissionsUiBinding mBinding;
 
     private MultiplePermissionsListener allPermissionsListener;
     private MultiplePermissionsListener dialogMultiplePermissionsListener;
     private PermissionListener cameraPermissionListener;
     private PermissionListener contactsPermissionListener;
     private PermissionListener locationPermissionListener;
-    private PermissionListener audioPermissionListener;
+    private PermissionListener micPermissionListener;
+    private PermissionListener musicPermissionListener;
     private PermissionListener phonePermissionListener;
-    private PermissionListener storagePermissionListener;
+    private MultiplePermissionsListener videoPermissionListener;
     private PermissionListener notificationsPermissionListener;
+    private PermissionListener storagePermissionListener;
     private PermissionRequestErrorListener errorListener;
 
     private ActivityResultLauncher<Void> mBatteryOptimization;
@@ -92,14 +93,20 @@ public class PermissionsActivity extends BaseActivity {
     protected static List<String> permissionList = new LinkedList<>();
 
     static {
-        permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissionList.add(Manifest.permission.CAMERA);
         permissionList.add(Manifest.permission.READ_CONTACTS);
-        permissionList.add(Manifest.permission.READ_PHONE_STATE);
+        permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissionList.add(Manifest.permission.RECORD_AUDIO);
+        permissionList.add(Manifest.permission.READ_PHONE_STATE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionList.add(Manifest.permission.READ_MEDIA_AUDIO);
+            permissionList.add(Manifest.permission.READ_MEDIA_VIDEO);
+            permissionList.add(Manifest.permission.READ_MEDIA_IMAGES);
             permissionList.add(Manifest.permission.POST_NOTIFICATIONS);
+        }
+        else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+            permissionList.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
         }
         else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -119,7 +126,7 @@ public class PermissionsActivity extends BaseActivity {
                 startActivity(intent);
             }
 
-            mBinding = PermissionsActivityBinding.inflate(getLayoutInflater());
+            mBinding = PermissionsUiBinding.inflate(getLayoutInflater());
             View view = mBinding.getRoot();
             setContentView(view);
             initView();
@@ -145,6 +152,11 @@ public class PermissionsActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     private void startLauncher() {
         Class<?> activityClass = aTalkApp.getHomeScreenActivityClass();
         Intent i = new Intent(this, activityClass);
@@ -155,39 +167,31 @@ public class PermissionsActivity extends BaseActivity {
     }
 
     private void initView() {
-        Button button_storage = mBinding.storagePermissionButton;
-        // handler for WRITE_EXTERNAL_STORAGE pending android API
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            mBinding.storagePermissionFeedback.setText(R.string.permission_granted_feedback);
-            button_storage.setEnabled(false);
-        }
-        else {
-            button_storage.setEnabled(true);
-            button_storage.setOnClickListener(v -> onStoragePermissionButtonClicked());
-        }
-
-        // POST_NOTIFICATIONS is only valid for API-33 (TIRAMISU)
-        TextView notificationsPermissionFeedbackView = mBinding.notificationsPermissionFeedback;
-        Button button_notifications = mBinding.notificationsPermissionButton;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            notificationsPermissionFeedbackView.setVisibility(View.VISIBLE);
-            button_notifications.setVisibility(View.VISIBLE);
-            button_notifications.setOnClickListener(v -> onNotificationsPermissionButtonClicked());
-        }
-        else {
-            notificationsPermissionFeedbackView.setVisibility(View.GONE);
-            button_notifications.setVisibility(View.GONE);
-        }
-
         mBinding.cameraPermissionButton.setOnClickListener(v -> onCameraPermissionButtonClicked());
         mBinding.contactsPermissionButton.setOnClickListener(v -> onContactsPermissionButtonClicked());
         mBinding.locationPermissionButton.setOnClickListener(v -> onLocationPermissionButtonClicked());
-        mBinding.audioPermissionButton.setOnClickListener(v -> onAudioPermissionButtonClicked());
+        mBinding.micPermissionButton.setOnClickListener(v -> onMicPermissionButtonClicked());
         mBinding.phonePermissionButton.setOnClickListener(v -> onPhonePermissionButtonClicked());
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            mBinding.musicPermissionButton.setOnClickListener(v -> onMusicPermissionButtonClicked());
+            mBinding.videoPermissionButton.setOnClickListener(v -> onVideoPermissionButtonClicked());
+            mBinding.notificationsPermissionButton.setOnClickListener(v -> onNotificationsPermissionButtonClicked());
+
+            mBinding.storageView.setVisibility(View.GONE);
+        } else {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                mBinding.storageView.setVisibility(View.GONE);
+            } else {
+                mBinding.storagePermissionButton.setOnClickListener(v -> onStoragePermissionButtonClicked());
+            }
+            mBinding.musicView.setVisibility(View.GONE);
+            mBinding.videoView.setVisibility(View.GONE);
+            mBinding.notificationsView.setVisibility(View.GONE);
+        }
+
         mBinding.allPermissionsButton.setOnClickListener(v -> onAllPermissionsButtonClicked());
-        mBinding.appInfoPermissionsButton.setOnClickListener(v -> onInfoButtonClicked());
+        mBinding.appInfoPermissionsButton.setOnClickListener(v -> onInfoButtonClicked(this));
         mBinding.buttonDone.setOnClickListener(v -> onDoneButtonClicked());
     }
 
@@ -220,14 +224,6 @@ public class PermissionsActivity extends BaseActivity {
                 .check();
     }
 
-    public void onAudioPermissionButtonClicked() {
-        Dexter.withContext(this)
-                .withPermission(Manifest.permission.RECORD_AUDIO)
-                .withListener(audioPermissionListener)
-                .withErrorListener(errorListener)
-                .check();
-    }
-
     public void onCameraPermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.CAMERA)
@@ -240,6 +236,23 @@ public class PermissionsActivity extends BaseActivity {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.READ_CONTACTS)
                 .withListener(contactsPermissionListener)
+                .withErrorListener(errorListener)
+                .check();
+    }
+
+    public void onMicPermissionButtonClicked() {
+        Dexter.withContext(this)
+                .withPermission(Manifest.permission.RECORD_AUDIO)
+                .withListener(micPermissionListener)
+                .withErrorListener(errorListener)
+                .check();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    public void onMusicPermissionButtonClicked() {
+        Dexter.withContext(this)
+                .withPermission(Manifest.permission.READ_MEDIA_AUDIO)
+                .withListener(musicPermissionListener)
                 .withErrorListener(errorListener)
                 .check();
     }
@@ -269,6 +282,16 @@ public class PermissionsActivity extends BaseActivity {
                 .check();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    // READ_MEDIA_VIDEO and READ_MEDIA_IMAGES; need to request only one.
+    public void onVideoPermissionButtonClicked() {
+        Dexter.withContext(this)
+                .withPermissions(Manifest.permission.READ_MEDIA_VIDEO, Manifest.permission.READ_MEDIA_IMAGES)
+                .withListener(videoPermissionListener)
+                .withErrorListener(errorListener)
+                .check();
+    }
+
     public void onStoragePermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -277,12 +300,12 @@ public class PermissionsActivity extends BaseActivity {
                 .check();
     }
 
-    public void onInfoButtonClicked() {
+    public static void onInfoButtonClicked(Context context) {
         Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                Uri.parse("package:" + this.getPackageName()));
+                Uri.parse("package:" + context.getPackageName()));
         myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
         myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(myAppSettings);
+        context.startActivity(myAppSettings);
     }
 
     public void showPermissionRationale(final PermissionToken token) {
@@ -375,7 +398,7 @@ public class PermissionsActivity extends BaseActivity {
     public void showPermissionGranted(String permission) {
         TextView feedbackView = getFeedbackViewForPermission(permission);
         if (feedbackView != null) {
-            feedbackView.setText(R.string.permission_granted_feedback);
+            feedbackView.setText(R.string.permission_granted);
             feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_granted));
         }
     }
@@ -389,7 +412,7 @@ public class PermissionsActivity extends BaseActivity {
         TextView feedbackView = getFeedbackViewForPermission(permission);
         if (feedbackView != null) {
             feedbackView.setText(isPermanentlyDenied
-                    ? R.string.permission_permanently_denied_feedback : R.string.permission_denied_feedback);
+                    ? R.string.permission_denied_permanently : R.string.permission_denied);
             feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_denied));
         }
     }
@@ -398,97 +421,109 @@ public class PermissionsActivity extends BaseActivity {
      * Initialize all the permission listener required actions
      */
     private void createPermissionListeners() {
-        PermissionListener dialogOnDeniedPermissionListener;
-        PermissionListener feedbackViewPermissionListener = new AppPermissionListener(this);
-        MultiplePermissionsListener feedbackViewMultiplePermissionListener = new MultiplePermissionListener(this);
+        PermissionListener deniedPermissionListener;
+        PermissionListener fbPermissionListener = new AppPermissionListener(this);
+
+        DialogOnAnyDeniedMultiplePermissionsListener anyDeniedPermissionListener;
+        MultiplePermissionsListener fbMultiplePermissionListener = new MultiplePermissionListener(this);
 
         View contentView = findViewById(android.R.id.content);
-        allPermissionsListener = new CompositeMultiplePermissionsListener(feedbackViewMultiplePermissionListener,
+        allPermissionsListener = new CompositeMultiplePermissionsListener(fbMultiplePermissionListener,
                 SnackbarOnAnyDeniedMultiplePermissionsListener.Builder
                         .with(contentView, R.string.all_permissions_denied_feedback)
                         .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
                         .build());
 
-        DialogOnAnyDeniedMultiplePermissionsListener dialogOnAnyDeniedPermissionListener
-                = DialogOnAnyDeniedMultiplePermissionsListener.Builder
+        anyDeniedPermissionListener = DialogOnAnyDeniedMultiplePermissionsListener.Builder
                 .withContext(this)
                 .withTitle(R.string.all_permission_denied_dialog_title)
                 .withMessage(R.string.all_permissions_denied_feedback)
                 .withButtonText(android.R.string.ok)
                 .withIcon(R.drawable.ic_icon)
                 .build();
-        dialogMultiplePermissionsListener = new CompositeMultiplePermissionsListener(
-                feedbackViewMultiplePermissionListener, dialogOnAnyDeniedPermissionListener);
+        dialogMultiplePermissionsListener
+                = new CompositeMultiplePermissionsListener(fbMultiplePermissionListener, anyDeniedPermissionListener);
 
-        dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
-                .withContext(this)
-                .withTitle(R.string.audio_permission_denied_dialog_title)
-                .withMessage(R.string.audio_permission_denied_feedback)
-                .withButtonText(android.R.string.ok)
-                .withIcon(R.drawable.ic_icon)
-                .build();
-        audioPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
-                dialogOnDeniedPermissionListener);
-
-        dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
+        deniedPermissionListener = DialogOnDeniedPermissionListener.Builder
                 .withContext(this)
                 .withTitle(R.string.camera_permission_denied_dialog_title)
                 .withMessage(R.string.camera_permission_denied_feedback)
                 .withButtonText(android.R.string.ok)
                 .withIcon(R.drawable.ic_icon)
                 .build();
-        cameraPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
-                dialogOnDeniedPermissionListener);
+        cameraPermissionListener = new CompositePermissionListener(fbPermissionListener, deniedPermissionListener);
 
-        dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
+        deniedPermissionListener = DialogOnDeniedPermissionListener.Builder
                 .withContext(this)
                 .withTitle(R.string.contacts_permission_denied_dialog_title)
                 .withMessage(R.string.contacts_permission_denied_feedback)
                 .withButtonText(android.R.string.ok)
                 .withIcon(R.drawable.ic_icon)
                 .build();
-        contactsPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
-                dialogOnDeniedPermissionListener);
+        contactsPermissionListener = new CompositePermissionListener(fbPermissionListener, deniedPermissionListener);
 
-        dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
+        deniedPermissionListener = DialogOnDeniedPermissionListener.Builder
+                .withContext(this)
+                .withTitle(R.string.mic_permission_denied_dialog_title)
+                .withMessage(R.string.mic_permission_denied_feedback)
+                .withButtonText(android.R.string.ok)
+                .withIcon(R.drawable.ic_icon)
+                .build();
+        micPermissionListener = new CompositePermissionListener(fbPermissionListener, deniedPermissionListener);
+
+        deniedPermissionListener = DialogOnDeniedPermissionListener.Builder
+                .withContext(this)
+                .withTitle(R.string.music_permission_denied_dialog_title)
+                .withMessage(R.string.music_permission_denied_feedback)
+                .withButtonText(android.R.string.ok)
+                .withIcon(R.drawable.ic_icon)
+                .build();
+        musicPermissionListener = new CompositePermissionListener(fbPermissionListener, deniedPermissionListener);
+
+        deniedPermissionListener = DialogOnDeniedPermissionListener.Builder
                 .withContext(this)
                 .withTitle(R.string.location_permission_denied_dialog_title)
                 .withMessage(R.string.location_permission_denied_feedback)
                 .withButtonText(android.R.string.ok)
                 .withIcon(R.drawable.ic_icon)
                 .build();
-        locationPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
-                dialogOnDeniedPermissionListener);
+        locationPermissionListener = new CompositePermissionListener(fbPermissionListener, deniedPermissionListener);
 
-        dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
+        deniedPermissionListener = DialogOnDeniedPermissionListener.Builder
                 .withContext(this)
                 .withTitle(R.string.notifications_permission_denied_dialog_title)
                 .withMessage(R.string.notifications_permission_denied_feedback)
                 .withButtonText(android.R.string.ok)
                 .withIcon(R.drawable.ic_icon)
                 .build();
-        notificationsPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
-                dialogOnDeniedPermissionListener);
+        notificationsPermissionListener = new CompositePermissionListener(fbPermissionListener, deniedPermissionListener);
 
-        dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
+        deniedPermissionListener = DialogOnDeniedPermissionListener.Builder
                 .withContext(this)
                 .withTitle(R.string.phone_permission_denied_dialog_title)
                 .withMessage(R.string.phone_permission_denied_feedback)
                 .withButtonText(android.R.string.ok)
                 .withIcon(R.drawable.ic_icon)
                 .build();
-        phonePermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
-                dialogOnDeniedPermissionListener);
+        phonePermissionListener = new CompositePermissionListener(fbPermissionListener, deniedPermissionListener);
 
-        dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
+        anyDeniedPermissionListener = DialogOnAnyDeniedMultiplePermissionsListener.Builder
+                .withContext(this)
+                .withTitle(R.string.video_permission_denied_dialog_title)
+                .withMessage(R.string.video_permission_denied_feedback)
+                .withButtonText(android.R.string.ok)
+                .withIcon(R.drawable.ic_icon)
+                .build();
+        videoPermissionListener = new CompositeMultiplePermissionsListener(fbMultiplePermissionListener, anyDeniedPermissionListener);
+
+        deniedPermissionListener = DialogOnDeniedPermissionListener.Builder
                 .withContext(this)
                 .withTitle(R.string.storage_permission_denied_dialog_title)
                 .withMessage(R.string.storage_permission_denied_feedback)
                 .withButtonText(android.R.string.ok)
                 .withIcon(R.drawable.ic_icon)
                 .build();
-        storagePermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
-                dialogOnDeniedPermissionListener);
+        storagePermissionListener = new CompositePermissionListener(fbPermissionListener, deniedPermissionListener);
 
         errorListener = new PermissionsErrorListener();
     }
@@ -504,24 +539,39 @@ public class PermissionsActivity extends BaseActivity {
         TextView feedbackView;
 
         switch (name) {
-            case Manifest.permission.ACCESS_FINE_LOCATION:
-                feedbackView = mBinding.locationPermissionFeedback;
-                break;
             case Manifest.permission.CAMERA:
                 feedbackView = mBinding.cameraPermissionFeedback;
                 break;
-            case Manifest.permission.POST_NOTIFICATIONS:
-                feedbackView = mBinding.notificationsPermissionFeedback;
-                break;
+
             case Manifest.permission.READ_CONTACTS:
                 feedbackView = mBinding.contactsPermissionFeedback;
                 break;
+
+            case Manifest.permission.RECORD_AUDIO:
+                feedbackView = mBinding.micPermissionFeedback;
+                break;
+
+            case Manifest.permission.READ_MEDIA_AUDIO:
+                feedbackView = mBinding.musicPermissionFeedback;
+                break;
+
+            case Manifest.permission.ACCESS_FINE_LOCATION:
+                feedbackView = mBinding.locationPermissionFeedback;
+                break;
+
+            case Manifest.permission.POST_NOTIFICATIONS:
+                feedbackView = mBinding.notificationsPermissionFeedback;
+                break;
+
             case Manifest.permission.READ_PHONE_STATE:
                 feedbackView = mBinding.phonePermissionFeedback;
                 break;
-            case Manifest.permission.RECORD_AUDIO:
-                feedbackView = mBinding.audioPermissionFeedback;
+
+            case Manifest.permission.READ_MEDIA_IMAGES:
+            case Manifest.permission.READ_MEDIA_VIDEO:
+                feedbackView = mBinding.videoPermissionFeedback;
                 break;
+
             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                 feedbackView = mBinding.storagePermissionFeedback;
                 break;

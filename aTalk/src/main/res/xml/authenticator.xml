@@ -2,6 +2,6 @@
     android:accountType="org.atalk.android.account"
     android:icon="@drawable/ic_logo"
     android:smallIcon="@drawable/ic_icon"
-    android:label="@string/APPLICATION_NAME"
+    android:label="@string/application_name"
     android:accountPreferences="@xml/account_preferences"
  />

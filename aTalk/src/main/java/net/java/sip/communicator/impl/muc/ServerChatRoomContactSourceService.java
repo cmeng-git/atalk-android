@@ -17,6 +17,9 @@ import net.java.sip.communicator.service.contactsource.ContactQuery;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+
 /**
  * Contact source service for the existing chat rooms on the server.
  *
@@ -24,7 +27,7 @@ import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
  */
 public class ServerChatRoomContactSourceService implements ContactSourceService
 {
-    private ChatRoomProviderWrapper provider;
+    private final ChatRoomProviderWrapper provider;
 
     public ServerChatRoomContactSourceService(ChatRoomProviderWrapper pps)
     {
@@ -48,7 +51,7 @@ public class ServerChatRoomContactSourceService implements ContactSourceService
      */
     public String getDisplayName()
     {
-        return MUCActivator.getResources().getI18NString("service.gui.SERVER_CHAT_ROOMS");
+        return aTalkApp.getResString(R.string.server_chatroom);
     }
 
     /**
@@ -76,8 +79,7 @@ public class ServerChatRoomContactSourceService implements ContactSourceService
         if (queryString == null)
             queryString = "";
 
-        ServerChatRoomQuery contactQuery = new ServerChatRoomQuery(queryString, this, provider);
-        return contactQuery;
+        return new ServerChatRoomQuery(queryString, this, provider);
     }
 
     /**

@@ -392,7 +392,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             case CaptchaDialog.cancel:
                 // Show in chat instead of launching an alert dialog
-                String errMsg = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED, mNickName, getName());
+                String errMsg = aTalkApp.getResString(R.string.chatroom_join_failed, mNickName, getName());
                 addMessage(errMsg, ChatMessage.MESSAGE_ERROR);
                 Timber.d("User cancel: %s", errMsg);
                 // MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_ERROR), errMsg);
@@ -665,7 +665,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     public void invite(EntityBareJid userJid, String reason)
             throws NotConnectedException, InterruptedException {
         if (TextUtils.isEmpty(XmppStringUtils.parseLocalpart(userJid.toString()))) {
-            aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, userJid);
+            aTalkApp.showToastMessage(R.string.send_message_not_supported, userJid);
         }
         else {
             mMultiUserChat.invite(userJid, reason);
@@ -731,7 +731,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             throws OperationFailedException {
         assertConnected();
         boolean retry = true;
-        String errorMessage = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED, nickname, getName());
+        String errorMessage = aTalkApp.getResString(R.string.chatroom_join_failed, nickname, getName());
         mPassword = password;
 
         if (TextUtils.isEmpty(nickname)) {
@@ -764,7 +764,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             else if (xmppError.getCondition().equals(Condition.not_authorized)) {
                 Timber.e("Join room exception: %s (state)\n%s", mCaptchaState, errorMessage);
                 if (mCaptchaState == CaptchaDialog.unknown) {
-                    errorMessage += "\n" + aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED_PASSWORD);
+                    errorMessage += "\n" + aTalkApp.getResString(R.string.chatroom_join_password);
                     throw new OperationFailedException(errorMessage, OperationFailedException.AUTHENTICATION_FAILED, ex);
                 }
                 else if (mCaptchaState == CaptchaDialog.failed) {
@@ -782,7 +782,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             else if (xmppError.getCondition().equals(Condition.registration_required)) {
                 String errText = xmppError.getDescriptiveText();
                 if (TextUtils.isEmpty(errText))
-                    errorMessage += "\n" + aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED_REGISTRATION);
+                    errorMessage += "\n" + aTalkApp.getResString(R.string.chatroom_join_failed_registration);
                 else
                     errorMessage += "\n" + errText;
 
@@ -807,11 +807,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
             }
             else if (mCaptchaState != CaptchaDialog.awaiting) {
-                errorMessage += "\n" + aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED);
+                errorMessage += "\n" + aTalkApp.getResString(R.string.captcha_verification_failed);
                 throw new OperationFailedException(errorMessage, OperationFailedException.CAPTCHA_CHALLENGE, ex);
             }
             else {
-                errorMessage = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING, getName());
+                errorMessage = aTalkApp.getResString(R.string.captcha_wait_timeout, getName());
                 throw new OperationFailedException(errorMessage, OperationFailedException.CAPTCHA_CHALLENGE, ex);
             }
         }
@@ -923,8 +923,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         try {
             mMultiUserChat.destroy(reason, roomName);
         } catch (NoResponseException | NotConnectedException | InterruptedException e) {
-            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.service_gui_ERROR,
-                    R.string.service_gui_CHATROOM_DESTROY_EXCEPTION, e.getMessage());
+            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.error,
+                    R.string.chatroom_destroy_exception, e.getMessage());
             return false;
         }
         return true;
@@ -934,7 +934,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Leave this chat room with no alternative room address to join.
      */
     public void leave() {
-        this.leave(null, aTalkApp.getResString(R.string.service_gui_LEAVE_ROOM));
+        this.leave(null, aTalkApp.getResString(R.string.leave_chat_room));
     }
 
     /**
@@ -1081,7 +1081,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             mMultiUserChat.sendMessage(messageBuilder);
         } catch (NotConnectedException | InterruptedException e) {
             Timber.e("Failed to send message: %s", e.getMessage());
-            throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_SEND_MESSAGE_FAIL, messageBuilder.build()),
+            throw new OperationFailedException(aTalkApp.getResString(R.string.send_message_failed, messageBuilder.build()),
                     OperationFailedException.GENERAL_ERROR, e);
         }
     }
@@ -1129,12 +1129,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             ctx.startActivity(OmemoAuthenticateDialog.createIntent(ctx, omemoManager, e.getUndecidedDevices(), omemoAuthListener));
             return;
         } catch (NoOmemoSupportException e) {
-            errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, "NoOmemoSupportException");
+            errMessage = aTalkApp.getResString(R.string.crypto_msg_omemo_session_setup_failed, "NoOmemoSupportException");
         } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException
                  | XMPPErrorException | IOException e) {
-            errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage());
+            errMessage = aTalkApp.getResString(R.string.crypto_msg_omemo_session_setup_failed, e.getMessage());
         } catch (NotLoggedInException e) {
-            errMessage = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
+            errMessage = aTalkApp.getResString(R.string.message_delivery_not_registered);
         }
 
         if (!TextUtils.isEmpty(errMessage)) {
@@ -1832,7 +1832,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         else {
             String displayName;
             if (TextUtils.isEmpty(name)) {
-                displayName = aTalkApp.getResString(R.string.service_gui_CHAT_CONFERENCE_ITEM_LABEL, mNickName.toString());
+                displayName = aTalkApp.getResString(R.string.chatroom_conference_item, mNickName.toString());
             }
             else {
                 displayName = name;
@@ -2258,7 +2258,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          */
         @Override
         public void kicked(Jid actor, String reason) {
-            aTalkApp.showToastMessage(R.string.service_gui_CR_MEMBER_KICK);
+            aTalkApp.showToastMessage(R.string.cr_member_kick);
             opSetMuc.fireLocalUserPresenceEvent(ChatRoomJabberImpl.this,
                     LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_KICKED, reason);
             leave();
@@ -2341,7 +2341,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          */
         @Override
         public void ownershipGranted() {
-            aTalkApp.showToastMessage(R.string.service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE);
+            aTalkApp.showToastMessage(R.string.cr_member_grant_owner_privilege);
             setLocalUserRole(ChatRoomMemberRole.OWNER);
         }
 
@@ -2352,7 +2352,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          */
         @Override
         public void ownershipRevoked() {
-            aTalkApp.showToastMessage(R.string.service_gui_CR_MEMBER_REVOKE_OWNER_PRIVILEGE);
+            aTalkApp.showToastMessage(R.string.cr_member_revoke_owner_privilege);
             setLocalUserRole(ChatRoomMemberRole.MEMBER);
         }
 
@@ -2522,7 +2522,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         EntityBareJid room = mMultiUserChat.getRoom();
         try {
             // Do not use getRoomInfo, as it has bug and throws NPE
-//            DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(mProvider.getConnection()).discoverInfo(room);
+//            DiscoverInfo info = mPPS.getScHelper().discoverInfo(room);
 //            if (info != null)
 //                persistent = info.containsFeature("muc_persistent");
 
@@ -2812,7 +2812,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                             leave();
                         }
                         else {
-                            leave(destroy.getJid(), aTalkApp.getResString(R.string.service_gui_CHATROOM_DESTROY_MESSAGE,
+                            leave(destroy.getJid(), aTalkApp.getResString(R.string.chatroom_destroy_message,
                                     destroy.getReason()));
                         }
                     }
@@ -2917,7 +2917,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 }
                 ChatRoomMemberJabberImpl member = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, nick, invitee);
 
-                String msgBody = aTalkApp.getResString(R.string.service_gui_INVITATION_REJECTED, invitee, reason);
+                String msgBody = aTalkApp.getResString(R.string.invitation_rejected, invitee, reason);
                 ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(
                         ChatRoomJabberImpl.this, member, new Date(), createMessage(msgBody), ChatMessage.MESSAGE_SYSTEM);
                 fireMessageEvent(msgReceivedEvt);
@@ -2995,6 +2995,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         // When status changes this may be related to a change in the available resources.
         ((ContactJabberImpl) contact).updatePresenceStatus(offlineStatus);
         presenceOpSet.fireContactPresenceStatusChangeEvent(contact, contact.getJid(), contact.getParentContactGroup(),
-                oldContactStatus, offlineStatus, false);
+                oldContactStatus, offlineStatus, false, false);
     }
 }

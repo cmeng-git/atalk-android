@@ -20,7 +20,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_CONTACT_PHONE_NUMBER"
+            android:text="@string/contact_phone"
            />
 
         <TextView
@@ -30,7 +30,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/label_padding"
-            android:text="@string/service_gui_JBR_TELE_DOMAIN" />
+            android:text="@string/jbr_telephony_domain" />
     </LinearLayout>
 
     <LinearLayout
@@ -64,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/label_padding"
-        android:text="@string/service_gui_EXT_CALL_VIA" />
+        android:text="@string/call_via" />
 
     <Spinner
         android:id="@+id/selectAccountSpinner"
@@ -79,19 +79,19 @@
         <Button
             android:id="@+id/button_cancel"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/button_video"
             style="@style/ButtonTop"
             android:layout_marginStart="4dp"
-            android:text="@string/service_gui_CALL_VIDEO" />
+            android:text="@string/call_video" />
 
         <Button
             android:id="@+id/button_audio"
             style="@style/ButtonTop"
             android:layout_marginStart="4dp"
-            android:text="@string/service_gui_CALL" />
+            android:text="@string/call_audio" />
     </LinearLayout>
 
 </LinearLayout>

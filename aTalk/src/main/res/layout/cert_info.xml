@@ -25,7 +25,7 @@
             android:id="@+id/alwaysTrust"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_ALWAYS_TRUST" />
+            android:text="@string/trust_always" />
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -36,7 +36,7 @@
                 android:id="@+id/cancel"
                 style="@style/ButtonTop"
                 android:onClick="onCancelClicked"
-                android:text="@string/service_gui_CANCEL" />
+                android:text="@string/cancel" />
 
             <View
                 android:id="@+id/centerShim"
@@ -49,7 +49,7 @@
                 android:id="@+id/continueBtn"
                 style="@style/ButtonTop"
                 android:onClick="onContinueClicked"
-                android:text="@string/service_gui_PROCEED" />
+                android:text="@string/proceed" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

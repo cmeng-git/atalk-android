@@ -26,7 +26,7 @@
         android:paddingBottom="5dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:text="@string/PoweredBy"
+        android:text="@string/powered_by"
         android:textColor="#ffff" />
 
     <TextView
@@ -37,7 +37,7 @@
         android:padding="@dimen/between_padding"
         style="@style/LargeFont"
         android:textColor="@color/textColorWhite"
-        android:text="@string/service_gui_WAITING" />
+        android:text="@string/please_wait" />
 
     <ProgressBar
         android:id="@+id/progressBar"

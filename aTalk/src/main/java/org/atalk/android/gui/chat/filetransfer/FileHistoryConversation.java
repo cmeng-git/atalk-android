@@ -21,6 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.File;
+
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.util.GuiUtils;
@@ -30,25 +32,20 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatMessage;
 
-import java.io.File;
-
 /**
  * The component used to show a file transfer history record in the chat window.
  *
  * @author Eng Chong Meng
  */
-public class FileHistoryConversation extends FileTransferConversation
-{
+public class FileHistoryConversation extends FileTransferConversation {
     private FileRecord fileRecord;
     private ChatMessage chatMessage;
 
-    private FileHistoryConversation(ChatFragment cPanel, String dir)
-    {
+    private FileHistoryConversation(ChatFragment cPanel, String dir) {
         super(cPanel, dir);
     }
 
-    public static FileHistoryConversation newInstance(ChatFragment cPanel, FileRecord fileRecord, ChatMessage msg)
-    {
+    public static FileHistoryConversation newInstance(ChatFragment cPanel, FileRecord fileRecord, ChatMessage msg) {
         FileHistoryConversation fragmentFHC = new FileHistoryConversation(cPanel, fileRecord.getDirection());
         fragmentFHC.fileRecord = fileRecord;
         fragmentFHC.chatMessage = msg;
@@ -56,8 +53,7 @@ public class FileHistoryConversation extends FileTransferConversation
     }
 
     public View FileHistoryConversationForm(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,
-            ViewGroup container, boolean init)
-    {
+            ViewGroup container, boolean init) {
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
         // Assume history file transfer is completed with all button hidden
         updateXferFileViewState(FileTransferStatusChangeEvent.COMPLETED, null);
@@ -66,7 +62,7 @@ public class FileHistoryConversation extends FileTransferConversation
             if (chatMessage != null) {
                 String date = GuiUtils.formatDateTime(chatMessage.getDate());
                 messageViewHolder.timeView.setText(date);
-                messageViewHolder.fileStatus.setText(R.string.xFile_FILE_TRANSFER_CANCELED);
+                messageViewHolder.fileStatus.setText(R.string.file_transfer_canceled);
             }
             return convertView;
         }
@@ -103,60 +99,60 @@ public class FileHistoryConversation extends FileTransferConversation
      * @param entityJid file transfer initiator
      * @param dir file send or received
      * @param status file transfer status
+     *
      * @return the status message to display
      */
-    private String getStatusMessage(String entityJid, String dir, int status)
-    {
+    private String getStatusMessage(String entityJid, String dir, int status) {
         String statusMsg = "";
         String statusText = FileRecord.statusMap.get(status);
 
         if (FileRecord.IN.equals(dir)) {
             switch (status) {
                 case FileRecord.STATUS_COMPLETED:
-                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, entityJid);
+                    statusMsg = aTalkApp.getResString(R.string.file_receive_completed, entityJid);
                     break;
                 case FileRecord.STATUS_FAILED:
-                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_FAILED, entityJid);
+                    statusMsg = aTalkApp.getResString(R.string.file_receive_failed, entityJid);
                     break;
                 case FileRecord.STATUS_CANCELED:
-                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
+                    statusMsg = aTalkApp.getResString(R.string.file_transfer_canceled);
                     break;
                 case FileRecord.STATUS_DECLINED:
-                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_DECLINED);
+                    statusMsg = aTalkApp.getResString(R.string.file_transfer_declined);
                     break;
                 case FileRecord.STATUS_WAITING:
                 case FileRecord.STATUS_PREPARING:
                 case FileRecord.STATUS_IN_PROGRESS:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, statusText);
+                    statusMsg = aTalkApp.getResString(R.string.file_transfer_active, statusText);
                     break;
                 case FileRecord.FILE_NOT_FOUND:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                    statusMsg = aTalkApp.getResString(R.string.file_does_not_exist);
                     break;
                 default: // http file transfer status containing http link
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, statusText);
+                    statusMsg = aTalkApp.getResString(R.string.file_transfer_active, statusText);
             }
         }
         else {
             switch (status) {
                 case FileRecord.STATUS_COMPLETED:
-                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_SEND_COMPLETED, entityJid);
+                    statusMsg = aTalkApp.getResString(R.string.file_send_completed, entityJid);
                     break;
                 case FileRecord.STATUS_FAILED:
-                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_UNABLE_TO_SEND, entityJid);
+                    statusMsg = aTalkApp.getResString(R.string.file_transfer_send_error, entityJid);
                     break;
                 case FileRecord.STATUS_CANCELED:
-                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
+                    statusMsg = aTalkApp.getResString(R.string.file_transfer_canceled);
                     break;
                 case FileRecord.STATUS_DECLINED:
-                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_SEND_DECLINED, entityJid);
+                    statusMsg = aTalkApp.getResString(R.string.file_send_declined, entityJid);
                     break;
                 case FileRecord.STATUS_WAITING:
                 case FileRecord.STATUS_PREPARING:
                 case FileRecord.STATUS_IN_PROGRESS:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, statusText);
+                    statusMsg = aTalkApp.getResString(R.string.file_transfer_active, statusText);
                     break;
                 case FileRecord.FILE_NOT_FOUND:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                    statusMsg = aTalkApp.getResString(R.string.file_does_not_exist);
                     break;
             }
         }
@@ -169,8 +165,7 @@ public class FileHistoryConversation extends FileTransferConversation
      * @return empty string
      */
     @Override
-    protected String getProgressLabel(long bytesString)
-    {
+    protected String getProgressLabel(long bytesString) {
         return "";
     }
 

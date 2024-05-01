@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,37 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.iqregisterx.provider;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.bob.element.BoBDataExtension;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jivesoftware.smack.xml.XmlPullParser;
-import org.jivesoftware.smack.xml.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * XEP-0077: In-Band Registration Implementation with fields elements and DataForm
  * Represents registration packets.
- *
  * The Registration can supported via DataForm with Captcha protection
  *
  * @author Eng Chong Meng
  */
-public class RegistrationProvider extends IQProvider<Registration>
-{
+public class RegistrationProvider extends IQProvider<Registration> {
     @Override
-    public Registration parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException
-    {
+    public Registration parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException, SmackParsingException {
         String instruction = null;
         Map<String, String> fields = new HashMap<>();
 

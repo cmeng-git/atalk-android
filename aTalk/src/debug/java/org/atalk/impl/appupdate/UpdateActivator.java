@@ -17,8 +17,7 @@ import org.osgi.framework.BundleContext;
  *
  * @author Pawel Domas
  */
-public class UpdateActivator extends SimpleServiceActivator<UpdateService>
-{
+public class UpdateActivator extends SimpleServiceActivator<UpdateService> {
     /**
      * <code>BundleContext</code> instance.
      */
@@ -27,8 +26,7 @@ public class UpdateActivator extends SimpleServiceActivator<UpdateService>
     /**
      * Creates new instance of <code>UpdateActivator</code>.
      */
-    public UpdateActivator()
-    {
+    public UpdateActivator() {
         super(UpdateService.class, "Android update service");
     }
 
@@ -37,8 +35,7 @@ public class UpdateActivator extends SimpleServiceActivator<UpdateService>
      *
      * @return the <code>ConfigurationService</code>
      */
-    public static ConfigurationService getConfiguration()
-    {
+    public static ConfigurationService getConfiguration() {
         return ServiceUtils.getService(bundleContext, ConfigurationService.class);
     }
 
@@ -46,8 +43,7 @@ public class UpdateActivator extends SimpleServiceActivator<UpdateService>
      * {@inheritDoc}
      */
     @Override
-    protected UpdateService createServiceImpl()
-    {
+    protected UpdateService createServiceImpl() {
         return new UpdateServiceImpl();
     }
 
@@ -56,8 +52,7 @@ public class UpdateActivator extends SimpleServiceActivator<UpdateService>
      */
     @Override
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         UpdateActivator.bundleContext = bundleContext;
         super.start(bundleContext);
         ((UpdateServiceImpl) serviceImpl).removeOldDownloads();

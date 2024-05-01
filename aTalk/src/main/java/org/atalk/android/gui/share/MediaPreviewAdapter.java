@@ -37,8 +37,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapter.MediaPreviewViewHolder>
-{
+public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapter.MediaPreviewViewHolder> {
     private final ArrayList<Attachment> mediaPreviews = new ArrayList<>();
 
     private final ChatActivity mChatActivity;
@@ -46,8 +45,7 @@ public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapte
     private final ImageView viewHolder;
     private final LinearLayout.LayoutParams layoutParams;
 
-    public MediaPreviewAdapter(ChatActivity fragment, ImageView imgPreview)
-    {
+    public MediaPreviewAdapter(ChatActivity fragment, ImageView imgPreview) {
         mChatActivity = fragment;
         viewHolder = imgPreview;
         int width = aTalkApp.mDisplaySize.width;
@@ -56,16 +54,14 @@ public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapte
 
     @NonNull
     @Override
-    public MediaPreviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-    {
+    public MediaPreviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         MediaPreviewBinding binding = DataBindingUtil.inflate(layoutInflater, R.layout.media_preview, parent, false);
         return new MediaPreviewViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MediaPreviewViewHolder holder, int position)
-    {
+    public void onBindViewHolder(@NonNull MediaPreviewViewHolder holder, int position) {
         final Attachment attachment = mediaPreviews.get(position);
         final File file = new File(FilePathHelper.getFilePath(mChatActivity, attachment));
         MyGlideApp.loadImage(holder.binding.mediaPreviewItem, file, true);
@@ -87,40 +83,33 @@ public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapte
         });
     }
 
-    public void addMediaPreviews(List<Attachment> attachments)
-    {
+    public void addMediaPreviews(List<Attachment> attachments) {
         // mediaPreviews.clear(); // Do not remove any existing attachments in the mediaPreviews
         mediaPreviews.addAll(attachments);
         notifyDataSetChanged();
     }
 
     @Override
-    public int getItemCount()
-    {
+    public int getItemCount() {
         return mediaPreviews.size();
     }
 
-    public boolean hasAttachments()
-    {
+    public boolean hasAttachments() {
         return mediaPreviews.size() > 0;
     }
 
-    public ArrayList<Attachment> getAttachments()
-    {
+    public ArrayList<Attachment> getAttachments() {
         return mediaPreviews;
     }
 
-    public void clearPreviews()
-    {
+    public void clearPreviews() {
         this.mediaPreviews.clear();
     }
 
-    static class MediaPreviewViewHolder extends RecyclerView.ViewHolder
-    {
+    static class MediaPreviewViewHolder extends RecyclerView.ViewHolder {
         private final MediaPreviewBinding binding;
 
-        MediaPreviewViewHolder(MediaPreviewBinding binding)
-        {
+        MediaPreviewViewHolder(MediaPreviewBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }

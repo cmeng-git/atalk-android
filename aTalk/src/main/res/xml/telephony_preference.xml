@@ -4,14 +4,14 @@
 
     <CheckBoxPreference
         android:key="pref_key_calling_disabled"
-        android:summary="@string/service_gui_JBR_DISABLE_JINGLE_SUMMARY"
-        android:title="@string/service_gui_JBR_DISABLE_JINGLE" />
+        android:summary="@string/jbr_jingle_summary"
+        android:title="@string/jbr_jingle_disable" />
 
     <EditTextPreference
         android:key="pref_key_override_phone_suffix"
-        android:title="@string/service_gui_JBR_TELE_DOMAIN" />
+        android:title="@string/jbr_telephony_domain" />
 
     <EditTextPreference
         android:key="pref_key_tele_bypass_gtalk_caps"
-        android:title="@string/service_gui_JBR_GTALK_DOMAIN" />
+        android:title="@string/jbr_gtalk_domain" />
 </PreferenceScreen>

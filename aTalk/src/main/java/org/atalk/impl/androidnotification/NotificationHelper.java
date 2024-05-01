@@ -61,7 +61,7 @@ public class NotificationHelper extends ContextWrapper
             deleteObsoletedChannelIds(false);
 
             final NotificationChannel nCall = new NotificationChannel(AndroidNotifications.CALL_GROUP,
-                    getString(R.string.noti_channel_CALL_GROUP), NotificationManager.IMPORTANCE_HIGH);
+                    getString(R.string.noti_channel_call_group), NotificationManager.IMPORTANCE_HIGH);
             nCall.setSound(null, null);
             nCall.setShowBadge(false);
             nCall.setLightColor(LED_COLOR);
@@ -70,7 +70,7 @@ public class NotificationHelper extends ContextWrapper
             notificationManager.createNotificationChannel(nCall);
 
             final NotificationChannel nMessage = new NotificationChannel(AndroidNotifications.MESSAGE_GROUP,
-                    getString(R.string.noti_channel_MESSAGE_GROUP), NotificationManager.IMPORTANCE_HIGH);
+                    getString(R.string.noti_channel_message_group), NotificationManager.IMPORTANCE_HIGH);
             nMessage.setSound(null, null);
             nMessage.setShowBadge(true);
             nMessage.setLightColor(LED_COLOR);
@@ -80,7 +80,7 @@ public class NotificationHelper extends ContextWrapper
             notificationManager.createNotificationChannel(nMessage);
 
             final NotificationChannel nFile = new NotificationChannel(AndroidNotifications.FILE_GROUP,
-                    getString(R.string.noti_channel_FILE_GROUP), NotificationManager.IMPORTANCE_LOW);
+                    getString(R.string.noti_channel_file_group), NotificationManager.IMPORTANCE_LOW);
             nFile.setSound(null, null);
             nFile.setShowBadge(false);
             // nFile.setLightColor(Color.GREEN);
@@ -88,7 +88,7 @@ public class NotificationHelper extends ContextWrapper
             notificationManager.createNotificationChannel(nFile);
 
             final NotificationChannel nDefault = new NotificationChannel(AndroidNotifications.DEFAULT_GROUP,
-                    getString(R.string.noti_channel_DEFAULT_GROUP), NotificationManager.IMPORTANCE_LOW);
+                    getString(R.string.noti_channel_default_group), NotificationManager.IMPORTANCE_LOW);
             nDefault.setSound(null, null);
             nDefault.setShowBadge(false);
             // nDefault.setLightColor(Color.WHITE);
@@ -96,7 +96,7 @@ public class NotificationHelper extends ContextWrapper
             notificationManager.createNotificationChannel(nDefault);
 
             final NotificationChannel nQuietHours = new NotificationChannel(AndroidNotifications.SILENT_GROUP,
-                    getString(R.string.noti_channel_SILENT_GROUP), NotificationManager.IMPORTANCE_LOW);
+                    getString(R.string.noti_channel_silent_group), NotificationManager.IMPORTANCE_LOW);
             nQuietHours.setSound(null, null);
             nQuietHours.setShowBadge(true);
             nQuietHours.setLightColor(LED_COLOR);

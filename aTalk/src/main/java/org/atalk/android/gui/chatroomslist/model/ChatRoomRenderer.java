@@ -33,23 +33,19 @@ import org.jivesoftware.smack.util.StringUtils;
  *
  * @author Eng Chong MEng
  */
-public class ChatRoomRenderer implements UIChatRoomRenderer
-{
+public class ChatRoomRenderer implements UIChatRoomRenderer {
     @Override
-    public boolean isSelected(Object chatRoomWrapper)
-    {
+    public boolean isSelected(Object chatRoomWrapper) {
         return ChatRoomListAdapter.isChatRoomWrapperSelected(((ChatRoomWrapper) chatRoomWrapper).getChatRoomID());
     }
 
     @Override
-    public String getDisplayName(Object chatRoomWrapper)
-    {
+    public String getDisplayName(Object chatRoomWrapper) {
         return ((ChatRoomWrapper) chatRoomWrapper).getChatRoomID();
     }
 
     @Override
-    public String getStatusMessage(Object chatRoomWrapper)
-    {
+    public String getStatusMessage(Object chatRoomWrapper) {
         String displayDetail = getDisplayDetail(chatRoomWrapper);
         if (StringUtils.isEmpty(displayDetail))
             displayDetail = getChatRoomID(chatRoomWrapper).split("@")[0];
@@ -57,8 +53,7 @@ public class ChatRoomRenderer implements UIChatRoomRenderer
     }
 
     @Override
-    public boolean isDisplayBold(Object crWrapper)
-    {
+    public boolean isDisplayBold(Object crWrapper) {
         ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) crWrapper;
         ChatPanel chatPanel = ChatSessionManager.getActiveChat(chatRoomWrapper.getChatRoomID());
 
@@ -75,26 +70,22 @@ public class ChatRoomRenderer implements UIChatRoomRenderer
     }
 
     @Override
-    public Drawable getChatRoomIcon(Object chatRoomWrapper)
-    {
+    public Drawable getChatRoomIcon(Object chatRoomWrapper) {
         return ResourcesCompat.getDrawable(aTalkApp.getAppResources(), R.drawable.ic_chatroom, null);
     }
 
     @Override
-    public String getChatRoomID(Object chatRoomWrapper)
-    {
+    public String getChatRoomID(Object chatRoomWrapper) {
         return ((ChatRoomWrapper) chatRoomWrapper).getChatRoomID();
     }
 
     @Override
-    public boolean isAutoJoin(Object chatRoomWrapper)
-    {
+    public boolean isAutoJoin(Object chatRoomWrapper) {
         return ((ChatRoomWrapper) chatRoomWrapper).isAutoJoin();
     }
 
     @Override
-    public boolean isBookmark(Object chatRoomWrapper)
-    {
+    public boolean isBookmark(Object chatRoomWrapper) {
         return ((ChatRoomWrapper) chatRoomWrapper).isBookmarked();
     }
 
@@ -102,10 +93,10 @@ public class ChatRoomRenderer implements UIChatRoomRenderer
      * Returns the display details for the underlying <code>ChatRoomWrapper</code>.
      *
      * @param chatRoomWrapper the <code>ChatRoomWrapper</code>, which details we're looking for
+     *
      * @return the display details for the underlying <code>ChatRoomWrapper</code>
      */
-    private static String getDisplayDetail(Object chatRoomWrapper)
-    {
+    private static String getDisplayDetail(Object chatRoomWrapper) {
         return ((ChatRoomWrapper) chatRoomWrapper).getBookmarkName();
     }
 }

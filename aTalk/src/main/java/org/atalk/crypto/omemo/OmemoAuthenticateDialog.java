@@ -108,7 +108,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         }
 
         setContentView(R.layout.omemo_authenticate_dialog);
-        setTitle(R.string.omemo_authbuddydialog_AUTHENTICATE_BUDDY);
+        setTitle(R.string.omemo_authbuddy_authenticate_buddy);
 
         fpListAdapter = new FingerprintListAdapter(getBuddyFingerPrints());
         ListView fingerprintsList = findViewById(R.id.fp_list);
@@ -127,14 +127,14 @@ public class OmemoAuthenticateDialog extends OSGiActivity
 
         View content = findViewById(android.R.id.content);
         ViewUtil.setTextViewValue(content, R.id.localFingerprintLbl,
-                getString(R.string.omemo_authbuddydialog_LOCAL_FINGERPRINT, userJid,
+                getString(R.string.omemo_authbuddy_local_fingerprint, userJid,
                         CryptoHelper.prettifyFingerprint(localFingerprint)));
     }
 
     /**
      * Gets the list of all known buddyFPs.
      *
-     * @return the list of all known buddyFPs.
+     * @return the map of all known buddyFPs.
      */
     Map<OmemoDevice, String> getBuddyFingerPrints()
     {

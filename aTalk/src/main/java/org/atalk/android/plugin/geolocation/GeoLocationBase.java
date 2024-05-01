@@ -84,7 +84,7 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setMainTitle(R.string.service_gui_GEO_LOCATION);
+        setMainTitle(R.string.location);
         isFollowMe = (mGeoLocationDelegate != null);
         if (isFollowMe) {
             mGeoLocationDelegate.unregisterLocationBroadcastReceiver();
@@ -109,7 +109,7 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
         mBtnSingleFix = findViewById(R.id.btn_single_fix);
         mBtnSingleFix.setOnClickListener(this);
         mBtnFollowMe = findViewById(R.id.btn_follow_me);
-        mBtnFollowMe.setText(String.format(getString(R.string.start_follow_me), gpsMinDistance, sendTimeInterval));
+        mBtnFollowMe.setText(String.format(getString(R.string.follow_me_start), gpsMinDistance, sendTimeInterval));
         mBtnFollowMe.setOnClickListener(this);
 
         mAnimation = ObjectAnimator.ofInt(mBtnFollowMe, "textColor", Color.GREEN, Color.BLACK);
@@ -230,14 +230,14 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
     {
         if (followMe) {
             isFollowMe = false;
-            mBtnFollowMe.setText(getString(R.string.start_follow_me, gpsMinDistance, sendTimeInterval));
+            mBtnFollowMe.setText(getString(R.string.follow_me_start, gpsMinDistance, sendTimeInterval));
             mBtnFollowMe.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             mAnimation.end();
             mAnimation.cancel();
         }
         else {
             isFollowMe = true;
-            mBtnFollowMe.setText(getString(R.string.stop_follow_me, gpsMinDistance, sendTimeInterval));
+            mBtnFollowMe.setText(getString(R.string.follow_me_stop, gpsMinDistance, sendTimeInterval));
             mAnimation.start();
         }
     }
@@ -336,7 +336,7 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
                 sendTimeInterval = (progress) * timeIntervalStep;
         }
 
-        mBtnFollowMe.setText(getString(R.string.start_follow_me, gpsMinDistance, sendTimeInterval));
+        mBtnFollowMe.setText(getString(R.string.follow_me_start, gpsMinDistance, sendTimeInterval));
         mBtnFollowMe.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
 
@@ -349,7 +349,7 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
     public void onStopTrackingTouch(SeekBar seekBar)
     {
         if (isFollowMe) {
-            mBtnFollowMe.setText(getString(R.string.stop_follow_me, gpsMinDistance, sendTimeInterval));
+            mBtnFollowMe.setText(getString(R.string.follow_me_stop, gpsMinDistance, sendTimeInterval));
         }
         showToast(getString(R.string.apply_new_location_setting));
     }

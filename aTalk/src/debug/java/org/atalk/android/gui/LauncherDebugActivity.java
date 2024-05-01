@@ -82,7 +82,7 @@ public class LauncherDebugActivity extends OSGiActivity
         setContentView(R.layout.splash);
         TextView stateText = findViewById(R.id.stateInfo);
         if (restoreIntent != null)
-            stateText.setText(R.string.service_gui_RESTORING);
+            stateText.setText(R.string.restoring_);
 
         mProgressBar = findViewById(R.id.progressBar);
         mProgressBar.setVisibility(ProgressBar.VISIBLE);

@@ -9,14 +9,14 @@
         android:id="@+id/localFingerprintLbl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/omemo_authbuddydialog_LOCAL_FINGERPRINT" />
+        android:text="@string/omemo_authbuddy_local_fingerprint" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/between_padding"
         android:layout_marginTop="@dimen/between_padding"
-        android:text="@string/omemo_authbuddydialog_AUTHENTICATION_INFO" />
+        android:text="@string/omemo_authbuddy_authenticate_info" />
 
     <ListView
         android:id="@+id/fp_list"
@@ -33,7 +33,7 @@
             android:id="@+id/cancelButton"
             style="@style/ButtonTop"
             android:onClick="onCancelClicked"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <View
             android:id="@+id/centerShim"
@@ -46,7 +46,7 @@
             android:id="@+id/okButton"
             style="@style/ButtonTop"
             android:onClick="onOkClicked"
-            android:text="@string/omemo_authbuddydialog_VERIRY_BUDDY" />
+            android:text="@string/omemo_authbuddy_verify_buddy" />
     </LinearLayout>
 
 </LinearLayout>

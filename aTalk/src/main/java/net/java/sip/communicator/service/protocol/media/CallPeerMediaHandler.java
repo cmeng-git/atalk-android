@@ -546,7 +546,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         // cmeng (20210504): Call with/initiated by Conversation may get terminated abruptly, when h264 video codec is used
         if (mPeer.getCall() == null) {
             Timber.w("Get default device with null call: %s %s", mPeer, mediaType);
-            aTalkApp.showToastMessage(R.string.service_gui_CALL_END, mPeer.getEntity());
+            aTalkApp.showToastMessage(R.string.call_ended, mPeer.getEntity());
             return null;
         }
 
@@ -779,7 +779,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
 
         if (supportFormats.size() == 0) {
             DialogActivity.showDialog(aTalkApp.getInstance(),
-                    R.string.service_gui_CALL, R.string.service_gui_CALL_NO_DEVICE_CODEC_H,
+                    R.string.call_audio, R.string.call_no_device_codec_H,
                     (mediaDevice != null) ? mediaDevice.getMediaType().toString() : "Unknown");
         }
         return supportFormats;

@@ -13,7 +13,6 @@ import androidx.fragment.app.DialogFragment;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.BundleContext;
 
-
 /**
  * Class can be used to build {@link DialogFragment}s that require OSGI services access.
  *

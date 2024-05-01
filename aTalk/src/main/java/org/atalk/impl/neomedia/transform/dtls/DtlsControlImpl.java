@@ -774,10 +774,10 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
         if (TextUtils.isEmpty(message)) {
             if (AlertDescription.close_notify == alertDescription) {
                 srtError = SrtpListener.INFORMATION;  // change to for info only
-                message = aTalkApp.getResString(R.string.imp_media_security_ENCRYPTION_ENDED, errDescription);
+                message = aTalkApp.getResString(R.string.media_security_encryption_ended, errDescription);
             }
             else {
-                message = aTalkApp.getResString(R.string.impl_media_security_INTERNAL_PROTOCOL_ERROR, errDescription);
+                message = aTalkApp.getResString(R.string.media_security_internal_protocol_error, errDescription);
             }
         }
         srtpListener.securityMessageReceived(errDescription, message, srtError);

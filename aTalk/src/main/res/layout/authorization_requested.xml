@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/between_padding"
-        android:text="@string/service_gui_AUTHORIZATION_REQUESTED_INFO" />
+        android:text="@string/authorization_request_info" />
 
     <CheckBox
         android:id="@+id/addToContacts"
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/between_padding"
         android:checked="true"
-        android:text="@string/service_gui_ADD_AUTHORIZED_CONTACT" />
+        android:text="@string/add_contact_to_list" />
 
     <TextView
         android:id="@+id/selectGroupTxt"
@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/between_padding"
-        android:text="@string/service_gui_SELECT_GROUP" />
+        android:text="@string/assign_group" />
 
     <Spinner
         android:id="@+id/selectGroupSpinner"
@@ -45,7 +45,7 @@
             android:id="@+id/ignore"
             style="@style/ButtonTop"
             android:onClick="onIgnoreClicked"
-            android:text="@string/service_gui_IGNORE" />
+            android:text="@string/ignore" />
 
         <View
             android:id="@+id/centerShim"
@@ -58,7 +58,7 @@
             android:id="@+id/deny"
             style="@style/ButtonTop"
             android:onClick="onRejectClicked"
-            android:text="@string/service_gui_DENY" />
+            android:text="@string/deny" />
 
         <View
             android:id="@+id/centerShim2"
@@ -71,6 +71,6 @@
             android:id="@+id/authorize"
             style="@style/ButtonTop"
             android:onClick="onAcceptClicked"
-            android:text="@string/service_gui_AUTHORIZE" />
+            android:text="@string/authorize" />
     </LinearLayout>
 </LinearLayout>

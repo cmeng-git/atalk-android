@@ -17,18 +17,28 @@
 
 package org.jivesoftware.smackx.iqregisterx;
 
-import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.SmackException.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+
+import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaCollector;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jxmpp.jid.parts.Localpart;
-
-import java.util.*;
 
 /**
  * Allows creation and management of accounts on an XMPP server.
@@ -127,8 +137,7 @@ public final class AccountManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public boolean supportsAccountCreation()
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public boolean supportsAccountCreation() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // TODO: Replace this body with isSupported() and possible deprecate this method.
 
         // Check if we already know that the server supports creating new accounts
@@ -149,21 +158,19 @@ public final class AccountManager extends Manager {
      * Returns an unmodifiable collection of the names of the required account attributes.
      * All attributes must be set when creating new accounts. The standard set of possible
      * attributes are as follows: <ul>
-     *      <li>nick     -- Familiar name of the user.
-     *      <li>name     -- Full name of the user.
-     *      <li>first    -- Given name of the user.
-     *      <li>last     -- Family name of the user.
-     *      <li>email    -- Email address of the user.
-     *      <li>city     -- Locality portion of a physical or mailing address.
-     *      <li>state    -- Region portion of a physical or mailing address.
-     *      <li>zip      -- Postal code portion of a physical or mailing address.
-     *      <li>phone    -- Telephone number of the user.
-     *      <li>address  -- Street portion of a physical or mailing address.
-     *      <li>url      -- URL to web page describing the user.
-     *      <li>date     -- Some date (e.g., birth date, hire date, sign-up date).
-     *      <li>misc     -- other miscellaneous information to associate with the account.
-     *      <li>text     -- textual information to associate with the account.
-     *      <li>remove   -- empty flag to remove account.
+     *      <li>name -- the user's name.
+     *      <li>first -- the user's first name.
+     *      <li>last -- the user's last name.
+     *      <li>email -- the user's email address.
+     *      <li>city -- the user's city.
+     *      <li>state -- the user's state.
+     *      <li>zip -- the user's ZIP code.
+     *      <li>phone -- the user's phone number.
+     *      <li>url -- the user's website.
+     *      <li>date -- the date the registration took place.
+     *      <li>misc -- other miscellaneous information to associate with the account.
+     *      <li>text -- textual information to associate with the account.
+     *      <li>remove -- empty flag to remove account.
      * </ul><p>
      *
      * Typically, servers require no attributes when creating new accounts, or just
@@ -175,15 +182,15 @@ public final class AccountManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public Set<String> getAccountAttributes() throws NoResponseException, XMPPErrorException,
-            NotConnectedException, InterruptedException  {
+    public Set<String> getAccountAttributes() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (info == null) {
             _getRegistrationInfo();
         }
         Map<String, String> attributes = info.getAttributes();
         if (attributes != null) {
             return Collections.unmodifiableSet(attributes.keySet());
-        } else {
+        }
+        else {
             return Collections.emptySet();
         }
     }
@@ -200,7 +207,7 @@ public final class AccountManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public String getAccountAttribute(String name) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+    public String getAccountAttribute(String name) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (info == null) {
             _getRegistrationInfo();
         }
@@ -218,7 +225,7 @@ public final class AccountManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public String getAccountInstructions() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+    public String getAccountInstructions() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (info == null) {
             _getRegistrationInfo();
         }
@@ -256,7 +263,7 @@ public final class AccountManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void createAccount(Localpart username, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+    public void createAccount(Localpart username, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Create a map for all the required attributes, but give them blank values.
         Map<String, String> attributes = new HashMap<>();
         for (String attributeName : getAccountAttributes()) {
@@ -280,7 +287,7 @@ public final class AccountManager extends Manager {
      * @see #getAccountAttributes()
      */
     public void createAccount(Localpart username, String password, Map<String, String> attributes)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (!connection().isSecureConnection() && !allowSensitiveOperationOverInsecureConnection) {
             throw new IllegalStateException("Creating account over insecure connection");
         }
@@ -339,7 +346,7 @@ public final class AccountManager extends Manager {
             throw new IllegalStateException("Changing password over insecure connection.");
         }
         Map<String, String> map = new HashMap<>();
-        map.put("username",  connection().getUser().getLocalpart().toString());
+        map.put("username", connection().getUser().getLocalpart().toString());
         map.put("password", newPassword);
         Registration reg = new Registration(map);
         reg.setType(IQ.Type.set);
@@ -369,7 +376,7 @@ public final class AccountManager extends Manager {
     }
 
     public boolean isSupported()
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         XMPPConnection connection = connection();
 
         ExtensionElement extensionElement = connection.getFeature(Registration.Feature.class);
@@ -391,6 +398,9 @@ public final class AccountManager extends Manager {
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     *
+     * @throws XMPPException if an error occurs.
+     * @throws SmackException if there was no response from the server.
      */
     private synchronized void _getRegistrationInfo() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Registration reg = new Registration();

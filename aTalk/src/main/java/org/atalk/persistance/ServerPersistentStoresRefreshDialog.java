@@ -26,6 +26,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ServiceDiscoveryHelper;
 import net.java.sip.communicator.service.protocol.AccountID;
@@ -44,10 +48,6 @@ import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.OmemoStore;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
 
 import timber.log.Timber;
 
@@ -78,9 +78,9 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment {
      */
     public void show(Activity parent) {
         DialogActivity.showCustomDialog(parent,
-                parent.getString(R.string.service_gui_REFRESH_STORES),
+                parent.getString(R.string.refresh_store),
                 ServerPersistentStoresRefreshDialog.class.getName(), null,
-                parent.getString(R.string.service_gui_REFRESH_APPLY),
+                parent.getString(R.string.refresh_apply),
                 new DialogListenerImpl(), null);
     }
 
@@ -145,7 +145,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment {
                 try {
                     FileBackend.deleteRecursive(rosterStoreDirectory);
                 } catch (IOException e) {
-                    Timber.e("Failed to purge store for: %s", R.string.service_gui_REFRESH_STORES_ROSTER);
+                    Timber.e("Failed to purge store for: %s", R.string.refresh_store_roster);
                 }
                 jabberProvider.initRosterStore();
             }

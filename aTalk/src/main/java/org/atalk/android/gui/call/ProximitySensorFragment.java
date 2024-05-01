@@ -123,7 +123,7 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
 
         float proximity = event.values[0];
         float max = event.sensor.getMaximumRange();
-        Timber.i("Proximity updated: " + proximity + " max range: " + max);
+        // Timber.d("Proximity updated: " + proximity + " max range: " + max);
 
         if (proximity > 0) {
             screenOn();

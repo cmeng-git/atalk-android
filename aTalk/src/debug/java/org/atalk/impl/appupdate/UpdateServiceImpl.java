@@ -31,6 +31,15 @@ import android.os.Build;
 
 import androidx.core.content.ContextCompat;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 
@@ -45,15 +54,6 @@ import org.atalk.service.version.Version;
 import org.atalk.service.version.VersionService;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import timber.log.Timber;
 
 /**
@@ -62,8 +62,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class UpdateServiceImpl implements UpdateService
-{
+public class UpdateServiceImpl implements UpdateService {
     // Default update link; path is case-sensitive.
     private static final String[] updateLinks = {
             "https://raw.githubusercontent.com/cmeng-git/atalk-android/master/aTalk/release/version.properties",
@@ -74,7 +73,7 @@ public class UpdateServiceImpl implements UpdateService
      * Apk mime type constant.
      */
     private static final String APK_MIME_TYPE = "application/vnd.android.package-archive";
-    private static final String fileNameApk =String.format("aTalk-%s-%s.apk", BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE);
+    private static final String fileNameApk = String.format("aTalk-%s-%s.apk", BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE);
 
     /**
      * The download link for the installed application
@@ -114,8 +113,7 @@ public class UpdateServiceImpl implements UpdateService
      * Checks for updates and notify user of any new version, and take necessary action.
      */
     @Override
-    public void checkForUpdates()
-    {
+    public void checkForUpdates() {
         // cmeng: reverse the logic to !isLatestVersion() for testing
         mIsLatest = isLatestVersion();
         Timber.i("Is latest: %s\nCurrent version: %s\nLatest version: %s\nDownload link: %s",
@@ -127,21 +125,18 @@ public class UpdateServiceImpl implements UpdateService
                     return;
 
                 DialogActivity.showConfirmDialog(aTalkApp.getInstance(),
-                        R.string.plugin_update_Install_Update,
-                        R.string.plugin_update_Update_Available,
-                        R.string.plugin_update_Download,
-                        new DialogActivity.DialogListener()
-                        {
+                        R.string.update_install_update,
+                        R.string.update_update_available,
+                        R.string.update_download,
+                        new DialogActivity.DialogListener() {
                             @Override
-                            public boolean onConfirmClicked(DialogActivity dialog)
-                            {
+                            public boolean onConfirmClicked(DialogActivity dialog) {
                                 downloadApk();
                                 return true;
                             }
 
                             @Override
-                            public void onDialogCancelled(@NotNull DialogActivity dialog)
-                            {
+                            public void onDialogCancelled(@NotNull DialogActivity dialog) {
                             }
                         }, latestVersion, latestVersionCode, fileNameApk, currentVersion, currentVersionCode
                 );
@@ -149,14 +144,12 @@ public class UpdateServiceImpl implements UpdateService
             else {
                 // Notify that running version is up to date
                 DialogActivity.showConfirmDialog(aTalkApp.getInstance(),
-                        R.string.plugin_update_New_Version_None,
-                        R.string.plugin_update_UpToDate,
-                        R.string.plugin_update_Download,
-                        new DialogActivity.DialogListener()
-                        {
+                        R.string.update_new_version_none,
+                        R.string.update_up_to_date,
+                        R.string.update_download,
+                        new DialogActivity.DialogListener() {
                             @Override
-                            public boolean onConfirmClicked(DialogActivity dialog)
-                            {
+                            public boolean onConfirmClicked(DialogActivity dialog) {
                                 if (aTalk.hasWriteStoragePermission(aTalk.getInstance(), true)) {
                                     if (checkLastDLFileAction() >= DownloadManager.ERROR_UNKNOWN) {
                                         downloadApk();
@@ -166,14 +159,14 @@ public class UpdateServiceImpl implements UpdateService
                             }
 
                             @Override
-                            public void onDialogCancelled(@NotNull DialogActivity dialog)
-                            {
+                            public void onDialogCancelled(@NotNull DialogActivity dialog) {
                             }
                         }, currentVersion, currentVersionCode, latestVersion, latestVersionCode
                 );
             }
-        } else {
-            aTalkApp.showToastMessage(R.string.plugin_update_New_Version_None);
+        }
+        else {
+            aTalkApp.showToastMessage(R.string.update_new_version_none);
         }
     }
 
@@ -182,8 +175,7 @@ public class UpdateServiceImpl implements UpdateService
      *
      * @return Last DownloadManager status; default to DownloadManager.ERROR_UNKNOWN if status unknown
      */
-    private int checkLastDLFileAction()
-    {
+    private int checkLastDLFileAction() {
         // Check old or scheduled downloads
         int lastJobStatus = DownloadManager.ERROR_UNKNOWN;
 
@@ -204,14 +196,14 @@ public class UpdateServiceImpl implements UpdateService
             else if (lastJobStatus != DownloadManager.STATUS_FAILED) {
                 // Download is in progress or scheduled for retry
                 DialogActivity.showDialog(aTalkApp.getInstance(),
-                        R.string.plugin_update_InProgress,
-                        R.string.plugin_update_Download_InProgress);
+                        R.string.update_in_progress,
+                        R.string.update_download_in_progress);
             }
             else {
                 // Download id return failed status, remove failed id and retry
                 removeOldDownloads();
                 DialogActivity.showDialog(aTalkApp.getInstance(),
-                        R.string.plugin_update_Install_Update, R.string.plugin_update_Download_failed);
+                        R.string.update_install_update, R.string.update_download_failed);
             }
         }
         return lastJobStatus;
@@ -222,17 +214,14 @@ public class UpdateServiceImpl implements UpdateService
      *
      * @param fileUri download file uri of the apk to install.
      */
-    private void askInstallDownloadedApk(Uri fileUri)
-    {
+    private void askInstallDownloadedApk(Uri fileUri) {
         DialogActivity.showConfirmDialog(aTalkApp.getInstance(),
-                R.string.plugin_update_Download_Completed,
-                R.string.plugin_update_Download_Ready,
-                mIsLatest ? R.string.plugin_update_ReInstall : R.string.plugin_update_Install,
-                new DialogActivity.DialogListener()
-                {
+                R.string.update_download_completed,
+                R.string.update_download_ready,
+                mIsLatest ? R.string.update_reInstall : R.string.update_install,
+                new DialogActivity.DialogListener() {
                     @Override
-                    public boolean onConfirmClicked(DialogActivity dialog)
-                    {
+                    public boolean onConfirmClicked(DialogActivity dialog) {
                         // Need REQUEST_INSTALL_PACKAGES in manifest; Intent.ACTION_VIEW works for both
                         Intent intent;
                         intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
@@ -244,8 +233,7 @@ public class UpdateServiceImpl implements UpdateService
                     }
 
                     @Override
-                    public void onDialogCancelled(@NotNull DialogActivity dialog)
-                    {
+                    public void onDialogCancelled(@NotNull DialogActivity dialog) {
                     }
                 }, latestVersion);
     }
@@ -254,12 +242,12 @@ public class UpdateServiceImpl implements UpdateService
      * Queries the <code>DownloadManager</code> for the status of download job identified by given <code>id</code>.
      *
      * @param id download identifier which status will be returned.
+     *
      * @return download status of the job identified by given id. If given job is not found
      * {@link DownloadManager#STATUS_FAILED} will be returned.
      */
     @SuppressLint("Range")
-    private int checkDownloadStatus(long id)
-    {
+    private int checkDownloadStatus(long id) {
         DownloadManager downloadManager = aTalkApp.getDownloadManager();
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(id);
@@ -275,8 +263,7 @@ public class UpdateServiceImpl implements UpdateService
     /**
      * Schedules .apk download.
      */
-    private void downloadApk()
-    {
+    private void downloadApk() {
         Uri uri = Uri.parse(downloadLink);
         String fileName = uri.getLastPathSegment();
 
@@ -297,11 +284,9 @@ public class UpdateServiceImpl implements UpdateService
         rememberDownloadId(jobId);
     }
 
-    private class DownloadReceiver extends BroadcastReceiver
-    {
+    private class DownloadReceiver extends BroadcastReceiver {
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             if (checkLastDLFileAction() < DownloadManager.ERROR_UNKNOWN)
                 return;
 
@@ -313,24 +298,21 @@ public class UpdateServiceImpl implements UpdateService
         }
     }
 
-    private SharedPreferences getStore()
-    {
+    private SharedPreferences getStore() {
         if (store == null) {
             store = aTalkApp.getInstance().getSharedPreferences("store", Context.MODE_PRIVATE);
         }
         return store;
     }
 
-    private void rememberDownloadId(long id)
-    {
+    private void rememberDownloadId(long id) {
         SharedPreferences store = getStore();
         String storeStr = store.getString(ENTRY_NAME, "");
         storeStr += id + ",";
         store.edit().putString(ENTRY_NAME, storeStr).apply();
     }
 
-    private List<Long> getOldDownloads()
-    {
+    private List<Long> getOldDownloads() {
         String storeStr = getStore().getString(ENTRY_NAME, "");
         String[] idStrs = storeStr.split(",");
         List<Long> apkIds = new ArrayList<>(idStrs.length);
@@ -348,8 +330,7 @@ public class UpdateServiceImpl implements UpdateService
     /**
      * Removes old downloads.
      */
-    void removeOldDownloads()
-    {
+    void removeOldDownloads() {
         List<Long> apkIds = getOldDownloads();
         DownloadManager downloadManager = aTalkApp.getDownloadManager();
         for (long id : apkIds) {
@@ -364,10 +345,10 @@ public class UpdateServiceImpl implements UpdateService
      *
      * @param fileUri apk Uri
      * @param versionCode use the given versionCode to check against the apk versionCode
+     *
      * @return true if apkFile has the specified versionCode
      */
-    private boolean isValidApkVersion(Uri fileUri, long versionCode)
-    {
+    private boolean isValidApkVersion(Uri fileUri, long versionCode) {
         // Default to valid as getPackageArchiveInfo() always return null; but sometimes OK
         boolean isValid = true;
         File apkFile = new File(FilePathHelper.getFilePath(aTalkApp.getInstance(), fileUri));
@@ -386,7 +367,7 @@ public class UpdateServiceImpl implements UpdateService
 
                 isValid = (versionCode == apkVersionCode);
                 if (!isValid) {
-                    aTalkApp.showToastMessage(R.string.plugin_update_Version_Invalid, apkVersionCode, versionCode);
+                    aTalkApp.showToastMessage(R.string.update_version_invalid, apkVersionCode, versionCode);
                     Timber.d("Downloaded apk actual version code: %s (%s)", apkVersionCode, versionCode);
                 }
             }
@@ -399,8 +380,7 @@ public class UpdateServiceImpl implements UpdateService
      *
      * @return the current (software) version
      */
-    public static Version getCurrentVersion()
-    {
+    public static Version getCurrentVersion() {
         return getVersionService().getCurrentVersion();
     }
 
@@ -409,8 +389,7 @@ public class UpdateServiceImpl implements UpdateService
      *
      * @return the current (software) version
      */
-    public static long getCurrentVersionCode()
-    {
+    public static long getCurrentVersionCode() {
         return getVersionService().getCurrentVersionCode();
     }
 
@@ -420,8 +399,7 @@ public class UpdateServiceImpl implements UpdateService
      * @return the latest (software) version
      */
     @Override
-    public String getLatestVersion()
-    {
+    public String getLatestVersion() {
         return latestVersion;
     }
 
@@ -430,8 +408,7 @@ public class UpdateServiceImpl implements UpdateService
      *
      * @return the current version service.
      */
-    private static VersionService getVersionService()
-    {
+    private static VersionService getVersionService() {
         return ServiceUtils.getService(UpdateActivator.bundleContext, VersionService.class);
     }
 
@@ -441,8 +418,7 @@ public class UpdateServiceImpl implements UpdateService
      * @return <code>true</code> if current running application is the latest version; otherwise, <code>false</code>
      */
     @Override
-    public boolean isLatestVersion()
-    {
+    public boolean isLatestVersion() {
         VersionService versionService = getVersionService();
         currentVersion = versionService.getCurrentVersionName();
         currentVersionCode = versionService.getCurrentVersionCode();
@@ -462,7 +438,8 @@ public class UpdateServiceImpl implements UpdateService
                     if (isValidateLink(downloadLink)) {
                         // return true is current running application is already the latest
                         return (currentVersionCode >= latestVersionCode);
-                    } else {
+                    }
+                    else {
                         downloadLink = null;
                     }
                 }
@@ -479,10 +456,10 @@ public class UpdateServiceImpl implements UpdateService
      * Check if the given link is accessible.
      *
      * @param link the link to check
+     *
      * @return true if link is accessible
      */
-    private boolean isValidateLink(String link)
-    {
+    private boolean isValidateLink(String link) {
         try {
             URL mUrl = new URL(link);
             mHttpConnection = (HttpURLConnection) mUrl.openConnection();

@@ -15,13 +15,13 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ThemeHelper;
 import org.atalk.android.gui.util.ThemeHelper.Theme;
 import org.atalk.impl.neomedia.codec.video.CodecInfo;
 import org.atalk.service.osgi.OSGiActivity;
-
-import java.util.ArrayList;
 
 /**
  * Activity that lists video <code>MediaCodec</code>s available in the system.
@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * Meaning of the colors:</br><br/>
  * * blue - codec will be used in call<br/>
  * * white / black - one of the codecs for particular media type, but it won't be used
- *   as there is another codec before it on the list<br/>
+ * as there is another codec before it on the list<br/>
  * * grey500 - codec is banned and won't be used<br/>
  *
  * Click on codec to toggle it's banned state. Changes are not persistent between
@@ -38,11 +38,9 @@ import java.util.ArrayList;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class MediaCodecList extends OSGiActivity implements AdapterView.OnItemClickListener
-{
+public class MediaCodecList extends OSGiActivity implements AdapterView.OnItemClickListener {
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_layout);
 
@@ -52,8 +50,7 @@ public class MediaCodecList extends OSGiActivity implements AdapterView.OnItemCl
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         MediaCodecAdapter adapter = (MediaCodecAdapter) parent.getAdapter();
         CodecInfo codec = (CodecInfo) adapter.getItem(position);
 
@@ -62,36 +59,30 @@ public class MediaCodecList extends OSGiActivity implements AdapterView.OnItemCl
         adapter.notifyDataSetChanged();
     }
 
-    class MediaCodecAdapter extends BaseAdapter
-    {
+    class MediaCodecAdapter extends BaseAdapter {
         private final ArrayList<CodecInfo> codecs;
 
-        MediaCodecAdapter()
-        {
+        MediaCodecAdapter() {
             codecs = new ArrayList<>(CodecInfo.getSupportedCodecs());
         }
 
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return codecs.size();
         }
 
         @Override
-        public Object getItem(int position)
-        {
+        public Object getItem(int position) {
             return codecs.get(position);
         }
 
         @Override
-        public long getItemId(int position)
-        {
+        public long getItemId(int position) {
             return position;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
+        public View getView(int position, View convertView, ViewGroup parent) {
             TextView row = (TextView) convertView;
             if (row == null) {
                 row = (TextView) getLayoutInflater().inflate(android.R.layout.simple_list_item_1, parent, false);
@@ -111,7 +102,7 @@ public class MediaCodecList extends OSGiActivity implements AdapterView.OnItemCl
             if (codec.isNominated()) {
                 color = R.color.blue;
             }
-            row.setTextColor(res.getColor(color));
+            row.setTextColor(res.getColor(color, null));
             return row;
         }
     }

@@ -14,28 +14,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/label_padding"
-        android:text="@string/plugin_certconfig_REVOCATION_TITLE" />
+        android:text="@string/certconfig_revocation_title" />
 
     <CheckBox
         android:id="@+id/cb_crl"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/list_padding"
-        android:text="@string/plugin_certconfig_REVOCATION_CHECK_ENABLED" />
+        android:text="@string/certconfig_revocation_check_enabled" />
 
     <CheckBox
         android:id="@+id/cb_ocsp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/list_padding"
-        android:text="@string/plugin_certconfig_REVOCATION_OCSP_ENABLED" />
+        android:text="@string/certconfig_revocation_ocsp_enabled" />
 
     <TextView
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/label_padding"
-        android:text="@string/plugin_certconfig_CERT_LIST_TITLE" />
+        android:text="@string/certconfig_cert_list_title" />
 
     <TextView
         style="@style/MediumFont"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:layout_marginBottom="@dimen/label_padding"
-        android:text="@string/plugin_certconfig_CERT_LIST_DESCRIPTION" />
+        android:text="@string/certconfig_cert_list_description" />
 
     <Spinner
         android:id="@+id/cboCert"
@@ -58,19 +58,19 @@
         <Button
             android:id="@+id/cmd_add"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_ADD" />
+            android:text="@string/add" />
 
         <Button
             android:id="@+id/cmd_remove"
             style="@style/ButtonTop"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
-            android:text="@string/service_gui_REMOVE" />
+            android:text="@string/remove" />
 
         <Button
             android:id="@+id/cmd_edit"
             style="@style/ButtonTop"
             android:focusable="true"
-            android:text="@string/service_gui_EDIT" />
+            android:text="@string/edit" />
     </LinearLayout>
 </LinearLayout>

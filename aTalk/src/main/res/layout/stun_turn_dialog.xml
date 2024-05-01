@@ -16,7 +16,7 @@
             android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_STUN_EDIT_ADDRESS" />
+            android:text="@string/ip_address" />
 
         <EditText
             android:id="@+id/ipAddress"
@@ -35,7 +35,7 @@
             android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_STUN_EDIT_PORT" />
+            android:text="@string/server_port" />
 
         <EditText
             android:id="@+id/serverPort"
@@ -48,7 +48,7 @@
         android:id="@+id/useTurnCheckbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_STUN_EDIT_SUPPORT_TURN" />
+        android:text="@string/turn_supported" />
 
     <LinearLayout
         android:id="@+id/turnSetting"
@@ -68,7 +68,7 @@
                 android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/service_gui_settings_PROTOCOL" />
+                android:text="@string/protocol" />
 
             <Spinner
                 android:id="@+id/TURNProtocol"
@@ -88,7 +88,7 @@
                 android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/service_gui_STUN_EDIT_TURN_USER" />
+                android:text="@string/username" />
 
             <EditText
                 android:id="@+id/usernameField"
@@ -108,7 +108,7 @@
                 android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/service_gui_STUN_EDIT_PASSWORD" />
+                android:text="@string/password" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"

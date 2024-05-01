@@ -2359,7 +2359,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      * MetaContactList. Synchronized to avoid firing events when we are editing the account
      * (there we temporally remove and then add again the storage manager and don't want anybody
      * to interrupt us).
-     *
+     * <p>
      * cmeng - have same effect in new sql implementation with single table row entry?
      * MetaContactGroupEvent.CONTACT_GROUP_REMOVED_FROM_META_GROUP:
      * MetaContactGroupEvent.META_CONTACT_GROUP_REMOVED: ==> Failed to find ...
@@ -2538,7 +2538,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
          */
         public synchronized void subscriptionCreated(SubscriptionEvent event) {
             if (event.getSourceContact().getAddress().equals(mSubscriptionAddress)
-                    || event.getSourceContact().equals(mSubscriptionAddress)) {
+                    || event.getSourceContact().toString().equals(mSubscriptionAddress)) {
                 mEvent = event;
                 mSourceContact = event.getSourceContact();
                 notifyAll();
@@ -2619,13 +2619,11 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      */
     public void supportedOperationSetsChanged(ContactCapabilitiesEvent event) {
         // If the source contact not in this meta contact, we have nothing more to do here.
-        MetaContactImpl metaContactImpl = (MetaContactImpl) findMetaContactByContact(event.getSourceContact());
-        if (metaContactImpl == null)
-            return;
-
         Contact contact = event.getSourceContact();
-        metaContactImpl.updateCapabilities(contact, event.getJid(), event.getOperationSets());
-
-        fireProtoContactEvent(contact, ProtoContactEvent.PROTO_CONTACT_MODIFIED, metaContactImpl, metaContactImpl);
+        MetaContactImpl metaContactImpl = (MetaContactImpl) findMetaContactByContact(contact);
+        if (metaContactImpl != null) {
+            metaContactImpl.updateCapabilities(contact, event.getJid(), event.getOperationSets());
+            fireProtoContactEvent(contact, ProtoContactEvent.PROTO_CONTACT_MODIFIED, metaContactImpl, metaContactImpl);
+        }
     }
 }

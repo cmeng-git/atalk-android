@@ -16,6 +16,10 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
@@ -27,18 +31,14 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.menu.MenuItem;
 import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.chat.ChatActivity;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.FullScreenHelper;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import timber.log.Timber;
 
-public class YoutubePlayerFragment extends Fragment
-{
+public class YoutubePlayerFragment extends Fragment {
     // regression to check for valid youtube link
     public static final String URL_YOUTUBE = "http[s]*://[w.]*youtu[.]*be.*";
 
@@ -75,17 +75,14 @@ public class YoutubePlayerFragment extends Fragment
     private static final float rateStep = 0.25f;
     private float mSpeed = 1.0f;
 
-    // private static final String[] mpSpeedValues = HymnsApp.getAppResources().getStringArray(R.array.mp_speed_value);
     private FragmentActivity mContext;
     private static final ConfigurationService configService = UtilActivator.getConfigurationService();
 
-    public YoutubePlayerFragment()
-    {
+    public YoutubePlayerFragment() {
     }
 
     @Override
-    public void onAttach(@NonNull @NotNull Context context)
-    {
+    public void onAttach(@NonNull @NotNull Context context) {
         super.onAttach(context);
         mContext = (FragmentActivity) context;
         fullScreenHelper = new FullScreenHelper(mContext);
@@ -94,16 +91,14 @@ public class YoutubePlayerFragment extends Fragment
     /**
      * Create a new instance of MediaExoPlayerFragment, providing "bundle" as an argument.
      */
-    public static YoutubePlayerFragment getInstance(Bundle args)
-    {
+    public static YoutubePlayerFragment getInstance(Bundle args) {
         YoutubePlayerFragment youtubePlayer = new YoutubePlayerFragment();
         youtubePlayer.setArguments(args);
         return youtubePlayer;
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.youtube_player_fragment, container, false);
         youTubePlayerView = view.findViewById(R.id.youtube_player_view);
 
@@ -126,8 +121,7 @@ public class YoutubePlayerFragment extends Fragment
         return view;
     }
 
-    private void initYouTubePlayerView()
-    {
+    private void initYouTubePlayerView() {
         // hymnchtv crashes when enabled
         // initPlayerMenu();
 
@@ -136,11 +130,9 @@ public class YoutubePlayerFragment extends Fragment
         // If you don't add YouTubePlayerView as a lifecycle observer, you will have to release it manually.
         getLifecycle().addObserver(youTubePlayerView);
 
-        youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener()
-        {
+        youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
-            public void onReady(@NonNull YouTubePlayer youTubePlayer)
-            {
+            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
                 if (usePlayList) {
                     startPlaylist(youTubePlayer, playLists[0]);
                 }
@@ -164,8 +156,7 @@ public class YoutubePlayerFragment extends Fragment
             }
 
             @Override
-            public void onError(@NotNull YouTubePlayer youTubePlayer, @NotNull PlayerConstants.PlayerError error)
-            {
+            public void onError(@NotNull YouTubePlayer youTubePlayer, @NotNull PlayerConstants.PlayerError error) {
                 // Error message will be shown in player view by API
                 Timber.w("Youtube url: %s, playback failed: %s", mediaUrl, error);
 
@@ -181,16 +172,14 @@ public class YoutubePlayerFragment extends Fragment
             }
 
             @Override
-            public void onVideoUrl(@NotNull YouTubePlayer youTubePlayer, @NotNull String videoUrl)
-            {
+            public void onVideoUrl(@NotNull YouTubePlayer youTubePlayer, @NotNull String videoUrl) {
                 Timber.w("Youtube videoUrl: %s (%s)", mediaUrl, videoUrl);
             }
 
             @Override
-            public void onPlaybackRateChange(@NotNull YouTubePlayer youTubePlayer, @NotNull String rate)
-            {
+            public void onPlaybackRateChange(@NotNull YouTubePlayer youTubePlayer, @NotNull String rate) {
                 mSpeed = Float.parseFloat(rate);
-                Toast.makeText(mContext, mContext.getString(R.string.gui_playback_rate, rate), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, mContext.getString(R.string.playback_rate, rate), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -201,8 +190,7 @@ public class YoutubePlayerFragment extends Fragment
      * @param youTubePlayer instance of youtube player
      * @param videoId video PL id or ids for playback
      */
-    private void startPlaylist(YouTubePlayer youTubePlayer, String videoId)
-    {
+    private void startPlaylist(YouTubePlayer youTubePlayer, String videoId) {
         Drawable nextActionIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_next);
         assert nextActionIcon != null;
 
@@ -228,10 +216,10 @@ public class YoutubePlayerFragment extends Fragment
      * d. https://www.youtube.com/playlist?list=PL0KROm2A3S8HaMLBxYPF5kuEEtTYvUJox\
      *
      * @param url Any of the above url string
+     *
      * @return the youtube videoId
      */
-    private String getVideoId(String url)
-    {
+    private String getVideoId(String url) {
         String mVideoId = url.substring(mediaUrl.lastIndexOf('/') + 1);
         if (mVideoId.contains("=")) {
             mVideoId = mVideoId.substring(mVideoId.indexOf("=") + 1).split("&")[0];
@@ -243,15 +231,15 @@ public class YoutubePlayerFragment extends Fragment
      * This method adds a new custom action to the player.
      * Custom actions are shown next to the Play/Pause button in the middle of the player.
      */
-    private void addActionsToPlayer(YouTubePlayer youTubePlayer)
-    {
+    private void addActionsToPlayer(YouTubePlayer youTubePlayer) {
         Drawable rewindActionIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_rewind);
         Drawable forwardActionIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_forward);
-
+        Drawable offYoutubeActionIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_hide_screen);
         Drawable rateIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_speed);
 
         assert rewindActionIcon != null;
         assert forwardActionIcon != null;
+        assert offYoutubeActionIcon != null;
         assert rateIcon != null;
 
         youTubePlayerView.getPlayerUiController().setRewindAction(rewindActionIcon,
@@ -273,13 +261,19 @@ public class YoutubePlayerFragment extends Fragment
                     float rate = tmp >= rateMin ? tmp : mSpeed;
                     youTubePlayer.setPlaybackRate(rate);
                 });
+
+        // End youtube player and hide UI
+        youTubePlayerView.getPlayerUiController().setHideScreenAction(offYoutubeActionIcon,
+                view -> {
+                    ((ChatActivity) mContext).releasePlayer();
+                }
+        );
     }
 
     /**
      * Shows the menu button in the player and adds an item to it.
      */
-    private void initPlayerMenu()
-    {
+    private void initPlayerMenu() {
         Objects.requireNonNull(youTubePlayerView.getPlayerUiController()
                         .showMenuButton(true)
                         .getMenu())
@@ -289,38 +283,29 @@ public class YoutubePlayerFragment extends Fragment
                 .addItem(new MenuItem("menu item2", R.drawable.ic_mood_black_24dp,
                         view -> Toast.makeText(mContext, "item2 clicked", Toast.LENGTH_SHORT).show())
                 )
-                .addItem(new MenuItem("menu item no icon", null,
+                .addItem(new MenuItem("menu item no icon",
                         view -> Toast.makeText(mContext, "item no icon clicked", Toast.LENGTH_SHORT).show())
                 );
     }
 
-    private void addFullScreenListenerToPlayer()
-    {
-        youTubePlayerView.addFullScreenListener(new YouTubePlayerFullScreenListener()
-        {
+    private void addFullScreenListenerToPlayer() {
+        youTubePlayerView.addFullScreenListener(new YouTubePlayerFullScreenListener() {
             @Override
-            public void onYouTubePlayerEnterFullScreen()
-            {
+            public void onYouTubePlayerEnterFullScreen() {
                 fullScreenHelper.enterFullScreen();
             }
 
             @Override
-            public void onYouTubePlayerExitFullScreen()
-            {
+            public void onYouTubePlayerExitFullScreen() {
                 fullScreenHelper.exitFullScreen();
             }
         });
     }
 
-    public FullScreenHelper getFullScreenHelper() {
-        return fullScreenHelper;
-    }
-
     /**
      * Initialize the Media Player playback speed to the user defined setting
      */
-    public void initPlaybackSpeed(YouTubePlayer youTubePlayer)
-    {
+    public void initPlaybackSpeed(YouTubePlayer youTubePlayer) {
         mSpeed = (float) configService.getDouble(MediaExoPlayerFragment.PREF_PLAYBACK_SPEED, 1.0);
         youTubePlayer.setPlaybackRate(mSpeed);
     }
@@ -330,8 +315,7 @@ public class YoutubePlayerFragment extends Fragment
      *
      * @param videoUrl videoUrl not playable by ExoPlayer
      */
-    private void playVideoUrlExt(String videoUrl)
-    {
+    private void playVideoUrlExt(String videoUrl) {
         // remove the youtube player fragment
         mContext.getSupportFragmentManager().beginTransaction().remove(this).commit();
 
@@ -343,12 +327,19 @@ public class YoutubePlayerFragment extends Fragment
     /**
      * Manually release the youtube player when user pressing backKey
      */
-    public void release()
-    {
+    public void release() {
         // Audio media player speed is (0.5 > mSpeed < 1.5)
         if (mSpeed >= rateMin && mSpeed <= rateMax) {
             configService.setProperty(MediaExoPlayerFragment.PREF_PLAYBACK_SPEED, mSpeed);
         }
         youTubePlayerView.release();
+    }
+
+    public void setPlayerVisible(boolean show) {
+        youTubePlayerView.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    public boolean isPlayerVisible() {
+        return youTubePlayerView.getVisibility() == View.VISIBLE;
     }
 }

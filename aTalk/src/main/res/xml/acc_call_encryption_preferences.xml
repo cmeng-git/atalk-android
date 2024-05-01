@@ -3,56 +3,56 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         android:key="pref.cat.security.general"
-        android:title="@string/service_gui_PREF_SECURITY_GENERAL">
+        android:title="@string/general">
         <CheckBoxPreference
             android:key="pref_key_enable_encryption"
-            android:title="@string/service_gui_PREF_SECURITY_ENCRYPTION" />
+            android:title="@string/security_encryption_enable" />
         <Preference
             android:dependency="pref_key_enable_encryption"
             android:key="pref_key_enc_protos_dialog"
             android:persistent="false"
-            android:title="@string/service_gui_PREF_SECURITY_ENC_PROTOCOLS" />
+            android:title="@string/security_encryption_protocols" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="pref.cat.security.zrtp"
-        android:title="@string/service_gui_PREF_SECURITY_ZRTP">
+        android:title="@string/security_zrtp_options">
         <CheckBoxPreference
             android:dependency="pref_key_enable_encryption"
             android:key="pref_key_enc_sipzrtp_attr"
-            android:title="@string/service_gui_PREF_SECURITY_ZRTP_SIGNALING" />
+            android:title="@string/security_zrtp_signalling" />
         <!-- Reset ZID -->
         <PreferenceScreen
             android:key="pref.key.zid.reset"
-            android:summary="@string/reset_ZID_summary"
-            android:title="@string/reset_ZID_title">
+            android:summary="@string/zid_reset_summary"
+            android:title="@string/zid_reset_title">
         </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="pref.cat.security.dtls"
-        android:title="@string/service_gui_PREF_SECURITY_DTLS_SRTP">
+        android:title="@string/security_dtls_srtp">
         <ListPreference
             android:dependency="pref_key_enable_encryption"
-            android:dialogTitle="@string/service_gui_PREF_SECURITY_DTLS_TITLE"
+            android:dialogTitle="@string/security_dtls_title"
             android:entries="@array/pref_dtls_srtp_cert_sa"
             android:entryValues="@array/pref_dtls_srtp_cert_sa"
             android:key="pref_key_enc_dtls_cert_signature_algorithm"
-            android:title="@string/service_gui_PREF_SECURITY_DTLS_TITLE" />
+            android:title="@string/security_dtls_title" />
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="pref.cat.security.sdes"
-        android:title="@string/service_gui_PREF_SECURITY_SDES">
+        android:title="@string/security_sdes">
         <MultiSelectListPreference
             android:dependency="pref_key_enable_encryption"
-            android:dialogTitle="@string/service_gui_PREF_SECURITY_SDES_DLG_TITLE"
+            android:dialogTitle="@string/security_sdes_dlg_title"
             android:key="pref_key_ecn_cipher_suites"
-            android:title="@string/service_gui_PREF_SECURITY_SDES_TITLE" />
+            android:title="@string/security_sdes_title" />
         <ListPreference
             android:dependency="pref_key_enable_encryption"
-            android:dialogTitle="@string/service_gui_PREF_SECURITY_RTP_SAVP_TITLE"
+            android:dialogTitle="@string/security_rtp_savp_title"
             android:entries="@array/pref_savp_option_desc"
             android:entryValues="@array/pref_savp_option_desc"
             android:key="pref_key_enc_savp_option"
-            android:title="@string/service_gui_PREF_SECURITY_RTP_SAVP" />
+            android:title="@string/security_rtp_savp" />
     </PreferenceCategory>
 </PreferenceScreen>

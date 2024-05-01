@@ -184,7 +184,7 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
                 mUploadMessageArray = null;
             }
             else {
-                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                aTalkApp.showToastMessage(R.string.file_does_not_exist);
             }
         });
     }

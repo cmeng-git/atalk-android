@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/label_padding"
-        android:text="@string/service_gui_TTS_VOICE" />
+        android:text="@string/tts_voice" />
 
     <EditText
         android:id="@+id/tts_locale"
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/label_padding"
-        android:text="@string/service_gui_TTS_DELAY" />
+        android:text="@string/tts_delay" />
 
     <EditText
         android:id="@+id/tts_delay"
@@ -38,13 +38,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/list_padding"
-        android:text="@string/service_gui_TTS_ENABLE" />
+        android:text="@string/tts_enable" />
 
     <Button
         android:id="@+id/tts_setting"
         style="@style/ButtonTop"
         android:layout_width="fill_parent"
-        android:text="@string/service_gui_TTS_SETTINGS" />
+        android:text="@string/tts_settings" />
 
     <LinearLayout
         android:id="@+id/loading"
@@ -64,7 +64,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_LOADING" />
+            android:text="@string/loading_wait" />
     </LinearLayout>
 
     <LinearLayout
@@ -79,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/label_padding"
-            android:text="@string/service_gui_TTS_SYNTHESIS" />
+            android:text="@string/tts_synthesis" />
 
         <EditText
             android:id="@+id/tts_text"
@@ -98,19 +98,19 @@
             <Button
                 android:id="@+id/tts_save"
                 style="@style/ButtonTop"
-                android:text="@string/service_gui_SAVE" />
+                android:text="@string/save" />
 
             <Button
                 android:id="@+id/tts_play"
                 style="@style/ButtonTop"
                 android:layout_marginStart="4dp"
-                android:text="@string/service_gui_PLAY" />
+                android:text="@string/play" />
 
             <Button
                 android:id="@+id/tts_ok"
                 style="@style/ButtonTop"
                 android:layout_marginStart="4dp"
-                android:text="@string/service_gui_OK" />
+                android:text="@string/ok" />
 
         </LinearLayout>
     </LinearLayout>

@@ -317,7 +317,7 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
         Map<String, String> accountProps = protocolProvider.getAccountID().getAccountProperties();
 
         String username = accountProps.get(ProtocolProviderFactory.USER_ID);
-        Account account = new Account(username, getString(R.string.ACCOUNT_TYPE));
+        Account account = new Account(username, getString(R.string.aTalk_account_type));
 
         final Bundle extraData = new Bundle();
         for (String key : accountProps.keySet()) {
@@ -336,7 +336,7 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
 
                 Bundle result = new Bundle();
                 result.putString(AccountManager.KEY_ACCOUNT_NAME, username);
-                result.putString(AccountManager.KEY_ACCOUNT_TYPE, getString(R.string.ACCOUNT_TYPE));
+                result.putString(AccountManager.KEY_ACCOUNT_TYPE, getString(R.string.aTalk_account_type));
                 result.putAll(extraData);
                 response.onResult(result);
             }

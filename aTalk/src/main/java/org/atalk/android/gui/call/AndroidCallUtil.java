@@ -111,6 +111,11 @@ public class AndroidCallUtil {
         Contact contact = metaContact.getDefaultContact();
         Jid callee = contact.getJid();
         ProtocolProviderService pps = contact.getProtocolProvider();
+        if (!pps.isRegistered()) {
+            aTalkApp.showToastMessage(R.string.create_call_failed);
+            return;
+        }
+
         boolean isJmSupported = metaContact.isFeatureSupported(JingleMessage.NAMESPACE);
         if (isJmSupported) {
             JingleMessageSessionImpl.sendJingleMessagePropose(pps.getConnection(), callee, isVideoCall);
@@ -151,7 +156,7 @@ public class AndroidCallUtil {
         }
         // Allow max of 2 outgoing calls for attended call transfer support
         else if (CallManager.getActiveCallsCount() > 1) {
-            aTalkApp.showToastMessage(R.string.gui_call_max_transfer);
+            aTalkApp.showToastMessage(R.string.call_max_transfer);
             return;
         }
         // cmeng (20210319: Seems to have no chance to show; and it causes waitForDialogOpened() (10s) error often, so remove it
@@ -165,7 +170,7 @@ public class AndroidCallUtil {
                     CallManager.createCall(provider, callee.toString(), isVideoCall);
                 } catch (Throwable t) {
                     Timber.e(t, "Error creating the call: %s", t.getMessage());
-                    DialogActivity.showDialog(context, context.getString(R.string.service_gui_ERROR), t.getMessage());
+                    DialogActivity.showDialog(context, context.getString(R.string.error), t.getMessage());
                 } finally {
                     createCallThread = null;
                 }
@@ -184,7 +189,7 @@ public class AndroidCallUtil {
     public static boolean checkCallInProgress(Activity activity) {
         if (CallManager.getActiveCallsCount() > 0) {
             Timber.w("Call is in progress");
-            Toast.makeText(activity, R.string.service_gui_WARN_CALL_IN_PROGRESS, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, R.string.call_in_progress_warning, Toast.LENGTH_SHORT).show();
             activity.finish();
             return true;
         }

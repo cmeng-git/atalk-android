@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@color/background_dark"
         android:padding="5dp"
-        android:text="@string/service_gui_CALL_HISTORY_GROUP_NAME"
+        android:text="@string/call_history_name"
         android:textColor="@color/textColorWhite" />
 
     <LinearLayout
@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:text="@string/service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING" />
+            android:text="@string/call_history_remove_before_date_warning" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,13 +64,13 @@
             <Button
                 android:id="@+id/cancelButton"
                 style="@style/ButtonTop"
-                android:text="@string/service_gui_CANCEL" />
+                android:text="@string/cancel" />
 
             <Button
                 android:id="@+id/purgeButton"
                 style="@style/ButtonTop"
                 android:layout_marginStart="4dp"
-                android:text="@string/service_gui_PURGE" />
+                android:text="@string/purge" />
         </LinearLayout>
     </LinearLayout>
 

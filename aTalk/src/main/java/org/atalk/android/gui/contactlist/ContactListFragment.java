@@ -360,7 +360,7 @@ public class ContactListFragment extends OSGiFragment
         }
         else {
             String tts_option = aTalkApp.getResString(contact.isTtsEnable()
-                    ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
+                    ? R.string.tts_disable : R.string.tts_enable);
             mContactTtsEnable.setTitle(tts_option);
             mContactTtsEnable.setVisible(ConfigurationUtils.isTtsEnable());
         }
@@ -452,11 +452,11 @@ public class ContactListFragment extends OSGiFragment
                         Contact contact = mClickedContact.getDefaultContact();
                         if (contact.isTtsEnable()) {
                             contact.setTtsEnable(false);
-                            mContactTtsEnable.setTitle(R.string.service_gui_TTS_ENABLE);
+                            mContactTtsEnable.setTitle(R.string.tts_enable);
                         }
                         else {
                             contact.setTtsEnable(true);
-                            mContactTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
+                            mContactTtsEnable.setTitle(R.string.tts_disable);
                         }
                         ChatSessionManager.createChatForChatId(mClickedContact.getMetaUID(),
                                 ChatSessionManager.MC_CHAT).updateChatTtsOption();
@@ -541,7 +541,7 @@ public class ContactListFragment extends OSGiFragment
 
     @Override
     public void onTaskComplete(int msgCount, List<String> deletedUUIDs) {
-        aTalkApp.showToastMessage(R.string.service_gui_HISTORY_REMOVE_COUNT, msgCount);
+        aTalkApp.showToastMessage(R.string.history_purge_count, msgCount);
         if (EntityListHelper.SINGLE_ENTITY == eraseMode) {
             ChatPanel clickedChat = ChatSessionManager.getActiveChat(mClickedContact);
             if (clickedChat != null) {
@@ -552,7 +552,7 @@ public class ContactListFragment extends OSGiFragment
             onCloseAllChats();
         }
         else { // failed
-            String errMsg = getString(R.string.service_gui_HISTORY_REMOVE_ERROR, mClickedContact.getDisplayName());
+            String errMsg = getString(R.string.history_purge_error, mClickedContact.getDisplayName());
             aTalkApp.showToastMessage(errMsg);
         }
     }
@@ -581,7 +581,7 @@ public class ContactListFragment extends OSGiFragment
                     authOpSet.reRequestAuthorization(request, contact);
                 } catch (OperationFailedException e) {
                     Context ctx = aTalkApp.getInstance();
-                    DialogActivity.showConfirmDialog(ctx, ctx.getString(R.string.service_gui_RE_REQUEST_AUTHORIZATION),
+                    DialogActivity.showConfirmDialog(ctx, ctx.getString(R.string.request_authorization),
                             e.getMessage(), null, null);
                 }
             }
@@ -633,7 +633,7 @@ public class ContactListFragment extends OSGiFragment
      */
     public void startChat(MetaContact metaContact) {
         if (metaContact.getDefaultContact() == null) {
-            aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, metaContact.getDisplayName());
+            aTalkApp.showToastMessage(R.string.contact_invalid, metaContact.getDisplayName());
         }
 
         // Default for domainJid - always show chat session

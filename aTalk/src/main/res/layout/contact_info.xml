@@ -55,7 +55,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="40dp"
             android:layout_toEndOf="@id/contactAvatar"
-            android:hint="@string/plugin_contactinfo_USER_STATUS_MESSAGE"
+            android:hint="@string/contactinfo_status_message"
             tools:ignore="UnknownIdInLayout" />
     </RelativeLayout>
 
@@ -83,13 +83,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_DISPLAY_NAME" />
+                    android:text="@string/accountinfo_display_name" />
 
                 <TextView
                     android:id="@+id/ci_DisplayNameField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -105,13 +105,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_FIRST_NAME" />
+                    android:text="@string/accountinfo_first_name" />
 
                 <TextView
                     android:id="@+id/ci_FirstNameField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -127,13 +127,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_MIDDLE_NAME" />
+                    android:text="@string/accountinfo_middle_name" />
 
                 <TextView
                     android:id="@+id/ci_MiddleNameField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -149,13 +149,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_LAST_NAME" />
+                    android:text="@string/accountinfo_last_name" />
 
                 <TextView
                     android:id="@+id/ci_LastNameField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -171,13 +171,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_NICKNAME" />
+                    android:text="@string/accountinfo_nickname" />
 
                 <TextView
                     android:id="@+id/ci_NickNameField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -193,13 +193,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_URL" />
+                    android:text="@string/contact_url" />
 
                 <TextView
                     android:id="@+id/ci_URLField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -215,13 +215,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_GENDER" />
+                    android:text="@string/accountinfo_gender" />
 
                 <TextView
                     android:id="@+id/ci_GenderField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -237,14 +237,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
-                    android:text="@string/plugin_accountinfo_BDAY" />
+                    android:text="@string/accountinfo_birth_date" />
 
                 <TextView
                     android:id="@+id/ci_BirthDateField"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -260,13 +260,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_AGE" />
+                    android:text="@string/accountinfo_age" />
 
                 <TextView
                     android:id="@+id/ci_AgeField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -282,13 +282,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_STREET" />
+                    android:text="@string/accountinfo_street" />
 
                 <TextView
                     android:id="@+id/ci_StreetAddressField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -304,13 +304,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_CITY" />
+                    android:text="@string/accountinfo_city" />
 
                 <TextView
                     android:id="@+id/ci_CityField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -326,13 +326,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_REGION" />
+                    android:text="@string/accountinfo_region" />
 
                 <TextView
                     android:id="@+id/ci_RegionField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -348,13 +348,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_POST" />
+                    android:text="@string/accountinfo_postcode" />
 
                 <TextView
                     android:id="@+id/ci_PostalCodeField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -370,13 +370,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_COUNTRY" />
+                    android:text="@string/accountinfo_country" />
 
                 <TextView
                     android:id="@+id/ci_CountryField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -392,13 +392,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_EMAIL" />
+                    android:text="@string/accountinfo_email" />
 
                 <TextView
                     android:id="@+id/ci_EMailField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -414,13 +414,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_WORK_EMAIL" />
+                    android:text="@string/accountinfo_work_email" />
 
                 <TextView
                     android:id="@+id/ci_WorkEmailField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -436,13 +436,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_PHONE" />
+                    android:text="@string/accountinfo_phone" />
 
                 <TextView
                     android:id="@+id/ci_PhoneField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -458,13 +458,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_WORK_PHONE" />
+                    android:text="@string/accountinfo_work_phone" />
 
                 <TextView
                     android:id="@+id/ci_WorkPhoneField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -480,13 +480,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_MOBILE_PHONE" />
+                    android:text="@string/accountinfo_mobile_phone" />
 
                 <TextView
                     android:id="@+id/ci_MobilePhoneField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -502,13 +502,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_ORGANIZATION" />
+                    android:text="@string/accountinfo_organisation" />
 
                 <TextView
                     android:id="@+id/ci_OrganizationNameField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -524,13 +524,13 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_JOB_TITLE" />
+                    android:text="@string/accountinfo_job_title" />
 
                 <TextView
                     android:id="@+id/ci_JobTitleField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
+                    android:text="@string/contactinfo_not_specified" />
             </LinearLayout>
 
             <LinearLayout
@@ -547,7 +547,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="5dp"
-                    android:text="@string/plugin_accountinfo_ABOUT_ME" />
+                    android:text="@string/accountinfo_about_me" />
 
                 <TextView
                     android:id="@+id/ci_AboutMeField"
@@ -579,6 +579,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_toEndOf="@id/centerShim"
-            android:text="@string/service_gui_OK" />
+            android:text="@string/ok" />
     </RelativeLayout>
 </LinearLayout>

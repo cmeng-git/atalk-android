@@ -8,6 +8,8 @@ package org.atalk.android.gui.settings;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
+import java.util.List;
+
 import org.atalk.android.R;
 import org.atalk.android.gui.account.settings.MediaEncodingActivity;
 import org.atalk.android.gui.account.settings.MediaEncodingsFragment;
@@ -18,14 +20,11 @@ import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.MediaType;
 
-import java.util.List;
-
 /**
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class EncodingSettings extends OSGiActivity
-{
+public class EncodingSettings extends OSGiActivity {
     public static final String EXTRA_MEDIA_TYPE = "media_type";
     public static final String MEDIA_TYPE_AUDIO = "media_type.AUDIO";
     public static final String MEDIA_TYPE_VIDEO = "media_type.VIDEO";
@@ -33,17 +32,16 @@ public class EncodingSettings extends OSGiActivity
     private MediaType mMediaType;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String mediaTypeStr = getIntent().getStringExtra(EXTRA_MEDIA_TYPE);
         if (MEDIA_TYPE_AUDIO.equals(mediaTypeStr)) {
             mMediaType = MediaType.AUDIO;
-            setMainTitle(R.string.service_gui_settings_AUDIO_CODECS_TITLE);
+            setMainTitle(R.string.settings_audio_codecs);
         }
         else if (MEDIA_TYPE_VIDEO.equals(mediaTypeStr)) {
             mMediaType = MediaType.VIDEO;
-            setMainTitle(R.string.service_gui_settings_VIDEO_CODECS_TITLE);
+            setMainTitle(R.string.settings_video_codec);
         }
 
         if (savedInstanceState == null) {
@@ -68,8 +66,7 @@ public class EncodingSettings extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
         MediaServiceImpl mediaSrvc = NeomediaActivator.getMediaServiceImpl();
 
         if ((keyCode == KeyEvent.KEYCODE_BACK) && (mediaSrvc != null)) {

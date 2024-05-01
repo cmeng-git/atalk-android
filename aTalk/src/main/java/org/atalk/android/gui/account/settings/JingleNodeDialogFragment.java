@@ -32,8 +32,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class JingleNodeDialogFragment extends DialogFragment
-{
+public class JingleNodeDialogFragment extends DialogFragment {
     /**
      * Edited Jingle Node descriptor
      */
@@ -44,8 +43,7 @@ public class JingleNodeDialogFragment extends DialogFragment
      */
     private JingleNodeAdapter listener;
 
-    public JingleNodeDialogFragment()
-    {
+    public JingleNodeDialogFragment() {
     }
 
     /**
@@ -54,8 +52,7 @@ public class JingleNodeDialogFragment extends DialogFragment
      * @param listener parent {@link JingleNodeAdapter}
      * @param descriptor the {@link JingleNodeDescriptor} to edit or <code>null</code> if a new node shall be created
      */
-    public static JingleNodeDialogFragment newInstance(JingleNodeAdapter listener, JingleNodeDescriptor descriptor)
-    {
+    public static JingleNodeDialogFragment newInstance(JingleNodeAdapter listener, JingleNodeDescriptor descriptor) {
         if (listener == null)
             throw new NullPointerException();
 
@@ -66,21 +63,20 @@ public class JingleNodeDialogFragment extends DialogFragment
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the layout inflater
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View contentView = inflater.inflate(R.layout.jingle_node_dialog, null);
 
         // Builds the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder = builder.setTitle(R.string.service_gui_JBR_JINGLE_NODES);
+        builder = builder.setTitle(R.string.jbr_jingle_nodes);
         builder = builder.setView(contentView)
-                .setPositiveButton(R.string.service_gui_SAVE, null)
-                .setNeutralButton(R.string.service_gui_SERVERS_LIST_CANCEL, null);
+                .setPositiveButton(R.string.save, null)
+                .setNeutralButton(R.string.cancel, null);
         if (descriptor != null) {
             // Add remove button if it''s not "create new" dialog
-            builder = builder.setNegativeButton(R.string.service_gui_SERVERS_LIST_REMOVE, null);
+            builder = builder.setNegativeButton(R.string.remove, null);
 
             TextView jidAdrTextView = contentView.findViewById(R.id.jidAddress);
             jidAdrTextView.setText(descriptor.getJID());
@@ -112,8 +108,7 @@ public class JingleNodeDialogFragment extends DialogFragment
      *
      * @return <code>true</code> if all data is correct and changes have been stored in descriptor
      */
-    boolean saveChanges()
-    {
+    boolean saveChanges() {
         Dialog dialog = getDialog();
         boolean relaySupport = ((CompoundButton) dialog.findViewById(R.id.relaySupportCheckbox)).isChecked();
         String jingleAddress = ViewUtil.toString(dialog.findViewById(R.id.jidAddress));

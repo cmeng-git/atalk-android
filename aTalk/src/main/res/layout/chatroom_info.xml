@@ -26,7 +26,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/service_gui_CHATROOM_INFO_NAME" />
+                    android:text="@string/chatroom_info_name" />
 
                 <TextView
                     android:id="@+id/roominfo_name"
@@ -46,7 +46,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/service_gui_CHATROOM_INFO_SUBJECT" />
+                    android:text="@string/chatroom_info_subject" />
 
                 <TextView
                     android:id="@+id/roominfo_subject"
@@ -67,7 +67,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/service_gui_CHATROOM_INFO_DESCRIPTION" />
+                    android:text="@string/chatroom_info_description" />
 
                 <TextView
                     android:id="@+id/roominfo_description"
@@ -89,7 +89,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/service_gui_CHATROOM_INFO_OCCUPANTS" />
+                    android:text="@string/chatroom_info_occupants" />
 
                 <TextView
                     android:id="@+id/roominfo_occupants"
@@ -109,7 +109,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/service_gui_CHATROOM_INFO_MAX_HISTORY_FETCH" />
+                    android:text="@string/chatroom_info_max_history_fetch" />
 
                 <TextView
                     android:id="@+id/maxhistoryfetch"
@@ -129,7 +129,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/service_gui_CHATROOM_INFO_CONTACT_JID" />
+                    android:text="@string/chatroom_info_contact_jid" />
 
                 <TextView
                     android:id="@+id/roominfo_contactjid"
@@ -150,7 +150,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/service_gui_CHATROOM_INFO_LANGUAGE" />
+                    android:text="@string/chatroom_info_language" />
 
                 <TextView
                     android:id="@+id/roominfo_lang"
@@ -170,7 +170,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/service_gui_CHATROOM_INFO_LDAP_GROUP" />
+                    android:text="@string/chatroom_info_ldap_group" />
 
                 <TextView
                     android:id="@+id/roominfo_ldapgroup"
@@ -191,7 +191,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:clickable="false"
-                    android:text="@string/service_gui_CHATROOM_INFO_MEMBERS_ONLY" />
+                    android:text="@string/chatroom_info_member_only" />
 
                 <View
                     android:id="@+id/centerShim1"
@@ -205,7 +205,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:clickable="false"
-                    android:text="@string/service_gui_CHATROOM_INFO_NON_ANANYMOUS" />
+                    android:text="@string/chatroom_info_non_anonymous" />
             </LinearLayout>
 
             <LinearLayout
@@ -220,7 +220,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:clickable="false"
-                    android:text="@string/service_gui_CHATROOM_INFO_PERSISTENT" />
+                    android:text="@string/chatroom_info_persistent" />
 
                 <View
                     android:id="@+id/centerShim2"
@@ -234,7 +234,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:clickable="false"
-                    android:text="@string/service_gui_CHATROOM_INFO_PASSWORD_PROTECTED" />
+                    android:text="@string/chatroom_info_password_protected" />
             </LinearLayout>
 
             <LinearLayout
@@ -249,7 +249,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:clickable="false"
-                    android:text="@string/service_gui_CHATROOM_INFO_MODERATED" />
+                    android:text="@string/chatroom_info_moderated" />
 
                 <View
                     android:id="@+id/centerShim3"
@@ -263,7 +263,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:clickable="false"
-                    android:text="@string/service_gui_CHATROOM_INFO_SUBJECT_MODIFIABLE" />
+                    android:text="@string/chatroom_info_subject_modifiable" />
             </LinearLayout>
 
             <LinearLayout
@@ -283,7 +283,7 @@
                     android:id="@+id/button_ok"
                     style="@style/ButtonTop"
                     android:layout_weight="1"
-                    android:text="@string/service_gui_OK" />
+                    android:text="@string/ok" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

@@ -6,25 +6,25 @@
         android:entries="@array/pref_opus_bandwidth"
         android:entryValues="@array/pref_opus_bandwidth_values"
         android:key="neomedia.codec.audio.opus.encoder.AUDIO_BANDWIDTH"
-        android:title="@string/service_gui_settings_OPUS_AUDIO_BANDWIDTH" />
+        android:title="@string/opus_sampling_rate" />
 
     <org.atalk.android.gui.settings.widget.ConfigEditText
         android:inputType="number"
         android:key="neomedia.codec.audio.opus.encoder.BITRATE"
-        android:title="@string/service_gui_settings_OPUS_BITRATE" />
+        android:title="@string/opus_bitrate" />
 
     <org.atalk.android.gui.settings.widget.ConfigCheckBox
         android:key="neomedia.codec.audio.opus.encoder.DTX"
-        android:title="@string/service_gui_settings_OPUS_USE_DTX" />
+        android:title="@string/opus_use_dtx" />
 
     <org.atalk.android.gui.settings.widget.ConfigCheckBox
         android:key="neomedia.codec.audio.opus.encoder.FEC"
-        android:title="@string/service_gui_settings_OPUS_USE_FEC" />
+        android:title="@string/opus_use_fec" />
 
     <org.atalk.android.gui.settings.widget.ConfigEditText
         android:inputType="number"
         android:key="neomedia.codec.audio.opus.encoder.MIN_EXPECTED_PACKET_LOSS"
-        android:title="@string/service_gui_settings_OPUS_MIN_EXPECTED_PACKET_LOSS"
+        android:title="@string/opus_min_expected_packet_loss"
         custom:intMax="100"
         custom:intMin="1" />
 
@@ -32,5 +32,5 @@
         android:entries="@array/pref_opus_complexity"
         android:entryValues="@array/pref_opus_complexity"
         android:key="neomedia.codec.audio.opus.encoder.COMPLEXITY"
-        android:title="@string/service_gui_settings_OPUS_COMPLEXITY" />
+        android:title="@string/opus_complexity" />
 </PreferenceScreen>

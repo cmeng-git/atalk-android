@@ -165,7 +165,7 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
 //                if (!manuallyDisconnected) {
 //                    switch (evt.getReasonCode()) {
 //                        case RegistrationStateChangeEvent.REASON_MULTIPLE_LOGIN:
-//							msgText = aTalkApp.getResString(R.string.service_gui_MULTIPLE_LOGIN,
+//                            msgText = aTalkApp.getResString(R.string.multiple_login,
 //                                    accountID.getUserID(), accountID.getService());
 //                            break;
 //                        case RegistrationStateChangeEvent.REASON_CLIENT_LIMIT_REACHED_FOR_IP:
@@ -176,14 +176,14 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
 //                            // do nothing
 //                            break;
 //                        default:
-//							msgText = aTalkApp.getResString(R.string.service_gui_UNREGISTERED_MESSAGE,
+//                            msgText = aTalkApp.getResString(R.string.unregistered_message,
 //                                    accountID.getUserID(), accountID.getServerAddress());
 //                    }
 //                    Timber.log(TimberLog.FINER, evt.getReason());
 //                }
 //            }
 //            if (msgText != null)
-//                DialogActivity.showAlertDialog(mRMS.getI18NString("service.gui.ERROR"), msgText);
+//                DialogActivity.showDialog(aTalkApp.getInstance(), aTalkApp.getResString(R.string.error), msgText);
 //        }
     }
 
@@ -347,7 +347,7 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
 //					Timber.e(alertMsg + "network failure: " + ex);
 //				}
                 DialogActivity.showDialog(aTalkApp.getInstance(),
-                        R.string.service_gui_ERROR, R.string.service_gui_LOGOFF_NOT_SUCCEEDED,
+                        R.string.error, R.string.logoff_failed,
                         protocolProvider.getAccountID().getUserID(),
                         protocolProvider.getAccountID().getService());
             }

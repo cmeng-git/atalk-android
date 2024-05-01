@@ -26,6 +26,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import java.util.List;
+
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ChatRoomMember;
@@ -40,8 +42,6 @@ import org.jivesoftware.smackx.muc.RoomInfo;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.util.List;
-
 import timber.log.Timber;
 
 /**
@@ -49,27 +49,23 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class ChatRoomInfoDialog extends OSGiDialogFragment
-{
+public class ChatRoomInfoDialog extends OSGiDialogFragment {
     private View contentView;
     private ChatRoomWrapper mChatRoomWrapper;
 
-    public ChatRoomInfoDialog()
-    {
+    public ChatRoomInfoDialog() {
     }
 
-    public static ChatRoomInfoDialog newInstance(ChatRoomWrapper chatRoomWrapper)
-    {
+    public static ChatRoomInfoDialog newInstance(ChatRoomWrapper chatRoomWrapper) {
         ChatRoomInfoDialog dialog = new ChatRoomInfoDialog();
         dialog.mChatRoomWrapper = chatRoomWrapper;
         return dialog;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (getDialog() != null)
-            getDialog().setTitle(R.string.service_gui_CHATROOM_INFO);
+            getDialog().setTitle(R.string.chatroom_info);
 
         contentView = inflater.inflate(R.layout.chatroom_info, container, false);
         final Button buttonOk = contentView.findViewById(R.id.button_ok);
@@ -84,18 +80,15 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
     /**
      * Retrieve the chatRoom info from server and populate the fragment with the available information
      */
-    private class getRoomInfo extends AsyncTask<Void, Void, RoomInfo>
-    {
+    private class getRoomInfo extends AsyncTask<Void, Void, RoomInfo> {
         String errMsg;
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
         }
 
         @Override
-        protected RoomInfo doInBackground(Void... params)
-        {
+        protected RoomInfo doInBackground(Void... params) {
             ChatRoomProviderWrapper crpWrapper = mChatRoomWrapper.getParentProvider();
             if (crpWrapper != null) {
                 ProtocolProviderService pps = crpWrapper.getProtocolProvider();
@@ -105,7 +98,7 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
                 try {
                     return mucManager.getRoomInfo(entityBareJid);
                 } catch (SmackException.NoResponseException | SmackException.NotConnectedException
-                        | InterruptedException e) {
+                         | InterruptedException e) {
                     errMsg = e.getMessage();
                 } catch (XMPPException.XMPPErrorException e) {
                     String descriptiveText = e.getStanzaError().getDescriptiveText() + "\n";
@@ -116,8 +109,7 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
         }
 
         @Override
-        protected void onPostExecute(RoomInfo chatRoomInfo)
-        {
+        protected void onPostExecute(RoomInfo chatRoomInfo) {
             String EMPTY = "";
 
             super.onPostExecute(chatRoomInfo);
@@ -142,7 +134,7 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
 
                 textView = contentView.findViewById(R.id.maxhistoryfetch);
                 textView.setText(toValue(chatRoomInfo.getMaxHistoryFetch(),
-                        getString(R.string.service_gui_INFO_NOT_SPECIFIED)));
+                        getString(R.string.contactinfo_not_specified)));
 
                 textView = contentView.findViewById(R.id.roominfo_contactjid);
                 try {
@@ -193,10 +185,10 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
          *
          * @param value Integer
          * @param defaultValue return default string if int == -1
+         *
          * @return String value of the specified Integer value
          */
-        private String toValue(int value, String defaultValue)
-        {
+        private String toValue(int value, String defaultValue) {
             return (value != -1) ? Integer.toString(value) : defaultValue;
         }
 
@@ -205,10 +197,10 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
          *
          * @param text test String
          * @param defaultValue return default string
+         *
          * @return text if not null else defaultValue
          */
-        private String toString(String text, String defaultValue)
-        {
+        private String toString(String text, String defaultValue) {
             return (text != null) ? text : defaultValue;
         }
 
@@ -216,10 +208,10 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
          * Return Boolean state if not null else false
          *
          * @param state Boolean state
+         *
          * @return Boolean value if not null else false
          */
-        private boolean toBoolean(Boolean state)
-        {
+        private boolean toBoolean(Boolean state) {
             return (state != null) ? state : false;
         }
     }

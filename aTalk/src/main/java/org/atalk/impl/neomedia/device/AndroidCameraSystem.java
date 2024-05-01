@@ -220,8 +220,8 @@ public class AndroidCameraSystem extends DeviceSystem {
 
                 // Construct display name
                 String name = (facing == CameraCharacteristics.LENS_FACING_FRONT)
-                        ? aTalkApp.getResString(R.string.service_gui_settings_CAMERA_FRONT)
-                        : aTalkApp.getResString(R.string.service_gui_settings_CAMERA_BACK);
+                        ? aTalkApp.getResString(R.string.settings_camera_front)
+                        : aTalkApp.getResString(R.string.settings_camera_back);
                 name += " (AndroidCamera#" + cameraId + ")";
                 if (formats.isEmpty()) {
                     Timber.e("No supported formats reported by camera: %s", locator);

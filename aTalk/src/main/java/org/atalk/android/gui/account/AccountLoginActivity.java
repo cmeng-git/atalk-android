@@ -118,25 +118,25 @@ public class AccountLoginActivity extends ExitMenuActivity
 
             switch (e.getErrorCode()) {
                 case OperationFailedException.ILLEGAL_ARGUMENT:
-                    DialogActivity.showDialog(this, R.string.service_gui_LOGIN_FAILED,
-                            R.string.service_gui_USERNAME_NULL);
+                    DialogActivity.showDialog(this, R.string.login_failed,
+                            R.string.username_password_null);
                     break;
                 case OperationFailedException.IDENTIFICATION_CONFLICT:
-                    DialogActivity.showDialog(this, R.string.service_gui_LOGIN_FAILED,
-                            R.string.service_gui_USER_EXISTS_ERROR);
+                    DialogActivity.showDialog(this, R.string.login_failed,
+                            R.string.user_exist_error);
                     break;
                 case OperationFailedException.SERVER_NOT_SPECIFIED:
-                    DialogActivity.showDialog(this, R.string.service_gui_LOGIN_FAILED,
-                            R.string.service_gui_SPECIFY_SERVER);
+                    DialogActivity.showDialog(this, R.string.login_failed,
+                            R.string.server_info_not_complete);
                     break;
                 default:
-                    DialogActivity.showDialog(this, R.string.service_gui_LOGIN_FAILED,
-                            R.string.service_gui_ACCOUNT_CREATION_FAILED, e.getMessage());
+                    DialogActivity.showDialog(this, R.string.login_failed,
+                            R.string.account_create_failed, e.getMessage());
             }
         } catch (Exception e) {
             Timber.e(e, "Exception while adding account: %s", e.getMessage());
-            DialogActivity.showDialog(this, R.string.service_gui_ERROR,
-                    R.string.service_gui_ACCOUNT_CREATION_FAILED, e.getMessage());
+            DialogActivity.showDialog(this, R.string.error,
+                    R.string.account_create_failed, e.getMessage());
         }
         return null;
     }

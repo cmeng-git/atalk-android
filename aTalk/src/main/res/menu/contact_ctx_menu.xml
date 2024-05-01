@@ -2,41 +2,41 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/contact_tts_enable"
-        android:title="@string/service_gui_TTS_ENABLE" />
+        android:title="@string/tts_enable" />
     <item
         android:id="@+id/close_chat"
-        android:title="@string/service_gui_CLOSE_CHAT" />
+        android:title="@string/close_current_chat" />
     <item
         android:id="@+id/close_all_chats"
-        android:title="@string/service_gui_CLOSE_ALL_CHATS" />
+        android:title="@string/close_all_active_chats" />
     <item
         android:id="@+id/erase_contact_chat_history"
-        android:title="@string/service_gui_HISTORY_ERASE_PER_CONTACT" />
+        android:title="@string/history_erase_for_contact" />
     <item
         android:id="@+id/erase_all_contact_chat_history"
-        android:title="@string/service_gui_HISTORY_ERASE_ALL" />
+        android:title="@string/history_erase_all" />
     <item
         android:id="@+id/re_request_auth"
-        android:title="@string/service_gui_RE_REQUEST_AUTHORIZATION" />
+        android:title="@string/request_authorization" />
     <item
         android:id="@+id/rename_contact"
-        android:title="@string/service_gui_RENAME_CONTACT" />
+        android:title="@string/rename_contact" />
     <item
         android:id="@+id/contact_blocking"
         android:title="@string/contact_block" />
     <item
         android:id="@+id/remove_contact"
-        android:title="@string/service_gui_REMOVE_CONTACT" />
+        android:title="@string/remove_contact" />
     <item
         android:id="@+id/move_contact"
-        android:title="@string/service_gui_MOVE_TO_GROUP" />
+        android:title="@string/move_contact_to_group" />
     <item
         android:id="@+id/send_contact_file"
-        android:title="@string/service_gui_FILE_ATTACHMENT"
+        android:title="@string/file_attachment"
         android:visible="false" />
     <item
         android:id="@+id/contact_info"
-        android:title="@string/service_gui_CONTACT_INFO" />
+        android:title="@string/contact_info" />
     <item
         android:id="@+id/contact_ctx_menu_exit"
         android:title="@android:string/cancel" />

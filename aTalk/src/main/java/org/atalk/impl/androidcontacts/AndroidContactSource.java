@@ -90,7 +90,7 @@ public class AndroidContactSource implements ExtendedContactSourceService, Prefi
     @Override
     public String getDisplayName()
     {
-        return aTalkApp.getResString(R.string.service_gui_PHONEBOOK);
+        return aTalkApp.getResString(R.string.phonebook);
     }
 
     /**

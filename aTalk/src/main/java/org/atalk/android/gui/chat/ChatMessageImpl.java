@@ -305,7 +305,7 @@ public class ChatMessageImpl implements ChatMessage {
 
         // Apply the "edited at" tag for corrected message
         if (correctedMessageUID != null) {
-            String editStr = aTalkApp.getResString(R.string.service_gui_EDITED);
+            String editStr = aTalkApp.getResString(R.string.edited);
             output = String.format("<i>%s <small><font color='#989898'>(%s)</font></small></i>", output, editStr);
         }
         cachedOutput = output;

@@ -22,23 +22,22 @@ import java.util.Map;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChangeListener
-{
+public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChangeListener {
     /**
      * The key to {@link androidx.preference.Preference} mapping
      */
-    private Map<String, Preference> mappedPreferences = new HashMap<>();
+    private final Map<String, Preference> mappedPreferences = new HashMap<>();
 
     /**
      * Mapping containing optional {@link SummaryConverter} that can provide custom operation on
      * the value before it is applied as a summary.
      */
-    private Map<String, SummaryConverter> convertersMap = new HashMap<>();
+    private final Map<String, SummaryConverter> convertersMap = new HashMap<>();
 
     /**
      * Mapping containing empty string definitions
      */
-    private Map<String, String> emptyStrMap = new HashMap<>();
+    private final Map<String, String> emptyStrMap = new HashMap<>();
 
     /**
      * Includes the {@link Preference} into summary mapping.
@@ -46,10 +45,10 @@ public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChange
      * @param pref the {@link Preference} to be included
      * @param empty optional empty String that will be set when the <code>Preference</code> value is <code>null</code> or empty
      * @param converter optional {@link SummaryConverter}
+     *
      * @see SummaryMapper
      */
-    public void includePreference(Preference pref, String empty, SummaryConverter converter)
-    {
+    public void includePreference(Preference pref, String empty, SummaryConverter converter) {
         if (pref == null)
             throw new NullPointerException("The preference cannot be null");
 
@@ -65,8 +64,7 @@ public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChange
     /**
      * Triggers summary update on all registered <code>Preference</code>s.
      */
-    public void updatePreferences()
-    {
+    public void updatePreferences() {
         for (Preference pref : mappedPreferences.values()) {
             setSummary(pref.getSharedPreferences(), pref);
         }
@@ -77,8 +75,7 @@ public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChange
      *
      * @see #includePreference(Preference, String, SummaryConverter)
      */
-    public void includePreference(Preference pref, String empty)
-    {
+    public void includePreference(Preference pref, String empty) {
         includePreference(pref, empty, null);
     }
 
@@ -88,8 +85,7 @@ public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChange
      * @param sharedPrefs the {@link SharedPreferences} that manages the <code>preference</code>
      * @param preference Android Preference
      */
-    private void setSummary(SharedPreferences sharedPrefs, Preference preference)
-    {
+    private void setSummary(SharedPreferences sharedPrefs, Preference preference) {
         String key = preference.getKey();
         String value = sharedPrefs.getString(key, "");
 
@@ -110,8 +106,7 @@ public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChange
         preference.setSummary(value);
     }
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
-    {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference pref = mappedPreferences.get(key);
         if (pref != null) {
             setSummary(sharedPreferences, pref);
@@ -121,12 +116,12 @@ public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChange
     /**
      * The interface is used to provide custom value into summary conversion.
      */
-    public interface SummaryConverter
-    {
+    public interface SummaryConverter {
         /**
          * The method shall return summary text for given <code>input</code> value.
          *
          * @param input {@link Preference} value as a <code>String</code>
+         *
          * @return output summary value
          */
         String convertToSummary(String input);
@@ -135,10 +130,8 @@ public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChange
     /**
      * Class is used for password preferences to display text as "*".
      */
-    public static class PasswordMask implements SummaryConverter
-    {
-        public String convertToSummary(String input)
-        {
+    public static class PasswordMask implements SummaryConverter {
+        public String convertToSummary(String input) {
             return input.replaceAll("(?s).", "*");
         }
     }

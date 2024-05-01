@@ -81,14 +81,14 @@
             android:layout_width="0dp"
             android:layout_weight="5"
             android:layout_height="wrap_content"
-            android:text="@string/store_password" />
+            android:text="@string/save_password" />
 
         <CheckBox
             android:id="@+id/ibRegistration"
             android:layout_width="0dp"
             android:layout_weight="10"
             android:layout_height="wrap_content"
-            android:text="@string/account_registration" />
+            android:text="@string/account_ibr_on_server" />
     </LinearLayout>
 
     <LinearLayout
@@ -102,7 +102,7 @@
             android:layout_width="0dp"
             android:layout_weight="5"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_TLS_CERT" />
+            android:text="@string/tls_cert" />
 
         <Spinner
             android:id="@+id/clientCertEntry"
@@ -123,7 +123,7 @@
             android:layout_width="0dp"
             android:layout_weight="5"
             android:layout_height="wrap_content"
-            android:text="@string/account_override_server" />
+            android:text="@string/account_server_override" />
 
         <EditText
             android:id="@+id/serverIpField"
@@ -141,7 +141,7 @@
             android:layout_weight="2"
             android:layout_marginStart="4dp"
             android:inputType="textNoSuggestions"
-            android:text="@string/account_server_port" />
+            android:text="@string/xmpp_server_port" />
 
     </LinearLayout>
 
@@ -153,7 +153,7 @@
         <Button
             android:id="@+id/buttonCancel"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <View
             android:id="@+id/centerShim"
@@ -166,6 +166,6 @@
             android:id="@+id/buttonSignIn"
             style="@style/ButtonTop"
             android:focusable="true"
-            android:text="@string/service_gui_SIGN_IN" />
+            android:text="@string/sign_in" />
     </LinearLayout>
 </LinearLayout>

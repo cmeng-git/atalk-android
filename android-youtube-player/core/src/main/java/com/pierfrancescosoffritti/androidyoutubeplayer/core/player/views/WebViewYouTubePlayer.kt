@@ -21,7 +21,7 @@ import java.util.*
 /**
  * WebView implementation of [YouTubePlayer]. The player runs inside the WebView, using the IFrame Player API.
  */
-internal class WebViewYouTubePlayer constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+internal class WebViewYouTubePlayer(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : WebView(context, attrs, defStyleAttr), YouTubePlayer, YouTubePlayerBridge.YouTubePlayerBridgeCallbacks {
 
     private lateinit var youTubePlayerInitListener: (YouTubePlayer) -> Unit
@@ -132,6 +132,10 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         settings.mediaPlaybackRequiresUserGesture = false
         settings.cacheMode = WebSettings.LOAD_NO_CACHE
 
+        settings.setSupportZoom(true);
+        settings.builtInZoomControls = true;
+        settings.displayZoomControls = false;
+
         addJavascriptInterface(YouTubePlayerBridge(this), "YouTubePlayerBridge")
 
         val htmlPage = Utils
@@ -142,7 +146,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
         // if the video's thumbnail is not in memory, show a black screen
         webChromeClient = object : WebChromeClient() {
-            override fun getDefaultVideoPoster(): Bitmap? {
+            override fun getDefaultVideoPoster(): Bitmap {
                 val result = super.getDefaultVideoPoster()
                 return result ?: Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565)
             }

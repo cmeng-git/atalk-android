@@ -32,7 +32,7 @@
                     android:id="@+id/key_error_message_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/service_gui_ERROR"
+                    android:text="@string/error"
                     android:textColor="?attr/textColorPrimary"
                     android:textSize="?attr/TextSizeHeadline"
                     android:textStyle="bold" />
@@ -97,7 +97,7 @@
         <Button
             android:id="@+id/cancel_button"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <View
             android:id="@+id/centerShim"
@@ -109,6 +109,6 @@
         <Button
             android:id="@+id/save_button"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_DONE" />
+            android:text="@string/done" />
     </LinearLayout>
 </RelativeLayout>

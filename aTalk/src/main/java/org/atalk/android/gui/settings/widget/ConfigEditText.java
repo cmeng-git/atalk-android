@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.settings.widget;
@@ -25,8 +25,7 @@ import org.atalk.service.configuration.ConfigurationService;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ConfigEditText extends EditTextPreference implements Preference.OnPreferenceChangeListener
-{
+public class ConfigEditText extends EditTextPreference implements Preference.OnPreferenceChangeListener {
     /**
      * Integer upper bound for accepted value
      */
@@ -58,20 +57,17 @@ public class ConfigEditText extends EditTextPreference implements Preference.OnP
      */
     private boolean allowEmpty = true;
 
-    public ConfigEditText(Context context, AttributeSet attrs, int defStyle)
-    {
+    public ConfigEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initAttributes(context, attrs);
     }
 
-    public ConfigEditText(Context context, AttributeSet attrs)
-    {
+    public ConfigEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         initAttributes(context, attrs);
     }
 
-    public ConfigEditText(Context context)
-    {
+    public ConfigEditText(Context context) {
         super(context);
     }
 
@@ -81,8 +77,7 @@ public class ConfigEditText extends EditTextPreference implements Preference.OnP
      * @param context the Android context.
      * @param attrs attributes set.
      */
-    private void initAttributes(Context context, AttributeSet attrs)
-    {
+    private void initAttributes(Context context, AttributeSet attrs) {
         TypedArray attArray = context.obtainStyledAttributes(attrs, R.styleable.ConfigEditText);
 
         for (int i = 0; i < attArray.getIndexCount(); i++) {
@@ -115,8 +110,7 @@ public class ConfigEditText extends EditTextPreference implements Preference.OnP
     }
 
     @Override
-    protected void onAttachedToHierarchy(PreferenceManager preferenceManager)
-    {
+    protected void onAttachedToHierarchy(PreferenceManager preferenceManager) {
         // Force load default value from configuration service
         setDefaultValue(getPersistedString(null));
         super.onAttachedToHierarchy(preferenceManager);
@@ -124,11 +118,10 @@ public class ConfigEditText extends EditTextPreference implements Preference.OnP
 
     /**
      * {@inheritDoc}
-     // Set summary on init
+     * // Set summary on init
      */
     @Override
-    protected void onSetInitialValue(Object defaultValue)
-    {
+    protected void onSetInitialValue(Object defaultValue) {
         super.onSetInitialValue(defaultValue);
         configUtil.updateSummary(getText());
     }
@@ -137,8 +130,7 @@ public class ConfigEditText extends EditTextPreference implements Preference.OnP
      * {@inheritDoc}
      */
     @Override
-    protected String getPersistedString(String defaultReturnValue)
-    {
+    protected String getPersistedString(String defaultReturnValue) {
         ConfigurationService configService = AndroidGUIActivator.getConfigurationService();
         if (configService == null)
             return defaultReturnValue;
@@ -150,8 +142,7 @@ public class ConfigEditText extends EditTextPreference implements Preference.OnP
      * {@inheritDoc}
      */
     @Override
-    protected boolean persistString(String value)
-    {
+    protected boolean persistString(String value) {
         super.persistString(value);
         configUtil.handlePersistValue(value);
         return true;
@@ -163,8 +154,7 @@ public class ConfigEditText extends EditTextPreference implements Preference.OnP
      * Performs value range checks before the value is accepted.
      */
     @Override
-    public boolean onPreferenceChange(Preference preference, Object newValue)
-    {
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (allowEmpty && StringUtils.isEmpty((String) newValue)) {
             return true;
         }
@@ -195,8 +185,7 @@ public class ConfigEditText extends EditTextPreference implements Preference.OnP
      * {@inheritDoc}
      */
     @Override
-    protected void onClick()
-    {
+    protected void onClick() {
         if (editable)
             super.onClick();
     }

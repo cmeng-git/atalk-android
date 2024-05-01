@@ -1270,7 +1270,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     // Update MessageDisplay to take care when view is refresh e.g. new message arrived or scroll
                     ChatMessage chatMessage = message.updateDeliveryStatus(msgId, receiptStatus);
 
-                    Timber.e("new Message Receipt: %s", msgId);
+                    // Timber.d("new Message Receipt: %s", msgId);
                     MessageViewHolder viewHolder = viewHolders.get(index);
                     runOnUiThread(() -> {
                         if (viewHolder != null) {
@@ -1734,8 +1734,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
             if (menuManage.isVisible()) {
                 menuManage.setTitle(ChatRoomMemberRole.OWNER == mMemberRole
-                        ? R.string.service_gui_CR_MEMBER_REVOKE_OWNER_PRIVILEGE
-                        : R.string.service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE);
+                        ? R.string.cr_member_revoke_owner_privilege
+                        : R.string.cr_member_grant_owner_privilege);
             }
 
             ChatRoomMember finalOccupant = mOccupant;
@@ -1748,11 +1748,10 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                             startActivity(chatIntent);
                         }
                         else {
-                            aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, contactJid);
+                            aTalkApp.showToastMessage(R.string.send_message_not_supported, contactJid);
                             // Show ContactList UI for user selection if groupChat contact is anonymous.
                             Intent intent = new Intent(mContext, aTalk.class);
                             intent.setAction(Intent.ACTION_SENDTO);
-                            // intent.setPackage(mChatActivity.getPackageName());
                             startActivity(intent);
                         }
                         break;
@@ -2475,23 +2474,23 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                             animatedDrawable.setOneShot(false);
                             animatedDrawable.start();
                         }
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_COMPOSING, sender));
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.contact_composing, sender));
                         break;
                     case paused:
                         chatStateImgView.setImageResource(R.drawable.typing1);
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_PAUSED_TYPING, sender));
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.contact_pause_typing, sender));
                         break;
                     case active:
                         chatStateImgView.setImageResource(R.drawable.global_ffc);
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_ACTIVE, sender));
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.contact_active, sender));
                         break;
                     case inactive:
                         chatStateImgView.setImageResource(R.drawable.global_away);
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_INACTIVE, sender));
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.contact_inactive, sender));
                         break;
                     case gone:
                         chatStateImgView.setImageResource(R.drawable.global_extended_away);
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_GONE, sender));
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.contact_gone, sender));
                         break;
                 }
                 chatStateImgView.getLayoutParams().height = LayoutParams.WRAP_CONTENT;
@@ -2596,7 +2595,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
             if ((newStatus == FileTransferStatusChangeEvent.CANCELED)
                     && (chatListAdapter.getXferStatus(msgPos) == FileTransferStatusChangeEvent.PREPARING)) {
-                String msg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
+                String msg = aTalkApp.getResString(R.string.file_transfer_canceled);
                 try {
                     chatPanel.getChatSession().getCurrentChatTransport().sendInstantMessage(msg,
                             IMessage.ENCRYPTION_NONE | IMessage.ENCODE_PLAIN);
@@ -2617,7 +2616,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     /**
      * Sends the given file through the currently selected chat transport by using the given
      * fileComponent to visualize the transfer process in the chatFragment view.
-     *
+     * <p>
      * // @param mFile the file to send
      * // @param FileSendConversation send file component to use for file transfer & visualization
      * // @param msgId he view position on chatFragment
@@ -2645,7 +2644,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         public void onPreExecute() {
             long maxFileLength = currentChatTransport.getMaximumFileLength();
             if (mFile.length() > maxFileLength) {
-                String reason = aTalkApp.getResString(R.string.service_gui_FILE_TOO_BIG, ByteFormat.format(maxFileLength));
+                String reason = aTalkApp.getResString(R.string.file_size_too_big, ByteFormat.format(maxFileLength));
                 // Remove below message allows the file view fileStatus text display properly.(reason now display in view holder)
                 // chatPanel.addMessage(currentChatTransport.getName(), new Date(), ChatMessage.MESSAGE_ERROR,
                 //        IMessage.ENCODE_PLAIN, reason);
@@ -2701,7 +2700,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     // Timber.w("HTTP link: %s: %s", mFile.getName(), urlLink);
                     if (TextUtils.isEmpty(urlLink)) {
                         sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED, entityJid, mEncryption,
-                                aTalkApp.getResString(R.string.service_gui_FILE_SEND_FAILED, "HttpFileUpload"));
+                                aTalkApp.getResString(R.string.file_send_failed, "HttpFileUpload"));
                     }
                     else {
                         sendFTConversion.setStatus(FileTransferStatusChangeEvent.COMPLETED, entityJid, mEncryption, "");
@@ -2720,7 +2719,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             if (ex != null) {
                 Timber.e("Failed to send file: %s", ex.getMessage());
                 chatPanel.addMessage(currentChatTransport.getName(), new Date(), ChatMessage.MESSAGE_ERROR,
-                        IMessage.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_FILE_DELIVERY_ERROR, ex.getMessage()));
+                        IMessage.ENCODE_PLAIN, aTalkApp.getResString(R.string.file_delivery_error, ex.getMessage()));
             }
         }
 

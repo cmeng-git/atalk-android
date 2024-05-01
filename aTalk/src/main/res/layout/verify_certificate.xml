@@ -24,7 +24,7 @@
             style="@style/ButtonTop"
             android:layout_weight="1"
             android:onClick="onCancelClicked"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <View
             android:id="@+id/centerShim"
@@ -38,7 +38,7 @@
             style="@style/ButtonTop"
             android:layout_weight="1.8"
             android:onClick="onShowCertClicked"
-            android:text="@string/service_gui_SHOW_CERT" />
+            android:text="@string/certificate_show" />
 
         <View
             android:id="@+id/centerShim2"
@@ -52,6 +52,6 @@
             style="@style/ButtonTop"
             android:layout_weight="1"
             android:onClick="onContinueClicked"
-            android:text="@string/service_gui_PROCEED" />
+            android:text="@string/proceed" />
     </LinearLayout>
 </LinearLayout>

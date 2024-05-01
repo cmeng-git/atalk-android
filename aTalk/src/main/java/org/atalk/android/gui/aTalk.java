@@ -84,13 +84,6 @@ public class aTalk extends MainMenuActivity {
     private static final ArrayList<aTalk> mInstances = new ArrayList<>();
 
     /**
-     * The main pager view fragment containing the contact List
-     */
-    private ContactListFragment contactListFragment = null;
-
-    private ChatSessionFragment chatSessionFragment = null;
-
-    /**
      * Variable caches instance state stored for example on rotate event to prevent from
      * recreating the contact list after rotation. It is passed as second argument of
      * {@link #handleIntent(Intent, Bundle)} when called from {@link #onNewIntent(Intent)}.
@@ -267,7 +260,7 @@ public class aTalk extends MainMenuActivity {
 
     public static void setPrefChange(int change) {
         if (Locale_Change == change)
-            aTalkApp.showToastMessage(R.string.service_gui_settings_Restart_Hint);
+            aTalkApp.showToastMessage(R.string.settings_restart_require);
 
         mPrefChange |= change;
     }
@@ -287,15 +280,16 @@ public class aTalk extends MainMenuActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case CL_FRAGMENT:
-                    contactListFragment = new ContactListFragment();
-                    return contactListFragment;
+                    /*
+                     * The main pager view fragment containing the contact List
+                     */
+                    return new ContactListFragment();
 
                 case CRL_FRAGMENT:
                     return new ChatRoomListFragment();
 
                 case CHAT_SESSION_FRAGMENT:
-                    chatSessionFragment = new ChatSessionFragment();
-                    return chatSessionFragment;
+                    return new ChatSessionFragment();
 
                 case CALL_HISTORY_FRAGMENT:
                     return new CallHistoryFragment();
@@ -394,7 +388,7 @@ public class aTalk extends MainMenuActivity {
 
     public static void showHintMessage(int requestCode, String permission) {
         if (requestCode == PRC_RECORD_AUDIO) {
-            aTalkApp.showToastMessage(R.string.audio_permission_denied_feedback);
+            aTalkApp.showToastMessage(R.string.mic_permission_denied_feedback);
         }
         else if (requestCode == PRC_CAMERA) {
             aTalkApp.showToastMessage(R.string.camera_permission_denied_feedback);
@@ -410,7 +404,7 @@ public class aTalk extends MainMenuActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PRC_RECORD_AUDIO) {
             if ((grantResults.length != 0) && (PackageManager.PERMISSION_GRANTED != grantResults[0])) {
-                aTalkApp.showToastMessage(R.string.audio_permission_denied_feedback);
+                aTalkApp.showToastMessage(R.string.mic_permission_denied_feedback);
             }
         }
         else if (requestCode == PRC_CAMERA) {

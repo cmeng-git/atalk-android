@@ -31,20 +31,17 @@ import org.osgi.framework.BundleContext;
  *
  * @author Eng Chong Meng
  */
-public class CryptoActivator implements BundleActivator
-{
+public class CryptoActivator implements BundleActivator {
     @Override
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         bundleContext.registerService(OtrActionHandler.class.getName(), new AndroidOtrActionHandler(), null);
         setupOmemoConfigStore();
     }
 
     @Override
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
     }
 
     /**
@@ -53,8 +50,7 @@ public class CryptoActivator implements BundleActivator
      * - Initialize the OMEMO configuration settings
      * - Setup OMEMO default data storage
      */
-    private void setupOmemoConfigStore()
-    {
+    private void setupOmemoConfigStore() {
         SignalOmemoService.acknowledgeLicense();
         SignalOmemoService.setup();
 

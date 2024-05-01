@@ -59,13 +59,13 @@ public class GlobalStatusEnum extends PresenceStatus {
      * The Online status. Indicate that the user is able and willing to communicate.
      */
     public static final GlobalStatusEnum ONLINE = new GlobalStatusEnum(65, ONLINE_STATUS,
-            loadIcon("service.gui.statusicons.USER_ONLINE_ICON"), "service.gui.ONLINE");
+            loadIcon("statusicons.USER_ONLINE_ICON"), "service.gui.ONLINE");
 
     /**
      * The Free For Chat status. Indicates that the user is eager to communicate.
      */
     public static final GlobalStatusEnum FREE_FOR_CHAT = new GlobalStatusEnum(85,
-            FREE_FOR_CHAT_STATUS, loadIcon("service.gui.statusicons.USER_FFC_ICON"),
+            FREE_FOR_CHAT_STATUS, loadIcon("statusicons.USER_FFC_ICON"),
             "service.gui.FFC_STATUS");
 
     /**
@@ -73,28 +73,28 @@ public class GlobalStatusEnum extends PresenceStatus {
      * immediately act upon initiation of communication.
      */
     public static final GlobalStatusEnum AWAY = new GlobalStatusEnum(48, AWAY_STATUS,
-            loadIcon("service.gui.statusicons.USER_AWAY_ICON"), "service.gui.AWAY_STATUS");
+            loadIcon("statusicons.USER_AWAY_ICON"), "service.gui.AWAY_STATUS");
 
     /**
      * The Away status. Indicates that the user has connectivity but might not be able to
      * immediately act upon initiation of communication.
      */
     public static final GlobalStatusEnum EXTENDED_AWAY = new GlobalStatusEnum(35,
-            EXTENDED_AWAY_STATUS, loadIcon("service.gui.statusicons.USER_EXTENDED_AWAY_ICON"),
+            EXTENDED_AWAY_STATUS, loadIcon("statusicons.USER_EXTENDED_AWAY_ICON"),
             "service.gui.EXTENDED_AWAY_STATUS");
 
     /**
      * The DND status. Indicates that the user has connectivity but prefers not to be contacted.
      */
     public static final GlobalStatusEnum DO_NOT_DISTURB = new GlobalStatusEnum(30,
-            DO_NOT_DISTURB_STATUS, loadIcon("service.gui.statusicons.USER_DND_ICON"),
+            DO_NOT_DISTURB_STATUS, loadIcon("statusicons.USER_DND_ICON"),
             "service.gui.DND_STATUS");
 
     /**
      * The Offline status. Indicates the user does not seem to be connected to any network.
      */
     public static final GlobalStatusEnum OFFLINE = new GlobalStatusEnum(0, OFFLINE_STATUS,
-            loadIcon("service.gui.statusicons.USER_OFFLINE_ICON"), "service.gui.OFFLINE");
+            loadIcon("statusicons.USER_OFFLINE_ICON"), "service.gui.OFFLINE");
 
     /**
      * The set of states currently supported.

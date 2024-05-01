@@ -30,6 +30,7 @@ interface PlayerUiController {
 
     fun setRateIncAction(icon: Drawable, clickListener: View.OnClickListener?): PlayerUiController
     fun setRateDecAction(icon: Drawable, clickListener: View.OnClickListener?): PlayerUiController
+    fun setHideScreenAction(icon: Drawable, clickListener: View.OnClickListener?): PlayerUiController
 
     fun showFullscreenButton(show: Boolean): PlayerUiController
     fun setFullScreenButtonClickListener(customFullScreenButtonClickListener: View.OnClickListener): PlayerUiController

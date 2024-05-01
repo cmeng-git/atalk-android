@@ -137,14 +137,14 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         assertConnected();
 
         if (file.length() > getMaximumFileLength())
-            throw new IllegalArgumentException(aTalkApp.getResString(R.string.service_gui_FILE_TOO_BIG, mPPS.getOurJid()));
+            throw new IllegalArgumentException(aTalkApp.getResString(R.string.file_size_too_big, mPPS.getOurJid()));
 
         // null if the contact is offline, or file transfer is not supported by this contact;
         // Then throws OperationNotSupportedException for caller to try alternative method
         EntityFullJid mContactJid = getFullJid(contact,
                 StreamInitiation.NAMESPACE, StreamInitiation.NAMESPACE + "/profile/file-transfer");
         if (mContactJid == null) {
-            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_supported));
         }
 
         /* Must init to the correct ftManager at time of sending file with current mPPS; Otherwise
@@ -169,7 +169,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         } catch (SmackException e) {
             Timber.e("Failed to send file: %s", e.getMessage());
             throw new OperationNotSupportedException(
-                    aTalkApp.getResString(R.string.xFile_FILE_UNABLE_TO_SEND, mContactJid));
+                    aTalkApp.getResString(R.string.file_transfer_send_error, mContactJid));
         }
         return mOGFileTransfer;
     }

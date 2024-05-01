@@ -17,6 +17,6 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:gravity="center_vertical"
-        android:text="@string/service_gui_SEC_ENABLE_ENCRYPTION" />
+        android:text="@string/sec_encryption" />
 
 </LinearLayout>

@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.service.version;
@@ -13,27 +13,26 @@ package org.atalk.service.version;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public interface VersionService
-{
-	/**
-	 * Returns a <code>Version</code> object containing version details of the SIP Communicator
-	 * version that we're currently running.
-	 *
-	 * @return a <code>Version</code> object containing version details of the SIP Communicator
-	 * version that we're currently running.
-	 */
-	Version getCurrentVersion();
+public interface VersionService {
+    /**
+     * Returns a <code>Version</code> object containing version details of the SIP Communicator
+     * version that we're currently running.
+     *
+     * @return a <code>Version</code> object containing version details of the SIP Communicator
+     * version that we're currently running.
+     */
+    Version getCurrentVersion();
 
-	long getCurrentVersionCode();
+    long getCurrentVersionCode();
 
-	String getCurrentVersionName();
+    String getCurrentVersionName();
 
-	/**
-	 * Returns a Version instance corresponding to the <code>version</code> string.
-	 *
-	 * @param version
-	 * 		a version String that we have obtained by calling a <code>Version.toString()</code> method.
-	 * @return the <code>Version</code> object corresponding to the <code>version</code> string.
-	 */
-	Version parseVersionString(String version);
+    /**
+     * Returns a Version instance corresponding to the <code>version</code> string.
+     *
+     * @param version a version String that we have obtained by calling a <code>Version.toString()</code> method.
+     *
+     * @return the <code>Version</code> object corresponding to the <code>version</code> string.
+     */
+    Version parseVersionString(String version);
 }

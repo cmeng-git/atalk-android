@@ -52,7 +52,7 @@ public class ChatSecuritySettings extends OSGiActivity {
             // Display the fragment as the main content.
             getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
         }
-        setMainTitle(R.string.service_gui_settings_MESSAGING_SECURITY_TITLE);
+        setMainTitle(R.string.settings_messaging_security);
     }
 
     /**

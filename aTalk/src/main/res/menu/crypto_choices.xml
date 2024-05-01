@@ -4,7 +4,7 @@
     <item
         android:id="@+id/crypto_choice"
         android:icon="@drawable/crypto_otr_unsecure"
-        android:title="@string/encryption_choices"
+        android:title="@string/encrypt_choices"
         android:enabled="true"
         app:showAsAction="always">
         <menu>
@@ -12,16 +12,16 @@
                 <item
                     android:id="@+id/encryption_none"
                     android:icon="?attr/iconCryptoNone"
-                    android:title="@string/encryption_choice_unencrypted"
+                    android:title="@string/encrypt_unencrypted"
                     />
                 <item
                     android:id="@+id/encryption_omemo"
                     android:icon="?attr/iconCryptoOmemo"
-                    android:title="@string/encryption_choice_omemo"/>
+                    android:title="@string/encryption_omemo"/>
                 <item
                     android:id="@+id/encryption_otr"
                     android:icon="?attr/iconCryptoOtr"
-                    android:title="@string/encryption_choice_otr"/>
+                    android:title="@string/encryption_otr"/>
             </group>
         </menu>
     </item>

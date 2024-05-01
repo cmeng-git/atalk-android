@@ -31,8 +31,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class MoveToGroupDialog extends OSGiDialogFragment implements DialogInterface.OnClickListener
-{
+public class MoveToGroupDialog extends OSGiDialogFragment implements DialogInterface.OnClickListener {
     /**
      * Meta UID arg key.
      */
@@ -52,10 +51,10 @@ public class MoveToGroupDialog extends OSGiDialogFragment implements DialogInter
      * Creates a new instance of <code>MoveToGroupDialog</code>.
      *
      * @param metaContact the contact that will be moved.
+     *
      * @return parametrized instance of <code>MoveToGroupDialog</code>.
      */
-    public static MoveToGroupDialog getInstance(MetaContact metaContact)
-    {
+    public static MoveToGroupDialog getInstance(MetaContact metaContact) {
         MoveToGroupDialog dialog = new MoveToGroupDialog();
 
         Bundle args = new Bundle();
@@ -68,17 +67,16 @@ public class MoveToGroupDialog extends OSGiDialogFragment implements DialogInter
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.move_to_group, container, false);
 
-        getDialog().setTitle(R.string.service_gui_MOVE_CONTACT);
+        getDialog().setTitle(R.string.move_contact);
         this.metaContact = AndroidGUIActivator.getContactListService()
                 .findMetaContactByMetaUID(getArguments().getString(META_CONTACT_UID));
 
         String UserId = getArguments().getString(USER_ID);
         TextView accountOwner = contentView.findViewById(R.id.accountOwner);
-        accountOwner.setText(getString(R.string.service_gui_CONTACT_OWNER, UserId));
+        accountOwner.setText(getString(R.string.contact_owner, UserId));
 
         final AdapterView groupListView = contentView.findViewById(R.id.selectGroupSpinner);
         MetaContactGroupAdapter contactGroupAdapter
@@ -97,26 +95,22 @@ public class MoveToGroupDialog extends OSGiDialogFragment implements DialogInter
         return contentView;
     }
 
-    private void moveContact(final MetaContactGroup selectedItem)
-    {
-        new Thread()
-        {
+    private void moveContact(final MetaContactGroup selectedItem) {
+        new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 try {
                     AndroidGUIActivator.getContactListService().moveMetaContact(metaContact, selectedItem);
                 } catch (MetaContactListException e) {
                     Timber.e(e, "%s", e.getMessage());
                     DialogActivity.showDialog(aTalkApp.getInstance(),
-                            aTalkApp.getResString(R.string.service_gui_ERROR), e.getMessage());
+                            aTalkApp.getResString(R.string.error), e.getMessage());
                 }
             }
         }.start();
     }
 
     @Override
-    public void onClick(DialogInterface dialog, int which)
-    {
+    public void onClick(DialogInterface dialog, int which) {
     }
 }

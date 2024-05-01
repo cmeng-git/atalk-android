@@ -5,6 +5,9 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.CallPeerState;
@@ -26,10 +29,8 @@ import net.java.sip.communicator.service.protocol.media.MediaAwareCallConference
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 
 import org.atalk.util.xml.XMLException;
-import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.ExtensionElement;
@@ -49,9 +50,6 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.Arrays;
-import java.util.Iterator;
-
 import timber.log.Timber;
 
 /**
@@ -66,8 +64,7 @@ import timber.log.Timber;
 public class OperationSetTelephonyConferencingJabberImpl
         extends AbstractOperationSetTelephonyConferencing<ProtocolProviderServiceJabberImpl,
         OperationSetBasicTelephonyJabberImpl, CallJabberImpl, CallPeerJabberImpl, String>
-        implements RegistrationStateChangeListener, StanzaFilter
-{
+        implements RegistrationStateChangeListener, StanzaFilter {
     /**
      * The Jabber Incoming Conference Call IQRequest Handler.
      */
@@ -101,10 +98,9 @@ public class OperationSetTelephonyConferencingJabberImpl
      * creation of the new instance and for which the new instance is to provide telephony
      * conferencing services
      */
-    public OperationSetTelephonyConferencingJabberImpl(ProtocolProviderServiceJabberImpl parentProvider)
-    {
+    public OperationSetTelephonyConferencingJabberImpl(ProtocolProviderServiceJabberImpl parentProvider) {
         super(parentProvider);
-        this.parentProvider.addRegistrationStateChangeListener(this);
+        this.mPPS.addRegistrationStateChangeListener(this);
         this.isCoinDisabled = JabberActivator.getConfigurationService().getBoolean(DISABLE_COIN_PROP_NAME, false);
     }
 
@@ -116,8 +112,7 @@ public class OperationSetTelephonyConferencingJabberImpl
      * @param evt the event received
      */
     @Override
-    public void registrationStateChanged(RegistrationStateChangeEvent evt)
-    {
+    public void registrationStateChanged(RegistrationStateChangeEvent evt) {
         super.registrationStateChanged(evt);
 
         RegistrationState registrationState = evt.getNewState();
@@ -141,8 +136,7 @@ public class OperationSetTelephonyConferencingJabberImpl
      * telephony conference-related information
      */
     @Override
-    protected void notifyCallPeers(Call call)
-    {
+    protected void notifyCallPeers(Call call) {
         if (!isCoinDisabled && call.isConferenceFocus()) {
             synchronized (lock) {
                 // send conference-info to all CallPeers of the specified call.
@@ -159,8 +153,7 @@ public class OperationSetTelephonyConferencingJabberImpl
      *
      * @param callPeer the <code>CallPeer</code> to notify.
      */
-    private void notify(CallPeer callPeer)
-    {
+    private void notify(CallPeer callPeer) {
         if (!(callPeer instanceof CallPeerJabberImpl))
             return;
 
@@ -196,21 +189,11 @@ public class OperationSetTelephonyConferencingJabberImpl
         EntityFullJid to = getBasicTelephony().getFullCalleeURI(callPeer.getPeerJid());
 
         // XXX if this generates actual disco#info requests we might want to cache it.
-        try {
-            DiscoverInfo discoverInfo = null;
-            try {
-                discoverInfo = parentProvider.getDiscoveryManager().discoverInfo(to);
-            } catch (NoResponseException | NotConnectedException | InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            if (!discoverInfo.containsFeature(ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_COIN)) {
-                Timber.i("%s does not support COIN", callPeer.getAddress());
-                callPeerJabber.setConfInfoScheduled(false);
-                return;
-            }
-        } catch (XMPPException xmppe) {
-            Timber.w(xmppe, "Failed to retrieve DiscoverInfo for %s", to);
+        DiscoverInfo discoverInfo = mPPS.getScHelper().discoverInfo(to);
+        if (discoverInfo == null || !discoverInfo.containsFeature(ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_COIN)) {
+            Timber.i("%s does not support COIN", callPeer.getAddress());
+            callPeerJabber.setConfInfoScheduled(false);
+            return;
         }
 
         ConferenceInfoDocument currentConfInfo = getCurrentConferenceInfo(callPeerJabber);
@@ -228,7 +211,7 @@ public class OperationSetTelephonyConferencingJabberImpl
             CoinIQ iq = getConferenceInfo(callPeerJabber, diff);
             if (iq != null) {
                 try {
-                    parentProvider.getConnection().sendStanza(iq);
+                    mPPS.getConnection().sendStanza(iq);
                 } catch (NotConnectedException | InterruptedException e) {
                     Timber.e(e, "Could not send conference IQ");
                     return;
@@ -249,20 +232,18 @@ public class OperationSetTelephonyConferencingJabberImpl
      *
      * @param callPeer the <code>CallPeer</code> to generate conference-info XML for
      * @param confInfo the <code>ConferenceInformationDocument</code> which is to be included in the IQ
+     *
      * @return the conference-info IQ to be sent to the specified <code>callPeer</code> in order to
      * notify it of the current state of the conference managed by the local peer
      */
-    private CoinIQ getConferenceInfo(CallPeerJabberImpl callPeer, final ConferenceInfoDocument confInfo)
-    {
+    private CoinIQ getConferenceInfo(CallPeerJabberImpl callPeer, final ConferenceInfoDocument confInfo) {
         String callPeerSID = callPeer.getSid();
         if (callPeerSID == null)
             return null;
 
-        CoinIQ coinIQ = new CoinIQ()
-        {
+        CoinIQ coinIQ = new CoinIQ() {
             @Override
-            public IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
-            {
+            public IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
                 // strip both "conference-info" ends' tags and rebuild xml;
                 String xmlString = confInfo.toString()
                         .replace("<conference-info xmlns=\"urn:ietf:params:xml:ns:conference-info\"", "")
@@ -285,12 +266,12 @@ public class OperationSetTelephonyConferencingJabberImpl
      *
      * @return a new outgoing <code>Call</code> into which conference callees are to be invited by this
      * <code>OperationSetTelephonyConferencing</code>
+     *
      * @throws OperationFailedException if anything goes wrong
      */
     @Override
     protected CallJabberImpl createOutgoingCall()
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         return new CallJabberImpl(getBasicTelephony(), JingleManager.randomId());
     }
 
@@ -303,13 +284,12 @@ public class OperationSetTelephonyConferencingJabberImpl
      */
     @Override
     protected CallPeer doInviteCalleeToCall(String calleeAddress, CallJabberImpl call)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         return getBasicTelephony().createOutgoingCall(call, calleeAddress,
                 Arrays.asList(new ExtensionElement[]{
                         CoinExtension.getBuilder()
-                        .setFocus(true)
-                        .build()
+                                .setFocus(true)
+                                .build()
                 }));
     }
 
@@ -321,14 +301,15 @@ public class OperationSetTelephonyConferencingJabberImpl
      * @param calleeAddressString a <code>String</code> value which represents a callee address to be parsed into an object
      * which is to actually represent the callee during the invitation to a conference
      * <code>Call</code>
+     *
      * @return an object which is to actually represent the specified <code>calleeAddressString</code>
      * during the invitation to a conference <code>Call</code>
+     *
      * @throws OperationFailedException if parsing the specified <code>calleeAddressString</code> fails
      */
     @Override
     protected String parseAddressString(String calleeAddressString)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         try {
             return getBasicTelephony().getFullCalleeURI(JidCreate.from(calleeAddressString)).toString();
         } catch (XmppStringprepException | IllegalArgumentException e) {
@@ -339,18 +320,16 @@ public class OperationSetTelephonyConferencingJabberImpl
     /**
      * Subscribes us to notifications about incoming Coin packets.
      */
-    private void subscribeForCoinPackets()
-    {
+    private void subscribeForCoinPackets() {
         iqRequestHandler = new IQRequestHandler();
-        parentProvider.getConnection().registerIQRequestHandler(iqRequestHandler);
+        mPPS.getConnection().registerIQRequestHandler(iqRequestHandler);
     }
 
     /**
      * UnSubscribes us from notifications about incoming Coin packets.
      */
-    private void unsubscribeForCoinPackets()
-    {
-        XMPPConnection connection = parentProvider.getConnection();
+    private void unsubscribeForCoinPackets() {
+        XMPPConnection connection = mPPS.getConnection();
         if ((connection != null) && (iqRequestHandler != null)) {
             connection.unregisterIQRequestHandler(iqRequestHandler);
         }
@@ -361,11 +340,11 @@ public class OperationSetTelephonyConferencingJabberImpl
      * method is called by smack prior to packet delivery and it would only accept <code>CoinIQ</code>s.
      *
      * @param packet the packet to test.
+     *
      * @return true if and only if <code>packet</code> passes the filter.
      */
     @Override
-    public boolean accept(Stanza packet)
-    {
+    public boolean accept(Stanza packet) {
         return (packet instanceof CoinIQ);
     }
 
@@ -373,17 +352,14 @@ public class OperationSetTelephonyConferencingJabberImpl
      * Handles incoming coin packets and passes them to the corresponding method based on their
      * action.
      */
-    private class IQRequestHandler extends AbstractIqRequestHandler
-    {
+    private class IQRequestHandler extends AbstractIqRequestHandler {
         // setup for Coin Request Handler
-        protected IQRequestHandler()
-        {
+        protected IQRequestHandler() {
             super(CoinIQ.ELEMENT, CoinIQ.NAMESPACE, IQ.Type.set, IQRequestHandler.Mode.async);
         }
 
         @Override
-        public IQ handleIQRequest(IQ iq)
-        {
+        public IQ handleIQRequest(IQ iq) {
             CoinIQ coinIQ = (CoinIQ) iq;
             String errorMessage = "";
 
@@ -395,7 +371,7 @@ public class OperationSetTelephonyConferencingJabberImpl
             if (type == IQ.Type.set) {
                 IQ ack = IQ.createResultIQ(coinIQ);
                 try {
-                    parentProvider.getConnection().sendStanza(ack);
+                    mPPS.getConnection().sendStanza(ack);
                 } catch (NotConnectedException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -432,8 +408,7 @@ public class OperationSetTelephonyConferencingJabberImpl
          * @param callPeer the <code>CallPeer</code> from which the specified <code>CoinIQ</code> was sent
          * @param coinIQ the <code>CoinIQ</code> which was sent from the specified <code>callPeer</code>
          */
-        private void handleCoin(CallPeerJabberImpl callPeer, CoinIQ coinIQ)
-        {
+        private void handleCoin(CallPeerJabberImpl callPeer, CoinIQ coinIQ) {
             XmlStringBuilder mCoinIQ = coinIQ.getChildElementXML();
             try {
                 setConferenceInfoXML(callPeer, mCoinIQ.toString());
@@ -451,8 +426,7 @@ public class OperationSetTelephonyConferencingJabberImpl
      * to pass the SID.
      */
     @Override
-    protected ConferenceInfoDocument getCurrentConferenceInfo(MediaAwareCallPeer<?, ?, ?> callPeer)
-    {
+    protected ConferenceInfoDocument getCurrentConferenceInfo(MediaAwareCallPeer<?, ?, ?> callPeer) {
         ConferenceInfoDocument confInfo = super.getCurrentConferenceInfo(callPeer);
 
         if (callPeer instanceof CallPeerJabberImpl && confInfo != null) {
@@ -465,15 +439,14 @@ public class OperationSetTelephonyConferencingJabberImpl
      * {@inheritDoc}
      */
     @Override
-    protected String getLocalEntity(CallPeer callPeer)
-    {
+    protected String getLocalEntity(CallPeer callPeer) {
         Jingle sessionIQ = ((CallPeerJabberImpl) callPeer).getSessionIQ();
         Jid from = sessionIQ.getFrom();
 
         // cmeng - local callPeer IQ's (from == null)
         if (from != null) {
             BareJid chatRoomName = from.asBareJid();
-            OperationSetMultiUserChatJabberImpl opSetMUC = (OperationSetMultiUserChatJabberImpl) parentProvider
+            OperationSetMultiUserChatJabberImpl opSetMUC = (OperationSetMultiUserChatJabberImpl) mPPS
                     .getOperationSet(OperationSetMultiUserChat.class);
             ChatRoom room = null;
             if (opSetMUC != null)
@@ -483,15 +456,14 @@ public class OperationSetTelephonyConferencingJabberImpl
             if (room != null)
                 return "xmpp:" + chatRoomName + "/" + room.getUserNickname();
         }
-        return "xmpp:" + parentProvider.getOurJid();
+        return "xmpp:" + mPPS.getOurJid();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected String getLocalDisplayName()
-    {
+    protected String getLocalDisplayName() {
         return null;
     }
 
@@ -506,9 +478,8 @@ public class OperationSetTelephonyConferencingJabberImpl
      * (on any protocol provider) can be used.
      */
     @Override
-    public ConferenceDescription setupConference(final ChatRoom chatRoom)
-    {
-        OperationSetVideoBridge videoBridge = parentProvider.getOperationSet(OperationSetVideoBridge.class);
+    public ConferenceDescription setupConference(final ChatRoom chatRoom) {
+        OperationSetVideoBridge videoBridge = mPPS.getOperationSet(OperationSetVideoBridge.class);
         boolean isVideobridge = (videoBridge != null) && videoBridge.isActive();
 
         CallJabberImpl call = new CallJabberImpl(getBasicTelephony(), JingleManager.randomId());
@@ -517,23 +488,19 @@ public class OperationSetTelephonyConferencingJabberImpl
         String uri = "xmpp:" + chatRoom.getIdentifier() + "/" + chatRoom.getUserNickname();
         ConferenceDescription cd = new ConferenceDescription(uri, call.getCallId());
 
-        call.addCallChangeListener(new CallChangeListener()
-        {
+        call.addCallChangeListener(new CallChangeListener() {
             @Override
-            public void callStateChanged(CallChangeEvent ev)
-            {
+            public void callStateChanged(CallChangeEvent ev) {
                 if (CallState.CALL_ENDED.equals(ev.getNewValue()))
                     chatRoom.publishConference(null, null);
             }
 
             @Override
-            public void callPeerRemoved(CallPeerEvent ev)
-            {
+            public void callPeerRemoved(CallPeerEvent ev) {
             }
 
             @Override
-            public void callPeerAdded(CallPeerEvent ev)
-            {
+            public void callPeerAdded(CallPeerEvent ev) {
             }
         });
         if (isVideobridge) {

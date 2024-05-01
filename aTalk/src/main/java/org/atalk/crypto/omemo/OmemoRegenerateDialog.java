@@ -67,7 +67,7 @@ public class OmemoRegenerateDialog extends OSGiActivity
 
         final boolean[] checkedItems = new boolean[accountMap.size()];
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.pref_omemo_regenerate_identities_title);
+        builder.setTitle(R.string.omemo_regenerate_identities);
         builder.setMultiChoiceItems(accounts.toArray(new CharSequence[0]), checkedItems, (dialog, which, isChecked) -> {
             checkedItems[which] = isChecked;
             final AlertDialog multiChoiceDialog = (AlertDialog) dialog;
@@ -80,8 +80,8 @@ public class OmemoRegenerateDialog extends OSGiActivity
             multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
         });
 
-        builder.setNegativeButton(R.string.service_gui_CANCEL, (dialog, which) -> finish());
-        builder.setPositiveButton(R.string.crypto_dialog_button_OMEMO_REGENERATE, (dialog, which) -> {
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> finish());
+        builder.setPositiveButton(R.string.regenerate_selected, (dialog, which) -> {
             final OmemoStore omemoStore = OmemoService.getInstance().getOmemoStoreBackend();
             new Thread()
             {

@@ -338,9 +338,8 @@ public class FileBackend
     }
 
     /**
-     * To guess the mime type of the given uri using the mimeMap or from path name
-     * Unicode uri string must be urlEncoded for android getFileExtensionFromUrl(),
-     * else always return ""
+     * To guess the mime type of the given uri using the mimeMap or from path name Unicode uri
+     * string must be urlEncoded for android getFileExtensionFromUrl(), else alwyas return ""
      * <p>
      * Note: android returns *.mp3 file as audio/mpeg. See https://tools.ietf.org/html/rfc3003;
      * and returns as video/mpeg on re-submission with *.mpeg

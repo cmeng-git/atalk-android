@@ -48,12 +48,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.target.CustomViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 
-import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.IMessage;
@@ -75,12 +80,6 @@ import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.httpfileupload.UploadProgressListener;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -339,7 +338,7 @@ public abstract class FileTransferConversation extends OSGiFragment
             messageViewHolder.fileStatus.setText(statusText);
         }
         messageViewHolder.timeView.setText(mDate);
-   }
+    }
 
     /**
      * Shows the given error message in the error area of this component.
@@ -407,7 +406,7 @@ public abstract class FileTransferConversation extends OSGiFragment
             updateImageView(isHistory);
         }
 
-        final String toolTip = aTalkApp.getResString(R.string.service_gui_OPEN_FILE_FROM_IMAGE);
+        final String toolTip = aTalkApp.getResString(R.string.open_file_vai_image);
         messageViewHolder.fileIcon.setContentDescription(toolTip);
         messageViewHolder.fileIcon.setOnClickListener(this);
 
@@ -553,7 +552,7 @@ public abstract class FileTransferConversation extends OSGiFragment
             if (mTransferSpeedAverage > 0) {
                 messageViewHolder.fileXferSpeed.setVisibility(View.VISIBLE);
                 messageViewHolder.fileXferSpeed.setText(
-                        aTalkApp.getResString(R.string.service_gui_SPEED, ByteFormat.format(mTransferSpeedAverage), bytesString));
+                        aTalkApp.getResString(R.string.speed_info, ByteFormat.format(mTransferSpeedAverage), bytesString));
             }
 
             if (transferredBytes >= mTransferFileSize) {
@@ -561,7 +560,7 @@ public abstract class FileTransferConversation extends OSGiFragment
             }
             else if (mEstimatedTimeLeft > 0) {
                 messageViewHolder.estTimeRemain.setVisibility(View.VISIBLE);
-                messageViewHolder.estTimeRemain.setText(aTalkApp.getResString(R.string.service_gui_ESTIMATED_TIME,
+                messageViewHolder.estTimeRemain.setText(aTalkApp.getResString(R.string.estimated_time_,
                         GuiUtils.formatSeconds(mEstimatedTimeLeft * 1000)));
             }
         });
@@ -810,7 +809,7 @@ public abstract class FileTransferConversation extends OSGiFragment
         try {
             mChatActivity.startActivity(intent);
         } catch (ActivityNotFoundException e) {
-            aTalkApp.showToastMessage(R.string.service_gui_FILE_OPEN_NO_APPLICATION);
+            aTalkApp.showToastMessage(R.string.file_open_no_application);
         }
     }
 
@@ -972,7 +971,7 @@ public abstract class FileTransferConversation extends OSGiFragment
 
         } catch (SecurityException e) {
             Timber.i("No permission to access %s: %s", file.getAbsolutePath(), e.getMessage());
-            aTalkApp.showToastMessage(R.string.service_gui_FILE_OPEN_NO_PERMISSION);
+            aTalkApp.showToastMessage(R.string.file_open_no_permission);
             return null;
         }
     }

@@ -7,7 +7,6 @@ package org.atalk.android.gui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -46,7 +45,7 @@ public class ShutdownActivity extends OSGiActivity {
 
         setContentView(R.layout.splash);
         TextView shutDown = findViewById(R.id.stateInfo);
-        shutDown.setText(R.string.service_gui_SHUTDOWN_IN_PROGRESS);
+        shutDown.setText(R.string.shutting_down);
 
         mProgressBar = findViewById(R.id.progressBar);
         mProgressBar.setVisibility(ProgressBar.VISIBLE);

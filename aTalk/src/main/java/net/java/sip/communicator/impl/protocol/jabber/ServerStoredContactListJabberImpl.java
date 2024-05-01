@@ -784,7 +784,6 @@ public class ServerStoredContactListJabberImpl {
         // create the entry with the new group so it can be removed from other groups if any.
         // modify our reply timeout because some XMPP may send "result" IQ late (> 5 seconds).
         xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_30);
-
         try {
             // Do not use getSourceEntry() to getJid(); may be null if contact is not in roster.
             mRoster.createItemAndRequestSubscription(contact.getJid().asBareJid(), contact.getDisplayName(),

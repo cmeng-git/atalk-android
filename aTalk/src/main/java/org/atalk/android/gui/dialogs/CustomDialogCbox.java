@@ -27,16 +27,14 @@ import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
 
-public class CustomDialogCbox extends OSGiFragment
-{
+public class CustomDialogCbox extends OSGiFragment {
     public static final String ARG_MESSAGE = "dialog_message";
     public static final String ARG_CB_MESSAGE = "cb_message";
     public static final String ARG_CB_CHECK = "cb_check";
     public static final String ARG_CB_ENABLE = "cb_enable";
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View vcBlocking = inflater.inflate(R.layout.custom_dialog_cb, container, false);
         Bundle arg = getArguments();
         if (arg != null) {

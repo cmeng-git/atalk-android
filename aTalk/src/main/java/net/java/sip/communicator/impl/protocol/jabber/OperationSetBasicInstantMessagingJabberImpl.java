@@ -598,9 +598,9 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             return;
         } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException |
                  IOException e) {
-            errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage());
+            errMessage = aTalkApp.getResString(R.string.crypto_msg_omemo_session_setup_failed, e.getMessage());
         } catch (SmackException.NotLoggedInException e) {
-            errMessage = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
+            errMessage = aTalkApp.getResString(R.string.message_delivery_not_registered);
         }
 
         if (!TextUtils.isEmpty(errMessage)) {
@@ -723,7 +723,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param stanza the packet that we need to handle (if it is a message).
      *
      * @see #INCOMING_SVR_MESSAGE_FILTER filter settings
-     *
+     * <p>
      * Handles incoming messages and dispatches whatever events that are necessary.
      */
     @Override

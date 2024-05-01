@@ -18,7 +18,7 @@
             style="@style/MediumFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/gui_call_transfer_hint"
+            android:text="@string/call_transfer_hint"
             android:textColor="@color/black"
             android:textSize="14sp"/>
     </LinearLayout>
@@ -56,13 +56,13 @@
         <Button
             android:id="@+id/buttonCancel"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/buttonTransfer"
             style="@style/ButtonTop"
             android:layout_marginStart="4dp"
-            android:text="@string/gui_call_transfer" />
+            android:text="@string/call_transfer" />
     </LinearLayout>
 
 </LinearLayout>

@@ -2,12 +2,12 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/generate"
-          android:title="@string/crypto_menu_KEY_GENERATE">
+          android:title="@string/crypto_menu_key_generate">
     </item>
     <item android:id="@+id/regenerate"
-          android:title="@string/crypto_menu_KEY_REGENERATE">
+          android:title="@string/crypto_menu_key_regenerate">
     </item>
     <item android:id="@+id/copy"
-          android:title="@string/crypto_menu_COPY_FINGERPRINT">
+          android:title="@string/crypto_menu_fingerprint_copy">
     </item>
 </menu>

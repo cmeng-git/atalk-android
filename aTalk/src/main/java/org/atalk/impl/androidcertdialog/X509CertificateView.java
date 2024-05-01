@@ -81,7 +81,7 @@ public class X509CertificateView extends Dialog
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.x509_certificate_view);
-        setTitle(mContext.getString(R.string.service_gui_CERT_INFO_CHAIN));
+        setTitle(mContext.getString(R.string.cert_info_chain));
 
         WebView certInfo = findViewById(R.id.certificateInfo);
         WebSettings settings = certInfo.getSettings();
@@ -132,7 +132,7 @@ public class X509CertificateView extends Dialog
         sb.append("<table cellspacing='1' cellpadding='1'>\n");
 
         // subject
-        addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_ISSUED_TO));
+        addTitle(sb, mContext.getString(R.string.cert_info_issued_to));
         rdnNames = splitRdn(subject.getName());
         if (!rdnNames.isEmpty()) {
             for (Map.Entry<String, String> name : rdnNames.entrySet()) {
@@ -155,11 +155,11 @@ public class X509CertificateView extends Dialog
             }
         }
         else {
-            addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_CN), subject.getName());
+            addField(sb, mContext.getString(R.string.cert_info_cn), subject.getName());
         }
 
         // issuer
-        addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_ISSUED_BY));
+        addTitle(sb, mContext.getString(R.string.cert_info_issued_by));
         rdnNames = splitRdn(issuer.getName());
         if (!rdnNames.isEmpty()) {
             for (Map.Entry<String, String> name : rdnNames.entrySet()) {
@@ -182,15 +182,15 @@ public class X509CertificateView extends Dialog
             }
         }
         else {
-            addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_CN), issuer.getName());
+            addField(sb, mContext.getString(R.string.cert_info_cn), issuer.getName());
         }
 
         // validity
-        addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_VALIDITY));
-        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_ISSUED_ON), certificate.getNotBefore().toString());
-        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_EXPIRES_ON), certificate.getNotAfter().toString());
+        addTitle(sb, mContext.getString(R.string.cert_info_validity));
+        addField(sb, mContext.getString(R.string.cert_info_issued_on), certificate.getNotBefore().toString());
+        addField(sb, mContext.getString(R.string.cert_info_expires_on), certificate.getNotAfter().toString());
 
-        addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_FINGERPRINTS));
+        addTitle(sb, mContext.getString(R.string.cert_info_fingerprints));
         try {
             String sha256String = getThumbprint(certificate, "SHA-256");
             addField(sb, "SHA256:", sha256String, 48);
@@ -201,26 +201,26 @@ public class X509CertificateView extends Dialog
             // do nothing as we cannot show this value
         }
 
-        addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_CERT_DETAILS));
-        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_SER_NUM), certificate.getSerialNumber().toString());
-        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_VER), String.valueOf(certificate.getVersion()));
-        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_SIGN_ALG), String.valueOf(certificate.getSigAlgName()));
-        addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_PUB_KEY_INFO));
-        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_ALG), certificate.getPublicKey().getAlgorithm());
+        addTitle(sb, mContext.getString(R.string.cert_info_details));
+        addField(sb, mContext.getString(R.string.cert_info_SN), certificate.getSerialNumber().toString());
+        addField(sb, mContext.getString(R.string.cert_info_version), String.valueOf(certificate.getVersion()));
+        addField(sb, mContext.getString(R.string.cert_info_sign_algo), String.valueOf(certificate.getSigAlgName()));
+        addTitle(sb, mContext.getString(R.string.cert_info_pubkey_info));
+        addField(sb, mContext.getString(R.string.cert_info_algo), certificate.getPublicKey().getAlgorithm());
 
         if (certificate.getPublicKey().getAlgorithm().equals("RSA")) {
             RSAPublicKey key = (RSAPublicKey) certificate.getPublicKey();
 
-            addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_PUB_KEY),
-                    mContext.getString(R.string.service_gui_CERT_INFO_KEY_BITS_PRINT,
+            addField(sb, mContext.getString(R.string.cert_info_pubkey),
+                    mContext.getString(R.string.cert_info_key_bits,
                             String.valueOf((key.getModulus().toByteArray().length - 1) * 8)),
                     getHex(key.getModulus().toByteArray()), 48);
 
-            addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_EXP),
+            addField(sb, mContext.getString(R.string.cert_info_exponent),
                     key.getPublicExponent().toString());
 
-            addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_KEY_SIZE),
-                    mContext.getString(R.string.service_gui_CERT_INFO_KEY_BITS_PRINT,
+            addField(sb, mContext.getString(R.string.cert_info_key_size),
+                    mContext.getString(R.string.cert_info_key_bits,
                             String.valueOf(key.getModulus().bitLength())));
         }
         else if (certificate.getPublicKey().getAlgorithm().equals("DSA")) {
@@ -228,8 +228,8 @@ public class X509CertificateView extends Dialog
             addField(sb, "Y:", key.getY().toString(16));
         }
 
-        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_SIGN),
-                mContext.getString(R.string.service_gui_CERT_INFO_KEY_BITS_PRINT,
+        addField(sb, mContext.getString(R.string.cert_info_signature),
+                mContext.getString(R.string.cert_info_key_bits,
                         String.valueOf(certificate.getSignature().length * 8)),
                 getHex(certificate.getSignature()), 48);
         sb.append("</table>\n");

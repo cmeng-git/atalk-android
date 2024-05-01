@@ -52,7 +52,7 @@ public class CallHistoryContactSource implements ContactSourceService
      */
     public String getDisplayName()
     {
-        return aTalkApp.getResString(R.string.service_gui_CALL_HISTORY_GROUP_NAME);
+        return aTalkApp.getResString(R.string.call_history_name);
     }
 
     /**

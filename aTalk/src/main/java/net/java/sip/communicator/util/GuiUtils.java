@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+
 /**
  * The <code>StringUtils</code> class is used through this ui implementation for
  * some special operations with strings.
@@ -167,7 +170,7 @@ public class GuiUtils
      */
     public static int compareDates(long date1, long date2)
     {
-        return (date1 < date2 ? -1 : (date1 == date2 ? 0 : 1));
+        return (Long.compare(date1, date2));
     }
 
     /**
@@ -409,49 +412,49 @@ public class GuiUtils
      */
     private static String processMonth(int month)
     {
-        String monthStringKey;
+        int monthStringKey;
 
         switch (month) {
             case 0:
-                monthStringKey = "service.gui.JANUARY";
+                monthStringKey = R.string.jan;
                 break;
             case 1:
-                monthStringKey = "service.gui.FEBRUARY";
+                monthStringKey = R.string.feb;
                 break;
             case 2:
-                monthStringKey = "service.gui.MARCH";
+                monthStringKey = R.string.mar;
                 break;
             case 3:
-                monthStringKey = "service.gui.APRIL";
+                monthStringKey = R.string.apr;
                 break;
             case 4:
-                monthStringKey = "service.gui.MAY";
+                monthStringKey = R.string.may;
                 break;
             case 5:
-                monthStringKey = "service.gui.JUNE";
+                monthStringKey = R.string.jun;
                 break;
             case 6:
-                monthStringKey = "service.gui.JULY";
+                monthStringKey = R.string.jul;
                 break;
             case 7:
-                monthStringKey = "service.gui.AUGUST";
+                monthStringKey = R.string.aug;
                 break;
             case 8:
-                monthStringKey = "service.gui.SEPTEMBER";
+                monthStringKey = R.string.sep;
                 break;
             case 9:
-                monthStringKey = "service.gui.OCTOBER";
+                monthStringKey = R.string.oct;
                 break;
             case 10:
-                monthStringKey = "service.gui.NOVEMBER";
+                monthStringKey = R.string.nov;
                 break;
             case 11:
-                monthStringKey = "service.gui.DECEMBER";
+                monthStringKey = R.string.dec;
                 break;
             default:
                 return "";
         }
-        return UtilActivator.getResources().getI18NString(monthStringKey);
+        return aTalkApp.getResString(monthStringKey);
     }
 
     /**

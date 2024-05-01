@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/label_padding"
-        android:text="@string/service_gui_DISPLAY_NAME" />
+        android:text="@string/display_name" />
 
     <EditText
         android:id="@+id/certDisplayName"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_weight="1"
-            android:text="@string/plugin_certconfig_KEYSTORE" />
+            android:text="@string/certconfig_keystore_file" />
 
         <ImageButton
             android:id="@+id/browse"
@@ -56,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/label_padding"
-        android:text="@string/plugin_certconfig_KEYSTORE_TYPE" />
+        android:text="@string/certconfig_keystore_type" />
 
     <Spinner
         android:id="@+id/cboKeyStoreType"
@@ -104,14 +104,14 @@
                 android:id="@+id/chkSavePassword"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/store_password" />
+                android:text="@string/save_password" />
 
             <TextView
                 style="@style/MediumFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:text="@string/plugin_certconfig_ALIAS" />
+                android:text="@string/certconfig_alias" />
         </LinearLayout>
 
         <ImageButton
@@ -136,12 +136,12 @@
         <Button
             android:id="@+id/button_Cancel"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/button_OK"
             style="@style/ButtonTop"
             android:layout_marginStart="4dp"
-            android:text="@string/service_gui_OK" />
+            android:text="@string/ok" />
     </LinearLayout>
 </LinearLayout>

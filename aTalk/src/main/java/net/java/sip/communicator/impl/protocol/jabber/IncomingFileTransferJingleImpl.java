@@ -84,7 +84,7 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer {
     }
 
     private void onCanceled() {
-        String reason = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
+        String reason = aTalkApp.getResString(R.string.file_transfer_canceled);
         fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, reason);
     }
 

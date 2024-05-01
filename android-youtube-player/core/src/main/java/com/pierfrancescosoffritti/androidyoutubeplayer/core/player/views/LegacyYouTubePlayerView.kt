@@ -50,8 +50,7 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
     internal var canPlay = true
         private set
 
-    var isUsingCustomUi = false
-        private set
+    private var isUsingCustomUi = false
 
     init {
         addView(youTubePlayer, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
@@ -89,13 +88,16 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
      * If set to false, you should handle network events with your own broadcast receiver.
      * @param playerOptions customizable options for the embedded video player, can be null.
      */
-    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, playerOptions: IFramePlayerOptions?) {
+    fun initialize(
+            youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean,
+            playerOptions: IFramePlayerOptions?,
+    ) {
         if (isYouTubePlayerReady)
             throw IllegalStateException("This YouTubePlayerView has already been initialized.")
 
         if (handleNetworkEvents) {
-//            ContextCompat.registerReceiver(aTalkApp.getInstance(), networkCallback,
-//                    IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION), ContextCompat.RECEIVER_NOT_EXPORTED)
+            // ContextCompat.registerReceiver(context, networkCallback,
+            //        IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION), ContextCompat.RECEIVER_NOT_EXPORTED)
             registerNetworkCallback()
 
         }
@@ -112,10 +114,10 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
         val manager = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
 
         val request = NetworkRequest.Builder()
-                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
-                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-                .build()
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .build()
 
         networkCallback = object : NetworkCallback() {
             override fun onAvailable(network: Network) {
@@ -190,9 +192,7 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
             youTubePlayer.removeListener(defaultPlayerUiController)
             fullScreenHelper.removeFullScreenListener(defaultPlayerUiController)
         }
-
         isUsingCustomUi = true
-
         return View.inflate(context, layoutId, this)
     }
 
@@ -201,9 +201,11 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
             Lifecycle.Event.ON_DESTROY == event -> {
                 release()
             }
+
             Lifecycle.Event.ON_RESUME == event -> {
                 onResume()
             }
+
             Lifecycle.Event.ON_STOP == event -> {
                 onStop()
             }

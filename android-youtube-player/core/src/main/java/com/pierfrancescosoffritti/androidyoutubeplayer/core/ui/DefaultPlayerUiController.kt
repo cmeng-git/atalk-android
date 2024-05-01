@@ -42,9 +42,10 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
     private val menuButton: ImageView
     private val playPauseButton: ImageView
     private val youTubeButton: ImageView
-    private val fullScreenButton: ImageView
     private val rateIncButton: ImageView
     private val rateDecButton: ImageView
+    private val hideScreenButton: ImageView
+    private val fullScreenButton: ImageView
 
     private val customActionLeft: ImageView
     private val customActionRight: ImageView
@@ -79,6 +80,9 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
         menuButton = controlsView.findViewById(R.id.menu_button)
         playPauseButton = controlsView.findViewById(R.id.play_pause_button)
         youTubeButton = controlsView.findViewById(R.id.youtube_button)
+        rateIncButton = controlsView.findViewById(R.id.rate_inc_button)
+        rateDecButton = controlsView.findViewById(R.id.rate_dec_button)
+        hideScreenButton = controlsView.findViewById(R.id.hide_screen_button)
         fullScreenButton = controlsView.findViewById(R.id.fullscreen_button)
 
         customActionLeft = controlsView.findViewById(R.id.action_rewind_button)
@@ -86,11 +90,7 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
         previousAction = controlsView.findViewById(R.id.action_previous_button)
         nextAction = controlsView.findViewById(R.id.action_next_button)
 
-        rateIncButton = controlsView.findViewById(R.id.rate_inc_button)
-        rateDecButton = controlsView.findViewById(R.id.rate_dec_button)
-
         youtubePlayerSeekBar = controlsView.findViewById(R.id.youtube_player_seekbar)
-
         fadeControlsContainer = FadeViewHelper(controlsContainer)
 
         onFullScreenButtonListener = View.OnClickListener { youTubePlayerView.toggleFullScreen() }
@@ -178,6 +178,13 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
         rateDecButton.visibility = View.VISIBLE
         rateDecButton.setOnClickListener(clickListener)
         return this
+    }
+
+    override fun setHideScreenAction(icon: Drawable, clickListener: View.OnClickListener?): PlayerUiController {
+        hideScreenButton.setImageDrawable(icon)
+        hideScreenButton.visibility = View.VISIBLE
+        hideScreenButton.setOnClickListener(clickListener)
+        return this;
     }
 
     override fun showCustomAction1(show: Boolean): PlayerUiController {

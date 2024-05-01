@@ -5,14 +5,14 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.event.ContactCapabilitiesEvent;
 import net.java.sip.communicator.service.protocol.event.ContactCapabilitiesListener;
 
 import org.jxmpp.jid.Jid;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -28,8 +28,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public abstract class AbstractOperationSetContactCapabilities<T extends ProtocolProviderService>
-        implements OperationSetContactCapabilities
-{
+        implements OperationSetContactCapabilities {
     /**
      * The list of <code>ContactCapabilitiesListener</code>s registered to be notified about changes in
      * the list of <code>OperationSet</code> capabilities of <code>Contact</code>s.
@@ -47,8 +46,7 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
      *
      * @param parentProvider the <code>ProtocolProviderService</code> implementation which will provide the new instance
      */
-    protected AbstractOperationSetContactCapabilities(T parentProvider)
-    {
+    protected AbstractOperationSetContactCapabilities(T parentProvider) {
         if (parentProvider == null)
             throw new NullPointerException("parentProvider");
 
@@ -62,10 +60,10 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
      *
      * @param listener the <code>ContactCapabilitiesListener</code> which is to be notified about changes in the
      * list of <code>OperationSet</code> capabilities of <code>Contact</code>s
+     *
      * @see OperationSetContactCapabilities#addContactCapabilitiesListener (ContactCapabilitiesListener)
      */
-    public void addContactCapabilitiesListener(ContactCapabilitiesListener listener)
-    {
+    public void addContactCapabilitiesListener(ContactCapabilitiesListener listener) {
         if (listener == null)
             throw new NullPointerException("listener");
 
@@ -83,21 +81,20 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
      * @param jid the contact fullJid
      * @param opSets the new operation sets for the given source contact
      */
-    protected void fireContactCapabilitiesEvent(Contact sourceContact, Jid jid, Map<String, ? extends OperationSet> opSets)
-    {
+    protected void fireContactCapabilitiesEvent(Contact sourceContact, Jid jid, Map<String, ? extends OperationSet> opSets) {
         ContactCapabilitiesListener[] listeners;
         synchronized (contactCapabilitiesListeners) {
             listeners = contactCapabilitiesListeners.toArray(new ContactCapabilitiesListener[0]);
         }
+
         if (listeners.length != 0) {
             ContactCapabilitiesEvent event = new ContactCapabilitiesEvent(sourceContact, jid, opSets);
-
             for (ContactCapabilitiesListener listener : listeners) {
                 if (jid != null) {
                     listener.supportedOperationSetsChanged(event);
                 }
                 else {
-                    Timber.w(new IllegalArgumentException("Cannot fire ContactCapabilitiesEvent with Jid: " + jid));
+                    Timber.w(new IllegalArgumentException("Cannot fire ContactCapabilitiesEvent with Jid: " + sourceContact));
                 }
             }
         }
@@ -121,13 +118,14 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
      * @param contact the <code>Contact</code> for which the <code>opsetClass</code> capability is to be queried
      * @param opsetClass the <code>OperationSet</code> <code>Class</code> for which the specified <code>contact</code> is
      * to be checked whether it possesses it as a capability
+     *
      * @return the <code>OperationSet</code> corresponding to the specified <code>opsetClass</code>
      * which is considered by the associated protocol provider to be possessed as a capability by
      * the specified <code>contact</code>; otherwise, <code>null</code>
+     *
      * @see OperationSetContactCapabilities#getOperationSet(Contact, Class)
      */
-    public <U extends OperationSet> U getOperationSet(Contact contact, Class<U> opsetClass)
-    {
+    public <U extends OperationSet> U getOperationSet(Contact contact, Class<U> opsetClass) {
         return getOperationSet(contact, opsetClass, isOnline(contact));
     }
 
@@ -149,14 +147,15 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
      * @param opsetClass the <code>OperationSet</code> <code>Class</code> for which the specified <code>contact</code> is
      * to be checked whether it possesses it as a capability
      * @param online <code>true</code> if <code>contact</code> is online; otherwise, <code>false</code>
+     *
      * @return the <code>OperationSet</code> corresponding to the specified <code>opsetClass</code>
      * which is considered by the associated protocol provider to be possessed as a capability by
      * the specified <code>contact</code>; otherwise, <code>null</code>
+     *
      * @see OperationSetContactCapabilities#getOperationSet(Contact, Class)
      */
     @SuppressWarnings("unchecked")
-    protected <U extends OperationSet> U getOperationSet(Contact contact, Class<U> opsetClass, boolean online)
-    {
+    protected <U extends OperationSet> U getOperationSet(Contact contact, Class<U> opsetClass, boolean online) {
         Map<String, OperationSet> supportedOperationSets = getSupportedOperationSets(contact, online);
 
         if (supportedOperationSets != null) {
@@ -178,15 +177,16 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
      * provide actual capability detection for the specified <code>contact</code>.
      *
      * @param contact the <code>Contact</code> for which the supported <code>OperationSet</code> capabilities are to be retrieved
+     *
      * @return a <code>Map</code> listing the <code>OperationSet</code>s considered by the associated
      * protocol provider to be supported by the specified <code>contact</code> (i.e. to be
      * possessed as capabilities). Each supported <code>OperationSet</code> capability is
      * represented by a <code>Map.Entry</code> with key equal to the <code>OperationSet</code> class
      * name and value equal to the respective <code>OperationSet</code> instance
+     *
      * @see OperationSetContactCapabilities#getSupportedOperationSets(Contact)
      */
-    public Map<String, OperationSet> getSupportedOperationSets(Contact contact)
-    {
+    public Map<String, OperationSet> getSupportedOperationSets(Contact contact) {
         return getSupportedOperationSets(contact, isOnline(contact));
     }
 
@@ -201,15 +201,16 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
      * @param contact the <code>Contact</code> for which the supported <code>OperationSet</code> capabilities are to
      * be retrieved
      * @param online <code>true</code> if <code>contact</code> is online; otherwise, <code>false</code>
+     *
      * @return a <code>Map</code> listing the <code>OperationSet</code>s considered by the associated
      * protocol provider to be supported by the specified <code>contact</code> (i.e. to be
      * possessed as capabilities). Each supported <code>OperationSet</code> capability is
      * represented by a <code>Map.Entry</code> with key equal to the <code>OperationSet</code> class
      * name and value equal to the respective <code>OperationSet</code> instance
+     *
      * @see OperationSetContactCapabilities#getSupportedOperationSets(Contact)
      */
-    protected Map<String, OperationSet> getSupportedOperationSets(Contact contact, boolean online)
-    {
+    protected Map<String, OperationSet> getSupportedOperationSets(Contact contact, boolean online) {
         return parentProvider.getSupportedOperationSets();
     }
 
@@ -217,10 +218,10 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
      * Determines whether a specific <code>Contact</code> is online (in contrast to offline).
      *
      * @param contact the <code>Contact</code> which is to be determines whether it is online
+     *
      * @return <code>true</code> if the specified <code>contact</code> is online; otherwise, <code>false</code>
      */
-    protected boolean isOnline(Contact contact)
-    {
+    protected boolean isOnline(Contact contact) {
         OperationSetPresence opsetPresence = parentProvider.getOperationSet(OperationSetPresence.class);
 
         if (opsetPresence == null) {
@@ -265,10 +266,10 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
      *
      * @param listener the <code>ContactCapabilitiesListener</code> which is to no longer be notified about
      * changes in the list of <code>OperationSet</code> capabilities of <code>Contact</code>s
+     *
      * @see OperationSetContactCapabilities#removeContactCapabilitiesListener (ContactCapabilitiesListener)
      */
-    public void removeContactCapabilitiesListener(ContactCapabilitiesListener listener)
-    {
+    public void removeContactCapabilitiesListener(ContactCapabilitiesListener listener) {
         if (listener != null) {
             synchronized (contactCapabilitiesListeners) {
                 contactCapabilitiesListeners.remove(listener);

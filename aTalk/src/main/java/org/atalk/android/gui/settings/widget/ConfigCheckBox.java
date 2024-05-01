@@ -21,27 +21,23 @@ import org.atalk.service.configuration.ConfigurationService;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ConfigCheckBox extends CheckBoxPreference
-{
+public class ConfigCheckBox extends CheckBoxPreference {
     /**
      * <code>ConfigWidgetUtil</code> used by this instance.
      */
     private final ConfigWidgetUtil configUtil = new ConfigWidgetUtil(this);
 
-    public ConfigCheckBox(Context context, AttributeSet attrs, int defStyle)
-    {
+    public ConfigCheckBox(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         configUtil.parseAttributes(context, attrs);
     }
 
-    public ConfigCheckBox(Context context, AttributeSet attrs)
-    {
+    public ConfigCheckBox(Context context, AttributeSet attrs) {
         super(context, attrs);
         configUtil.parseAttributes(context, attrs);
     }
 
-    public ConfigCheckBox(Context context)
-    {
+    public ConfigCheckBox(Context context) {
         super(context);
     }
 
@@ -49,15 +45,13 @@ public class ConfigCheckBox extends CheckBoxPreference
      * {@inheritDoc}
      */
     @Override
-    protected void onSetInitialValue(@Nullable Object defaultValue)
-    {
+    protected void onSetInitialValue(@Nullable Object defaultValue) {
         super.onSetInitialValue(defaultValue);
         configUtil.updateSummary(isChecked());
     }
 
     @Override
-    protected void onAttachedToHierarchy(PreferenceManager preferenceManager)
-    {
+    protected void onAttachedToHierarchy(PreferenceManager preferenceManager) {
         // Force load default value from configuration service
         setDefaultValue(getPersistedBoolean(false));
         super.onAttachedToHierarchy(preferenceManager);
@@ -67,8 +61,7 @@ public class ConfigCheckBox extends CheckBoxPreference
      * {@inheritDoc}
      */
     @Override
-    protected boolean getPersistedBoolean(boolean defaultReturnValue)
-    {
+    protected boolean getPersistedBoolean(boolean defaultReturnValue) {
         ConfigurationService configService = AndroidGUIActivator.getConfigurationService();
         if (configService == null)
             return defaultReturnValue;
@@ -80,8 +73,7 @@ public class ConfigCheckBox extends CheckBoxPreference
      * {@inheritDoc}
      */
     @Override
-    protected boolean persistBoolean(boolean value)
-    {
+    protected boolean persistBoolean(boolean value) {
         super.persistBoolean(value);
         // Sets boolean value in the ConfigurationService
         configUtil.handlePersistValue(value);

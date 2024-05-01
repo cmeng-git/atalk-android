@@ -1,5 +1,26 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.0.2 (400020)
+Release Date:   05/01/2024
+Author:         cmeng
+- Add new permissions required for API-34 and change UI to support.
+- Add 'App Info' option in main menu to view/change aTalk permission settings; different android devices have own implementations.
+- Check and skip process for duplicated presence with caps sent from server; OperationSetPersistentPresenceJabberImpl#userCapsNodeNotify() process.
+- Add CapExtension flag in ContactPresenceStatusChangeEvent, and remove unused constructor.
+- Must handle userCapsNode Notify for presence goes offline for fullJid; else call options on UI are not updated.
+- ReImplement ServiceDiscoveryHelper#discoverInfoNonBlocking() to minimize device ANR.
+- Fix send file status not being updated to DB, and remain at STATUS_WAITING; accidentally commented out since v3.2.2.
+- Http Download to proceed with auto-download only if the file size from server is known.
+- In API-34, a file selected via picker for sending may be a url link temporary created by android system for file sharing;
+  this url link is invalid and not accessible to aTalk when user returns to the chat UI again. The url link is
+  i.e. /storage/emulated/0/.transforms/synthetic/picker/0/com.android.providers.media.photopicker/media/1000000043.jpg
+- Execute purgeCorruptedOmemoKey() in new Thread to avoid ANR.
+- Upgrade smack libraries to 4.4.8.
+- Migrate com.google.android.exoplayer:exoplayer:2.19.1 to androidx.media3:media3-exoplayer:1.3.1.
+- Simplify String parameter names and clean up unused resources.
+- Add aTalk.doap file.
+
+=========================================================================
 Version:        4.0.1 (400010)
 Release Date:   03/28/2024
 Author:         cmeng
@@ -196,7 +217,7 @@ Author:         cmeng
 - Change chat session action options on user single and multiple items selection
 - Change auto return to contactList UI timer to 5 seconds after call has ended; allow user more time to view error messages.
 - Use exclude group: for local smack libraries inclusion;
-  add jarjar for local smack libraries into main build.gralde, and remove buildSrc#build.gradle
+  add jarjar for local smack libraries into main build.gradle, and remove buildSrc#build.gradle
 - AccountLoginActivity#onLoginPerformed(); update for new user create and login, startActivity aTalk UI
 - JingleFile send still having problem, AS throws AbstractMethodError exception unexpectedly.
   Not such problem with apk in ADB debug. see https://issuetracker.google.com/issues/321988935

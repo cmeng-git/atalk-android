@@ -59,6 +59,7 @@ import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.plugin.geolocation.GeoLocationActivity;
+import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.android.plugin.textspeech.TTSActivity;
 import org.atalk.impl.osgi.framework.BundleImpl;
 import org.osgi.framework.ServiceEvent;
@@ -149,9 +150,9 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         TextView textView = searchView.findViewById(R.id.search_src_text);
-        textView.setTextColor(getResources().getColor(R.color.white));
-        textView.setHintTextColor(getResources().getColor(R.color.white));
-        textView.setHint(R.string.service_gui_ENTER_NAME_OR_NUMBER);
+        textView.setTextColor(getResources().getColor(R.color.white, null));
+        textView.setHintTextColor(getResources().getColor(R.color.white, null));
+        textView.setHint(R.string.enter_name_or_number);
 
         // cmeng: 20191220 <= disable videoBridge until implementation
         // this.videoBridgeMenuItem = menu.findItem(R.id.create_videobridge);
@@ -161,13 +162,13 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
 
         mShowHideOffline = menu.findItem(R.id.show_hide_offline);
         int itemId = ConfigurationUtils.isShowOffline()
-                ? R.string.service_gui_CONTACTS_OFFLINE_HIDE
-                : R.string.service_gui_CONTACTS_OFFLINE_SHOW;
+                ? R.string.contact_offline_hide
+                : R.string.contact_offline_show;
         mShowHideOffline.setTitle(itemId);
 
         mOnOffLine = menu.findItem(R.id.sign_in_off);
         boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(ActionBarUtil.getStatus(this));
-        itemId = isOffline ? R.string.service_gui_SIGN_IN : R.string.service_gui_SIGN_OUT;
+        itemId = isOffline ? R.string.sign_in : R.string.sign_out;
         mOnOffLine.setTitle(itemId);
         mOnOffLine.setVisible(isOffline);
 
@@ -204,7 +205,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
             enableMenu = false;
 
         // runOnUiThread to update view
-        this.runOnUiThread(() -> {
+        runOnUiThread(() -> {
             // videoBridgeMenuItem is always enabled - allow user to re-trigger if earlier init failed
             videoBridgeMenuItem.setEnabled(true);
 
@@ -230,8 +231,8 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         final ProgressDialog progressDialog;
         if (!done) {
             progressDialog = ProgressDialog.show(MainMenuActivity.this,
-                    getString(R.string.service_gui_WAITING),
-                    getString(R.string.service_gui_SERVER_INFO_FETCH), true, true);
+                    getString(R.string.please_wait),
+                    getString(R.string.server_info_fetching), true, true);
         }
         else {
             progressDialog = null;
@@ -303,6 +304,9 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
             case R.id.account_settings:
                 startActivity(AccountsListActivity.class);
                 break;
+            case R.id.app_info:
+                PermissionsActivity.onInfoButtonClicked(this);
+                break;
             case R.id.tts_settings:
                 Intent ttsIntent = new Intent(this, TTSActivity.class);
                 startActivity(ttsIntent);
@@ -316,8 +320,8 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
                     contactListAdapter.filterData("");
                 }
                 int itemId = isShowOffline
-                        ? R.string.service_gui_CONTACTS_OFFLINE_HIDE
-                        : R.string.service_gui_CONTACTS_OFFLINE_SHOW;
+                        ? R.string.contact_offline_hide
+                        : R.string.contact_offline_show;
                 mShowHideOffline.setTitle(itemId);
 
                 break;

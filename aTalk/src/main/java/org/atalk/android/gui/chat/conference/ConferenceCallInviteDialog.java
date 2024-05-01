@@ -22,6 +22,13 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.ContactList;
 import net.java.sip.communicator.service.protocol.Call;
@@ -40,20 +47,12 @@ import org.atalk.android.gui.contactlist.model.BaseContactListAdapter;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.contactlist.model.MetaGroupExpandHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 /**
  * The invite dialog is the one shown when the user clicks on the conference button in the chat toolbar.
  *
  * @author Eng Chong Meng
  */
-public class ConferenceCallInviteDialog extends Dialog implements OnChildClickListener, DialogInterface.OnShowListener
-{
+public class ConferenceCallInviteDialog extends Dialog implements OnChildClickListener, DialogInterface.OnShowListener {
     private static boolean MUC_OFFLINE_ALLOW = true;
 
     private Button mInviteButton;
@@ -120,8 +119,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
      * otherwise, <code>false</code>
      */
     public ConferenceCallInviteDialog(Context mContext, CallConference conference, ProtocolProviderService preselectedProvider,
-            List<ProtocolProviderService> protocolProviders, final boolean isJitsiVideobridge)
-    {
+            List<ProtocolProviderService> protocolProviders, final boolean isJitsiVideobridge) {
         super(mContext);
 
         this.conference = conference;
@@ -136,8 +134,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
     /**
      * Constructs the <code>ConferenceCallInviteDialog</code>.
      */
-    public ConferenceCallInviteDialog(Context mContext)
-    {
+    public ConferenceCallInviteDialog(Context mContext) {
         this(mContext, null, null, null, false);
     }
 
@@ -147,8 +144,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
      *
      * @param conference the existing <code>CallConference</code>
      */
-    public ConferenceCallInviteDialog(Context mContext, CallConference conference)
-    {
+    public ConferenceCallInviteDialog(Context mContext, CallConference conference) {
         this(mContext, conference, null, null, false);
     }
 
@@ -159,8 +155,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
      * @param conference the existing <code>CallConference</code>
      */
     public ConferenceCallInviteDialog(Context mContext, CallConference conference,
-            ProtocolProviderService preselectedProtocolProvider, boolean isJitsiVideobridge)
-    {
+            ProtocolProviderService preselectedProtocolProvider, boolean isJitsiVideobridge) {
         this(mContext, conference, preselectedProtocolProvider, null, isJitsiVideobridge);
     }
 
@@ -173,8 +168,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
      * otherwise, <code>false</code>
      */
     public ConferenceCallInviteDialog(Context mContext,
-            List<ProtocolProviderService> protocolProviders, boolean isJitsiVideobridge)
-    {
+            List<ProtocolProviderService> protocolProviders, boolean isJitsiVideobridge) {
         this(mContext, null, null, protocolProviders, isJitsiVideobridge);
     }
 
@@ -187,16 +181,14 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
      * otherwise, <code>false</code>
      */
     public ConferenceCallInviteDialog(Context mContext, ProtocolProviderService selectedConfProvider,
-            boolean isJitsiVideobridge)
-    {
+            boolean isJitsiVideobridge) {
         this(mContext, null, selectedConfProvider, null, isJitsiVideobridge);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.service_gui_INVITE_CONTACT_TO_VIDEO_BRIDGE);
+        setTitle(R.string.invite_contact_to_videoBridge);
 
         this.setContentView(R.layout.videobridge_invite_dialog);
         contactListView = this.findViewById(R.id.ContactListView);
@@ -236,8 +228,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
         // this.initContactListData();
     }
 
-    private void initListAdapter()
-    {
+    private void initListAdapter() {
         contactListView.setAdapter(getContactListAdapter());
 
         // Attach contact groups expand memory
@@ -251,8 +242,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
         contactListAdapter.invalidateViews();
     }
 
-    public void chkSelectedContact()
-    {
+    public void chkSelectedContact() {
         List<MetaContact> mContacts = new LinkedList<>(mucContactList.values());
         int indexes = contactListAdapter.getGroupCount();
         for (MetaContact mContact : mContacts) {
@@ -267,15 +257,13 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
         }
     }
 
-    public void closeDialog()
-    {
+    public void closeDialog() {
         // must clear dialogMode on exit dialog
         contactListAdapter.setDialogMode(false);
         this.cancel();
     }
 
-    private MetaContactListAdapter getContactListAdapter()
-    {
+    private MetaContactListAdapter getContactListAdapter() {
         if (contactListAdapter == null) {
             ContactListFragment clf = new ContactListFragment(); //(ContactListFragment) aTalk.getFragment(aTalk.CL_FRAGMENT);
             // Disable call button options
@@ -292,8 +280,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
      */
     @Override
     public boolean onChildClick(ExpandableListView listView, View v, int groupPosition,
-            int childPosition, long id)
-    {
+            int childPosition, long id) {
         BaseContactListAdapter adapter = (BaseContactListAdapter) listView.getExpandableListAdapter();
         int position = adapter.getListIndex(groupPosition, childPosition);
         contactListView.setSelection(position);
@@ -341,8 +328,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
      *
      * @param protocolProviders the list of protocol providers we'd like to show in the account selector box
      */
-    private void initAccountSelectorPanel(List<ProtocolProviderService> protocolProviders)
-    {
+    private void initAccountSelectorPanel(List<ProtocolProviderService> protocolProviders) {
         // Initialize the account selector box.
         if (protocolProviders != null && protocolProviders.size() > 0)
             this.initAccountListData(protocolProviders);
@@ -357,8 +343,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
      * @param protocolProviders the list of <code>ProtocolProviderService</code>-s we'd like to show in the account
      * selector box
      */
-    private void initAccountListData(List<ProtocolProviderService> protocolProviders)
-    {
+    private void initAccountListData(List<ProtocolProviderService> protocolProviders) {
         for (ProtocolProviderService protocolProvider : protocolProviders) {
             // accountSelectorBox.addItem(protocolProvider);
         }
@@ -370,8 +355,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
     /**
      * Initializes the account list.
      */
-    private void initAccountListData()
-    {
+    private void initAccountListData() {
         List<ProtocolProviderService> protocolProviders = ProtocolProviderActivator.getProtocolProviders();
         for (ProtocolProviderService protocolProvider : protocolProviders) {
             OperationSet opSet = protocolProvider.getOperationSet(OperationSetTelephonyConferencing.class);
@@ -407,8 +391,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
     /**
      * Invites the contacts to the chat conference.
      */
-    private void inviteContacts(List<MetaContact> mContacts)
-    {
+    private void inviteContacts(List<MetaContact> mContacts) {
         Map<ProtocolProviderService, List<String>> selectedProviderCallees = new HashMap<>();
         List<String> callees = new ArrayList<>();
 
@@ -490,8 +473,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
      * @param mContacts the list of contacts to invite
      */
     private void inviteJitsiVideobridgeContacts(ProtocolProviderService preselectedProvider,
-            List<MetaContact> mContacts)
-    {
+            List<MetaContact> mContacts) {
         List<String> callees = new ArrayList<>();
 
         for (MetaContact mContact : mContacts) {
@@ -548,8 +530,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
 //	}
 
     @Override
-    public void onShow(DialogInterface arg0)
-    {
+    public void onShow(DialogInterface arg0) {
         List<MetaContact> mContacts = new LinkedList<>(mucContactList.values());
         int indexes = contactListAdapter.getGroupCount();
         for (MetaContact mContact : mContacts) {

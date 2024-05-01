@@ -36,7 +36,6 @@ import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusCha
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
-import net.java.sip.communicator.service.protocol.event.MessageReceiptListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
@@ -431,7 +430,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     public void sendInstantMessage(String message, int encType) {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
-            aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, getName());
+            aTalkApp.showToastMessage(R.string.send_message_not_supported, getName());
             return;
         }
 
@@ -752,7 +751,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             }
         }
         else {
-            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_supported));
         }
     }
 
@@ -831,7 +830,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             }
         }
         else
-            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_supported));
     }
 
     /**

@@ -16,11 +16,11 @@
  */
 package org.atalk.android.gui.chat.chatsession;
 
+import java.util.Date;
+
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatSession;
 import org.jxmpp.jid.EntityBareJid;
-
-import java.util.Date;
 
 /**
  * Add Source call to the CallRecord

@@ -28,7 +28,7 @@
         <Button
             android:id="@+id/btn_Cancel"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <View
             android:id="@+id/centerShim"
@@ -40,6 +40,6 @@
         <Button
             android:id="@+id/btn_OK"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_OK" />
+            android:text="@string/ok" />
     </LinearLayout>
 </LinearLayout>

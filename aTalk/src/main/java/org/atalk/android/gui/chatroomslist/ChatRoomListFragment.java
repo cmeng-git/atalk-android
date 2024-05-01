@@ -317,7 +317,7 @@ public class ChatRoomListFragment extends OSGiFragment
 
         // update contact TTS enable option title
         String tts_option = aTalkApp.getResString(crWrapper.isTtsEnable()
-                ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
+                ? R.string.tts_disable : R.string.tts_enable);
         mChatRoomTtsEnable = menu.findItem(R.id.chatroom_tts_enable);
         mChatRoomTtsEnable.setTitle(tts_option);
         mChatRoomTtsEnable.setVisible(ConfigurationUtils.isTtsEnable());
@@ -361,11 +361,11 @@ public class ChatRoomListFragment extends OSGiFragment
                 case R.id.chatroom_tts_enable:
                     if (mClickedChatRoom.isTtsEnable()) {
                         mClickedChatRoom.setTtsEnable(false);
-                        mChatRoomTtsEnable.setTitle(R.string.service_gui_TTS_ENABLE);
+                        mChatRoomTtsEnable.setTitle(R.string.tts_enable);
                     }
                     else {
                         mClickedChatRoom.setTtsEnable(true);
-                        mChatRoomTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
+                        mChatRoomTtsEnable.setTitle(R.string.tts_disable);
                     }
                     ChatSessionManager.getMultiChat(mClickedChatRoom, true).updateChatTtsOption();
                     return true;
@@ -432,7 +432,7 @@ public class ChatRoomListFragment extends OSGiFragment
 
     @Override
     public void onTaskComplete(int msgCount, List<String> deletedUUIDs) {
-        aTalkApp.showToastMessage(R.string.service_gui_HISTORY_REMOVE_COUNT, msgCount);
+        aTalkApp.showToastMessage(R.string.history_purge_count, msgCount);
         if (EntityListHelper.SINGLE_ENTITY == eraseMode) {
             ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomID());
             if (chatPanel != null) {
@@ -443,7 +443,7 @@ public class ChatRoomListFragment extends OSGiFragment
             onCloseAllChats();
         }
         else { // failed
-            String errMsg = getString(R.string.service_gui_HISTORY_REMOVE_ERROR, mClickedChatRoom.getChatRoomID());
+            String errMsg = getString(R.string.history_purge_error, mClickedChatRoom.getChatRoomID());
             aTalkApp.showToastMessage(errMsg);
         }
     }

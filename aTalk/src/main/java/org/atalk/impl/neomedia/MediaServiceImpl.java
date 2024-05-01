@@ -877,7 +877,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     @Override
     public Object getVideoPreviewComponent(MediaDevice device, int preferredWidth, int preferredHeight)
     {
-        String noPreviewText = aTalkApp.getResString(R.string.impl_media_configform_NO_PREVIEW);
+        String noPreviewText = aTalkApp.getResString(R.string.media_configform_preview);
         JLabel noPreview = new JLabel(noPreviewText);
 
         noPreview.setHorizontalAlignment(SwingConstants.CENTER);

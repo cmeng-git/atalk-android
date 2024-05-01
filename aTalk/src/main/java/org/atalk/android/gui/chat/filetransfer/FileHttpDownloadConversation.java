@@ -22,6 +22,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.File;
+import java.util.Date;
+
 import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
 import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
@@ -37,9 +40,6 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.persistance.FileBackend;
-
-import java.io.File;
-import java.util.Date;
 
 /**
  * The <code>ReceiveFileConversationComponent</code> is the component shown in the conversation area
@@ -119,7 +119,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             );
 
             updateXferFileViewState(FileTransferStatusChangeEvent.WAITING,
-                    aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, mSender));
+                    aTalkApp.getResString(R.string.file_transfer_request_received, mSender));
 
             // Do not auto retry if it had failed previously; otherwise ANR if multiple such items exist
             if (FileRecord.STATUS_FAILED == xferStatus) {
@@ -148,16 +148,16 @@ public class FileHttpDownloadConversation extends FileTransferConversation
 
         switch (status) {
             case FileTransferStatusChangeEvent.PREPARING:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSender);
+                statusText = aTalkApp.getResString(R.string.file_transfer_preparing, mSender);
                 break;
 
             case FileTransferStatusChangeEvent.IN_PROGRESS:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, mSender);
+                statusText = aTalkApp.getResString(R.string.file_receive_from, mSender);
                 mChatFragment.addActiveFileTransfer(httpFileTransferJabber.getID(), httpFileTransferJabber, msgViewId);
                 break;
 
             case FileTransferStatusChangeEvent.COMPLETED:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, mSender);
+                statusText = aTalkApp.getResString(R.string.file_receive_completed, mSender);
                 if (mXferFile == null) { // Android view redraw happen?
                     mXferFile = mChatFragment.getChatListAdapter().getFileName(msgViewId);
                 }
@@ -166,7 +166,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 break;
 
             case FileTransferStatusChangeEvent.FAILED:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_FAILED, mSender);
+                statusText = aTalkApp.getResString(R.string.file_receive_failed, mSender);
                 if (!TextUtils.isEmpty(reason)) {
                     statusText += "\n" + reason;
                 }
@@ -174,7 +174,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
 
             // local cancel the file download process
             case FileTransferStatusChangeEvent.CANCELED:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
+                statusText = aTalkApp.getResString(R.string.file_transfer_canceled);
                 if (!TextUtils.isEmpty(reason)) {
                     statusText += "\n" + reason;
                 }
@@ -182,7 +182,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
 
             // user reject the incoming http download
             case FileTransferStatusChangeEvent.DECLINED:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_DECLINED);
+                statusText = aTalkApp.getResString(R.string.file_transfer_declined);
                 // need to update status here as chatFragment statusListener is enabled for
                 // fileTransfer and only after accept
                 break;
@@ -252,7 +252,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
      */
     @Override
     protected String getProgressLabel(long bytesString) {
-        return aTalkApp.getResString(R.string.service_gui_RECEIVED, bytesString);
+        return aTalkApp.getResString(R.string.received_, bytesString);
     }
 
     /**
@@ -265,10 +265,8 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         setFileTransfer(httpFileTransferJabber, fileSize);
         messageViewHolder.fileLabel.setText(getFileLabel(fileName, fileSize));
 
-        if (fileSize <= 0) {
-            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-        }
-        else if (ConfigurationUtils.isAutoAcceptFile(fileSize)) {
+        // Check for auto-download only if the file size is not zero
+        if (fileSize > 0 && ConfigurationUtils.isAutoAcceptFile(fileSize)) {
             startDownload();
         }
     }

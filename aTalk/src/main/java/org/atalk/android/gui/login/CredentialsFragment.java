@@ -33,12 +33,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import java.util.Arrays;
+
 import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
 
-import java.util.Arrays;
 
 /**
  * The credentials fragment can be used to retrieve username, password, the "store password" option status, login
@@ -57,8 +58,7 @@ import java.util.Arrays;
  *
  * @author Eng Chong Meng
  */
-public class CredentialsFragment extends Fragment
-{
+public class CredentialsFragment extends Fragment {
     /**
      * Pre-entered login argument.
      */
@@ -127,8 +127,7 @@ public class CredentialsFragment extends Fragment
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
         View content = inflater.inflate(R.layout.account_credentials, container, false);
 
@@ -191,8 +190,7 @@ public class CredentialsFragment extends Fragment
         return content;
     }
 
-    private void initializeViewListeners()
-    {
+    private void initializeViewListeners() {
         mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
                 -> ViewUtil.showPassword(mPasswordField, isChecked));
 
@@ -200,8 +198,7 @@ public class CredentialsFragment extends Fragment
                 (buttonView, isChecked) -> updateViewVisibility(isChecked));
     }
 
-    private void updateViewVisibility(boolean IsServerOverridden)
-    {
+    private void updateViewVisibility(boolean IsServerOverridden) {
         if (IsServerOverridden) {
             mServerIpField.setVisibility(View.VISIBLE);
             mServerPortField.setVisibility(View.VISIBLE);

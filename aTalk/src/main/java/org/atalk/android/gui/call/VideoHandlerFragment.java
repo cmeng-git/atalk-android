@@ -366,8 +366,8 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
         if (AndroidCamera.getCameraFromCurrentDeviceSystem(otherFacing) != null) {
             inflater.inflate(R.menu.camera_menu, menu);
             String displayName = isFrontCamera
-                    ? getString(R.string.service_gui_settings_USE_BACK_CAMERA)
-                    : getString(R.string.service_gui_settings_USE_FRONT_CAMERA);
+                    ? getString(R.string.settings_use_back_camera)
+                    : getString(R.string.settings_use_front_camera);
             mCameraToggle = menu.findItem(R.id.switch_camera).setTitle(displayName);
         }
     }
@@ -421,11 +421,11 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
 
         final AndroidCamera newDevice;
 
-        String back = getString(R.string.service_gui_settings_USE_BACK_CAMERA);
+        String back = getString(R.string.settings_use_back_camera);
         if (item.getTitle().equals(back)) {
             // Switch to back camera and toggle item name
             newDevice = AndroidCamera.getCameraFromCurrentDeviceSystem(LENS_FACING_BACK);
-            item.setTitle(R.string.service_gui_settings_USE_FRONT_CAMERA);
+            item.setTitle(R.string.settings_use_front_camera);
         }
         else {
             // Switch to front camera and toggle item name

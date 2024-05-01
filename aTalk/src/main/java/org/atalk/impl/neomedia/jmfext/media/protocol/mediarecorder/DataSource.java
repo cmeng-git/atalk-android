@@ -432,7 +432,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                     errMessage = "UnKnown";
             }
             Timber.e("Set camera preview failed: %s", errMessage);
-            aTalkApp.showGenericError(R.string.service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED, "", errMessage);
+            aTalkApp.showGenericError(R.string.video_format_not_supported, "", errMessage);
 
             mediaRecorder.release();
             mediaRecorder = null;

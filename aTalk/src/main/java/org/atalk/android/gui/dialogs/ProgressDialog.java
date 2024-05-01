@@ -25,20 +25,17 @@ import java.util.Map;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ProgressDialog extends OSGiFragment
-{
+public class ProgressDialog extends OSGiFragment {
     /**
      * Argument used to retrieve the message that will be displayed next to the progress bar.
      */
     private static final String ARG_MESSAGE = "progress_dialog_message";
 
-    public ProgressDialog()
-    {
+    public ProgressDialog() {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View progressView = inflater.inflate(R.layout.progress_dialog, container, false);
         ViewUtil.setTextViewValue(progressView, R.id.messageText, getArguments().getString(ARG_MESSAGE));
         return progressView;
@@ -49,11 +46,11 @@ public class ProgressDialog extends OSGiFragment
      *
      * @param title dialog's title
      * @param message the message to be displayed next to the progress bar.
+     *
      * @return dialog id that can be used to close the dialog
      * {@link DialogActivity#closeDialog(long)}.
      */
-    public static long showProgressDialog(String title, String message)
-    {
+    public static long showProgressDialog(String title, String message) {
         Map<String, Serializable> extras = new HashMap<>();
         extras.put(DialogActivity.EXTRA_CANCELABLE, false);
         extras.put(DialogActivity.EXTRA_REMOVE_BUTTONS, true);

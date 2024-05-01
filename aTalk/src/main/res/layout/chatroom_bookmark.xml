@@ -17,7 +17,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_ACCOUNT" />
+            android:text="@string/account" />
 
         <TextView
             android:id="@+id/jid_account"
@@ -37,7 +37,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_NAME" />
+            android:text="@string/name" />
 
         <EditText
             android:id="@+id/mucName_Edit"
@@ -57,7 +57,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_NICKNAME_LABEL" />
+            android:text="@string/nickname" />
 
         <EditText
             android:id="@+id/nickName_Edit"
@@ -77,7 +77,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_PASSWORD" />
+            android:text="@string/password_" />
 
         <RelativeLayout
             android:id="@+id/pwdTypingArea"
@@ -115,7 +115,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_CHATROOM" />
+            android:text="@string/chatroom" />
 
         <CheckBox
             android:id="@+id/cb_bookmark"
@@ -123,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:clickable="true"
-            android:text="@string/service_gui_CHATROOM_BOOKMARK" />
+            android:text="@string/chatroom_bookmark" />
 
         <CheckBox
             android:id="@+id/cb_autojoin"
@@ -131,7 +131,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:clickable="true"
-            android:text="@string/service_gui_CHATROOM_AUTOJOIN" />
+            android:text="@string/chatroom_auto_join" />
 
     </LinearLayout>
 
@@ -152,13 +152,13 @@
             android:id="@+id/button_Cancel"
             style="@style/ButtonTop"
             android:enabled="true"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/button_Apply"
             style="@style/ButtonTop"
             android:enabled="true"
             android:layout_marginStart="4dp"
-            android:text="@string/service_gui_APPLY" />
+            android:text="@string/apply" />
     </LinearLayout>
 </LinearLayout>

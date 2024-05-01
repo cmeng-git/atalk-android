@@ -29,8 +29,7 @@ import org.atalk.service.configuration.ConfigurationService;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-class ConfigWidgetUtil implements OnBindEditTextListener
-{
+class ConfigWidgetUtil implements OnBindEditTextListener {
     /**
      * The parent <code>Preference</code> handled by this instance.
      */
@@ -53,8 +52,7 @@ class ConfigWidgetUtil implements OnBindEditTextListener
      *
      * @param parent the <code>Preference</code> that will be handled by this instance.
      */
-    ConfigWidgetUtil(Preference parent)
-    {
+    ConfigWidgetUtil(Preference parent) {
         this.parent = parent;
     }
 
@@ -64,8 +62,7 @@ class ConfigWidgetUtil implements OnBindEditTextListener
      * @param parent the <code>Preference</code> that will be handled by this instance.
      * @param mapSummary indicates whether value should be displayed as a summary
      */
-    ConfigWidgetUtil(Preference parent, boolean mapSummary)
-    {
+    ConfigWidgetUtil(Preference parent, boolean mapSummary) {
         this.parent = parent;
         this.mapSummary = true;
     }
@@ -76,8 +73,7 @@ class ConfigWidgetUtil implements OnBindEditTextListener
      * @param context the Android context
      * @param attrs the attribute set
      */
-    void parseAttributes(Context context, AttributeSet attrs)
-    {
+    void parseAttributes(Context context, AttributeSet attrs) {
         TypedArray attArray = context.obtainStyledAttributes(attrs, R.styleable.ConfigWidget);
         useNewThread = attArray.getBoolean(R.styleable.ConfigWidget_storeInNewThread, false);
         mapSummary = attArray.getBoolean(R.styleable.ConfigWidget_mapSummary, mapSummary);
@@ -88,8 +84,7 @@ class ConfigWidgetUtil implements OnBindEditTextListener
      *
      * @param value the current value
      */
-    void updateSummary(Object value)
-    {
+    void updateSummary(Object value) {
         if (mapSummary) {
             String text = (value != null) ? value.toString() : "";
             if (parent instanceof EditTextPreference) {
@@ -103,8 +98,7 @@ class ConfigWidgetUtil implements OnBindEditTextListener
     }
 
     @Override
-    public void onBindEditText(@NonNull EditText editText)
-    {
+    public void onBindEditText(@NonNull EditText editText) {
         mInputType = editText.getInputType();
     }
 
@@ -113,14 +107,11 @@ class ConfigWidgetUtil implements OnBindEditTextListener
      *
      * @param value the new value to persist.
      */
-    void handlePersistValue(final Object value)
-    {
+    void handlePersistValue(final Object value) {
         updateSummary(value);
-        Thread store = new Thread()
-        {
+        Thread store = new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 ConfigurationService confService = AndroidGUIActivator.getConfigurationService();
                 if (confService != null) {
                     confService.setProperty(parent.getKey(), value);
@@ -141,8 +132,8 @@ class ConfigWidgetUtil implements OnBindEditTextListener
     }
 
     /**
-     *  Couple the codec surface enable option to the codec option state;
-     *  Current aTalk implementation requires surface option for android codec to be selected by fmj
+     * Couple the codec surface enable option to the codec option state;
+     * Current aTalk implementation requires surface option for android codec to be selected by fmj
      *
      * @param key surface preference key
      * @param value the value to persist.

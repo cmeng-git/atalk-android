@@ -143,7 +143,7 @@ public class MyWebViewClient extends WebViewClient
                 -> ViewUtil.showPassword(mPasswordField, isChecked));
 
         AlertDialog.Builder authDialog = new AlertDialog.Builder(mContext)
-                .setTitle(R.string.service_gui_USER_LOGIN)
+                .setTitle(R.string.user_login)
                 .setView(authView)
                 .setCancelable(false);
         final AlertDialog dialog = authDialog.show();

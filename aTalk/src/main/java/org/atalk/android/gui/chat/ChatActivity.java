@@ -417,7 +417,6 @@ public class ChatActivity extends OSGiActivity
                 chatRoomConfig.onBackPressed();
             }
             else if (mPlayerContainer.getVisibility() == View.VISIBLE) {
-                mPlayerContainer.setVisibility(View.GONE);
                 releasePlayer();
             }
             else {
@@ -488,7 +487,7 @@ public class ChatActivity extends OSGiActivity
             if (contactSession) {
                 mLeaveChatRoom.setVisible(false);
                 mDestroyChatRoom.setVisible(false);
-                mHistoryErase.setTitle(R.string.service_gui_HISTORY_ERASE_PER_CONTACT);
+                mHistoryErase.setTitle(R.string.history_erase_for_contact);
                 boolean isDomainJid = (mRecipient == null) || (mRecipient.getJid() instanceof DomainBareJid);
 
                 // check if to show call buttons.
@@ -507,7 +506,7 @@ public class ChatActivity extends OSGiActivity
 
                 mTtsEnable.setVisible(!isDomainJid);
                 mTtsEnable.setTitle((mRecipient != null) && mRecipient.isTtsEnable()
-                        ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
+                        ? R.string.tts_disable : R.string.tts_enable);
 
                 mStatusEnable.setVisible(false);
                 mRoomInvite.setVisible(!isDomainJid);
@@ -552,15 +551,15 @@ public class ChatActivity extends OSGiActivity
 
             mTtsEnable.setVisible(isJoined);
             mTtsEnable.setTitle(chatRoomWrapper.isTtsEnable()
-                    ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
+                    ? R.string.tts_disable : R.string.tts_enable);
 
             mStatusEnable.setVisible(true);
             boolean roomStatusEnable = chatRoomWrapper.isRoomStatusEnable();
             mStatusEnable.setTitle(roomStatusEnable
-                    ? R.string.service_gui_CHATROOM_STATUS_OFF : R.string.service_gui_CHATROOM_STATUS_ON);
+                    ? R.string.chatroom_status_disable : R.string.chatroom_status_enable);
 
             mChatRoomNickSubject.setVisible(isJoined);
-            mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
+            mHistoryErase.setTitle(R.string.chatroom_history_erase_per);
             mChatRoomInfo.setVisible(true);
             mChatRoomMember.setVisible(true);
 
@@ -627,11 +626,11 @@ public class ChatActivity extends OSGiActivity
                 case R.id.chat_tts_enable:
                     if (chatRoomWrapper.isTtsEnable()) {
                         chatRoomWrapper.setTtsEnable(false);
-                        mTtsEnable.setTitle(R.string.service_gui_TTS_ENABLE);
+                        mTtsEnable.setTitle(R.string.tts_enable);
                     }
                     else {
                         chatRoomWrapper.setTtsEnable(true);
-                        mTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
+                        mTtsEnable.setTitle(R.string.tts_disable);
                     }
                     selectedChatPanel.updateChatTtsOption();
                     return true;
@@ -672,11 +671,11 @@ public class ChatActivity extends OSGiActivity
                 case R.id.room_status_enable:
                     if (chatRoomWrapper.isRoomStatusEnable()) {
                         chatRoomWrapper.setRoomStatusEnable(false);
-                        mStatusEnable.setTitle(R.string.service_gui_CHATROOM_STATUS_ON);
+                        mStatusEnable.setTitle(R.string.chatroom_status_enable);
                     }
                     else {
                         chatRoomWrapper.setRoomStatusEnable(true);
-                        mStatusEnable.setTitle(R.string.service_gui_CHATROOM_STATUS_OFF);
+                        mStatusEnable.setTitle(R.string.chatroom_status_disable);
                     }
                     return true;
 
@@ -696,7 +695,7 @@ public class ChatActivity extends OSGiActivity
                         }
                     }
                     else {
-                        memberList.append(getString(R.string.service_gui_LIST_NONE));
+                        memberList.append(getString(R.string.none));
                     }
                     String user = chatRoomWrapper.getProtocolProvider().getAccountID().getUserID();
                     selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_HTML,
@@ -712,11 +711,11 @@ public class ChatActivity extends OSGiActivity
                 case R.id.chat_tts_enable:
                     if (mRecipient.isTtsEnable()) {
                         mRecipient.setTtsEnable(false);
-                        mTtsEnable.setTitle(R.string.service_gui_TTS_ENABLE);
+                        mTtsEnable.setTitle(R.string.tts_enable);
                     }
                     else {
                         mRecipient.setTtsEnable(true);
-                        mTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
+                        mTtsEnable.setTitle(R.string.tts_disable);
                     }
                     selectedChatPanel.updateChatTtsOption();
                     return true;
@@ -746,7 +745,7 @@ public class ChatActivity extends OSGiActivity
 
     @Override
     public void onTaskComplete(int msgCount, List<String> deletedUUIDs) {
-        aTalkApp.showToastMessage(R.string.service_gui_HISTORY_REMOVE_COUNT, msgCount);
+        aTalkApp.showToastMessage(R.string.history_purge_count, msgCount);
         if (EntityListHelper.SINGLE_ENTITY == eraseMode) {
             chatPagerAdapter.getCurrentChatFragment().onClearCurrentEntityChatHistory(deletedUUIDs);
         }
@@ -755,7 +754,7 @@ public class ChatActivity extends OSGiActivity
             // selectedSession.msgListeners.notifyDataSetChanged(); // all registered contact chart
         }
         else {
-            showToastMessage(R.string.service_gui_HISTORY_REMOVE_ERROR);
+            showToastMessage(R.string.history_purge_error);
         }
     }
 
@@ -869,7 +868,7 @@ public class ChatActivity extends OSGiActivity
                     if (lastActiveTime != -1) {
                         if (DateUtils.isToday(lastActiveTime)) {
                             DateFormat df = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-                            lastSeen = getString(R.string.service_gui_LAST_SEEN, df.format(new Date(lastActiveTime)));
+                            lastSeen = getString(R.string.last_seen, df.format(new Date(lastActiveTime)));
                         }
                         else {
                             // lastSeen = DateUtils.getRelativeTimeSpanString(dateTime, timeNow, DateUtils.DAY_IN_MILLIS);
@@ -896,11 +895,10 @@ public class ChatActivity extends OSGiActivity
 
     public void sendAttachment(AttachOptionItem attachOptionItem) {
         Uri fileUri;
-        String contentType;
 
         switch (attachOptionItem) {
             case pic:
-                contentType = "image/*";
+                String contentType = "image/*";
                 mGetContents.launch(contentType);
                 break;
 
@@ -949,7 +947,7 @@ public class ChatActivity extends OSGiActivity
                 mediaPreviewAdapter.addMediaPreviews(attachments);
             }
             else {
-                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                aTalkApp.showToastMessage(R.string.file_does_not_exist);
             }
         });
     }
@@ -965,7 +963,7 @@ public class ChatActivity extends OSGiActivity
                 mediaPreviewAdapter.addMediaPreviews(attachments);
             }
             else {
-                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                aTalkApp.showToastMessage(R.string.file_does_not_exist);
             }
         });
     }
@@ -981,7 +979,7 @@ public class ChatActivity extends OSGiActivity
                 mediaPreviewAdapter.addMediaPreviews(attachments);
             }
             else {
-                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                aTalkApp.showToastMessage(R.string.file_does_not_exist);
             }
         });
     }
@@ -1002,7 +1000,7 @@ public class ChatActivity extends OSGiActivity
                             if (StringUtils.isNotEmpty(filePath))
                                 openDownloadable(new File(filePath), null);
                             else
-                                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                                aTalkApp.showToastMessage(R.string.file_does_not_exist);
                         }
                     }
                     break;
@@ -1073,7 +1071,7 @@ public class ChatActivity extends OSGiActivity
      */
     public void openDownloadable(File file, View view) {
         if ((file == null) || !file.exists()) {
-            showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+            showToastMessage(R.string.file_does_not_exist);
             return;
         }
 
@@ -1082,7 +1080,7 @@ public class ChatActivity extends OSGiActivity
             uri = FileBackend.getUriForFile(this, file);
         } catch (SecurityException e) {
             Timber.i("No permission to access %s: %s", file.getAbsolutePath(), e.getMessage());
-            showToastMessage(R.string.service_gui_FILE_OPEN_NO_PERMISSION);
+            showToastMessage(R.string.file_open_no_permission);
             return;
         }
 
@@ -1133,7 +1131,7 @@ public class ChatActivity extends OSGiActivity
             try {
                 startActivity(openIntent);
             } catch (ActivityNotFoundException e) {
-                aTalkApp.showToastMessage(R.string.service_gui_FILE_OPEN_NO_APPLICATION);
+                aTalkApp.showToastMessage(R.string.file_open_no_application);
             }
         }
     }
@@ -1168,11 +1166,12 @@ public class ChatActivity extends OSGiActivity
     /**
      * Release the exoPlayer resource on end
      */
-    private void releasePlayer() {
+    public void releasePlayer() {
         // remove the existing player view
         Fragment playerView = getSupportFragmentManager().findFragmentById(R.id.player_container);
         if (playerView != null)
             getSupportFragmentManager().beginTransaction().remove(playerView).commit();
+        mPlayerContainer.setVisibility(View.GONE);
 
         if (mExoPlayer != null) {
             mExoPlayer.releasePlayer();
@@ -1220,7 +1219,7 @@ public class ChatActivity extends OSGiActivity
                     String title = attributes.getString("title");
                     String imageUrl = attributes.getString("thumbnail_url");
 
-                    urlInfo = getString(R.string.service_gui_URL_MEDIA_SHARE, imageUrl, title, mUrl);
+                    urlInfo = getString(R.string.url_media_share, imageUrl, title, mUrl);
                     selectedChatPanel.sendMessage(urlInfo, IMessage.ENCODE_HTML);
                 } catch (JSONException e) {
                     Timber.w("Exception in JSONObject access: %s", result);

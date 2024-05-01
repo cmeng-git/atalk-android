@@ -9,14 +9,14 @@
         android:textAppearance="@style/MediumFont"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_CHATROOM_DESTROY_PROMPT"
+        android:text="@string/chatroom_destroy_prompt"
         android:paddingBottom="20dp" />
 
     <TextView
         android:id="@+id/textHint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_CHATROOM_DESTROY_NOTE"
+        android:text="@string/chatroom_destroy_note"
         android:textAppearance="@style/MediumFont"/>
 
         <TextView
@@ -25,13 +25,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
-            android:text="@string/service_gui_REASON_LABEL" />
+            android:text="@string/reason" />
 
         <EditText
             android:id="@+id/ReasonDestroy"
             style="@style/EntryTextView"
             android:layout_width="match_parent"
-            android:text="@string/service_gui_CHATROOM_DESTROY_REASON" />
+            android:text="@string/chatroom_destroy_reason" />
 
         <TextView
             android:id="@+id/venueView"
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
-            android:text="@string/service_gui_CHATROOM_ALTERNATE_VENUE" />
+            android:text="@string/chatroom_alternate_venue" />
 
         <EditText
             android:id="@+id/VenueAlternate"

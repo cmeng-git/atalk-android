@@ -215,6 +215,7 @@ public class ContactJabberImpl extends AbstractContact {
      * @param retrieveIfNecessary specifies whether the method should queue this contact for avatar update from the server.
      *
      * @return a reference to the image currently stored by this contact.
+     *
      * @see ServerStoredContactListJabberImpl.ImageRetriever#run()
      */
     public byte[] getImage(boolean retrieveIfNecessary) {
@@ -230,7 +231,7 @@ public class ContactJabberImpl extends AbstractContact {
      * @param retrieveIfNecessary force to retrieve avatar from server if it is null
      */
     public void getAvatar(boolean retrieveIfNecessary) {
-        ssclCallback.addContactForImageUpdate(this, retrieveIfNecessary );
+        ssclCallback.addContactForImageUpdate(this, retrieveIfNecessary);
     }
 
     /**
@@ -648,9 +649,10 @@ public class ContactJabberImpl extends AbstractContact {
 
     /**
      * Set contact blocking status.
-     * @see OperationSetPersistentPresenceJabberImpl#initContactBlockStatus(BlockingCommandManager)
      *
      * @param value contact block state.
+     *
+     * @see OperationSetPersistentPresenceJabberImpl#initContactBlockStatus(BlockingCommandManager)
      */
     public void setContactBlock(boolean value) {
         isContactBlock = value;
@@ -724,14 +726,14 @@ public class ContactJabberImpl extends AbstractContact {
         }
     }
 
-public final class Options {
-    public static final int TO = 0;
-    public static final int FROM = 1;
-    public static final int ASKING = 2;
-    public static final int PREEMPTIVE_GRANT = 3;
-    public static final int IN_ROSTER = 4;
-    public static final int PENDING_SUBSCRIPTION_REQUEST = 5;
-    public static final int DIRTY_PUSH = 6;
-    public static final int DIRTY_DELETE = 7;
-}
+    public final class Options {
+        public static final int TO = 0;
+        public static final int FROM = 1;
+        public static final int ASKING = 2;
+        public static final int PREEMPTIVE_GRANT = 3;
+        public static final int IN_ROSTER = 4;
+        public static final int PENDING_SUBSCRIPTION_REQUEST = 5;
+        public static final int DIRTY_PUSH = 6;
+        public static final int DIRTY_DELETE = 7;
+    }
 }

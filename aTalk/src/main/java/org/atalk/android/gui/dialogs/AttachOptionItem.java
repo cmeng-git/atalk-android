@@ -8,29 +8,27 @@ import org.atalk.android.R;
  * @author Eng Chong Meng
  */
 public enum AttachOptionItem {
-	pic(R.string.attachOptionDialog_picture, R.drawable.ic_attach_photo),
-    video(R.string.attachOptionDialog_Videos, R.drawable.ic_attach_video),
-	camera(R.string.attachOptionDialog_camera, R.drawable.ic_attach_camera),
-	video_record(R.string.attachOptionDialog_videoRecord, R.drawable.ic_attach_video_record),
-//	audio_record(R.string.attachOptionDialog_audioRecord, R.drawable.ic_action_audio_record),
+    pic(R.string.attach_picture, R.drawable.ic_attach_photo),
+    video(R.string.attach_video, R.drawable.ic_attach_video),
+    camera(R.string.attach_take_picture, R.drawable.ic_attach_camera),
+    video_record(R.string.attach_record_video, R.drawable.ic_attach_video_record),
+    //	audio_record(R.string.attachOptionDialog_audioRecord, R.drawable.ic_action_audio_record),
 //	share_contact(R.string.attachOptionDialog_shareContact, R.drawable.ic_attach_contact),
-	share_file(R.string.attachOptionDialog_shareFile,  R.drawable.ic_attach_file);
-	
-	private final int mIconId;
-	private final int mTextId;
-	
-	AttachOptionItem(int textId, int iconId)
-	{
-		this.mTextId = textId;
-		this.mIconId = iconId;
-	}
-	
-	public int getTextId()
-	{
-		return mTextId;
-	}
-	public int getIconId()
-	{
-		return mIconId;
-	}
+    share_file(R.string.attach_file, R.drawable.ic_attach_file);
+
+    private final int mIconId;
+    private final int mTextId;
+
+    AttachOptionItem(int textId, int iconId) {
+        this.mTextId = textId;
+        this.mIconId = iconId;
+    }
+
+    public int getTextId() {
+        return mTextId;
+    }
+
+    public int getIconId() {
+        return mIconId;
+    }
 }

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/screen_padding"
+    android:background="@color/color_primary"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/permission_hint"
+        style="@style/MediumFont"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/alpha_blue_01"
+        android:padding="@dimen/label_padding"
+        android:text="@string/permission_hint" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/screen_padding"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/camera_permission_button"
+                    style="@style/PermissionButton"
+                    android:text="@string/permission_camera" />
+
+                <TextView
+                    android:id="@+id/camera_permission_feedback"
+                    style="@style/PermissionFeedback"
+                    android:text="@string/permission_unknown" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/contacts_permission_button"
+                    style="@style/PermissionButton"
+                    android:text="@string/permission_contacts" />
+
+                <TextView
+                    android:id="@+id/contacts_permission_feedback"
+                    style="@style/PermissionFeedback"
+                    android:text="@string/permission_unknown" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/location_permission_button"
+                    style="@style/PermissionButton"
+                    android:text="@string/permission_location" />
+
+                <TextView
+                    android:id="@+id/location_permission_feedback"
+                    style="@style/PermissionFeedback"
+                    android:text="@string/permission_unknown" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/mic_permission_button"
+                    style="@style/PermissionButton"
+                    android:text="@string/permission_microphone" />
+
+                <TextView
+                    android:id="@+id/mic_permission_feedback"
+                    style="@style/PermissionFeedback"
+                    android:text="@string/permission_unknown" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/music_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/music_permission_button"
+                    style="@style/PermissionButton"
+                    android:text="@string/permission_music" />
+
+                <TextView
+                    android:id="@+id/music_permission_feedback"
+                    style="@style/PermissionFeedback"
+                    android:text="@string/permission_unknown" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/notifications_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/notifications_permission_button"
+                    style="@style/PermissionButton"
+                    android:text="@string/permission_notifications" />
+
+                <TextView
+                    android:id="@+id/notifications_permission_feedback"
+                    style="@style/PermissionFeedback"
+                    android:text="@string/permission_unknown" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/phone_permission_button"
+                    style="@style/PermissionButton"
+                    android:text="@string/permission_phone" />
+
+                <TextView
+                    android:id="@+id/phone_permission_feedback"
+                    style="@style/PermissionFeedback"
+                    android:text="@string/permission_unknown" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/video_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/video_permission_button"
+                    style="@style/PermissionButton"
+                    android:text="@string/permission_video" />
+
+                <TextView
+                    android:id="@+id/video_permission_feedback"
+                    style="@style/PermissionFeedback"
+                    android:text="@string/permission_unknown" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/storage_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/storage_permission_button"
+                    style="@style/PermissionButton"
+                    android:text="@string/permission_storage" />
+
+                <TextView
+                    android:id="@+id/storage_permission_feedback"
+                    style="@style/PermissionFeedback"
+                    android:text="@string/permission_unknown" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/button_Container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/all_permissions_button"
+            style="@style/ButtonTop"
+            android:text="@string/permission_request_all" />
+
+        <Button
+            android:id="@+id/app_info_permissions_button"
+            style="@style/ButtonTop"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:text="@string/permission_app_info" />
+
+        <Button
+            android:id="@+id/button_done"
+            style="@style/ButtonTop"
+            android:text="@string/done" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</LinearLayout>

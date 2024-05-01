@@ -7,52 +7,52 @@
     <!-- Video Settings -->
     <PreferenceCategory
         android:key="pref.cat.settings.video"
-        android:title="@string/service_gui_settings_VIDEO">
+        android:title="@string/video">
 
         <CheckBoxPreference
             android:key="pref.key.video.limit_fps"
-            android:summaryOff="@string/service_gui_settings_LIMIT_FPS_OFF"
-            android:summaryOn="@string/service_gui_settings_LIMIT_FPS_ON"
-            android:title="@string/service_gui_settings_VIDEO_FRAME_RATE" />
+            android:summaryOff="@string/settings_fps_limit_off"
+            android:summaryOn="@string/settings_fps_limit_on"
+            android:title="@string/settings_video_frame_rate" />
 
         <EditTextPreference
             android:dependency="pref.key.video.limit_fps"
-            android:dialogMessage="@string/service_gui_settings_VIDEO_FPS_DESC"
+            android:dialogMessage="@string/settings_video_fps_description"
             android:inputType="number"
             android:key="pref.key.video.frame_rate"
-            android:title="@string/service_gui_settings_VIDEO_TARGET_FPS" />
+            android:title="@string/settings_video_fps_target" />
 
         <org.atalk.android.gui.settings.widget.ConfigCheckBox
             android:key="neomedia.android.hw_encode"
-            android:title="@string/service_gui_settings_HW_ENCODE" />
+            android:title="@string/settings_hw_encode" />
 
         <org.atalk.android.gui.settings.widget.ConfigCheckBox
             android:dependency="neomedia.android.hw_encode"
             android:key="neomedia.android.surface_encode"
-            android:title="@string/service_gui_settings_DIRECT_SURFACE_ENCODE" />
+            android:title="@string/settings_direct_surface_encode" />
 
         <org.atalk.android.gui.settings.widget.ConfigCheckBox
             android:key="neomedia.android.hw_decode"
-            android:title="@string/service_gui_settings_HW_DECODE" />
+            android:title="@string/settings_hw_decode" />
 
         <org.atalk.android.gui.settings.widget.ConfigCheckBox
             android:dependency="neomedia.android.hw_decode"
             android:key="neomedia.android.surface_decode"
-            android:title="@string/service_gui_settings_DIRECT_SURFACE_DECODE" />
+            android:title="@string/settings_direct_surface_decode" />
 
         <EditTextPreference
             android:inputType="number"
             android:key="pref.key.video.max_bandwidth"
-            android:title="@string/service_gui_settings_VIDEO_MAX_BANDWIDTH" />
+            android:title="@string/settings_video_max_bw" />
 
         <EditTextPreference
             android:inputType="number"
             android:key="pref.key.video.bitrate"
-            android:title="@string/service_gui_settings_VIDEO_BITRATE" />
+            android:title="@string/settings_video_bitrate" />
 
         <Preference
-            android:summary="@string/service_gui_settings_MEDIA_CODEC_LIST_SUMMARY"
-            android:title="@string/service_gui_settings_MEDIA_CODEC_LIST">
+            android:summary="@string/settings_media_codec_list_summary"
+            android:title="@string/settings_media_codec_list">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetClass="org.atalk.android.gui.settings.MediaCodecList"
@@ -63,29 +63,29 @@
     <!-- Audio Settings -->
     <PreferenceCategory
         android:key="pref.cat.settings.audio"
-        android:title="@string/service_gui_settings_AUDIO">
+        android:title="@string/audio">
 
         <CheckBoxPreference
             android:key="pref.key.audio.echo_cancel"
-            android:summaryOff="@string/service_gui_settings_ECHO_CANCEL_OFF"
-            android:summaryOn="@string/service_gui_settings_ECHO_CANCEL_ON"
-            android:title="@string/service_gui_settings_ECHO_CANCEL" />
+            android:summaryOff="@string/settings_echo_cancel_off"
+            android:summaryOn="@string/settings_echo_cancel_on"
+            android:title="@string/settings_echo_cancel" />
 
         <CheckBoxPreference
             android:key="pref.key.audio.agc"
-            android:summaryOff="@string/service_gui_settings_AGC_OFF"
-            android:summaryOn="@string/service_gui_settings_AGC_ON"
-            android:title="@string/service_gui_settings_AGC" />
+            android:summaryOff="@string/settings_agc_off"
+            android:summaryOn="@string/settings_agc_on"
+            android:title="@string/settings_agc" />
 
         <CheckBoxPreference
             android:key="pref.key.audio.denoise"
-            android:summaryOff="@string/service_gui_settings_DENOISE_OFF"
-            android:summaryOn="@string/service_gui_settings_DENOISE_ON"
-            android:title="@string/service_gui_settings_DENOISE" />
+            android:summaryOff="@string/settings_denoise_off"
+            android:summaryOn="@string/settings_denoise_on"
+            android:title="@string/settings_denoise" />
 
         <Preference
-            android:summary="@string/service_gui_settings_OPUS_SUMMARY"
-            android:title="@string/service_gui_settings_OPUS">
+            android:summary="@string/opus_encoder_settings"
+            android:title="@string/opus">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetClass="org.atalk.android.gui.settings.OpusSettings"
@@ -93,8 +93,8 @@
         </Preference>
 
         <Preference
-            android:summary="@string/service_gui_settings_SILK_SUMMARY"
-            android:title="@string/service_gui_settings_SILK">
+            android:summary="@string/silk_encoder_settings"
+            android:title="@string/silk">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetClass="org.atalk.android.gui.settings.SilkSettings"
@@ -102,7 +102,7 @@
         </Preference>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/service_gui_settings_OTHER">
+    <PreferenceCategory android:title="@string/other">
 
         <!-- Preference
             android:summary="@string/service_gui_settings_SIP_SUMMARY"
@@ -114,8 +114,8 @@
         </Preference -->
 
         <Preference
-            android:summary="@string/plugin_provisioning_PROVISIONING_SUMMARY"
-            android:title="@string/plugin_provisioning_PROVISIONING" >
+            android:summary="@string/provisioning_summary"
+            android:title="@string/provisioning" >
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetClass="org.atalk.android.gui.settings.ProvisioningSettings"

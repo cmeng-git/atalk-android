@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 # aTalk, the OpenSource Java VoIP and Instant Messaging client.
 
 # Distributable under LGPL license.
@@ -29,68 +30,72 @@
     <string name="account_delete_on_server_unregistered">在服务器上删除帐户失败，用户未注册！</string>
     <string name="account_delete_on_server_failed">在服务器上删除帐户失败：\n%1$s</string>
     <string name="account_delete_on_server_successful">在服务器上删除帐户成功：\n%1$s</string>
-    <string name="account_setup_basics_show_password">显示密码</string>
-    <string name="account_override_server">覆盖服务器设置</string>
-    <string name="account_registration">在服务器上注册新账号</string>
+    <string name="account_show_password">显示密码</string>
+    <string name="account_server_override">覆盖服务器设置</string>
+    <string name="account_ibr_on_server">在服务器上注册新账号</string>
     <string name="account_server_ip">连接服务器IP</string>
+
     <string name="ibr_registration">带内注册</string>
-    <string name="captcha_registration_request">注册验证码</string>
-    <string name="captcha_registration_fail">注册验证码失败！\n%1$s</string>
-    <string name="captcha_registration_success">注册验证码成功。\n您可以继续登录了！</string>
-    <string name="captcha_registration_reason">用户请求带内注册</string>
-    <string name="captcha_registration_pwd_empty">错误：密码字段为空！</string>
-    <string name="captcha_hint">输入你看到的文字</string>
-    <string name="captcha_retry">点击“确定”重试或“取消”结束</string>
+    <string name="captcha_ibr_request">注册验证码</string>
+    <string name="captcha_ibr_failed">注册验证码失败！\n%1$s</string>
+    <string name="captcha_ibr_success">注册验证码成功。\n您可以继续登录了！</string>
+    <string name="captcha_ibr_reason">用户请求带内注册</string>
+    <string name="captcha_ibr_pwd_empty">错误：密码字段为空！</string>
+    <string name="captcha_ibr_hint">输入你看到的文字</string>
+    <string name="captcha_ibr_retry">点击“确定”重试或“取消”结束</string>
+
+    <string name="captcha_challenge">验证码挑战</string>
+    <string name="captcha_protected">聊天室受验证码挑战保护</string>
+    <string name="captcha_text_empty">验证码输入不能为空</string>
+    <string name="captcha_verification_valid">验证码有效</string>
+    <string name="captcha_verification_failed">验证码验证失败</string>
+    <string name="captcha_wait_timeout">%1$s 聊天室验证码挑战超时；\n请重新加入聊天室并重试。</string>
 
     <string name="choose_network">选择网络</string>
-    <string name="encryption_TOOLTIP">加密聊天</string>
-    <string name="encryption_choices">加密选项</string>
-    <string name="encryption_choice_unencrypted">未加密</string>
-    <string name="enter_name_or_number">输入姓名或号码</string>
+    <string name="encrypt_tooltip">加密聊天</string>
+    <string name="encrypt_choices">加密选项</string>
+    <string name="encrypt_unencrypted">未加密</string>
     <string name="network">网络</string>
     <string name="notification_setting">通知设置&#8230;</string>
-    <string name="no_application_found_to_open_file">没有找到打开文件的应用程序</string>
+    <string name="open_file_no_application">没有找到打开文件的应用程序</string>
     <string name="password">密码</string>
     <string name="password_change_on_server_failed">服务器上的密码更改失败:\n%1$s</string>
     <string name="password_change_on_server_successful">服务器密码修改成功！</string>
-    <string name="service_gui_PASSWORD">密码：</string>
+    <string name="password_">密码：</string>
     <string name="send_process_signal">发送过程信号</string>
-    <string name="show_call_info">通话信息</string>
-    <string name="show_call_zrtp_info">"调用 ZRTP 信息</string>
-    <string name="stop_osgi_framework">停止 OSGi 框架</string>
-    <string name="store_password">保存密码</string>
+    <string name="call_info">通话信息</string>
+    <string name="call_info_zrtp">"调用 ZRTP 信息</string>
+    <string name="osgi_framework_stop">停止 OSGi 框架</string>
+    <string name="save_password">保存密码</string>
     <string name="system_settings">设置&#8230;</string>
     <string name="username_hint">username@example.com</string>
-    <string name="service_gui_USERNAME">用户名：</string>
+    <string name="username_">用户名：</string>
 
     <!-- Call Transfer -->
-    <string name="gui_call_hang_up">挂断电话</string>
-    <string name="gui_call_hold">保持通话</string>
-    <string name="gui_call_max_transfer">出席呼叫转移最多允许 2 个呼叫！</string>
-    <string name="gui_call_transfer_call">转接电话</string>
-    <string name="gui_call_transfer">转接</string>
-    <string name="gui_call_transfer_failed">无法继续呼叫转移：%1$s &#8674; %2$s\n%3$s</string>
-    <string name="gui_call_transfer_hint">选择您要转接到的联系人的姓名，然后点击转接。</string>
-    <string name="gui_call_transfer_msg">%1$s 呼叫转移到&#8230; %2$s</string>
-    <string name="gui_call_with">通话中</string>
+    <string name="call_hang_up">挂断电话</string>
+    <string name="call_on_hold">保持通话</string>
+    <string name="call_max_transfer">出席呼叫转移最多允许 2 个呼叫！</string>
+    <string name="call_transfer_call">转接电话</string>
+    <string name="call_transfer">转接</string>
+    <string name="call_transfer_failed">无法继续呼叫转移：%1$s &#8674; %2$s\n%3$s</string>
+    <string name="call_transfer_hint">选择您要转接到的联系人的姓名，然后点击转接。</string>
+    <string name="call_transfer_msg">%1$s 呼叫转移到&#8230; %2$s</string>
 
-    <string name="attachOptionDialog_picture">图片</string>
-    <string name="attachOptionDialog_camera">拍照</string>
-    <string name="attachOptionDialog_Videos">视频</string>
-    <string name="attachOptionDialog_videoRecord">录制视频</string>
-    <string name="attachOptionDialog_shareFile">共享文件</string>
-    <string name="service_gui_COPY">复制</string>
-    <string name="service_gui_DELETE">删除</string>
-    <string name="service_gui_EDIT">编辑</string>
-    <string name="service_gui_FORWARD">转发…</string>
+    <string name="attach_picture">图片</string>
+    <string name="attach_take_picture">拍照</string>
+    <string name="attach_video">视频</string>
+    <string name="attach_record_video">录制视频</string>
+    <string name="attach_file">共享文件</string>
+    <string name="copy">复制</string>
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="forward">转发…</string>
     <string name="chat_message_long_press_hint">多选操作避免在消息区域内点击</string>
-    <string name="service_gui_QUOTE">引用</string>
-    <string name="service_gui_REPLY">回复</string>
-    <string name="service_gui_SELECT_ALL">全选</string>
-    <string name="chatRoom_Subject">主题</string>
-    <string name="choose_file_activity_title">选择一个文件</string>
-    <string name="menu_settings">设置</string>
-    <string name="title_activity_activation_view">激活</string>
+    <string name="quote">引用</string>
+    <string name="reply">回复</string>
+    <string name="select_all">全选</string>
+    <string name="subject">主题</string>
+    <string name="settings">设置</string>
 
     <!-- Block Command -->
     <string name="contact_block_text">要封禁“%1$s”向您传送讯息吗？</string>
@@ -105,860 +110,843 @@
     <string name="block_list_show">显示封禁列表</string>
 
     <!-- General -->
-    <string name="service_gui_ACCEPT">接受</string>
-    <string name="service_gui_ACCOUNT">账号</string>
-    <string name="service_gui_ACCOUNT_ME">本人</string>
-    <string name="service_gui_ACCOUNT_SETTINGS">账户设置&#8230;</string>
-    <string name="service_gui_ACCOUNT_UNREGISTERED">%1$s 未注册</string>
-    <string name="service_gui_ADD">添加</string>
-    <string name="service_gui_ADD_CONTACT">添加联系人</string>
-    <string name="service_gui_ADD_AUTHORIZED_CONTACT">将 %1$s 添加到您的联系人列表</string>
-    <string name="service_gui_ADD_CONTACT_TO">添加联系人</string>
-    <string name="service_gui_ADD_CONTACT_ERROR">无法添加 ID 为 %1$s 的联系人</string>
-    <string name="service_gui_ADD_CONTACT_ERROR_TITLE">添加联系人错误</string>
-    <string name="service_gui_ADD_CONTACT_EXIST_ERROR">联系人 %1$s 已存在于您的联系人列表中。</string>
-    <string name="service_gui_ADD_CONTACT_NETWORK_ERROR">服务器没有响应我们添加与聊天 ID 的联系的请求：%1$s。</string>
-    <string name="service_gui_ADD_CONTACT_NOT_SUPPORTED">添加 ID 为 %1$s 的联系人失败。不支持操作。</string>
-    <string name="service_gui_ADD_CONTACT_NOT_CONNECTED">您需要连接才能添加联系人。请登录所选提供商并重试。</string>
-    <string name="service_gui_ADD_GROUP_LOCAL_ERROR">无法添加名称为：%1$s 的组。问题发生在本地 IO 操作期间。</string>
-    <string name="service_gui_ADD_GROUP_EXIST_ERROR">群组 %1$s 已存在于您的联系人列表中。请选择其他名称。</string>
-    <string name="service_gui_ADD_GROUP_NET_ERROR">无法添加名称为：%1$s 的组。该问题是由于网络故障而发生的。请检查您的网络连接并重试。</string>
-    <string name="service_gui_ADD_GROUP_ERROR">无法添加名称为：%1$s 的组。</string>
-    <string name="service_gui_ADD_GROUP_EMPTY_NAME">组名不能为空</string>
-    <string name="service_gui_ADD_GROUP">创建群组</string>
-    <string name="service_gui_ADD_GROUP_HINT">输入组名</string>
-    <string name="service_gui_ANSWER">接听来电&#8230;</string>
-    <string name="service_gui_APPLY">更改</string>
-    <string name="service_gui_APPLY_CHANGES">应用帐户更改（~60S）&#8230;</string>
-    <string name="service_gui_AT">在</string>
-    <string name="service_gui_AUTHORIZE">授权</string>
-    <string name="service_gui_AUTHORIZATION_ACCEPTED">联系人已接受您的授权请求。</string>
-    <string name="service_gui_AUTHENTICATION_FAILED">%1$s 的身份验证失败。您输入的密码无效。</string>
-    <string name="service_gui_AUTHENTICATION_REQUESTED">请求身份验证</string>
-    <string name="service_gui_AUTHENTICATION_REQUESTED_SERVER">%1$s 服务器已请求您的身份验证。</string>
-    <string name="service_gui_AUTHENTICATION_REJECTED">联系人已拒绝您的授权请求。</string>
-    <string name="service_gui_AUTHENTICATION_WINDOW_TITLE">%1$s 身份验证</string>
-    <string name="service_gui_AUTHORIZATION_REQUESTED">请求授权</string>
-    <string name="service_gui_AUTHORIZATION_REQUESTED_INFO">%1$s 联系人请求您的授权。</string>
-    <string name="service_gui_AUTHORIZATION_REQUEST">授权请求</string>
-    <string name="service_gui_AVATAR_HINT">推荐图标：64*64 (96*96 最大像素平方)</string>
-    <string name="service_gui_AWAY_STATUS">离开</string>
-    <string name="service_gui_AVATAR_SET_ERROR">无法为 %1$s 设置头像</string>
-    <string name="service_gui_AVATAR_RETRIEVING">正在检索 %1$s 的头像</string>
+    <string name="accept">接受</string>
+    <string name="account">账号</string>
+    <string name="account_me">本人</string>
+    <string name="account_settings">账户设置&#8230;</string>
+    <string name="account_unregistered">%1$s 未注册</string>
+    <string name="add">添加</string>
+    <string name="add_contact">添加联系人</string>
+    <string name="add_contact_to_list">将 %1$s 添加到您的联系人列表</string>
+    <string name="add_contact_to">添加联系人</string>
+    <string name="add_contact_failed">无法添加 ID 为 %1$s 的联系人</string>
+    <string name="add_contact_error">添加联系人错误</string>
+    <string name="add_contact_error_exist">联系人 %1$s 已存在于您的联系人列表中。</string>
+    <string name="add_contact_error_network">服务器没有响应我们添加与聊天 ID 的联系的请求：%1$s。</string>
+    <string name="add_contact_error_not_supported">添加 ID 为 %1$s 的联系人失败。不支持操作。</string>
+    <string name="add_contact_error_not_connected">您需要连接才能添加联系人。请登录所选提供商并重试。</string>
+    <string name="add_group_error_local">无法添加名称为：%1$s 的组。问题发生在本地 IO 操作期间。</string>
+    <string name="add_group_error_exist">群组 %1$s 已存在于您的联系人列表中。请选择其他名称。</string>
+    <string name="add_group_error_network">无法添加名称为：%1$s 的组。该问题是由于网络故障而发生的。请检查您的网络连接并重试。</string>
+    <string name="add_group_failed">无法添加名称为：%1$s 的组。</string>
+    <string name="add_group_error_empty_name">组名不能为空</string>
+    <string name="add_group_create">创建群组</string>
+    <string name="add_group_name">输入组名</string>
+    <string name="answer">接听来电&#8230;</string>
+    <string name="apply">更改</string>
+    <string name="apply_changes">应用帐户更改（~60S）&#8230;</string>
+    <string name="at">在</string>
+    <string name="authentication_failed">%1$s 的身份验证失败。您输入的密码无效。</string>
+    <string name="authentication_requested">请求身份验证</string>
+    <string name="authentication_requested_by_server">%1$s 服务器已请求您的身份验证。</string>
+    <string name="authentication_title">%1$s 身份验证</string>
+    <string name="authorize">授权</string>
+    <string name="authorization_accepted">联系人已接受您的授权请求。</string>
+    <string name="authorization_rejected">联系人已拒绝您的授权请求。</string>
+    <string name="authorization_requested">请求授权</string>
+    <string name="authorization_request_info">%1$s 联系人请求您的授权。</string>
+    <string name="authorization_request">授权请求</string>
+    <string name="avatar_size_hint">推荐图标：64*64 (96*96 最大像素平方)</string>
+    <string name="away">离开</string>
+    <string name="avatar_set_error">无法为 %1$s 设置头像</string>
+    <string name="avatar_retrieving">正在检索 %1$s 的头像</string>
 
-    <string name="service_gui_BUSY_STATUS">忙碌</string>
-    <string name="service_gui_CALL">启动语音通话</string>
-    <string name="service_gui_CALL_ANSWER">%1$s 已接听电话。</string>
-    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk 未能初始化 %1$s\n所有媒体通话/服务将被禁用。\n%2$s</string>
-    <string name="service_gui_CALL_END">远程调用者已结束通话：%1$s</string>
-    <string name="service_gui_CALL_ERROR">远程方返回错误：%1$s</string>
-    <string name="service_gui_CALL_FAILED">调用失败</string>
-    <string name="service_gui_CALL_HISTORY_GROUP_NAME">通话记录</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">您确定要删除日期之前的所有通话记录：%1$s？</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_NONE">没有选择要删除的记录</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">您确定要删除所有选定的通话记录吗？</string>
-    <string name="service_gui_CALL_INCOMING">来电：%1$s</string>
-    <string name="service_gui_CALL_INCOMING_STATUS">来电</string>
-    <string name="service_gui_CALL_INITIATING_STATUS">开始拨出电话</string>
-    <string name="service_gui_CALL_REJECTED">%1$s 已拒绝通话。</string>
-    <string name="service_gui_CALL_RETRACTED">%1$s 已撤回通话。</string>
-    <string name="service_gui_CALL_MISSED_CALL">未接来电来自：</string>
-    <string name="service_gui_CALL_NO_ACTIVE_DEVICE">我们找不到任何活动的音频/视频设备，因此无法创建通话。</string>
-    <string name="service_gui_CALL_NO_AUDIO_DEVICE">没有配置音频设备。</string>
-    <string name="service_gui_CALL_NO_AUDIO_CODEC">没有启用音频编解码器。</string>
-    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">设备或编解码器未在“设置…”中正确配置。%1$s</string>
-    <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">是否继续通话？</string>
-    <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">未找到与要约 %1$s 相匹配的媒体格式以接听电话。请在“设置…”中验证设备和编解码器设置。</string>
-    <string name="service_gui_CALL_OUTGOING">拨出电话</string>
-    <string name="service_gui_CALL_OUTGOING_MSG">正在与 %1$s 通话…</string>
-    <string name="service_gui_CALL_VIA">通话方式：%1$s</string>
-    <string name="service_gui_CALL_VIDEO">启动视频通话</string>
-    <string name="service_gui_CALL_WITH">调用方式</string>
+    <string name="busy">忙碌</string>
+    <string name="call_audio">启动语音通话</string>
+    <string name="call_answered">%1$s 已接听电话。</string>
+    <string name="call_disable_on_fault">aTalk 未能初始化 %1$s\n所有媒体通话/服务将被禁用。\n%2$s</string>
+    <string name="call_ended">远程调用者已结束通话：%1$s</string>
+    <string name="call_error">远程方返回错误：%1$s</string>
+    <string name="call_failed">调用失败</string>
+    <string name="call_history_name">通话记录</string>
+    <string name="call_history_remove_before_date_warning">您确定要删除日期之前的所有通话记录：%1$s？</string>
+    <string name="call_history_remove_none">没有选择要删除的记录</string>
+    <string name="call_history_remove_warning">您确定要删除所有选定的通话记录吗？</string>
+    <string name="call_incoming">来电：%1$s</string>
+    <string name="call_incoming_status">来电</string>
+    <string name="call_initiating">开始拨出电话</string>
+    <string name="call_rejected">%1$s 已拒绝通话。</string>
+    <string name="call_retracted">%1$s 已撤回通话。</string>
+    <string name="call_missed">未接来电来自：</string>
+    <string name="call_no_active_device">aTalk 找不到任何活动的音频/视频设备，因此无法创建通话。</string>
+    <string name="call_no_audio_device">没有配置音频设备。</string>
+    <string name="call_no_audio_codec">没有启用音频编解码器。</string>
+    <string name="call_no_device_codec_H">设备或编解码器未在“设置…”中正确配置。%1$s</string>
+    <string name="call_no_device_codec_Q">是否继续通话？</string>
+    <string name="call_no_matching_format">未找到与要约 %1$s 相匹配的媒体格式以接听电话。请在“设置…”中验证设备和编解码器设置。</string>
+    <string name="call_outgoing">拨出电话</string>
+    <string name="call_outgoing_with">正在与 %1$s 通话…</string>
+    <string name="call_via_">通话方式：%1$s</string>
+    <string name="call_video">启动视频通话</string>
+    <string name="call_with">调用方式：</string>
 
-    <string name="service_gui_CANCEL">取消</string>
-    <string name="service_gui_CONTACT_INVALID">所选联系人无效：%1$s</string>
-    <string name="service_gui_DISMISS">拒接来电</string>
-    <string name="service_gui_DONE">完成</string>
-    <string name="service_gui_MAS">标记为已读</string>
-    <string name="service_gui_REASON_LABEL">原因：</string>
-    <string name="service_gui_SET">设置</string>
-    <string name="service_gui_SHARE">分享…</string>
-    <string name="service_gui_SHARE_TEXT">分享文字&#8230;</string>
-    <string name="service_gui_SHARE_FILE">共享文件&#8230;</string>
-    <string name="service_gui_SNOOZE">暂停</string>
+    <string name="cancel">取消</string>
+    <string name="contact_invalid">所选联系人无效：%1$s</string>
+    <string name="dismiss">拒接来电</string>
+    <string name="done">完成</string>
+    <string name="mark_as_read">标记为已读</string>
+    <string name="reason">原因：</string>
+    <string name="set">设置</string>
+    <string name="share">分享…</string>
+    <string name="share_text">分享文字&#8230;</string>
+    <string name="share_file">共享文件&#8230;</string>
+    <string name="snooze">暂停</string>
 
     <!-- ExoPlayer -->
-    <string name="gui_playback_error">找不到要播放的媒体内容</string>
-    <string name="gui_playback_buffering">缓冲&#8230;</string>
-    <string name="gui_playback_completed">媒体播放结束</string>
-    <string name="gui_playback_rate">播放速率：%1$s</string>
+    <string name="playback_error">找不到要播放的媒体内容</string>
+    <string name="playback_buffering">缓冲&#8230;</string>
+    <string name="playback_completed">媒体播放结束</string>
+    <string name="playback_rate">播放速率：%1$s</string>
 
     <!-- Conference Chat -->
-    <string name="service_gui_AUTOJOIN">自动加入</string>
-    <string name="service_gui_CHANGE_NICK">更改昵称</string>
-    <string name="service_gui_CHANGE_NICKNAME">更改昵称&#8230;</string>
-    <string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">昵称已经存在</string>
-    <string name="service_gui_CHANGE_NICKNAME_ERROR">更改 %1$s 的昵称时出错：%2$s</string>
-    <string name="service_gui_CHANGE_NICKNAME_LABEL">在下面的字段中，您可以输入您的新昵称。</string>
-    <string name="service_gui_CHANGE_NICKNAME_NULL">昵称字段内容不能为空</string>
-    <string name="service_gui_CHANGE_ROOM_INFO">聊天室信息更改</string>
-    <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">在下面的字段中，您可以输入该房间的新主题。</string>
-    <string name="service_gui_CHANGE_VIDEO_QUALITY">更改远程视频质量</string>
-    <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s 的会议</string>
-    <string name="service_gui_CHAT_CONFERENCE_LABEL">会议</string>
-    <string name="service_gui_CHATROOM">聊天室</string>
-    <string name="service_gui_CHATROOM_ALREADY_JOINED">您已经加入了 %1$s 聊天室。</string>
-    <string name="service_gui_CHATROOM_CONFIGURATION">聊天室配置</string>
-    <string name="service_gui_CHATROOM_CONFIGURATION_FAILED">获取 %1$s 聊天室配置表单失败。</string>
-    <string name="service_gui_CHATROOM_CONFIGURATION_FORBIDDEN">无法获取 %1$s 聊天室配置表单。只有聊天室的所有者才能查看和更改配置表。</string>
-    <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">右侧的列表包含在此聊天室中具有成员角色的用户。当聊天室是“仅限会员”时，那些将是允许加入的用户。</string>
-    <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">编辑成员列表</string>
-    <string name="service_gui_CHATROOM_CONFIGURATION_SUBMIT_FAILED">尝试提交聊天室 %1$s 的配置表单时发生错误。</string>
-    <string name="service_gui_CHATROOM_REMOVE_BUTTON_TOOLTIP">从已保存房间列表中删除所选聊天室</string>
-    <string name="service_gui_CHATROOM_SAVE_BUTTON_TOOLTIP">保存聊天室以备将来使用</string>
-    <string name="service_gui_CHATROOM_SEND_MSG_FORBIDDEN">禁止发送消息（语音撤销）</string>
-    <string name="service_gui_CHATROOM_USER_JOINED">已加入 %1$s</string>
-    <string name="service_gui_CHATROOM_USER_KICKED">已被驱逐 %1$s</string>
-    <string name="service_gui_CHATROOM_USER_LEFT">已离开 %1$s</string>
-    <string name="service_gui_CHATROOM_USER_QUIT">已退出 %1$s</string>
-    <string name="service_gui_CHATROOM_NAME">聊天室名称</string>
-    <string name="service_gui_CHATROOM_NAME_INFO">在下面的字段中输入您要创建的聊天室的名称。</string>
-    <string name="service_gui_CHATROOM_NOT_EXIST">在 %2$s 服务器中找不到 %1$s 聊天室。请验证您输入的名称是否正确。</string>
-    <string name="service_gui_CHATROOM_NOT_CONNECTED">您需要在线才能加入 %1$s 聊天室。</string>
-    <string name="service_gui_CHATROOM_LEAVE_NOT_CONNECTED">您需要在线才能离开聊天室。</string>
-    <string name="service_gui_CHATROOM_NOT_JOINED">您需要加入聊天室才能对其进行进一步操作。</string>
-    <string name="service_gui_CHATROOM_OPTIONS">聊天室选项</string>
-    <string name="service_gui_CHATROOM_REQUIRES_PASSWORD">%1$s 聊天室要求密码。</string>
-    <string name="service_gui_CHATROOM_STATUS_OFF">禁用聊天室状态</string>
-    <string name="service_gui_CHATROOM_STATUS_ON">启用聊天室状态</string>
-    <string name="service_gui_CHATROOM_SUBJECT_CHANGED">聊天室主题已更改：\'%1$s\' => \'%2$s\'</string>
-    <string name="service_gui_CHAT_ROOMS">聊天室</string>
-    <string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s 现在称为 %2$s</string>
-    <string name="service_gui_CLEAR_CUSTOM_MESSAGES">删除自定义短信</string>
-    <string name="service_gui_CLOSE">关闭</string>
-    <string name="service_gui_CLOSE_ALL_CHATS">关闭所有在线的的聊天</string>
-    <string name="service_gui_CLOSE_CHAT">关闭当前聊天会话</string>
-    <string name="service_gui_CONNECTED_STATUS">已连接</string>
-    <string name="service_gui_CONNECTING_ACCOUNT">正在连接 %1$s</string>
-    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">正在连接…</string>
-    <string name="service_gui_CONNECTION_FAILED_MSG">帐户连接登录失败：用户名：%1$s\n
+    <string name="auto_join">自动加入</string>
+    <string name="change_nickname">更改昵称</string>
+    <string name="change_nickname_">更改昵称&#8230;</string>
+    <string name="change_nickname_error_conflict">昵称已经存在</string>
+    <string name="change_nickname_error">更改 %1$s 的昵称时出错：%2$s</string>
+    <string name="change_nickname_label">在下面的字段中，您可以输入您的新昵称。</string>
+    <string name="change_nickname_null">昵称字段内容不能为空</string>
+    <string name="chatroom_change_info">聊天室信息更改</string>
+    <string name="chatroom_change_subject">在下面的字段中，您可以输入该房间的新主题。</string>
+    <string name="change_video_remote_quality">更改远程视频质量</string>
+    <string name="chatroom_conference_item">%1$s 的会议</string>
+    <string name="chatroom_conference">会议</string>
+    <string name="chatroom">聊天室</string>
+    <string name="chatroom_already_joined">您已经加入了 %1$s 聊天室。</string>
+    <string name="chatroom_configuration">聊天室配置</string>
+    <string name="chatroom_configuration_failed">获取 %1$s 聊天室配置表单失败。</string>
+    <string name="chatroom_configuration_forbidden">无法获取 %1$s 聊天室配置表单。只有聊天室的所有者才能查看和更改配置表。</string>
+    <string name="chatroom_configuration_members_edit_description">右侧的列表包含在此聊天室中具有成员角色的用户。当聊天室是“仅限会员”时，那些将是允许加入的用户。</string>
+    <string name="chatroom_configuration_members_edit_title">编辑成员列表</string>
+    <string name="chatroom_configuration_submit_failed">尝试提交聊天室 %1$s 的配置表单时发生错误。</string>
+    <string name="chatroom_remove_tooltip">从已保存房间列表中删除所选聊天室</string>
+    <string name="chatroom_save_tooltip">保存聊天室以备将来使用</string>
+    <string name="chatroom_send_message_forbidden">禁止发送消息（语音撤销）</string>
+    <string name="chatroom_user_joined">已加入 %1$s</string>
+    <string name="chatroom_user_kicked">已被驱逐 %1$s</string>
+    <string name="chatroom_user_left">已离开 %1$s</string>
+    <string name="chatroom_user_quit">已退出 %1$s</string>
+    <string name="chatroom_name">聊天室名称</string>
+    <string name="chatroom_name_info">在下面的字段中输入您要创建的聊天室的名称。</string>
+    <string name="chatroom_not_exist">在 %2$s 服务器中找不到 %1$s 聊天室。请验证您输入的名称是否正确。</string>
+    <string name="chatroom_not_connected">您需要在线才能加入 %1$s 聊天室。</string>
+    <string name="chatroom_leave_not_connected">您需要在线才能离开聊天室。</string>
+    <string name="chatroom_not_joined">您需要加入聊天室才能对其进行进一步操作。</string>
+    <string name="chatroom_options">聊天室选项</string>
+    <string name="chatroom_required_password">%1$s 聊天室要求密码。</string>
+    <string name="chatroom_status_disable">禁用聊天室状态</string>
+    <string name="chatroom_status_enable">启用聊天室状态</string>
+    <string name="chatroom_subject_changed">聊天室主题已更改：\'%1$s\' => \'%2$s\'</string>
+    <string name="chatroom_nickname_changed">%1$s 现在称为 %2$s</string>
+    <string name="clear_custom_messages">删除自定义短信</string>
+    <string name="close">关闭</string>
+    <string name="close_all_active_chats">关闭所有在线的的聊天</string>
+    <string name="close_current_chat">关闭当前聊天会话</string>
+    <string name="connected">已连接</string>
+    <string name="connecting_">正在连接 %1$s</string>
+    <string name="connecting_status">正在连接…</string>
+    <string name="connection_failed_message">帐户连接登录失败：用户名：%1$s\n
          服务器名称：%2$s\n请检查您的网络连接或联系您的网络管理员以获取更多信息。</string>
-    <string name="service_gui_CONNECTING_STATUS">正在连接</string>
-    <string name="service_gui_CONTACT_ACTIVE">** %1$s 在聊天会话中处于在线状态</string>
-    <string name="service_gui_CONTACT_COMPOSING">** %1$s 正在撰写短信</string>
-    <string name="service_gui_CONTACT_INACTIVE">** %1$s 暂时离开</string>
-    <string name="service_gui_CONTACT_GONE">** %1$s 已离开聊天会话</string>
-    <string name="service_gui_CONTACT_INFO">联系方式</string>
-    <string name="service_gui_CONTACT_NAME">联系人 JID 或号码</string>
-    <string name="service_gui_CONTACT_NAME_EMPTY">联系人显示名称不能为空。</string>
-    <string name="service_gui_CONTACT_OWNER">联系所有者：%1$s</string>
-    <string name="service_gui_CONTACT_PAUSED_TYPING">** %1$s 已暂停输入</string>
-    <string name="service_gui_CONTACT_RENAME">联系新姓名：</string>
-    <string name="service_gui_CONTACT_RENAME_HINT">输入新联系人姓名</string>
-    <string name="service_gui_CONTACT_RENAME_TITLE">更改联系人姓名</string>
-    <string name="service_gui_CONTACTS">联系人</string>
-    <string name="service_gui_CONTACTS_OFFLINE_HIDE">隐藏离线联系人</string>
-    <string name="service_gui_CONTACTS_OFFLINE_SHOW">显示离线联系人</string>
-    <string name="service_gui_COPY_MESSAGE_TEXT">复制短信文本</string>
+    <string name="connecting">正在连接</string>
+    <string name="contact_active">** %1$s 在聊天会话中处于在线状态</string>
+    <string name="contact_composing">** %1$s 正在撰写短信</string>
+    <string name="contact_inactive">** %1$s 暂时离开</string>
+    <string name="contact_gone">** %1$s 已离开聊天会话</string>
+    <string name="contact_info">联系方式</string>
+    <string name="contact_name">联系人 JID 或号码</string>
+    <string name="contact_name_empty">联系人显示名称不能为空。</string>
+    <string name="contact_owner">联系所有者：%1$s</string>
+    <string name="contact_pause_typing">** %1$s 已暂停输入</string>
+    <string name="contact_rename">联系新姓名：</string>
+    <string name="contact_rename_tooltip">输入新联系人姓名</string>
+    <string name="contact_rename_title">更改联系人姓名</string>
+    <string name="contacts">联系人</string>
+    <string name="contact_offline_hide">隐藏离线联系人</string>
+    <string name="contact_offline_show">显示离线联系人</string>
+    <string name="copy_message_text">复制短信文本</string>
 
-    <string name="service_gui_CREATE">创建</string>
-    <string name="service_gui_CREATE_CALL_FAILED">创建通话失败。</string>
-    <string name="service_gui_CREATE_CONFERENCE_CALL">创建电话会议&#8230;</string>
-    <string name="service_gui_CREATE_CONFERENCE_CHAT">创建会议聊天&#8230;</string>
-    <string name="service_gui_CREATE_GROUP">创建组&#8230;</string>
-    <string name="service_gui_CREATE_GROUP_INVALID">无效的组名：%1$s</string>
-    <string name="service_gui_CREATE_GROUP_NAME">在下面的字段中输入您要创建的组的名称。</string>
-    <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">您的联系人列表不包含任何组。请先创建一个组（文件/创建组）。</string>
+    <string name="create">创建</string>
+    <string name="create_call_failed">创建通话失败。</string>
+    <string name="create_conference_call">创建电话会议&#8230;</string>
+    <string name="create_conference_chat">创建会议聊天&#8230;</string>
+    <string name="create_group">创建组&#8230;</string>
+    <string name="create_group_name_invalid">无效的组名：%1$s</string>
+    <string name="create_group_name">在下面的字段中输入您要创建的组的名称。</string>
+    <string name="create_group_first_wizard">您的联系人列表不包含任何组。请先创建一个组（文件/创建组）。</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io/atalk">在线帮助</a></string>
-    <string name="AboutDialog_title">关于</string>
-    <string name="AboutDialog_Version">版本 %1$s</string>
-    <string name="About_action">关于 aTalk</string>
-    <string name="About_help">帮助</string>
+    <string name="aboutDialog_help"><a href="https://cmeng-git.github.io/atalk">在线帮助</a></string>
+    <string name="About">关于</string>
+    <string name="version_">版本 %1$s</string>
+    <string name="help">帮助</string>
     <string name="check_new_version">检查更新</string>
     <string name="show_history_log">历史日志</string>
-    <string name="Online_help">在线帮助</string>
+    <string name="online_help">在线帮助</string>
 
     <!-- HTTP Authorization Request Dialog -->
-    <string name="service_gui_HTTP_REQUEST_TITLE">HTTP 授权请求</string>
-    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">%2$s 的 HTTP (%1$s) 授权\n验证码：%3$s\n你是否接受帐户的此请求：\n%4$s？\n \n验证给定的 ID 匹配站点（如果可用）</string>
+    <string name="http_authorization_request">HTTP 授权请求</string>
+    <string name="http_authorization_request_instruction">%2$s 的 HTTP (%1$s) 授权\n验证码：%3$s\n你是否接受帐户的此请求：\n%4$s？\n \n验证给定的 ID 匹配站点（如果可用）</string>
 
     <string name="app_authors_fmt">作者：%1$s</string>
     <string name="app_libraries">aTalk 使用以下第三方库：%1$s</string>
     <string name="app_revision_fmt">修订信息：%1$s</string>
-    <string name="app_xeps">aTalk 支持以下 XEP：%1$s</string>
-    <string name="PoweredBy">由 atalk.org 提供支持</string>
+    <string name="app_xep">aTalk 支持以下 XEP：%1$s</string>
+    <string name="powered_by">由 atalk.org 提供支持</string>
 
     <!-- PTT Chat -->
-    <string name="chat_noaudio_buddyOffline">不允许与离线联系人进行音频聊天。</string>
-    <string name="chat_RecordCancel">&lt; 向左滑动\n取消</string>
-    <string name="chat_soundRecordStartButton">开始录音</string>
+    <string name="chat_audio_buddy_offline">不允许与离线联系人进行音频聊天。</string>
+    <string name="chat_audio_cancel">&lt; 向左滑动\n取消</string>
+    <string name="chat_audio_start_record">开始录音</string>
 
     <!-- GPS Location -->
-    <string name="service_gui_GEO_LATITUDE">纬度：</string>
-    <string name="service_gui_GEO_LOCATION">位置：</string>
-    <string name="service_gui_GEO_LONGITUDE">经度：</string>
-    <string name="service_gui_GEO_ALTITUDE">海拔：</string>
-    <string name="service_gui_GEO_SEND">发送 GPS 位置</string>
-    <string name="service_gui_GEO_SMAP">街景 &amp; 地图</string>
-    <string name="service_gui_GPS_SHARE">分享地理位置</string>
+    <string name="latitude">纬度：</string>
+    <string name="location">位置：</string>
+    <string name="longitude">经度：</string>
+    <string name="altitude">海拔：</string>
+    <string name="geo_send">发送 GPS 位置</string>
+    <string name="geo_street_views_map">街景 &amp; 地图</string>
+    <string name="geo_share">分享地理位置</string>
     <string name="apply_new_location_setting">点击“跟随我”按钮应用新设置</string>
-    <string name="btn_center_map_description">以我的位置为中心</string>
-    <string name="btn_follow_me_description">跟踪</string>
+    <string name="btn_center_map">以我的位置为中心</string>
+    <string name="btn_follow_me">跟踪</string>
     <string name="single_location_fix">单个位置更新</string>
-    <string name="start_follow_me">跟踪设置 (%1$dm) @%2$dS</string>
-    <string name="stop_follow_me">停止跟踪 (%1$dm) @%2$dS</string>
+    <string name="follow_me_start">跟踪设置 (%1$dm) @%2$dS</string>
+    <string name="follow_me_stop">停止跟踪 (%1$dm) @%2$dS</string>
 
     <!-- Google Map -->
-    <string name="gmap_name">谷歌地图</string>
+    <string name="google_map">谷歌地图</string>
     <string name="legal_info">法律信息</string>
-    <string name="play_services_not_installed">此设备上未安装 Google Play 服务。</string>
+    <string name="play_service_not_installed">此设备上未安装 Google Play 服务。</string>
     <string name="split_street_view_panorama_and_map_description">演示如何显示街景全景图和地图。</string>
     <string name="split_street_view_panorama_and_map_label">街景全景图和地图</string>
-    <string name="title_activity_maps">地图</string>
+    <string name="map">地图</string>
 
     <!-- Location Permissions -->
-    <string name="permission_rationale_location">需要访问定位服务来演示“我的位置”功能，该功能会在地图上显示您的当前位置。</string>
-    <string name="location_permission_denied">此示例需要位置权限才能启用“我的位置”图层。请重试并授予访问权限以使用该位置。\n如果权限已被永久拒绝，可以从系统设置 > 应用程序 &gt; \'Google Maps API 演示\'。</string>
-    <string name="permission_required_toast">此演示需要位置权限。</string>
+    <string name="permission_location_rationale">需要访问定位服务来演示“我的位置”功能，该功能会在地图上显示您的当前位置。</string>
+    <string name="permission_location_denied">此示例需要位置权限才能启用“我的位置”图层。请重试并授予访问权限以使用该位置。\n如果权限已被永久拒绝，可以从系统设置 > 应用程序 &gt; \'Google Maps API 演示\'。</string>
+    <string name="permission_location_required">此演示需要位置权限。</string>
 
     <!-- Persistent Store -->
-    <string name="service_gui_EXPORT_SQL_DB">导出一个 aTalk SQL 数据库</string>
-    <string name="service_gui_PURGE_DEBUG_LOG">删除 aTalk 调试日志文件</string>
-    <string name="service_gui_PURGE_SQL_DB">删除 aTalk SQL 数据库 - 警戒！</string>
-    <string name="service_gui_REFRESH_APPLY">应用</string>
-    <string name="service_gui_REFRESH_STORES">刷新持久存储&#8230;</string>
-    <string name="service_gui_REFRESH_STORES_AVATAR">XEP-0084/XEP-0153：头像</string>
-    <string name="service_gui_REFRESH_STORES_CAPS">XEP-0115：实体能力</string>
-    <string name="service_gui_REFRESH_STORES_DISCINFO">XEP-0030：服务发现</string>
-    <string name="service_gui_REFRESH_STORES_HINT">检查要清理和刷新的持久存储的项目； 只在必要时执行！\n</string>
-    <string name="service_gui_REFRESH_STORES_ROSTER">XEP-0237：名册</string>
-    <string name="service_gui_REFRESH_STORES_OMEMO">XEP-0384：OMEMO 加密</string>
+    <string name="export_sql_db">导出一个 aTalk SQL 数据库</string>
+    <string name="purge_debug_log">删除 aTalk 调试日志文件</string>
+    <string name="purge_sql_db">删除 aTalk SQL 数据库 - 警戒！</string>
+    <string name="refresh_apply">应用</string>
+    <string name="refresh_store">刷新持久存储&#8230;</string>
+    <string name="refresh_store_avatar">XEP-0084/XEP-0153：头像</string>
+    <string name="refresh_store_caps">XEP-0115：实体能力</string>
+    <string name="refresh_store_disc_info">XEP-0030：服务发现</string>
+    <string name="refresh_store_hint">检查要清理和刷新的持久存储的项目； 只在必要时执行！\n</string>
+    <string name="refresh_store_roster">XEP-0237：名册</string>
+    <string name="refresh_store_omemo">XEP-0384：OMEMO 加密</string>
 
-    <string name="service_gui_UNREGISTERED_MESSAGE">账户连接登录失败：\n用户名：%1$s\n服务器名：%2$s\n账户离线。</string>
-    <string name="service_gui_CREATE_VIDEO_BRIDGE">创建视频桥接&#8230;</string>
-    <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">创建视频桥</string>
-    <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">创建/加入视频会议</string>
-    <string name="service_gui_CREATE_VIDEO_CONFERENCE">为此聊天室创建一个新的视频会议</string>
-    <string name="service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED">无法将设备相机预览设置为：%1$s； 异常：%2$s.</string>
-    <string name="service_gui_DISCONNECTED_STATUS">断开连接</string>
-    <string name="service_gui_DISCONNECTING_ACCOUNT">正在断开 %1$s</string>
-    <string name="service_gui_DENY">拒绝</string>
-    <string name="service_gui_DISPLAY_NAME">显示名称</string>
-    <string name="service_gui_CONTACT_DISPLAY_NAME">联系人显示名称</string>
-    <string name="service_gui_DND_STATUS">请勿打扰</string>
-    <string name="service_gui_DURATION">持续时间</string>
+    <string name="unregistered_message">账户连接登录失败：\n用户名：%1$s\n服务器名：%2$s\n账户离线。</string>
+    <string name="create_videoBridge">创建视频桥接&#8230;</string>
+    <string name="create_videoBridge_menu">创建视频桥</string>
+    <string name="create_join_video_conference">创建/加入视频会议</string>
+    <string name="create_video_conference">为此聊天室创建一个新的视频会议</string>
+    <string name="video_format_not_supported">无法将设备相机预览设置为：%1$s； 异常：%2$s.</string>
+    <string name="disconnected">断开连接</string>
+    <string name="disconnecting_">正在断开 %1$s</string>
+    <string name="deny">拒绝</string>
+    <string name="display_name">显示名称</string>
+    <string name="contact_display_name">联系人显示名称</string>
+    <string name="do_not_disturb">请勿打扰</string>
+    <string name="duration">持续时间</string>
 
-    <string name="service_gui_EDIT_STATUS_MSG_TIP">设置状态信息</string>
-    <string name="service_gui_EDITED">已编辑</string>
-    <string name="service_gui_ENTER_NAME_OR_NUMBER">输入姓名或号码</string>
-    <string name="service_gui_ERROR">错误</string>
-    <string name="service_gui_ERROR_WAS">错误为：%1$s</string>
-    <string name="service_gui_EXIT">退出应用程序</string>
-    <string name="service_gui_EXTENDED_AWAY_STATUS">延长离开</string>
-    <string name="service_gui_FFC_STATUS">有空聊天</string>
+    <string name="edit_status_message_tip">设置状态信息</string>
+    <string name="edited">已编辑</string>
+    <string name="enter_name_or_number">输入姓名或号码</string>
+    <string name="error">错误</string>
+    <string name="error_was_">错误为：%1$s</string>
+    <string name="exit">退出应用程序</string>
+    <string name="extended_away">延长离开</string>
+    <string name="free_for_chat">有空聊天</string>
 
     <!-- File Transfer (xFile prefix with date) -->
-    <string name="xFile_FILE_BYTE_SENT">%1$s 已发送</string>
-    <string name="xFile_FILE_RECEIVE_COMPLETED">已从 %1$s 收到文件</string>
-    <string name="xFile_FILE_RECEIVE_FAILED">从 %1$s 传输文件时发生错误</string>
-    <string name="xFile_FILE_RECEIVING_FROM">正在从 %1$s 接收文件</string>
-    <string name="xFile_FILE_SEND_COMPLETED">文件已成功发送至 %1$s</string>
-    <string name="xFile_FILE_SEND_DECLINED">%1$s 已拒绝此文件</string>
-    <string name="xFile_FILE_SENDING_TO">正在发送文件到 %1$s</string>
-    <string name="xFile_FILE_TRANSFER_CANCELED">文件传输已取消</string>
-    <string name="xFile_FILE_TRANSFER_PREPARING">正在与 %1$s 准备文件传输。请稍候&#8230;</string>
-    <string name="xFile_FILE_TRANSFER_DECLINED">文件传输已被拒绝</string>
-    <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s 正在与您共享一个文件</string>
-    <string name="xFile_FILE_UNABLE_TO_SEND">将文件发送到 %1$s 时发生错误</string>
-    <string name="xFile_FILE_WAITING_TO_ACCEPT">等待 %1$s 接受您的文件</string>
+    <string name="file_byte_sent">%1$s 已发送</string>
+    <string name="file_receive_completed">已从 %1$s 收到文件</string>
+    <string name="file_receive_failed">从 %1$s 传输文件时发生错误</string>
+    <string name="file_receive_from">正在从 %1$s 接收文件</string>
+    <string name="file_send_completed">文件已成功发送至 %1$s</string>
+    <string name="file_send_declined">%1$s 已拒绝此文件</string>
+    <string name="file_sending_to">正在发送文件到 %1$s</string>
+    <string name="file_transfer_canceled">文件传输已取消</string>
+    <string name="file_transfer_preparing">正在与 %1$s 准备文件传输。请稍候&#8230;</string>
+    <string name="file_transfer_declined">文件传输已被拒绝</string>
+    <string name="file_transfer_request_received">%1$s 正在与您共享一个文件</string>
+    <string name="file_transfer_send_error">将文件发送到 %1$s 时发生错误</string>
+    <string name="file_transfer_waiting_acceptance">等待 %1$s 接受您的文件</string>
 
-    <string name="service_gui_PURGE">删除</string>
-    <string name="service_gui_ESTIMATED_TIME">预计时间：%1$s</string>
-    <string name="service_gui_FILE">文件</string>
-    <string name="service_gui_FILE_DELIVERY_ERROR">发送所选文件失败。%1$s</string>
-    <string name="service_gui_FILE_DOES_NOT_EXIST">找不到指定的文件。它已被删除或移动</string>
-    <string name="service_gui_FILE_OPEN_FAILED">打开文件失败。它可能被删除或移动</string>
-    <string name="service_gui_FILE_OPEN_NO_APPLICATION">我们无法找到与此类文件关联的应用程序</string>
-    <string name="service_gui_FILE_OPEN_NO_PERMISSION">您没有足够的权限打开此文件。请检查您的阅读权限并重试</string>
-    <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">您的设备当前平台不支持打开文件操作</string>
-    <string name="service_gui_FILE_SEND_CLIENT_ERROR">远程客户端发送文件错误：%1$s</string>
-    <string name="service_gui_FILE_SEND_FAILED">发送文件失败：%1$s</string>
-    <string name="service_gui_FILE_SEND_NOT_ALLOW">无法在电话会议中发送文件！</string>
-    <string name="service_gui_FILE_ATTACHMENT">发送附件</string>
-    <string name="service_gui_FILE_TOO_BIG">文件大小超过此协议允许的最大值：%1$s</string>
-    <string name="service_gui_FILE_TRANSFER_ACTIVE">正在进行的文件传输被中断。状态跟踪 @ %1$s 丢失！</string>
-    <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">联系客户端或服务器不支持文件传输或要求的协议</string>
+    <string name="purge">删除</string>
+    <string name="estimated_time_">预计时间：%1$s</string>
+    <string name="file">文件</string>
+    <string name="file_delivery_error">发送所选文件失败。%1$s</string>
+    <string name="file_does_not_exist">找不到指定的文件。它已被删除或移动</string>
+    <string name="file_open_failed">打开文件失败。它可能被删除或移动</string>
+    <string name="file_open_no_application">我们无法找到与此类文件关联的应用程序</string>
+    <string name="file_open_no_permission">您没有足够的权限打开此文件。请检查您的阅读权限并重试</string>
+    <string name="file_open_not_supported">您的设备当前平台不支持打开文件操作</string>
+    <string name="file_send_client_error">远程客户端发送文件错误：%1$s</string>
+    <string name="file_send_failed">发送文件失败：%1$s</string>
+    <string name="file_send_not_allow">无法在电话会议中发送文件！</string>
+    <string name="file_attachment">发送附件</string>
+    <string name="file_size_too_big">文件大小超过此协议允许的最大值：%1$s</string>
+    <string name="file_transfer_active">正在进行的文件传输被中断。状态跟踪 @ %1$s 丢失！</string>
+    <string name="file_transfer_not_supported">联系客户端或服务器不支持文件传输或要求的协议</string>
 
-    <string name="service_gui_FINISH">完成</string>
-    <string name="service_gui_FOLDER_DOES_NOT_EXIST">找不到包含此文件的文件夹。它已被删除或移动</string>
-    <string name="service_gui_FOLDER_OPEN_FAILED">无法打开文件夹</string>
-    <string name="service_gui_FOLDER_OPEN_NO_PERMISSION">您没有足够的权限打开此文件夹。请检查您的阅读权限并重试</string>
-    <string name="service_gui_FOLDER_OPEN_NO_APPLICATION">我们找不到打开此文件夹的应用程序</string>
-    <string name="service_gui_GROUP_CHAT">群聊</string>
-    <string name="service_gui_HIDE">隐藏</string>
-    <string name="service_gui_HISTORY">历史</string>
-    <string name="service_gui_HISTORY_CONTACT">历史 - %1$s</string>
-    <string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">关闭此联系人的历史记录</string>
-    <string name="service_gui_HISTORY_TOGGLE_ALL">关闭所有聊天和联系人的历史记录</string>
-    <string name="service_gui_HISTORY_ERASE_PER_CONTACT">删除此联系历史</string>
-    <string name="service_gui_HISTORY_ERASE_ALL">删除所有联系人聊天记录</string>
-    <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">您确定要删除 %1$s 的所有选定短信吗？</string>
-    <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">您确定要删除所有实体的所有短信吗？</string>
-    <string name="service_gui_HISTORY_REMOVE_COUNT">删除的历史记录数量：%1$s</string>
-    <string name="service_gui_HISTORY_REMOVE_ERROR">删除 %1$s 的本地存储短信时出错。</string>
-    <string name="service_gui_HISTORY_REMOVE_MEDIA">从我的手机中删除媒体</string>
-    <string name="service_gui_HISTORY_WARNING">在线时关闭并打开此聊天会话以查看 MAM 和离线短信</string>
+    <string name="finish">完成</string>
+    <string name="folder_not_exist">找不到包含此文件的文件夹。它已被删除或移动</string>
+    <string name="folder_open_failed">无法打开文件夹</string>
+    <string name="folder_open_no_permission">您没有足够的权限打开此文件夹。请检查您的阅读权限并重试</string>
+    <string name="folder_open_no_application">我们找不到打开此文件夹的应用程序</string>
+    <string name="group_chat">群聊</string>
+    <string name="hide">隐藏</string>
+    <string name="history">历史</string>
+    <string name="history_contact">历史 - %1$s</string>
+    <string name="history_off_for_contact">关闭此联系人的历史记录</string>
+    <string name="history_off_all">关闭所有聊天和联系人的历史记录</string>
+    <string name="history_erase_for_contact">删除此联系历史</string>
+    <string name="history_erase_all">删除所有联系人聊天记录</string>
+    <string name="history_purge_for_contact_warning">您确定要删除 %1$s 的所有选定短信吗？</string>
+    <string name="history_purge_all_warning">您确定要删除所有实体的所有短信吗？</string>
+    <string name="history_purge_count">删除历史记录条数：%1$s</string>
+    <string name="history_purge_error">删除 %1$s 的本地存储短信时出错。</string>
+    <string name="history_purge_media">从我的手机中删除媒体</string>
+    <string name="history_offline_warning">在线时关闭并打开此聊天会话以查看 MAM 和离线短信</string>
 
-    <string name="service_gui_CHATROOM_ALTERNATE_VENUE">备用地点：</string>
-    <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">您可以在以下聊天室继续对话：%1$s</string>
-    <string name="service_gui_CHATROOM_BOOKMARK_TITLE">聊天室书签</string>
-    <string name="service_gui_CHATROOM_BOOKMARK">书签</string>
-    <string name="service_gui_CHATROOM_AUTOJOIN">自动加入</string>
-    <string name="service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED">无法更新 %1$s 的书签：%2$s</string>
+    <string name="chatroom_alternate_venue">备用地点：</string>
+    <string name="chatroom_alternate_address">您可以在以下聊天室继续对话：%1$s</string>
+    <string name="chatroom_bookmark_title">聊天室书签</string>
+    <string name="chatroom_bookmark">书签</string>
+    <string name="chatroom_auto_join">自动加入</string>
+    <string name="chatroom_bookmark_update_failed">无法更新 %1$s 的书签：%2$s</string>
 
-    <string name="service_gui_CHATROOM_OCCUPANT">聊天室占用者</string>
-    <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">删除这个聊天室历史</string>
-    <string name="service_gui_CHATROOM_HISTORY_ERASE_ALL">删除所有聊天室历史</string>
-    <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">关闭此聊天室的历史记录</string>
-    <string name="service_gui_CHATROOM_INFO">聊天室信息</string>
-    <string name="service_gui_CHATROOM_INFO_NAME">姓名</string>
-    <string name="service_gui_CHATROOM_INFO_SUBJECT">主题</string>
-    <string name="service_gui_CHATROOM_INFO_DESCRIPTION">描述</string>
-    <string name="service_gui_CHATROOM_INFO_OCCUPANTS">住户</string>
-    <string name="service_gui_CHATROOM_INFO_MEMBERS_ONLY">仅限会员</string>
-    <string name="service_gui_CHATROOM_INFO_MODERATED">已审核</string>
-    <string name="service_gui_CHATROOM_INFO_NON_ANANYMOUS">非匿名</string>
-    <string name="service_gui_CHATROOM_INFO_PASSWORD_PROTECTED">密码保护</string>
-    <string name="service_gui_CHATROOM_INFO_PERSISTENT">持久</string>
-    <string name="service_gui_CHATROOM_INFO_MAX_HISTORY_FETCH">最大历史</string>
-    <string name="service_gui_CHATROOM_INFO_CONTACT_JID">联系 Jid</string>
-    <string name="service_gui_CHATROOM_INFO_SUBJECT_MODIFIABLE">主题可修改</string>
-    <string name="service_gui_CHATROOM_INFO_LANGUAGE">语言</string>
-    <string name="service_gui_CHATROOM_INFO_LDAP_GROUP">LDAP 群组</string>
+    <string name="chatroom_occupant">聊天室占用者</string>
+    <string name="chatroom_history_erase_per">删除这个聊天室历史</string>
+    <string name="chatroom_history_erase_all">删除所有聊天室历史</string>
+    <string name="chatroom_history_off_per">关闭此聊天室的历史记录</string>
+    <string name="chatroom_info">聊天室信息</string>
+    <string name="chatroom_info_name">姓名</string>
+    <string name="chatroom_info_subject">主题</string>
+    <string name="chatroom_info_description">描述</string>
+    <string name="chatroom_info_occupants">住户</string>
+    <string name="chatroom_info_member_only">仅限会员</string>
+    <string name="chatroom_info_moderated">已审核</string>
+    <string name="chatroom_info_non_anonymous">非匿名</string>
+    <string name="chatroom_info_password_protected">密码保护</string>
+    <string name="chatroom_info_persistent">持久</string>
+    <string name="chatroom_info_max_history_fetch">最大历史</string>
+    <string name="chatroom_info_contact_jid">联系 Jid</string>
+    <string name="chatroom_info_subject_modifiable">主题可修改</string>
+    <string name="chatroom_info_language">语言</string>
+    <string name="chatroom_info_ldap_group">LDAP 群组</string>
 
-    <string name="service_gui_CHATROOM_CREATE">创建聊天室&#8230;</string>
-    <string name="service_gui_CHATROOM_CREATE_ERROR">无法为以下对象创建聊天室：\n%1$s</string>
-    <string name="service_gui_CHATROOM_CREATE_JOIN">创建/加入聊天室</string>
-    <string name="service_gui_CHATROOM_CREATE_WIZARD">创建聊天室向导</string>
+    <string name="chatroom_create">创建聊天室&#8230;</string>
+    <string name="chatroom_create_error">无法为以下对象创建聊天室：\n%1$s</string>
+    <string name="chatroom_create_join">创建/加入聊天室</string>
+    <string name="chatroom_create_wizard">创建聊天室向导</string>
 
-    <string name="service_gui_CHATROOM_DESTROY">销毁这个聊天室</string>
-    <string name="service_gui_CHATROOM_DESTROY_EXCEPTION">销毁聊天室时出错：\n%1$s</string>
-    <string name="service_gui_CHATROOM_DESTROY_ERROR">无法删除服务器上的聊天室：\n\'%1$s\'\n%2$s\n\n继续删除本地聊天室。</string>
-    <string name="service_gui_CHATROOM_DESTROY_MESSAGE">该群聊已被破坏！\n原因：%1$s</string>
-    <string name="service_gui_CHATROOM_DESTROY_NOTE">要通知其他参与者，请输入加入的原因和替代聊天室地点。</string>
-    <string name="service_gui_CHATROOM_DESTROY_PROMPT">帐户所有者：%1$s。\n您确定要销毁\n\'%2$s\'\n及其所有聊天记录吗？</string>
-    <string name="service_gui_CHATROOM_DESTROY_REASON">群聊不活跃</string>
-    <string name="service_gui_CHATROOM_DESTROY_SUCCESSFUL">\'%1$s\' 已成功删除！</string>
-    <string name="service_gui_CHATROOM_DESTROY_TITLE">销毁聊天室</string>
+    <string name="chatroom_destroy">销毁这个聊天室</string>
+    <string name="chatroom_destroy_exception">销毁聊天室时出错：\n%1$s</string>
+    <string name="chatroom_destroy_error">无法删除服务器上的聊天室：\n\'%1$s\'\n%2$s\n\n继续删除本地聊天室。</string>
+    <string name="chatroom_destroy_message">该群聊已被破坏！\n原因：%1$s</string>
+    <string name="chatroom_destroy_note">要通知其他参与者，请输入加入的原因和替代聊天室地点。</string>
+    <string name="chatroom_destroy_prompt">帐户所有者：%1$s。\n您确定要销毁\n\'%2$s\'\n及其所有聊天记录吗？</string>
+    <string name="chatroom_destroy_reason">群聊不活跃</string>
+    <string name="chatroom_destroy_successful">\'%1$s\' 已成功删除！</string>
+    <string name="chatroom_destroy_title">销毁聊天室</string>
 
-    <string name="service_gui_CHATROOM_JOIN_FAILED">无法使用昵称加入房间：%1$s\n%2$s.</string>
-    <string name="service_gui_CHATROOM_JOIN_FAILED_REASON">无法加入聊天室 %1$s:\n%2$s</string>
-    <string name="service_gui_CHATROOM_JOIN_FAILED_PASSWORD">聊天室请求密码。</string>
-    <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION">聊天室需要注册。</string>
-    <string name="service_gui_CHATROOM_JOIN_TITLE">加入聊天室</string>
-    <string name="service_gui_CHATROOM_JOIN_NAME">请输入您想加入的聊天室的名称。</string>
-    <string name="service_gui_CHATROOM_JOIN_SUBJECT_NULL">请输入聊天室的主题</string>
-    <string name="service_gui_CHATROOM_JOIN_WIZARD">加入聊天室向导</string>
+    <string name="chatroom_join_failed">无法使用昵称加入房间：%1$s\n%2$s.</string>
+    <string name="chatroom_join_failed_reason">无法加入聊天室 %1$s:\n%2$s</string>
+    <string name="chatroom_join_password">聊天室请求密码。</string>
+    <string name="chatroom_join_failed_registration">聊天室需要注册。</string>
+    <string name="chatroom_join_title">加入聊天室</string>
+    <string name="chatroom_join_name">请输入您想加入的聊天室的名称。</string>
+    <string name="chatroom_join_subject_null">请输入聊天室的主题</string>
+    <string name="chatroom_join_wizard">加入聊天室向导</string>
 
-    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">验证码挑战</string>
-    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">聊天室受验证码挑战保护</string>
-    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_TEXT_EMPTY">验证码输入不能为空</string>
-    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">验证码有效</string>
-    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">验证码验证失败</string>
-    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s 聊天室验证码挑战超时；\n请重新加入聊天室并重试。</string>
+    <string name="cr_member_start_conversation">开始对话</string>
+    <string name="cr_member_grant_owner_privilege">授予所有者权限</string>
+    <string name="cr_member_revoke_owner_privilege">撤销所有者权限</string>
+    <string name="cr_member_kick">从群聊中移除</string>
 
-    <string name="service_gui_CR_MEMBER_START_CONVERSATION">开始对话</string>
-    <string name="service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE">授予所有者权限</string>
-    <string name="service_gui_CR_MEMBER_REVOKE_OWNER_PRIVILEGE">撤销所有者权限</string>
-    <string name="service_gui_CR_MEMBER_KICK">从群聊中移除</string>
+    <string name="invitation_message">邀请信息：</string>
+    <string name="invitation_received">收到邀请</string>
+    <string name="invitation_received_message">%1$s 邀请您加入 %2$s 聊天室。您可以接受、拒绝或忽略此邀请。</string>
+    <string name="invitation_rejected">%1$s 拒绝了您加入聊天室的邀请。原因：%2$s.</string>
+    <string name="invite">邀请加入聊天组</string>
+    <string name="invite_contact_message">选择您要添加到此对话中的联系人姓名，然后单击邀请。</string>
+    <string name="invite_contact_to_call">邀请联系人通话</string>
+    <string name="invite_contact_to_chat">邀请联系人聊天</string>
+    <string name="invite_contact_to_videoBridge">邀请联系人（videobridge）</string>
+    <string name="invite_group_chat">群聊邀请</string>
+    <string name="invite_reason">邀请原因：</string>
+    <string name="invite_reject_reason">原因（拒绝）：</string>
+    <string name="invite_reject_busy">忙碌</string>
+    <string name="ignore">忽略</string>
+    <string name="info">信息</string>
 
-    <string name="service_gui_INVITATION">邀请信息：</string>
-    <string name="service_gui_INVITATION_RECEIVED">收到邀请</string>
-    <string name="service_gui_INVITATION_RECEIVED_MSG">%1$s 邀请您加入 %2$s 聊天室。您可以接受、拒绝或忽略此邀请。</string>
-    <string name="service_gui_INVITATION_REJECTED">%1$s 拒绝了您加入聊天室的邀请。原因：%2$s.</string>
-    <string name="service_gui_INVITE">邀请加入聊天组</string>
-    <string name="service_gui_INVITE_CONTACT_MSG">选择您要添加到此对话中的联系人姓名，然后单击邀请。</string>
-    <string name="service_gui_INVITE_CONTACT_TO_CALL">邀请联系人通话</string>
-    <string name="service_gui_INVITE_CONTACT_TO_CHAT">邀请联系人聊天</string>
-    <string name="service_gui_INVITE_CONTACT_TO_VIDEO_BRIDGE">邀请联系人（videobridge）</string>
-    <string name="service_gui_INVITE_REASON">群聊邀请</string>
-    <string name="service_gui_INVITE_REASON_INVITE">邀请原因：</string>
-    <string name="service_gui_INVITE_REASON_REJECT">原因（拒绝）：</string>
-    <string name="service_gui_INVITE_REJECT_REASON">忙碌</string>
-    <string name="service_gui_IGNORE">忽略</string>
-    <string name="service_gui_INFO">信息</string>
+    <string name="address">地址</string>
+    <string name="city">城市</string>
+    <string name="country">国家</string>
+    <string name="email">邮箱</string>
+    <string name="emails">电子邮件</string>
+    <string name="fax">传真</string>
+    <string name="home">主页</string>
+    <string name="home_page">首页</string>
+    <string name="invalid_address">无效地址：%1$s</string>
+    <string name="join">加入</string>
+    <string name="join_as">加入为</string>
+    <string name="join_existing_video_conference">加入现有的视频会议</string>
+    <string name="join_video">加入视频</string>
+    <string name="job_title">职位名称</string>
 
-    <string name="service_gui_ADDRESS">地址</string>
-    <string name="service_gui_CITY">城市</string>
-    <string name="service_gui_COUNTRY">国家</string>
-    <string name="service_gui_EMAIL">邮箱</string>
-    <string name="service_gui_EMAILS">电子邮件</string>
-    <string name="service_gui_FAX">传真</string>
-    <string name="service_gui_HOME">主页</string>
-    <string name="service_gui_HOME_PAGE">首页</string>
-    <string name="service_gui_INVALID_ADDRESS">无效地址：%1$s</string>
-    <string name="service_gui_JOIN">加入</string>
-    <string name="service_gui_JOIN_AS">加入为</string>
-    <string name="service_gui_JOIN_EXISTING_VIDEO_CONFERENCE">加入现有的视频会议</string>
-    <string name="service_gui_JOIN_VIDEO">加入视频</string>
-    <string name="service_gui_JOB_TITLE">职位名称</string>
+    <string name="join_automatically">自动加入</string>
+    <string name="do_not_join_automatically">不要自动加入</string>
+    <string name="kick">驱逐</string>
+    <string name="kick_failed">驱逐失败</string>
+    <string name="kick_failed_general_error">驱逐 %1$s 失败。发生一般服务器错误。</string>
+    <string name="kick_failed_not_allowed">驱逐 %1$s 失败。不能踢房间的主人和管理员。</string>
+    <string name="kick_failed_not_enough_permission">驱逐 %1$s 失败。您没有足够的权限执行此操作。</string>
+    <string name="last">姓氏</string>
+    <string name="last_message_correction">最后一条短信更正</string>
+    <string name="last_name">姓氏</string>
+    <string name="last_seen">今天：%s</string>
+    <string name="leave">离开</string>
+    <string name="leave_chat_room">离开聊天室</string>
+    <string name="locally_on_hold">本地暂停</string>
+    <string name="login_credential">登录用户凭证</string>
+    <string name="login_failed">登录失败</string>
+    <string name="logoff_failed">使用以下帐户注销时发生错误：用户名：%1$s，服务器名：%2$s。</string>
+    <string name="mobile">手机</string>
+    <string name="move">移动</string>
+    <string name="move_contact">移动联系人</string>
+    <string name="move_contact_error">无法移动联系人</string>
+    <string name="move_contact_message">选择要将所选联系人移动到的联系人或群组。</string>
+    <string name="move_contact_failed">您选择的联系人与来源联系人相同。\n 请选择其他联系人！</string>
+    <string name="move_contact_prompt">你确定要将 %1$s 移动到 %2$s 吗？</string>
+    <string name="move_contact_to_group">移至群组</string>
+    <string name="nickname">昵称</string>
+    <string name="chatroom_open_automatically">自动打开房间</string>
+    <string name="personal">个人</string>
 
-    <string name="service_gui_JOIN_AUTOMATICALLY">自动加入</string>
-    <string name="service_gui_DONT_JOIN_AUTOMATICALLY">不要自动加入</string>
-    <string name="service_gui_KICK">驱逐</string>
-    <string name="service_gui_KICK_FAILED">驱逐失败</string>
-    <string name="service_gui_KICK_FAILED_GENERAL_ERROR">驱逐 %1$s 失败。发生一般服务器错误。</string>
-    <string name="service_gui_KICK_FAILED_NOT_ALLOWED">驱逐 %1$s 失败。不能踢房间的主人和管理员。</string>
-    <string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">驱逐 %1$s 失败。您没有足够的权限执行此操作。</string>
-    <string name="service_gui_LAST">姓氏</string>
-    <string name="service_gui_LAST_MSG_CORRECTION">最后一条短信更正</string>
-    <string name="service_gui_LAST_NAME">姓氏</string>
-    <string name="service_gui_LAST_SEEN">今天：%s</string>
-    <string name="service_gui_LEAVE">离开</string>
-    <string name="service_gui_LEAVE_ROOM">离开聊天室</string>
-    <string name="service_gui_LOCALLY_ON_HOLD_STATUS">本地暂停</string>
-    <string name="service_gui_LOGIN_CREDENTIAL">登录用户凭证</string>
-    <string name="service_gui_LOGIN_FAILED">登录失败</string>
-    <string name="service_gui_LOGIN_GENERAL_ERROR">使用帐户登录时发生错误：用户名：%1$s，服务器名称：%2$s：%3$s。</string>
-    <string name="service_gui_LOGIN_INTERNAL_ERROR">使用帐户登录时发生错误：用户名：{0}，服务器名称：{1}。这很可能是内部应用程序错误。请将问题报告给我们的开发人员邮件列表。</string>
-    <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">无法使用帐户登录：用户名：{0}，服务器名称：{1}，由于帐户配置问题。请检查您的帐户配置。</string>
-    <string name="service_gui_LOGIN_NETWORK_ERROR">无法使用帐户登录：\n用户名：{0}\n服务器名称：{1}\n由于网络故障。请检查您的网络连接。</string>
-    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">使用以下帐户注销时发生错误：用户名：%1$s，服务器名：%2$s。</string>
-    <string name="service_gui_MOBILE_PHONE">手机</string>
-    <string name="service_gui_MOVE">移动</string>
-    <string name="service_gui_MOVE_CONTACT">移动联系人</string>
-    <string name="service_gui_MOVE_CONTACT_ERROR">无法移动联系人</string>
-    <string name="service_gui_MOVE_SUBCONTACT">移动联系人</string>
-    <string name="service_gui_MOVE_SUBCONTACT_MSG">选择要将所选联系人移动到的联系人或群组。</string>
-    <string name="service_gui_MOVE_SUBCONTACT_FAILED">您选择的联系人与来源联系人相同。\n 请选择其他联系人！</string>
-    <string name="service_gui_MOVE_SUBCONTACT_QUESTION">你确定要将 %1$s 移动到 %2$s 吗？</string>
-    <string name="service_gui_MOVE_TO_GROUP">移至群组</string>
-    <string name="service_gui_NICKNAME_LABEL">昵称</string>
-    <string name="service_gui_OPEN_AUTOMATICALLY">自动打开房间</string>
-    <string name="service_gui_PERSONAL">个人</string>
+    <string name="message_delivery_error">发送短信失败</string>
+    <string name="message_delivery_failed">以上短信无法送达</string>
+    <string name="message_delivery_internal_error">发生内部错误。这很可能是一个错误。请通过调试日志报告。</string>
+    <string name="message_delivery_not_supported">您使用的协议不支持离线短信。您可以尝试通过其他协议联系 %1$s 或等到他/她上线。</string>
+    <string name="message_delivery_unknown_error">传递您的短信时发生未知错误。</string>
+    <string name="message_delivery_unsupported_operation">不支持的操作。</string>
+    <string name="message_delivery_network_error">出现网络问题。请检查您的网络配置并重试。</string>
+    <string name="message_received">%1$s 写了</string>
+    <string name="message_delivery_not_registered">您必须先登录才能发送短信。</string>
 
-    <string name="service_gui_MSG_DELIVERY_ERROR">发送短信失败</string>
-    <string name="service_gui_MSG_DELIVERY_FAILURE">以上短信无法送达</string>
-    <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">发生内部错误。这很可能是一个错误。请通过调试日志报告。</string>
-    <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">您使用的协议不支持离线短信。您可以尝试通过其他协议联系 %1$s 或等到他/她上线。</string>
-    <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">传递您的短信时发生未知错误。</string>
-    <string name="service_gui_UNSUPPORTED_OPERATION">不支持的操作。</string>
-    <string name="service_gui_MSG_NOT_DELIVERED">出现网络问题。请检查您的网络配置并重试。</string>
-    <string name="service_gui_MSG_RECEIVED">%1$s 写了</string>
-    <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">您必须先登录才能发送短信。</string>
-
-    <string name="service_gui_MULTIPLE_LOGIN">不允许多次登录。以下帐户：用户名：%1$s，服务器名称：%2$s 已断开连接。</string>
-    <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">相互搁置</string>
-    <string name="service_gui_NAME">名称</string>
-    <string name="service_gui_NEW_ACCOUNT">添加新账户</string>
-    <string name="service_gui_NETOWRK_ASSERTION_ERROR">Jabber 提供网络服务必须先登录才能进行通信。</string>
-    <string name="service_gui_NICKNAME">昵称</string>
-    <string name="service_gui_NO">否</string>
-    <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">至少需要一个在线电话帐户才能拨打电话。请登录您的其中一个电话帐户，然后重试。</string>
-    <string name="service_gui_NOT_AUTHORIZED">未授权</string>
-    <string name="service_gui_NOT_AUTHORIZED_HINT">您无权访问服务器。检查账户设置、密码或启用 IB 注册并重试：\n%s"</string>
-    <string name="service_gui_OFF">关闭</string>
-    <string name="service_gui_OFFLINE">离线</string>
-    <string name="service_gui_OK">确定</string>
-    <string name="service_gui_ON">开启</string>
-    <string name="service_gui_ONLINE">在线</string>
-    <string name="service_gui_OPEN">打开</string>
-    <string name="service_gui_OPEN_FILE_FROM_IMAGE">点击打开文件。</string>
-    <string name="service_gui_OPEN_FOLDER">文件夹</string>
-    <string name="service_gui_OTHER">其他</string>
-    <string name="service_gui_ORGANIZATION">组织</string>
-    <string name="service_gui_PHONE">电话</string>
-    <string name="service_gui_PHONES">电话</string>
-    <string name="service_gui_PLAY">播放</string>
-    <string name="service_gui_POSTAL_CODE">邮政编码</string>
-    <string name="service_gui_RENAME">重命名</string>
-    <string name="service_gui_REGISTRATION_REQUIRED">服务器账户注册错误：\n%s"</string>
-    <string name="service_gui_SAVE">保存</string>
-    <string name="service_gui_SHOW_STACK_TRACE">显示堆栈跟踪</string>
-    <string name="service_gui_STREET">地址</string>
-    <string name="service_gui_SUBMIT">提交</string>
-    <string name="service_gui_USER_LOGIN">请登录</string>
-    <string name="service_gui_VIDEO_PHONE">视频</string>
-    <string name="service_gui_WORK_PHONE">工作</string>
-    <string name="service_gui_XMPP_EXCEPTION">XMPP 连接时遇到问题：\n%s"</string>
+    <string name="multiple_login">不允许多次登录。以下帐户：用户名：%1$s，服务器名称：%2$s 已断开连接。</string>
+    <string name="mutually_on_hole">相互搁置</string>
+    <string name="name">名称</string>
+    <string name="add_new_account">添加新账户</string>
+    <string name="network_assert_error">Jabber 提供网络服务必须先登录才能进行通信。</string>
+    <string name="no">否</string>
+    <string name="no_online_telephony_account">至少需要一个在线电话帐户才能拨打电话。请登录您的其中一个电话帐户，然后重试。</string>
+    <string name="not_authorized">未授权</string>
+    <string name="not_authorized_hint">您无权访问服务器。检查账户设置、密码或启用 IB 注册并重试：\n%s"</string>
+    <string name="off">关闭</string>
+    <string name="offline">离线</string>
+    <string name="ok">确定</string>
+    <string name="on">开启</string>
+    <string name="online">在线</string>
+    <string name="open">打开</string>
+    <string name="open_file_vai_image">点击打开文件。</string>
+    <string name="folder">文件夹</string>
+    <string name="other">其他</string>
+    <string name="organization">组织</string>
+    <string name="phone">电话</string>
+    <string name="phones">电话</string>
+    <string name="play">播放</string>
+    <string name="postal_code">邮政编码</string>
+    <string name="rename">重命名</string>
+    <string name="registration_required">服务器账户注册错误：\n%s"</string>
+    <string name="save">保存</string>
+    <string name="show_stack_trace">显示堆栈跟踪</string>
+    <string name="street">地址</string>
+    <string name="submit">提交</string>
+    <string name="user_login">请登录</string>
+    <string name="work">工作</string>
+    <string name="xmpp_connection_error">XMPP 连接时遇到问题：\n%s"</string>
 
     <!-- Call -->
-    <string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">切换视频</string>
-    <string name="service_gui_MIC_CONTROL_TITLE">麦克风增益级别</string>
-    <string name="service_gui_MUTE_BUTTON_TOOL_TIP">调整麦克风声音</string>
-    <string name="service_gui_PRESENCE_NOT_SUPPORTED">%1$s 不支持在线状态</string>
-    <string name="service_gui_PROACTIVE_NOTIFICATION">正在写短信 (%1$s)</string>
-    <string name="service_gui_RECENT_MESSAGES">最近对话</string>
-    <string name="service_gui_RECEIVED">%1$s 已收到</string>
-    <string name="service_gui_REFERRED_STATUS">推荐</string>
-    <string name="service_gui_RESTORING">正在恢复&#8230;</string>
+    <string name="btn_video_tooltip">切换视频</string>
+    <string name="mic_control_title">麦克风增益级别</string>
+    <string name="btn_mute_tooltip">调整麦克风声音</string>
+    <string name="presence_not_supported">%1$s 不支持在线状态</string>
+    <string name="proactive_notification">正在写短信 (%1$s)</string>
+    <string name="recent_messages">最近对话</string>
+    <string name="received_">%1$s 已收到</string>
+    <string name="referred">推荐</string>
+    <string name="restoring_">正在恢复&#8230;</string>
 
-    <string name="service_gui_RE_REQUEST_AUTHORIZATION">请求授权</string>
-    <string name="service_gui_DECLINE">拒绝</string>
-    <string name="service_gui_REMOVE">删除</string>
-    <string name="service_gui_REMOVE_ACCOUNT">删除账户</string>
-    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">您确定要删除帐户：\n%1$s?</string>
-    <string name="service_gui_REMOVE_CONTACT">删除联系人</string>
-    <string name="service_gui_REMOVE_CONTACT_TEXT">联系人所有者：%1$s。\n\n您确定要从您的联系人列表中删除联系人：\'%2$s\'吗？</string>
-    <string name="service_gui_REMOVE_CONTACT_NOT_CONNECTED">您需要连接才能删除此联系人。请登录并重试。</string>
-    <string name="service_gui_REMOVE_GROUP">移除群组</string>
-    <string name="service_gui_REMOVE_GROUP_TEXT">您确定要从您的联系人列表中删除群组：\'%1$s\' 及其所有关联的联系人吗？</string>
-    <string name="service_gui_REMOTELY_ON_HOLD_STATUS">远程保持</string>
-    <string name="service_gui_RENAME_CONTACT">更改联系人姓名</string>
+    <string name="decline">拒绝</string>
+    <string name="remove">删除</string>
+    <string name="remove_account">删除账户</string>
+    <string name="remove_account_prompt">您确定要删除帐户：\n%1$s?</string>
+    <string name="remove_contact">删除联系人</string>
+    <string name="remove_contact_prompt">联系人所有者：%1$s。\n\n您确定要从您的联系人列表中删除联系人：\'%2$s\'吗？</string>
+    <string name="remove_contact_not_connected">您需要连接才能删除此联系人。请登录并重试。</string>
+    <string name="remove_group">移除群组</string>
+    <string name="remove_group_prompt">您确定要从您的联系人列表中删除群组：\'%1$s\' 及其所有关联的联系人吗？</string>
+    <string name="remotely_on_hold">远程保持</string>
+    <string name="rename_contact">更改联系人姓名</string>
 
-    <string name="service_gui_RINGING_STATUS">正在响铃</string>
-    <string name="service_gui_REQUEST">请求</string>
-    <string name="service_gui_REQUEST_AUTHORIZATION">请求授权</string>
-    <string name="service_gui_REQUEST_AUTHORIZATION_MSG">联系人所有者：%1$s\n\n需要 \'%2$s\' 的授权才能将他/她添加到您的联系人列表中。请再次输入您的请求。</string>
-    <string name="service_gui_RETRY">重试</string>
-    <string name="service_gui_SEARCH">搜索</string>
-    <string name="service_gui_SEARCH_STRING_CONTACT_SOURCE">搜索联系人</string>>
-    <string name="service_gui_PHONEBOOK">电话簿</string>
-    <string name="service_gui_settings_SECURITY">加密</string>
-    <string name="service_gui_SELECT_ACCOUNT">选择账户所有者</string>
-    <string name="service_gui_SELECT_GROUP">联系分配的组：</string>
-    <string name="service_gui_SELECT_NO_GROUP">没有群组</string>
+    <string name="ringing">正在响铃</string>
+    <string name="request">请求</string>
+    <string name="request_authorization">请求授权</string>
+    <string name="request_authorization_prompt">联系人所有者：%1$s\n\n需要 \'%2$s\' 的授权才能将他/她添加到您的联系人列表中。请再次输入您的请求。</string>
+    <string name="retry">重试</string>
+    <string name="search">搜索</string>
+    <string name="search_contact">搜索联系人</string>>
+    <string name="phonebook">电话簿</string>
+    <string name="security">加密</string>
+    <string name="select_account_owner">选择账户所有者</string>
+    <string name="assign_group">联系分配的组：</string>
+    <string name="no_group">没有群组</string>
 
     <!-- Logs -->
-    <string name="service_gui_SEND_LOGS">报告错误</string>
-    <string name="service_gui_SEND_LOGS_QUESTION">aTalk 在严重崩溃后刚刚恢复。您想向开发人员报告错误吗？</string>
-    <string name="service_gui_SEND_LOGS_SUBJECT">aTalk 错误报告</string>
-    <string name="service_gui_SEND_LOGS_TITLE">通过电子邮件报告 aTalk 错误</string>
-    <string name="service_gui_SEND_LOGS_INFO">以下信息可以帮助开发者解决问题：\n\n
+    <string name="send_log">报告错误</string>
+    <string name="send_log_prompt">aTalk 在严重崩溃后刚刚恢复。您想向开发人员报告错误吗？</string>
+    <string name="send_log_subject">aTalk 错误报告</string>
+    <string name="send_log_title">通过电子邮件报告 aTalk 错误</string>
+    <string name="send_log_info">以下信息可以帮助开发者解决问题：\n\n
          1. 问题发生前你做的最后一件事是什么？\n\n\n
          2. 您看到的问题是什么，包括显示的快照（如果有）？\n\n\n
          3. 能否或如何重现问题？</string>
 
-    <string name="service_gui_SEND_MESSAGE">发送短信</string>
-    <string name="service_gui_SEND_MESSAGE_FAIL">发送短信失败：%1$s</string>
-    <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">您选择的实体不支持即时聊天短信：%1$s</string>
-    <string name="service_gui_SEND_AS_SMS">以短信形式发送</string>
-    <string name="service_gui_SEND_PRIVATE_MESSAGE">发送私信</string>
-    <string name="service_gui_SEND_VIA">发送方式</string>
-    <string name="service_gui_SENT">已发送</string>
-    <string name="service_gui_SERVER_CHAT_ROOMS">服务器聊天室</string>
-    <string name="service_gui_SHUTDOWN_IN_PROGRESS">正在关闭&#8230;</string>
-    <string name="service_gui_STATUS">状态</string>
-    <string name="service_gui_TYPE_YOUR_REQUEST">输入您的请求原因</string>
-    <string name="service_gui_UNKNOWN">未知</string>
-    <string name="service_gui_UNKNOWN_USER">未知用户</string>
-    <string name="service_gui_UNKNOWN_STATUS">未知状态</string>
-    <string name="service_gui_URL_HINT">https://www.example.com</string>
-    <string name="service_gui_VOLUME_CONTROL_TITLE">输出音量增益级别</string>
-    <string name="service_gui_VOLUME_CONTROL_TOOL_TIP">调整音量</string>
-    <string name="service_gui_VOLUME_GAIN_LEVEL">音量增益级别：%1$s%%</string>
-    <string name="service_gui_WAITING_AUTHORIZATION">等待授权</string>
-    <string name="service_gui_WARNING">警告</string>
-    <string name="service_gui_WARN_CALL_IN_PROGRESS">通话中不能这样做</string>
-    <string name="service_gui_YES">是</string>
+    <string name="send_message">发送短信</string>
+    <string name="send_message_failed">发送短信失败：%1$s</string>
+    <string name="send_message_not_supported">您选择的实体不支持即时聊天短信：%1$s</string>
+    <string name="send_message_as_sms">以短信形式发送</string>
+    <string name="send_message_private">发送私信</string>
+    <string name="send_via">发送方式</string>
+    <string name="sent">已发送</string>
+    <string name="server_chatroom">服务器聊天室</string>
+    <string name="shutting_down">正在关闭&#8230;</string>
+    <string name="status">状态</string>
+    <string name="type_your_request_reason">输入您的请求原因</string>
+    <string name="unknown">未知</string>
+    <string name="unknown_user">未知用户</string>
+    <string name="unknown_state">未知状态</string>
+    <string name="url_example">https://www.example.com</string>
+    <string name="volume_control_title">输出音量增益级别</string>
+    <string name="volume_control_tooltip">调整音量</string>
+    <string name="volume_gain_level">音量增益级别：%1$s%%</string>
+    <string name="waiting_for_authorization">等待授权</string>
+    <string name="warning">警告</string>
+    <string name="call_in_progress_warning">通话中不能这样做</string>
+    <string name="yes">是</string>
 
     <!-- Sign in -->
-    <string name="service_gui_ACCOUNT_CREATION_FAILED">由于错误无法创建新帐户：%1$s</string>
-    <string name="service_gui_CREATE_ACCOUNT">创建账户</string>
-    <string name="service_gui_GENERAL_ERROR">一般错误</string>
-    <string name="service_gui_NETWORK_FAILURE">网络故障</string>
-    <string name="service_gui_SELECT_AVATAR">选择新头像</string>
-    <string name="service_gui_SET_STATUS">更改状态</string>
-    <string name="service_gui_SIGN_IN">登录服务器</string>
-    <string name="service_gui_SIGN_OUT">登出服务器</string>
-    <string name="service_gui_SPECIFY_SERVER">请填写您帐户的服务器部分。</string>
-    <string name="service_gui_SPEED">速度：%1$s/秒 (%2$s)</string>
-    <string name="service_gui_STATUS_CHANGE_GENERAL_ERROR">更改帐户状态失败：用户名：%1$s，服务器名：%2$s，由于一般错误。</string>
-    <string name="service_gui_STATUS_CHANGED_CHAT_MESSAGE">已变成 %1$s</string>
-    <string name="service_gui_STATUS_CHANGE_NETWORK_FAILURE">更改帐户状态失败：用户名：%1$s，服务器名称：%2$s，由于网络问题。</string>
-    <string name="service_gui_SECURITY_ERROR">安全错误</string>
-    <string name="service_gui_SECURITY_INFO">安全信息</string>
-    <string name="service_gui_SECURITY_WARNING">安全警告</string>
-    <string name="service_gui_USERNAME_NULL">请输入正确的用户名或/和密码。</string>
-    <string name="service_gui_USERNAME_CHANGE_WARN">警告：将帐户用户名更改为 \'%1$s\' 也会删除现有帐户 \'%3$s\' 的 %2$s 短信。继续吗？</string>
-    <string name="service_gui_USER_EXISTS_ERROR">该用户已存在于所选网络中。请选择其他用户或网络。</string>
+    <string name="account_create_failed">由于错误无法创建新帐户：%1$s</string>
+    <string name="create_account">创建账户</string>
+    <string name="general_error">一般错误</string>
+    <string name="network_failure">网络故障</string>
+    <string name="select_avatar">选择新头像</string>
+    <string name="set_status">更改状态</string>
+    <string name="sign_in">登录服务器</string>
+    <string name="sign_out">登出服务器</string>
+    <string name="server_info_not_complete">请填写您帐户的服务器部分。</string>
+    <string name="speed_info">速度：%1$s/秒 (%2$s)</string>
+    <string name="status_change_general_error">更改帐户状态失败：用户名：%1$s，服务器名：%2$s，由于一般错误。</string>
+    <string name="status_change_message">已变成 %1$s</string>
+    <string name="status_change_network_failure">更改帐户状态失败：用户名：%1$s，服务器名称：%2$s，由于网络问题。</string>
+    <string name="security_error">安全错误</string>
+    <string name="security_info">安全信息</string>
+    <string name="security_warning">安全警告</string>
+    <string name="username_password_null">请输入正确的用户名或/和密码。</string>
+    <string name="username_change_warning">警告：将帐户用户名更改为 \'%1$s\' 也会删除现有帐户 \'%3$s\' 的 %2$s 短信。继续吗？</string>
+    <string name="user_exist_error">该用户已存在于所选网络中。请选择其他用户或网络。</string>
 
-    <string name="service_gui_JANUARY">一月</string>
-    <string name="service_gui_FEBRUARY">二月</string>
-    <string name="service_gui_MARCH">三月</string>
-    <string name="service_gui_APRIL">四月</string>
-    <string name="service_gui_MAY">五月</string>
-    <string name="service_gui_JUNE">六月</string>
-    <string name="service_gui_JULY">七月</string>
-    <string name="service_gui_AUGUST">八月</string>
-    <string name="service_gui_SEPTEMBER">九月</string>
-    <string name="service_gui_OCTOBER">十月</string>
-    <string name="service_gui_NOVEMBER">11 月</string>
-    <string name="service_gui_DECEMBER">十二月</string>
+    <string name="jan">一月</string>
+    <string name="feb">二月</string>
+    <string name="mar">三月</string>
+    <string name="apr">四月</string>
+    <string name="may">五月</string>
+    <string name="jun">六月</string>
+    <string name="jul">七月</string>
+    <string name="aug">八月</string>
+    <string name="sep">九月</string>
+    <string name="oct">十月</string>
+    <string name="nov">11 月</string>
+    <string name="dec">十二月</string>
 
     <!-- Call info -->
-    <string name="service_protocol_ICE_FAILED">无法建立连接（ICE 失败且未找到中继）</string>
-    <string name="service_gui_callinfo_AUDIO_INFO">音频信息</string>
-    <string name="service_gui_callinfo_BANDWITH">带宽：</string>
-    <string name="service_gui_callinfo_CALL_DURATION">通话时长：</string>
-    <string name="service_gui_callinfo_CALL_IDENTITY">身份：</string>
-    <string name="service_gui_callinfo_CALL_INFORMATION">通话信息</string>
-    <string name="service_gui_callinfo_CALL_TRANSPORT">信令呼叫传输：</string>
-    <string name="service_gui_callinfo_CODEC">编解码器/频率：</string>
-    <string name="service_gui_callinfo_IS_CONFERENCE_FOCUS">会议焦点：</string>
-    <string name="service_gui_callinfo_IS_DEFAULT_ENCRYPTED">启用加密：</string>
-    <string name="service_gui_callinfo_JITTER">抖动：</string>
-    <string name="service_gui_callinfo_KEY_EXCHANGE_PROTOCOL">密钥交换协议</string>
-    <string name="service_gui_callinfo_LOCAL_IP">本地IP/端口：</string>
-    <string name="service_gui_callinfo_LOSS_RATE">丢失率：</string>
-    <string name="service_gui_callinfo_MEDIA_STREAM_RTP">RTP:</string>
-    <string name="service_gui_callinfo_MEDIA_STREAM_SRTP">SRTP:</string>
-    <string name="service_gui_callinfo_MEDIA_STREAM_TRANSPORT_PROTOCOL">媒体流传输协议：</string>
-    <string name="service_gui_callinfo_NA">不适用</string>
-    <string name="service_gui_callinfo_PEER_COUNT">参与人数：</string>
-    <string name="service_gui_callinfo_REMOTE_IP">远程IP/端口：</string>
-    <string name="service_gui_callinfo_RTT">RTT:</string>
-    <string name="service_gui_callinfo_TECHNICAL_CALL_INFO">通话信息详情</string>
-    <string name="service_gui_callinfo_TLS_CIPHER_SUITE">TLS 密码套件：</string>
-    <string name="service_gui_callinfo_TLS_CERTIFICATE_CONTENT">下面显示TLS服务器证书的内容。</string>
-    <string name="service_gui_callinfo_TLS_PROTOCOL">TLS 协议：</string>
-    <string name="service_gui_callinfo_VIEW_CERTIFICATE">查看证书</string>
-    <string name="service_gui_callinfo_VIDEO_SIZE">视频大小</string>
-    <string name="service_gui_callinfo_VIDEO_INFO">视频信息</string>
+    <string name="protocol_ice_failed">无法建立连接（ICE 失败且未找到中继）</string>
+    <string name="callinfo_audio_info">音频信息</string>
+    <string name="callinfo_bandwidth">带宽：</string>
+    <string name="callinfo_call_duration">通话时长：</string>
+    <string name="callinfo_call_identity">身份：</string>
+    <string name="callinfo_call_information">通话信息</string>
+    <string name="callinfo_call_transport">信令呼叫传输：</string>
+    <string name="callinfo_codec">编解码器/频率：</string>
+    <string name="callinfo_conference_focus">会议焦点：</string>
+    <string name="callinfo_default_encrypted">启用加密：</string>
+    <string name="callinfo_jitter">抖动：</string>
+    <string name="callinfo_key_exchange_protocol">密钥交换协议</string>
+    <string name="callinfo_local_ip">本地IP/端口：</string>
+    <string name="callinfo_loss_rate">丢失率：</string>
+    <string name="callinfo_media_stream_rip">RTP:</string>
+    <string name="callinfo_media_srtp">SRTP:</string>
+    <string name="callinfo_media_stream_transport_protocol">媒体流传输协议：</string>
+    <string name="callinfo_na">不适用</string>
+    <string name="callinfo_peer_count">参与人数：</string>
+    <string name="callinfo_remote_ip">远程IP/端口：</string>
+    <string name="callinfo_rtt">RTT:</string>
+    <string name="callinfo_details">通话信息详情</string>
+    <string name="callinfo_tls_cipher_suite">TLS 密码套件：</string>
+    <string name="callinfo_tls_certificate_content">下面显示TLS服务器证书的内容。</string>
+    <string name="callinfo_tls_protocol">TLS 协议：</string>
+    <string name="callinfo_view_certificate">查看证书</string>
+    <string name="callinfo_video_size">视频大小</string>
+    <string name="callinfo_video_info">视频信息</string>
 
-    <string name="service_gui_callinfo_ADAPTIVE_JITTER_BUFFER">自适应抖动缓冲区：</string>
-    <string name="service_gui_callinfo_DECODED_WITH_FEC">使用 FEC 解码的数据包：</string>
-    <string name="service_gui_callinfo_DISCARDED_PERCENT">当前被丢弃的数据包：</string>
-    <string name="service_gui_callinfo_DISCARDED_TOTAL">丢弃包数：</string>
+    <string name="callinfo_adaptive_jitter_buffer">自适应抖动缓冲区：</string>
+    <string name="callinfo_decoded_with_fec">使用 FEC 解码的数据包：</string>
+    <string name="callinfo_discarded_percent">当前被丢弃的数据包：</string>
+    <string name="callinfo_discarded_total">丢弃包数：</string>
 
     <!-- ICE info -->
-    <string name="service_gui_callinfo_HARVESTING_DATA">%1$d 毫秒（%2$d 收获）</string>
-    <string name="service_gui_callinfo_HARVESTING_TIME">收获时间：</string>
-    <string name="service_gui_callinfo_ICE_CANDIDATE_EXTENDED_TYPE">ICE 候选扩展类型：</string>
-    <string name="service_gui_callinfo_ICE_LOCAL_HOST_ADDRESS">本地主机IP/端口：</string>
-    <string name="service_gui_callinfo_ICE_LOCAL_REFLEXIVE_ADDRESS">本地自反 IP/端口：</string>
-    <string name="service_gui_callinfo_ICE_LOCAL_RELAYED_ADDRESS">本地中继 IP/端口：</string>
-    <string name="service_gui_callinfo_ICE_REMOTE_HOST_ADDRESS">远程主机IP/端口：</string>
-    <string name="service_gui_callinfo_ICE_REMOTE_REFLEXIVE_ADDRESS">远程自反IP/端口：</string>
-    <string name="service_gui_callinfo_ICE_REMOTE_RELAYED_ADDRESS">远程中继IP/端口：</string>
-    <string name="service_gui_callinfo_ICE_STATE">ICE 处理状态：</string>
-    <string name="service_gui_callinfo_ICE_STATE_COMPLETED">完成</string>
-    <string name="service_gui_callinfo_ICE_STATE_FAILED">失败</string>
-    <string name="service_gui_callinfo_ICE_STATE_RUNNING">连接检查</string>
-    <string name="service_gui_callinfo_ICE_STATE_WAITING">收集候选人</string>
-    <string name="service_gui_callinfo_JITTER_BUFFER_DELAY">抖动缓冲区：</string>
-    <string name="service_gui_callinfo_TOTAL_HARVESTING_TIME">总收获时间：</string>
+    <string name="callinfo_harvesting_data">%1$d 毫秒（%2$d 收获）</string>
+    <string name="callinfo_harvesting_time">收获时间：</string>
+    <string name="callinfo_candidate_extended_type">ICE 候选扩展类型：</string>
+    <string name="callinfo_localhost_address">本地主机IP/端口：</string>
+    <string name="callinfo_ice_local_reflexive_address">本地自反 IP/端口：</string>
+    <string name="callinfo_ice_local_relayed_address">本地中继 IP/端口：</string>
+    <string name="callinfo_ice_remote_host_address">远程主机IP/端口：</string>
+    <string name="callinfo_ice_remote_reflexive_address">远程自反IP/端口：</string>
+    <string name="callinfo_ice_remote_relayed_address">远程中继IP/端口：</string>
+    <string name="callinfo_ice_state">ICE 处理状态：</string>
+    <string name="callinfo_ice_state_completed">完成</string>
+    <string name="callinfo_ice_state_failed">失败</string>
+    <string name="callinfo_ice_state_running">连接检查</string>
+    <string name="callinfo_ice_state_waiting">收集候选人</string>
+    <string name="callinfo_ice_state_jitter_buffer_delay">抖动缓冲区：</string>
+    <string name="callinfo_total_harvesting_time">总收获时间：</string>
 
     <!-- Security certificates -->
-    <string name="service_gui_ALWAYS_TRUST">始终信任此证书</string>
-    <string name="service_gui_CERT_DIALOG_TITLE">证书验证</string>
-    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT">&lt;html>%1$s 在连接到时无法验证服务器的身份&lt;br/>&lt;b>%2$s&lt;/b>&lt;br/>&lt;br />证书不受信任（自签名证书），这意味着无法自动验证服务器的身份。&lt;br />&lt;br />是否仅针对此实例继续连接？&lt;br />有关更多选项和信息，请单击“显示证书”。&lt;/html></string>
-    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>%1$s 无法验证
+    <string name="trust_always">始终信任此证书</string>
+    <string name="cert_dialog_title">证书验证</string>
+    <string name="cert_dialog_description">&lt;html>%1$s 在连接到时无法验证服务器的身份&lt;br/>&lt;b>%2$s&lt;/b>&lt;br/>&lt;br />证书不受信任（自签名证书），这意味着无法自动验证服务器的身份。&lt;br />&lt;br />是否仅针对此实例继续连接？&lt;br />有关更多选项和信息，请单击“显示证书”。&lt;/html></string>
+    <string name="cert_dialog_description_no_host">&lt;html>%1$s 无法验证
          服务器证书的身份。&lt;br />&lt;br />
          该证书不受信任（自签名证书），这意味着服务器的
          无法自动验证身份。&lt;br />&lt;br />
          仅针对此实例继续连接？&lt;br />
          有关更多选项和信息，请单击“显示证书”。&lt;/html></string>
-    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>%1$s 无法验证
+    <string name="cert_dialog_client_description">&lt;html>%1$s 无法验证
          连接客户端的身份。&lt;br />&lt;br />
          该证书不受信任（自签名证书），这意味着客户端的
          无法自动验证身份。&lt;br />&lt;br />
          仅针对此实例继续连接？&lt;br />
          有关更多选项和信息，请单击“显示证书”。&lt;/html></string>
-    <string name="service_gui_CERT_DIALOG_PEER_DESCRIPTION_TXT">&lt;html>%1$s 无法验证
+    <string name="cert_dialog_peer_description">&lt;html>%1$s 无法验证
          对等点 %2$s 的身份。&lt;br />&lt;br />
          该证书不受信任（自签名证书），这意味着对等方的
          无法自动验证身份。&lt;br />&lt;br />
          仅针对此实例继续连接？&lt;br />
          有关更多选项和信息，请单击“显示证书”。&lt;/html></string>
-    <string name="service_gui_PROCEED">继续</string>
-    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;b>颁发给&lt;&lt;/b></string>
-    <string name="service_gui_CERT_INFO_CHAIN">证书链：</string>
-    <string name="service_gui_CERT_INFO_CN">通用名称：</string>
-    <string name="service_gui_CERT_INFO_O">组织：</string>
-    <string name="service_gui_CERT_INFO_C">国家名称：</string>
-    <string name="service_gui_CERT_INFO_ST">州或省名称：</string>
-    <string name="service_gui_CERT_INFO_L">地区名称：</string>
-    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;b>颁发者&lt;&lt;/b></string>
-    <string name="service_gui_CERT_INFO_OU">组织单位：</string>
-    <string name="service_gui_CERT_INFO_VALIDITY">&lt;b>有效期&lt;&lt;/b></string>
-    <string name="service_gui_CERT_INFO_ISSUED_ON">颁发于：</string>
-    <string name="service_gui_CERT_INFO_EXPIRES_ON">过期时间：</string>
-    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;b>指纹&lt;&lt;/b></string>
-    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;b>证书信息&lt;&lt;/b></string>
-    <string name="service_gui_CERT_INFO_SER_NUM">序列号：</string>
-    <string name="service_gui_CERT_INFO_VER">版本：</string>
-    <string name="service_gui_CERT_INFO_SIGN_ALG">签名算法：</string>
-    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;b>公钥信息&lt;&lt;/b></string>
-    <string name="service_gui_CERT_INFO_ALG">算法：</string>
-    <string name="service_gui_CERT_INFO_PUB_KEY">公钥：</string>
-    <string name="service_gui_CERT_INFO_KEY_BYTES_PRINT">%1$s 字节：%2$s</string>
-    <string name="service_gui_CERT_INFO_KEY_BITS_PRINT">%1$s 位</string>
-    <string name="service_gui_CERT_INFO_EXP">指数：</string>
-    <string name="service_gui_CERT_INFO_KEY_SIZE">密钥大小：</string>
-    <string name="service_gui_CERT_INFO_SIGN">签名：</string>
+    <string name="proceed">继续</string>
+    <string name="cert_info_issued_to">&lt;b>颁发给&lt;&lt;/b></string>
+    <string name="cert_info_chain">证书链：</string>
+    <string name="cert_info_cn">通用名称：</string>
+    <string name="cert_info_O">组织：</string>
+    <string name="cert_info_C">国家名称：</string>
+    <string name="cert_info_ST">州或省名称：</string>
+    <string name="cert_info_L">地区名称：</string>
+    <string name="cert_info_issued_by">&lt;b>颁发者&lt;&lt;/b></string>
+    <string name="cert_info_OU">组织单位：</string>
+    <string name="cert_info_validity">&lt;b>有效期&lt;&lt;/b></string>
+    <string name="cert_info_issued_on">颁发于：</string>
+    <string name="cert_info_expires_on">过期时间：</string>
+    <string name="cert_info_fingerprints">&lt;b>指纹&lt;&lt;/b></string>
+    <string name="cert_info_details">&lt;b>证书信息&lt;&lt;/b></string>
+    <string name="cert_info_SN">序列号：</string>
+    <string name="cert_info_version">版本：</string>
+    <string name="cert_info_sign_algo">签名算法：</string>
+    <string name="cert_info_pubkey_info">&lt;b>公钥信息&lt;&lt;/b></string>
+    <string name="cert_info_algo">算法：</string>
+    <string name="cert_info_pubkey">公钥：</string>
+    <string name="cert_info_key_bytes">%1$s 字节：%2$s</string>
+    <string name="cert_info_key_bits">%1$s 位</string>
+    <string name="cert_info_exponent">指数：</string>
+    <string name="cert_info_key_size">密钥大小：</string>
+    <string name="cert_info_signature">签名：</string>
     <string name="service_gui_CONTINUE">继续</string>
-    <string name="service_gui_SHOW_CERT">显示证书</string>
-    <string name="service_gui_HIDE_CERT">隐藏证书</string>
-    <string name="service_gui_UNSAVED_CHANGES">您有未保存的更改。保存或取消并退出。</string>
-    <string name="service_gui_UNSAVED_CHANGES_TITLE">未保存的更改</string>
-    <string name="service_gui_WAITING">请稍候&#8230;</string>
-    <string name="service_gui_SERVER_INFO_FETCH">获取服务器公布的功能/信息&#8230;</string>
+    <string name="certificate_show">显示证书</string>
+    <string name="certificate_hide">隐藏证书</string>
+    <string name="unsaved_changes">您有未保存的更改。保存或取消并退出。</string>
+    <string name="unsaved_changes_title">未保存的更改</string>
+    <string name="please_wait">请稍候&#8230;</string>
+    <string name="server_info_fetching">获取服务器公布的功能/信息&#8230;</string>
 
     <!-- Security info -->
-    <string name="service_gui_security_AUDIO_NOT_SECURED">音频不安全</string>
-    <string name="service_gui_security_CALL_NOT_SECURED_TOOLTIP">调用不安全。</string>
-    <string name="service_gui_security_CALL_SECURED_COMPARE_TOOLTIP">按此处与您的合作伙伴比较安全秘密。</string>
-    <string name="service_gui_security_CALL_SECURED_TOOLTIP">安全通话。有关更多信息，请按此处。</string>
-    <string name="service_gui_security_CIPHER">密码：%1$s</string>
-    <string name="service_gui_security_CLEAR">清除</string>
-    <string name="service_gui_security_COMPARE_WITH_PARTNER_SHORT">与伙伴比较：</string>
-    <string name="service_gui_security_CONFIRM">确认</string>
-    <string name="service_gui_security_ENCRYPTION_REQUIRED">需要加密！</string>
-    <string name="service_gui_security_NO_VIDEO">没有视频</string>
-    <string name="service_gui_security_SECURE_AUDIO">安全音频</string>
-    <string name="service_gui_security_SECURE_VIDEO">安全视频</string>
-    <string name="service_gui_security_SECURITY_ALERT">正在尝试安全调用。将断开连接</string>
-    <string name="service_gui_security_STRING_COMPARED">比较的字符串：</string>
-    <string name="service_gui_security_VERIFY_TOAST">呼叫安全启用！ 点击以立即比较安全字符串或稍后使用菜单。</string>
-    <string name="service_gui_security_VIDEO_NOT_SECURED">视频不安全</string>
-    <string name="service_gui_avatar_CHOOSE_ICON">选择图片</string>
-    <string name="service_gui_avatar_REMOVE_ICON">移除当前图片</string>
+    <string name="security_audio_not_secure">音频不安全</string>
+    <string name="security_call_not_secured_tooltip">调用不安全。</string>
+    <string name="security_call_secured_compare_tooltip">按此处与您的合作伙伴比较安全秘密。</string>
+    <string name="security_call_secured_tooltip">安全通话。有关更多信息，请按此处。</string>
+    <string name="security_cipher">密码：%1$s</string>
+    <string name="security_clear">清除</string>
+    <string name="security_compare_with_partner_short">与伙伴比较：</string>
+    <string name="confirm">确认</string>
+    <string name="security_encryption_required">需要加密！</string>
+    <string name="security_no_video">没有视频</string>
+    <string name="security_secure_audio">安全音频</string>
+    <string name="security_secure_video">安全视频</string>
+    <string name="security_alert">正在尝试安全调用。将断开连接</string>
+    <string name="security_string_compared">比较的字符串：</string>
+    <string name="security_verify_toast">呼叫安全启用！ 点击以立即比较安全字符串或稍后使用菜单。</string>
+    <string name="security_video_not_secured">视频不安全</string>
+    <string name="avatar_chose_icon">选择图片</string>
+    <string name="avatar_remove_icon">移除当前图片</string>
 
     <!-- Update checker -->
-    <string name="plugin_update_Download">下载</string>
-    <string name="plugin_update_Install">安装</string>
-    <string name="plugin_update_ReInstall">重新安装</string>
-    <string name="plugin_update_Download_Completed">下载完成</string>
-    <string name="plugin_update_Download_Ready">更新 (%1$s) 已下载并准备安装。</string>
-    <string name="plugin_update_InProgress">进行中</string>
-    <string name="plugin_update_Download_InProgress">正在下载更新。</string>
-    <string name="plugin_update_Update_Available">%3$s 的新发布版本 (%1$s-%2$s) 可用。当前安装的版本：(%4$s-%5$s).</string>
-    <string name="plugin_update_UpToDate">您当前安装的版本：(%1$s-%2$s) 是最新的。\n在线版本：(%3$s-%4$s).</string>
-    <string name="plugin_update_New_Version_None">没有新版本</string>
-    <string name="plugin_update_Install_Update">安装更新</string>
-    <string name="plugin_update_Download_failed">无法下载新更新！</string>
-    <string name="plugin_update_Check_Update">检查更新</string>
-    <string name="plugin_update_Version_Invalid">下载的apk不匹配； 实际：%1$s (%2$s)</string>
-    <string name="plugin_update_New_Version_Available">有新的软件版本 (%1$s) 可用。</string>
+    <string name="update_download">下载</string>
+    <string name="update_install">安装</string>
+    <string name="update_reInstall">重新安装</string>
+    <string name="update_download_completed">下载完成</string>
+    <string name="update_download_ready">更新 (%1$s) 已下载并准备安装。</string>
+    <string name="update_in_progress">进行中</string>
+    <string name="update_download_in_progress">正在下载更新。</string>
+    <string name="update_update_available">%3$s 的新发布版本 (%1$s-%2$s) 可用。当前安装的版本：(%4$s-%5$s).</string>
+    <string name="update_up_to_date">您当前安装的版本：(%1$s-%2$s) 是最新的。\n在线版本： (%3$s-%4$s).</string>
+    <string name="update_new_version_none">没有新版本</string>
+    <string name="update_install_update">安装更新</string>
+    <string name="update_download_failed">无法下载新更新！</string>
+    <string name="update_check_update">检查更新</string>
+    <string name="update_version_invalid">下载的apk不匹配； 实际：%1$s (%2$s)</string>
+    <string name="update_vew_version_available">有新的软件版本 (%1$s) 可用。</string>
 
     <!-- account info -->
-    <string name="plugin_accountinfo_ABOUT_ME">关于本人：</string>
-    <string name="plugin_accountinfo_ABOUT_ME_HINT">在此框中输入您的简短描述</string>
-    <string name="plugin_accountinfo_AGE">年龄：</string>
-    <string name="plugin_accountinfo_BDAY">出生日期：</string>
-    <string name="plugin_accountinfo_CHANGE">更改</string>
-    <string name="plugin_accountinfo_CITY">城市：</string>
-    <string name="plugin_accountinfo_COUNTRY">国家：</string>
-    <string name="plugin_accountinfo_DISCARD_CHANGE">用户离线 - 放弃所有帐户信息更改。</string>
-    <string name="plugin_accountinfo_DISPLAY_NAME">显示名称：</string>
-    <string name="plugin_accountinfo_EMAIL">电子邮箱：</string>
-    <string name="plugin_accountinfo_EXTENDED">扩展</string>
-    <string name="plugin_accountinfo_FIRST_NAME">名字：</string>
-    <string name="plugin_accountinfo_GENDER">性别：</string>
-    <string name="plugin_accountinfo_GLOBAL_ICON">使用全局图标</string>
-    <string name="plugin_accountinfo_JOB_TITLE">职位：</string>
-    <string name="plugin_accountinfo_LAST_NAME">姓氏：</string>
-    <string name="plugin_accountinfo_LOCAL_ICON">使用这个图标：</string>
-    <string name="plugin_accountinfo_MIDDLE_NAME">中间名：</string>
-    <string name="plugin_accountinfo_MOBILE_PHONE">手机：</string>
-    <string name="plugin_accountinfo_NICKNAME">昵称：</string>
-    <string name="plugin_accountinfo_NO_REGISTERED_MESSAGE">帐户离线 - 必须在线才能更改帐户信息。</string>
-    <string name="plugin_accountinfo_NOT_SUPPORTED">帐户信息不可用。</string>
-    <string name="plugin_accountinfo_ONLY_MESSAGE">仅短信</string>
-    <string name="plugin_accountinfo_ORGANIZATION">组织名称：</string>
-    <string name="plugin_accountinfo_PHONE">电话：</string>
-    <string name="plugin_accountinfo_POST">邮政编码：</string>
-    <string name="plugin_accountinfo_REGION">地区：</string>
-    <string name="plugin_accountinfo_SELECT_ACCOUNT">请选择一个账户：</string>
-    <string name="plugin_accountinfo_STREET">街道地址：</string>
-    <string name="plugin_accountinfo_TITLE">账户信息</string>
-    <string name="plugin_accountinfo_USER_PICTURES">用户图片</string>
-    <string name="plugin_accountinfo_WORK_EMAIL">工作邮箱：</string>
-    <string name="plugin_accountinfo_WORK_PHONE">工作电话：</string>
+    <string name="accountinfo_about_me">关于本人：</string>
+    <string name="accountinfo_about_me_hint">在此框中输入您的简短描述</string>
+    <string name="accountinfo_age">年龄：</string>
+    <string name="accountinfo_birth_date">出生日期：</string>
+    <string name="accountinfo_change">更改</string>
+    <string name="accountinfo_city">城市：</string>
+    <string name="accountinfo_country">国家：</string>
+    <string name="accountinfo_discard_change">用户离线 - 放弃所有帐户信息更改。</string>
+    <string name="accountinfo_display_name">显示名称：</string>
+    <string name="accountinfo_email">电子邮箱：</string>
+    <string name="accountinfo_extended">扩展</string>
+    <string name="accountinfo_first_name">名字：</string>
+    <string name="accountinfo_gender">性别：</string>
+    <string name="accountinfo_global_icon">使用全局图标</string>
+    <string name="accountinfo_job_title">职位：</string>
+    <string name="accountinfo_last_name">姓氏：</string>
+    <string name="accountinfo_local_icon">使用这个图标：</string>
+    <string name="accountinfo_middle_name">中间名：</string>
+    <string name="accountinfo_mobile_phone">手机：</string>
+    <string name="accountinfo_nickname">昵称：</string>
+    <string name="accountinfo_not_registered_message">帐户离线 - 必须在线才能更改帐户信息。</string>
+    <string name="accountinfo_not_supported">帐户信息不可用。</string>
+    <string name="accountinfo_only_message">仅短信</string>
+    <string name="accountinfo_organisation">组织名称：</string>
+    <string name="accountinfo_phone">电话：</string>
+    <string name="accountinfo_postcode">邮政编码：</string>
+    <string name="accountinfo_region">地区：</string>
+    <string name="accountinfo_select_account">请选择一个账户：</string>
+    <string name="accountinfo_street">街道地址：</string>
+    <string name="accountinfo_title">账户信息</string>
+    <string name="accountinfo_user_picture">用户图片</string>
+    <string name="accountinfo_work_email">工作邮箱：</string>
+    <string name="accountinfo_work_phone">工作电话：</string>
 
     <!-- Certificate configuration plugin -->
-    <string name="plugin_certconfig_TITLE">TLS 配置</string>
-    <string name="plugin_certconfig_TRUSTSTORE_CONFIG">可信根证书的来源</string>
-    <string name="plugin_certconfig_CERT_LIST_TITLE">TLS 客户端认证配置</string>
-    <string name="plugin_certconfig_CERT_LIST_DESCRIPTION">可以在帐户配置中选择此处管理的配置作为客户端 TLS 证书（例如，使用针对您的 SIP 提供商的证书而不是用户名和密码进行身份验证）。</string>
-    <string name="plugin_certconfig_ALIAS">KeyStore 中的别名</string>
-    <string name="plugin_certconfig_KEYSTORE_TYPE">类型</string>
-    <string name="plugin_certconfig_CERT_ENTRY_TITLE">TLS 客户端证书</string>
-    <string name="plugin_certconfig_KEYSTORE">文件</string>
-    <string name="plugin_certconfig_KEYSTORE_PASSWORD">密码</string>
-    <string name="plugin_certconfig_INCOMPLETE">请为所有字段输入一个值</string>
-    <string name="plugin_certconfig_SHOW_CERT_EXCEPTION">无法显示证书 (%1$s)。</string>
-    <string name="plugin_certconfig_KEYSTORE_EXCEPTION">无法加载密钥库（%1$s）。</string>
-    <string name="plugin_certconfig_FILE_TYPE_DESCRIPTION">证书存储（PKCS#11 模块、PKCS#12 文件、Java ks 密钥库）</string>
-    <string name="plugin_certconfig_ALIAS_LOAD_EXCEPTION">无法从密钥库 (%1$s) 获取别名。</string>
-    <string name="plugin_certconfig_INVALID_KEYSTORE_TYPE">所选的密钥库类型似乎无效 (%1$s)。</string>
-    <string name="plugin_certconfig_REVOCATION_TITLE">证书撤销选项</string>
-    <string name="plugin_certconfig_REVOCATION_CHECK_ENABLED">启用 CRL（证书吊销列表）检查</string>
-    <string name="plugin_certconfig_REVOCATION_OCSP_ENABLED">OCSP（在线证书状态协议）检查已启用</string>
+    <string name="certconfig_title">TLS 配置</string>
+    <string name="certconfig_trusted_store">可信根证书的来源</string>
+    <string name="certconfig_cert_list_title">TLS 客户端认证配置</string>
+    <string name="certconfig_cert_list_description">可以在帐户配置中选择此处管理的配置作为客户端 TLS 证书（例如，使用针对您的 SIP 提供商的证书而不是用户名和密码进行身份验证）。</string>
+    <string name="certconfig_alias">KeyStore 中的别名</string>
+    <string name="certconfig_keystore_type">类型</string>
+    <string name="certconfig_cert_entry_title">TLS 客户端证书</string>
+    <string name="certconfig_keystore_file">文件</string>
+    <string name="certconfig_keystore_password">密码</string>
+    <string name="certconfig_incomplete">请为所有字段输入一个值</string>
+    <string name="certconfig_show_cert_exception">无法显示证书 (%1$s)。</string>
+    <string name="certconfig_keystore_exception">无法加载密钥库（%1$s）。</string>
+    <string name="certconfig_file_type_description">证书存储（PKCS#11 模块、PKCS#12 文件、Java ks 密钥库）</string>
+    <string name="certconfig_alias_load_exception">无法从密钥库 (%1$s) 获取别名。</string>
+    <string name="certconfig_invalid_keystore_type">所选的密钥库类型似乎无效 (%1$s)。</string>
+    <string name="certconfig_revocation_title">证书撤销选项</string>
+    <string name="certconfig_revocation_check_enabled">启用 CRL（证书吊销列表）检查</string>
+    <string name="certconfig_revocation_ocsp_enabled">OCSP（在线证书状态协议）检查已启用</string>
 
     <!-- connection info -->
-    <string name="plugin_connectioninfo_TITLE">连接信息</string>
+    <string name="connectioninfo_title">连接信息</string>
 
     <!-- contact info -->
-    <string name="plugin_contactinfo_TITLE">联系方式</string>
-    <string name="plugin_contactinfo_CONTACT_SUMMARY_DESCRIPTION">联系人信息摘要</string>
-    <string name="plugin_contactinfo_CONTACT_EXTENDED_DESCRIPTION">扩展联系信息</string>
-    <string name="service_gui_INFO_NOT_SPECIFIED">[未指定]</string>
-    <string name="plugin_contactinfo_USER_PICTURES">用户图片</string>
-    <string name="plugin_contactinfo_USER_STATUS_MESSAGE">状态短信</string>
+    <string name="contactinfo_title">联系方式</string>
+    <string name="contactinfo_contact_summary_description">联系人信息摘要</string>
+    <string name="contactinfo_contact_extended_description">扩展联系信息</string>
+    <string name="contactinfo_not_specified">[未指定]</string>
+    <string name="contactinfo_user_pictures">用户图片</string>
+    <string name="contactinfo_status_message">状态短信</string>
 
-    <!-- Notification strings -->
-    <string name="plugin_notificationconfig_event_BusyCall">通话忙</string>
-    <string name="plugin_notificationconfig_event_BusyCall_description">忙线说明</string>
-    <string name="plugin_notificationconfig_event_CallSaved">通话已保存</string>
-    <string name="plugin_notificationconfig_event_CallSecurityError">调用安全错误</string>
-    <string name="plugin_notificationconfig_event_CallSecurityError_description">调用安全错误描述</string>
-    <string name="plugin_notificationconfig_event_CallSecurityOn">调用安全性</string>
-    <string name="plugin_notificationconfig_event_CallSecurityOn_description">调用安全描述</string>
-    <string name="plugin_notificationconfig_event_Dialing">拨号</string>
-    <string name="plugin_notificationconfig_event_Dialing_description">拨号说明</string>
-    <string name="plugin_notificationconfig_event_HangUp">挂断</string>
-    <string name="plugin_notificationconfig_event_HangUp_description">挂机说明</string>
-    <string name="plugin_notificationconfig_event_IncomingCall">来电</string>
-    <string name="plugin_notificationconfig_event_IncomingCall_description">来电说明。</string>
-    <string name="plugin_notificationconfig_event_IncomingFile">传入文件</string>
-    <string name="plugin_notificationconfig_event_IncomingInvitation">传入邀请</string>
-    <string name="plugin_notificationconfig_event_IncomingMessage">传入短信</string>
-    <string name="plugin_notificationconfig_event_IncomingMessage_description">传入短信描述</string>
-    <string name="plugin_notificationconfig_event_LogFilesArchived">存档的日志文件</string>
-    <string name="plugin_notificationconfig_event_MissedCall">未接来电</string>
-    <string name="plugin_notificationconfig_event_NetworkNotifications">网络通知</string>
-    <string name="plugin_notificationconfig_event_NetworkNotifications_description">网络通知描述</string>
-    <string name="plugin_notificationconfig_event_ProactiveNotification">输入通知</string>
-    <string name="plugin_notificationconfig_event_ProactiveNotification_description">主动聊天状态通知描述</string>
-    <string name="plugin_notificationconfig_event_OutgoingCall">去电</string>
-    <string name="plugin_notificationconfig_event_OutgoingCall_description">去电说明</string>
-    <string name="plugin_notificationconfig_event_SecurityMessage">安全短信</string>
-    <string name="plugin_notificationconfig_event_SecurityMessage_description">安全短信描述</string>
-    <string name="plugin_notificationconfig_notification_sound">通知设备上的声音</string>
-    <string name="plugin_notificationconfig_playback_sound">播放设备上的声音</string>
-    <string name="plugin_notificationconfig_popup_notification">弹出通知</string>
-    <string name="plugin_notificationconfig_vibration">振动</string>
-    <string name="plugin_notificationconfig_sound_file">声音文件：</string>
+    <!-- Notification strings (do not change; getI18NString(NotificationSettings.NOTICE_PREFIX + eventType))-->
+    <string name="notificationconfig_event_BusyCall">通话忙</string>
+    <string name="notificationconfig_event_BusyCall_description">忙线说明</string>
+    <string name="notificationconfig_event_CallSaved">通话已保存</string>
+    <string name="notificationconfig_event_CallSecurityError">调用安全错误</string>
+    <string name="notificationconfig_event_CallSecurityError_description">调用安全错误描述</string>
+    <string name="notificationconfig_event_CallSecurityOn">调用安全性</string>
+    <string name="notificationconfig_event_CallSecurityOn_description">调用安全描述</string>
+    <string name="notificationconfig_event_Dialing">拨号</string>
+    <string name="notificationconfig_event_Dialing_description">拨号说明</string>
+    <string name="notificationconfig_event_HangUp">挂断</string>
+    <string name="notificationconfig_event_HangUp_description">挂机说明</string>
+    <string name="notificationconfig_event_IncomingCall">来电</string>
+    <string name="notificationconfig_event_IncomingCall_description">来电说明。</string>
+    <string name="notificationconfig_event_IncomingFile">传入文件</string>
+    <string name="notificationconfig_event_IncomingInvitation">传入邀请</string>
+    <string name="notificationconfig_event_IncomingMessage">传入短信</string>
+    <string name="notificationconfig_event_IncomingMessage_description">传入短信描述</string>
+    <string name="notificationconfig_event_LogFilesArchived">存档的日志文件</string>
+    <string name="notificationconfig_event_MissedCall">未接来电</string>
+    <string name="notificationconfig_event_NetworkNotifications">网络通知</string>
+    <string name="notificationconfig_event_NetworkNotifications_description">网络通知描述</string>
+    <string name="notificationconfig_event_ProactiveNotification">输入通知</string>
+    <string name="notificationconfig_event_ProactiveNotification_description">主动聊天状态通知描述</string>
+    <string name="notificationconfig_event_OutgoingCall">去电</string>
+    <string name="notificationconfig_event_OutgoingCall_description">去电说明</string>
+    <string name="notificationconfig_event_SecurityMessage">安全短信</string>
+    <string name="notificationconfig_event_SecurityMessage_description">安全短信描述</string>
+    <string name="notificationconfig_notification_sound">通知设备上的声音</string>
+    <string name="notificationconfig_playback_sound">播放设备上的声音</string>
+    <string name="notificationconfig_popup_notification">弹出通知</string>
+    <string name="notificationconfig_vibration">振动</string>
+    <string name="notificationconfig_sound_file">声音文件：</string>
 
     <!-- call recording config -->
-    <string name="plugin_callrecordingconfig_CALL_SAVED">通话保存成功</string>
-    <string name="plugin_callrecordingconfig_CALL_SAVED_TO">保存到：%1$s</string>
+    <string name="callrecordingconfig_call_saved">通话保存成功</string>
+    <string name="callrecordingconfig_call_saved_to">保存到：%1$s</string>
 
     <!-- ZRTP Securing -->
-    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_CHANGED">音频设备配置已更改</string>
-    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">点击此处进行设备管理</string>
-    <string name="impl_media_configform_NO_PREVIEW">预览</string>
-    <string name="impl_media_security_CHECKSUM_MISMATCH">&lt;html>内部 ZRTP 数据包校验和不匹配。&lt;br />如果您经常看到此短信，这可能意味着拒绝服务攻击！&lt;/html></string>
-    <string name="impl_media_security_DATA_SEND_FAILED">&lt;html>发送加密数据失败。互联网数据连接或对等端已关闭。&lt;br /><b>您的通话不安全</b>&lt;br />错误代码：%1$s&lt;/html></string>
-    <string name="impl_media_security_RETRY_RATE_EXCEEDED">&lt;html>安全协商期间重试次数过多。这可能意味着对方有网络连接问题。&lt;br /><b>您的通话不安全</b>&lt;br />错误代码：%1$s&lt;/html></string>
-    <string name="impl_media_security_INTERNAL_PROTOCOL_ERROR">&lt;html>出现内部协议错误。&lt;br/>&lt;b>你的调用不安全&lt;/b>&lt;br/>错误代码：%1$s&lt;/html ></string>
-    <string name="impl_media_security_SECURITY_OFF">关闭通话加密支持</string>
-    <string name="impl_media_security_SECURITY_ON">调用加密支持</string>
-    <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>检测到严重的安全问题。&lt;br/>&lt;b>你的通话不安全&lt;/b>&lt;br/>错误代码：%1$s&lt;/html></string>
-    <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>没有可用的保留共享秘密。&lt;br/>&lt;b>建议使用 SAS 验证&lt;/b>&lt;/html></string>
-    <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>缺少预期的保留共享机密。&lt;br/>&lt;b>需要 SAS 验证&lt;/b>&lt;br/>如果 SAS 代码不匹配，则挂断 然后重试&lt;/html></string>
-    <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>检测到严重的 ZRTP 问题。&lt;br/>&lt;b>您的通话不安全&lt;/b>&lt;br/>错误代码：%1$s&lt;/html></string>
-    <string name="impl_media_security_ZRTP_HANDSHAKE_TIMEOUT">通话不安全； RTP 握手超时：%1$s</string>
+    <string name="media_configform_audio_device_config_changed">音频设备配置已更改</string>
+    <string name="media_configform_audio_device_config_management_click">点击此处进行设备管理</string>
+    <string name="media_configform_preview">预览</string>
+    <string name="media_security_checksum_mismatch">&lt;html>内部 ZRTP 数据包校验和不匹配。&lt;br />如果您经常看到此短信，这可能意味着拒绝服务攻击！&lt;/html></string>
+    <string name="media_security_data_send_failed">&lt;html>发送加密数据失败。互联网数据连接或对等端已关闭。&lt;br /><b>您的通话不安全</b>&lt;br />错误代码：%1$s&lt;/html></string>
+    <string name="imedia_security_retry_rate_exceeded">&lt;html>安全协商期间重试次数过多。这可能意味着对方有网络连接问题。&lt;br /><b>您的通话不安全</b>&lt;br />错误代码：%1$s&lt;/html></string>
+    <string name="media_security_internal_protocol_error">&lt;html>出现内部协议错误。&lt;br/>&lt;b>你的调用不安全&lt;/b>&lt;br/>错误代码：%1$s&lt;/html ></string>
+    <string name="media_security_off">关闭通话加密支持</string>
+    <string name="media_security_on">调用加密支持</string>
+    <string name="media_security_severe_generic_message">&lt;html>检测到严重的安全问题。&lt;br/>&lt;b>你的通话不安全&lt;/b>&lt;br/>错误代码：%1$s&lt;/html></string>
+    <string name="media_security_warning_no_rs_match">&lt;html>没有可用的保留共享秘密。&lt;br/>&lt;b>建议使用 SAS 验证&lt;/b>&lt;/html></string>
+    <string name="media_security_warning_no_expected_rs_match">&lt;html>缺少预期的保留共享机密。&lt;br/>&lt;b>需要 SAS 验证&lt;/b>&lt;br/>如果 SAS 代码不匹配，则挂断 然后重试&lt;/html></string>
+    <string name="media_security_zrtp_generic_message">&lt;html>检测到严重的 ZRTP 问题。&lt;br/>&lt;b>您的通话不安全&lt;/b>&lt;br/>错误代码：%1$s&lt;/html></string>
+    <string name="media_security_zrtp_handshake_timeout">通话不安全； RTP 握手超时：%1$s</string>
 
     <!-- DTLS-SRTP Securing -->
-    <string name="imp_media_security_ENCRYPTION_ENDED">通话加密结束：%1$s</string>
+    <string name="media_security_encryption_ended">通话加密结束：%1$s</string>
 
     <!-- OTR plugin -->
-    <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">验证好友</string>
+    <string name="otr_menu_authenticate_buddy">验证好友</string>
     <string name="plugin_otr_menu_CB_AUTO">自动发起私信</string>
     <string name="plugin_otr_menu_CB_ENABLE">启用私人短信</string>
     <string name="plugin_otr_menu_CB_REQUIRE">需要私信</string>
@@ -1028,17 +1016,17 @@
 
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">纯文本</string>
-    <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">验证好友</string>
-    <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">您有未经身份验证的好友。未经验证的好友无法收到 OMEMO 短信。检查以进行身份验证。</string>
-    <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">我的指纹 %1$s:\n%2$s</string>
-    <string name="omemo_authbuddydialog_VERIRY_BUDDY">验证好友</string>
+    <string name="omemo_authbuddy_authenticate_buddy">验证好友</string>
+    <string name="omemo_authbuddy_authenticate_info">您有未经身份验证的好友。未经验证的好友无法收到 OMEMO 短信。检查以进行身份验证。</string>
+    <string name="omemo_authbuddy_local_fingerprint">我的指纹 %1$s:\n%2$s</string>
+    <string name="omemo_authbuddy_verify_buddy">验证好友</string>
     <string name="omemo_identity_keypairs_missing">为 %1$s 创建 OMEMO IdentityKeyPairs</string>
     <string name="omemo_identity_key_invalid">omemoDevice 的 IdentityKey 无效：%1$s。\n异常：%2$s。</string>
     <string name="omemo_identity_key_missing">%1$s 的 OMEMO IdentityKey 丢失。\n继续从服务器下载。</string>
     <string name="omemo_identity_keypairs_invalid">omemoDevice 的 IdentityKeyPairs 无效：%1$s。\n异常：%2$s。</string>
-    <string name="omemo_init_failed_CorruptedOmemoKeyException">初始化 OmemoManager 失败，omemo 短信传递不工作。如果问题仍然存在
+    <string name="omemo_init_failed_corrupted_omemoKey_exception">初始化 OmemoManager 失败，omemo 短信传递不工作。如果问题仍然存在
          重新启动后，请继续为失败的 omomoDevice 执行“重新生成 OMEMO 身份”：%1$s。\n\n异常：%2$s。</string>
-    <string name="omemo_init_failed_noresponse">初始化 OmemoManager 失败，omemo 短信可能无法正常工作：%1$s</string>
+    <string name="omemo_init_failed_no_response">初始化 OmemoManager 失败，omemo 短信可能无法正常工作：%1$s</string>
     <string name="omemo_init_failed_title">OmemoManager 初始化失败</string>
     <string name="omemo_menu_authenticated">OMEMO 认证</string>
     <string name="omemo_send_error">短信发送失败。请在更正所有错误后重试：%1$s</string>
@@ -1048,59 +1036,59 @@
     <string name="omemo_purge_inactive_device_error">无法删除不活动的 omemo 设备：%1$s。</string>
 
     <!-- Account proxy settings -->
-    <string name="service_gui_settings_BOSH_PROXY">BOSH 代理配置</string>
-    <string name="service_gui_settings_BOSH_PROXY_SUMMARY">通过 BOSH/Proxy 为帐户设置连接</string>
-    <string name="plugin_proxy_BOSHURL_NULL">BOSH URL 字段内容不能为空</string>
-    <string name="plugin_proxy_HOST_PORT_NULL">代理主机和端口字段内容不能为空</string>
+    <string name="settings_bosh_proxy">BOSH 代理配置</string>
+    <string name="settings_bosh_proxy_summary">通过 BOSH/Proxy 为帐户设置连接</string>
+    <string name="bosh_proxy_url_null">BOSH URL 字段内容不能为空</string>
+    <string name="bosh_proxy_host_port_null">代理主机和端口字段内容不能为空</string>
 
-    <string name="plugin_bosh_proxy_TYPE">类型：</string>
-    <string name="plugin_proxy_PROXY_BOSH_URL">BOSH 网址：</string>
-    <string name="plugin_proxy_PROXY_BOSH_USE_HTTP">使用 HTTP 代理</string>
-    <string name="plugin_proxy_PROXY_HOST">代理主机：</string>
-    <string name="plugin_proxy_PROXY_PORT">代理端口：</string>
+    <string name="bosh_proxy_type">类型：</string>
+    <string name="bosh_proxy_url">BOSH 网址：</string>
+    <string name="bosh_proxy_use_http">使用 HTTP 代理</string>
+    <string name="bosh_proxy_host">代理主机：</string>
+    <string name="bosh_proxy_port">代理端口：</string>
 
     <!-- Provisioning Plugin-->
-    <string name="plugin_provisioning_AUTO">自动发现配置 URI</string>
-    <string name="plugin_provisioning_BONJOUR">卓悦</string>
-    <string name="plugin_provisioning_CLIPBOARD_FAILED">复制 UUID 到剪贴板失败</string>
-    <string name="plugin_provisioning_COPYTOCLIPBOARD">复制 UUID 到剪贴板</string>
-    <string name="plugin_provisioning_CREDENTIALS">最后存储的配置凭证</string>
-    <string name="plugin_provisioning_ENABLE_DISABLE">启用配置</string>
-    <string name="plugin_provisioning_EXIT_ON_FAIL">如果配置失败则退出应用</string>
-    <string name="plugin_provisioning_FORGET_PASSWORD">忘记密码</string>
-    <string name="plugin_provisioning_MANUAL">手动指定配置 URI</string>
-    <string name="plugin_provisioning_METHOD">配置方法</string>
-    <string name="plugin_provisioning_PROV_FAILED">配置失败</string>
-    <string name="plugin_provisioning_PROV_FAILED_MSG">&lt;html>供应失败。%1$s！&lt;br />请稍后再试或联系您的管理员。&lt;html></string>
-    <string name="plugin_provisioning_PROVISIONING">供应</string>
-    <string name="plugin_provisioning_PROVISIONING_SUMMARY">配置供应设置</string>
-    <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">您确定要删除配置密码吗？</string>
-    <string name="plugin_provisioning_RESTART_WARNING">请注意，您的更改只会在您下次开始通话时生效！</string>
+    <string name="provisioning_auto">自动发现配置 URI</string>
+    <string name="provisioning_bonjour">卓悦</string>
+    <string name="provisioning_clipboard_failed">复制 UUID 到剪贴板失败</string>
+    <string name="provisioning_copy_to_clipboard">复制 UUID 到剪贴板</string>
+    <string name="provisioning_credentials">最后存储的配置凭证</string>
+    <string name="provisioning_enable">启用配置</string>
+    <string name="provisioning_exit_on_failed">如果配置失败则退出应用</string>
+    <string name="provisioning_forget_password">忘记密码</string>
+    <string name="provisioning_manual">手动指定配置 URI</string>
+    <string name="provisioning_method">配置方法</string>
+    <string name="provisioning_failed">配置失败</string>
+    <string name="provisioning_failed_message">&lt;html>供应失败。%1$s！&lt;br />请稍后再试或联系您的管理员。&lt;html></string>
+    <string name="provisioning">供应</string>
+    <string name="provisioning_summary">配置供应设置</string>
+    <string name="provisioning_remove_credentials_message">您确定要删除配置密码吗？</string>
+    <string name="provisioning_restart_alert">请注意，您的更改只会在您下次开始通话时生效！</string>
 
     <!-- DNS config -->
-    <string name="service_gui_settings_DNSSEC_DANE">SSL/DNSSEC/DANE 安全</string>
-    <string name="service_gui_settings_DNS">DNS</string>
-    <string name="service_gui_settings_DNS_SUMMARY">配置 DNS 设置</string>
-    <string name="plugin_dnsconfig_DNSSEC">DNS 安全 (DNSSEC)</string>
-    <string name="plugin_dnsconfig_dnssec_DOMAIN_NAME">域</string>
-    <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">状态更改失败</string>
-    <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">更改 DNSSEC 启用状态失败。</string>
-    <string name="plugin_dnsconfig_dnssec_MODE">行为</string>
-    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING">&lt;html>请注意，启用或禁用 DNSSEC 会禁用并行解析器，并且只会在您下次启动 aTalk 时生效。&lt;/html></string>
-    <string name="plugin_dnsconfig_border_TITLE">备份解析器</string>
-    <string name="plugin_dnsconfig_dnssec_chkAbsolute">将所有域名视为绝对域名</string>
-    <string name="plugin_dnsconfig_dnssec_chkEnabled">启用 DNSSEC 解析器</string>
-    <string name="plugin_dnsconfig_dnssec_lblDefault">默认行为</string>
-    <string name="plugin_dnsconfig_dnssec_lblNameservers">自定义名称服务器</string>
-    <string name="plugin_dnsconfig_dnssec_lblNameserversHint">&lt;html>多个服务器可以用逗号分隔，例如 149.20.64.20、149.20.64.21（OARC 的开放式 DNSSEC 验证解析器）&lt;/html></string>
+    <string name="settings_dnssec_dane">SSL/DNSSEC/DANE 安全</string>
+    <string name="settings_dns">DNS</string>
+    <string name="settings_dns_summary">配置 DNS 设置</string>
+    <string name="dnsconfig_dnssec">DNS 安全 (DNSSEC)</string>
+    <string name="dnsconfig_dnssec_domain_name">域</string>
+    <string name="dnsconfig_dnssec_enable_failed">状态更改失败</string>
+    <string name="dnsconfig_dnssec_enable_failed_message">更改 DNSSEC 启用状态失败。</string>
+    <string name="dnsconfig_dnssec_mode">行为</string>
+    <string name="dnsconfig_dnssec_restart_alert">&lt;html>请注意，启用或禁用 DNSSEC 会禁用并行解析器，并且只会在您下次启动 aTalk 时生效。&lt;/html></string>
+    <string name="dnsconfig_dnssec_title">备份解析器</string>
+    <string name="dnsconfig_dnssec_check_absolute">将所有域名视为绝对域名</string>
+    <string name="dnsconfig_dnssec_check_enable">启用 DNSSEC 解析器</string>
+    <string name="dnsconfig_dnssec_label_default">默认行为</string>
+    <string name="dnsconfig_dnssec_label_name_servers">自定义名称服务器</string>
+    <string name="dnsconfig_dnssec_label_name_servers_hint">&lt;html>多个服务器可以用逗号分隔，例如 149.20.64.20、149.20.64.21（OARC 的开放式 DNSSEC 验证解析器）&lt;/html></string>
 
-    <string name="util_dns_INSECURE_ANSWER_TITLE">DNSSEC 失败</string>
-    <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">%1$s 的 DNS 应答不安全。</string>
-    <string name="util_dns_INSECURE_ANSWER_MESSAGE_REASON">%1$s 的 DNS 应答不安全。\n原因：%2$s</string>
-    <string name="util_dns_DNSSEC_ADVANCED_OPTIONS">显示高级选项</string>
-    <string name="util_dns_DNSSEC_ADVANCED_REASON_BOGUS">&lt;html>DNSSEC 签名区域 %1$s 返回了无效数据。&lt;br/>%2$s&lt;/html></string>
-    <string name="util_dns_DNSSEC_ADVANCED_REASON_UNSIGNED">%1$s 对 %2$s 的查询未签名。</string>
-    <string name="util_dns_DNSSEC_WARNING">&lt;html>&lt;div width="600">%1$s 已尝试连接到位于 &lt;b>%2$s&lt;&lt;/b> 的服务器，
+    <string name="dns_insecure_answer_title">DNSSEC 失败</string>
+    <string name="dns_insecure_answer_message_insecure">%1$s 的 DNS 应答不安全。</string>
+    <string name="dns_insecure_answer_message_reason">%1$s 的 DNS 应答不安全。\n原因：%2$s</string>
+    <string name="dns_dnssec_advanced_options">显示高级选项</string>
+    <string name="dns_dnssec_advanced_reason_invalid">&lt;html>DNSSEC 签名区域 %1$s 返回了无效数据。&lt;br/>%2$s&lt;/html></string>
+    <string name="dns_dnssec_advanced_reason_unsigned">%1$s 对 %2$s 的查询未签名。</string>
+    <string name="dns_dnssec_warning">&lt;html>&lt;div width="600">%1$s 已尝试连接到位于 &lt;b>%2$s&lt;&lt;/b> 的服务器，
          这是一个具有称为 DNSSEC 的强大保护的域。%1$s 获得的信息
          来自 DNS 服务器的信息与 DNSSEC 提供的有关此域的信息不一致。&lt;br/>&lt;br/><b>
          除非在 %2$s 处犯了非常严重的错误，否则这不应该发生。因此，这是一个非常强烈的迹象，表明某事是
@@ -1111,196 +1099,188 @@
          服务提供商通知他们有关该问题。&lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
-    <string name="service_gui_settings_SSL_CERTIFICATE">SSL 证书</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_PURGE">删除用户批准的证书：%1$s</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_REMOVE">删除证书</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">管理 SSL 证书</string>
+    <string name="settings_ssl_certificate">SSL 证书</string>
+    <string name="settings_ssl_certificate_purge">删除用户批准的证书：%1$s</string>
+    <string name="settings_ssl_certificate_remove">删除证书</string>
+    <string name="settings_ssl_certificate_summary">管理 SSL 证书</string>
 
     <!-- Client TLS Certificates -->
-    <string name="service_gui_TLS_CERT">客户端 TLS 证书</string>
-    <string name="service_gui_TLS_CERT_PROMPT">请选择TLS证书</string>
-    <string name="service_gui_TLS_CERT_SUMMARY">证书在服务器用户认证中的使用</string>
+    <string name="tls_cert">客户端 TLS 证书</string>
+    <string name="tls_cert_prompt">请选择TLS证书</string>
+    <string name="tls_cert_summary">证书在服务器用户认证中的使用</string>
 
     <!-- Reset ZID -->
-    <string name="reset_ZID_summary">重置永久 ZRTP 标识符</string>
-    <string name="reset_ZID_title">重置 ZID</string>
-    <string name="ZID_has_been_reset_toast">ZID 已重置</string>
+    <string name="zid_reset_summary">重置永久 ZRTP 标识符</string>
+    <string name="zid_reset_title">重置 ZID</string>
+    <string name="zid_reset_done">ZID 已重置</string>
 
     <!-- Settings -->
-    <string name="service_gui_COMMIT_PROGRESS_MSG">正在存储账户变更，请稍候&#8230;</string>
-    <string name="service_gui_COMMIT_PROGRESS_TITLE">"提交&#8230;"</string>
-    <string name="service_gui_SETTINGS_NOT_SET">（未设置）</string>
+    <string name="commit_progress_message">正在存储账户变更，请稍候&#8230;</string>
+    <string name="commit_progress_title">"提交&#8230;"</string>
+    <string name="settings_not_set">（未设置）</string>
 
     <!-- Encoding settings -->
-    <string name="service_gui_ENC_AUDIO_TITLE">音频编码</string>
-    <string name="service_gui_ENC_OVERRIDE_GLOBAL">覆盖全局</string>
-    <string name="service_gui_ENC_VIDEO_TITLE">视频编码</string>
+    <string name="enc_audio_title">音频编码</string>
+    <string name="enc_override_global">覆盖全局</string>
+    <string name="enc_video_title">视频编码</string>
 
     <!-- Security protocols dialog -->
-    <string name="service_gui_LIST_NONE">无</string>
-    <string name="service_gui_SEC_ENABLE_ENCRYPTION">加密</string>
-    <string name="service_gui_SEC_PROTOCOLS_TITLE">安全协议</string>
-    <string name="service_gui_SEC_PROTOCOLS_MSG">请选择所需的协议顺序</string>
-    <string name="service_gui_SEC_PROTOCOLS_OK">保存</string>
-    <string name="service_gui_SEC_PROTOCOLS_CANCEL">丢弃</string>
-    <string name="service_gui_SEC_ZRTP_SIGNALING_ON">ZRTP 将通过信令协议发布</string>
-    <string name="service_gui_SEC_ZRTP_SIGNALING_OFF">不会有ZRTP广告</string>
+    <string name="none">无</string>
+    <string name="sec_encryption">加密</string>
+    <string name="sec_protocols_title">安全协议</string>
+    <string name="sec_protocols_message">请选择所需的协议顺序</string>
+    <string name="discard">丢弃</string>
+    <string name="sec_zrtp_signalling_on">ZRTP 将通过信令协议发布</string>
+    <string name="sec_zrtp_signalling_off">不会有ZRTP广告</string>
 
     <!-- STUN/Jingle Nodes list -->
     <string name="service_gui_SERVERS_LIST_ADD_SERVER">添加服务器</string>
-    <string name="service_gui_SERVERS_LIST_CANCEL">取消</string>
     <string name="service_gui_SERVERS_LIST_EMPTY">列表为空。点击添加新条目&#8230;</string>
-    <string name="service_gui_SERVERS_LIST_REMOVE">移除</string>
 
     <!-- Jingle Nodes edit -->
     <string name="service_gui_JINGLE_EDIT_JID">JID 地址</string>
     <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">支持中继</string>
 
     <!-- STUN edit -->
-    <string name="service_gui_STUN_TURN_SERVER">STUN/TURN 服务器</string>
-    <string name="service_gui_STUN_EDIT_ADDRESS">IP 地址</string>
-    <string name="service_gui_STUN_EDIT_PASSWORD">密码</string>
-    <string name="service_gui_STUN_EDIT_PORT">服务器端口</string>
-    <string name="service_gui_STUN_EDIT_SUPPORT_TURN">支持 TURN</string>
-    <string name="service_gui_STUN_EDIT_TURN_USER">用户名</string>
+    <string name="stun_turn_server">STUN/TURN 服务器</string>
+    <string name="ip_address">IP 地址</string>
+    <string name="server_port">服务器端口</string>
+    <string name="turn_supported">支持 TURN</string>
+    <string name="username">用户名</string>
 
     <!-- Security preferences -->
-    <string name="service_gui_PREF_SECURITY_DTLS_SRTP">DTLS_SRTP 选项</string>
-    <string name="service_gui_PREF_SECURITY_DTLS_TITLE">TLS 证书签名算法</string>
-    <string name="service_gui_PREF_SECURITY_ENCRYPTION">启用通话加密</string>
-    <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">加密协议</string>
-    <string name="service_gui_PREF_SECURITY_GENERAL">一般</string>
-    <string name="service_gui_PREF_SECURITY_RTP_SAVP">RTP/SAVP 指示</string>
-    <string name="service_gui_PREF_SECURITY_RTP_SAVP_TITLE">RTP/SAVP 指示方式</string>
-    <string name="service_gui_PREF_SECURITY_SDES">SDES 选项</string>
-    <string name="service_gui_PREF_SECURITY_SDES_DLG_TITLE">选择所需的密码套件</string>
-    <string name="service_gui_PREF_SECURITY_SDES_TITLE">SDES 密码套件</string>
-    <string name="service_gui_PREF_SECURITY_ZRTP">ZRTP 选项</string>
-    <string name="service_gui_PREF_SECURITY_ZRTP_SIGNALING">ZRTP 信号</string>
+    <string name="security_dtls_srtp">DTLS_SRTP 选项</string>
+    <string name="security_dtls_title">TLS 证书签名算法</string>
+    <string name="security_encryption_enable">启用通话加密</string>
+    <string name="security_encryption_protocols">加密协议</string>
+    <string name="security_rtp_savp">RTP/SAVP 指示</string>
+    <string name="security_rtp_savp_title">RTP/SAVP 指示方式</string>
+    <string name="security_sdes">SDES 选项</string>
+    <string name="security_sdes_dlg_title">选择所需的密码套件</string>
+    <string name="security_sdes_title">SDES 密码套件</string>
+    <string name="security_zrtp_options">ZRTP 选项</string>
+    <string name="security_zrtp_signalling">ZRTP 信号</string>
 
     <!-- Common preferences -->
-    <string name="service_gui_PREF_AUDIO_ENCODING">音频编码</string>
-    <string name="service_gui_PREF_AUDIO_ENC_SUMMARY">为这个账户覆盖全局定义的音频格式</string>
-    <string name="service_gui_PREF_ENCRYPTION">调用加密设置</string>
-    <string name="service_gui_PREF_VIDEO_ENCODING">视频编码</string>
-    <string name="service_gui_PREF_VIDEO_ENC_SUMMARY">为此帐户覆盖全局定义的视频格式</string>
+    <string name="audio_encoding">音频编码</string>
+    <string name="audio_enc_global_override_summary">为这个账户覆盖全局定义的音频格式</string>
+    <string name="call_encryption">调用加密设置</string>
+    <string name="video_encoding">视频编码</string>
+    <string name="video_enc_global_override_summary">为此帐户覆盖全局定义的视频格式</string>
 
     <!-- Jabber preferences -->
-    <string name="service_gui_JBR_ADVANCED">高级</string>
-    <string name="service_gui_JBR_AUTO_SIGNIN">启动时连接</string>
-    <string name="service_gui_JBR_AUTO_STUN_DICOVERY">自动发现 STUN/TURN 服务器</string>
-    <string name="service_gui_JBR_CONN_GENERAL">一般</string>
-    <string name="service_gui_JBR_CONN_SUMMARY">设置连接细节&#8230;</string>
-    <string name="service_gui_JBR_CONNECTION">连接设置</string>
-    <string name="service_gui_JBR_DISABLE_JINGLE">禁用媒体通话 (Jingle)</string>
-    <string name="service_gui_JBR_DISABLE_JINGLE_SUMMARY">（使用 XMPP 的音频和视频通话）</string>
-    <string name="service_gui_JBR_DTMF_METHOD">DTMF 方法</string>
-    <string name="service_gui_JBR_DTMF_SUMMARY">DTMF 方式选择</string>
-    <string name="service_gui_JBR_GMAIL_NOTIFICATIONS">Gmail 新邮件通知</string>
-    <string name="service_gui_JBR_GOOGLE_CONTACTS_SEARCH">Google 通讯录搜索</string>
-    <string name="service_gui_JBR_GTALK_DOMAIN">将使用 GTalk 调用的域</string>
-    <string name="service_gui_JBR_ICE_GENERAL">一般</string>
-    <string name="service_gui_JBR_ICE_SUMMARY">配置 ICE 选项&#8230;</string>
-    <string name="service_gui_JBR_JINGLE_AUTO">自动发现 Jingle 节点中继</string>
-    <string name="service_gui_JBR_JINGLE_LIST">额外的 Jingle 节点&#8230;</string>
-    <string name="service_gui_JBR_JINGLE_LIST_SUMMARY">用户定义的附加 Jingle 节点以供使用</string>
-    <string name="service_gui_JBR_JINGLE_NODES">Jingle 节点</string>
-    <string name="service_gui_JBR_JINGLE_SUMMARY">使用 jingle 节点</string>
-    <string name="service_gui_JBR_KEEP_ALIVE">保持活力</string>
-    <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">启用保活选项</string>
-    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">如果遇到频繁的移动网络断开连接则启用</string>
-    <string name="service_gui_JBR_MINIMUM_TLS">最低 TLS 版本</string>
-    <string name="service_gui_JBR_MINIMUM_TLS_SUMMARY">使用这个或更高的 TLS 协议版本连接</string>
-    <string name="service_gui_JBR_NON_SECURE_ALLOW">允许非安全连接</string>
-    <string name="service_gui_JBR_NON_SSL_SUMMARY">禁用 SSL/TLS 服务器连接加密</string>
-    <string name="service_gui_JBR_OVERRIDE_SERVER">覆盖服务器默认选项</string>
-    <string name="service_gui_JBR_PASSWORD">输入密码</string>
-    <string name="service_gui_JBR_PING_INTERVAL">侦测网络间隔（1~3600 秒）</string>
-    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ENABLE">启用侦测网络间隔优化</string>
-    <string name="service_gui_JBR_PING_INTERVAL_TUNE_OFF_SUMMARY">不对移动网络连接执行侦测网络间隔优化</string>
-    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ON_SUMMARY">为移动网络连接执行侦测网络间隔优化</string>
-    <string name="service_gui_JBR_PORT">服务器端口</string>
-    <string name="service_gui_JBR_PRIORITY">优先级（范围：-128~127）</string>
-    <string name="service_gui_JBR_RES_AUTO_GEN">自动生成资源</string>
-    <string name="service_gui_JBR_RESOURCE">Jabber ID 资源</string>
-    <string name="service_gui_JBR_RESURCE_NAME">资源名称</string>
-    <string name="service_gui_JBR_SERVER">连接服务器IP</string>
-    <string name="service_gui_JBR_SERVER_OPTIONS">服务器选项</string>
-    <string name="service_gui_JBR_STORE_PASSWORD">记住密码</string>
-    <string name="service_gui_JBR_STORE_PASSWORD_SUMMARY">保存密码以在应用程序启动时自动登录</string>
-    <string name="service_gui_JBR_STUN_LIST">额外的 STUN/TURN 服务器&#8230;</string>
-    <string name="service_gui_JBR_STUN_LIST_SUMMARY">用户定义的附加 STUN/TURN 服务器以供使用</string>
-    <string name="service_gui_JBR_TELE_DOMAIN">电话域</string>
-    <string name="service_gui_JBR_TELEPHONY">VoIP-PBX 网关电话</string>
-    <string name="service_gui_JBR_TELEPHONY_SUMMARY">配置电话选项&#8230;</string>
-    <string name="service_gui_JBR_USE_DEFAULT_STUN">使用 Jitsi STUN 服务器（回退）</string>
-    <string name="service_gui_JBR_USE_ICE">使用 ICE</string>
-    <string name="service_gui_JBR_USE_GOOGLE_ICE">使用 Google 的 Jingle/ICE（实验性）</string>
-    <string name="service_gui_JBR_USE_UPNP">使用 UPnP</string>
-    <string name="service_gui_JBR_USER">用户 ID</string>
-    <string name="service_gui_JBR_USER_CATEGORY">用户名和密码</string>
+    <string name="jbr_auto_sign_in">启动时连接</string>
+    <string name="jbr_auto_stun_discovery">自动发现 STUN/TURN 服务器</string>
+    <string name="jbr_connection_summary">设置连接细节&#8230;</string>
+    <string name="jbr_connection">连接设置</string>
+    <string name="jbr_jingle_disable">禁用媒体通话 (Jingle)</string>
+    <string name="jbr_jingle_summary">（使用 XMPP 的音频和视频通话）</string>
+    <string name="jbr_dtmf_method">DTMF 方法</string>
+    <string name="jbr_dtmf_summary">DTMF 方式选择</string>
+    <string name="jbr_gmail_notifications">Gmail 新邮件通知</string>
+    <string name="jbr_google_contact_search">Google 通讯录搜索</string>
+    <string name="jbr_gtalk_domain">将使用 GTalk 调用的域</string>
+    <string name="jbr_ice_summary">配置 ICE 选项&#8230;</string>
+    <string name="jbr_jingle_auto">自动发现 Jingle 节点中继</string>
+    <string name="jbr_jingle_list">额外的 Jingle 节点&#8230;</string>
+    <string name="jbr_jingle_list_summary">用户定义的附加 Jingle 节点以供使用</string>
+    <string name="jbr_jingle_nodes">Jingle 节点</string>
+    <string name="jbr_jingle_use">使用 jingle 节点</string>
+    <string name="jbr_keep_alive">保持活力</string>
+    <string name="jbr_keep_alive_enable">启用保活选项</string>
+    <string name="jbr_keep_alive_summary">如果遇到频繁的移动网络断开连接则启用</string>
+    <string name="jbr_tls_ver_min">最低 TLS 版本</string>
+    <string name="jbr_tls_ver_min_summary">使用这个或更高的 TLS 协议版本连接</string>
+    <string name="jbr_non_secure_allow">允许非安全连接</string>
+    <string name="jbr_non_ssk_summary">禁用 SSL/TLS 服务器连接加密</string>
+    <string name="jbr_server_override">覆盖服务器默认选项</string>
+    <string name="jbr_password">输入密码</string>
+    <string name="jbr_ping_interval">侦测网络间隔（1~3600 秒）</string>
+    <string name="jbr_ping_interval_tune_enable">启用侦测网络间隔优化</string>
+    <string name="jbr_ping_interval_tune_off_summary">不对移动网络连接执行侦测网络间隔优化</string>
+    <string name="jbr_ping_interval_tune_on_summary">为移动网络连接执行侦测网络间隔优化</string>
+    <string name="jbr_server_port">服务器端口</string>
+    <string name="jbr_priority">优先级（范围：-128~127）</string>
+    <string name="jbr_resource_auto_gen">自动生成资源</string>
+    <string name="jbr_resource_id">Jabber ID 资源</string>
+    <string name="jbr_resource_name">资源名称</string>
+    <string name="jbr_server_ip">连接服务器IP</string>
+    <string name="jbr_server_options">服务器选项</string>
+    <string name="jbr_store_password">记住密码</string>
+    <string name="jbr_store_password_summary">保存密码以在应用程序启动时自动登录</string>
+    <string name="jbr_stun_list">额外的 STUN/TURN 服务器&#8230;</string>
+    <string name="jbr_stun_list_summary">用户定义的附加 STUN/TURN 服务器以供使用</string>
+    <string name="jbr_telephony_domain">电话域</string>
+    <string name="jbr_telephony_voip_pbx">VoIP-PBX 网关电话</string>
+    <string name="jbr_telephony_summary">配置电话选项&#8230;</string>
+    <string name="jbr_use_default_stun">使用 Jitsi STUN 服务器（回退）</string>
+    <string name="jbr_use_ice">使用 ICE</string>
+    <string name="jbr_use_google_ice">使用 Google 的 Jingle/ICE（实验性）</string>
+    <string name="jbr_use_upnp">使用 UPnP</string>
+    <string name="jbr_user_id">用户 ID</string>
+    <string name="jbr_user_name_password">用户名和密码</string>
 
     <!-- Telephony -->
-    <string name="service_gui_CONTACT_PHONE_NUMBER">联系人姓名/电话/Jid：</string>
-    <string name="service_gui_EXT_CALL_VIA">调用方式：</string>
-    <string name="service_gui_NO_CONTACT_PHONE">联系电话不能为空！</string>
+    <string name="contact_phone">联系人姓名/电话/Jid：</string>
+    <string name="call_via">调用方式：</string>
+    <string name="contact_phone_empty">联系电话不能为空！</string>
     <string name="recipient_error_non_ascii">目前不支持特殊字符！</string>
-    <string name="service_gui_NOT_IN_ROSTER">指定的电话域\'%1$s\'不是联系人列表的成员</string>
-    <string name="service_gui_NOT_IN_CALLGROUP">%1$s 不属于定义的调用组</string>
-    <string name="service_gui_NO_JINGLE_SUPPORT">%1$s\n不支持 Jingle 协议</string>
+    <string name="domain_not_in_roster">指定的电话域\'%1$s\'不是联系人列表的成员</string>
+    <string name="not_in_call_group">%1$s 不属于定义的调用组</string>
+    <string name="jingle_not_supported">%1$s\n不支持 Jingle 协议</string>
     <string name="recipient_error_parse_failed">地址解析错误！</string>
     <string name="unknown_recipient"><![CDATA[<Unknown Recipient>]]></string>
 
     <!-- General settings -->
-    <string name="service_gui_settings_DISABLED_STR">禁用</string>
-    <string name="service_gui_settings_ENABLED_STR">启用</string>
-    <string name="service_gui_settings_GENERAL">常规</string>
+    <string name="disabled">禁用</string>
+    <string name="enabled">启用</string>
+    <string name="general">常规</string>
 
     <!-- WebView default Page -->
-    <string name="service_gui_settings_WEBVIEW_DLG_TITLE">进入网站链接默认访问页面：</string>
-    <string name="service_gui_settings_WEBVIEW_TITLE">网站链接访问页面</string>
+    <string name="settings_webview_dlg_title">进入网站链接默认访问页面：</string>
+    <string name="settings_webview_page">网站链接访问页面</string>
 
     <!-- Messaging settings -->
-    <string name="service_gui_settings_MSG">短信</string>
+    <string name="settings_messaging">短信</string>
 
     <!-- Group messages in one window -->
-    <string name="service_gui_settings_MULTICHAT_OFF">每个对话的单独窗口</string>
-    <string name="service_gui_settings_MULTICHAT_ON">一窗群聊短信</string>
-    <string name="service_gui_settings_MULTICHAT_WINDOW">多聊天窗口</string>
+    <string name="settings_multichat_off">每个对话的单独窗口</string>
+    <string name="settings_multichat_on">一窗群聊短信</string>
+    <string name="settings_multichat_window">多聊天窗口</string>
 
     <!-- Log chat history -->
-    <string name="service_gui_settings_HISTORY_LOG_OFF">禁用聊天记录</string>
-    <string name="service_gui_settings_HISTORY_LOG_ON">启用聊天记录</string>
-    <string name="service_gui_settings_HISTORY_LOGGING">永久保存聊天记录</string>
-    <string name="service_gui_settings_HISTORY_WARNING">为离线用户设置 MAM 选项时出错：%1$s</string>
+    <string name="settings_history_log_off">禁用聊天记录</string>
+    <string name="settings_history_log_on">启用聊天记录</string>
+    <string name="settings_history_logging">永久保存聊天记录</string>
+    <string name="settings_history_mam_warning">为离线用户设置 MAM 选项时出错：%1$s</string>
 
     <!-- Show x recent messages in new chats -->
-    <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">应显示多少条最近的短信？</string>
-    <string name="service_gui_settings_CHAT_HISTORY_SIZE">显示最近的短信</string>
-    <string name="service_gui_settings_CHAT_HISTORY_SUMMARY">新聊天中有 %d 条最近短信</string>
-    <string name="service_gui_settings_SHOW_HISTORY">显示历史</string>
+    <string name="settings_history_dlg_title">应显示多少条最近的短信？</string>
+    <string name="settings_history_size">显示最近的短信</string>
+    <string name="settings_history_summary">新聊天中有 %d 条最近短信</string>
+    <string name="settings_history_show">显示历史</string>
 
     <!-- Tell others when we have received and read the messages -->
-    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT">短信发送回执</string>
-    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT_SUMMARY">让您的联系人知道您何时收到并阅读他们的短信</string>
+    <string name="settings_message_delivery_receipt">短信发送回执</string>
+    <string name="settings_message_delivery_receipt_summary">让您的联系人知道您何时收到并阅读他们的短信</string>
 
     <!-- Tell others when we are writing to them -->
-    <string name="service_gui_settings_TYPING_NOTIFICATIONS">发送聊天状态通知</string>
+    <string name="settings_typing_notifications">发送聊天状态通知</string>
 
     <!-- Enable option to send thumbnail preview for image file sending -->
-    <string name="service_gui_settings_THUMBNAIL_OPTION">发送/接收缩略图预览</string>
+    <string name="settings_thumbnail_option">发送/接收缩略图预览</string>
 
     <!-- Auto accept downloadable max file size -->
-    <string name="service_gui_settings_ACCEPT_FILE">自动接受最大文件字节数</string>
+    <string name="settings_file_max_auto_accept">自动接受最大文件字节数</string>
 
     <!-- Setup subscription Mode: auto or manual approval -->
-    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">在线状态订阅批准</string>
-    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">订阅批准 - 自动接受所有</string>
-    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">订阅批准 - 手动</string>
+    <string name="settings_presence_subscribe_approval_mode">在线状态订阅批准</string>
+    <string name="settings_presence_subscribe_approval_auto">订阅批准 - 自动接受所有</string>
+    <string name="settings_presence_subscribe_approval_manual">订阅批准 - 手动</string>
 
     <!-- Bring chat window to front(not sure if this makes sense on Android, so omitted) -->
     <!-- Use task bar/dock alerts on incoming calls and chats -->
-    <string name="service_gui_settings_CHAT_ALERTS">显示状态栏通知</string>
+    <string name="settings_chat_notifications">显示状态栏通知</string>
 
     <!-- Leave chat rooms when closing window(omitted on Android for now) -->
 
@@ -1308,226 +1288,222 @@
     <!-- Not sure how to implement it on android - leave for now -->
 
     <!-- Notifications -->
-    <string name="service_gui_settings_NOTIFICATIONS">通知</string>
+    <string name="settings_notifications">通知</string>
 
     <!-- Popup notifications type -->
-    <string name="service_gui_settings_auto_update_check_status">启用自动软件更新检查</string>
-    <string name="service_gui_settings_POPUP_HANDLER">弹出通知类型</string>
+    <string name="settings_auto_update_check_enable">启用自动软件更新检查</string>
+    <string name="settings_popup_handler">弹出通知类型</string>
 
-    <string name="pref_headsup_notifications">提示通知</string>
-    <string name="pref_headsup_notifications_summary">显示提醒通知</string>
+    <string name="pref_heads_up_notifications">提示通知</string>
+    <string name="pref_heads_up_notifications_summary">显示提醒通知</string>
 
     <!-- Status bar notifications handler -->
-    <string name="impl_popup_auto">自动</string>
-    <string name="impl_popup_status_bar">状态栏通知</string>
+    <string name="popup_auto">自动</string>
+    <string name="popup_status_bar">状态栏通知</string>
 
     <!-- Events -->
-    <string name="service_gui_settings_EVENTS_SUMMARY">配置个别通知</string>
-    <string name="service_gui_settings_EVENTS_TITLE">事件</string>
+    <string name="settings_event_summary">配置个别通知</string>
+    <string name="settings_event_title">事件</string>
 
     <!-- Quite hour settings -->
-    <string name="title_pref_quiet_hours">勿打扰时间</string>
-    <string name="title_pref_quiet_hours_start_time">开始时间</string>
-    <string name="title_pref_quiet_hours_end_time">结束时间</string>
-    <string name="title_pref_enable_quiet_hours">启用勿打扰时间</string>
-    <string name="pref_quiet_hours_summary">通知将在勿打扰时段静音</string>
+    <string name="quiet_hours">勿打扰时间</string>
+    <string name="quiet_hours_start_time">开始时间</string>
+    <string name="quiet_hours_end_time">结束时间</string>
+    <string name="quiet_hours_enable">启用勿打扰时间</string>
+    <string name="quiet_hours_summary">通知将在勿打扰时段静音</string>
 
     <!-- aTalk icon -->
-    <string name="service_gui_settings_SHOW_ICON">显示 aTalk 图标</string>
-    <string name="service_gui_settings_SHOW_ICON_SUMMARY_OFF">在通知中隐藏 aTalk 活动指示器</string>
-    <string name="service_gui_settings_SHOW_ICON_SUMMARY_ON">在通知中显示 aTalk 活动指示器</string>
+    <string name="settings_show_icon">显示 aTalk 图标</string>
+    <string name="settings_show_icon_summary_off">在通知中隐藏 aTalk 活动指示器</string>
+    <string name="settings_show_icon_summary_on">在通知中显示 aTalk 活动指示器</string>
 
     <!-- aTalk auto start -->
-    <string name="service_gui_settings_AUTO_START">重启时自动启动 aTalk</string>
-    <string name="service_gui_settings_AUTO_START_SUMMARY_DISABLE">在下次重启时禁用 aTalk 自动启动</string>
-    <string name="service_gui_settings_AUTO_START_SUMMARY_ENABLE">在下次重启时启用 aTalk 自动启动</string>
+    <string name="settings_auto_start">重启时自动启动 aTalk</string>
+    <string name="settings_auto_start_summary_disable">在下次重启时禁用 aTalk 自动启动</string>
+    <string name="settings_auto_start_summary_enable">在下次重启时启用 aTalk 自动启动</string>
 
     <!-- Locale -->
-    <string name="service_gui_settings_LOCALE">语言</string>
-    <string name="settings_language_system">系统默认值</string>
+    <string name="settings_locale">语言</string>
+    <string name="settings_locale_system">系统默认值</string>
 
     <!-- Theme -->
     <string name="settings_theme_dark">深色</string>
     <string name="settings_theme_light">浅色</string>
-    <string name="settings_theme_label">主题</string>
+    <string name="settings_theme">主题</string>
 
     <!-- TTS Language -->
-    <string name="service_gui_TTS_DELAY">短信文本到语音延迟（毫秒）</string>
-    <string name="service_gui_TTS_SETTINGS">常规 TTS 设置&#8230;</string>
-    <string name="service_gui_TTS_DISABLE">禁用文本 &#x27A1; 言语</string>
-    <string name="service_gui_TTS_ENABLE">启用文本 &#x27A1; 言语</string>
-    <string name="service_gui_TTS_SYNTHESIS">输入语音或合成文本并保存到文件：</string>
-    <string name="service_gui_TTS_VOICE">默认 TTS 语音：</string>
+    <string name="tts_delay">短信文本到语音延迟（毫秒）</string>
+    <string name="tts_settings">常规 TTS 设置&#8230;</string>
+    <string name="tts_disable">禁用文本 &#x27A1; 言语</string>
+    <string name="tts_enable">启用文本 &#x27A1; 言语</string>
+    <string name="tts_synthesis">输入语音或合成文本并保存到文件：</string>
+    <string name="tts_voice">默认 TTS 语音：</string>
 
-    <string name="service_gui_LOADING">加载中，请稍候…</string>
+    <string name="loading_wait">加载中，请稍候…</string>
 
     <!-- Remove special characters from phone number -->
-    <string name="service_gui_settings_NORMALIZE_NUMBER">电话号码中的特殊符号</string>
-    <string name="service_gui_settings_NORMALIZE_OFF">没有电话号码修改</string>
-    <string name="service_gui_settings_NORMALIZE_ON">特殊符号将从号码中移除</string>
+    <string name="settings_normalize_number">电话号码中的特殊符号</string>
+    <string name="settings_normalize_off">没有电话号码修改</string>
+    <string name="settings_normalize_on">特殊符号将从号码中移除</string>
     <!-- Convert letters in phone numbers -->
-    <string name="service_gui_settings_ALLOW_ALPHA_OFF">电话号码不可修改</string>
-    <string name="service_gui_settings_ALLOW_ALPHA_PNUMBER">电话号码中的字母</string>
+    <string name="settings_phone_alpha_no_allow">电话号码不可修改</string>
+    <string name="settings_phone_alpha_allow">电话号码中的字母</string>
 
     <!-- Call settings -->
-    <string name="service_gui_settings_CALL">调用</string>
-    <string name="service_gui_settings_MEDIA_CALL">媒体通话</string>
+    <string name="call">调用</string>
+    <string name="media_call">媒体通话</string>
 
     <!-- Audio settings -->
-    <string name="service_gui_settings_AUDIO">音频</string>
+    <string name="audio">音频</string>
     <!-- Echo cancellation -->
-    <string name="service_gui_settings_ECHO_CANCEL">回声消除</string>
-    <string name="service_gui_settings_ECHO_CANCEL_OFF">禁用</string>
-    <string name="service_gui_settings_ECHO_CANCEL_ON">启用</string>
+    <string name="settings_echo_cancel">回声消除</string>
+    <string name="settings_echo_cancel_off">禁用</string>
+    <string name="settings_echo_cancel_on">启用</string>
     <!-- Auto gain control -->
-    <string name="service_gui_settings_AGC">自动增益控制</string>
-    <string name="service_gui_settings_AGC_OFF">禁用</string>
-    <string name="service_gui_settings_AGC_ON">启用</string>
+    <string name="settings_agc">自动增益控制</string>
+    <string name="settings_agc_off">禁用</string>
+    <string name="settings_agc_on">启用</string>
     <!-- Denoise -->
-    <string name="service_gui_settings_DENOISE">噪声抑制</string>
-    <string name="service_gui_settings_DENOISE_OFF">禁用</string>
-    <string name="service_gui_settings_DENOISE_ON">启用</string>
+    <string name="settings_denoise">噪声抑制</string>
+    <string name="settings_denoise_off">禁用</string>
+    <string name="settings_denoise_on">启用</string>
     <!-- Audio encodings -->
-    <string name="service_gui_settings_AUDIO_CODECS_SUMMARY">选择并定义音频编解码器的优先级</string>
-    <string name="service_gui_settings_AUDIO_CODECS_TITLE">音频编解码器</string>
+    <string name="settings_audio_codecs_summary">选择并定义音频编解码器的优先级</string>
+    <string name="settings_audio_codecs">音频编解码器</string>
 
     <!-- Video settings -->
-    <string name="service_gui_settings_VIDEO">视频</string>
+    <string name="video">视频</string>
 
     <!-- Video system -->
-    <string name="service_gui_settings_SYSTEM_ANDROIDCAMERA">安卓相机</string>
-    <string name="service_gui_settings_SYSTEM_MEDIARECORDER">媒体记录器</string>
+    <string name="settings_system_android_camera">安卓相机</string>
+    <string name="settings_system_media_recorder">媒体记录器</string>
 
     <!-- Camera used -->
-    <string name="service_gui_settings_CAMERA">相机</string>
-    <string name="service_gui_settings_NO_CAMERA">未找到摄像头设备</string>
-    <string name="service_gui_settings_USE_BACK_CAMERA">使用后置摄像头</string>
-    <string name="service_gui_settings_USE_FRONT_CAMERA">使用前置摄像头</string>
+    <string name="settings_camera">相机</string>
+    <string name="settings_no_camera">未找到摄像头设备</string>
+    <string name="settings_use_back_camera">使用后置摄像头</string>
+    <string name="settings_use_front_camera">使用前置摄像头</string>
 
     <!-- Video codecs -->
-    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">使用直接表面解码</string>
-    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">使用直接表面编码</string>
-    <string name="service_gui_settings_HW_DECODE">使用硬件解码（需要重启）</string>
-    <string name="service_gui_settings_HW_ENCODE">使用硬件编码（需要重启）</string>
-    <string name="service_gui_settings_MEDIA_CODEC_LIST">MediaCodecs</string>
-    <string name="service_gui_settings_MEDIA_CODEC_LIST_SUMMARY">内置媒体编码器/解码器列表</string>
-    <string name="service_gui_settings_Restart_Hint">要求重启 aTalk</string>
-    <string name="service_gui_settings_VIDEO_CODECS_SUMMARY">选择并定义视频编解码器的优先级</string>
-    <string name="service_gui_settings_VIDEO_CODECS_TITLE">视频编解码器</string>
+    <string name="settings_direct_surface_decode">使用直接表面解码</string>
+    <string name="settings_direct_surface_encode">使用直接表面编码</string>
+    <string name="settings_hw_decode">使用硬件解码（需要重启）</string>
+    <string name="settings_hw_encode">使用硬件编码（需要重启）</string>
+    <string name="settings_media_codec_list">MediaCodecs</string>
+    <string name="settings_media_codec_list_summary">内置媒体编码器/解码器列表</string>
+    <string name="settings_restart_require">要求重启 aTalk</string>
+    <string name="settings_video_codec_summary">选择并定义视频编解码器的优先级</string>
+    <string name="settings_video_codec">视频编解码器</string>
     <!-- Video resolution -->
-    <string name="service_gui_settings_VIDEO_RESOLUTION">视频分辨率</string>
+    <string name="settings_video_resolution">视频分辨率</string>
     <!-- Frame rate -->
-    <string name="service_gui_settings_LIMIT_FPS_OFF">无限制</string>
-    <string name="service_gui_settings_LIMIT_FPS_ON">调整帧率</string>
-    <string name="service_gui_settings_VIDEO_BITRATE">视频比特率（千比特/秒）</string>
-    <string name="service_gui_settings_VIDEO_FRAME_RATE">视频帧率</string>
-    <string name="service_gui_settings_VIDEO_FPS_DESC">接受的值介于 5 至 30 fps 之间</string>
-    <string name="service_gui_settings_VIDEO_MAX_BANDWIDTH">RTP 步调阈值（kBytes/s）</string>
-    <string name="service_gui_settings_VIDEO_TARGET_FPS">目标帧率（每秒）</string>
+    <string name="settings_fps_limit_off">无限制</string>
+    <string name="settings_fps_limit_on">调整帧率</string>
+    <string name="settings_video_bitrate">视频比特率（千比特/秒）</string>
+    <string name="settings_video_frame_rate">视频帧率</string>
+    <string name="settings_video_fps_description">接受的值介于 5 至 30 fps 之间</string>
+    <string name="settings_video_max_bw">RTP 步调阈值（kBytes/s）</string>
+    <string name="settings_video_fps_target">目标帧率（每秒）</string>
 
     <!-- Chat Security settings -->
-    <string name="service_gui_settings_MESSAGING_SECURITY_SUMMARY">短信加密安全设置</string>
-    <string name="service_gui_settings_MESSAGING_SECURITY_TITLE">短信加密</string>
+    <string name="settings_messaging_security_summary">短信加密安全设置</string>
+    <string name="settings_messaging_security">短信加密</string>
 
     <!-- Messaging security options -->
-    <string name="pref_cat_MESSAGING_SECURITY_OPTIONS">OTR 短信加密</string>
+    <string name="otr_messaging_security">OTR 短信加密</string>
     <!-- Crypto Messaging Enable -->
-    <string name="service_gui_settings_CRYPTO_ENABLE_OFF">无短信加密</string>
-    <string name="service_gui_settings_CRYPTO_ENABLE_ON">已启用短信加密</string>
-    <string name="service_gui_settings_CRYPTO_ENABLE_TITLE">私人短信</string>
+    <string name="settings_CRYPTO_ENABLE_OFF">无短信加密</string>
+    <string name="settings_CRYPTO_ENABLE_ON">已启用短信加密</string>
+    <string name="settings_CRYPTO_ENABLE_TITLE">私人短信</string>
     <!-- Crypto Messaging Auto -->
-    <string name="service_gui_settings_CRYPTO_AUTO_OFF">手动启动短信加密会话</string>
-    <string name="service_gui_settings_CRTOTI_AUTO_ON">自动启动短信加密会话</string>
-    <string name="service_gui_settings_CRYPTO_AUTO_TITLE">自动启动私人短信</string>
+    <string name="settings_CRYPTO_AUTO_OFF">手动启动短信加密会话</string>
+    <string name="settings_CRTOTI_AUTO_ON">自动启动短信加密会话</string>
+    <string name="settings_CRYPTO_AUTO_TITLE">自动启动私人短信</string>
     <!-- Crypto Messaging Required -->
-    <string name="service_gui_settings_CRYPTO_REQUIRE_OFF">如果支持，将使用加密短信</string>
-    <string name="service_gui_settings_CRYPTO_REQUIRE_ON">仅接受安全会话</string>
-    <string name="service_gui_settings_CRYPTO_REQUIRE_TITLE">需要私信</string>
+    <string name="settings_CRYPTO_REQUIRE_OFF">如果支持，将使用加密短信</string>
+    <string name="settings_CRYPTO_REQUIRE_ON">仅接受安全会话</string>
+    <string name="settings_CRYPTO_REQUIRE_TITLE">需要私信</string>
 
     <!-- OMEMO security category-->
-    <string name="pref_cat_OMEMO_SECURITY_SETTINGS">OMEMO 短信加密</string>
+    <string name="omemo_messaging_security">OMEMO 短信加密</string>
     <!-- OMEMO device screen -->
-    <string name="pref_omemo_blind_trust_before_verification">验证前盲目信任</string>
-    <string name="pref_omemo_blind_trust_before_verification_summary">自动信任之前未验证过的联系人的所有新设备； 当已验证的联系人添加新设备时提示手动确认。</string>
+    <string name="omemo_blind_trust_before_verification">验证前盲目信任</string>
+    <string name="omemo_blind_trust_before_verification_summary">自动信任之前未验证过的联系人的所有新设备； 当已验证的联系人添加新设备时提示手动确认。</string>
     <!-- OMEMO regenerate screen -->
-    <string name="pref_omemo_regenerate_identities_summary">重新生成您的 OMEMO 身份后，您的所有联系人都将收到新指纹并需要重新验证您。仅在有 OEMEO 会话设置问题时执行。</string>
-    <string name="pref_omemo_regenerate_identities_title">重新生成 OMEMO 身份</string>
-    <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">OMEMO 身份刷新</string>
+    <string name="omemo_regenerate_identities_summary">重新生成您的 OMEMO 身份后，您的所有联系人都将收到新指纹并需要重新验证您。仅在有 OEMEO 会话设置问题时执行。</string>
+    <string name="omemo_regenerate_identities">重新生成 OMEMO 身份</string>
+    <string name="omemo_regenerate_title">OMEMO 身份刷新</string>
     <!-- OMEMO purge device screen -->
-    <string name="pref_omemo_purge_devices_summary">删除所有非活动设备； 仅发布您正在使用的当前活动设备。</string>
-    <string name="pref_omemo_purge_devices_title">删除未使用的身份</string>
-    <string name="service_gui_settings_OMEMO_PURGE_DEVICE_TITLE">OMEMO 设备删除</string>
+    <string name="omemo_purge_devices_summary">删除所有非活动设备； 仅发布您正在使用的当前活动设备。</string>
+    <string name="omemo_purge_device_unused">删除未使用的身份</string>
+    <string name="omemo_purge_device">OMEMO 设备删除</string>
 
     <!-- Key & FingerPrint security category -->
-    <string name="pref_cat_KEY_FINGERPRINT_SECURITY">钥匙 &amp; 指纹安全</string>
+    <string name="key_fingerprint_security">钥匙 &amp; 指纹安全</string>
     <!-- Crypto private Keys screen -->
-    <string name="service_gui_settings_CRYPTO_PRIV_KEYS_EMPTY">找到零个注册用户</string>
-    <string name="service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY">管理加密私有指纹</string>
-    <string name="service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">加密私钥</string>
+    <string name="settings_crypto_priv_key_empty">找到零个注册用户</string>
+    <string name="settings_crypto_priv_key_summary">管理加密私有指纹</string>
+    <string name="settings_crypto_priv_key">加密私钥</string>
     <!-- Crypto fingerprints screen -->
-    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_SUMMARY">管理所有已知设备指纹\n颜色：青色=自己的设备; 灰色=不活动</string>
-    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">加密设备指纹</string>
+    <string name="settings_fingerprint_summary">管理所有已知设备指纹\n颜色：青色=自己的设备; 灰色=不活动</string>
+    <string name="settings_fingerprint_title">加密设备指纹</string>
 
     <!-- Crypto contextMenu, dialog, message and toast -->
-    <string name="crypto_dialog_KEY_GENERATE_QUESTION">你想为 %1$s%2$s 生成新密钥吗</string>
-    <string name="crypto_dialog_KEY_GENERATE_TITLE">私钥生成</string>
-    <string name="crypto_dialog_KEY_REGENERATE_QUESTION">你想为 %1$s 重新生成密钥吗\n\n%2$s</string>
+    <string name="crypto_key_generate_prompt">你想为 %1$s%2$s 生成新密钥吗</string>
+    <string name="crypto_key_generate_title">私钥生成</string>
+    <string name="crypto_key_regenerate_prompt">你想为 %1$s 重新生成密钥吗\n\n%2$s</string>
 
-    <string name="crypto_dialog_button_DELETE">删除选中的</string>
-    <string name="crypto_dialog_button_OMEMO_REGENERATE">重新生成所选内容</string>
+    <string name="delete_selected">删除选中的</string>
+    <string name="regenerate_selected">重新生成所选内容</string>
 
-    <string name="crypto_menu_KEY_GENERATE">生成新密钥</string>
-    <string name="crypto_menu_KEY_REGENERATE">重新生成密钥</string>
+    <string name="crypto_menu_key_generate">生成新密钥</string>
+    <string name="crypto_menu_key_regenerate">重新生成密钥</string>
 
-    <string name="crypto_menu_COPY_FINGERPRINT">复制指纹</string>
-    <string name="crypto_menu_DISTRUST_FINGERPRINT">不信任指纹</string>
-    <string name="crypto_menu_TRUST_FINGERPRINT">信任指纹</string>
+    <string name="crypto_menu_fingerprint_copy">复制指纹</string>
+    <string name="crypto_menu_fingerprint_distrust">不信任指纹</string>
+    <string name="crypto_menu_fingerprint_trust">信任指纹</string>
 
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">在 OMEMO 会话中来自您好友的 OTR 会话请求已被拒绝。您可以手动启用 OTR 会话！</string>
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">OMEMO 会话正在进行时，您的 OTR 会话请求已被拒绝！</string>
-    <string name="crypto_msg_OMEMO_SESSION_SETUP_FAILED">OMEMO 会话设置不成功！ %1$s</string>
-    <string name="crypto_msg_OMEMO_SESSION_UNTRUSTED">找到零个可信任的好友来接收 OMEMO 短信！</string>
-    <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED">发送 OMEMO 短信给一些未验证指纹的未知好友！</string>
-    <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED_UNTRUSTED">与一些不信任或未经验证指纹的好友进行多用户聊天！</string>
-    <string name="crypto_msg_OMEMO_SESSION_VERIFIED">*** 所有好友都已通过身份验证！ ***</string>
+    <string name="crypto_msg_omemo_session_setup_failed">OMEMO 会话设置不成功！ %1$s</string>
+    <string name="crypto_msg_omemo_session_untrusted">找到零个可信任的好友来接收 OMEMO 短信！</string>
+    <string name="crypto_msg_omemo_session_unverified">发送 OMEMO 短信给一些未验证指纹的未知好友！</string>
+    <string name="crypto_msg_omemo_session_unverified_untrusted">与一些不信任或未经验证指纹的好友进行多用户聊天！</string>
+    <string name="crypto_msg_omemo_session_verified">*** 所有好友都已通过身份验证！ ***</string>
 
-    <string name="crypto_FINGERPRINT_NOT_VERIFIED">否</string>
-    <string name="crypto_FINGERPRINT_STATUS">已验证：%1$s</string>
-    <string name="crypto_FINGERPRINT_VERIFIED">是</string>
-    <string name="crypto_NO_KEY_PRESENT">没有密钥存在</string>
+    <string name="crypto_fingerprint_status">已验证：%1$s</string>
+    <string name="crypto_no_key_present">没有密钥存在</string>
 
-    <string name="crypto_toast_FINGERPRINT_COPY">指纹已复制到剪贴板！</string>
-    <string name="crypto_toast_OMEMO_DISTRUST_MESSAGE_STOP">停止向好友发送 OMEMO 短信：%1$s</string>
-    <string name="crypto_toast_OMEMO_TRUST_MESSAGE_RESUME">继续向好友发送 OMEMO 短信：%1$s</string>
+    <string name="crypto_fingerprint_copy">指纹已复制到剪贴板！</string>
+    <string name="crypto_omemo_distrust_messaging_stop">停止向好友发送 OMEMO 短信：%1$s</string>
+    <string name="crypto_omemo_trust_messaging_resume">继续向好友发送 OMEMO 短信：%1$s</string>
 
     <!-- Advanced settings category -->
-    <string name="service_gui_settings_ADVANCED">高级</string>
-    <string name="service_gui_settings_EXPERT">专家设置</string>
-    <string name="service_gui_settings_EXPERT_SUMMARY">请注意这些设置</string>
-    <string name="service_gui_settings_OTHER">其他</string>
+    <string name="advanced">高级</string>
+    <string name="settings_expert">专家设置</string>
+    <string name="settings_expert_summary">请注意这些设置</string>
 
     <!-- Protocol category -->
-    <string name="service_gui_settings_ADDRESS">地址</string>
-    <string name="service_gui_settings_PORT">端口</string>
-    <string name="service_gui_settings_PROTOCOL">协议</string>
+    <string name="port">端口</string>
+    <string name="protocol">协议</string>
 
     <!-- Opus -->
-    <string name="service_gui_settings_OPUS">作品</string>
-    <string name="service_gui_settings_OPUS_AUDIO_BANDWIDTH">采样率</string>
-    <string name="service_gui_settings_OPUS_BITRATE">编码器平均比特率（kbps）</string>
-    <string name="service_gui_settings_OPUS_COMPLEXITY">编码器复杂度</string>
-    <string name="service_gui_settings_OPUS_MIN_EXPECTED_PACKET_LOSS">最小预期丢包率(%)</string>
-    <string name="service_gui_settings_OPUS_SUMMARY">配置 Opus 编码器设置</string>
-    <string name="service_gui_settings_OPUS_USE_DTX">使用 DTX</string>
-    <string name="service_gui_settings_OPUS_USE_FEC">使用带内 FEC</string>
+    <string name="opus">作品</string>
+    <string name="opus_sampling_rate">采样率</string>
+    <string name="opus_bitrate">编码器平均比特率（kbps）</string>
+    <string name="opus_complexity">编码器复杂度</string>
+    <string name="opus_min_expected_packet_loss">最小预期丢包率(%)</string>
+    <string name="opus_encoder_settings">配置 Opus 编码器设置</string>
+    <string name="opus_use_dtx">使用 DTX</string>
+    <string name="opus_use_fec">使用带内 FEC</string>
 
     <!-- Silk -->
-    <string name="service_gui_settings_SILK">丝绸</string>
-    <string name="service_gui_settings_SILK_SUMMARY">配置 Silk 编码器设置</string>
-    <string name="service_gui_settings_SILK_FEC">使用带内 FEC</string>
-    <string name="service_gui_settings_SILK_ASSUME_PL">始终假定数据包丢失</string>
-    <string name="service_gui_settings_SILK_FEC_SAT">语音活动阈值 (0–1)</string>
-    <string name="service_gui_settings_SILK_ADVERTISE_FEC">在 SDP 中通告 FEC 支持</string>
+    <string name="silk">丝绸</string>
+    <string name="silk_encoder_settings">配置 Silk 编码器设置</string>
+    <string name="silk_use_fec">使用带内 FEC</string>
+    <string name="silk_assume_pl">始终假定数据包丢失</string>
+    <string name="silk_fec_sat">语音活动阈值 (0–1)</string>
+    <string name="silk_fec_advertise">在 SDP 中通告 FEC 支持</string>
 
     <!-- SIP config -->
     <string name="plugin_generalconfig_SIP_CLIENT_PORT">SIP 客户端端口</string>
@@ -1535,12 +1511,6 @@
     <string name="plugin_generalconfig_SIP_SSL_PROTOCOLS">启用 SSL/TLS 协议</string>
     <string name="service_gui_settings_SIP">SIP</string>
     <string name="service_gui_settings_SIP_SUMMARY">配置 SIP 协议设置</string>
-
-    <!-- group chat menu -->
-    <string name="menu_invite">邀请</string>
-    <string name="profile_child_camera">拍照</string>
-    <string name="profile_child_delete">删除照片</string>
-    <string name="profile_child_gallery">从图库中选择</string>
 
     <!-- Android Battery Usage Optimization -->
     <string name="battery_optimizations">电池优化</string>
@@ -1551,30 +1521,36 @@
     <string name="next">下一步</string>
 
     <!-- Android Permissions -->
-    <string name="app_info_permissions_button">应用信息</string>
-    <string name="ask_for_all_permissions_button">请求所有</string>
-    <string name="ask_for_audio_permission_button">音频</string>
-    <string name="ask_for_camera_permission_button">相机</string>
-    <string name="ask_for_contacts_permission_button">联系人</string>
-    <string name="ask_for_location_permission_button">位置</string>
-    <string name="ask_for_notifications_permission_button">通知</string>
-    <string name="ask_for_phone_permission_button">电话</string>
-    <string name="ask_for_storage_permission_button">存储空间</string>
+    <string name="app_info">应用信息…</string>
+    <string name="permission_app_info">应用信息</string>
+    <string name="permission_request_all">请求所有</string>
+    <string name="permission_camera">相机</string>
+    <string name="permission_contacts">联系人</string>
+    <string name="permission_location">位置</string>
+    <string name="permission_microphone">音频</string>
+    <string name="permission_music">音乐与音频</string>
+    <string name="permission_notifications">通知</string>
+    <string name="permission_phone">电话</string>
+    <string name="permission_video">照片和视频</string>
+    <string name="permission_storage">存储空间</string>
     <string name="permission_hint">为了应用程序的最佳性能和完整的功能支持，aTalk 需要您授予以下服务的权限。没有它们，aTalk 可能无法工作或出现意外行为！</string>
 
-    <string name="permission_denied_feedback">拒绝</string>
-    <string name="permission_granted_feedback">已授权</string>
-    <string name="permission_permanently_denied_feedback">永久拒绝</string>
-    <string name="permission_unknown_feedback">未知</string>
+    <string name="permission_denied">拒绝</string>
+    <string name="permission_granted">已授权</string>
+    <string name="permission_denied_permanently">永久拒绝</string>
+    <string name="permission_unknown">未知</string>
 
-    <string name="audio_permission_denied_dialog_title">音频权限请求</string>
-    <string name="audio_permission_denied_feedback">在您授予权限请求之前，音频通话将不可用</string>
+    <string name="mic_permission_denied_dialog_title">录音许可请求</string>
+    <string name="mic_permission_denied_feedback">在您授予权限请求之前，音频通话将不可用</string>
 
     <string name="camera_permission_denied_dialog_title">相机权限请求</string>
     <string name="camera_permission_denied_feedback">在您授予权限请求之前，所有与相机相关的活动都将不可用</string>
 
     <string name="contacts_permission_denied_dialog_title">联系人权限请求</string>
     <string name="contacts_permission_denied_feedback">电话状态访问和通话设置需要联系人权限</string>
+
+    <string name="music_permission_denied_dialog_title">音乐和音频许可请求</string>
+    <string name="music_permission_denied_feedback">在您授予权限请求之前，无法访问媒体音频文件</string>
 
     <string name="location_permission_denied_dialog_title">位置权限请求</string>
     <string name="location_permission_denied_feedback">在您授予权限请求之前，GPS 定位功能将不可用</string>
@@ -1584,6 +1560,9 @@
 
     <string name="phone_permission_denied_dialog_title">读取手机状态权限请求</string>
     <string name="phone_permission_denied_feedback">在您授予权限请求之前，手机功能将不可用</string>
+
+    <string name="video_permission_denied_dialog_title">照片和视频许可请求</string>
+    <string name="video_permission_denied_feedback">在您授予权限请求之前，无法访问媒体照片和视频文件</string>
 
     <string name="storage_permission_denied_dialog_title">存储权限请求</string>
     <string name="storage_permission_denied_feedback">在您授予权限请求之前，不允许将发送和接收的内容保存在存储中</string>
@@ -1601,5 +1580,4 @@
     <string name="location_permission_dialog_message">现在启用位置权限吗？</string>
     <string name="location_services_off">定位服务关闭</string>
     <string name="open_location_settings">现在启用定位服务吗？</string>
-
 </resources>

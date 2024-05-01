@@ -2,29 +2,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/chatroom_tts_enable"
-        android:title="@string/service_gui_TTS_ENABLE" />
+        android:title="@string/tts_enable" />
     <item
         android:id="@+id/close_current_chat"
-        android:title="@string/service_gui_CLOSE_CHAT" />
+        android:title="@string/close_current_chat" />
     <item
         android:id="@+id/close_all_active_chats"
-        android:title="@string/service_gui_CLOSE_ALL_CHATS" />
+        android:title="@string/close_all_active_chats" />
     <item
         android:id="@+id/erase_chatroom_history"
-        android:title="@string/service_gui_CHATROOM_HISTORY_ERASE_PER" />
+        android:title="@string/chatroom_history_erase_per" />
     <item
         android:id="@+id/erase_all_chatroom_history"
-        android:title="@string/service_gui_CHATROOM_HISTORY_ERASE_ALL" />
+        android:title="@string/chatroom_history_erase_all" />
     <item
         android:id="@+id/destroy_chatroom"
-        android:title="@string/service_gui_CHATROOM_DESTROY" />
+        android:title="@string/chatroom_destroy" />
     <item
         android:id="@+id/send_chatroom_file"
-        android:title="@string/service_gui_FILE_ATTACHMENT"
+        android:title="@string/file_attachment"
         android:visible="false" />
     <item
         android:id="@+id/chatroom_info"
-        android:title="@string/service_gui_CHATROOM_INFO"
+        android:title="@string/chatroom_info"
         android:visible="true" />
     <item
         android:id="@+id/chatroom_ctx_menu_exit"

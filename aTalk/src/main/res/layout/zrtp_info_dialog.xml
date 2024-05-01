@@ -12,7 +12,7 @@
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_security_CIPHER" />
+        android:text="@string/security_cipher" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
             style="@style/MediumFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_security_SECURE_AUDIO" />
+            android:text="@string/security_secure_audio" />
 
         <ImageView
             android:id="@+id/secure_audio_icon"
@@ -47,7 +47,7 @@
             style="@style/MediumFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_security_SECURE_VIDEO" />
+            android:text="@string/security_secure_video" />
 
         <ImageView
             android:id="@+id/secure_video_icon"
@@ -69,7 +69,7 @@
             style="@style/MediumFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_security_COMPARE_WITH_PARTNER_SHORT" />
+            android:text="@string/security_compare_with_partner_short" />
 
         <TextView
             android:id="@+id/security_auth_str"
@@ -91,7 +91,7 @@
             android:id="@+id/zrtp_ok"
             style="@style/ButtonTop"
             android:focusable="true"
-            android:text="@string/service_gui_OK" />
+            android:text="@string/ok" />
 
         <View
             android:id="@+id/centerShim"
@@ -104,6 +104,6 @@
             android:id="@+id/security_confirm"
             style="@style/ButtonTop"
             android:focusable="true"
-            android:text="@string/service_gui_security_CONFIRM" />
+            android:text="@string/confirm" />
     </LinearLayout>
 </LinearLayout>

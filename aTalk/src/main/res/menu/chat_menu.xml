@@ -5,54 +5,54 @@
     <item
         android:id="@+id/send_file"
         android:icon="@drawable/ic_attach_dark"
-        android:title="@string/service_gui_FILE_ATTACHMENT"
+        android:title="@string/file_attachment"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/muc_invite"
         android:icon="@drawable/ic_add_to_chat_dark"
-        android:title="@string/service_gui_INVITE"
+        android:title="@string/invite"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/share_location"
         android:icon="@drawable/ic_location_dark"
-        android:title="@string/service_gui_GEO_SEND"
+        android:title="@string/geo_send"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/chat_tts_enable"
-        android:title="@string/service_gui_TTS_ENABLE">
+        android:title="@string/tts_enable">
     </item>
     <item
         android:id="@+id/call_contact_audio"
         android:icon="@drawable/chatcall_dark"
-        android:title="@string/service_gui_CALL" />
+        android:title="@string/call_audio" />
     <item
         android:id="@+id/call_contact_video"
         android:icon="@drawable/chat_call_video_dark"
-        android:title="@string/service_gui_CALL_VIDEO" />
+        android:title="@string/call_video" />
     <item
         android:id="@+id/erase_chat_history"
-        android:title="@string/service_gui_HISTORY_ERASE_PER_CONTACT" />
+        android:title="@string/history_erase_for_contact" />
     <item
         android:id="@+id/leave_chat_room"
-        android:title="@string/service_gui_LEAVE_ROOM" />
+        android:title="@string/leave_chat_room" />
     <item
         android:id="@+id/destroy_chat_room"
-        android:title="@string/service_gui_CHATROOM_DESTROY_TITLE" />
+        android:title="@string/chatroom_destroy_title" />
     <item
         android:id="@+id/chatroom_info"
-        android:title="@string/service_gui_CHATROOM_INFO" />
+        android:title="@string/chatroom_info" />
     <item
         android:id="@+id/chatroom_info_change"
-        android:title="@string/service_gui_CHANGE_ROOM_INFO" />
+        android:title="@string/chatroom_change_info" />
     <item
         android:id="@+id/chatroom_config"
-        android:title="@string/service_gui_CHATROOM_CONFIGURATION" />
+        android:title="@string/chatroom_configuration" />
     <item
         android:id="@+id/room_status_enable"
-        android:title="@string/service_gui_CHATROOM_STATUS_OFF" />
+        android:title="@string/chatroom_status_disable" />
     <item
         android:id="@+id/show_chatroom_occupant"
-        android:title="@string/service_gui_CHATROOM_OCCUPANT" />
+        android:title="@string/chatroom_occupant" />
     <item
         android:id="@+id/otr_session"
         android:icon="@drawable/crypto_otr_dark"

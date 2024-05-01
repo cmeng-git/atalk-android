@@ -4,83 +4,83 @@
 
     <PreferenceCategory
         android:key="pref.cat.jbr.conn.general"
-        android:title="@string/service_gui_JBR_CONN_GENERAL">
+        android:title="@string/general">
         <CheckBoxPreference
             android:key="pref_key_gmail_notifications"
-            android:title="@string/service_gui_JBR_GMAIL_NOTIFICATIONS" />
+            android:title="@string/jbr_gmail_notifications" />
         <CheckBoxPreference
             android:key="pref_key_google_contact_enabled"
-            android:title="@string/service_gui_JBR_GOOGLE_CONTACTS_SEARCH" />
+            android:title="@string/jbr_google_contact_search" />
         <ListPreference
-            android:dialogTitle="@string/service_gui_JBR_DTMF_SUMMARY"
+            android:dialogTitle="@string/jbr_dtmf_summary"
             android:entries="@array/pref_jabber_dtmf_method"
             android:entryValues="@array/pref_jabber_dtmf_method_values"
             android:key="pref_key_dtmf_method"
-            android:title="@string/service_gui_JBR_DTMF_METHOD" />
+            android:title="@string/jbr_dtmf_method" />
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="pref.cat.jbr.server.options"
-        android:title="@string/service_gui_JBR_SERVER_OPTIONS">
+        android:title="@string/jbr_server_options">
         <CheckBoxPreference
             android:key="pref_key_is_keep_alive_enable"
-            android:summary="@string/service_gui_JBR_KEEP_ALIVE_SUMMARY"
-            android:title="@string/service_gui_JBR_KEEP_ALIVE_ENABLE" />
+            android:summary="@string/jbr_keep_alive_summary"
+            android:title="@string/jbr_keep_alive_enable" />
         <EditTextPreference
             android:defaultValue="240"
             android:dependency="pref_key_is_keep_alive_enable"
             android:inputType="number"
             android:key="pref_key_ping_interval"
-            android:title="@string/service_gui_JBR_PING_INTERVAL" />
+            android:title="@string/jbr_ping_interval" />
         <CheckBoxPreference
             android:key="pref_key_ping_auto_tune_enable"
-            android:summaryOff="@string/service_gui_JBR_PING_INTERVAL_TUNE_OFF_SUMMARY"
-            android:summaryOn="@string/service_gui_JBR_PING_INTERVAL_TUNE_ON_SUMMARY"
-            android:title="@string/service_gui_JBR_PING_INTERVAL_TUNE_ENABLE" />
+            android:summaryOff="@string/jbr_ping_interval_tune_off_summary"
+            android:summaryOn="@string/jbr_ping_interval_tune_on_summary"
+            android:title="@string/jbr_ping_interval_tune_enable" />
 
         <ListPreference
-            android:dialogTitle="@string/service_gui_TLS_CERT_PROMPT"
+            android:dialogTitle="@string/tls_cert_prompt"
             android:key="pref_key_client_tls_cert"
-            android:title="@string/service_gui_TLS_CERT" />
+            android:title="@string/tls_cert" />
 
         <CheckBoxPreference
             android:key="pref_key_is_server_overridden"
-            android:title="@string/service_gui_JBR_OVERRIDE_SERVER" />
+            android:title="@string/jbr_server_override" />
         <EditTextPreference
             android:dependency="pref_key_is_server_overridden"
             android:key="pref_key_server_address"
-            android:title="@string/service_gui_JBR_SERVER" />
+            android:title="@string/jbr_server_ip" />
         <EditTextPreference
             android:dependency="pref_key_is_server_overridden"
             android:inputType="number"
             android:key="pref_key_server_port"
-            android:title="@string/service_gui_JBR_PORT" />
+            android:title="@string/jbr_server_port" />
         <ListPreference
             android:entries="@array/TLS_version_name"
             android:entryValues="@array/TLS_version_value"
             android:key="pref_key_minimum_TLS_version"
-            android:summary="@string/service_gui_JBR_MINIMUM_TLS_SUMMARY"
-            android:title="@string/service_gui_JBR_MINIMUM_TLS" />
+            android:summary="@string/jbr_tls_ver_min_summary"
+            android:title="@string/jbr_tls_ver_min" />
         <CheckBoxPreference
             android:key="pref_key_allow_non_secure_conn"
-            android:summary="@string/service_gui_JBR_NON_SSL_SUMMARY"
-            android:title="@string/service_gui_JBR_NON_SECURE_ALLOW" />
+            android:summary="@string/jbr_non_ssk_summary"
+            android:title="@string/jbr_non_secure_allow" />
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="pref.cat.jbr.resource"
-        android:title="@string/service_gui_JBR_RESOURCE">
+        android:title="@string/jbr_resource_id">
         <CheckBoxPreference
             android:disableDependentsState="true"
             android:key="pref_key_auto_gen_resource"
-            android:title="@string/service_gui_JBR_RES_AUTO_GEN" />
+            android:title="@string/jbr_resource_auto_gen" />
         <EditTextPreference
             android:dependency="pref_key_auto_gen_resource"
             android:key="pref_key_resource_name"
-            android:title="@string/service_gui_JBR_RESURCE_NAME" />
+            android:title="@string/jbr_resource_name" />
         <EditTextPreference
             android:inputType="number"
             android:key="pref_key_resource_priority"
-            android:title="@string/service_gui_JBR_PRIORITY" />
+            android:title="@string/jbr_priority" />
     </PreferenceCategory>
 </PreferenceScreen>

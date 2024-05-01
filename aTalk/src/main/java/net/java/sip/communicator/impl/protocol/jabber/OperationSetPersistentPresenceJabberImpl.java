@@ -112,8 +112,9 @@ public class OperationSetPersistentPresenceJabberImpl
     /**
      * <code>true</code> update both account and contacts status. set to <code>false</code> when the
      * session is resumed to leave contacts' status untouched.
+     * cmeng (20240428): Update of contact offline status is via Roster#fireRosterPresenceEvent()
      */
-    private boolean updateAllStatus = true;
+    private final boolean updateAllStatus = false; // true;
 
     /**
      * A map containing bindings between aTalk's jabber presence status instances and Jabber status codes
@@ -134,7 +135,6 @@ public class OperationSetPersistentPresenceJabberImpl
      * A map containing bindings between aTalk's xmpp presence status instances and priorities to use for statuses.
      */
     private static final Map<String, Integer> statusToPriorityMappings = new Hashtable<>();
-
     /**
      * The server stored contact list that will be encapsulating smack's buddy list.
      */
@@ -837,7 +837,7 @@ public class OperationSetPersistentPresenceJabberImpl
             currentStatus = newStatus;
             super.fireProviderStatusChangeEvent(oldStatus, newStatus);
 
-            // Do not update contacts status if pps is in reconnecting state
+            // cmeng (20240428): Always skipped, Update of contact offline status is via Roster#fireRosterPresenceEvent()
             if (updateAllStatus) {
                 PresenceStatus offlineStatus = mPPS.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE);
 
@@ -854,7 +854,7 @@ public class OperationSetPersistentPresenceJabberImpl
                         while (contactsIter.hasNext()) {
                             ContactJabberImpl contact = (ContactJabberImpl) contactsIter.next();
                             Jid jid = contact.getJid();
-                            updateContactStatus(contact, jid, offlineStatus);
+                            updateContactStatus(contact, jid, offlineStatus, false);
                         }
                     }
                     // do the same for all contacts in the root group
@@ -862,7 +862,7 @@ public class OperationSetPersistentPresenceJabberImpl
                     while (contactsIter.hasNext()) {
                         ContactJabberImpl contact = (ContactJabberImpl) contactsIter.next();
                         Jid jid = contact.getJid();
-                        updateContactStatus(contact, jid, offlineStatus);
+                        updateContactStatus(contact, jid, offlineStatus, false);
                     }
                 }
             }
@@ -985,7 +985,7 @@ public class OperationSetPersistentPresenceJabberImpl
                 // status untouched as we will not be informed when we resumed.
                 PresenceStatus oldStatus = currentStatus;
                 PresenceStatus currentStatus = mPPS.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE);
-                updateAllStatus = false;
+                // updateAllStatus = false;
                 fireProviderStatusChangeEvent(oldStatus, currentStatus);
             }
             else if (eventNew == RegistrationState.UNREGISTERED
@@ -1003,7 +1003,7 @@ public class OperationSetPersistentPresenceJabberImpl
                     accountInfoOpSet.clearDetails();
                 }
 
-                updateAllStatus = true;
+                // updateAllStatus = true;
                 fireProviderStatusChangeEvent(oldStatus, currentStatus);
                 ssContactList.cleanup();
 
@@ -1187,23 +1187,24 @@ public class OperationSetPersistentPresenceJabberImpl
      * @param contact the contact which presence to update if needed.
      * @param jid the contact FullJid.
      * @param newStatus the new status.
+     * @param capsExtension presence capsExtension.
      */
-    private void updateContactStatus(ContactJabberImpl contact, Jid jid, PresenceStatus newStatus) {
+    private void updateContactStatus(ContactJabberImpl contact, Jid jid, PresenceStatus newStatus, boolean capsExtension) {
         // When status changes this may be related to a change in the available resources.
         boolean oldMobileIndicator = contact.isMobile();
         boolean resourceUpdated = updateResources(contact, true);
         mobileIndicator.resourcesUpdated(contact);
         PresenceStatus oldStatus = contact.getPresenceStatus();
 
-        // when old and new status are the same do nothing no change
-        if (oldStatus.equals(newStatus) && oldMobileIndicator == contact.isMobile()) {
+        // Skip when old and new status are the same for BareJid; let OperationSetContactCapabilities handle FullJid presence change.
+        // Timber.e("Dispatching contact status change %s => %s: %s", !oldStatus.equals(newStatus), jid, newStatus.getStatusName());
+        if (oldStatus.equals(newStatus) && (jid instanceof BareJid) && oldMobileIndicator == contact.isMobile()) {
             return;
         }
 
         contact.updatePresenceStatus(newStatus);
-        // Timber.d("Dispatching contact status change for %s: %s", jid, newStatus.getStatusName());
         fireContactPresenceStatusChangeEvent(contact, jid, contact.getParentContactGroup(),
-                oldStatus, newStatus, resourceUpdated);
+                oldStatus, newStatus, resourceUpdated, capsExtension);
     }
 
     /**
@@ -1365,46 +1366,14 @@ public class OperationSetPersistentPresenceJabberImpl
                     Timber.w("Ignore own or no source contact found for id = %s", userJid);
                     return;
                 }
-
+                // Timber.d("Smack presence update for: %s", presence.toXML());
                 // statuses may be the same and only change in status message
                 sourceContact.setStatusMessage(currentPresence.getStatus());
-
-                Timber.d("Smack presence update for: %s - %s", presence.getFrom(), presence.getType());
-                updateContactStatus(sourceContact, presence.getFrom(), jabberStatusToPresenceStatus(currentPresence, mPPS));
-                userCapCheck(presence);
+                updateContactStatus(sourceContact, presence.getFrom(),
+                        jabberStatusToPresenceStatus(currentPresence, mPPS), presence.hasExtension(CapsExtension.QNAME));
             } catch (IllegalStateException | IllegalArgumentException ex) {
                 Timber.e(ex, "Failed changing status");
             }
-        }
-    }
-
-    // ======================= Contacts userCap handler ==================================
-    private void userCapCheck(Presence presence) {
-        if (presence.hasExtension(CapsExtension.QNAME)) {
-            boolean isOnline = presence.isAvailable();
-            Timber.d("userCapCheck notify for: %s %s", isOnline, presence.getFrom());
-            userCapsNodeNotify(presence.getFrom(), isOnline);
-        }
-    }
-
-    // ========== UserCapsNodeListener Implementation  ========== //
-
-    /**
-     * Alert listener that entity caps node of a user may have changed.
-     *
-     * @param user the user (FullJid): Can either be account or contact
-     * @param online indicates if the user is online
-     */
-    public void userCapsNodeNotify(Jid user, boolean online) {
-        if (user != null) {
-            // Fire userCapsNodeNotify.
-            UserCapsNodeListener[] listeners;
-            synchronized (userCapsNodeListeners) {
-                listeners = userCapsNodeListeners.toArray(new UserCapsNodeListener[0]);
-            }
-
-            for (UserCapsNodeListener listener : listeners)
-                listener.userCapsNodeNotify(user, online);
         }
     }
 

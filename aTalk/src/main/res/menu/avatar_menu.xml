@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/avatar_ChoosePicture"
-        android:title="@string/service_gui_avatar_CHOOSE_ICON">
+        android:title="@string/avatar_chose_icon">
     </item>
     <item
         android:id="@+id/avatar_RemovePicture"
-        android:title="@string/service_gui_avatar_REMOVE_ICON">
+        android:title="@string/avatar_remove_icon">
     </item>
     <item
         android:id="@+id/avatar_Cancel"
-        android:title="@string/service_gui_CANCEL">
+        android:title="@string/cancel">
     </item>
 </menu>

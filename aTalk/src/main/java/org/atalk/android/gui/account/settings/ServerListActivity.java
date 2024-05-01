@@ -33,8 +33,7 @@ import org.osgi.framework.BundleContext;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ServerListActivity extends OSGiActivity
-{
+public class ServerListActivity extends OSGiActivity {
     /**
      * Request code when launched for STUN servers list edit
      */
@@ -67,8 +66,7 @@ public class ServerListActivity extends OSGiActivity
 
     @Override
     protected void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         super.start(bundleContext);
 
         Intent intent = getIntent();
@@ -76,11 +74,11 @@ public class ServerListActivity extends OSGiActivity
         int listType = intent.getIntExtra(REQUEST_CODE_KEY, -1);
         if (listType == RCODE_STUN_TURN) {
             mAdapter = new StunServerAdapter(this, registration);
-            setMainTitle(R.string.service_gui_STUN_TURN_SERVER);
+            setMainTitle(R.string.stun_turn_server);
         }
         else if (listType == RCODE_JINGLE_NODES) {
             mAdapter = new JingleNodeAdapter(this, registration);
-            setMainTitle(R.string.service_gui_JBR_JINGLE_NODES);
+            setMainTitle(R.string.jbr_jingle_nodes);
         }
         else {
             throw new IllegalArgumentException();
@@ -97,8 +95,7 @@ public class ServerListActivity extends OSGiActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
         MenuInflater inflater = getMenuInflater();
@@ -107,8 +104,7 @@ public class ServerListActivity extends OSGiActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.addItem) {
             showServerEditDialog(-1);
             return true;
@@ -121,8 +117,7 @@ public class ServerListActivity extends OSGiActivity
      *
      * @param listPosition the position of selected item, -1 means "create new item"
      */
-    void showServerEditDialog(int listPosition)
-    {
+    void showServerEditDialog(int listPosition) {
         DialogFragment securityDialog = mAdapter.createItemEditDialogFragment(listPosition);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -130,8 +125,7 @@ public class ServerListActivity extends OSGiActivity
     }
 
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent result = new Intent();
             result.putExtra(JABBER_REGISTRATION_KEY, registration);
@@ -145,17 +139,15 @@ public class ServerListActivity extends OSGiActivity
     /**
      * The server list fragment. Required to catch events.
      */
-    static public class ServerListFragment extends ListFragment
-    {
+    static public class ServerListFragment extends ListFragment {
         @Override
-        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)        {
+        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
             setEmptyText(getString(R.string.service_gui_SERVERS_LIST_EMPTY));
         }
 
         @Override
-        public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id)
-        {
+        public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
             super.onListItemClick(l, v, position, id);
             ((ServerListActivity) getActivity()).showServerEditDialog(position);
         }

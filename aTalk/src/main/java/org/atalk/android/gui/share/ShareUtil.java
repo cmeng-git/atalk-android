@@ -17,7 +17,6 @@
 
 package org.atalk.android.gui.share;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
@@ -58,7 +57,6 @@ public class ShareUtil {
      * @param msgContent text content for sharing
      * @param imageUris array of image uris for sharing
      */
-    @SuppressLint("NewApi")
     public static void share(final Activity activity, String msgContent, ArrayList<Uri> imageUris) {
         if (activity != null) {
             int timeDelay = 0;
@@ -71,7 +69,7 @@ public class ShareUtil {
                                 new Intent(activity, ShareBroadcastReceiver.class).setPackage(activity.getPackageName()),
                                 NotificationPopupHandler.getPendingIntentFlag(false, true));
                         activity.startActivity(Intent.createChooser(shareIntent,
-                                activity.getString(R.string.service_gui_SHARE_TEXT), pi.getIntentSender()));
+                                activity.getString(R.string.share_text), pi.getIntentSender()));
 
                         // setup up media file sending intent
                         ShareBroadcastReceiver.setShareIntent(activity, share(activity, imageUris));
@@ -81,10 +79,10 @@ public class ShareUtil {
                         // setting is used only when !imageUris.isEmpty()
                         timeDelay = TIME_DELAY;
                         activity.startActivity(Intent.createChooser(shareIntent,
-                                activity.getString(R.string.service_gui_SHARE_TEXT)));
+                                activity.getString(R.string.share_text)));
                     }
                 } catch (ActivityNotFoundException e) {
-                    Timber.w("%s", aTalkApp.getResString(R.string.no_application_found_to_open_file));
+                    Timber.w("%s", aTalkApp.getResString(R.string.open_file_no_application));
                 }
             }
 
@@ -93,7 +91,7 @@ public class ShareUtil {
                 new Handler().postDelayed(() -> {
                     Intent intent = share(activity, imageUris);
                     try {
-                        activity.startActivity(Intent.createChooser(intent, activity.getText(R.string.service_gui_SHARE_FILE)));
+                        activity.startActivity(Intent.createChooser(intent, activity.getText(R.string.share_file)));
                     } catch (ActivityNotFoundException e) {
                         Timber.w("No application found to open file");
                     }
@@ -221,7 +219,7 @@ public class ShareUtil {
         private static Intent mediaIntent;
 
         public static void setShareIntent(Activity activity, Intent intent) {
-            mediaIntent = Intent.createChooser(intent, activity.getText(R.string.service_gui_SHARE_FILE));
+            mediaIntent = Intent.createChooser(intent, activity.getText(R.string.share_file));
             mediaIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
 

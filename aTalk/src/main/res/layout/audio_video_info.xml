@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/call_status_bg"
-        android:text="@string/service_gui_callinfo_AUDIO_INFO" />
+        android:text="@string/callinfo_audio_info" />
 
     <TextView
         android:id="@+id/mediaStreamLabel"
@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/audioVideoLabel"
-        android:text="@string/service_gui_callinfo_MEDIA_STREAM_TRANSPORT_PROTOCOL" />
+        android:text="@string/callinfo_media_stream_transport_protocol" />
 
     <TextView
         android:id="@+id/mediaTransport"
@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/mediaTransport"
-        android:text="@string/service_gui_callinfo_VIDEO_SIZE" />
+        android:text="@string/callinfo_video_size" />
 
     <TextView
         android:id="@+id/videoSize"
@@ -51,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/videoSizeLabel"
-        android:text="@string/service_gui_callinfo_CODEC" />
+        android:text="@string/callinfo_codec" />
 
     <TextView
         android:id="@+id/codec"
@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/codec"
         android:singleLine="false"
-        android:text="@string/service_gui_callinfo_ICE_CANDIDATE_EXTENDED_TYPE" />
+        android:text="@string/callinfo_candidate_extended_type" />
 
     <TextView
         android:id="@+id/iceExtType"
@@ -84,7 +84,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/iceExtType"
-        android:text="@string/service_gui_callinfo_ICE_LOCAL_HOST_ADDRESS" />
+        android:text="@string/callinfo_localhost_address" />
 
     <TextView
         android:id="@+id/iceLocalHost"
@@ -100,7 +100,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/iceLocalHost"
-        android:text="@string/service_gui_callinfo_ICE_REMOTE_HOST_ADDRESS" />
+        android:text="@string/callinfo_ice_remote_host_address" />
 
     <TextView
         android:id="@+id/iceRemoteHost"
@@ -117,7 +117,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/iceRemoteHost"
         android:singleLine="false"
-        android:text="@string/service_gui_callinfo_ICE_LOCAL_REFLEXIVE_ADDRESS" />
+        android:text="@string/callinfo_ice_local_reflexive_address" />
 
     <TextView
         android:id="@+id/iceLocalReflx"
@@ -134,7 +134,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/iceLocalReflx"
         android:singleLine="false"
-        android:text="@string/service_gui_callinfo_ICE_LOCAL_RELAYED_ADDRESS" />
+        android:text="@string/callinfo_ice_local_relayed_address" />
 
     <TextView
         android:id="@+id/iceLocalRelayed"
@@ -151,7 +151,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/iceLocalRelayed"
         android:singleLine="false"
-        android:text="@string/service_gui_callinfo_ICE_REMOTE_RELAYED_ADDRESS" />
+        android:text="@string/callinfo_ice_remote_relayed_address" />
 
     <TextView
         android:id="@+id/iceRemoteRelayed"
@@ -168,7 +168,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/iceRemoteRelayed"
         android:singleLine="false"
-        android:text="@string/service_gui_callinfo_ICE_REMOTE_REFLEXIVE_ADDRESS" />
+        android:text="@string/callinfo_ice_remote_reflexive_address" />
 
     <TextView
         android:id="@+id/iceRemoteReflexive"
@@ -185,7 +185,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/iceRemoteReflexive"
         android:singleLine="false"
-        android:text="@string/service_gui_callinfo_LOCAL_IP" />
+        android:text="@string/callinfo_local_ip" />
 
     <TextView
         android:id="@+id/localIp"
@@ -202,7 +202,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/localIp"
         android:singleLine="false"
-        android:text="@string/service_gui_callinfo_REMOTE_IP" />
+        android:text="@string/callinfo_remote_ip" />
 
     <TextView
         android:id="@+id/remoteIp"
@@ -218,7 +218,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/remoteIp"
-        android:text="@string/service_gui_callinfo_BANDWITH" />
+        android:text="@string/callinfo_bandwidth" />
 
     <TextView
         android:id="@+id/bandwidth"
@@ -235,7 +235,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/bandwidthLabel"
-        android:text="@string/service_gui_callinfo_LOSS_RATE" />
+        android:text="@string/callinfo_loss_rate" />
 
     <TextView
         android:id="@+id/lossRate"
@@ -252,7 +252,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/lossRateLabel"
-        android:text="@string/service_gui_callinfo_DECODED_WITH_FEC" />
+        android:text="@string/callinfo_decoded_with_fec" />
 
     <TextView
         android:id="@+id/decodedWithFEC"
@@ -269,7 +269,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/decodedWithFecLabel"
-        android:text="@string/service_gui_callinfo_DISCARDED_PERCENT" />
+        android:text="@string/callinfo_discarded_percent" />
 
     <TextView
         android:id="@+id/discardedPercent"
@@ -286,7 +286,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/discarderPercentLabel"
-        android:text="@string/service_gui_callinfo_DISCARDED_TOTAL" />
+        android:text="@string/callinfo_discarded_total" />
 
     <TextView
         android:id="@+id/discardedTotal"
@@ -302,7 +302,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/discardedTotal"
-        android:text="@string/service_gui_callinfo_ADAPTIVE_JITTER_BUFFER" />
+        android:text="@string/callinfo_adaptive_jitter_buffer" />
 
     <TextView
         android:id="@+id/adaptiveJitterBuffer"
@@ -319,7 +319,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/adaptJitterLabel"
-        android:text="@string/service_gui_callinfo_JITTER_BUFFER_DELAY" />
+        android:text="@string/callinfo_ice_state_jitter_buffer_delay" />
 
     <TextView
         android:id="@+id/jitterBuffer"
@@ -335,7 +335,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/jitterBuffer"
-        android:text="@string/service_gui_callinfo_RTT" />
+        android:text="@string/callinfo_rtt" />
 
     <TextView
         android:id="@+id/RTT"
@@ -353,7 +353,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/rttLabel"
         android:singleLine="false"
-        android:text="@string/service_gui_callinfo_JITTER" />
+        android:text="@string/callinfo_jitter" />
 
     <TextView
         android:id="@+id/jitter"

@@ -725,7 +725,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     public void setPeerName(final String name) {
         runOnUiThread(() -> {
             ActionBarUtil.setTitle(VideoCallActivity.this,
-                    getResources().getString(R.string.service_gui_CALL_WITH) + ": ");
+                    getResources().getString(R.string.call_with));
             ActionBarUtil.setSubtitle(VideoCallActivity.this, name);
         });
     }
@@ -1220,7 +1220,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             srtpControlType = SrtpControlType.ZRTP;
             isVerified = ((ZrtpControl) srtpCtrl).isSecurityVerified();
             if (!isVerified) {
-                String toastMsg = getString(R.string.service_gui_security_VERIFY_TOAST);
+                String toastMsg = getString(R.string.security_verify_toast);
                 sasToastControl.showToast(false, toastMsg);
             }
         }

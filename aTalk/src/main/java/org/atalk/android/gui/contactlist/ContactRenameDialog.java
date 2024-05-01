@@ -33,8 +33,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class ContactRenameDialog extends OSGiDialogFragment
-        implements DialogInterface.OnClickListener
-{
+        implements DialogInterface.OnClickListener {
     /**
      * Meta UID arg key.
      */
@@ -58,16 +57,15 @@ public class ContactRenameDialog extends OSGiDialogFragment
     private MetaContact metaContact;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        getDialog().setTitle(R.string.service_gui_CONTACT_RENAME_TITLE);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        getDialog().setTitle(R.string.contact_rename_title);
         this.metaContact = AndroidGUIActivator.getContactListService()
                 .findMetaContactByMetaUID(getArguments().getString(META_CONTACT_UID));
 
         View contentView = inflater.inflate(R.layout.contact_rename, container, false);
         String userId = getArguments().getString(USER_ID);
         TextView accountOwner = contentView.findViewById(R.id.accountOwner);
-        accountOwner.setText(getString(R.string.service_gui_CONTACT_OWNER, userId));
+        accountOwner.setText(getString(R.string.contact_owner, userId));
 
         mEditName = contentView.findViewById(R.id.editName);
         String contactNick = getArguments().getString(CONTACT_NICK);
@@ -77,7 +75,7 @@ public class ContactRenameDialog extends OSGiDialogFragment
         contentView.findViewById(R.id.rename).setOnClickListener(v -> {
             String displayName = ViewUtil.toString(mEditName);
             if (displayName == null) {
-                showErrorMessage(getString(R.string.service_gui_CONTACT_NAME_EMPTY));
+                showErrorMessage(getString(R.string.contact_name_empty));
             }
             else
                 renameContact(displayName);
@@ -88,13 +86,10 @@ public class ContactRenameDialog extends OSGiDialogFragment
         return contentView;
     }
 
-    private void renameContact(final String newDisplayName)
-    {
-        new Thread()
-        {
+    private void renameContact(final String newDisplayName) {
+        new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 try {
                     AndroidGUIActivator.getContactListService().renameMetaContact(metaContact, newDisplayName);
                 } catch (MetaContactListException e) {
@@ -106,18 +101,17 @@ public class ContactRenameDialog extends OSGiDialogFragment
     }
 
     @Override
-    public void onClick(DialogInterface dialog, int which)
-    {
+    public void onClick(DialogInterface dialog, int which) {
     }
 
     /**
      * Creates new instance of <code>MoveToGroupDialog</code>.
      *
      * @param metaContact the contact that will be moved.
+     *
      * @return parametrized instance of <code>MoveToGroupDialog</code>.
      */
-    public static ContactRenameDialog getInstance(MetaContact metaContact)
-    {
+    public static ContactRenameDialog getInstance(MetaContact metaContact) {
         Bundle args = new Bundle();
         String userId = metaContact.getDefaultContact().getProtocolProvider().getAccountID().getUserID();
         args.putString(USER_ID, userId);
@@ -134,9 +128,8 @@ public class ContactRenameDialog extends OSGiDialogFragment
      *
      * @param errMessage the error message to show.
      */
-    private void showErrorMessage(String errMessage)
-    {
+    private void showErrorMessage(String errMessage) {
         DialogActivity.showDialog(aTalkApp.getInstance(),
-                aTalkApp.getResString(R.string.service_gui_ERROR), errMessage);
+                aTalkApp.getResString(R.string.error), errMessage);
     }
 }

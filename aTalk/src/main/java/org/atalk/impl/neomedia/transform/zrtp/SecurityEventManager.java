@@ -40,13 +40,13 @@ public class SecurityEventManager extends ZrtpUserCallback
      * A warning <code>String</code> that we display to the user.
      */
     public static final String WARNING_NO_RS_MATCH
-            = aTalkApp.getResString(R.string.impl_media_security_WARNING_NO_RS_MATCH);
+            = aTalkApp.getResString(R.string.media_security_warning_no_rs_match);
 
     /**
      * A warning <code>String</code> that we display to the user.
      */
     public static final String WARNING_NO_EXPECTED_RS_MATCH
-            = aTalkApp.getResString(R.string.impl_media_security_WARNING_NO_EXPECTED_RS_MATCH);
+            = aTalkApp.getResString(R.string.media_security_warning_no_expected_rs_match);
 
     /**
      * The zrtp control that this manager is associated with.
@@ -205,7 +205,7 @@ public class SecurityEventManager extends ZrtpUserCallback
             }
             else if (warn == ZrtpCodes.WarningCodes.WarningCRCmismatch) {
                 message = "Internal ZRTP packet checksum mismatch.";
-                i18nMessage = aTalkApp.getResString(R.string.impl_media_security_CHECKSUM_MISMATCH);
+                i18nMessage = aTalkApp.getResString(R.string.media_security_checksum_mismatch);
             }
             else {
                 // Other warnings are internal only, no user action required
@@ -218,19 +218,19 @@ public class SecurityEventManager extends ZrtpUserCallback
 
             if (severe == ZrtpCodes.SevereCodes.SevereCannotSend) {
                 message = "Failed to send data. Internet data connection or peer is down.";
-                i18nMessage = aTalkApp.getResString(R.string.impl_media_security_DATA_SEND_FAILED, msgCode.toString());
+                i18nMessage = aTalkApp.getResString(R.string.media_security_data_send_failed, msgCode.toString());
             }
             else if (severe == ZrtpCodes.SevereCodes.SevereTooMuchRetries) {
                 message = "Too much retries during ZRTP negotiation.";
-                i18nMessage = aTalkApp.getResString(R.string.impl_media_security_RETRY_RATE_EXCEEDED, msgCode.toString());
+                i18nMessage = aTalkApp.getResString(R.string.imedia_security_retry_rate_exceeded, msgCode.toString());
             }
             else if (severe == ZrtpCodes.SevereCodes.SevereProtocolError) {
                 message = "Internal protocol error occurred.";
-                i18nMessage = aTalkApp.getResString(R.string.impl_media_security_INTERNAL_PROTOCOL_ERROR, msgCode.toString());
+                i18nMessage = aTalkApp.getResString(R.string.media_security_internal_protocol_error, msgCode.toString());
             }
             else {
                 message = "General error has occurred.";
-                i18nMessage = aTalkApp.getResString(R.string.impl_media_security_ZRTP_GENERIC_MSG, msgCode.toString());
+                i18nMessage = aTalkApp.getResString(R.string.media_security_zrtp_generic_message, msgCode.toString());
             }
         }
         else if (msgCode instanceof ZrtpCodes.ZrtpErrorCodes) {
@@ -238,7 +238,7 @@ public class SecurityEventManager extends ZrtpUserCallback
 
             message = "Indicates compatibility problems like for example: unsupported protocol version," +
                     " unsupported hash type, cypher type, SAS scheme, etc.";
-            i18nMessage = aTalkApp.getResString(R.string.impl_media_security_ZRTP_GENERIC_MSG, msgCode.toString());
+            i18nMessage = aTalkApp.getResString(R.string.media_security_zrtp_generic_message, msgCode.toString());
         }
         else {
             // Other warnings are internal only, no user action required
@@ -264,7 +264,7 @@ public class SecurityEventManager extends ZrtpUserCallback
         Iterator<?> ii = subCode.iterator();
         Object msgCode = ii.next();
 
-        aTalkApp.showToastMessage(R.string.impl_media_security_ZRTP_HANDSHAKE_TIMEOUT, msgCode);
+        aTalkApp.showToastMessage(R.string.media_security_zrtp_handshake_timeout, msgCode);
         Timber.w(new Exception(), "%s: ZRTP key negotiation failed: %s", sessionTypeToString(sessionType), msgCode);
     }
 

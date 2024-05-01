@@ -24,12 +24,12 @@ import android.graphics.drawable.Drawable;
  *
  * @author Eng Chong Meng
  */
-public interface UIChatRoomRenderer
-{
+public interface UIChatRoomRenderer {
     /**
      * Return <code>true</code> if given contact is considered to be currently selected.
      *
      * @param chatRoomWrapper chatRoomWrapper instance.
+     *
      * @return <code>true</code> if given chatRoomWrapper is considered to be currently selected.
      */
     boolean isSelected(Object chatRoomWrapper);
@@ -38,6 +38,7 @@ public interface UIChatRoomRenderer
      * Returns chatRoomWrapper display name.
      *
      * @param chatRoomWrapper chatRoomWrapper instance.
+     *
      * @return chatRoomWrapper display name.
      */
     String getDisplayName(Object chatRoomWrapper);
@@ -46,6 +47,7 @@ public interface UIChatRoomRenderer
      * Returns chatRoomWrapper status message.
      *
      * @param chatRoomWrapper chatRoomWrapper instance.
+     *
      * @return chatRoomWrapper status message.
      */
     String getStatusMessage(Object chatRoomWrapper);
@@ -54,6 +56,7 @@ public interface UIChatRoomRenderer
      * Returns <code>true</code> if given chatRoomWrapper name should be displayed in bold.
      *
      * @param chatRoomWrapper chatRoomWrapper instance.
+     *
      * @return <code>true</code> if given chatRoomWrapper name should be displayed in bold.
      */
     boolean isDisplayBold(Object chatRoomWrapper);
@@ -62,6 +65,7 @@ public interface UIChatRoomRenderer
      * Returns chatRoomWrapper Icon image.
      *
      * @param chatRoomWrapper chatRoomWrapper instance.
+     *
      * @return chatRoomWrapper avatar image.
      */
     Drawable getChatRoomIcon(Object chatRoomWrapper);
@@ -70,10 +74,12 @@ public interface UIChatRoomRenderer
      * Returns chatRoomID that can be used to establish an outgoing connection.
      *
      * @param chatRoomWrapper chatRoomWrapper instance.
+     *
      * @return chatRoomID that can be used to establish an outgoing connection.
      */
     String getChatRoomID(Object chatRoomWrapper);
 
     boolean isAutoJoin(Object chatRoomWrapper);
+
     boolean isBookmark(Object chatRoomWrapper);
 }

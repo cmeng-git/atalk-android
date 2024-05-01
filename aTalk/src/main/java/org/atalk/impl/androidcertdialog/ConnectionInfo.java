@@ -182,10 +182,10 @@ public class ConnectionInfo extends OSGiActivity
                 viewCertDialog.show();
             }
             else
-                aTalkApp.showToastMessage(aTalkApp.getResString(R.string.service_gui_callinfo_TLS_CERTIFICATE_CONTENT) + ": null!");
+                aTalkApp.showToastMessage(aTalkApp.getResString(R.string.callinfo_tls_certificate_content) + ": null!");
         }
         else {
-            aTalkApp.showToastMessage(R.string.plugin_certconfig_SHOW_CERT_EXCEPTION, accountId);
+            aTalkApp.showToastMessage(R.string.certconfig_show_cert_exception, accountId);
         }
     }
 
@@ -207,9 +207,9 @@ public class ConnectionInfo extends OSGiActivity
 
         final String bareJid = accountId.getAccountJid();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.service_gui_settings_SSL_CERTIFICATE_REMOVE)
-                .setMessage(getString(R.string.service_gui_settings_SSL_CERTIFICATE_PURGE, bareJid))
-                .setPositiveButton(R.string.service_gui_YES, (dialog, which) -> {
+        builder.setTitle(R.string.settings_ssl_certificate_remove)
+                .setMessage(getString(R.string.settings_ssl_certificate_purge, bareJid))
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
                     for (String certEntry : certs)
                         cvs.removeCertificateEntry(certEntry);
 
@@ -217,7 +217,7 @@ public class ConnectionInfo extends OSGiActivity
                     mCIAdapter.setAccountIDs(initCertificateEntry());
                     dialog.dismiss();
                 })
-                .setNegativeButton(R.string.service_gui_NO, (dialog, which) -> dialog.dismiss());
+                .setNegativeButton(R.string.no, (dialog, which) -> dialog.dismiss());
         deleteDialog = builder.create();
         deleteDialog.show();
     }
@@ -233,33 +233,33 @@ public class ConnectionInfo extends OSGiActivity
         buff.append("<html><body>");
 
         // Protocol name
-        buff.append(getItemString(getString(R.string.service_gui_settings_PROTOCOL), pps.getProtocolName()));
+        buff.append(getItemString(getString(R.string.protocol), pps.getProtocolName()));
 
         // Server address and port
         final OperationSetConnectionInfo opSetConnInfo = pps.getOperationSet(OperationSetConnectionInfo.class);
         if (opSetConnInfo != null) {
             InetSocketAddress ISAddress = opSetConnInfo.getServerAddress();
-            // buff.append(getItemString(getString(R.string.service_gui_settings_ADDRESS),
+            // buff.append(getItemString(getString(R.string.address),
             //      (ISAddress == null) ? "" : ISAddress.getHostName()));
-            buff.append(getItemString(getString(R.string.service_gui_settings_ADDRESS),
+            buff.append(getItemString(getString(R.string.address),
                     (ISAddress == null) ? "" : ISAddress.getHostString()));
-            buff.append(getItemString(getString(R.string.service_gui_settings_PORT),
+            buff.append(getItemString(getString(R.string.port),
                     (ISAddress == null) ? "" : String.valueOf(ISAddress.getPort())));
         }
 
         // Transport protocol
         TransportProtocol preferredTransport = pps.getTransportProtocol();
         if (preferredTransport != TransportProtocol.UNKNOWN)
-            buff.append(getItemString(getString(R.string.service_gui_callinfo_CALL_TRANSPORT), preferredTransport.toString()));
+            buff.append(getItemString(getString(R.string.callinfo_call_transport), preferredTransport.toString()));
 
         // TLS information
         final OperationSetTLS opSetTLS = pps.getOperationSet(OperationSetTLS.class);
         if (opSetTLS != null) {
-            buff.append(getItemString(getString(R.string.service_gui_callinfo_TLS_PROTOCOL), opSetTLS.getProtocol()));
-            buff.append(getItemString(getString(R.string.service_gui_callinfo_TLS_CIPHER_SUITE), opSetTLS.getCipherSuite()));
+            buff.append(getItemString(getString(R.string.callinfo_tls_protocol), opSetTLS.getProtocol()));
+            buff.append(getItemString(getString(R.string.callinfo_tls_cipher_suite), opSetTLS.getCipherSuite()));
 
             buff.append("<b><u><font color=\"aqua\">")
-                    .append(getString(R.string.service_gui_callinfo_VIEW_CERTIFICATE))
+                    .append(getString(R.string.callinfo_view_certificate))
                     .append("</font></u></b>");
         }
         buff.append("</body></html>");
@@ -375,7 +375,7 @@ public class ConnectionInfo extends OSGiActivity
                 detailInfo = loadDetails(accountId.getProtocolProvider());
             }
             else {
-                detailInfo = getString(R.string.service_gui_ACCOUNT_UNREGISTERED, "&#8226; ");
+                detailInfo = getString(R.string.account_unregistered, "&#8226; ");
             }
 
             ciViewHolder.connectionInfo.setText(Html.fromHtml(detailInfo));

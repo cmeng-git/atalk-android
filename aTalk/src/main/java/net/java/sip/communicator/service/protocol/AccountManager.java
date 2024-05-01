@@ -10,6 +10,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Vector;
+
 import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.service.protocol.event.AccountManagerEvent;
@@ -25,15 +34,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceReference;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Vector;
-
 import timber.log.Timber;
 
 /**
@@ -43,8 +43,7 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class AccountManager
-{
+public class AccountManager {
     /**
      * The delay in milliseconds the background <code>Thread</code> loading the stored accounts should wait
      * before dying so that it doesn't get recreated for each <code>ProtocolProviderFactory</code> registration.
@@ -91,8 +90,7 @@ public class AccountManager
      * @param bundleContext the <code>BundleContext</code> in which the new instance is loaded (and in which the
      * caller will usually later register it as a service)
      */
-    public AccountManager(BundleContext bundleContext)
-    {
+    public AccountManager(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
         Context context = ServiceUtils.getService(bundleContext, OSGiService.class);
         databaseBackend = DatabaseBackend.getInstance(context);
@@ -106,8 +104,7 @@ public class AccountManager
      *
      * @param listener the <code>AccountManagerListener</code> to add
      */
-    public void addListener(AccountManagerListener listener)
-    {
+    public void addListener(AccountManagerListener listener) {
         synchronized (listeners) {
             if (!listeners.contains(listener))
                 listeners.add(listener);
@@ -119,8 +116,7 @@ public class AccountManager
      *
      * @param factory the <code>ProtocolProviderFactory</code> to load the stored accounts of
      */
-    private void doLoadStoredAccounts(ProtocolProviderFactory factory)
-    {
+    private void doLoadStoredAccounts(ProtocolProviderFactory factory) {
         List<AccountID> accountIDs = databaseBackend.getAccounts(factory);
         Timber.d("Found %s %s accounts", accountIDs.size(), factory.getProtocolName());
 
@@ -157,8 +153,7 @@ public class AccountManager
      *
      * @param factory the <code>ProtocolProviderFactory</code> which had its stored accounts just loaded
      */
-    private void fireStoredAccountsLoaded(ProtocolProviderFactory factory)
-    {
+    private void fireStoredAccountsLoaded(ProtocolProviderFactory factory) {
         AccountManagerListener[] listeners;
         synchronized (this.listeners) {
             listeners = this.listeners.toArray(new AccountManagerListener[0]);
@@ -179,10 +174,10 @@ public class AccountManager
      * Returns the package name of the <code>factory</code>.
      *
      * @param factory the factory which package will be returned.
+     *
      * @return the package name of the <code>factory</code>.
      */
-    public String getFactoryImplPackageName(ProtocolProviderFactory factory)
-    {
+    public String getFactoryImplPackageName(ProtocolProviderFactory factory) {
         String className = factory.getClass().getName();
         return className.substring(0, className.lastIndexOf('.'));
     }
@@ -192,11 +187,11 @@ public class AccountManager
      *
      * @param protocolName the protocol name to check for
      * @param includeHidden whether to include hidden providers
+     *
      * @return <code>true</code> if there is any account stored in configuration service with
      * <code>protocolName</code>, <code>false</code> otherwise.
      */
-    public boolean hasStoredAccounts(String protocolName, boolean includeHidden)
-    {
+    public boolean hasStoredAccounts(String protocolName, boolean includeHidden) {
         return hasStoredAccount(protocolName, includeHidden, null);
     }
 
@@ -206,11 +201,11 @@ public class AccountManager
      * @param protocolName the protocol name
      * @param includeHidden whether to check hidden providers
      * @param userID the user id to check.
+     *
      * @return <code>true</code> if there is any account stored in configuration service with
      * <code>protocolName</code> and <code>userID</code>, <code>false</code> otherwise.
      */
-    public boolean hasStoredAccount(String protocolName, boolean includeHidden, String userID)
-    {
+    public boolean hasStoredAccount(String protocolName, boolean includeHidden, String userID) {
         boolean hasStoredAccount = false;
         Map<String, String> accounts;
         ServiceReference[] factoryRefs;
@@ -260,8 +255,7 @@ public class AccountManager
      * @return <code>AccountID</code> if there is any account stored in configuration service with
      * <code>uid</code>, <code>null</code> otherwise.
      */
-    public AccountID findAccountID(String uid)
-    {
+    public AccountID findAccountID(String uid) {
         Map<String, String> accounts;
         ServiceReference[] factoryRefs;
 
@@ -299,8 +293,7 @@ public class AccountManager
      * @param factory the <code>ProtocolProviderFactory</code> to load the stored accounts of
      */
 
-    private void loadStoredAccounts(ProtocolProviderFactory factory)
-    {
+    private void loadStoredAccounts(ProtocolProviderFactory factory) {
         doLoadStoredAccounts(factory);
         fireStoredAccountsLoaded(factory);
     }
@@ -312,8 +305,7 @@ public class AccountManager
      *
      * @param factory the <code>ProtocolProviderFactory</code> which has been registered as a service.
      */
-    private void protocolProviderFactoryRegistered(ProtocolProviderFactory factory)
-    {
+    private void protocolProviderFactoryRegistered(ProtocolProviderFactory factory) {
         queueLoadStoredAccounts(factory);
     }
 
@@ -324,18 +316,15 @@ public class AccountManager
      * @param factory the <code>ProtocolProviderFactory</code> to be queued for loading its stored accounts as
      * soon as possible
      */
-    private void queueLoadStoredAccounts(ProtocolProviderFactory factory)
-    {
+    private void queueLoadStoredAccounts(ProtocolProviderFactory factory) {
         synchronized (loadStoredAccountsQueue) {
             loadStoredAccountsQueue.add(factory);
             loadStoredAccountsQueue.notifyAll();
 
             if (loadStoredAccountsThread == null) {
-                loadStoredAccountsThread = new Thread()
-                {
+                loadStoredAccountsThread = new Thread() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         runInLoadStoredAccountsThread();
                     }
                 };
@@ -351,8 +340,7 @@ public class AccountManager
      *
      * @param listener the <code>AccountManagerListener</code> to remove
      */
-    public void removeListener(AccountManagerListener listener)
-    {
+    public void removeListener(AccountManagerListener listener) {
         synchronized (listeners) {
             listeners.remove(listener);
         }
@@ -362,8 +350,7 @@ public class AccountManager
      * Running in {@link #loadStoredAccountsThread}, loads the stored accounts of the
      * <code>ProtocolProviderFactory</code> services waiting in {@link #loadStoredAccountsQueue}
      */
-    private void runInLoadStoredAccountsThread()
-    {
+    private void runInLoadStoredAccountsThread() {
         boolean interrupted = false;
         while (!interrupted) {
             try {
@@ -441,8 +428,7 @@ public class AccountManager
      *
      * @param serviceEvent the <code>ServiceEvent</code> containing the event data
      */
-    private void serviceChanged(ServiceEvent serviceEvent)
-    {
+    private void serviceChanged(ServiceEvent serviceEvent) {
         if (serviceEvent.getType() == ServiceEvent.REGISTERED) {
             Object service = bundleContext.getService(serviceEvent.getServiceReference());
 
@@ -458,11 +444,11 @@ public class AccountManager
      *
      * @param factory the <code>ProtocolProviderFactory</code> which created the account to be stored
      * @param accountID the account in the form of <code>AccountID</code> to be stored
+     *
      * @throws OperationFailedException if anything goes wrong while storing the account
      */
     public void storeAccount(ProtocolProviderFactory factory, AccountID accountID)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         Map<String, Object> configurationProperties = new HashMap<>();
         synchronized (storedAccounts) {
             if (!storedAccounts.contains(accountID))
@@ -530,8 +516,7 @@ public class AccountManager
      *
      * @param accountID the account in the form of <code>AccountID</code> to be modified
      */
-    public void modifyAccountId(AccountID accountID)
-    {
+    public void modifyAccountId(AccountID accountID) {
         databaseBackend.createAccount(accountID);
     }
 
@@ -540,10 +525,10 @@ public class AccountManager
      *
      * @param factory account's protocol provider factory
      * @param accountUID account for which the prefix will be returned
+     *
      * @return configuration prefix for given <code>accountID</code> if exists or <code>null</code> otherwise
      */
-    public String getStoredAccountUUID(ProtocolProviderFactory factory, String accountUID)
-    {
+    public String getStoredAccountUUID(ProtocolProviderFactory factory, String accountUID) {
         Map<String, String> accounts;
         accounts = getStoredAccounts(factory);
         if (accounts.containsKey(accountUID))
@@ -558,10 +543,10 @@ public class AccountManager
      *
      * @param factory the <code>ProtocolProviderFactory</code> which created the account to be stored
      * @param accountID the AccountID of the account to remove.
+     *
      * @return true if an account has been removed and false otherwise.
      */
-    public boolean removeStoredAccount(ProtocolProviderFactory factory, AccountID accountID)
-    {
+    public boolean removeStoredAccount(ProtocolProviderFactory factory, AccountID accountID) {
         synchronized (storedAccounts) {
             storedAccounts.remove(accountID);
         }
@@ -581,8 +566,7 @@ public class AccountManager
      *
      * @see #removeStoredAccount(ProtocolProviderFactory, AccountID)
      */
-    public void removeStoredAccounts()
-    {
+    public void removeStoredAccounts() {
         synchronized (loadStoredAccountsQueue) {
             /*
              * Wait for the Thread which loads the stored account to complete so that we can be
@@ -626,8 +610,7 @@ public class AccountManager
      *
      * @return an <code>Iterator</code> over a list of all stored <code>AccountID</code>s
      */
-    public Collection<AccountID> getStoredAccounts()
-    {
+    public Collection<AccountID> getStoredAccounts() {
         synchronized (storedAccounts) {
             return new Vector<>(storedAccounts);
         }
@@ -639,12 +622,12 @@ public class AccountManager
      * meant to load the account through the corresponding <code>ProtocolProviderFactory</code> .
      *
      * @param accountID the identifier of the account to load
+     *
      * @throws OperationFailedException if anything goes wrong while loading the account corresponding to the specified
      * <code>accountID</code>
      */
     public void loadAccount(AccountID accountID)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         // If the account with the given id is already loaded we have nothing to do here.
         if (isAccountLoaded(accountID)) {
             Timber.w("Account is already loaded: %s", accountID);
@@ -674,12 +657,12 @@ public class AccountManager
      * is meant to unload the account through the corresponding <code>ProtocolProviderFactory</code>.
      *
      * @param accountID the identifier of the account to load
+     *
      * @throws OperationFailedException if anything goes wrong while unloading the account corresponding
      * to the specified <code>accountID</code>
      */
     public void unloadAccount(AccountID accountID)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         // If the account with the given id is already unloaded we have nothing to do here.
         if (!isAccountLoaded(accountID))
             return;
@@ -724,16 +707,15 @@ public class AccountManager
      * would be unregistered from the bundle context, but would remain in the configuration file.
      *
      * @param accountID the identifier of the account to load
+     *
      * @return <code>true</code> to indicate that the account with the given <code>accountID</code> is
      * loaded, <code>false</code> - otherwise
      */
-    public boolean isAccountLoaded(AccountID accountID)
-    {
+    public boolean isAccountLoaded(AccountID accountID) {
         return storedAccounts.contains(accountID) && accountID.isEnabled();
     }
 
-    private String stripPackagePrefix(String property)
-    {
+    private String stripPackagePrefix(String property) {
         int packageEndIndex = property.lastIndexOf('.');
 
         if (packageEndIndex != -1) {
@@ -742,8 +724,7 @@ public class AccountManager
         return property;
     }
 
-    private Map<String, String> getStoredAccounts(ProtocolProviderFactory factory)
-    {
+    private Map<String, String> getStoredAccounts(ProtocolProviderFactory factory) {
         Map<String, String> accounts = new Hashtable<>();
         SQLiteDatabase mDB = databaseBackend.getReadableDatabase();
         String[] args = {factory.getProtocolName()};

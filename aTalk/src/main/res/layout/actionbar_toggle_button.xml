@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:text="@string/service_gui_ENC_OVERRIDE_GLOBAL"
+        android:text="@string/enc_override_global"
         android:gravity="center_vertical" />
 
 </LinearLayout>

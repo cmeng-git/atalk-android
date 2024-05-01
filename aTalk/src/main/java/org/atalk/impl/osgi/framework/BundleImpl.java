@@ -85,13 +85,7 @@ public class BundleImpl implements Bundle
     {
         long thisBundleId = getBundleId();
         long otherBundleId = other.getBundleId();
-
-        if (thisBundleId < otherBundleId)
-            return -1;
-        else if (thisBundleId == otherBundleId)
-            return 0;
-        else
-            return 1;
+        return Long.compare(thisBundleId, otherBundleId);
     }
 
     public Enumeration<URL> findEntries(String path, String filePattern, boolean recurse)

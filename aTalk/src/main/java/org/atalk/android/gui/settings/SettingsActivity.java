@@ -20,14 +20,12 @@ import org.atalk.service.osgi.OSGiActivity;
  * @author Eng Chong Meng
  */
 public class SettingsActivity extends OSGiActivity
-        implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
-{
+        implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // We do not allow opening settings if there is a call currently active

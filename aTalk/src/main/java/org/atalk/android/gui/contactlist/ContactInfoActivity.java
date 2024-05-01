@@ -15,6 +15,13 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationSetPresence;
@@ -52,13 +59,6 @@ import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.service.osgi.OSGiActivity;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -73,14 +73,13 @@ import timber.log.Timber;
  * <p>
  * <p>
  * The {@link #mContact} is retrieved from the {@link Intent} by direct access to
- * @link ContactListFragment#getClickedContact()
  *
  * @author Eng Chong Meng
+ * @link ContactListFragment#getClickedContact()
  */
 
 public class ContactInfoActivity extends OSGiActivity
-        implements OperationSetServerStoredContactInfo.DetailsResponseListener
-{
+        implements OperationSetServerStoredContactInfo.DetailsResponseListener {
     /**
      * Mapping between all supported by this plugin <code>ServerStoredDetails</code> and their
      * respective <code>TextView</code> that are used for modifying the details.
@@ -104,8 +103,7 @@ public class ContactInfoActivity extends OSGiActivity
     private Contact mContact;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact_info);
 
@@ -142,8 +140,7 @@ public class ContactInfoActivity extends OSGiActivity
     /**
      * Create and initialize the view with actual values
      */
-    private void initPresenceStatus()
-    {
+    private void initPresenceStatus() {
         String title = mContact.getDisplayName();
         ActionBarUtil.setTitle(this, title);
 
@@ -182,8 +179,7 @@ public class ContactInfoActivity extends OSGiActivity
      * street/city/region/country address, postal code, birth date, gender,
      * organization name, job title, about me, home/work email, home/work phone.
      */
-    private void initSummaryPanel()
-    {
+    private void initSummaryPanel() {
         // Display name details.
         TextView displayNameField = findViewById(R.id.ci_DisplayNameField);
         detailToTextField.put(DisplayNameDetail.class, displayNameField);
@@ -264,8 +260,7 @@ public class ContactInfoActivity extends OSGiActivity
     }
 
     @Override
-    public void detailsRetrieved(final Iterator<GenericDetail> allDetails)
-    {
+    public void detailsRetrieved(final Iterator<GenericDetail> allDetails) {
         new Handler(Looper.getMainLooper()).post(() -> {
             if (allDetails != null) {
                 while (allDetails.hasNext()) {
@@ -282,8 +277,7 @@ public class ContactInfoActivity extends OSGiActivity
      *
      * @param detail to be loaded.
      */
-    private void loadDetail(GenericDetail detail)
-    {
+    private void loadDetail(GenericDetail detail) {
         if (detail instanceof BinaryDetail) {
             ImageView avatarView = findViewById(R.id.contactAvatar);
 

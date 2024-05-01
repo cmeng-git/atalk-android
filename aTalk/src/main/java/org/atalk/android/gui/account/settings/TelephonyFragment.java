@@ -25,8 +25,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class TelephonyFragment extends OSGiPreferenceFragment
-        implements SharedPreferences.OnSharedPreferenceChangeListener
-{
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
     // Telephony
     private static final String P_KEY_CALLING_DISABLED = "pref_key_calling_disabled";
     private static final String P_KEY_OVERRIDE_PHONE_SUFFIX = "pref_key_override_phone_suffix";
@@ -50,8 +49,7 @@ public class TelephonyFragment extends OSGiPreferenceFragment
      * {@inheritDoc}
      */
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
-    {
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         String accountID = getArguments().getString(AccountPreferenceFragment.EXTRA_ACCOUNT_ID);
         AccountID account = AccountUtils.getAccountIDForUID(accountID);
         ProtocolProviderService pps = AccountUtils.getRegisteredProviderForAccount(account);
@@ -62,7 +60,7 @@ public class TelephonyFragment extends OSGiPreferenceFragment
 
         initPreferences();
         setPreferencesFromResource(R.xml.telephony_preference, rootKey);
-        setPrefTitle(R.string.service_gui_JBR_TELEPHONY);
+        setPrefTitle(R.string.jbr_telephony_voip_pbx);
 
         shPrefs.registerOnSharedPreferenceChangeListener(this);
         shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
@@ -73,8 +71,7 @@ public class TelephonyFragment extends OSGiPreferenceFragment
     /**
      * {@inheritDoc}
      */
-    protected void initPreferences()
-    {
+    protected void initPreferences() {
         jbrReg = JabberPreferenceFragment.jbrReg;
         shPrefs = getPreferenceManager().getSharedPreferences();
         SharedPreferences.Editor editor = shPrefs.edit();
@@ -90,9 +87,8 @@ public class TelephonyFragment extends OSGiPreferenceFragment
     /**
      * {@inheritDoc}
      */
-    protected void mapSummaries(SummaryMapper summaryMapper)
-    {
-        String emptyStr = getString(R.string.service_gui_SETTINGS_NOT_SET);
+    protected void mapSummaries(SummaryMapper summaryMapper) {
+        String emptyStr = getString(R.string.settings_not_set);
 
         // Telephony
         summaryMapper.includePreference(findPreference(P_KEY_OVERRIDE_PHONE_SUFFIX), emptyStr);
@@ -102,8 +98,7 @@ public class TelephonyFragment extends OSGiPreferenceFragment
     /**
      * {@inheritDoc}
      */
-    public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key)
-    {
+    public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key) {
         // Check to ensure a valid key before proceed
         if (findPreference(key) == null)
             return;

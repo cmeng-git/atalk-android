@@ -8,7 +8,7 @@
         <activity
             android:name="org.atalk.android.gui.LauncherDebugActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/APPLICATION_NAME"
+            android:label="@string/application_name"
             android:launchMode="singleTask" />
 
         <service

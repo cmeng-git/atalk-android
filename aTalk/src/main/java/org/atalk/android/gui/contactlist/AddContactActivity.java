@@ -10,6 +10,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactlist.event.MetaContactEvent;
@@ -30,9 +34,6 @@ import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiActivity;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import timber.log.Timber;
 
 /**
@@ -41,17 +42,15 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AddContactActivity extends OSGiActivity
-{
+public class AddContactActivity extends OSGiActivity {
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_contact);
-        setMainTitle(R.string.service_gui_ADD_CONTACT);
+        setMainTitle(R.string.add_contact);
         initAccountSpinner();
         initContactGroupSpinner();
     }
@@ -59,8 +58,7 @@ public class AddContactActivity extends OSGiActivity
     /**
      * Initializes "select account" spinner with existing accounts.
      */
-    private void initAccountSpinner()
-    {
+    private void initAccountSpinner() {
         Spinner accountsSpinner = findViewById(R.id.selectAccountSpinner);
 
         Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
@@ -95,8 +93,7 @@ public class AddContactActivity extends OSGiActivity
     /**
      * Initializes select contact group spinner with contact groups.
      */
-    private void initContactGroupSpinner()
-    {
+    private void initContactGroupSpinner() {
         Spinner groupSpinner = findViewById(R.id.selectGroupSpinner);
         MetaContactGroupAdapter contactGroupAdapter
                 = new MetaContactGroupAdapter(this, R.id.selectGroupSpinner, true, true);
@@ -112,8 +109,7 @@ public class AddContactActivity extends OSGiActivity
      *
      * @param v add button's <code>View</code>
      */
-    public void onAddClicked(View v)
-    {
+    public void onAddClicked(View v) {
         Spinner accountsSpinner = findViewById(R.id.selectAccountSpinner);
         Account selectedAcc = (Account) accountsSpinner.getSelectedItem();
         if (selectedAcc == null) {
@@ -140,15 +136,14 @@ public class AddContactActivity extends OSGiActivity
         try {
             mGroup = (MetaContactGroup) groupSpinner.getSelectedItem();
         } catch (Exception e) {
-            aTalkApp.showToastMessage(R.string.service_gui_CREATE_GROUP_INVALID, e.getMessage());
+            aTalkApp.showToastMessage(R.string.create_group_name_invalid, e.getMessage());
             return;
         }
         ContactListUtils.addContact(pps, mGroup, contactAddress);
         finish();
     }
 
-    public void onCancelClicked(View v)
-    {
+    public void onCancelClicked(View v) {
         finish();
     }
 
@@ -161,22 +156,18 @@ public class AddContactActivity extends OSGiActivity
      * @param displayName the new display name
      */
     private void addRenameListener(final ProtocolProviderService protocolProvider, final MetaContact metaContact,
-            final String contactAddress, final String displayName)
-    {
+            final String contactAddress, final String displayName) {
         AndroidGUIActivator.getContactListService().addMetaContactListListener(
-                new MetaContactListAdapter()
-                {
+                new MetaContactListAdapter() {
                     @Override
-                    public void metaContactAdded(MetaContactEvent evt)
-                    {
+                    public void metaContactAdded(MetaContactEvent evt) {
                         if (evt.getSourceMetaContact().getContact(contactAddress, protocolProvider) != null) {
                             renameContact(evt.getSourceMetaContact(), displayName);
                         }
                     }
 
                     @Override
-                    public void protoContactAdded(ProtoContactEvent evt)
-                    {
+                    public void protoContactAdded(ProtoContactEvent evt) {
                         if (metaContact != null && evt.getNewParent().equals(metaContact)) {
                             renameContact(metaContact, displayName);
                         }
@@ -190,13 +181,10 @@ public class AddContactActivity extends OSGiActivity
      * @param metaContact the <code>MetaContact</code> to rename
      * @param displayName the new display name
      */
-    private void renameContact(final MetaContact metaContact, final String displayName)
-    {
-        new Thread()
-        {
+    private void renameContact(final MetaContact metaContact, final String displayName) {
+        new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 AndroidGUIActivator.getContactListService().renameMetaContact(metaContact, displayName);
             }
         }.start();

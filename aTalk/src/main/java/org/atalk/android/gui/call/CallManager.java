@@ -435,11 +435,11 @@ public class CallManager
             try {
                 telephony.transfer(peer, target);
             } catch (OperationFailedException ex) {
-                String error = aTalkApp.getResString(R.string.gui_call_transfer_failed,
+                String error = aTalkApp.getResString(R.string.call_transfer_failed,
                         peer.getAddress(), target.getAddress(), ex.getMessage());
                 Timber.w("%s", error);
                 DialogActivity.showDialog(aTalkApp.getInstance(),
-                        aTalkApp.getResString(R.string.gui_call_transfer_call), error);
+                        aTalkApp.getResString(R.string.call_transfer_call), error);
             }
         }
     }
@@ -459,11 +459,11 @@ public class CallManager
             try {
                 telephony.transfer(peer, target);
             } catch (OperationFailedException ex) {
-                String error = aTalkApp.getResString(R.string.gui_call_transfer_failed,
+                String error = aTalkApp.getResString(R.string.call_transfer_failed,
                         peer.getAddress(), target, ex.getMessage());
                 Timber.w("%s", error);
                 DialogActivity.showDialog(aTalkApp.getInstance(),
-                        aTalkApp.getResString(R.string.gui_call_transfer_call), error);
+                        aTalkApp.getResString(R.string.call_transfer_call), error);
             }
         }
     }
@@ -797,13 +797,13 @@ public class CallManager
                 String errMsg = null;
 
                 if (!dev.getDirection().allowsSending())
-                    errMsg = aTalkApp.getResString(R.string.service_gui_CALL_NO_AUDIO_DEVICE);
+                    errMsg = aTalkApp.getResString(R.string.call_no_audio_device);
                 else if (formats.isEmpty()) {
-                    errMsg = aTalkApp.getResString(R.string.service_gui_CALL_NO_AUDIO_CODEC);
+                    errMsg = aTalkApp.getResString(R.string.call_no_audio_codec);
                 }
                 if (errMsg != null) {
                     DialogActivity.showDialog(aTalkApp.getInstance(),
-                            R.string.service_gui_CALL, R.string.service_gui_CALL_NO_DEVICE_CODEC_H, errMsg);
+                            R.string.call_audio, R.string.call_no_device_codec_H, errMsg);
                     return;
                 }
             }
@@ -838,11 +838,11 @@ public class CallManager
                     throw (ThreadDeath) t;
 
                 Timber.e(t, "The call could not be created: ");
-                String message = aTalkApp.getResString(R.string.service_gui_CREATE_CALL_FAILED);
+                String message = aTalkApp.getResString(R.string.create_call_failed);
 
                 if (t.getMessage() != null)
                     message += "\n" + t.getMessage();
-                DialogActivity.showDialog(aTalkApp.getInstance(), aTalkApp.getResString(R.string.service_gui_ERROR), message);
+                DialogActivity.showDialog(aTalkApp.getInstance(), aTalkApp.getResString(R.string.error), message);
             }
         }
     }
@@ -1035,7 +1035,7 @@ public class CallManager
             if (exception != null) {
                 Timber.e("The call could not be created: %s", exception.getMessage());
                 DialogActivity.showDialog(aTalkApp.getInstance(),
-                        aTalkApp.getResString(R.string.service_gui_ERROR), exception.getMessage());
+                        aTalkApp.getResString(R.string.error), exception.getMessage());
             }
 
             if (uiContact != null && createdCall != null)
@@ -1246,7 +1246,7 @@ public class CallManager
                 } catch (Exception e) {
                     Timber.e(e, "Failed to invite callee: %s", Arrays.toString(contactArray));
                     DialogActivity.showDialog(aTalkApp.getInstance(),
-                            aTalkApp.getResString(R.string.service_gui_ERROR), e.getMessage());
+                            aTalkApp.getResString(R.string.error), e.getMessage());
                 }
             }
         }
@@ -1293,7 +1293,7 @@ public class CallManager
             } catch (Exception e) {
                 Timber.e(e, "Failed to invite callee: %s", Arrays.toString(callees));
                 DialogActivity.showDialog(aTalkApp.getInstance(),
-                        aTalkApp.getResString(R.string.service_gui_ERROR), e.getMessage());
+                        aTalkApp.getResString(R.string.error), e.getMessage());
             }
         }
     }

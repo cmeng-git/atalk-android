@@ -9,7 +9,7 @@
         android:id="@+id/textMsgView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_INVITATION_RECEIVED"
+        android:text="@string/invitation_received"
         android:textAppearance="@style/MediumFont" />
 
     <TextView
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/service_gui_INVITATION"
+        android:text="@string/invitation_message"
         android:textAppearance="@style/MediumFont"
         android:textStyle="normal|bold" />
 
@@ -25,7 +25,7 @@
         android:id="@+id/textInvitation"
         style="@style/EntryTextView"
         android:layout_width="match_parent"
-        android:text="@string/service_gui_INVITE_REASON"
+        android:text="@string/invite_group_chat"
         android:enabled="false" />
 
     <TextView
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/service_gui_INVITE_REASON_REJECT"
+        android:text="@string/invite_reject_reason"
         android:textAppearance="@style/MediumFont"
         android:textStyle="normal|bold" />
 
@@ -41,7 +41,7 @@
         android:id="@+id/rejectReasonTextArea"
         style="@style/EntryTextView"
         android:layout_width="match_parent"
-        android:hint="@string/service_gui_INVITE_REJECT_REASON" />
+        android:hint="@string/invite_reject_busy" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,13 +53,13 @@
             android:id="@+id/button_Ignore"
             style="@style/ButtonTop"
             android:enabled="true"
-            android:text="@string/service_gui_IGNORE" />
+            android:text="@string/ignore" />
 
         <Button
             android:id="@+id/button_Reject"
             style="@style/ButtonTop"
             android:enabled="true"
-            android:text="@string/service_gui_DECLINE"
+            android:text="@string/decline"
             android:layout_marginStart="2dp"
             android:layout_marginEnd="2dp"/>
 
@@ -67,7 +67,7 @@
             android:id="@+id/button_Accept"
             style="@style/ButtonTop"
             android:enabled="true"
-            android:text="@string/service_gui_ACCEPT" />
+            android:text="@string/accept" />
     </LinearLayout>
 
 </LinearLayout>

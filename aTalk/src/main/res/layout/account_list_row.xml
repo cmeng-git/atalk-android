@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:gravity="center_vertical"
-                android:text="@string/service_gui_OFFLINE" />
+                android:text="@string/offline" />
         </LinearLayout>
 
     </LinearLayout>

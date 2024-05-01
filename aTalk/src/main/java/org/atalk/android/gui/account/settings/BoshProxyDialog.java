@@ -107,7 +107,7 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.service_gui_settings_BOSH_PROXY);
+        setTitle(R.string.settings_bosh_proxy);
         this.setContentView(R.layout.bosh_proxy_dialog);
 
         spinnerType = findViewById(R.id.boshProxyType);
@@ -236,7 +236,7 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
         switch (type) {
             case BOSH:
                 if (boshUrl == null) {
-                    aTalkApp.showToastMessage(R.string.plugin_proxy_BOSHURL_NULL);
+                    aTalkApp.showToastMessage(R.string.bosh_proxy_url_null);
                     return false;
                 }
                 configSrvc.setProperty(accPrefix + ProtocolProviderFactory.BOSH_URL, boshUrl);
@@ -253,7 +253,7 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
             case SOCKS4:
             case SOCKS5:
                 if ((host == null) || (port == null)) {
-                    aTalkApp.showToastMessage(R.string.plugin_proxy_HOST_PORT_NULL);
+                    aTalkApp.showToastMessage(R.string.bosh_proxy_host_port_null);
                     return false;
                 }
                 break;
@@ -289,9 +289,9 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
     {
         if (hasChanges) {
             DialogActivity.showConfirmDialog(mContext,
-                    R.string.service_gui_UNSAVED_CHANGES_TITLE,
-                    R.string.service_gui_UNSAVED_CHANGES,
-                    R.string.service_gui_SAVE, this);
+                    R.string.unsaved_changes_title,
+                    R.string.unsaved_changes,
+                    R.string.save, this);
         }
         else {
             cancel();

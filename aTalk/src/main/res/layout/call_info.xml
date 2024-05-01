@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:background="@drawable/call_status_bg"
-                android:text="@string/service_gui_callinfo_CALL_INFORMATION" />
+                android:text="@string/callinfo_call_information" />
 
             <TextView
                 android:id="@+id/peerCountLabel"
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textView"
-                android:text="@string/service_gui_callinfo_PEER_COUNT" />
+                android:text="@string/callinfo_peer_count" />
 
             <TextView
                 android:id="@+id/peerCount"
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/textView"
                 android:layout_below="@id/peerCountLabel"
-                android:text="@string/service_gui_callinfo_IS_CONFERENCE_FOCUS" />
+                android:text="@string/callinfo_conference_focus" />
 
             <TextView
                 android:id="@+id/conferenceFocus"
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/textView"
                 android:layout_below="@id/confFocusLabel"
-                android:text="@string/service_gui_callinfo_CALL_IDENTITY" />
+                android:text="@string/callinfo_call_identity" />
 
             <TextView
                 android:id="@+id/identity"
@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/textView"
                 android:layout_below="@id/identityLabel"
-                android:text="@string/service_gui_callinfo_CALL_TRANSPORT" />
+                android:text="@string/callinfo_call_transport" />
 
             <TextView
                 android:id="@+id/transport"
@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/textView"
                 android:layout_below="@id/callPeer"
-                android:text="@string/service_gui_callinfo_CALL_DURATION" />
+                android:text="@string/callinfo_call_duration" />
 
             <TextView
                 android:id="@+id/callDuration"
@@ -130,7 +130,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/durationLabel"
-                android:text="@string/service_gui_callinfo_ICE_STATE" />
+                android:text="@string/callinfo_ice_state" />
 
             <TextView
                 android:id="@+id/iceState"
@@ -138,7 +138,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/iceStateLabel"
-                android:text="@string/service_gui_callinfo_ICE_STATE_RUNNING" />
+                android:text="@string/callinfo_ice_state_running" />
 
             <TextView
                 android:id="@+id/totalHarvestLabel"
@@ -146,7 +146,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/iceState"
-                android:text="@string/service_gui_callinfo_TOTAL_HARVESTING_TIME" />
+                android:text="@string/callinfo_total_harvesting_time" />
 
             <TextView
                 android:id="@+id/totalHarvestTime"
@@ -293,5 +293,5 @@
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:focusable="true"
-        android:text="@string/service_gui_OK" />
+        android:text="@string/ok" />
 </RelativeLayout>

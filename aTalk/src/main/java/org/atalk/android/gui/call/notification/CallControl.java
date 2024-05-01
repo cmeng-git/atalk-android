@@ -13,7 +13,6 @@ import android.media.AudioManager;
 import net.java.sip.communicator.service.protocol.Call;
 
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.call.CallManager;
 import org.atalk.impl.timberlog.TimberLog;
 

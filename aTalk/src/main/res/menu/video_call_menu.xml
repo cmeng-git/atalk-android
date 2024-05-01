@@ -3,14 +3,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Show ZRTP call info -->
     <item android:id="@+id/call_zrtp_info_item"
-          android:title="@string/show_call_zrtp_info">
+          android:title="@string/call_info_zrtp">
     </item>
     <!-- Show call info -->
     <item android:id="@+id/call_info_item"
-          android:title="@string/show_call_info">
+          android:title="@string/call_info">
     </item>
     <item android:id="@+id/video_resolution"
-          android:title="@string/service_gui_settings_VIDEO_RESOLUTION">
+          android:title="@string/settings_video_resolution">
         <menu android:id="@+id/video_dimension">
         </menu>
     </item>

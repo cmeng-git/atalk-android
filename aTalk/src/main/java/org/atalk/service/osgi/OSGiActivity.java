@@ -195,13 +195,13 @@ public class OSGiActivity extends BaseActivity {
         // Clears the crash status and ask user to send debug log
         ExceptionHandler.resetCrashedStatus();
         AlertDialog.Builder question = new AlertDialog.Builder(this);
-        question.setTitle(R.string.service_gui_WARNING)
-                .setMessage(getString(R.string.service_gui_SEND_LOGS_QUESTION))
-                .setPositiveButton(R.string.service_gui_YES, (dialog, which) -> {
+        question.setTitle(R.string.warning)
+                .setMessage(getString(R.string.send_log_prompt))
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
                     dialog.dismiss();
                     aTalkApp.showSendLogsDialog();
                 })
-                .setNegativeButton(R.string.service_gui_NO, (dialog, which) -> dialog.dismiss())
+                .setNegativeButton(R.string.no, (dialog, which) -> dialog.dismiss())
                 .create().show();
     }
 

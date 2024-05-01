@@ -167,7 +167,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
             if (parent == null)
                 return;
 
-            String txt = aTalkApp.getResString(R.string.service_gui_VOLUME_GAIN_LEVEL, position * 10);
+            String txt = aTalkApp.getResString(R.string.volume_gain_level, position * 10);
             if (toast == null) {
                 toast = Toast.makeText(parent, txt, Toast.LENGTH_SHORT);
             }

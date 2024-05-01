@@ -9,7 +9,7 @@
         android:id="@+id/messageText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING"
+        android:text="@string/history_purge_for_contact_warning"
         android:textAppearance="@style/MediumFont" />
 
     <CheckBox
@@ -18,6 +18,6 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/list_padding"
         android:checked="true"
-        android:text="@string/service_gui_HISTORY_REMOVE_MEDIA" />
+        android:text="@string/history_purge_media" />
 
 </LinearLayout>

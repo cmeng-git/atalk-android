@@ -115,9 +115,9 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
         this.initPeerDetails();
 
         this.displayDetails
-                = aTalkApp.getResString(R.string.service_gui_AT) + ": "
+                = aTalkApp.getResString(R.string.at) + ": "
                 + getDateString(callRecord.getStartTime().getTime())
-                + " " + aTalkApp.getResString(R.string.service_gui_DURATION) + ": "
+                + " " + aTalkApp.getResString(R.string.duration) + ": "
                 + GuiUtils.formatTime(callRecord.getStartTime(), callRecord.getEndTime());
     }
 

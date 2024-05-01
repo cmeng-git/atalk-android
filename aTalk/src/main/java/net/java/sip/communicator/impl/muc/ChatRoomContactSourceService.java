@@ -37,7 +37,7 @@ public class ChatRoomContactSourceService implements ContactSourceService
      */
     public String getDisplayName()
     {
-        return aTalkApp.getResString(R.string.service_gui_CHAT_ROOMS);
+        return aTalkApp.getResString(R.string.chatroom);
     }
 
     /**

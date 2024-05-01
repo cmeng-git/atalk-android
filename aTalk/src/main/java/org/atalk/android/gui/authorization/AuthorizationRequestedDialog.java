@@ -28,8 +28,7 @@ import org.atalk.service.osgi.OSGiActivity;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AuthorizationRequestedDialog extends OSGiActivity
-{
+public class AuthorizationRequestedDialog extends OSGiActivity {
     /**
      * Request id managed by <code>AuthorizationHandlerImpl</code>.
      */
@@ -49,8 +48,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.authorization_requested);
 
@@ -62,10 +60,10 @@ public class AuthorizationRequestedDialog extends OSGiActivity
         String contactId = request.contact.getAddress();
         View content = findViewById(android.R.id.content);
         ViewUtil.setTextViewValue(content, R.id.requestInfo,
-                getString(R.string.service_gui_AUTHORIZATION_REQUESTED_INFO, contactId));
+                getString(R.string.authorization_request_info, contactId));
 
         ViewUtil.setTextViewValue(content, R.id.addToContacts,
-                getString(R.string.service_gui_ADD_AUTHORIZED_CONTACT, contactId));
+                getString(R.string.add_contact_to_list, contactId));
 
         Spinner contactGroupSpinner = findViewById(R.id.selectGroupSpinner);
         contactGroupSpinner.setAdapter(new MetaContactGroupAdapter(this, R.id.selectGroupSpinner, true, true));
@@ -82,8 +80,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
 
         // Update add to contacts status
@@ -91,8 +88,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
     }
 
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
         // Prevent Back Key from closing the dialog
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             return true;
@@ -105,8 +101,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
      *
      * @param isChecked <code>true</code> if "add to contacts" checkbox is checked.
      */
-    private void updateAddToContactsStatus(boolean isChecked)
-    {
+    private void updateAddToContactsStatus(boolean isChecked) {
         ViewUtil.ensureEnabled(getContentView(), R.id.selectGroupSpinner, isChecked);
     }
 
@@ -116,8 +111,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
      * @param v the button's <code>View</code>
      */
     @SuppressWarnings("unused")
-    public void onAcceptClicked(View v)
-    {
+    public void onAcceptClicked(View v) {
         responseCode = AuthorizationResponse.ACCEPT;
         finish();
     }
@@ -128,8 +122,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
      * @param v the button's <code>View</code>
      */
     @SuppressWarnings("unused")
-    public void onRejectClicked(View v)
-    {
+    public void onRejectClicked(View v) {
         responseCode = AuthorizationResponse.REJECT;
         finish();
     }
@@ -140,8 +133,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
      * @param v the button's <code>View</code>
      */
     @SuppressWarnings("unused")
-    public void onIgnoreClicked(View v)
-    {
+    public void onIgnoreClicked(View v) {
         finish();
     }
 
@@ -149,8 +141,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
 
         // cmeng - Handle in OperationSetPersistentPresenceJabberImpl#handleSubscribeReceived
@@ -169,8 +160,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
      *
      * @param id request identifier for which new dialog will be displayed.
      */
-    public static void showDialog(Long id)
-    {
+    public static void showDialog(Long id) {
         Context ctx = aTalkApp.getInstance();
         Intent showIntent = new Intent(ctx, AuthorizationRequestedDialog.class);
         showIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

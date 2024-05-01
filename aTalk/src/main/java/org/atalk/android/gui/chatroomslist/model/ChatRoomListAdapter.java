@@ -661,7 +661,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
 
             case ChatRoomListChangeEvent.CHAT_ROOM_REMOVED:
                 removeChatRoom(chatRoomWrapper.getParentProvider(), chatRoomWrapper);
-                aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_DESTROY_SUCCESSFUL,
+                aTalkApp.showToastMessage(R.string.chatroom_destroy_successful,
                         chatRoomWrapper.getChatRoomID());
                 break;
 

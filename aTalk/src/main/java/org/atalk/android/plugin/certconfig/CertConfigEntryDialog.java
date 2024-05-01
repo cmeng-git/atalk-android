@@ -82,7 +82,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     // Fields and services
     // ------------------------------------------------------------------------
     private static final KeyStoreType KS_NONE =
-            new KeyStoreType(aTalkApp.getResString(R.string.service_gui_LIST_NONE), new String[]{""}, false);
+            new KeyStoreType(aTalkApp.getResString(R.string.none), new String[]{""}, false);
 
     private static final String PKCS11 = "PKCS11";
 
@@ -132,7 +132,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
         View contentView = inflater.inflate(R.layout.cert_tls_entry_config, container, false);
 
         if (getDialog() != null) {
-            getDialog().setTitle(R.string.plugin_certconfig_CERT_ENTRY_TITLE);
+            getDialog().setTitle(R.string.certconfig_cert_entry_title);
 
             Window window = getDialog().getWindow();
             if (window != null) {
@@ -226,7 +226,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
                 runOnUiThread(this::loadAliases);
             } catch (KeyStoreException | UnrecoverableEntryException ex) {
                 Timber.e(ex, "Load KeyStore Exception");
-                aTalkApp.showGenericError(R.string.plugin_certconfig_INVALID_KEYSTORE_TYPE, ex.getMessage());
+                aTalkApp.showGenericError(R.string.certconfig_invalid_keystore_type, ex.getMessage());
             }
         }).start();
     }
@@ -318,7 +318,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
             }
             aliasAdapter.notifyDataSetChanged();
         } catch (KeyStoreException e) {
-            aTalkApp.showGenericError(R.string.plugin_certconfig_ALIAS_LOAD_EXCEPTION, e.getMessage());
+            aTalkApp.showGenericError(R.string.certconfig_alias_load_exception, e.getMessage());
         }
     }
 
@@ -354,7 +354,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
                     }
                 }
                 else
-                    aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                    aTalkApp.showToastMessage(R.string.file_does_not_exist);
             }
         });
     }
@@ -371,7 +371,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
                 if ((cboAlias.getSelectedItem() == null)
                         || (ViewUtil.toString(txtDisplayName) == null)
                         || (ViewUtil.toString(txtKeyStore) == null)) {
-                    aTalkApp.showGenericError(R.string.plugin_certconfig_INCOMPLETE);
+                    aTalkApp.showGenericError(R.string.certconfig_incomplete);
                     return;
                 }
                 mEntry.setDisplayName(ViewUtil.toString(txtDisplayName));
@@ -445,7 +445,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
             X509CertificateView viewCertDialog = new X509CertificateView(getActivity(), chain);
             viewCertDialog.show();
         } catch (KeyStoreException e1) {
-            aTalkApp.showGenericError(R.string.plugin_certconfig_SHOW_CERT_EXCEPTION, e1.getMessage());
+            aTalkApp.showGenericError(R.string.certconfig_show_cert_exception, e1.getMessage());
         }
     }
 

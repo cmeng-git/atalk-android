@@ -168,14 +168,14 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                     // Build end call action
                     NotificationCompat.Action dismissAction = new NotificationCompat.Action.Builder(
                             R.drawable.ic_call_end_light,
-                            aTalkApp.getResString(R.string.service_gui_DISMISS),
+                            aTalkApp.getResString(R.string.dismiss),
                             createDismissIntent(nId)).build();
                     mBuilder.addAction(dismissAction);
 
                     // Build answer call action
                     NotificationCompat.Action answerAction = new NotificationCompat.Action.Builder(
                             R.drawable.ic_call_light,
-                            aTalkApp.getResString(R.string.service_gui_ANSWER),
+                            aTalkApp.getResString(R.string.answer),
                             fullScreenPendingIntent).build();
                     mBuilder.addAction(answerAction);
                 }
@@ -189,7 +189,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                     // Build Mark as read action
                     NotificationCompat.Action markReadAction = new NotificationCompat.Action.Builder(
                             R.drawable.ic_read_dark,
-                            aTalkApp.getResString(R.string.service_gui_MAS),
+                            aTalkApp.getResString(R.string.mark_as_read),
                             createReadPendingIntent(nId))
                             .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ)
                             // .setShowsUserInterface(true)
@@ -203,7 +203,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
 
                     NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
                             R.drawable.ic_send_text_dark,
-                            aTalkApp.getResString(R.string.service_gui_REPLY),
+                            aTalkApp.getResString(R.string.reply),
                             createReplyIntent(nId))
                             .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
                             // .setShowsUserInterface(true)
@@ -216,7 +216,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                         if (((AndroidMergedPopup) newPopup).displaySnoozeAction()) {
                             NotificationCompat.Action snoozeAction = new NotificationCompat.Action.Builder(
                                     R.drawable.ic_notifications_paused_dark,
-                                    aTalkApp.getResString(R.string.service_gui_SNOOZE),
+                                    aTalkApp.getResString(R.string.snooze),
                                     createSnoozeIntent(nId))
                                     .build();
                             mBuilder.addAction(snoozeAction);

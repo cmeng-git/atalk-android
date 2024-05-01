@@ -219,11 +219,15 @@ public class MetaContactImpl extends DataObject implements MetaContact {
         Contact contact = getDefaultContact();
         ProtocolProviderServiceJabberImpl pps = (ProtocolProviderServiceJabberImpl) contact.getProtocolProvider();
 
-        // Proceed only for presence with Type.available
+        // Do not proceed if the user is not registered with the server, return false.
+        if (!pps.isRegistered()) {
+            return false;
+        }
+
         List<Presence> presences = Roster.getInstanceFor(pps.getConnection()).getPresences(contact.getJid().asBareJid());
         for (Presence presence : presences) {
             if (presence.isAvailable()) {
-                DiscoverInfo featureInfo = pps.getScHelper().discoverInfo(presence.getFrom());
+                DiscoverInfo featureInfo = pps.getScHelper().discoverInfoNonBlocking(presence.getFrom());
                 if ((featureInfo != null) && featureInfo.containsFeature(feature)) {
                     return true;
                 }
@@ -497,6 +501,7 @@ public class MetaContactImpl extends DataObject implements MetaContact {
      *
      * @return a negative integer, zero, or a positive integer as this object
      * is less than, equal to, or greater than the specified object.
+     *
      * @throws ClassCastException if the specified object is not a MetaContactListImpl
      */
     public int compareTo(@NonNull MetaContact o) {
@@ -894,14 +899,11 @@ public class MetaContactImpl extends DataObject implements MetaContact {
     public void addDetail(String name, String value) {
         try {
             JSONArray jsonArray = (JSONArray) details.get(name);
-            if (jsonArray == null) {
-                jsonArray = new JSONArray();
-            }
             jsonArray.put(value);
             details.put(name, jsonArray);
             fireMetaContactModified(name, null, value);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Timber.e("Add detail: %s", e.getMessage());
         }
     }
 
@@ -914,17 +916,15 @@ public class MetaContactImpl extends DataObject implements MetaContact {
     public void removeDetail(String name, String value) {
         try {
             JSONArray jsonArray = (JSONArray) details.get(name);
-            if ((jsonArray != null) && (jsonArray.length() != 0)) {
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    if (value.equals(jsonArray.getString(i))) {
-                        jsonArray.remove(i);
-                        fireMetaContactModified(name, value, null);
-                        break;
-                    }
+            for (int i = 0; i < jsonArray.length(); i++) {
+                if (value.equals(jsonArray.getString(i))) {
+                    jsonArray.remove(i);
+                    fireMetaContactModified(name, value, null);
+                    break;
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Timber.e("Remove detail: %s", e.getMessage());
         }
     }
 
@@ -949,9 +949,6 @@ public class MetaContactImpl extends DataObject implements MetaContact {
     public void changeDetail(String name, String oldValue, String newValue) {
         try {
             JSONArray jsonArray = (JSONArray) details.get(name);
-            if (jsonArray == null)
-                return;
-
             for (int i = 0; i < jsonArray.length(); i++) {
                 if (oldValue.equals(jsonArray.getString(i))) {
                     jsonArray.put(i, newValue);
@@ -960,7 +957,7 @@ public class MetaContactImpl extends DataObject implements MetaContact {
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Timber.e("Change detail: %s", e.getMessage());
         }
     }
 

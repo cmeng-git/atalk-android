@@ -24,6 +24,7 @@ import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -148,7 +149,7 @@ public class LocationBgService extends Service implements LocationListenerCompat
     private void getLastLocation()
     {
         try {
-            LocationManagerCompat.getCurrentLocation(mLocationManager, mProvider, null,
+            LocationManagerCompat.getCurrentLocation(mLocationManager, mProvider, (CancellationSignal) null,
                     Runnable::run, location -> {
                         if (location != null) {
                             Timber.d("Fallback location received: %s", location);

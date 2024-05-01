@@ -19,6 +19,12 @@ package org.atalk.android.gui.call;
 import android.content.Context;
 import android.content.Intent;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import net.java.sip.communicator.impl.protocol.jabber.CallPeerJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTelephonyJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
@@ -51,12 +57,6 @@ import org.jivesoftware.smackx.jinglemessage.JingleMessageType;
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 import timber.log.Timber;
 
@@ -176,7 +176,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
         // notify all listeners in preparation for Jingle RTP session-accept; sid - must use the same;
         // and to make earlier registerJingleSessionHandler() with JingleManager
         notifyOnStateChange(connection, JingleMessageType.proceed, mRemote, sid);
-        endJmCallProcess(R.string.service_gui_CALL_ANSWER, mRemote);
+        endJmCallProcess(R.string.call_answered, mRemote);
 
         OperationSetBasicTelephonyJabberImpl telephonyJabber = jmStateListeners.get(connection);
         if (telephonyJabber != null)
@@ -198,7 +198,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
         allowSendRetract = false;
 
         notifyOnStateChange(connection, JingleMessageType.reject, mRemote, sid);
-        endJmCallProcess(R.string.service_gui_CALL_REJECTED, mRemote);
+        endJmCallProcess(R.string.call_rejected, mRemote);
     }
 
     /**
@@ -217,7 +217,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
                     .to(mConnection.getUser());
 
             sendJingleMessage(mConnection, msgRetract, messageBuilder.build());
-            endJmCallProcess(R.string.service_gui_CALL_RETRACTED, mConnection.getUser());
+            endJmCallProcess(R.string.call_retracted, mConnection.getUser());
         }
     }
 
@@ -310,14 +310,14 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
                 message.setFrom(mRemote);  // message actual send to
                 JingleMessage msgProceed = new JingleMessage(JingleMessage.ACTION_PROCEED, sid);
                 sendJingleMessage(connection, msgProceed, message);
-                aTalkApp.showToastMessage(R.string.service_gui_CONNECTING_ACCOUNT, mRemote);
+                aTalkApp.showToastMessage(R.string.connecting_, mRemote);
             }
             else {
                 // Dismiss notification if another user instance has accepted the call propose.
                 NotificationPopupHandler.removeCallNotification(sid);
             }
             // Display to user who has accepted the call
-            endJmCallProcess(R.string.service_gui_CALL_ANSWER, callee);
+            endJmCallProcess(R.string.call_answered, callee);
         }
     }
 
@@ -335,7 +335,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
                     .to(mConnection.getUser());
 
             sendJingleMessage(mConnection, msgReject, messageBuilder.build());
-            endJmCallProcess(R.string.service_gui_CALL_REJECTED, mConnection.getUser());
+            endJmCallProcess(R.string.call_rejected, mConnection.getUser());
         }
     }
 
@@ -354,7 +354,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
 
         if (mRemote != null) {
             notifyOnStateChange(connection, JingleMessageType.retract, mRemote, sid);
-            endJmCallProcess(R.string.service_gui_CALL_END, message.getFrom());
+            endJmCallProcess(R.string.call_ended, message.getFrom());
             onCallRetract(mRemote.asEntityFullJidIfPossible());
         }
     }
@@ -369,7 +369,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
 
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         notificationService.fireNotification(NotificationManager.MISSED_CALL, SystrayService.MISSED_CALL_MESSAGE_TYPE,
-                aTalkApp.getResString(R.string.service_gui_CALL_MISSED_CALL), textMessage, contactIcon, extras);
+                aTalkApp.getResString(R.string.call_missed), textMessage, contactIcon, extras);
     }
 
     //==================== Helper common utilities ====================//

@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -126,7 +125,7 @@ public class ActionBarUtil {
      * @return use online status
      */
     public static boolean isOffline(AppCompatActivity activity) {
-        String offlineLabel = activity.getResources().getString(R.string.service_gui_OFFLINE);
+        String offlineLabel = activity.getResources().getString(R.string.offline);
         return offlineLabel.equals(ActionBarUtil.getStatus(activity));
     }
 

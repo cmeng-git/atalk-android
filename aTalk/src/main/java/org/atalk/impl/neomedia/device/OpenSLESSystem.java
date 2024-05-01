@@ -122,15 +122,13 @@ public class OpenSLESSystem extends AudioSystem
                     Format.byteArray));
         }
 
-        if (!formats.isEmpty()) {
-            CaptureDeviceInfo2 captureDevice = new CaptureDeviceInfo2("OpenSL ES",
-                    new MediaLocator(LOCATOR_PROTOCOL_OPENSLES + ":"),
-                    formats.toArray(new Format[0]), null, null, null);
+        CaptureDeviceInfo2 captureDevice = new CaptureDeviceInfo2("OpenSL ES",
+                new MediaLocator(LOCATOR_PROTOCOL_OPENSLES + ":"),
+                formats.toArray(new Format[0]), null, null, null);
 
-            List<CaptureDeviceInfo2> captureDevices = new ArrayList<>(1);
-            captureDevices.add(captureDevice);
-            setCaptureDevices(captureDevices);
-        }
+        List<CaptureDeviceInfo2> captureDevices = new ArrayList<>(1);
+        captureDevices.add(captureDevice);
+        setCaptureDevices(captureDevices);
     }
 
     private static native int[] queryAudioInputCapabilities(long deviceID, double[] sampleRates,

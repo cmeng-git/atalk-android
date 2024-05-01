@@ -20,6 +20,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.EventObject;
+import java.util.Iterator;
+
 import net.java.sip.communicator.impl.protocol.jabber.OutgoingFileSendEntityImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileHistoryService;
@@ -51,12 +57,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
-
-import java.io.IOException;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.EventObject;
-import java.util.Iterator;
 
 import timber.log.Timber;
 

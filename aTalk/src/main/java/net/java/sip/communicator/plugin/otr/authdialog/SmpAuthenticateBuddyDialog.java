@@ -164,7 +164,7 @@ public class SmpAuthenticateBuddyDialog extends JDialog //SIPCommDialog
         buttonPanel.add(cancelButton, c);
 
         c.gridx = 2;
-        JButton authenticateButton = new JButton(OtrActivator.resourceService.getI18NString("plugin.otr.authbuddydialog.AUTHENTICATE_BUDDY"));
+        JButton authenticateButton = new JButton(OtrActivator.resourceService.getI18NString("otr.menu.authenticate_buddy"));
         authenticateButton.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)

@@ -324,7 +324,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
                     errMessage = "UnKnown";
             }
             Timber.e("Set camera preview failed: %s", errMessage);
-            aTalkApp.showGenericError(R.string.service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED, mPreviewSize, errMessage);
+            aTalkApp.showGenericError(R.string.video_format_not_supported, mPreviewSize, errMessage);
 
             mCameraDevice.close();
             mCameraDevice = null;
@@ -468,7 +468,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
             try {
                 start();
             } catch (IOException e) {
-                aTalkApp.showToastMessage(R.string.service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED, mCameraId, e.getMessage());
+                aTalkApp.showToastMessage(R.string.video_format_not_supported, mCameraId, e.getMessage());
             }
         }
     }
@@ -494,7 +494,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
             try {
                 start();
             } catch (IOException e) {
-                aTalkApp.showToastMessage(R.string.service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED, cameraLocator, e.getMessage());
+                aTalkApp.showToastMessage(R.string.video_format_not_supported, cameraLocator, e.getMessage());
             }
         }
     }

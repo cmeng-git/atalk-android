@@ -96,7 +96,7 @@ public class XmppConnectionFragment extends OSGiPreferenceFragment
         // must initPreferences before setPreferencesFromResource; else updated value will not be reflected
         initPreferences();
         setPreferencesFromResource(R.xml.xmpp_connection_preferences, rootKey);
-        setPrefTitle(R.string.service_gui_JBR_CONNECTION);
+        setPrefTitle(R.string.jbr_connection);
 
         shPrefs.registerOnSharedPreferenceChangeListener(this);
         shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
@@ -171,7 +171,7 @@ public class XmppConnectionFragment extends OSGiPreferenceFragment
      * {@inheritDoc}
      */
     protected void mapSummaries(SummaryMapper summaryMapper) {
-        String emptyStr = getString(R.string.service_gui_SETTINGS_NOT_SET);
+        String emptyStr = getString(R.string.settings_not_set);
 
         // DTMF Option
         summaryMapper.includePreference(findPreference(P_KEY_DTMF_METHOD), emptyStr, input -> {

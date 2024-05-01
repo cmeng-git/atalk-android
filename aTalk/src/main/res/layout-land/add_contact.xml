@@ -17,7 +17,7 @@
             android:layout_weight="2"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_SELECT_ACCOUNT" />
+            android:text="@string/select_account_owner" />
 
         <Spinner
             android:id="@+id/selectAccountSpinner"
@@ -38,7 +38,7 @@
             android:layout_weight="2"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_CONTACT_NAME" />
+            android:text="@string/contact_name" />
 
         <EditText
             android:id="@+id/editContactName"
@@ -60,7 +60,7 @@
             android:layout_weight="2"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_SELECT_GROUP" />
+            android:text="@string/assign_group" />
 
         <Spinner
             android:id="@+id/selectGroupSpinner"
@@ -81,7 +81,7 @@
             android:layout_weight="2"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_CONTACT_DISPLAY_NAME" />
+            android:text="@string/contact_display_name" />
 
         <EditText
             android:id="@+id/editDisplayName"
@@ -100,13 +100,13 @@
             android:id="@+id/button_cancel"
             style="@style/ButtonTop"
             android:onClick="onCancelClicked"
-            android:text="@string/service_gui_CANCEL" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/button_add"
             style="@style/ButtonTop"
             android:layout_marginStart="2dp"
             android:onClick="onAddClicked"
-            android:text="@string/service_gui_ADD" />
+            android:text="@string/add" />
     </LinearLayout>
 </LinearLayout>

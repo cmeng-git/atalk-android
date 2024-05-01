@@ -11,19 +11,19 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.util.ServiceUtils;
-
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.impl.configuration.ConfigurationStore;
-import org.atalk.impl.configuration.DatabaseConfigurationStore;
-import org.atalk.impl.configuration.HashtableConfigurationStore;
-import org.atalk.persistance.DatabaseBackend;
-import org.atalk.service.osgi.OSGiService;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.util.ServiceUtils;
+
+import org.atalk.impl.configuration.ConfigurationStore;
+import org.atalk.impl.configuration.DatabaseConfigurationStore;
+import org.atalk.impl.configuration.HashtableConfigurationStore;
+import org.atalk.impl.timberlog.TimberLog;
+import org.atalk.persistance.DatabaseBackend;
+import org.atalk.service.osgi.OSGiService;
 
 import timber.log.Timber;
 
@@ -34,8 +34,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class SQLiteConfigurationStore extends DatabaseConfigurationStore
-{
+public class SQLiteConfigurationStore extends DatabaseConfigurationStore {
     public static final String TABLE_NAME = "properties";
     public static final String COLUMN_NAME = "Name";
     public static final String COLUMN_VALUE = "Value";
@@ -49,15 +48,13 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
     /**
      * Initializes a new <code>SQLiteConfigurationStore</code> instance.
      */
-    public SQLiteConfigurationStore()
-    {
-        Context context = ServiceUtils.getService(ConfigurationActivator.getBundleContext(), OSGiService.class);
-        openHelper = DatabaseBackend.getInstance(context);
+    public SQLiteConfigurationStore() {
+        this(ServiceUtils.getService(ConfigurationActivator.getBundleContext(), OSGiService.class));
     }
 
-    public SQLiteConfigurationStore(Context context)
-    {
+    public SQLiteConfigurationStore(Context context) {
         openHelper = DatabaseBackend.getInstance(context);
+        mDB = openHelper.getReadableDatabase();
     }
 
     /**
@@ -68,20 +65,20 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
      * AccountID.TBL_PROPERTIES for the specified accountUuid, otherwise use table TABLE_NAME
      *
      * @param name the name of the property to get the value of
+     *
      * @return the value in this <code>ConfigurationStore</code> of the property with the specified
      * name; <code>null</code> if the property with the specified name does not have an association
      * with a value in this <code>ConfigurationStore</code>
+     *
      * @see ConfigurationStore#getProperty(String)
      */
     @Override
-    public Object getProperty(String name)
-    {
+    public Object getProperty(String name) {
         Cursor cursor = null;
         Object value = properties.get(name);
         if (value == null) {
             String[] columns = {COLUMN_VALUE};
             synchronized (openHelper) {
-                mDB = openHelper.getReadableDatabase();
                 if (name.startsWith(AccountID.ACCOUNT_UUID_PREFIX)) {
                     int idx = name.indexOf(".");
                     if (idx == -1) {
@@ -120,16 +117,15 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
      * @return an array of <code>String</code>s which specify the names of the properties that have
      * values associated in this <code>ConfigurationStore</code>; an empty array if this instance
      * contains no property values
+     *
      * @see ConfigurationStore#getPropertyNames(String)
      */
     @Override
-    public String[] getPropertyNames(String name)
-    {
+    public String[] getPropertyNames(String name) {
         List<String> propertyNames = new ArrayList<>();
         String tableName;
 
         synchronized (openHelper) {
-            mDB = openHelper.getReadableDatabase();
             if (name.startsWith(AccountID.ACCOUNT_UUID_PREFIX)) {
                 tableName = AccountID.TBL_PROPERTIES;
             }
@@ -156,8 +152,7 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
      */
 
     protected void reloadConfiguration()
-            throws IOException
-    {
+            throws IOException {
         // TODO Auto-generated method stub
     }
 
@@ -169,13 +164,12 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
      *
      * @param name the name of the property which is to have its value association in this
      * <code>ConfigurationStore</code> removed
+     *
      * @see ConfigurationStore#removeProperty(String)
      */
-    public void removeProperty(String name)
-    {
+    public void removeProperty(String name) {
         super.removeProperty(name);
         synchronized (openHelper) {
-            mDB = openHelper.getWritableDatabase();
             if (name.startsWith(AccountID.ACCOUNT_UUID_PREFIX)) {
                 int idx = name.indexOf(".");
                 // remove user account if only accountUuid is specified
@@ -204,13 +198,12 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
      * <code>ConfigurationStore</code>
      * @param value the value to be assigned to the non-system property with the specified name in this
      * <code>ConfigurationStore</code>
+     *
      * @see ConfigurationStore#setNonSystemProperty(String, Object)
      */
     @Override
-    public void setNonSystemProperty(String name, Object value)
-    {
+    public void setNonSystemProperty(String name, Object value) {
         synchronized (openHelper) {
-            SQLiteDatabase mDB = openHelper.getWritableDatabase();
             String tableName = TABLE_NAME;
 
             ContentValues contentValues = new ContentValues();

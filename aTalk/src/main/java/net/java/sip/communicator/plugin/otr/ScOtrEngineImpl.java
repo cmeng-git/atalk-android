@@ -166,12 +166,12 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
                         if (!OtrActivator.getMessageHistoryService().isHistoryLoggingEnabled()
                                 || !isHistoryLoggingEnabled(contact)) {
                             otrAndHistoryMessage = aTalkApp.getResString(R.string.plugin_otr_activator_historyoff,
-                                    aTalkApp.getResString(R.string.APPLICATION_NAME),
+                                    aTalkApp.getResString(R.string.application_name),
                                     this.getClass().getName(), "showHistoryPopupMenu");
                         }
                         else {
                             otrAndHistoryMessage = aTalkApp.getResString(R.string.plugin_otr_activator_historyon,
-                                    aTalkApp.getResString(R.string.APPLICATION_NAME),
+                                    aTalkApp.getResString(R.string.application_name),
                                     this.getClass().getName(), "showHistoryPopupMenu");
                         }
                         OtrActivator.uiService.getChat(contact).addMessage(sender, new Date(),
@@ -423,7 +423,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
         if (ref == null)
             return;
         BrowserLauncherService service = (BrowserLauncherService) OtrActivator.bundleContext.getService(ref);
-        service.openURL(aTalkApp.getResString(R.string.plugin_otr_authbuddydialog_HELP_URI));
+        service.openURL(aTalkApp.getResString(R.string.otr_authbuddydialog_help_uri));
     }
 
     @Override

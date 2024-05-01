@@ -22,8 +22,7 @@ import org.atalk.service.osgi.OSGiActivity;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class RequestAuthorizationDialog extends OSGiActivity
-{
+public class RequestAuthorizationDialog extends OSGiActivity {
     /**
      * Request identifier extra key.
      */
@@ -43,8 +42,7 @@ public class RequestAuthorizationDialog extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.request_authorization);
         long requestId = getIntent().getLongExtra(EXTRA_REQUEST_ID, -1);
@@ -56,15 +54,14 @@ public class RequestAuthorizationDialog extends OSGiActivity
         String contactId = request.contact.getAddress();
 
         ViewUtil.setTextViewValue(getContentView(), R.id.requestInfo,
-                getString(R.string.service_gui_REQUEST_AUTHORIZATION_MSG, userID, contactId));
+                getString(R.string.request_authorization_prompt, userID, contactId));
 
         // Prevents from closing the dialog on outside touch
         setFinishOnTouchOutside(false);
     }
 
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
         // Prevent Back Key from closing the dialog
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             return true;
@@ -77,8 +74,7 @@ public class RequestAuthorizationDialog extends OSGiActivity
      *
      * @param v the button's <code>View</code>
      */
-    public void onRequestClicked(View v)
-    {
+    public void onRequestClicked(View v) {
         String requestText = ViewUtil.getTextViewValue(getContentView(), R.id.requestText);
         request.submit(requestText);
         discard = false;
@@ -90,8 +86,7 @@ public class RequestAuthorizationDialog extends OSGiActivity
      *
      * @param v the button's <code>View</code>
      */
-    public void onCancelClicked(View v)
-    {
+    public void onCancelClicked(View v) {
         discard = true;
         finish();
     }
@@ -100,8 +95,7 @@ public class RequestAuthorizationDialog extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         if (discard)
             request.discard();
         super.onDestroy();
@@ -112,10 +106,10 @@ public class RequestAuthorizationDialog extends OSGiActivity
      * given <code>requestId</code>.
      *
      * @param requestId the id of authentication request.
+     *
      * @return <code>Intent</code> that start <code>RequestAuthorizationDialog</code> parametrized with given request id.
      */
-    public static Intent getRequestAuthDialogIntent(long requestId)
-    {
+    public static Intent getRequestAuthDialogIntent(long requestId) {
         Intent intent = new Intent(aTalkApp.getInstance(), RequestAuthorizationDialog.class);
         intent.putExtra(EXTRA_REQUEST_ID, requestId);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

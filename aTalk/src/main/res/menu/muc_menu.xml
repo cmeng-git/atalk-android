@@ -3,15 +3,15 @@
 
     <item
         android:id="@+id/muc_Kick"
-        android:title="@string/service_gui_KICK">
+        android:title="@string/kick">
     </item>
     <item
         android:id="@+id/muc_PrivateMessage"
-        android:title="@string/service_gui_SEND_PRIVATE_MESSAGE">
+        android:title="@string/send_message_private">
     </item>
     <item
         android:id="@+id/muc_send_file"
-        android:title="@string/service_gui_FILE_ATTACHMENT"
+        android:title="@string/file_attachment"
         android:visible="false">
     </item>
 

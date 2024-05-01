@@ -81,7 +81,7 @@ public class LocaleHelper {
         Locale locale;
         if (TextUtils.isEmpty(language)) {
             // System default may contain regional preference i.e. 'en-US-#u-fw-sun-mu-celsius'
-            locale = Resources.getSystem().getConfiguration().locale;
+            locale = Resources.getSystem().getConfiguration().getLocales().get(0);
 
             // Strip off any regional preferences in the language
             language = locale.toString().split("_#")[0];

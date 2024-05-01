@@ -26,16 +26,13 @@ import org.atalk.android.gui.chat.ChatContact;
  * @author Yana Stamcheva
  * @author Lubomir Marinov
  */
-public class ConferenceChatContact extends ChatContact<ChatRoomMember>
-{
-
+public class ConferenceChatContact extends ChatContact<ChatRoomMember> {
     /**
      * Creates an instance of <code>ChatContact</code> by passing to it the <code>ChatRoomMember</code> for which it is created.
      *
      * @param chatRoomMember the <code>ChatRoomMember</code> for which this <code>ChatContact</code> is created.
      */
-    public ConferenceChatContact(ChatRoomMember chatRoomMember)
-    {
+    public ConferenceChatContact(ChatRoomMember chatRoomMember) {
         super(chatRoomMember);
     }
 
@@ -43,8 +40,7 @@ public class ConferenceChatContact extends ChatContact<ChatRoomMember>
      * Implements ChatContact#getAvatarBytes(). Delegates to chatRoomMember.
      */
     @Override
-    public byte[] getAvatarBytes()
-    {
+    public byte[] getAvatarBytes() {
         return descriptor.getAvatar();
     }
 
@@ -54,17 +50,15 @@ public class ConferenceChatContact extends ChatContact<ChatRoomMember>
      * @return the contact name
      */
     @Override
-    public String getName()
-    {
+    public String getName() {
         String name = descriptor.getNickName();
         if (StringUtils.isEmpty(name))
-            name = aTalkApp.getResString(R.string.service_gui_UNKNOWN_USER);
+            name = aTalkApp.getResString(R.string.unknown_user);
 
         return name;
     }
 
-    public ChatRoomMemberRole getRole()
-    {
+    public ChatRoomMemberRole getRole() {
         return descriptor.getRole();
     }
 
@@ -72,8 +66,7 @@ public class ConferenceChatContact extends ChatContact<ChatRoomMember>
      * Implements ChatContact#getUID(). Delegates to ChatRoomMember#getContactAddress() because it's supposed to be unique.
      */
     @Override
-    public String getUID()
-    {
+    public String getUID() {
         return descriptor.getContactAddress();
     }
 }

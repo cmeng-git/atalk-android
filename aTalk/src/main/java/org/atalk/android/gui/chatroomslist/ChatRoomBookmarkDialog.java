@@ -94,7 +94,7 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         if (getDialog() != null)
-            getDialog().setTitle(R.string.service_gui_CHATROOM_BOOKMARK_TITLE);
+            getDialog().setTitle(R.string.chatroom_bookmark_title);
 
         View contentView = inflater.inflate(R.layout.chatroom_bookmark, container, false);
 
@@ -201,7 +201,7 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
             }
         } catch (SmackException.NoResponseException | SmackException.NotConnectedException
                 | XMPPException.XMPPErrorException | InterruptedException | XmppStringprepException e) {
-            String errMag = aTalkApp.getResString(R.string.service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED,
+            String errMag = aTalkApp.getResString(R.string.chatroom_bookmark_update_failed,
                     mChatRoomWrapper, e.getMessage());
             Timber.w(errMag);
             aTalkApp.showToastMessage(errMag);
