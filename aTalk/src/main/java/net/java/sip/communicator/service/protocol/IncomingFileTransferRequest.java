@@ -8,6 +8,8 @@ package net.java.sip.communicator.service.protocol;
 
 import java.io.File;
 
+import org.atalk.android.gui.chat.filetransfer.FileReceiveConversation;
+
 /**
  * Used for incoming file transfer request.
  *
@@ -81,9 +83,6 @@ public interface IncomingFileTransferRequest
 
     /**
      * Function called to accept and receive the file.
-     *
-     * @param file the file to accept
-     * @return the <code>FileTransfer</code> object managing the transfer
      */
     void acceptFile();
 
@@ -94,9 +93,9 @@ public interface IncomingFileTransferRequest
         throws OperationFailedException;
 
     /**
-     * Returns the thumbnail contained in this request.
+     * Return the thumbnail contained in this request. Proceed to request if thumbnail is null and enabled.
      *
-     * @return the thumbnail contained in this request
+     * @return the thumbnail contained in this request; use callback to update thumbnail.
      */
-    byte[] getThumbnail();
+    byte[] getThumbnail(FileReceiveConversation callback);
 }

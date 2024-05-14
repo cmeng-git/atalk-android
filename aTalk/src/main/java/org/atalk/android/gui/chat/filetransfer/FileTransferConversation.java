@@ -86,7 +86,7 @@ import timber.log.Timber;
 /**
  * The <code>FileTransferConversationComponent</code> is the parent of all
  * file conversation components - for incoming, outgoing and history file transfers.
- *
+ * <p>
  * The smack reply timer is extended to 10 sec in file sharing info exchanges e.g. IBB takes > 5sec
  *
  * @author Eng Chong Meng
@@ -356,23 +356,30 @@ public abstract class FileTransferConversation extends OSGiFragment
      *
      * @param thumbnail the thumbnail to show
      */
-    protected void showThumbnail(byte[] thumbnail) {
-        if (thumbnail != null && thumbnail.length > 0) {
-            Bitmap thumbnailIcon = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
-            int mWidth = thumbnailIcon.getWidth();
-            int mHeight = thumbnailIcon.getHeight();
+    public void showThumbnail(byte[] thumbnail) {
+        runOnUiThread(() -> {
+            if (thumbnail != null && thumbnail.length > 0) {
+                Bitmap thumbnailIcon = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
+                int mWidth = thumbnailIcon.getWidth();
+                int mHeight = thumbnailIcon.getHeight();
 
-            if (mWidth > IMAGE_WIDTH || mHeight > IMAGE_HEIGHT) {
-                messageViewHolder.fileIcon.setScaleType(ScaleType.FIT_CENTER);
-            }
-            else {
-                messageViewHolder.fileIcon.setScaleType(ScaleType.CENTER);
-            }
-            messageViewHolder.fileIcon.setImageBitmap(thumbnailIcon);
+                if (mWidth > IMAGE_WIDTH || mHeight > IMAGE_HEIGHT) {
+                    messageViewHolder.fileIcon.setScaleType(ScaleType.FIT_CENTER);
+                }
+                else {
+                    messageViewHolder.fileIcon.setScaleType(ScaleType.CENTER);
+                }
+                messageViewHolder.fileIcon.setImageBitmap(thumbnailIcon);
 
-            messageViewHolder.stickerView.setVisibility(View.VISIBLE);
-            messageViewHolder.stickerView.setImageBitmap(thumbnailIcon);
-        }
+                // Update stickerView drawable only if is null
+                if (messageViewHolder.stickerView.getDrawable() == null) {
+                    messageViewHolder.stickerView.setVisibility(View.VISIBLE);
+                    Bitmap scaledThumbnail = Bitmap.createScaledBitmap(thumbnailIcon,
+                            thumbnailIcon.getWidth()*2, thumbnailIcon.getHeight()*2, false);
+                    messageViewHolder.stickerView.setImageBitmap(scaledThumbnail);
+                }
+            }
+        });
     }
 
     /**
@@ -773,7 +780,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      * Toggle audio file playback states:
      * STOP -> PLAY -> PAUSE -> PLAY;
      * long press play button to STOP
-     *
+     * <p>
      * Proceed to open the file for VIEW if this is not an audio file
      */
     private void playStart() {

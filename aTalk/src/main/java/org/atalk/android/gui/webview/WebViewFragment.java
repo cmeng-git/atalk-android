@@ -16,6 +16,7 @@
  */
 package org.atalk.android.gui.webview;
 
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -36,6 +37,12 @@ import android.widget.ProgressBar;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Stack;
+
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.BuildConfig;
@@ -43,12 +50,6 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Stack;
 
 import timber.log.Timber;
 
@@ -59,8 +60,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 @SuppressLint("SetJavaScriptEnabled")
-public class WebViewFragment extends OSGiFragment implements OnKeyListener
-{
+public class WebViewFragment extends OSGiFragment implements OnKeyListener {
     private WebView webview;
     private ProgressBar progressbar;
     private static final Stack<String> urlStack = new Stack<>();
@@ -73,8 +73,7 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
 
     @SuppressLint("JavascriptInterface")
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.webview_main, container, false);
         progressbar = contentView.findViewById(R.id.progress);
         progressbar.setIndeterminate(true);
@@ -94,10 +93,9 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
         webSettings.setAllowUniversalAccessFromFileURLs(true);
 
         ActivityResultLauncher<String> mGetContents = getFileUris();
-        webview.setWebChromeClient(new WebChromeClient()
-        {
-            public void onProgressChanged(WebView view, int progress)
-            {
+        webview.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int progress) {
                 progressbar.setProgress(progress);
                 if (progress < 100 && progress > 0 && progressbar.getVisibility() == ProgressBar.GONE) {
                     progressbar.setIndeterminate(true);
@@ -110,8 +108,7 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
 
             @Override
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> uploadMessageArray,
-                    FileChooserParams fileChooserParams)
-            {
+                    FileChooserParams fileChooserParams) {
                 if (mUploadMessageArray != null)
                     mUploadMessageArray.onReceiveValue(null);
 
@@ -137,8 +134,7 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
 
         // setup keyPress listener - must re-enable every time on resume
@@ -150,8 +146,7 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
     /**
      * Init webView so it download root url stored in DB on next init
      */
-    public static void initWebView()
-    {
+    public static void initWebView() {
         urlStack.clear();
     }
 
@@ -161,8 +156,7 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
      *
      * @param url loaded/user clicked url
      */
-    public void addLastUrl(String url)
-    {
+    public void addLastUrl(String url) {
         urlStack.push(url);
         isLoadFromStack = false;
     }
@@ -170,8 +164,7 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
     /**
      * Opens a FileChooserDialog to let the user pick files for upload
      */
-    private ActivityResultLauncher<String> getFileUris()
-    {
+    private ActivityResultLauncher<String> getFileUris() {
         return registerForActivityResult(new ActivityResultContracts.GetMultipleContents(), uris -> {
             if (uris != null) {
                 if (mUploadMessageArray == null)
@@ -191,13 +184,11 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
 
     // Prevent the webView from reloading on device rotation
     @Override
-    public void onConfigurationChanged(@NotNull Configuration newConfig)
-    {
+    public void onConfigurationChanged(@NotNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
 
-    public static Bitmap getBitmapFromURL(String src)
-    {
+    public static Bitmap getBitmapFromURL(String src) {
         try {
             URL url = new URL(src);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -218,11 +209,11 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
      * @param v view
      * @param keyCode the entered key keycode
      * @param event the key Event
+     *
      * @return true if process
      */
     @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event)
-    {
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             // android OS will not pass in KEYCODE_MENU???
             if (keyCode == KeyEvent.KEYCODE_MENU) {

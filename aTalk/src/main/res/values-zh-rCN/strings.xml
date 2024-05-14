@@ -392,6 +392,7 @@
     <string name="file_attachment">发送附件</string>
     <string name="file_size_too_big">文件大小超过此协议允许的最大值：%1$s</string>
     <string name="file_transfer_active">正在进行的文件传输被中断。状态跟踪 @ %1$s 丢失！</string>
+    <string name="file_transfer_not_secure">XEP-0096：SI 文件传输协议不支持加密文件发送！</string>
     <string name="file_transfer_not_supported">联系客户端或服务器不支持文件传输或要求的协议</string>
 
     <string name="finish">完成</string>

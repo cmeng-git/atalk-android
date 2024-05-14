@@ -75,7 +75,8 @@
     <string name="ice">ICE</string>
 
     <!-- WebView default Page -->
-    <string name="settings_webView_summary">file:///android_asset/movim/index.html</string>
+    <string name="settings_webView_summary_old">file:///android_asset/movim/index.html</string>
+    <string name="settings_webView_summary">https://demo.agayon.be</string>
 
     <!-- Auto accept downloadable max file size -->
     <string name="auto_accept_filesize">524288</string>

@@ -58,20 +58,18 @@ import timber.log.Timber;
 
 /**
  * The <code>SendFileConversationComponent</code> is the component added in the chat conversation
- * when user sends a file either via legacy file transfer or httpFileUpload protocol.
+ * when user sends a file either via legacy file transfer, jingleFileTransfer or httpFileUpload protocol.
  *
  * @author Eng Chong Meng
  */
 public class FileSendConversation extends FileTransferConversation implements FileTransferStatusListener {
     /**
-     * The thumbnail default width.
+     * The thumbnail default width and height
+     * Current BobData response time is ~16s (jpeg=14784) and 39s (png=31326) with thumbnail size = 128 x 96.
+     * Thumbnail size 64x64 => jpeg 5303 and takes ~7s
      */
-    private static final int THUMBNAIL_WIDTH = 64;
-
-    /**
-     * The thumbnail default height.
-     */
-    private static final int THUMBNAIL_HEIGHT = 64;
+    public static final int THUMBNAIL_WIDTH = 64;
+    public static final int THUMBNAIL_HEIGHT = 64;
 
     private String mSendTo;
     private boolean mStickerMode;
@@ -187,7 +185,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                 // Inform remote user if sender canceled; not in standard legacy file xfer protocol event
                 statusText = aTalkApp.getResString(R.string.file_transfer_canceled);
                 if (!TextUtils.isEmpty(reason)) {
-                    statusText += "\n" + reason;
+                    statusText += ": " + reason;
                 }
 
                 if (mFileTransfer instanceof OutgoingFileTransferJabberImpl) {
@@ -298,8 +296,8 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     }
 
     /**
-     * Get the file thumbnail if applicable and start the file transfer process.
-     * use sBitmap() to retrieve the thumbnail for smallest size;
+     * Get the file thumbnail if applicable (disabled for OMEMO) and start the file transfer process.
+     * Use asBitmap() to retrieve the thumbnail for smallest size;
      * The .as(byte[].class) returns a scale of the gif animation file (large size)
      */
     public void sendFileWithThumbnail() {
@@ -316,8 +314,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                                   ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                   bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                                   byte[] byteData = stream.toByteArray();
-
-                                  Timber.d("ByteData Glide byteData: %s", byteData.length);
+                                  Timber.d("Thumbnail byteData size: %s", byteData.length);
                                   sendFileTransferRequest(byteData);
                               }
 

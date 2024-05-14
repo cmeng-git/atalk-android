@@ -10,6 +10,6 @@
         android:icon="?attr/iconActionAbout"
         android:title="@string/About" />
     <item android:id="@+id/menu_exit"
-          android:title="@string/exit"
+        android:title="@string/exit"
         android:visible="false" />
 </menu>

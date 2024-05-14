@@ -390,6 +390,7 @@
     <string name="file_attachment">Anlagen senden</string>
     <string name="file_size_too_big">Die maximale Dateigrösse wurde überschritten: %1$s</string>
     <string name="file_transfer_active">Der laufende Dateitransfer wurde unterbrochen @ %1$s.</string>
+    <string name="file_transfer_not_secure">XEP-0096: Das SI File Transfer-Protokoll unterstützt den verschlüsselten Dateiversand nicht!</string>
     <string name="file_transfer_not_supported">Contact Client oder Server unterstützt keine Dateiübertragung oder erforderliche Protokolle</string>
 
 	<string name="finish">Beenden</string>

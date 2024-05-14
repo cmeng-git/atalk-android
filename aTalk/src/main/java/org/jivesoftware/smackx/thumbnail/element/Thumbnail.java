@@ -1,9 +1,26 @@
 /*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014~2024 Eng Chong Meng
  *
- * Distributable under LGPL license. See terms of license at gnu.org.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package org.jivesoftware.smackx.thumbnail;
+package org.jivesoftware.smackx.thumbnail.element;
+
+import java.io.File;
+
+import javax.xml.namespace.QName;
+
+import net.java.sip.communicator.impl.protocol.jabber.ThumbnailedFile;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -12,21 +29,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smackx.bob.ContentId;
 
-import javax.xml.namespace.QName;
-
-/**
- * The <code>Thumbnail</code> represents a "thumbnail" XML element, that is contained in the file
- * element, we're sending to notify for a file transfer. The <code>Thumbnail</code>'s role is to
- * advertise a thumbnail. Implementing XEP-0264: Jingle Content Thumbnails v0.4
- * https://xmpp.org/extensions/xep-0264.html
- *
- * The class is designed mainly to handle only cid
- *
- * @author Yana Stamcheva
- * @author Eng Chong Meng
- */
-public class Thumbnail implements ExtensionElement
-{
+public class Thumbnail implements ExtensionElement {
     /**
      * The name of the XML element used for transport of thumbnail parameters.
      */
@@ -69,14 +72,12 @@ public class Thumbnail implements ExtensionElement
 
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return NAMESPACE;
     }
 
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return ELEMENT;
     }
 
@@ -88,8 +89,7 @@ public class Thumbnail implements ExtensionElement
      * @param width the width of the thumbnail
      * @param height the height of the thumbnail
      */
-    public Thumbnail(byte[] thumbnailData, String mediaType, int width, int height)
-    {
+    public Thumbnail(byte[] thumbnailData, String mediaType, int width, int height) {
         this.cid = createCid(thumbnailData);
         this.mediaType = mediaType;
         this.width = width;
@@ -97,14 +97,21 @@ public class Thumbnail implements ExtensionElement
         setUri(cid.toSrc());
     }
 
-    public Thumbnail(String uri, String mediaType, int width, int height)
-    {
+    public Thumbnail(String uri, String mediaType, int width, int height) {
         this.uri = uri;
         if (uri.startsWith(CID_PREFIX))
             cid = ContentId.fromSrc(uri);
         this.mediaType = mediaType;
         this.width = width;
         this.height = height;
+    }
+
+    public static Thumbnail fromFile(File file) {
+        if (file instanceof ThumbnailedFile) {
+            ThumbnailedFile tnFile = (ThumbnailedFile) file;
+            return new Thumbnail(tnFile.getThumbnailData(), tnFile.getThumbnailMimeType(), tnFile.getThumbnailWidth(), tnFile.getThumbnailHeight());
+        } else
+            return null;
     }
 
     /**
@@ -114,8 +121,7 @@ public class Thumbnail implements ExtensionElement
      *
      * @param parser the XML from which we obtain the needed information to create this <code>Thumbnail</code>
      */
-    public Thumbnail(XmlPullParser parser)
-    {
+    public Thumbnail(XmlPullParser parser) {
         parseUri(parser.getAttributeValue("", URI));
         mediaType = parser.getAttributeValue("", MEDIA_TYPE);
         String parserWidth = parser.getAttributeValue("", WIDTH);
@@ -134,8 +140,7 @@ public class Thumbnail implements ExtensionElement
      * @param uri A URI where the thumbnail data can be accessed
      * (typically by using a URI scheme of 'cid:', 'https:', or 'http:').
      */
-    private void parseUri(String uri)
-    {
+    private void parseUri(String uri) {
         this.uri = uri;
         if (uri.startsWith(CID_PREFIX)) {
             cid = ContentId.fromSrc(uri);
@@ -148,8 +153,7 @@ public class Thumbnail implements ExtensionElement
      * @return the packet extension as XML.
      */
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace)
-    {
+    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
 
         // adding thumbnail uri parameters
@@ -165,10 +169,10 @@ public class Thumbnail implements ExtensionElement
      * Creates the cid attribute value for the given  <code>thumbnailData</code>.
      *
      * @param thumbnailData the byte array containing the data
+     *
      * @return the cid attribute value for the thumbnail extension
      */
-    private ContentId createCid(byte[] thumbnailData)
-    {
+    private ContentId createCid(byte[] thumbnailData) {
         return new ContentId(SHA1.hex(thumbnailData), "sha1");
     }
 
@@ -177,8 +181,7 @@ public class Thumbnail implements ExtensionElement
      *
      * @return the uri, corresponding to this <code>Thumbnail</code>
      */
-    public String getUri()
-    {
+    public String getUri() {
         return uri;
     }
 
@@ -187,8 +190,7 @@ public class Thumbnail implements ExtensionElement
      *
      * @param uri the uri to set
      */
-    public void setUri(String uri)
-    {
+    public void setUri(String uri) {
         this.uri = uri;
     }
 
@@ -197,8 +199,7 @@ public class Thumbnail implements ExtensionElement
      *
      * @return the Content-ID, corresponding to this <code>Thumbnail</code>
      */
-    public ContentId getCid()
-    {
+    public ContentId getCid() {
         return cid;
     }
 
@@ -207,8 +208,7 @@ public class Thumbnail implements ExtensionElement
      *
      * @param cid the content-ID to set
      */
-    public void setCid(ContentId cid)
-    {
+    public void setCid(ContentId cid) {
         this.cid = cid;
     }
 
@@ -217,8 +217,7 @@ public class Thumbnail implements ExtensionElement
      *
      * @return the mime type of this <code>Thumbnail</code>
      */
-    public String getMediaType()
-    {
+    public String getMediaType() {
         return mediaType;
     }
 
@@ -227,8 +226,7 @@ public class Thumbnail implements ExtensionElement
      *
      * @param mediaType the mime type of the thumbnail
      */
-    public void setMediaType(String mediaType)
-    {
+    public void setMediaType(String mediaType) {
         this.mediaType = mediaType;
     }
 
@@ -237,8 +235,7 @@ public class Thumbnail implements ExtensionElement
      *
      * @return the width of this <code>Thumbnail</code>
      */
-    public int getWidth()
-    {
+    public int getWidth() {
         return width;
     }
 
@@ -247,8 +244,7 @@ public class Thumbnail implements ExtensionElement
      *
      * @param width the width of the thumbnail
      */
-    public void setWidth(int width)
-    {
+    public void setWidth(int width) {
         this.width = width;
     }
 
@@ -257,8 +253,7 @@ public class Thumbnail implements ExtensionElement
      *
      * @return the height of this <code>Thumbnail</code>
      */
-    public int getHeight()
-    {
+    public int getHeight() {
         return height;
     }
 
@@ -267,8 +262,7 @@ public class Thumbnail implements ExtensionElement
      *
      * @param height the height of the thumbnail
      */
-    public void setHeight(int height)
-    {
+    public void setHeight(int height) {
         this.height = height;
     }
 }

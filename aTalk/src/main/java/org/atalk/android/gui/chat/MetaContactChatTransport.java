@@ -125,16 +125,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     private final OperationSetPresence presenceOpSet;
 
     /**
-     * The thumbnail default width.
-     */
-    private static final int THUMBNAIL_WIDTH = 64;
-
-    /**
-     * The thumbnail default height.
-     */
-    private static final int THUMBNAIL_HEIGHT = 64;
-
-    /**
      * Indicates if only the resource name should be displayed.
      */
     private final boolean isDisplayResourceOnly;
@@ -608,6 +598,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
 
     /**
      * Sends the given file through this chat transport file transfer operation set.
+     * Generate the Thumbnail if (xferCon.getFileThumbnail() != null) i.e. support thumbnail sending
      *
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
@@ -627,11 +618,10 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         if (tfOpSet != null) {
             byte[] thumbnail = xferCon.getFileThumbnail();
             if (thumbnail != null && thumbnail.length > 0) {
-                file = tfOpSet.createFileWithThumbnail(file, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT,
-                        "image/png", thumbnail);
+                file = tfOpSet.createFileWithThumbnail(file, FileSendConversation.THUMBNAIL_WIDTH,
+                        FileSendConversation.THUMBNAIL_HEIGHT, "image/jpeg", thumbnail);
             }
         }
-
         if (isMultimediaMessage) {
             if (smsOpSet == null)
                 return null;
@@ -673,14 +663,14 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
 
                 /* ==== For testing of JingleFileSend or ByteStream transfer only ==== */
                 // return jingleFileSend(file, chatType, xferCon);
-                // return ftOpSet.sendFile(mContact, file, xferCon.getMessageUuid());
+                // return ftOpSet.sendFile(mContact, file, chatType, xferCon.getMessageUuid());
             } catch (OperationNotSupportedException ex) {
                 try {
-                    // Use jingle file transfer protocol as second attempt if supported by buddy
+                    // Use jingle file transfer protocol for normal and JET as second attempt if supported by buddy
                     return jingleFileSend(file, chatType, xferCon);
                 } catch (OperationNotSupportedException ex2) {
                     // Use legacy FileTransfer starting with SOCKS5, fallback to IBB ByteStream transfer.
-                    return ftOpSet.sendFile(mContact, file, xferCon.getMessageUuid());
+                    return ftOpSet.sendFile(mContact, file, chatType, xferCon.getMessageUuid());
                 }
             }
         }
@@ -718,7 +708,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         if ((recipient != null)
                 && (!OutgoingFileOfferJingleImpl.hasSecurityError(mContact) || (ChatFragment.MSGTYPE_OMEMO != chatType))) {
             OutgoingFileOfferController ofoController;
-            int encType = IMessage.ENCRYPTION_NONE;
+            // int encType = IMessage.ENCRYPTION_NONE;
             String msgUuid = xferCon.getMessageUuid();
             Context ctx = aTalkApp.getInstance();
             JingleFile jingleFile = createJingleFile(ctx, file);
@@ -726,7 +716,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
 
             try {
                 if (ChatFragment.MSGTYPE_OMEMO == chatType) {
-                    encType = IMessage.ENCRYPTION_OMEMO;
+                    // encType = IMessage.ENCRYPTION_OMEMO;
                     ofoController = jetManager.sendEncryptedFile(file, jingleFile, recipient, omemoManager);
                 }
                 else {

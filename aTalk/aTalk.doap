@@ -347,8 +347,8 @@
     <implements>
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0264.html"/>
-        <xmpp:version>0.4</xmpp:version>
-        <xmpp:note xml:lang='en'>XEP-0264: File Transfer Thumbnails</xmpp:note>
+        <xmpp:version>0.4.1</xmpp:version>
+        <xmpp:note xml:lang='en'>XEP-0264: Jingle Content Thumbnails</xmpp:note>
       </xmpp:SupportedXep>
     </implements>
     <implements>
@@ -483,6 +483,13 @@
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0391.html"/>
         <xmpp:version>0.1.2</xmpp:version>
         <xmpp:note xml:lang='en'>XEP-0391: Jingle Encrypted Transports</xmpp:note>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0396.html"/>
+        <xmpp:version>0.2.0</xmpp:version>
+        <xmpp:note xml:lang='en'>XEP-0396: Jingle Encrypted Transports - OMEMO</xmpp:note>
       </xmpp:SupportedXep>
     </implements>
     <implements>

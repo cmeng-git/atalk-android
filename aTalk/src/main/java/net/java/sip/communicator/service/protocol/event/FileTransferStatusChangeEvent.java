@@ -53,9 +53,14 @@ public class FileTransferStatusChangeEvent extends EventObject
     public static final int PREPARING = 15;
 
     /**
+     * Indicates that the recipient has accepted the file transfer.
+     */
+    public static final int ACCEPT = 16;
+    /**
      * Indicates that the file transfer is in progress.
      */
-    public static final int IN_PROGRESS = 16;
+    public static final int IN_PROGRESS = 17;
+
 
     public static final int UNKNOWN = -1;
 

@@ -391,6 +391,7 @@
     <string name="file_attachment">Enviar anexo</string>
     <string name="file_size_too_big">O tamanho do arquivo excede o máximo permitido para este protocolo: %1$s</string>
     <string name="file_transfer_active">A transferência de arquivos foi interrompida. Status de progresso @ %1$s foi perdido!</string>
+    <string name="file_transfer_not_secure">XEP-0096: O protocolo SI File Transfer não suporta o envio de arquivos criptografados!</string>
     <string name="file_transfer_not_supported">Cliente ou servidor do contato não tem suporte para transferências de arquivos ou protocolos necessários</string>
 
     <string name="finish">Concluir</string>

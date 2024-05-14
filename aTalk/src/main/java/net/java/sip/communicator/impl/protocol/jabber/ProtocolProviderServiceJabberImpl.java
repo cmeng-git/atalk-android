@@ -197,6 +197,7 @@ import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationProvider;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationStreamFeatureProvider;
 import org.jivesoftware.smackx.iqversion.VersionManager;
+import org.jivesoftware.smackx.jet.JetManager;
 import org.jivesoftware.smackx.jibri.JibriIq;
 import org.jivesoftware.smackx.jibri.JibriIqProvider;
 import org.jivesoftware.smackx.jingle.element.Jingle;
@@ -238,8 +239,7 @@ import org.jivesoftware.smackx.receipts.DeliveryReceipt;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager.AutoReceiptMode;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
-import org.jivesoftware.smackx.thumbnail.Thumbnail;
-import org.jivesoftware.smackx.thumbnail.ThumbnailStreamInitiationProvider;
+import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
@@ -1575,6 +1575,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             /*  Start up Jingle File Transfer */
             JingleFileTransferManager.getInstanceFor(mConnection);
 
+            /*  Start up JetManager for jingle security file transfer */
+            JetManager.getInstanceFor(mConnection);
+
             // Start up both instances for incoming JingleMessage events handlers
             JingleMessageManager.getInstanceFor(connection);
             JingleMessageSessionImpl.getInstanceFor(connection);
@@ -2249,11 +2252,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             // register our JingleInfo provider
             ProviderManager.addIQProvider(JingleInfoQueryIQ.ELEMENT, JingleInfoQueryIQ.NAMESPACE,
                     new JingleInfoQueryIQProvider());
-
-            // replace the default StreamInitiationProvider with our
-            // custom provider that handles the XEP-0264 <File/> element
-            ProviderManager.addIQProvider(StreamInitiation.ELEMENT, StreamInitiation.NAMESPACE,
-                    new ThumbnailStreamInitiationProvider());
 
             ProviderManager.addIQProvider(Registration.ELEMENT, Registration.NAMESPACE, new RegistrationProvider());
 

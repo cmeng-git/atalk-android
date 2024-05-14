@@ -6,8 +6,24 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="4.0.2 (05/01/2024)" versioncode="400020">
+    <release version="4.1.0 (05/14/2024)" versioncode="401000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Add Jingle Content Thumbnails (XEP-0264) support in Jingle File Transfer (XEP-0234) protocol; Thumbnails is disabled for OMEMO Jet</change>
+        <change>Add ThumbnailProvider class for Thumbnail element parsing in JingleFileTransferProvider</change>
+        <change>Update all relevant Jingle File Transfer classes to support Thumbnail and BOB handling</change>
+        <change>Rename ThumbnailStreamInitiationProvider to StreamInitiationProvider, and override smack class</change>
+        <change>Cleanup and update smack StreamInitiation to support Thumbnail element; remove aTalk ThumbnailFile element class</change>
+        <change>Optimize and cleanup aTalk XEP-0096: SI File Transfer implementation for XEP-0264 support</change>
+        <change>OutgoingFileTransferJabberImpl handles bobInfo init at constructor; remove StanzaListener to insert Thumbnail element</change>
+        <change>Block and alert user if attempt to send encrypted file via XEP-0096: SI File Transfer</change>
+        <change>Scale thumbnail x2 for display in file transfer request UI</change>
+        <change>Update smack library classes to fully support Jingle Content Thumbnails (XEP-0264) in legacy Si and Jingle File Transfer</change>
+        <change>OutgoingFileOfferJingleImpl needs to perform process cleanup upon ProgressListener#onFinished()</change>
+        <change>Must init JetManager upon user authenticated, ready for advertise JET feature in DiscoveryManager</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="4.0.2 (05/01/2024)" versioncode="400020">
         <change>Add new permissions required for API-34 and change UI to support</change>
         <change>Add 'App Info' option in main menu to view/change aTalk permission settings; different android devices have own implementations</change>
         <change>Check and skip process for duplicated presence with caps sent from server</change>

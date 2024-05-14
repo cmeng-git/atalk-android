@@ -28,6 +28,7 @@ import org.jivesoftware.smackx.hashes.HashManager;
 import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild;
 import org.jivesoftware.smackx.jingle_filetransfer.element.Range;
+import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
 
 /**
  * Represent a file sent in a file transfer.
@@ -37,13 +38,13 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.Range;
  * @author Eng Chong Meng
  */
 public class JingleFile extends JingleFileTransferChild {
-    public JingleFile(Date date, String desc, HashElement hash, String mediaType, String name, int size) {
-        super(date, desc, hash, mediaType, name, size, new Range(0, size));
+    public JingleFile(Date date, String desc, HashElement hash, String mediaType, String name, int size, Thumbnail thumbnail) {
+        super(date, desc, hash, mediaType, name, size, new Range(0, size), thumbnail);
     }
 
     public JingleFile(JingleFileTransferChild element) {
         super(element.getDate(), element.getDescription(), element.getHash(), element.getMediaType(),
-                element.getName(), element.getSize(), element.getRange());
+                element.getName(), element.getSize(), element.getRange(), element.getThumbnail());
     }
 
     public static JingleFile fromFile(File file, String desc, String mediaType, HashManager.ALGORITHM hashAlgorithm) throws NoSuchAlgorithmException, IOException {
@@ -51,7 +52,8 @@ public class JingleFile extends JingleFileTransferChild {
         if (hashAlgorithm != null) {
             hash = calculateHash(file, hashAlgorithm);
         }
-        return new JingleFile(new Date(file.lastModified()), desc, hash, mediaType, file.getName(), (int) file.length());
+        Thumbnail thumbnail = Thumbnail.fromFile(file);
+        return new JingleFile(new Date(file.lastModified()), desc, hash, mediaType, file.getName(), (int) file.length(), thumbnail);
     }
 
     public static HashElement calculateHash(File file, HashManager.ALGORITHM algorithm) throws NoSuchAlgorithmException, IOException {
@@ -84,6 +86,7 @@ public class JingleFile extends JingleFileTransferChild {
         builder.setName(getName());
         builder.setSize(getSize());
         builder.setRange(getRange());
+        builder.setThumbnail(getThumbnail());
         return builder.build();
     }
 }

@@ -25,6 +25,7 @@ public interface OperationSetFileTransfer extends OperationSet
      *
      * @param toContact the contact that should receive the file
      * @param file the file to send
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param uuid the uuid of the message that trigger the send file request
      *
      * @return the transfer object
@@ -32,7 +33,7 @@ public interface OperationSetFileTransfer extends OperationSet
      * @throws IllegalArgumentException if some of the arguments doesn't fit the protocol requirements
      * @throws OperationNotSupportedException if the given contact client or server does not support file transfers
      */
-    FileTransfer sendFile(Contact toContact, File file, String uuid)
+    FileTransfer sendFile(Contact toContact, File file, int chatType, String uuid)
             throws IllegalStateException, IllegalArgumentException, OperationNotSupportedException;
 
     /**

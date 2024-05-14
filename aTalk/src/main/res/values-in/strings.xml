@@ -391,6 +391,7 @@
     <string name="file_attachment">Kirim Lampiran</string>
     <string name="file_size_too_big">Ukuran fail melebihi batas maksimum yang diizinkan untuk protokol ini: %1$s</string>
     <string name="file_transfer_active">Transfer fail sedang diproses sedang terganggu. Pelacakan status @ %1$s hilang!</string>
+    <string name="file_transfer_not_secure">XEP-0096: Protokol Transfer File SI tidak dapat mendukung pengiriman file terenkripsi!</string>
     <string name="file_transfer_not_supported">Hubungi klien atau server tidak mendukung transfer file atau protokol yang diperlukan</string>
 
     <string name="finish">Selesai</string>

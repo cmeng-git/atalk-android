@@ -23,10 +23,10 @@ import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeE
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.event.ScFileTransferListener;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
-import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.chat.ChatFragment;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
@@ -46,8 +46,6 @@ import org.jivesoftware.smackx.jingle_filetransfer.JingleFileTransferManager;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.IncomingFileOfferController;
 import org.jivesoftware.smackx.jingle_filetransfer.listener.IncomingFileOfferListener;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
-import org.jivesoftware.smackx.thumbnail.Thumbnail;
-import org.jivesoftware.smackx.thumbnail.ThumbnailFile;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 
@@ -128,14 +126,20 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
      *
      * @param contact the contact that should receive the file
      * @param file file to send
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param msgUuid the id that uniquely identifies this file transfer and saved DB record
      *
      * @return the transfer object
      */
-    public FileTransfer sendFile(Contact contact, File file, String msgUuid)
+    public FileTransfer sendFile(Contact contact, File file, int chatType, String msgUuid)
             throws IllegalStateException, IllegalArgumentException, OperationNotSupportedException {
-        assertConnected();
 
+        // Legacy si File Transfer cannot support encrypted file sending.
+        if (ChatFragment.MSGTYPE_OMEMO == chatType) {
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_secure));
+        }
+
+        assertConnected();
         if (file.length() > getMaximumFileLength())
             throw new IllegalArgumentException(aTalkApp.getResString(R.string.file_size_too_big, mPPS.getOurJid()));
 
@@ -151,6 +155,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
          * the ftManager is the last registered PPS and may not be correct in multiple user accounts env.
          */
         FileTransferManager ftManager = FileTransferManager.getInstanceFor(mPPS.getConnection());
+        // OutgoingFileTransfer.setResponseTimeout(2*60*1000); // use default 60s instead for user accept timeout.
         OutgoingFileTransfer transfer = ftManager.createOutgoingFileTransfer(mContactJid);
         mOGFileTransfer = new OutgoingFileTransferJabberImpl(contact, file, transfer, mPPS, msgUuid);
 
@@ -164,7 +169,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         try {
             // Start smack handle everything and start status and progress thread.
             transfer.setCallback(negotiationProgress);
-            transfer.sendFile(file, "Sending file");
+            transfer.sendFile(file, "Sending file with thumbnail element if enabled");
             new FileTransferProgressThread(transfer, mOGFileTransfer).start();
         } catch (SmackException e) {
             Timber.e("Failed to send file: %s", e.getMessage());
@@ -395,7 +400,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         /**
          * Listens for file transfer packets.
          *
-         * @param request fileTransfer request from smack FileTransferListener
+         * @param offer IncomingFileOfferController offer from smack IncomingFileOfferListener
          */
         @Override
         public void onIncomingFileOffer(IncomingFileOfferController offer) {
@@ -432,28 +437,10 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         @Override
         public void fileTransferRequest(final FileTransferRequest request) {
             // Timber.d("Received incoming Jabber file transfer request.");
-
-            // Create a global incoming file transfer request.
+            // Create and fire global incoming file transfer request received.
             IncomingFileTransferRequestJabberImpl incomingFileTransferRequest
                     = new IncomingFileTransferRequestJabberImpl(mPPS, OperationSetFileTransferJabberImpl.this, request);
-            StreamInitiation si = getStreamInitiation(request);
-
-            // Request thumbnail if advertised in streamInitiation stanza, no autoAccept, and the feature is enabled
-            StreamInitiation.File file;
-            boolean thumbnailRequest = false;
-            if ((si != null) && (file = si.getFile()) instanceof ThumbnailFile) {
-                // Proceed to request for the available thumbnail if auto accept file not permitted
-                boolean isAutoAccept = ConfigurationUtils.isAutoAcceptFile(request.getFileSize());
-                Thumbnail thumbnailElement = ((ThumbnailFile) file).getThumbnail();
-                if (!isAutoAccept && ConfigurationUtils.isSendThumbnail() && (thumbnailElement != null)) {
-                    thumbnailRequest = true;
-                    incomingFileTransferRequest.fetchThumbnailAndNotify(thumbnailElement.getCid());
-                }
-            }
-            // No thumbnail request, then proceed to notify the global listener that a request has arrived
-            if (!thumbnailRequest) {
-                fireFileTransferRequest(incomingFileTransferRequest);
-            }
+            fireFileTransferRequest(incomingFileTransferRequest);
         }
     }
 

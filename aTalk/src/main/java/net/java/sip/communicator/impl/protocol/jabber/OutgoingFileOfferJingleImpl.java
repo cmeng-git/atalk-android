@@ -16,6 +16,10 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
@@ -23,16 +27,16 @@ import net.java.sip.communicator.service.protocol.event.FileTransferStatusChange
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.bob.BoBData;
+import org.jivesoftware.smackx.bob.BoBInfo;
+import org.jivesoftware.smackx.bob.BoBManager;
+import org.jivesoftware.smackx.bob.ContentId;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl.JingleSessionListener;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl.SessionState;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
 import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -47,6 +51,9 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
      * Default number of fallback to use HttpFileUpload if previously has securityError
      */
     private static final int defaultErrorTimer = 10;
+
+    // must include this attribute in bobData; else smack 4.4.0 throws NPE
+    private static final int maxAge = 86400;
 
     /**
      * Fallback to use HttpFileUpload file transfer if previously has securityError i.e. not zero
@@ -63,6 +70,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
      */
     private final OutgoingFileOfferController mOfoJingle;
     private final XMPPConnection mConnection;
+    private BoBInfo bobInfo = null;
 
     /**
      * Creates an <code>OutgoingFileTransferJabberImpl</code> by specifying the <code>receiver</code>
@@ -71,9 +79,9 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
      *
      * @param recipient the destination contact
      * @param file the file to send
-     * @param jabberTransfer the Jabber transfer object, containing all transfer information
-     * @param protocolProvider the parent protocol provider
      * @param mUuid the id that uniquely identifies this file transfer and saved DB record
+     * @param offer the Jabber OutgoingFileOfferController object
+     * @param connection the XMPP Connection
      */
     public OutgoingFileOfferJingleImpl(Contact recipient, File file, String mUuid,
             OutgoingFileOfferController offer, XMPPConnection connection) {
@@ -82,8 +90,44 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
         msgUuid = mUuid;
         mOfoJingle = offer;
         mConnection = connection;
+
+        bobInfoInit(file);
         offer.addProgressListener(inFileProgressListener);
         JingleSessionImpl.addJingleSessionListener(jingleSessionListener);
+    }
+
+    private void bobInfoInit(File file) {
+        bobInfo = null;
+        if (file instanceof ThumbnailedFile) {
+            ThumbnailedFile tnFile = (ThumbnailedFile) file;
+            byte[] thumbnail = tnFile.getThumbnailData();
+
+            if (thumbnail != null && thumbnail.length > 0) {
+                BoBData bobData = new BoBData(tnFile.getThumbnailMimeType(), thumbnail, maxAge);
+
+                BoBManager bobManager = BoBManager.getInstanceFor(mConnection);
+                bobInfo = bobManager.addBoB(bobData);
+            }
+        }
+    }
+
+    /**
+     * Cleanup bobInfo from BoBManager, and remove OFO Listener:
+     * a. When sender cancel file transfer (FileTransferConversation); nothing returns from remote.
+     * b. onSessionTerminated() received from remote (uer declines or cancels during active transfer)
+     */
+    private void jingleFileOfferCleanup() {
+        // Timber.d("Jingle File Offer Cleanup: %s", bobInfo);
+        if (bobInfo != null) {
+            BoBManager bobManager = BoBManager.getInstanceFor(mConnection);
+            for (ContentId hash : bobInfo.getHashes()) {
+                bobManager.removeBoB(hash);
+            }
+            bobInfo = null;
+        }
+
+        mOfoJingle.removeProgressListener(inFileProgressListener);
+        JingleSessionImpl.removeJingleSessionListener(jingleSessionListener);
     }
 
     /**
@@ -94,25 +138,14 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
         try {
             mOfoJingle.cancel(mConnection);
         } catch (SmackException.NotConnectedException | InterruptedException | XMPPException.XMPPErrorException
-                | SmackException.NoResponseException e) {
+                 | SmackException.NoResponseException e) {
             Timber.e("File send cancel exception: %s", e.getMessage());
         }
 
         // Must perform the following even if cancel failed due to remote: XMPPError: item-not-found - cancel
-        removeOfoListener();
+        jingleFileOfferCleanup();
         SessionState oldState = mOfoJingle.getJingleSession().getSessionState();
         fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, oldState.toString());
-    }
-
-    /**
-     * Remove OFO Listener:
-     * a. When sender cancel file transfer (FileTransferConversation); nothing returns from remote.
-     * b. onSessionTerminated() received from remote (uer declines or cancels during active transfer)
-     */
-    private void removeOfoListener() {
-        // Timber.d("Remove Ofo Listener");
-        mOfoJingle.removeProgressListener(inFileProgressListener);
-        JingleSessionImpl.removeJingleSessionListener(jingleSessionListener);
     }
 
     /**
@@ -161,6 +194,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
         return msgUuid;
     }
 
+    // User interface for jingle file transfer progress status.
     ProgressListener inFileProgressListener = new ProgressListener() {
         @Override
         public void onStarted() {
@@ -175,6 +209,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
 
         @Override
         public void onFinished() {
+            jingleFileOfferCleanup();
             fireStatusChangeEvent(FileTransferStatusChangeEvent.COMPLETED, "Byte sent completed");
         }
 
@@ -199,8 +234,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
                     break;
 
                 case active:
-                    // Rely onSessionAccepted() to report the new status
-                    // fireStatusChangeEvent(FileTransferStatusChangeEvent.IN_PROGRESS, sessionState);
+                    fireStatusChangeEvent(FileTransferStatusChangeEvent.ACCEPT, sessionState);
                     break;
 
                 case cancelled:
@@ -231,8 +265,9 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
             if (JingleReason.Reason.security_error.equals(reason.asEnum())) {
                 mSecurityErrorTimer.put(mContact, defaultErrorTimer);
             }
+
+            jingleFileOfferCleanup();
             fireStatusChangeEvent(reason);
-            removeOfoListener();
         }
     };
 

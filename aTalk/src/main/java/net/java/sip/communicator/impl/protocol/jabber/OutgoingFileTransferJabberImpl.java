@@ -5,30 +5,18 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.io.File;
+
 import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.util.ConfigurationUtils;
 
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.IQTypeFilter;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.bob.BoBData;
 import org.jivesoftware.smackx.bob.BoBInfo;
 import org.jivesoftware.smackx.bob.BoBManager;
 import org.jivesoftware.smackx.bob.ContentId;
-import org.jivesoftware.smackx.bob.element.BoBIQ;
 import org.jivesoftware.smackx.filetransfer.FileTransfer;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
-import org.jivesoftware.smackx.si.packet.StreamInitiation;
-import org.jivesoftware.smackx.thumbnail.Thumbnail;
-import org.jivesoftware.smackx.thumbnail.ThumbnailFile;
-
-import java.io.File;
-
-import timber.log.Timber;
 
 /**
  * The Jabber protocol extension of the <code>AbstractFileTransfer</code>.
@@ -36,8 +24,7 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer implements StanzaListener
-{
+public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer {
     // must include this attribute in bobData; else smack 4.4.0 throws NPE
     private static final int maxAge = 86400;
 
@@ -50,7 +37,8 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      * The jabber outgoing file transfer.
      */
     private final OutgoingFileTransfer mJabberFileTransfer;
-    private final ProtocolProviderServiceJabberImpl mPPS;
+    private final XMPPConnection mConnection;
+
     private BoBInfo bobInfo;
 
     /**
@@ -61,16 +49,15 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      * @param recipient the destination contact
      * @param file the file to send
      * @param jabberTransfer the Jabber transfer object, containing all transfer information
-     * @param protocolProvider the parent protocol provider
+     * @param pps the parent protocol provider
      * @param id the id that uniquely identifies this file transfer and saved DB record
      */
     public OutgoingFileTransferJabberImpl(Contact recipient, File file, OutgoingFileTransfer jabberTransfer,
-            ProtocolProviderServiceJabberImpl protocolProvider, String id)
-    {
+            ProtocolProviderServiceJabberImpl pps, String id) {
         mContact = recipient;
         mFile = file;
         mJabberFileTransfer = jabberTransfer;
-        mPPS = protocolProvider;
+        mConnection = pps.getConnection();
 
         // Create the identifier of this file transfer that is used from the history and the user
         // interface to track this transfer. Use pass in value if available (cmeng 20220206: true always)
@@ -79,18 +66,8 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
         msgUuid = id;
 
         // jabberTransfer is null for http file upload
-        if (jabberTransfer == null)
-            return;
-
-        // Add this outgoing transfer as a packet interceptor in order to manage thumbnails.
-        if (ConfigurationUtils.isSendThumbnail() && (file instanceof ThumbnailedFile)
-                && (((ThumbnailedFile) file).getThumbnailData() != null)
-                && ((ThumbnailedFile) file).getThumbnailData().length > 0) {
-            if (protocolProvider.isFeatureListSupported(protocolProvider.getFullJidIfPossible(recipient),
-                    Thumbnail.NAMESPACE, BoBIQ.NAMESPACE)) {
-                protocolProvider.getConnection().addStanzaInterceptor(this,
-                        new AndFilter(IQTypeFilter.SET, new StanzaTypeFilter(StreamInitiation.class)));
-            }
+        if (jabberTransfer != null) {
+            bobInfoInit(file);
         }
     }
 
@@ -98,17 +75,16 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      * Cancels the file transfer.
      */
     @Override
-    public void cancel()
-    {
+    public void cancel() {
         mJabberFileTransfer.cancel();
     }
 
     /**
      * Get the transfer error
+     *
      * @return FileTransfer.Error
      */
-    public FileTransfer.Error getTransferError()
-    {
+    public FileTransfer.Error getTransferError() {
         return mJabberFileTransfer.getError();
     }
 
@@ -118,8 +94,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      * @return the number of bytes already sent to the recipient.
      */
     @Override
-    public long getTransferredBytes()
-    {
+    public long getTransferredBytes() {
         return mJabberFileTransfer.getBytesSent();
     }
 
@@ -128,8 +103,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      *
      * @return OUT.
      */
-    public int getDirection()
-    {
+    public int getDirection() {
         return OUT;
     }
 
@@ -138,8 +112,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      *
      * @return the file
      */
-    public File getLocalFile()
-    {
+    public File getLocalFile() {
         return mFile;
     }
 
@@ -148,8 +121,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      *
      * @return the receiver.
      */
-    public Contact getContact()
-    {
+    public Contact getContact() {
         return mContact;
     }
 
@@ -158,71 +130,35 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      *
      * @return the id.
      */
-    public String getID()
-    {
+    public String getID() {
         return msgUuid;
+    }
+
+    private void bobInfoInit(File file) {
+        bobInfo = null;
+        if (file instanceof ThumbnailedFile) {
+            ThumbnailedFile tnFile = (ThumbnailedFile) file;
+            byte[] thumbnail = tnFile.getThumbnailData();
+
+            if (thumbnail != null && thumbnail.length > 0) {
+                BoBData bobData = new BoBData(tnFile.getThumbnailMimeType(), thumbnail, maxAge);
+
+                BoBManager bobManager = BoBManager.getInstanceFor(mConnection);
+                bobInfo = bobManager.addBoB(bobData);
+            }
+        }
     }
 
     /**
      * Removes previously added thumbnail request listener.
      */
-    public void removeThumbnailHandler()
-    {
-        if (bobInfo == null) {
-            return;
+    public void removeThumbnailHandler() {
+        if (bobInfo != null) {
+            BoBManager bobManager = BoBManager.getInstanceFor(mConnection);
+            for (ContentId hash : bobInfo.getHashes()) {
+                bobManager.removeBoB(hash);
+            }
+            bobInfo = null;
         }
-
-        BoBManager bobManager = BoBManager.getInstanceFor(mPPS.getConnection());
-        for (ContentId hash : bobInfo.getHashes()) {
-            bobManager.removeBoB(hash);
-        }
-    }
-
-    /**
-     * Listen for all <code>Si</code> stanzas and adds a thumbnail element to it if a thumbnail preview is enabled.
-     *
-     * @see StanzaListener#processStanza(Stanza)
-     */
-    @Override
-    public void processStanza(Stanza stanza)
-    {
-        if (!ConfigurationUtils.isSendThumbnail() || !(stanza instanceof StreamInitiation))
-            return;
-
-        // If our file is not a thumbnail file we have nothing to do here.
-        if (!(mFile instanceof ThumbnailedFile))
-            return;
-
-        XMPPConnection connection = mPPS.getConnection();
-        StreamInitiation fileTransferPacket = (StreamInitiation) stanza;
-        ThumbnailedFile thumbnailedFile = (ThumbnailedFile) mFile;
-
-        if (mJabberFileTransfer.getStreamID().equals(fileTransferPacket.getSessionID())) {
-            StreamInitiation.File file = fileTransferPacket.getFile();
-
-            BoBData bobData = new BoBData(
-                    thumbnailedFile.getThumbnailMimeType(),
-                    thumbnailedFile.getThumbnailData(),
-                    maxAge);
-
-            BoBManager bobManager = BoBManager.getInstanceFor(connection);
-            bobInfo = bobManager.addBoB(bobData);
-            Thumbnail thumbnail = new Thumbnail(
-                    thumbnailedFile.getThumbnailData(),
-                    thumbnailedFile.getThumbnailMimeType(),
-                    thumbnailedFile.getThumbnailWidth(),
-                    thumbnailedFile.getThumbnailHeight());
-
-            ThumbnailFile fileElement = new ThumbnailFile(file, thumbnail);
-            fileTransferPacket.setFile(fileElement);
-
-            Timber.d("File transfer packet intercepted to add thumbnail element.");
-            // Timber.d("The file transfer packet with thumbnail: %s", fileTransferPacket.toXML(XmlEnvironment.EMPTY));
-        }
-
-        // Remove this packet interceptor after we're done.
-        if (connection != null)
-            connection.removeStanzaInterceptor(this);
     }
 }
-

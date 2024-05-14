@@ -176,7 +176,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             case FileTransferStatusChangeEvent.CANCELED:
                 statusText = aTalkApp.getResString(R.string.file_transfer_canceled);
                 if (!TextUtils.isEmpty(reason)) {
-                    statusText += "\n" + reason;
+                    statusText += ": " + reason;
                 }
                 break;
 

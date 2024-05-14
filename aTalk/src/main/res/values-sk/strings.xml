@@ -390,6 +390,7 @@
     <string name="file_attachment">Odoslať prílohu</string>
     <string name="file_size_too_big">Veľkosť súboru presahuje maximum povolené pre tento protokol: %1$s</string>
     <string name="file_transfer_active">Prebieha prenos súborov. Sledovanie stavu @%1$s sa stratilo!</string>
+    <string name="file_transfer_not_secure">XEP-0096: Protokol SI File Transfer nepodporuje odosielanie šifrovaných súborov!</string>
     <string name="file_transfer_not_supported">Obráťte sa na klienta alebo server nepodporuje prenos súborov ani požadované protokoly</string>
 
     <string name="finish">Skončiť</string>

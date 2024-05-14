@@ -5,6 +5,10 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Vector;
+
 import net.java.sip.communicator.service.protocol.event.FileTransferProgressEvent;
 import net.java.sip.communicator.service.protocol.event.FileTransferProgressListener;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
@@ -13,10 +17,6 @@ import net.java.sip.communicator.service.protocol.event.FileTransferStatusListen
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Vector;
 
 import timber.log.Timber;
 
@@ -120,6 +120,7 @@ public abstract class AbstractFileTransfer implements FileTransfer {
      * interface to show a progress bar indicating the file transfer status.
      *
      * @return the current status of the transfer
+     *
      * @see FileTransferStatusChangeEvent (Active xfer status)
      * @see net.java.sip.communicator.service.filehistory.FileRecord (End of xfer status)
      */

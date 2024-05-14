@@ -391,6 +391,7 @@
     <string name="file_attachment">Отправить вложение</string>
     <string name="file_size_too_big">Размер файла превышает максимально допустимый для этого протокола: %1$s</string>
     <string name="file_transfer_active">Прерывание передачи файлов прерывается. Отслеживание состояния @ %1$s потеряно!</string>
+    <string name="file_transfer_not_secure">XEP-0096: Протокол передачи файлов SI не поддерживает отправку зашифрованных файлов!</string>
     <string name="file_transfer_not_supported">Контактный клиент или сервер не поддерживает передачу файлов или требуемые протоколы</string>
 
 	<string name="finish">Закончить</string>

@@ -32,10 +32,10 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 
+import java.util.regex.Pattern;
+
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
-
-import java.util.regex.Pattern;
 
 import timber.log.Timber;
 
@@ -45,8 +45,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class MyWebViewClient extends WebViewClient
-{
+public class MyWebViewClient extends WebViewClient {
     // Domain match pattern for last two segments of host
     private final Pattern pattern = Pattern.compile("^.*?[.](.*?[.].+?)$");
 
@@ -55,15 +54,13 @@ public class MyWebViewClient extends WebViewClient
 
     private EditText mPasswordField;
 
-    public MyWebViewClient(WebViewFragment viewFragment)
-    {
+    public MyWebViewClient(WebViewFragment viewFragment) {
         this.viewFragment = viewFragment;
         mContext = viewFragment.getContext();
     }
 
     @Override
-    public boolean shouldOverrideUrlLoading(WebView webView, String url)
-    {
+    public boolean shouldOverrideUrlLoading(WebView webView, String url) {
         // Timber.d("shouldOverrideUrlLoading for url (webView url): %s (%s)", url, webView.getUrl());
         // This user clicked url is from the same website, so do not override; let MyWebViewClient load the page
         if (isDomainMatch(webView, url)) {
@@ -94,11 +91,11 @@ public class MyWebViewClient extends WebViewClient
      *
      * @param view The WebView that is initiating the callback.
      * @param request Object containing the details of the request.
+     *
      * @return {@code true} to cancel the current load, otherwise return {@code false}.
      */
     @Override
-    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request)
-    {
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
         String url = request.getUrl().toString();
         return shouldOverrideUrlLoading(view, url);
     }
@@ -115,8 +112,7 @@ public class MyWebViewClient extends WebViewClient
 
     @Override
     public void onReceivedHttpAuthRequest(final WebView view, final HttpAuthHandler handler, final String host,
-            final String realm)
-    {
+            final String realm) {
         final String[] httpAuth = new String[2];
         final String[] viewAuth = view.getHttpAuthUsernamePassword(host, realm);
 
@@ -167,10 +163,10 @@ public class MyWebViewClient extends WebViewClient
      *
      * @param webView the current webView
      * @param url to be loaded
+     *
      * @return true if match
      */
-    private boolean isDomainMatch(WebView webView, String url)
-    {
+    private boolean isDomainMatch(WebView webView, String url) {
         String origin = Uri.parse(webView.getUrl()).getHost();
         String aim = Uri.parse(url).getHost();
 

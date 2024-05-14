@@ -12,8 +12,7 @@ import java.io.File;
  *
  * @author Yana Stamcheva
  */
-public class ThumbnailedFile extends File
-{
+public class ThumbnailedFile extends File {
     /**
      * Serial version UID.
      */
@@ -38,8 +37,7 @@ public class ThumbnailedFile extends File
      * @param thumbnailMimeType the mime type
      * @param thumbnail the thumbnail
      */
-    public ThumbnailedFile(File file, int thumbnailWidth, int thumbnailHeight, String thumbnailMimeType, byte[] thumbnail)
-    {
+    public ThumbnailedFile(File file, int thumbnailWidth, int thumbnailHeight, String thumbnailMimeType, byte[] thumbnail) {
         super(file.getPath());
         this.thumbnailWidth = thumbnailWidth;
         this.thumbnailHeight = thumbnailHeight;
@@ -52,8 +50,7 @@ public class ThumbnailedFile extends File
      *
      * @return the thumbnail of this file
      */
-    public byte[] getThumbnailData()
-    {
+    public byte[] getThumbnailData() {
         return thumbnail;
     }
 
@@ -62,8 +59,7 @@ public class ThumbnailedFile extends File
      *
      * @return the thumbnail width
      */
-    public int getThumbnailWidth()
-    {
+    public int getThumbnailWidth() {
         return thumbnailWidth;
     }
 
@@ -72,8 +68,7 @@ public class ThumbnailedFile extends File
      *
      * @return the thumbnail height
      */
-    public int getThumbnailHeight()
-    {
+    public int getThumbnailHeight() {
         return thumbnailHeight;
     }
 
@@ -82,8 +77,7 @@ public class ThumbnailedFile extends File
      *
      * @return the thumbnail mime type
      */
-    public String getThumbnailMimeType()
-    {
+    public String getThumbnailMimeType() {
         return thumbnailMimeType;
     }
 }

@@ -1,5 +1,35 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.1.0 (401000)
+Release Date:   05/14/2024
+Author:         cmeng
+- Add Jingle Content Thumbnails (XEP-0264) support in Jingle File Transfer (XEP-0234) protocol.
+  * Thumbnails is disabled for OMEMO Jet; no defined protocol to support.
+  * Add ThumbnailProvider class for Thumbnail element parsing in JingleFileTransferProvider.
+  * Include Thumbnail element handling in JingleFile and JingleFileTransferChild classes.
+  * OutgoingFileOfferJingleImpl: Implement bobInfoInit handler for thumbnail support.
+  * IncomingFileOfferJingleImpl: implement getThumbnail() with callback.
+- Optimize and cleanup OperationSetFileTransferJabberImpl for XEP-0264: Jingle Content Thumbnails support:
+  * OperationSetFileTransferJabberImpl#fileTransferRequest: let thumbnail request to be handled by FileReceiveConversation.
+  * OutgoingFileTransferJabberIml handles bobInfoInit at constructor, and remove StanzaListener to insert Thumbnail element.
+  * IncomingFileTransferRequestJabberImpl: add getThumbnail() with callback.
+- Block and alert user if attempt to send encrypted file via XEP-0096: SI File Transfer.
+- Update smack library classes to fully support Jingle Content Thumbnails (XEP-0264) in legacy Si and Jingle File Transfer.
+  * Rename ThumbnailStreamInitiationProvider to StreamInitiationProvider, and replace smack class file.
+  * Cleanup and update StreamInitiation.File to support Thumbnail element, and remove thumbnail.ThumbnailFile class file.
+  * FileTransferRequest: add getThumbnail() method.
+  * OutgoingFileTransfer: Add new thumbnail parameter in sendFile() etc for use in FileTransferNegotiator.negotiateOutgoingTransfer().
+  * FileTransferNegotiator: Add thumbnail element in XEP-0096: SI File Transfer stanza sending.
+  * JingleFileTransferProvider: Support Thumbnail parsing.
+- Dropped changing thumbnail default size to 128x96 in file transfer.
+  * Current BobData response time is ~16s (jpeg=14784) and 39s (png=31326) with thumbnail size = 128 x 96.
+  * Thumbnail size 64x64 => jpeg 5303 and takes ~7s; use this as default
+- Scale thumbnail x2 for display in file transfer request UI.
+- OutgoingFileOfferJingleImpl needs to perform process cleanup upon ProgressListener#onFinished().
+- Must init JetManager when user is authenticated, ready for advertise JET feature in DiscoveryManager;
+  else JetManager security file transfer support is not working.
+
+=========================================================================
 Version:        4.0.2 (400020)
 Release Date:   05/01/2024
 Author:         cmeng
@@ -2465,7 +2495,7 @@ Author:         cmeng
 - Check to ensure dialog is showing before dismissed": PhoneWindow$DecorView-not attached to window manager
 - Remove inactive account status icon in preference setting screens
 - Use smack BobManager to handle Bob thumbnail request in OperationSetFileTransferJabberImpl and OutgoingFileTransferJabberImpl
-- Remove ThumbNailIQ and ThumbNailProvider; use BobManager instead
+- Remove ThumbNailIQ and ThumbNail(IQ)Provider; use BobManager instead
 - Change aTalk Bob to BobExt and update to use smack BoBHash and BoBData format
 - Omit Set Type=chat for Omemo message before sending - implemented in OmemoMessage - 4.4.0-alpha2
 - Fixed BaseContactListAdapter#contactListFragment.getLayoutInflater() exception when it is not attached to FragmentManager

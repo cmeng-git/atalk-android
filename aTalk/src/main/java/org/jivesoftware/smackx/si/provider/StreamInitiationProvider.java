@@ -1,17 +1,26 @@
 /**
+ *
  * Copyright 2003-2006 Jive Software.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package org.jivesoftware.smackx.thumbnail;
+package org.jivesoftware.smackx.si.provider;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
@@ -20,24 +29,20 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
+import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.jxmpp.util.XmppDateTime;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.Date;
-
-import timber.log.Timber;
-
 /**
- * The ThumbnailStreamInitiationProvider parses StreamInitiation packets.
+ * The StreamInitiationProvider parses StreamInitiation packets with thumbnail element support.
  *
  * @author Alexander Wenckus
  * @author Eng Chong Meng
  */
-public class ThumbnailStreamInitiationProvider extends IQProvider<StreamInitiation>
-{
+public class StreamInitiationProvider extends IQProvider<StreamInitiation> {
+    private static final Logger LOGGER = Logger.getLogger(StreamInitiationProvider.class.getName());
+
     /**
      * Parses the given <code>parser</code> in order to create a <code>FileElement</code> from it.
      *
@@ -45,13 +50,13 @@ public class ThumbnailStreamInitiationProvider extends IQProvider<StreamInitiati
      */
     @Override
     public StreamInitiation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException
-    {
+            throws IOException, XmlPullParserException, SmackParsingException {
         boolean done = false;
 
         // si
         String id = parser.getAttributeValue("", "id");
         String mimeType = parser.getAttributeValue("", "mime-type");
+
         StreamInitiation initiation = new StreamInitiation();
 
         // file
@@ -76,15 +81,15 @@ public class ThumbnailStreamInitiationProvider extends IQProvider<StreamInitiati
             namespace = parser.getNamespace();
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (elementName.equals("file")) {
-                    name = parser.getAttributeValue("", "name");
-                    size = parser.getAttributeValue("", "size");
-                    hash = parser.getAttributeValue("", "hash");
-                    date = parser.getAttributeValue("", "date");
+                    name = parser.getAttributeValue("", StreamInitiation.ATTR_NAME);
+                    size = parser.getAttributeValue("", StreamInitiation.ATTR_SIZE);
+                    hash = parser.getAttributeValue("", StreamInitiation.ATTR_HASH);
+                    date = parser.getAttributeValue("", StreamInitiation.ATTR_DATE);
                 }
-                else if (elementName.equals("desc")) {
+                else if (elementName.equals(StreamInitiation.ELEM_DESC)) {
                     desc = parser.nextText();
                 }
-                else if (elementName.equals("range")) {
+                else if (elementName.equals(StreamInitiation.ELEM_RANGE)) {
                     isRanged = true;
                 }
                 else if (elementName.equals("x") && namespace.equals("jabber:x:data")) {
@@ -108,28 +113,25 @@ public class ThumbnailStreamInitiationProvider extends IQProvider<StreamInitiati
                         try {
                             fileSize = Long.parseLong(size);
                         } catch (NumberFormatException e) {
-                            Timber.w(e, "Received an invalid file size, continuing with fileSize set to 0");
+                            LOGGER.log(Level.SEVERE, "Failed to parse file size from " + fileSize);
                         }
                     }
-                    ThumbnailFile file = new ThumbnailFile(name, fileSize);
-                    file.setHash(hash);
 
+                    StreamInitiation.File file = new StreamInitiation.File(name, fileSize);
                     if (date != null) {
                         try {
                             file.setDate(XmppDateTime.parseDate(date));
                         } catch (ParseException e) {
-                            Timber.w("Unknown dateformat on incoming file transfer: %s", date);
+                            LOGGER.log(Level.WARNING, "Unknown date format on incoming file transfer: " + date);
                         }
                     }
                     else {
                         file.setDate(new Date());
                     }
-
-                    if (thumbnail != null)
-                        file.setThumbnail(thumbnail);
-
                     file.setDesc(desc);
                     file.setRanged(isRanged);
+                    file.setHash(hash);
+                    file.setThumbnail(thumbnail);
                     initiation.setFile(file);
                 }
             }

@@ -113,7 +113,7 @@ public class FileReceiveConversation extends FileTransferConversation
             // Must reset button image to fileIcon on new(); else reused view may contain an old thumbnail image
             messageViewHolder.fileIcon.setImageResource(R.drawable.file_icon);
             if (ConfigurationUtils.isSendThumbnail()) {
-                byte[] thumbnail = fileTransferRequest.getThumbnail();
+                byte[] thumbnail = fileTransferRequest.getThumbnail(this);
                 showThumbnail(thumbnail);
             }
 

@@ -392,6 +392,7 @@
     <string name="file_attachment">Send Attachment</string>
     <string name="file_size_too_big">File size exceeds the maximum allowed for this protocol: %1$s</string>
     <string name="file_transfer_active">File transfer in progress was being interrupted. Status tracking @ %1$s lost!</string>
+    <string name="file_transfer_not_secure">XEP-0096: SI File Transfer protocol cannot support encrypted file sending!</string>
     <string name="file_transfer_not_supported">Contact client or server does not support file transfer or required protocols</string>
 
     <string name="finish">Finish</string>

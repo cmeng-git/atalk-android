@@ -523,8 +523,10 @@ public class ConfigurationUtils {
 
         // Load the "webPage" property.
         mWebPage = mConfigService.getString(pWebPage);
-        if (StringUtils.isEmpty(mWebPage))
+        if (StringUtils.isEmpty(mWebPage)
+                || mWebPage.equals(aTalkApp.getResString(R.string.settings_webView_summary_old))) {
             mWebPage = aTalkApp.getResString(R.string.settings_webView_summary);
+        }
 
         // Load the "auPopupNewMessage" property.
         String autoPopup = mConfigService.getString(pAutoPopupNewMessage);
