@@ -17,6 +17,7 @@ import org.jivesoftware.smackx.bob.BoBManager;
 import org.jivesoftware.smackx.bob.ContentId;
 import org.jivesoftware.smackx.filetransfer.FileTransfer;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
+import org.jivesoftware.smackx.thumbnail.component.ThumbnailedFile;
 
 /**
  * The Jabber protocol extension of the <code>AbstractFileTransfer</code>.

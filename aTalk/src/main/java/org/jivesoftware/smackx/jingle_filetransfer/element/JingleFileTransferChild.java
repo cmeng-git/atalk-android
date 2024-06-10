@@ -29,7 +29,7 @@ import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
 import javax.xml.namespace.QName;
 
 /**
- * Content of type File.
+ * Content of type File with thumbnail element.
  */
 public class JingleFileTransferChild implements JingleContentDescriptionChildElement {
     public static final String ELEMENT = "file";

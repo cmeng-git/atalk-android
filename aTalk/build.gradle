@@ -58,14 +58,11 @@ android {
         namespace 'org.atalk.android'
         applicationId "org.atalk.android"
 
-        versionCode 401000
-        versionName "4.1.0"
+        versionCode 401010
+        versionName "4.1.1"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
-
-        // Required when setting minSdkVersion to 20 or lower
-        // multiDexEnabled true
 
         externalNativeBuild {
             ndkBuild {
@@ -219,9 +216,9 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.13.1'
 
     implementation 'androidx.activity:activity-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.fragment:fragment-ktx:1.7.0'
+    implementation 'androidx.fragment:fragment-ktx:1.7.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
@@ -324,7 +321,7 @@ dependencies {
     implementation 'org.jxmpp:jxmpp-jid:1.0.3'
     implementation 'org.osgi:osgi.core:8.0.0'
 
-    // playstore version use google map services
+    // playStore version use google map services
     playstoreImplementation "com.google.android.gms:play-services-maps:18.2.0"
     playstoreImplementation "com.google.android.gms:play-services-panorama:17.1.0"
 

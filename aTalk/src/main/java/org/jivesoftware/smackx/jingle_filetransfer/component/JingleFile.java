@@ -31,8 +31,10 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.Range;
 import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
 
 /**
- * Represent a file sent in a file transfer.
+ * Represent a file with thumbnail sent in a file transfer.
  * This can be both LocalFile (available to the client), or RemoteFile (file not yet available).
+ *
+ * @see <a href="https://xmpp.org/extensions/xep-0264.html"> XEP-0264: Jingle Content Thumbnails</a>
  *
  * @author Paul Schaub
  * @author Eng Chong Meng

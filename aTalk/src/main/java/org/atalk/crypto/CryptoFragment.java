@@ -964,6 +964,10 @@ public class CryptoFragment extends OSGiFragment
             omemoCapable.put(mDescriptor, false);
             return;
         }
+        // Skip if previous check has omemo supported. The contactSupportsOmemo can cause ANR in OmemoManager.encrypt
+        else if (Boolean.TRUE.equals(omemoCapable.get(mDescriptor))) {
+            return;
+        }
 
         // Execute in a new thread to avoid ANR with black screen when chat window is opened.
         new Thread() {

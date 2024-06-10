@@ -31,8 +31,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ProximitySensorFragment extends Fragment implements SensorEventListener
-{
+public class ProximitySensorFragment extends Fragment implements SensorEventListener {
     /**
      * Proximity sensor managed used by this fragment.
      */
@@ -57,8 +56,7 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
      * {@inheritDoc}
      */
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         SensorManager manager = aTalkApp.getSensorManager();
         fm = getActivity().getSupportFragmentManager();
@@ -90,8 +88,7 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
      * {@inheritDoc}
      */
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
         if (proximitySensor != null) {
             screenOn();
@@ -103,8 +100,7 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
      * {@inheritDoc}
      */
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
         if (proximitySensor != null) {
             screenOn();
@@ -116,8 +112,7 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
     /**
      * {@inheritDoc}
      */
-    public synchronized void onSensorChanged(SensorEvent event)
-    {
+    public synchronized void onSensorChanged(SensorEvent event) {
         if (sensorDisabled)
             return;
 
@@ -136,8 +131,7 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
     /**
      * Turns the screen off.
      */
-    private void screenOff()
-    {
+    private void screenOff() {
         // ScreenOff exist - proximity detection screen on is out of sync; so just reuse the existing one
 //		if (screenOffDialog != null) {
 //			Timber.w("screenOffDialog exist when trying to perform screenOff");
@@ -149,8 +143,7 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
     /**
      * Turns the screen on.
      */
-    private void screenOn()
-    {
+    private void screenOn() {
         if (screenOffDialog != null) {
             screenOffDialog.dismiss();
             screenOffDialog = null;
@@ -163,8 +156,7 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
     /**
      * {@inheritDoc}
      */
-    public void onAccuracyChanged(Sensor sensor, int accuracy)
-    {
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
         if (accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
             sensorDisabled = true;
             screenOn();
@@ -177,28 +169,24 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
     /**
      * Blank full screen dialog that captures all keys (BACK is what interest us the most).
      */
-    public static class ScreenOffDialog extends DialogFragment
-    {
+    public static class ScreenOffDialog extends DialogFragment {
         private CallVolumeCtrlFragment volControl;
 
         @Override
-        public void onResume()
-        {
+        public void onResume() {
             super.onResume();
             volControl = ((VideoCallActivity) getActivity()).getVolCtrlFragment();
         }
 
         @Override
-        public void onPause()
-        {
+        public void onPause() {
             super.onPause();
             volControl = null;
         }
 
         @NotNull
         @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState)
-        {
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
             setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
 
             Dialog d = super.onCreateDialog(savedInstanceState);
@@ -209,18 +197,20 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
 
             d.setOnKeyListener((dialog, keyCode, event) -> {
                 // Capture all events, but dispatch volume keys to volume control fragment
-                if (volControl != null && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                        volControl.onKeyVolUp();
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (volControl != null) {
+                        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                            volControl.onKeyVolUp();
+                        }
+                        else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                            volControl.onKeyVolDown();
+                        }
                     }
-                    else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                        volControl.onKeyVolDown();
-                    }
-                    // Force to exit Screen Block in case device is not responsive
-                    else if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        screenOffDialog.dismiss();
-                        screenOffDialog = null;
-                    }
+                }
+                // Force to exit Screen Block in case device sensor is not responding
+                else if (keyCode == KeyEvent.KEYCODE_BACK && screenOffDialog != null) {
+                    screenOffDialog.dismiss();
+                    screenOffDialog = null;
                 }
                 return true;
             });

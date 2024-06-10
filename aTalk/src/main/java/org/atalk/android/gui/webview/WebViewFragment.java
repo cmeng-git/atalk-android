@@ -16,7 +16,6 @@
  */
 package org.atalk.android.gui.webview;
 
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;

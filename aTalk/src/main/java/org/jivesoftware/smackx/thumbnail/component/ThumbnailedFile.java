@@ -3,7 +3,7 @@
  *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
-package net.java.sip.communicator.impl.protocol.jabber;
+package org.jivesoftware.smackx.thumbnail.component;
 
 import java.io.File;
 

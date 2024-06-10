@@ -45,9 +45,12 @@ dependencies {
     androidTestImplementation "androidx.test:runner:1.5.2"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
 
-    api "androidx.annotation:annotation:1.7.1"
+    api "androidx.annotation:annotation:1.8.0"
+    // 2.8.x causes RuntimeException: Unable to get provider androidx.startup.InitializationProvider:
+    // androidx.startup.StartupException: java.lang.NoClassDefFoundError: Failed resolution of:
+    // Landroidx/lifecycle/ReportFragment$ActivityInitializationListener;
     api "androidx.lifecycle:lifecycle-runtime-ktx:2.7.0"
 
-    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "androidx.recyclerview:recyclerview:1.3.2"
 }

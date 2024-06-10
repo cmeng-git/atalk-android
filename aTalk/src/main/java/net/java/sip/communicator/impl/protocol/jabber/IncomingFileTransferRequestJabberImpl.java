@@ -248,8 +248,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
         final BoBManager bobManager = BoBManager.getInstanceFor(mConnection);
         thumbnailCollector.submit(() -> {
             try {
-                // Current BobData response time is ~16s (jpeg=14784) and 39s (png=31326) with thumbnail size = 128 x 96.
-                // Thumbnail size 64x64 => jpeg 5303 and takes ~7s; use this as default
+                // Not required if ejabberd server does not limit transfer rate in Shaper#normal
                 // mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_20);
                 thumbnail = bobManager.requestBoB(remoteJid, cid).getContent();
             } catch (SmackException.NotLoggedInException

@@ -37,6 +37,7 @@ import org.jivesoftware.smackx.jingle.component.JingleSessionImpl.SessionState;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
 import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
+import org.jivesoftware.smackx.thumbnail.component.ThumbnailedFile;
 
 import timber.log.Timber;
 

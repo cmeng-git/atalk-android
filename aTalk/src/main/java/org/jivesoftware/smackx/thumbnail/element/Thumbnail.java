@@ -20,7 +20,7 @@ import java.io.File;
 
 import javax.xml.namespace.QName;
 
-import net.java.sip.communicator.impl.protocol.jabber.ThumbnailedFile;
+import org.jivesoftware.smackx.thumbnail.component.ThumbnailedFile;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -29,12 +29,16 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smackx.bob.ContentId;
 
+/**
+ * Implement XEP-0264: Jingle Content Thumbnails sent in a file transfer.
+ *
+ * @author Eng Chong Meng
+ */
 public class Thumbnail implements ExtensionElement {
     /**
      * The name of the XML element used for transport of thumbnail parameters.
      */
     public static final String ELEMENT = "thumbnail";
-
     /**
      * The names XMPP space that the thumbnail elements belong to.
      */
@@ -45,20 +49,16 @@ public class Thumbnail implements ExtensionElement {
     /**
      * The name of the thumbnail attribute "cid".
      */
-    public static final String URI = "uri";
-
     public static final String CID_PREFIX = "cid:";
-
+    public static final String URI = "uri";
     /**
      * The name of the thumbnail attribute "media-type".
      */
-
     public static final String MEDIA_TYPE = "media-type";
     /**
      * The name of the thumbnail attribute "width".
      */
     public static final String WIDTH = "width";
-
     /**
      * The name of the thumbnail attribute "height".
      */
@@ -69,7 +69,6 @@ public class Thumbnail implements ExtensionElement {
     private String mediaType;
     private int width;
     private int height;
-
 
     @Override
     public String getNamespace() {
@@ -98,9 +97,7 @@ public class Thumbnail implements ExtensionElement {
     }
 
     public Thumbnail(String uri, String mediaType, int width, int height) {
-        this.uri = uri;
-        if (uri.startsWith(CID_PREFIX))
-            cid = ContentId.fromSrc(uri);
+        parseUri(uri);
         this.mediaType = mediaType;
         this.width = width;
         this.height = height;
@@ -150,17 +147,16 @@ public class Thumbnail implements ExtensionElement {
     /**
      * Returns the XML representation of this ExtensionElement.
      *
-     * @return the packet extension as XML.
+     * @return the extension element as XML.
      */
     @Override
     public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
 
-        // adding thumbnail uri parameters
         xml.attribute(URI, uri);
-        xml.attribute(MEDIA_TYPE, getMediaType());
-        xml.attribute(WIDTH, getWidth());
-        xml.attribute(HEIGHT, getHeight());
+        xml.attribute(MEDIA_TYPE, mediaType);
+        xml.attribute(WIDTH, width);
+        xml.attribute(HEIGHT, height);
         xml.closeEmptyElement();
         return xml;
     }

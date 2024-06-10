@@ -1,5 +1,16 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.1.1 (401010)
+Release Date:   06/10/2024
+Author:         cmeng
+- Change default thumbnail size to 128x96 with jpeg compress 80% quality; better visibility and converse bandwidth.
+  ejabberd.yml shaper@normal set to 50KB/s
+- CryptoFragment: Skip if previous check has omemo supported. The OmemoManager.contactSupportsOmemo can cause ANR in OmemoManager.encrypt
+- Check for ConfigurationUtils#mConfigService not null before proceed to handle any setting changes.
+- Back key during call will exit screen block if UI is not responding due to proximity sensor problem.
+- Consolidate and move all si file transfer classes into smack directory.
+
+=========================================================================
 Version:        4.1.0 (401000)
 Release Date:   05/14/2024
 Author:         cmeng

@@ -534,6 +534,10 @@ public class SettingsFragment extends OSGiPreferenceFragment
      * {@inheritDoc}
      */
     public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key) {
+        // FR - mConfigService may be null???
+        if (ConfigurationUtils.mConfigService == null)
+            return;
+
         switch (key) {
             case P_KEY_LOG_CHAT_HISTORY:
                 MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();

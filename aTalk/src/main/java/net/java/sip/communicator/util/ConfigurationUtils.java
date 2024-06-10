@@ -297,7 +297,7 @@ public class ConfigurationUtils {
     /**
      * The configuration service.
      */
-    private static ConfigurationService mConfigService;
+    public static ConfigurationService mConfigService;
 
     /**
      * The parent of the last contact.

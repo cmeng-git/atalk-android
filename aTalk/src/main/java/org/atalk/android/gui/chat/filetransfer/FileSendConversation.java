@@ -64,12 +64,13 @@ import timber.log.Timber;
  */
 public class FileSendConversation extends FileTransferConversation implements FileTransferStatusListener {
     /**
-     * The thumbnail default width and height
-     * Current BobData response time is ~16s (jpeg=14784) and 39s (png=31326) with thumbnail size = 128 x 96.
+     * The thumbnail default width and height; Ensure ejabberd.yml shaper#normal is set to high value e.g. 50000
+     * When the normal = 1000 in ejabberd.yml:
+     * BobData response time is ~16s (jpeg=14784) and 39s (png=31326) with thumbnail size = 128 x 96.
      * Thumbnail size 64x64 => jpeg 5303 and takes ~7s
      */
-    public static final int THUMBNAIL_WIDTH = 64;
-    public static final int THUMBNAIL_HEIGHT = 64;
+    public static final int THUMBNAIL_WIDTH = 128;
+    public static final int THUMBNAIL_HEIGHT = 96;
 
     private String mSendTo;
     private boolean mStickerMode;
@@ -312,7 +313,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                               public void onResourceReady(@NonNull Bitmap bitmap,
                                       @Nullable Transition<? super Bitmap> transition) {
                                   ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                  bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                                  bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
                                   byte[] byteData = stream.toByteArray();
                                   Timber.d("Thumbnail byteData size: %s", byteData.length);
                                   sendFileTransferRequest(byteData);

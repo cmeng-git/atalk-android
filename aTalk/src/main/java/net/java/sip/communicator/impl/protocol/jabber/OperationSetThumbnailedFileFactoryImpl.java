@@ -5,9 +5,11 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.io.File;
+
 import net.java.sip.communicator.service.protocol.OperationSetThumbnailedFileFactory;
 
-import java.io.File;
+import org.jivesoftware.smackx.thumbnail.component.ThumbnailedFile;
 
 /**
  * The <code>OperationSetThumbnailedFileFactory</code> is meant to be used by bundles interested in
@@ -17,8 +19,7 @@ import java.io.File;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class OperationSetThumbnailedFileFactoryImpl implements OperationSetThumbnailedFileFactory
-{
+public class OperationSetThumbnailedFileFactoryImpl implements OperationSetThumbnailedFileFactory {
     /**
      * Creates a file, by attaching the thumbnail, given by the details, to it.
      *
@@ -27,11 +28,11 @@ public class OperationSetThumbnailedFileFactoryImpl implements OperationSetThumb
      * @param thumbnailHeight the height of the thumbnail
      * @param thumbnailMimeType the mime type of the thumbnail
      * @param thumbnail the thumbnail data, must not be null
+     *
      * @return a file with a thumbnail
      */
     public File createFileWithThumbnail(File file, int thumbnailWidth, int thumbnailHeight,
-            String thumbnailMimeType, byte[] thumbnail)
-    {
+            String thumbnailMimeType, byte[] thumbnail) {
         return new ThumbnailedFile(file, thumbnailWidth, thumbnailHeight, thumbnailMimeType, thumbnail);
     }
 }

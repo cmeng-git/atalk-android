@@ -6,8 +6,17 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="4.1.0 (05/14/2024)" versioncode="401000">
+    <release version="4.1.1 (06/10/2024)" versioncode="401010">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Change default thumbnail size to 128x96 with jpeg compress 80% quality; better visibility and converse bandwidth</change>
+        <change>Minimize unnecessary OmemoManager #contactSupportsOmemo check; may block omemo message encryption and cause ANR</change>
+        <change>Check for ConfigService availability, before proceed to handle any user setting changes</change>
+        <change>Back key during call will exit screen block if UI is not responding due to proximity sensor problem</change>
+        <change>Consolidate and move all si file transfer classes into smack directory</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="4.1.0 (05/14/2024)" versioncode="401000">
         <change>Add Jingle Content Thumbnails (XEP-0264) support in Jingle File Transfer (XEP-0234) protocol; Thumbnails is disabled for OMEMO Jet</change>
         <change>Add ThumbnailProvider class for Thumbnail element parsing in JingleFileTransferProvider</change>
         <change>Update all relevant Jingle File Transfer classes to support Thumbnail and BOB handling</change>

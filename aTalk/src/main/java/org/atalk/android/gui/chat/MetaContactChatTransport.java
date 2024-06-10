@@ -703,12 +703,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             recipient = ftOpSet.getFullJid(mContact, JingleFileTransferImpl.NAMESPACE);
         }
 
-        // Conversations allows Jet FileSent but failed with session-terminate and reason = connectivity-error
-        // So retry with HttpFileUpload if previously hasSecurityError
+        // Conversations allows Jet FileSent but failed with session-terminate and reason = connectivity-error,
+        // So retry with HttpFileUpload if previously hasSecurityError; no further valid as httpFileUpload is now first priority
         if ((recipient != null)
                 && (!OutgoingFileOfferJingleImpl.hasSecurityError(mContact) || (ChatFragment.MSGTYPE_OMEMO != chatType))) {
             OutgoingFileOfferController ofoController;
-            // int encType = IMessage.ENCRYPTION_NONE;
             String msgUuid = xferCon.getMessageUuid();
             Context ctx = aTalkApp.getInstance();
             JingleFile jingleFile = createJingleFile(ctx, file);
@@ -716,7 +715,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
 
             try {
                 if (ChatFragment.MSGTYPE_OMEMO == chatType) {
-                    // encType = IMessage.ENCRYPTION_OMEMO;
                     ofoController = jetManager.sendEncryptedFile(file, jingleFile, recipient, omemoManager);
                 }
                 else {
