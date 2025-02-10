@@ -26,12 +26,22 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentOnAttachListener;
+
+import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Collection;
+import java.util.EventObject;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 import net.java.sip.communicator.service.gui.call.CallPeerRenderer;
 import net.java.sip.communicator.service.gui.call.CallRenderer;
@@ -51,6 +61,7 @@ import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutE
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 import net.java.sip.communicator.util.call.CallPeerAdapter;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
@@ -58,11 +69,11 @@ import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.notification.CallControl;
 import org.atalk.android.gui.call.notification.CallNotificationManager;
 import org.atalk.android.gui.controller.AutoHideController;
-import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.widgets.ClickableToastController;
 import org.atalk.android.gui.widgets.LegacyClickableToastCtrl;
-import org.atalk.impl.androidtray.NotificationPopupHandler;
+import org.atalk.android.util.AppImageUtil;
+import org.atalk.impl.appstray.NotificationPopupHandler;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.CameraStreamBase;
 import org.atalk.impl.neomedia.transform.sdes.SDesControlImpl;
@@ -71,19 +82,9 @@ import org.atalk.service.neomedia.SDesControl;
 import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.service.neomedia.ZrtpControl;
-import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.MediaType;
 import org.jetbrains.annotations.NotNull;
 import org.jxmpp.jid.Jid;
-
-import java.awt.Dimension;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Collection;
-import java.util.EventObject;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
 
 import timber.log.Timber;
 
@@ -94,7 +95,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer, CallRenderer,
+public class VideoCallActivity extends BaseActivity implements CallPeerRenderer, CallRenderer,
         CallChangeListener, PropertyChangeListener, ZrtpInfoDialog.SasVerificationListener,
         AutoHideController.AutoHideListener, View.OnClickListener, View.OnLongClickListener,
         VideoHandlerFragment.OnRemoteVideoChangeListener, FragmentOnAttachListener {
@@ -309,6 +310,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             callVolumeControl = (CallVolumeCtrlFragment) fragmentManager.findFragmentByTag(VOLUME_CTRL_TAG);
             callTimer = (CallTimerFragment) fragmentManager.findFragmentByTag(TIMER_FRAGMENT_TAG);
         }
+        getOnBackPressedDispatcher().addCallback(backPressedCallback);
     }
 
     /**
@@ -438,14 +440,15 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     /*
      * Close the Call Transfer Dialog is shown; else close call UI
      */
-    @Override
-    public void onBackPressed() {
-        if (mTransferDialog != null) {
-            mTransferDialog.closeDialog();
-            mTransferDialog = null;
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            if (mTransferDialog != null) {
+                mTransferDialog.closeDialog();
+                mTransferDialog = null;
+            }
         }
-        super.onBackPressed();
-    }
+    };
 
     /**
      * Called on call ended event. Runs on separate thread to release the EDT Thread and preview
@@ -476,9 +479,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 // getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new CallEnded()).commit();
 
                 // auto exit 3 seconds after call ended successfully
-                new Handler().postDelayed(() -> {
-                    finish();
-                }, 5000);
+                new Handler().postDelayed(this::finish, 5000);
             });
         }).start();
     }
@@ -724,8 +725,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     public void setPeerName(final String name) {
         runOnUiThread(() -> {
-            ActionBarUtil.setTitle(VideoCallActivity.this,
-                    getResources().getString(R.string.call_with));
+            ActionBarUtil.setTitle(VideoCallActivity.this, getString(R.string.call_with));
             ActionBarUtil.setSubtitle(VideoCallActivity.this, name);
         });
     }
@@ -737,7 +737,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     public void setPeerImage(byte[] image) {
         if ((image != null) && (image.length != 0)) {
-            peerAvatar.setImageBitmap(AndroidImageUtil.bitmapFromBytes(image));
+            peerAvatar.setImageBitmap(AppImageUtil.bitmapFromBytes(image));
         }
     }
 
@@ -1149,7 +1149,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     private void setPadlockColor(int colorId) {
         padlockGroupView.setOnClickListener(this);
 
-        int color = getResources().getColor(colorId);
+        int color = getResources().getColor(colorId, null);
         padlockGroupView.setBackgroundColor(color);
     }
 
@@ -1260,10 +1260,6 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
     public static void setBackToChat(boolean state) {
         mBackToChat = state;
-    }
-
-    public boolean isBackToChat() {
-        return mBackToChat;
     }
 
     public static class CallStateHolder {

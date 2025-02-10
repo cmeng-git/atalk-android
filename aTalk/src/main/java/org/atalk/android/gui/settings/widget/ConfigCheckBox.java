@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.PreferenceManager;
 
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.service.configuration.ConfigurationService;
 
 /**
@@ -62,7 +62,7 @@ public class ConfigCheckBox extends CheckBoxPreference {
      */
     @Override
     protected boolean getPersistedBoolean(boolean defaultReturnValue) {
-        ConfigurationService configService = AndroidGUIActivator.getConfigurationService();
+        ConfigurationService configService = AppGUIActivator.getConfigurationService();
         if (configService == null)
             return defaultReturnValue;
 

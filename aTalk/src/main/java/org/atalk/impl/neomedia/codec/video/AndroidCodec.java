@@ -6,19 +6,20 @@
 package org.atalk.impl.neomedia.codec.video;
 
 import android.media.MediaCodec;
-import android.media.MediaCodecInfo;
+import android.media.MediaCodecInfo.CodecCapabilities;
 import android.media.MediaFormat;
 import android.view.Surface;
 
-import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.service.neomedia.codec.Constants;
-
 import java.awt.Dimension;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import javax.media.Buffer;
 import javax.media.Format;
 import javax.media.ResourceUnavailableException;
+
+import org.atalk.impl.neomedia.codec.AbstractCodec2;
+import org.atalk.service.neomedia.codec.Constants;
 
 import timber.log.Timber;
 
@@ -29,13 +30,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-abstract class AndroidCodec extends AbstractCodec2
-{
-    /**
-     * Copied from <code>MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface</code>
-     */
-    private final static int COLOR_FormatSurface = 0x7F000789;
-
+abstract class AndroidCodec extends AbstractCodec2 {
     /**
      * Indicates that this instance is used for encoding(and not for decoding).
      */
@@ -49,12 +44,12 @@ abstract class AndroidCodec extends AbstractCodec2
     /**
      * Input <code>MediaCodec</code> buffer.
      */
-    java.nio.ByteBuffer codecInputBuf;
+    ByteBuffer codecInputBuf;
 
     /**
      * Output <code>MediaCodec</code> buffer.
      */
-    java.nio.ByteBuffer codecOutputBuf;
+    ByteBuffer codecOutputBuf;
 
     /**
      * <code>BufferInfo</code> object that stores codec buffer information.
@@ -67,16 +62,15 @@ abstract class AndroidCodec extends AbstractCodec2
      * @param name the <code>PlugIn</code> name of the new instance
      * @param formatClass the <code>Class</code> of input and output <code>Format</code>s supported by the new instance
      * @param supportedOutputFormats the list of <code>Format</code>s supported by the new instance as output.
+     * @param isEncoder true if codec is encoder.
      */
-    protected AndroidCodec(String name, Class<? extends Format> formatClass,
-            Format[] supportedOutputFormats, boolean isEncoder)
-    {
+    protected AndroidCodec(String name, Class<? extends Format> formatClass, Format[] supportedOutputFormats, boolean isEncoder) {
         super(name, formatClass, supportedOutputFormats);
         this.isEncoder = isEncoder;
     }
 
     /**
-     * Class should return <code>true</code> if surface will be used.
+     * Class should return <code>true</code> if surface will be used for the codec.
      *
      * @return <code>true</code> if surface will be used.
      */
@@ -94,6 +88,7 @@ abstract class AndroidCodec extends AbstractCodec2
      *
      * @param codec <code>MediaCodec</code> instance to be configured.
      * @param codecType string codec media type.
+     *
      * @throws ResourceUnavailableException Resource Unavailable Exception if not supported
      */
     protected abstract void configureMediaCodec(MediaCodec codec, String codecType)
@@ -104,17 +99,15 @@ abstract class AndroidCodec extends AbstractCodec2
      *
      * @return used <code>MediaFormat</code> color format.
      */
-    protected int getColorFormat()
-    {
-        return useSurface() ? COLOR_FormatSurface : MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar;
+    protected int getColorFormat() {
+        return useSurface() ? CodecCapabilities.COLOR_FormatSurface : CodecCapabilities.COLOR_FormatYUV420Flexible;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doClose()
-    {
+    protected void doClose() {
         if (codec != null) {
             try {
                 // Throws IllegalStateException – if in the Released state.
@@ -133,8 +126,7 @@ abstract class AndroidCodec extends AbstractCodec2
      */
     @Override
     protected void doOpen()
-            throws ResourceUnavailableException
-    {
+            throws ResourceUnavailableException {
         String codecType;
         String encoding = isEncoder ? outputFormat.getEncoding() : inputFormat.getEncoding();
 
@@ -167,8 +159,7 @@ abstract class AndroidCodec extends AbstractCodec2
         codec.start();
     }
 
-    private String getStrName()
-    {
+    private String getStrName() {
         return isEncoder ? "encoder" : "decoder";
     }
 
@@ -178,8 +169,7 @@ abstract class AndroidCodec extends AbstractCodec2
      * Exception: IllegalStateException thrown by codec.dequeueOutputBuffer or codec.dequeueInputBuffer
      * Any RuntimeException will close remote view container.
      */
-    protected int doProcess(Buffer inputBuffer, Buffer outputBuffer)
-    {
+    protected int doProcess(Buffer inputBuffer, Buffer outputBuffer) {
         try {
             return doProcessImpl(inputBuffer, outputBuffer);
         } catch (Exception e) {
@@ -194,10 +184,10 @@ abstract class AndroidCodec extends AbstractCodec2
      *
      * @param inputBuffer input buffer
      * @param outputBuffer output buffer
+     *
      * @return process status
      */
-    private int doProcessImpl(Buffer inputBuffer, Buffer outputBuffer)
-    {
+    private int doProcessImpl(Buffer inputBuffer, Buffer outputBuffer) {
         Format outputFormat = this.outputFormat;
         int processed = INPUT_BUFFER_NOT_CONSUMED | OUTPUT_BUFFER_NOT_FILLED;
 
@@ -232,12 +222,13 @@ abstract class AndroidCodec extends AbstractCodec2
                 }
                 else if ((outputLength = mBufferInfo.size) > 0) {
                     codecOutputBuf = codec.getOutputBuffer(outputBufferIdx);
-                    codecOutputBuf.position(mBufferInfo.offset);
-                    codecOutputBuf.limit(mBufferInfo.offset + mBufferInfo.size);
+                    if (codecOutputBuf != null) {
+                        codecOutputBuf.position(mBufferInfo.offset);
+                        codecOutputBuf.limit(mBufferInfo.offset + mBufferInfo.size);
 
-                    byte[] out = AbstractCodec2.validateByteArraySize(outputBuffer, mBufferInfo.size, false);
-                    codecOutputBuf.get(out, 0, mBufferInfo.size);
-
+                        byte[] out = AbstractCodec2.validateByteArraySize(outputBuffer, mBufferInfo.size, false);
+                        codecOutputBuf.get(out, 0, mBufferInfo.size);
+                    }
                     outputBuffer.setFormat(outputFormat);
                     outputBuffer.setLength(outputLength);
                     outputBuffer.setOffset(0);
@@ -276,15 +267,15 @@ abstract class AndroidCodec extends AbstractCodec2
                 int buf_size = inputBuffer.getLength();
 
                 codecInputBuf = codec.getInputBuffer(inputBufferIdx);
-                if (codecInputBuf.capacity() < buf_size) {
-                    throw new RuntimeException("Input buffer too small: " + codecInputBuf.capacity() + " < " + buf_size);
+                if (codecInputBuf == null || codecInputBuf.capacity() < buf_size) {
+                    throw new RuntimeException("Invalid input buffer: " + codecInputBuf + " < " + buf_size);
                 }
 
                 codecInputBuf.clear();
                 codecInputBuf.put(buf_data, buf_offset, buf_size);
                 codec.queueInputBuffer(inputBufferIdx, 0, buf_size, inputBuffer.getTimeStamp(), 0);
 
-                Timber.d("Fed input with %s bytes of data; Offset: %s.", buf_size, buf_offset);
+                // Timber.d("Fed input with %s bytes of data; Offset: %s.", buf_size, buf_offset);
                 processed &= ~INPUT_BUFFER_NOT_CONSUMED;
             }
             else if (inputBufferIdx != MediaCodec.INFO_TRY_AGAIN_LATER) {
@@ -295,12 +286,12 @@ abstract class AndroidCodec extends AbstractCodec2
     }
 
     /**
-     * Method fired when <code>MediaCodec</code> detects video size.
+     * Method fired when <code>MediaCodec</code> detects video size changed.
      *
      * @param dimension video dimension.
+     *
      * @see AndroidDecoder#onSizeChanged(Dimension)
      */
-    protected void onSizeChanged(Dimension dimension)
-    {
+    protected void onSizeChanged(Dimension dimension) {
     }
 }

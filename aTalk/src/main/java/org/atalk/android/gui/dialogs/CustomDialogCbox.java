@@ -23,11 +23,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.osgi.OSGiFragment;
 
-public class CustomDialogCbox extends OSGiFragment {
+public class CustomDialogCbox extends BaseFragment {
     public static final String ARG_MESSAGE = "dialog_message";
     public static final String ARG_CB_MESSAGE = "cb_message";
     public static final String ARG_CB_CHECK = "cb_check";

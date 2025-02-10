@@ -5,12 +5,18 @@
  */
 package org.atalk.android.gui.call;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
+import java.awt.Component;
+import java.util.Iterator;
+import java.util.List;
 
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallPeer;
@@ -25,18 +31,14 @@ import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutE
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.dialogs.BaseDialogFragment;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.ZrtpControl;
-import org.atalk.service.osgi.OSGiDialogFragment;
 import org.atalk.util.MediaType;
 import org.atalk.util.event.VideoEvent;
 import org.atalk.util.event.VideoListener;
-
-import java.awt.Component;
-import java.util.Iterator;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -49,8 +51,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecurityListener, VideoListener
-{
+public class ZrtpInfoDialog extends BaseDialogFragment implements CallPeerSecurityListener, VideoListener {
     /**
      * The extra key for call ID managed by {@link CallManager}.
      */
@@ -80,20 +81,18 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Activity activity)
-    {
-        if (activity instanceof SasVerificationListener) {
-            verificationListener = (SasVerificationListener) activity;
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof SasVerificationListener) {
+            verificationListener = (SasVerificationListener) context;
         }
-        super.onAttach(activity);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onDetach()
-    {
+    public void onDetach() {
         verificationListener = null;
         super.onDetach();
     }
@@ -103,8 +102,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      *
      * @param isVerified <code>true</code> if the SAS string has been verified by the user.
      */
-    private void notifySasVerified(boolean isVerified)
-    {
+    private void notifySasVerified(boolean isVerified) {
         if (verificationListener != null)
             verificationListener.onSasVerificationChanged(isVerified);
     }
@@ -113,8 +111,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Retrieves the call from manager.
         String callKey = getArguments().getString(EXTRA_CALL_KEY);
         Call call = CallManager.getActiveCall(callKey);
@@ -161,8 +158,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      * {@inheritDoc}
      */
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         if (mediaAwarePeer == null) {
             showToast("This call does not contain media information");
@@ -178,10 +174,9 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
         mediaAwarePeer.addCallPeerSecurityListener(this);
         mediaAwarePeer.getMediaHandler().addVideoListener(this);
 
-        ViewUtil.setTextViewValue(viewContainer, R.id.security_auth_str, getSecurityString());
-
         ViewUtil.setTextViewValue(viewContainer, R.id.security_cipher,
                 getString(R.string.security_cipher, masterControl.getCipherString()));
+        ViewUtil.setTextViewValue(viewContainer, R.id.security_auth_str, getSecurityString());
 
         updateVerificationStatus();
         boolean isAudioSecure = masterControl != null && masterControl.getSecureCommunicationStatus();
@@ -194,8 +189,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     /**
      * Updates SAS verification status display.
      */
-    private void updateVerificationStatus()
-    {
+    private void updateVerificationStatus() {
         boolean verified = masterControl.isSecurityVerified();
         Timber.d("Is sas verified? %s", verified);
 
@@ -210,8 +204,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      * {@inheritDoc}
      */
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         if (mediaAwarePeer != null) {
             mediaAwarePeer.removeCallPeerSecurityListener(this);
             mediaAwarePeer.getMediaHandler().removeVideoListener(this);
@@ -224,8 +217,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      *
      * @param text the message text that will be used.
      */
-    private void showToast(String text)
-    {
+    private void showToast(String text) {
         Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_LONG);
         toast.show();
     }
@@ -235,8 +227,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      *
      * @return Returns formatted security authentication string.
      */
-    private String getSecurityString()
-    {
+    private String getSecurityString() {
         String securityString = masterControl.getSecurityString();
         if (securityString != null) {
             final String sb = String.valueOf(
@@ -256,8 +247,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      *
      * @param isSecure <code>true</code> if the audio is secure.
      */
-    private void updateAudioSecureStatus(boolean isSecure)
-    {
+    private void updateAudioSecureStatus(boolean isSecure) {
         String audioStr = isSecure ? getString(R.string.security_secure_audio) : getString(R.string.security_audio_not_secure);
 
         ViewUtil.setTextViewValue(viewContainer, R.id.secure_audio_text, audioStr);
@@ -270,8 +260,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      *
      * @return <code>true</code> if the video is secure.
      */
-    private boolean isVideoSecure()
-    {
+    private boolean isVideoSecure() {
         MediaStream videoStream = mediaAwarePeer.getMediaHandler().getStream(MediaType.VIDEO);
         return videoStream != null && videoStream.getSrtpControl().getSecureCommunicationStatus();
     }
@@ -281,8 +270,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      *
      * @param isSecure <code>true</code> if video stream is secured.
      */
-    private void updateVideoSecureStatus(boolean isSecure)
-    {
+    private void updateVideoSecureStatus(boolean isSecure) {
         boolean isVideo = false;
 
         OperationSetVideoTelephony videoTelephony = mediaAwarePeer.getProtocolProvider().getOperationSet(OperationSetVideoTelephony.class);
@@ -294,7 +282,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
             isVideo = mediaAwarePeer.isLocalVideoStreaming();
             if (!isVideo) {
                 List<Component> videos = videoTelephony.getVisualComponents(mediaAwarePeer);
-                isVideo = ((videos != null) && (videos.size() != 0));
+                isVideo = (videos != null && !videos.isEmpty());
             }
         }
 
@@ -322,8 +310,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      *
      * @param securityEvent the security event received
      */
-    public void securityOn(CallPeerSecurityOnEvent securityEvent)
-    {
+    public void securityOn(CallPeerSecurityOnEvent securityEvent) {
         int sessionType = securityEvent.getSessionType();
         if (sessionType == CallPeerSecurityStatusEvent.AUDIO_SESSION) {
             // Audio security on
@@ -341,8 +328,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      *
      * @param securityEvent the security event received
      */
-    public void securityOff(CallPeerSecurityOffEvent securityEvent)
-    {
+    public void securityOff(CallPeerSecurityOffEvent securityEvent) {
         int sessionType = securityEvent.getSessionType();
         if (sessionType == CallPeerSecurityStatusEvent.AUDIO_SESSION) {
             // Audio security off
@@ -357,62 +343,54 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     /**
      * {@inheritDoc}
      */
-    public void securityTimeout(CallPeerSecurityTimeoutEvent securityTimeoutEvent)
-    {
+    public void securityTimeout(CallPeerSecurityTimeoutEvent securityTimeoutEvent) {
     }
 
     /**
      * {@inheritDoc}
      */
-    public void securityMessageReceived(CallPeerSecurityMessageEvent event)
-    {
+    public void securityMessageReceived(CallPeerSecurityMessageEvent event) {
         Timber.i("### ZRTP security Message Received: %s", event.getMessage());
     }
 
     /**
      * {@inheritDoc}
      */
-    public void securityNegotiationStarted(CallPeerSecurityNegotiationStartedEvent securityStartedEvent)
-    {
+    public void securityNegotiationStarted(CallPeerSecurityNegotiationStartedEvent securityStartedEvent) {
     }
 
     /**
      * Refreshes video security displays on GUI thread.
      */
-    private void refreshVideoOnUIThread()
-    {
+    private void refreshVideoOnUIThread() {
         runOnUiThread(() -> updateVideoSecureStatus(isVideoSecure()));
     }
 
     /**
      * {@inheritDoc}
      */
-    public void videoAdded(VideoEvent videoEvent)
-    {
+    public void videoAdded(VideoEvent videoEvent) {
         refreshVideoOnUIThread();
     }
 
     /**
      * {@inheritDoc}
      */
-    public void videoRemoved(VideoEvent videoEvent)
-    {
+    public void videoRemoved(VideoEvent videoEvent) {
         refreshVideoOnUIThread();
     }
 
     /**
      * {@inheritDoc}
      */
-    public void videoUpdate(VideoEvent videoEvent)
-    {
+    public void videoUpdate(VideoEvent videoEvent) {
         refreshVideoOnUIThread();
     }
 
     /**
      * The security authentication string verification status listener.
      */
-    public interface SasVerificationListener
-    {
+    public interface SasVerificationListener {
         /**
          * Called when SAS verification status is updated.
          *
@@ -425,10 +403,10 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      * Creates new parametrized instance of {@link ZrtpInfoDialog}.
      *
      * @param callKey the call key managed by {@link CallManager}.
+     *
      * @return parametrized instance of <code>ZrtpInfoDialog</code>.
      */
-    public static ZrtpInfoDialog newInstance(String callKey)
-    {
+    public static ZrtpInfoDialog newInstance(String callKey) {
         ZrtpInfoDialog infoDialog = new ZrtpInfoDialog();
 
         Bundle arguments = new Bundle();

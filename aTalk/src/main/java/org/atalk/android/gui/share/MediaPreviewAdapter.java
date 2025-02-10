@@ -49,7 +49,8 @@ public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapte
         mChatActivity = fragment;
         viewHolder = imgPreview;
         int width = aTalkApp.mDisplaySize.width;
-        layoutParams = new LinearLayout.LayoutParams(width, width);
+        int height = aTalkApp.mDisplaySize.height;
+        layoutParams = new LinearLayout.LayoutParams(width, height);
     }
 
     @NonNull
@@ -95,7 +96,7 @@ public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapte
     }
 
     public boolean hasAttachments() {
-        return mediaPreviews.size() > 0;
+        return !mediaPreviews.isEmpty();
     }
 
     public ArrayList<Attachment> getAttachments() {

@@ -23,6 +23,8 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
+import timber.log.Timber;
+
 /**
  * @author Yana Stamcheva
  */
@@ -90,14 +92,12 @@ public class GlobalDisplayDetailsActivator implements BundleActivator, ServiceLi
             ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
         } catch (InvalidSyntaxException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Timber.e("Exception %s", e.getMessage());
         }
 
-        if (ppsRefs.length != 0) {
-            for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs) {
-                ProtocolProviderService pps = bundleContext.getService(ppsRef);
-                handleProviderAdded(pps);
-            }
+        for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs) {
+            ProtocolProviderService pps = bundleContext.getService(ppsRef);
+            handleProviderAdded(pps);
         }
     }
 

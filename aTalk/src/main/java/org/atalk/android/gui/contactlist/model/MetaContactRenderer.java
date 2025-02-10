@@ -25,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatSessionManager;
-import org.atalk.android.gui.util.AndroidImageUtil;
+import org.atalk.android.util.AppImageUtil;
 import org.atalk.android.gui.util.DrawableCache;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.jxmpp.jid.DomainBareJid;
@@ -184,7 +184,7 @@ public class MetaContactRenderer implements UIContactRenderer {
 
         BitmapDrawable avatarImage = cache.getBitmapFromMemCache(bmpKey);
         if (avatarImage == null) {
-            BitmapDrawable roundedAvatar = AndroidImageUtil.roundedDrawableFromBytes(avatar);
+            BitmapDrawable roundedAvatar = AppImageUtil.roundedDrawableFromBytes(avatar);
             if (roundedAvatar != null) {
                 avatarImage = roundedAvatar;
                 cache.cacheImage(bmpKey, avatarImage);
@@ -204,7 +204,7 @@ public class MetaContactRenderer implements UIContactRenderer {
         byte[] statusImage = getStatusImage(metaContact);
 
         if ((statusImage != null) && (statusImage.length > 0))
-            return AndroidImageUtil.drawableFromBytes(statusImage);
+            return AppImageUtil.drawableFromBytes(statusImage);
 
         return null;
     }

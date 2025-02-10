@@ -19,24 +19,25 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
-
-import net.java.sip.communicator.util.ConfigurationUtils;
-
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.aTalk;
-import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.persistance.FileBackend;
-import org.atalk.service.osgi.OSGiActivity;
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
+import net.java.sip.communicator.util.ConfigurationUtils;
+
+import org.atalk.android.BaseActivity;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
+import org.atalk.android.gui.util.ViewUtil;
+import org.atalk.persistance.FileBackend;
+import org.jetbrains.annotations.NotNull;
+
 import timber.log.Timber;
 
-public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitListener, View.OnClickListener,
+public class TTSActivity extends BaseActivity implements TextToSpeech.OnInitListener, View.OnClickListener,
         CompoundButton.OnCheckedChangeListener {
     private static final String ACTION_TTS_SETTINGS = "com.android.settings.TTS_SETTINGS";
 
@@ -329,7 +330,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, int @NotNull [] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == aTalk.PRC_WRITE_EXTERNAL_STORAGE) {
             if ((grantResults.length != 0) && (PackageManager.PERMISSION_GRANTED == grantResults[0]))

@@ -247,13 +247,13 @@ public class VideoLayout extends FitLayout {
          * XXX The methods layoutContainer and preferredLayoutSize must be kept in sync.
          */
 
-        List<Component> visibleRemotes = new ArrayList<Component>();
+        List<Component> visibleRemotes = new ArrayList<>();
         List<Component> remotes;
         Component local = getLocal();
 
-        for (int i = 0; i < this.remotes.size(); i++) {
-            if (this.remotes.get(i).isVisible())
-                visibleRemotes.add(this.remotes.get(i));
+        for (Component remote : this.remotes) {
+            if (remote.isVisible())
+                visibleRemotes.add(remote);
         }
 
         /*
@@ -296,8 +296,7 @@ public class VideoLayout extends FitLayout {
                      * columns and that horizontal space cannot be allocated
                      * to the bounds of the Components.
                      */
-                    (parentSize.width - (columnsMinus1 * HGAP)) / columns,
-                    parentSize.height / rows);
+                    (parentSize.width - (columnsMinus1 * HGAP)) / columns, parentSize.height / rows);
 
             for (int i = 0; i < remoteCount; i++) {
                 int column = i % columns;
@@ -385,11 +384,8 @@ public class VideoLayout extends FitLayout {
                 super.layoutComponent(
                         closeButton,
                         new Rectangle(local.getX() + local.getWidth() - closeButton.getWidth(),
-                                local.getY(),
-                                closeButton.getWidth(),
-                                closeButton.getHeight()),
-                        Component.CENTER_ALIGNMENT,
-                        Component.CENTER_ALIGNMENT);
+                                local.getY(), closeButton.getWidth(), closeButton.getHeight()),
+                        Component.CENTER_ALIGNMENT, Component.CENTER_ALIGNMENT);
             }
         }
 
@@ -410,13 +406,13 @@ public class VideoLayout extends FitLayout {
      */
     @Override
     public Dimension preferredLayoutSize(Container parent) {
-        List<Component> visibleRemotes = new ArrayList<Component>();
+        List<Component> visibleRemotes = new ArrayList<>();
         List<Component> remotes;
         Component local = getLocal();
 
-        for (int i = 0; i < this.remotes.size(); i++) {
-            if (this.remotes.get(i).isVisible())
-                visibleRemotes.add(this.remotes.get(i));
+        for (Component component : this.remotes) {
+            if (component.isVisible())
+                visibleRemotes.add(component);
         }
 
         /*
@@ -449,18 +445,13 @@ public class VideoLayout extends FitLayout {
             int columns = calculateColumnCount(remotes);
             int columnsMinus1 = columns - 1;
             int rows = (remoteCount + columnsMinus1) / columns;
-            int i = 0;
             Dimension[] prefSizes = new Dimension[columns * rows];
 
-            for (Component remote : remotes) {
-                int column = columnsMinus1 - (i % columns);
-                int row = i / columns;
-
+            for (int x = 0; x < remoteCount; x++) {
+                Component remote = remotes.get(0);
+                int column = columnsMinus1 - (x % columns);
+                int row = x / columns;
                 prefSizes[column + row * columns] = remote.getPreferredSize();
-
-                i++;
-                if (i >= remoteCount)
-                    break;
             }
 
             int prefLayoutWidth = 0;

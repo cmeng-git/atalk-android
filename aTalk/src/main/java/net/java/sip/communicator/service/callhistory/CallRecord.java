@@ -18,20 +18,17 @@ package net.java.sip.communicator.service.callhistory;
 import android.icu.text.MeasureFormat;
 import android.icu.util.Measure;
 import android.icu.util.MeasureUnit;
-import android.os.Build;
 import android.text.format.DateUtils;
-
-import androidx.annotation.RequiresApi;
-
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
+
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Structure used for encapsulating data when writing or reading Call History Data. Also these

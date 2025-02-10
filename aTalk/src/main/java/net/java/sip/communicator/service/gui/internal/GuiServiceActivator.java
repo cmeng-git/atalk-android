@@ -15,8 +15,7 @@ import org.osgi.framework.BundleContext;
  * @author Lubomir Marinov
  * @author Yana Stamcheva
  */
-public class GuiServiceActivator implements BundleActivator
-{
+public class GuiServiceActivator implements BundleActivator {
     /**
      * The <code>BundleContext</code> of the service.
      */
@@ -32,8 +31,7 @@ public class GuiServiceActivator implements BundleActivator
      *
      * @return bundle context
      */
-    public static BundleContext getBundleContext()
-    {
+    public static BundleContext getBundleContext() {
         return bundleContext;
     }
 
@@ -42,8 +40,7 @@ public class GuiServiceActivator implements BundleActivator
      *
      * @param bundleContext the <code>BundleContext</code>
      */
-    public void start(BundleContext bundleContext)
-    {
+    public void start(BundleContext bundleContext) {
         GuiServiceActivator.bundleContext = bundleContext;
     }
 
@@ -52,8 +49,7 @@ public class GuiServiceActivator implements BundleActivator
      *
      * @param bundleContext the <code>BundleContext</code>
      */
-    public void stop(BundleContext bundleContext)
-    {
+    public void stop(BundleContext bundleContext) {
         if (GuiServiceActivator.bundleContext == bundleContext)
             GuiServiceActivator.bundleContext = null;
     }
@@ -63,8 +59,7 @@ public class GuiServiceActivator implements BundleActivator
      *
      * @return the <code>ResourceManagementService</code>, through which we will access all resources.
      */
-    public static ResourceManagementService getResources()
-    {
+    public static ResourceManagementService getResources() {
         if (resourceService == null) {
             resourceService = ServiceUtils.getService(bundleContext, ResourceManagementService.class);
         }

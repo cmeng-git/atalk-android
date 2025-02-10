@@ -23,9 +23,8 @@ import androidx.fragment.app.ListFragment;
 
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
-import org.atalk.service.osgi.OSGiActivity;
-import org.osgi.framework.BundleContext;
 
 /**
  * The activity allows user to edit STUN or Jingle Nodes list of the Jabber account.
@@ -33,7 +32,7 @@ import org.osgi.framework.BundleContext;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ServerListActivity extends OSGiActivity {
+public class ServerListActivity extends BaseActivity {
     /**
      * Request code when launched for STUN servers list edit
      */
@@ -65,10 +64,8 @@ public class ServerListActivity extends OSGiActivity {
     private ServerItemAdapter mAdapter;
 
     @Override
-    protected void start(BundleContext bundleContext)
-            throws Exception {
-        super.start(bundleContext);
-
+    protected void onStart() {
+        super.onStart();
         Intent intent = getIntent();
         this.registration = (JabberAccountRegistration) intent.getSerializableExtra(JABBER_REGISTRATION_KEY);
         int listType = intent.getIntExtra(REQUEST_CODE_KEY, -1);

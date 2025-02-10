@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import java.util.Collection;
+
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
 import net.java.sip.communicator.service.globaldisplaydetails.event.GlobalAvatarChangeEvent;
 import net.java.sip.communicator.service.globaldisplaydetails.event.GlobalDisplayDetailsListener;
@@ -29,16 +31,14 @@ import net.java.sip.communicator.util.StatusUtil;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.AndroidLoginRenderer;
 import org.atalk.android.gui.menu.GlobalStatusMenu;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.gui.widgets.ActionMenuItem;
-import org.atalk.service.osgi.OSGiFragment;
-
-import java.util.Collection;
 
 /**
  * Fragment when added to Activity will display global display details like avatar, display name
@@ -48,7 +48,7 @@ import java.util.Collection;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ActionBarStatusFragment extends OSGiFragment
+public class ActionBarStatusFragment extends BaseFragment
         implements EventListener<PresenceStatus>, GlobalDisplayDetailsListener {
     /**
      * The online status.
@@ -86,7 +86,7 @@ public class ActionBarStatusFragment extends OSGiFragment
      * The global status menu.
      */
     private GlobalStatusMenu globalStatusMenu;
-    private AppCompatActivity mContext;
+    private AppCompatActivity mActivity;
 
     private static GlobalDisplayDetailsService displayDetailsService;
     private static AndroidLoginRenderer loginRenderer;
@@ -97,17 +97,17 @@ public class ActionBarStatusFragment extends OSGiFragment
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        mContext = (AppCompatActivity) context;
+        mActivity = (AppCompatActivity) mFragmentActivity;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        displayDetailsService = AndroidGUIActivator.getGlobalDisplayDetailsService();
+        displayDetailsService = AppGUIActivator.getGlobalDisplayDetailsService();
         globalStatusMenu = createGlobalStatusMenu();
 
-        View actionBarView = mContext.findViewById(R.id.actionBarView);
+        View actionBarView = mActivity.findViewById(R.id.actionBarView);
         if (actionBarView != null) {
             actionBarView.setOnClickListener(v -> {
                 globalStatusMenu.show(actionBarView);
@@ -119,7 +119,7 @@ public class ActionBarStatusFragment extends OSGiFragment
     @Override
     public void onResume() {
         super.onResume();
-        loginRenderer = AndroidGUIActivator.getLoginRenderer();
+        loginRenderer = AppGUIActivator.getLoginRenderer();
         loginRenderer.addGlobalStatusListener(this);
         onChangeEvent(loginRenderer.getGlobalStatus());
 
@@ -161,7 +161,7 @@ public class ActionBarStatusFragment extends OSGiFragment
                 res.getString(R.string.do_not_disturb),
                 ResourcesCompat.getDrawable(res, R.drawable.global_dnd, null));
 
-        final GlobalStatusMenu globalStatusMenu = new GlobalStatusMenu(mContext);
+        final GlobalStatusMenu globalStatusMenu = new GlobalStatusMenu(mActivity);
         globalStatusMenu.addActionItem(ffcItem);
         globalStatusMenu.addActionItem(onlineItem);
         globalStatusMenu.addActionItem(offlineItem);
@@ -201,7 +201,7 @@ public class ActionBarStatusFragment extends OSGiFragment
          * Runs publish status on separate thread to prevent NetworkOnMainThreadException
          */
         new Thread(() -> {
-            GlobalStatusService globalStatusService = AndroidGUIActivator.getGlobalStatusService();
+            GlobalStatusService globalStatusService = AppGUIActivator.getGlobalStatusService();
             switch (newStatus) {
                 case FFC:
                     globalStatusService.publishStatus(GlobalStatusEnum.FREE_FOR_CHAT);
@@ -227,15 +227,15 @@ public class ActionBarStatusFragment extends OSGiFragment
 
     @Override
     public void onChangeEvent(final PresenceStatus presenceStatus) {
-        if ((presenceStatus == null) || (mContext == null))
+        if ((presenceStatus == null) || (mActivity == null))
             return;
 
         runOnUiThread(() -> {
             String mStatus = presenceStatus.getStatusName();
-            ActionBarUtil.setSubtitle(mContext, mStatus);
-            ActionBarUtil.setStatusIcon(mContext, StatusUtil.getStatusIcon(presenceStatus));
+            ActionBarUtil.setSubtitle(mActivity, mStatus);
+            ActionBarUtil.setStatusIcon(mActivity, StatusUtil.getStatusIcon(presenceStatus));
 
-            MenuItem mOnOffLine = ((aTalk) mContext).getMenuItemOnOffLine();
+            MenuItem mOnOffLine = ((aTalk) mActivity).getMenuItemOnOffLine();
             // Proceed only if mOnOffLine has been initialized
             if (mOnOffLine != null) {
                 boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(mStatus);
@@ -269,10 +269,10 @@ public class ActionBarStatusFragment extends OSGiFragment
      */
     private void setGlobalAvatar(final byte[] avatar) {
         if (avatar != null && avatar.length > 0) {
-            ActionBarUtil.setAvatar(mContext, avatar);
+            ActionBarUtil.setAvatar(mActivity, avatar);
         }
         else {
-            ActionBarUtil.setAvatar(mContext, R.drawable.ic_icon);
+            ActionBarUtil.setAvatar(mActivity, R.drawable.ic_icon);
         }
     }
 
@@ -290,6 +290,6 @@ public class ActionBarStatusFragment extends OSGiFragment
         }
         if (pProviders.size() > 1)
             displayName = getString(R.string.account_me);
-        ActionBarUtil.setTitle(mContext, displayName);
+        ActionBarUtil.setTitle(mActivity, displayName);
     }
 }

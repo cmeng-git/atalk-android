@@ -622,7 +622,7 @@
     <string name="url_example">https://www.example.com</string>
     <string name="volume_control_title">Уровень усиления выходного объема</string>
     <string name="volume_control_tooltip">Отрегулировать громкость</string>
-    <string name="volume_gain_level">Уровень усиления уровня: %1$s%%</string>
+    <string name="volume_gain_level">Уровень усиления уровня: %1$d%%</string>
     <string name="waiting_for_authorization">Ожидание авторизации</string>
     <string name="warning">Предупреждение</string>
     <string name="call_in_progress_warning">Невозможно выполнить это во время вызова</string>
@@ -802,7 +802,7 @@
     <string name="update_download_failed">Не удалось загрузить новое обновление!</string>
     <string name="update_check_update">Проверить наличие обновлений</string>
     <string name="update_version_invalid">Загруженный apk не соответствует; действительный: %1$s (%2$s)</string>
-    <string name="update_vew_version_available">Доступна новая версия программного обеспечения (%1$s).</string>
+    <string name="update_new_version_available">Доступна новая версия программного обеспечения (%1$s).</string>
 
     <!-- account info -->
     <string name="accountinfo_about_me">Обо мне:</string>
@@ -1371,8 +1371,8 @@
     <!-- Video codecs -->
     <string name="settings_direct_surface_decode">Использовать прямое поверхностное декодирование</string>
     <string name="settings_direct_surface_encode">Использовать прямое кодирование</string>
-    <string name="settings_hw_decode">Использовать аппаратное декодирование (требуется перезагрузка)</string>
-    <string name="settings_hw_encode">Использовать аппаратное кодирование (требуется перезагрузка)</string>
+    <string name="settings_hw_decode">Использовать аппаратное декодирование</string>
+    <string name="settings_hw_encode">Использовать аппаратное кодирование</string>
     <string name="settings_media_codec_list">MediaCodecs</string>
     <string name="settings_media_codec_list_summary">Список встроенных медиакодеров/декодеров</string>
     <string name="settings_restart_require">Требовать перезапустить aTalk</string>
@@ -1507,7 +1507,7 @@
     <!-- Android Permissions -->
     <string name="app_info">Информация о приложении…</string>
     <string name="permission_app_info">Информация о приложении</string>
-    <string name="permission_microphone">Аудио</string>
+    <string name="permission_microphone">Микрофон</string>
     <string name="permission_camera">Камера</string>
     <string name="permission_contacts">Контакты</string>
     <string name="permission_location">Местоположение</string>

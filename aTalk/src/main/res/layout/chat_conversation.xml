@@ -38,6 +38,6 @@
             android:layout_height="0dp"
             android:layout_gravity="bottom"
             android:layout_marginStart="@dimen/chat_text_margin"
-            android:src="@drawable/chat_state_drawable" />
+            android:src="@drawable/chat_state_anim" />
     </LinearLayout>
 </LinearLayout>

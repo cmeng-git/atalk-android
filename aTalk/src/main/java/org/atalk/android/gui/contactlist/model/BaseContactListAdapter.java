@@ -7,7 +7,6 @@ package org.atalk.android.gui.contactlist.model;
 
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,15 +27,15 @@ import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ContactGroup;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.call.AndroidCallUtil;
+import org.atalk.android.gui.call.AppCallUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.AppUtils;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.widgets.UnreadCountCustomView;
-import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
@@ -53,12 +52,6 @@ import timber.log.Timber;
  */
 public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         implements View.OnClickListener, View.OnLongClickListener {
-    /**
-     * UI thread handler used to call all operations that access data model. This guarantees that
-     * it's accessed from the main thread.
-     */
-    protected final Handler uiHandler = OSGiActivity.uiHandler;
-
     /**
      * The contact list view.
      */
@@ -142,7 +135,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     public void expandAllGroups() {
         // Expand group view only when contactListView is in focus (UI mode)
         // cmeng - do not use isFocused() - may not in sync with actual
-        uiHandler.post(() -> {
+        BaseActivity.uiHandler.post(() -> {
             int count = getGroupCount();
             for (int position = 0; position < count; position++) {
                 if (contactListView != null)
@@ -424,7 +417,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         boolean isShowCall = renderer.isShowCallBtn(child);
 
         if (isMainContactList && (isShowVideoCall || isShowCall)) {
-            AndroidUtils.setOnTouchBackgroundEffect(contactViewHolder.callButtonLayout);
+            AppUtils.setOnTouchBackgroundEffect(contactViewHolder.callButtonLayout);
 
             contactViewHolder.callButtonLayout.setVisibility(View.VISIBLE);
             contactViewHolder.callButton.setVisibility(isShowCall ? View.VISIBLE : View.GONE);
@@ -544,7 +537,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
                     case R.id.contactCallVideoButton:
                         if (viewHolder != null) {
-                            AndroidCallUtil.createCall(aTalkApp.getInstance(), metaContact,
+                            AppCallUtil.createCall(aTalkApp.getInstance(), metaContact,
                                     (isAudioCall == null), viewHolder.callVideoButton);
                         }
                         break;

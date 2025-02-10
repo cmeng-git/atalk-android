@@ -32,8 +32,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AccountLoginActivity extends ExitMenuActivity
-        implements AccountLoginFragment.AccountLoginListener
+public class AccountLoginActivity extends ExitMenuActivity implements AccountLoginFragment.AccountLoginListener
 {
     /**
      * The username property name.

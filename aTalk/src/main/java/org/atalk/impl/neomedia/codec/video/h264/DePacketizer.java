@@ -60,8 +60,7 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class DePacketizer extends AbstractCodec2
-{
+public class DePacketizer extends AbstractCodec2 {
     /**
      * The indicator which determines whether incomplete NAL units are output
      * from the H.264 <code>DePacketizer</code> to the decoder. It is advisable to
@@ -155,8 +154,7 @@ public class DePacketizer extends AbstractCodec2
     /**
      * Initializes a new <code>DePacketizer</code> instance which is to depacketize H.264 RTP packets into NAL units.
      */
-    public DePacketizer()
-    {
+    public DePacketizer() {
         super("H264 DePacketizer", VideoFormat.class,
                 new VideoFormat[]{new VideoFormat(Constants.H264)});
 
@@ -179,11 +177,11 @@ public class DePacketizer extends AbstractCodec2
      * @param inOffset the offset in <code>in</code> at which the payload begins
      * @param inLength the length of the payload in <code>in</code> beginning at <code>inOffset</code>
      * @param outBuffer the <code>Buffer</code> which is to receive the extracted FU-A fragment of a NAL unit
+     *
      * @return the flags such as <code>BUFFER_PROCESSED_OK</code> and
      * <code>OUTPUT_BUFFER_NOT_FILLED</code> to be returned by {@link #process(Buffer, Buffer)}
      */
-    private int dePacketizeFUA(byte[] in, int inOffset, int inLength, Buffer outBuffer)
-    {
+    private int dePacketizeFUA(byte[] in, int inOffset, int inLength, Buffer outBuffer) {
         byte fu_indicator = in[inOffset];
         inOffset++;
         inLength--;
@@ -259,12 +257,12 @@ public class DePacketizer extends AbstractCodec2
      * @param inOffset the offset in <code>in</code> at which the payload begins
      * @param inLength the length of the payload in <code>in</code> beginning at <code>inOffset</code>
      * @param outBuffer the <code>Buffer</code> which is to receive the extracted NAL unit
+     *
      * @return the flags such as <code>BUFFER_PROCESSED_OK</code> and
      * <code>OUTPUT_BUFFER_NOT_FILLED</code> to be returned by {@link #process(Buffer, Buffer)}
      */
     private int dePacketizeSingleNALUnitPacket(
-            int nal_unit_type, byte[] in, int inOffset, int inLength, Buffer outBuffer)
-    {
+            int nal_unit_type, byte[] in, int inOffset, int inLength, Buffer outBuffer) {
         this.nal_unit_type = nal_unit_type;
 
         int outOffset = outBuffer.getOffset();
@@ -287,8 +285,7 @@ public class DePacketizer extends AbstractCodec2
      * Close the <code>Codec</code>.
      */
     @Override
-    protected synchronized void doClose()
-    {
+    protected synchronized void doClose() {
         // If requestKeyFrameThread is running, tell it to perish.
         requestKeyFrameThread = null;
         notifyAll();
@@ -306,8 +303,7 @@ public class DePacketizer extends AbstractCodec2
      */
     @Override
     protected synchronized void doOpen()
-            throws ResourceUnavailableException
-    {
+            throws ResourceUnavailableException {
         fuaStartedAndNotEnded = false;
         lastKeyFrameTime = -1;
         lastRequestKeyFrameTime = -1;
@@ -322,12 +318,12 @@ public class DePacketizer extends AbstractCodec2
      *
      * @param inBuffer input buffer
      * @param outBuffer output buffer
+     *
      * @return <code>BUFFER_PROCESSED_OK</code> if buffer has been successfully processed
      */
     @Override
     @SuppressWarnings("fallthrough")
-    protected int doProcess(Buffer inBuffer, Buffer outBuffer)
-    {
+    protected int doProcess(Buffer inBuffer, Buffer outBuffer) {
         /*
          * We'll only be depacketizing, we'll not act as an H.264 parser. Consequently, we'll
          * only care about the rules of packetizing/depacketizing. For example, we'll have to
@@ -447,10 +443,10 @@ public class DePacketizer extends AbstractCodec2
      * @param buf the byte buffer to check
      * @param off the offset in the byte buffer where the actual data starts
      * @param len the length of the data in the byte buffer
+     *
      * @return true if the buffer contains a H264 key frame at offset <code>offset</code>.
      */
-    public static boolean isKeyFrame(byte[] buf, int off, int len)
-    {
+    public static boolean isKeyFrame(byte[] buf, int off, int len) {
         if (buf == null || buf.length < off + Math.max(len, 1)) {
             return false;
         }
@@ -469,8 +465,7 @@ public class DePacketizer extends AbstractCodec2
     /**
      * Checks if a a fragment of a NAL unit from a specific FU-A RTP packet payload is keyframe or not
      */
-    private static boolean parseFuaNaluForKeyFrame(byte[] buf, int off, int len)
-    {
+    private static boolean parseFuaNaluForKeyFrame(byte[] buf, int off, int len) {
         if (len < kFuAHeaderSize) {
             return false;
         }
@@ -480,8 +475,7 @@ public class DePacketizer extends AbstractCodec2
     /**
      * Checks if a a fragment of a NAL unit from a specific FU-A RTP packet payload is keyframe or not
      */
-    private static boolean parseSingleNaluForKeyFrame(byte[] buf, int off, int len)
-    {
+    private static boolean parseSingleNaluForKeyFrame(byte[] buf, int off, int len) {
         int naluStart = off + kNalHeaderSize;
         int naluLength = len - kNalHeaderSize;
         int nalType = buf[off] & kTypeMask;
@@ -509,8 +503,7 @@ public class DePacketizer extends AbstractCodec2
      * <code>Codec</code> in the codec chain (i.e. <code>JNIDecoder</code>).
      */
     @Override
-    protected Format[] getMatchingOutputFormats(Format inputFormat)
-    {
+    protected Format[] getMatchingOutputFormats(Format inputFormat) {
         Format[] matchingOutputFormats = super.getMatchingOutputFormats(inputFormat);
 
         if ((matchingOutputFormats != null)
@@ -539,8 +532,7 @@ public class DePacketizer extends AbstractCodec2
      * @param outOffset the index in <code>outOffset</code> at which the writing of
      * <code>outputPaddingSize</code> number of bytes is to begin
      */
-    private void padOutput(byte[] out, int outOffset)
-    {
+    private void padOutput(byte[] out, int outOffset) {
         Arrays.fill(out, outOffset, outOffset + outputPaddingSize, (byte) 0);
     }
 
@@ -551,11 +543,11 @@ public class DePacketizer extends AbstractCodec2
      * @param urgent <code>true</code> if the caller has determined that the need
      * for a key frame is urgent and should not obey all constraints with
      * respect to time between two subsequent requests for key frames
+     *
      * @return <code>true</code> if a key frame was indeed requested in response to
      * the call; otherwise, <code>false</code>
      */
-    public synchronized boolean requestKeyFrame(boolean urgent)
-    {
+    public synchronized boolean requestKeyFrame(boolean urgent) {
         lastKeyFrameTime = -1;
         setRequestKeyFrame(true);
         return true;
@@ -569,12 +561,12 @@ public class DePacketizer extends AbstractCodec2
      * and the NAL unit in question will be output by this <code>DePacketizer</code>.
      *
      * @param outBuffer the output <code>Buffer</code> to be reset
+     *
      * @return the flags such as <code>BUFFER_PROCESSED_OK</code> and
      * <code>OUTPUT_BUFFER_NOT_FILLED</code> to be returned by
      * {@link #process(Buffer, Buffer)}
      */
-    private int reset(Buffer outBuffer)
-    {
+    private int reset(Buffer outBuffer) {
         /*
          * We need the octet at the very least. Additionally, it does not make
          * sense to output a NAL unit with zero payload because such NAL units
@@ -603,8 +595,7 @@ public class DePacketizer extends AbstractCodec2
      * Requests key frames from the remote peer associated with
      * {@link #keyFrameControl} in {@link #requestKeyFrameThread}.
      */
-    private void runInRequestKeyFrameThread()
-    {
+    private void runInRequestKeyFrameThread() {
         while (true) {
             synchronized (this) {
                 if (requestKeyFrameThread != Thread.currentThread())
@@ -700,8 +691,7 @@ public class DePacketizer extends AbstractCodec2
      * @param keyFrameControl the <code>KeyFrameControl</code> to be used by this <code>DePacketizer</code>
      * as a means of control over its key frame-related logic
      */
-    public void setKeyFrameControl(KeyFrameControl keyFrameControl)
-    {
+    public void setKeyFrameControl(KeyFrameControl keyFrameControl) {
         this.keyFrameControl = keyFrameControl;
     }
 
@@ -712,17 +702,14 @@ public class DePacketizer extends AbstractCodec2
      * @param requestKeyFrame <code>true</code> if this <code>DePacketizer</code> is to request a key frame
      * from the remote peer associated with {@link #keyFrameControl}
      */
-    private synchronized void setRequestKeyFrame(boolean requestKeyFrame)
-    {
+    private synchronized void setRequestKeyFrame(boolean requestKeyFrame) {
         if (this.requestKeyFrame != requestKeyFrame) {
             this.requestKeyFrame = requestKeyFrame;
 
             if (this.requestKeyFrame && (requestKeyFrameThread == null)) {
-                requestKeyFrameThread = new Thread()
-                {
+                requestKeyFrameThread = new Thread() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         try {
                             runInRequestKeyFrameThread();
                         } finally {

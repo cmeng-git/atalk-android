@@ -26,7 +26,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.dialogs.CustomDialogCbox;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
@@ -114,7 +114,7 @@ public class AccountDeleteDialog {
     private static void removeAccount(AccountID accountId) {
         ProtocolProviderFactory providerFactory = AccountUtils.getProtocolProviderFactory(accountId.getProtocolName());
         String accountUuid = accountId.getAccountUuid();
-        AndroidGUIActivator.getConfigurationService().setProperty(accountUuid, null);
+        AppGUIActivator.getConfigurationService().setProperty(accountUuid, null);
 
         boolean isUninstalled = providerFactory.uninstallAccount(accountId);
         if (!isUninstalled)

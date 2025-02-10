@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import java.util.ArrayList;
@@ -30,6 +29,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.menu.MenuItem;
 
 import net.java.sip.communicator.util.UtilActivator;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.gui.chat.ChatActivity;
 import org.atalk.service.configuration.ConfigurationService;
@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
 
-public class YoutubePlayerFragment extends Fragment {
+public class YoutubePlayerFragment extends BaseFragment {
     // regression to check for valid youtube link
     public static final String URL_YOUTUBE = "http[s]*://[w.]*youtu[.]*be.*";
 
@@ -85,7 +85,7 @@ public class YoutubePlayerFragment extends Fragment {
     public void onAttach(@NonNull @NotNull Context context) {
         super.onAttach(context);
         mContext = (FragmentActivity) context;
-        fullScreenHelper = new FullScreenHelper(mContext);
+        fullScreenHelper = new FullScreenHelper(mFragmentActivity);
     }
 
     /**
@@ -211,9 +211,9 @@ public class YoutubePlayerFragment extends Fragment {
     /**
      * Extract the youtube videoId from the following string formats:
      * a. vCKCkc8llaM
-     * b. https://youtu.be/vCKCkc8llaM
-     * c. https://youtube.com/watch?v=14VrDQSnfzI&feature=share
-     * d. https://www.youtube.com/playlist?list=PL0KROm2A3S8HaMLBxYPF5kuEEtTYvUJox\
+     * b. <a href="https://youtu.be/vCKCkc8llaM">...</a>
+     * c. <a href="https://youtube.com/watch?v=14VrDQSnfzI&feature=share">...</a>
+     * d. <a href="https://www.youtube.com/playlist?list=PL0KROm2A3S8HaMLBxYPF5kuEEtTYvUJox">...</a>\
      *
      * @param url Any of the above url string
      *

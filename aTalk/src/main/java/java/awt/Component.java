@@ -1,7 +1,6 @@
 package java.awt;
 
 import android.database.Cursor;
-import android.graphics.Region;
 
 import java.awt.event.ComponentListener;
 import java.awt.event.HierarchyListener;
@@ -362,39 +361,6 @@ public class Component implements Serializable {
      * order of public and deprecated methods.
      */
     private int boundsOp = DEFAULT_OPERATION;
-
-    /*
-     * The shape set with the applyCompoundShape() method. It uncludes the result
-     * of the HW/LW mixing related shape computation. It may also include
-     * the user-specified shape of the component.
-     * The 'null' value means the component has normal shape (or has no shape at all)
-     * and applyCompoundShape() will skip the following shape identical to normal.
-     */
-    private transient Region compoundShape = null;
-
-    /*
-     * Represents the shape of this lightweight component to be cut out from
-     * heavyweight components should they intersect. Possible values:
-     *    1. null - consider the shape rectangular
-     *    2. EMPTY_REGION - nothing gets cut out (children still get cut out)
-     *    3. non-empty - this shape gets cut out.
-     */
-    private transient Region mixingCutoutRegion = null;
-
-    /*
-     * Indicates whether addNotify() is complete
-     * (i.e. the peer is created).
-     */
-    private transient boolean isAddNotifyComplete = false;
-
-
-    // Whether this Component has had the background erase flag
-    // specified via SunToolkit.disableBackgroundErase(). This is
-    // needed in order to make this function work on X11 platforms,
-    // where currently there is no chance to interpose on the creation
-    // of the peer and therefore the call to XSetBackground.
-    transient boolean backgroundEraseDisabled;
-    private int componentSerializedDataVersion = 4;
 
     public void addComponentListener(ComponentListener paramComponentListener) {
     }

@@ -14,12 +14,16 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+
 import java.io.Serializable;
 import java.util.List;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.settings.BasePreferenceFragment;
 import org.atalk.android.gui.widgets.TouchInterceptor;
-import org.atalk.service.osgi.OSGiPreferenceFragment;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -28,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class MediaEncodingsFragment extends OSGiPreferenceFragment implements TouchInterceptor.DropListener {
+public class MediaEncodingsFragment extends BasePreferenceFragment implements TouchInterceptor.DropListener {
     /**
      * Argument key for list of encodings as strings (see {@link MediaEncodingActivity} for utility methods.)
      */
@@ -83,11 +87,17 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
         return hasChanges;
     }
 
+    @Override
+    public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+
+    }
+
     /**
      * {@inheritDoc}
      */
+    @NonNull
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle bundle = savedInstanceState == null ? getArguments() : savedInstanceState;
 
         encodings = (List<String>) bundle.get(ARG_ENCODINGS);
@@ -100,7 +110,7 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
 
         View content = inflater.inflate(R.layout.encoding, container, false);
 
-        /**
+        /*
          * The {@link TouchInterceptor} widget that allows user to drag items to set their order
          */
         TouchInterceptor listWidget = (TouchInterceptor) content.findViewById(R.id.encodingList);
@@ -240,7 +250,7 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
          * Refresh the list on UI thread
          */
         public void invalidate() {
-            getActivity().runOnUiThread(this::notifyDataSetChanged);
+            ((FragmentActivity) mContext).runOnUiThread(this::notifyDataSetChanged);
         }
 
         public int getCount() {
@@ -257,7 +267,7 @@ public class MediaEncodingsFragment extends OSGiPreferenceFragment implements To
 
         public View getView(final int i, View view, ViewGroup viewGroup) {
             // Creates the list row view
-            ViewGroup gv = (ViewGroup) getActivity().getLayoutInflater().inflate(this.viewResId, viewGroup, false);
+            ViewGroup gv = (ViewGroup) LayoutInflater.from(mContext).inflate(this.viewResId, viewGroup, false);
             // Creates the enable/disable button
             CompoundButton cb = gv.findViewById(android.R.id.checkbox);
             cb.setChecked(priorities.get(i) > 0);

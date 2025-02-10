@@ -22,7 +22,10 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,8 +47,9 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusServi
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.AccountsListActivity;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
@@ -116,8 +120,8 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     @Override
     protected void onResume() {
         super.onResume();
-        if (AndroidGUIActivator.bundleContext != null) {
-            AndroidGUIActivator.bundleContext.addServiceListener(this);
+        if (AppGUIActivator.bundleContext != null) {
+            AppGUIActivator.bundleContext.addServiceListener(this);
             if (menuVbItem == null) {
                 initVideoBridge();
             }
@@ -127,9 +131,9 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     @Override
     protected void onPause() {
         super.onPause();
-        // FFR v3.0.5: NullPointerException; may have stop() in AndroidGUIActivator
-        if (AndroidGUIActivator.bundleContext != null)
-            AndroidGUIActivator.bundleContext.removeServiceListener(this);
+        // FFR v3.0.5: NullPointerException; may have stop() in AppGUIActivator
+        if (AppGUIActivator.bundleContext != null)
+            AppGUIActivator.bundleContext.removeServiceListener(this);
     }
 
     /**
@@ -204,7 +208,6 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         else
             enableMenu = false;
 
-        // runOnUiThread to update view
         runOnUiThread(() -> {
             // videoBridgeMenuItem is always enabled - allow user to re-trigger if earlier init failed
             videoBridgeMenuItem.setEnabled(true);
@@ -331,7 +334,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
             case R.id.sign_in_off:
                 // Toggle current account presence status
                 boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(ActionBarUtil.getStatus(this));
-                GlobalStatusService globalStatusService = AndroidGUIActivator.getGlobalStatusService();
+                GlobalStatusService globalStatusService = AppGUIActivator.getGlobalStatusService();
                 if (isOffline)
                     globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
                 else
@@ -341,6 +344,22 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    /**
+     * Start the application notification settings page
+     */
+    private void openNotificationSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+            startActivity(intent);
+        }
+        else {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
+        }
     }
 
     //========================================================
@@ -421,7 +440,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         }
 
         // we don't care if the source service is not a protocol provider
-        Object service = AndroidGUIActivator.bundleContext.getService(serviceRef);
+        Object service = AppGUIActivator.bundleContext.getService(serviceRef);
         if (!(service instanceof ProtocolProviderService)) {
             return;
         }
@@ -430,7 +449,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
             case ServiceEvent.REGISTERED:
             case ServiceEvent.UNREGISTERING:
                 if (videoBridgeMenuItem != null) {
-                    uiHandler.post(this::initVideoBridge);
+                    BaseActivity.uiHandler.post(this::initVideoBridge);
                 }
                 break;
         }
@@ -439,7 +458,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     @Override
     public void contactPresenceStatusChanged(final ContactPresenceStatusChangeEvent evt) {
         // cmeng - how to add the listener onResume - multiple protocol providers???
-        uiHandler.post(() -> {
+        BaseActivity.uiHandler.post(() -> {
             Contact sourceContact = evt.getSourceContact();
             initVideoBridge();
         });

@@ -129,7 +129,7 @@ public class LibJitsiImpl extends LibJitsi
             String implClassName = System.getProperty(className);
             boolean suppressClassNotFoundException = false;
 
-            if (implClassName == null || implClassName.length() == 0) {
+            if (implClassName == null || implClassName.isEmpty()) {
                 implClassName = className.replace(".service.", ".impl.").concat("Impl");
                 // Nobody has explicitly mentioned implClassName, we have just
                 // made it up. If it turns out that it cannot be found, do not

@@ -70,9 +70,9 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
         try {
             ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
         } catch (InvalidSyntaxException ex) {
-            ex.printStackTrace();
+            Timber.e("Exception: %s", ex.getMessage());
         }
-        if ((ppsRefs != null) && (ppsRefs.length != 0)) {
+        if (ppsRefs != null) {
             for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs) {
                 ProtocolProviderService pps = bundleContext.getService(ppsRef);
                 handleProviderAdded(pps);
@@ -94,10 +94,10 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
         try {
             ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
         } catch (InvalidSyntaxException e) {
-            e.printStackTrace();
+            Timber.e("Exception: %s", e.getMessage());
         }
 
-        if ((ppsRefs != null) && (ppsRefs.length != 0)) {
+        if (ppsRefs != null) {
             for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs) {
                 ProtocolProviderService pps = bundleContext.getService(ppsRef);
                 handleProviderRemoved(pps);
@@ -112,7 +112,7 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
      * @param event ServiceEvent received when there is a service changed
      */
     public void serviceChanged(ServiceEvent event) {
-        ServiceReference serviceRef = event.getServiceReference();
+        ServiceReference<?> serviceRef = event.getServiceReference();
         // if the event is caused by a bundle being stopped, we don't want to know
         if (serviceRef.getBundle().getState() == Bundle.STOPPING)
             return;

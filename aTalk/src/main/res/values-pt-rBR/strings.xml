@@ -636,7 +636,7 @@
     <string name="url_example">https://www.exemplo.com</string>
     <string name="volume_control_title">Nível de volume da saída</string>
     <string name="volume_control_tooltip">Ajustar volume</string>
-    <string name="volume_gain_level">Nível de volume: %1$s%%</string>
+    <string name="volume_gain_level">Nível de volume: %1$d%%</string>
     <string name="waiting_for_authorization">Aguardando autorização</string>
     <string name="warning">Aviso</string>
     <string name="call_in_progress_warning">Não posso fazer isso durante a ligação</string>
@@ -820,7 +820,7 @@
     <string name="update_download_failed">Falha ao baixar a nova atualização!</string>
     <string name="update_check_update">Verificar por atualizações</string>
     <string name="update_version_invalid">O apk baixado não corresponde; atual: %1$s (%2$s)</string>
-    <string name="update_vew_version_available">Uma nova versão (%1$s) de software está disponível.</string>
+    <string name="update_new_version_available">Uma nova versão (%1$s) de software está disponível.</string>
 
     <!-- account info -->
     <string name="accountinfo_about_me">Sobre mim:</string>
@@ -1385,8 +1385,8 @@
     <!-- Video codecs -->
     <string name="settings_direct_surface_decode">Usar decodificação Direct Surface</string>
     <string name="settings_direct_surface_encode">Usar codificação Direct Surface</string>
-    <string name="settings_hw_decode">Usar decodificação de hardware (reinício necessário)</string>
-    <string name="settings_hw_encode">Usar codificação de hardware (reinício necessário)</string>
+    <string name="settings_hw_decode">Usar decodificação de hardware</string>
+    <string name="settings_hw_encode">Usar codificação de hardware</string>
     <string name="settings_media_codec_list">Codecs de mídia</string>
     <string name="settings_media_codec_list_summary">Lista de codificadores/descodificadores de mídia integrados</string>
     <string name="settings_restart_require">Requer reiniciação do aTalk</string>
@@ -1525,7 +1525,7 @@
     <string name="permission_camera">Câmara</string>
     <string name="permission_contacts">Contatos</string>
     <string name="permission_location">Localização</string>
-    <string name="permission_microphone">Áudio</string>
+    <string name="permission_microphone">Microfone</string>
     <string name="permission_music">Música e Áudio</string>
     <string name="permission_notifications">Notifications</string>
     <string name="permission_phone">Telefone</string>

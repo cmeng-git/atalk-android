@@ -18,7 +18,6 @@ package org.atalk.android.gui.chatroomslist;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -30,6 +29,12 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
@@ -39,7 +44,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.ThemeHelper;
@@ -54,11 +59,6 @@ import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -66,8 +66,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedListener, DialogActivity.DialogListener
-{
+public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedListener, DialogActivity.DialogListener {
     private final MainMenuActivity mParent;
     private final MUCServiceImpl mucService;
 
@@ -113,16 +112,14 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
      *
      * @param mContext the <code>ChatPanel</code> corresponding to the <code>ChatRoom</code>, where the contact is invited.
      */
-    public ChatRoomBookmarksDialog(Context mContext)
-    {
+    public ChatRoomBookmarksDialog(Context mContext) {
         super(mContext);
         mParent = (MainMenuActivity) mContext;
         mucService = MUCActivator.getMUCService();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         ThemeHelper.setTheme(mParent);
         super.onCreate(savedInstanceState);
 
@@ -144,7 +141,7 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
 
         chatRoomSpinner = this.findViewById(R.id.chatRoom_Spinner);
         // chatRoomSpinner.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-        new initBookmarkedConference().execute();
+        new InitBookmarkedConference().execute();
 
         Button mApplyButton = this.findViewById(R.id.button_Apply);
         mApplyButton.setOnClickListener(v -> {
@@ -167,20 +164,17 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
     }
 
     @Override
-    public boolean onConfirmClicked(DialogActivity dialog)
-    {
+    public boolean onConfirmClicked(DialogActivity dialog) {
         closeDialog();
         return true;
     }
 
     @Override
-    public void onDialogCancelled(DialogActivity dialog)
-    {
+    public void onDialogCancelled(DialogActivity dialog) {
     }
 
     // add items into accountsSpinner dynamically
-    private void initAccountSpinner()
-    {
+    private void initAccountSpinner() {
         String mAccount;
         List<String> ppsList = new ArrayList<>();
 
@@ -205,17 +199,30 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
      * Creates the providers comboBox and filling its content with the current available chatRooms
      * Add available server chatRooms to the chatRoomList when providers changes
      */
-    private class initBookmarkedConference extends AsyncTask<Void, Void, Void>
-    {
+    private class InitBookmarkedConference {
         List<BookmarkedConference> bookmarkedList = new ArrayList<>();
         List<BookmarkConference> bookmarkList = new ArrayList<>();
         BookmarkConference bookmarkConference;
 
-        @Override
-        protected Void doInBackground(Void... params)
-        {
-            List<ChatRoomProviderWrapper> crpWrappers = mucService.getChatRoomProviders();
+        public void execute() {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                doInBackground();
 
+                mParent.runOnUiThread(() -> {
+                    if (!mAccountBookmarkConferencesList.isEmpty()) {
+                        Object[] keySet = mAccountBookmarkConferencesList.keySet().toArray();
+                        if (keySet.length > 0) {
+                            String accountId = (String) keySet[0];
+                            if (StringUtils.isNotEmpty(accountId))
+                                initChatRoomSpinner(accountId);
+                        }
+                    }
+                });
+            });
+        }
+
+        private void doInBackground() {
+            List<ChatRoomProviderWrapper> crpWrappers = mucService.getChatRoomProviders();
             for (ChatRoomProviderWrapper crpWrapper : crpWrappers) {
                 if (crpWrapper != null) {
                     ProtocolProviderService pps = crpWrapper.getProtocolProvider();
@@ -246,11 +253,11 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
                         }
 
                     } catch (SmackException.NoResponseException | SmackException.NotConnectedException
-                            | XMPPException.XMPPErrorException | InterruptedException e) {
+                             | XMPPException.XMPPErrorException | InterruptedException e) {
                         Timber.w("Failed to fetch Bookmarks: %s", e.getMessage());
                     }
 
-                    if (chatRoomList.size() > 0) {
+                    if (!chatRoomList.isEmpty()) {
                         String mNickName = getDefaultNickname(pps);
 
                         for (String chatRoom : chatRoomList) {
@@ -274,22 +281,6 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
                     mAccountBookmarkConferencesList.put(mAccount, bookmarkList);
                 }
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result)
-        {
-            super.onPostExecute(result);
-            if ((mAccountBookmarkConferencesList != null) && (mAccountBookmarkConferencesList.size() > 0)) {
-                Object[] keySet = mAccountBookmarkConferencesList.keySet().toArray();
-
-                if (keySet.length > 0) {
-                    String accountId = (String) keySet[0];
-                    if (StringUtils.isNotEmpty(accountId))
-                        initChatRoomSpinner(accountId);
-                }
-            }
         }
     }
 
@@ -297,8 +288,7 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
      * Creates the providers comboBox and filling its content with the current available chatRooms
      * Add available server chatRooms to the chatRoomList when providers changes
      */
-    private void initChatRoomSpinner(String accountId)
-    {
+    private void initChatRoomSpinner(String accountId) {
         mChatRoomList = new ArrayList<>();
         List<BookmarkConference> mBookmarkConferences = mAccountBookmarkConferencesList.get(accountId);
 
@@ -318,20 +308,18 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         chatRoomSpinner.setAdapter(mAdapter);
         chatRoomSpinner.setOnItemSelectedListener(this);
 
-        if (mChatRoomList.size() > 0) {
+        if (!mChatRoomList.isEmpty()) {
             String chatRoom = mChatRoomList.get(0);
             initBookMarkForm(chatRoom);
         }
     }
 
-    private void closeDialog()
-    {
+    private void closeDialog() {
         this.cancel();
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id)
-    {
+    public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
         switch (adapter.getId()) {
             case R.id.jid_Accounts_Spinner:
                 String userId = (String) adapter.getItemAtPosition(pos);
@@ -355,8 +343,7 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent)
-    {
+    public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
     }
 
@@ -365,9 +352,8 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
      *
      * @param pps the ProtocolProviderService
      */
-    private String getDefaultNickname(ProtocolProviderService pps)
-    {
-        String nickName = AndroidGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
+    private String getDefaultNickname(ProtocolProviderService pps) {
+        String nickName = AppGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
         if ((nickName == null) || nickName.contains("@"))
             nickName = XmppStringUtils.parseLocalpart(pps.getAccountID().getAccountJid());
 
@@ -379,26 +365,22 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
      *
      * @param chatRoom the chat room name.
      */
-    private boolean initBookMarkForm(String chatRoom)
-    {
-        if (!updateBookmarkFocus()) {
-            return false;
-        }
-
-        mBookmarkFocus = mBookmarkConferenceList.get(chatRoom);
-        if (mBookmarkFocus != null) {
-            mucNameField.setText(mBookmarkFocus.getName());
-            nicknameField.setText(mBookmarkFocus.getNickname());
-            mPasswordField.setText(mBookmarkFocus.getPassword());
-            mAutoJoin.setChecked(mBookmarkFocus.isAutoJoin());
-            mBookmark.setChecked(mBookmarkFocus.isBookmark());
-            return true;
+    private boolean initBookMarkForm(String chatRoom) {
+        if (updateBookmarkFocus()) {
+            mBookmarkFocus = mBookmarkConferenceList.get(chatRoom);
+            if (mBookmarkFocus != null) {
+                mucNameField.setText(mBookmarkFocus.getName());
+                nicknameField.setText(mBookmarkFocus.getNickname());
+                mPasswordField.setText(mBookmarkFocus.getPassword());
+                mAutoJoin.setChecked(mBookmarkFocus.isAutoJoin());
+                mBookmark.setChecked(mBookmarkFocus.isBookmark());
+                return true;
+            }
         }
         return false;
     }
 
-    private boolean updateBookmarkFocus()
-    {
+    private boolean updateBookmarkFocus() {
         if (mBookmarkFocus != null) {
             String nickName = (mBookmarkFocus.getNickname() != null) ? mBookmarkFocus.getNickname().toString() : null;
             hasChanges = !(isEqual(mBookmarkFocus.getName(), ViewUtil.toString(mucNameField))
@@ -432,10 +414,10 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
      *
      * @param oldStr exiting string value
      * @param newStr newly edited string
+     *
      * @return true is both are equal
      */
-    private boolean isEqual(String oldStr, String newStr)
-    {
+    private boolean isEqual(String oldStr, String newStr) {
         return (TextUtils.isEmpty(oldStr) && TextUtils.isEmpty(newStr))
                 || ((oldStr != null) && oldStr.equals(newStr));
     }
@@ -443,8 +425,7 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
     /**
      * Update the bookmarks on server.
      */
-    private boolean updateBookmarkedConference()
-    {
+    private boolean updateBookmarkedConference() {
         boolean success = true;
         List<BookmarkedConference> bookmarkedList;
         List<EntityBareJid> bookmarkedEntityList = new ArrayList<>();
@@ -515,7 +496,7 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
                         }
                     }
                 } catch (SmackException.NoResponseException | SmackException.NotConnectedException
-                        | XMPPException.XMPPErrorException | InterruptedException e) {
+                         | XMPPException.XMPPErrorException | InterruptedException e) {
                     String errMag = aTalkApp.getResString(R.string.chatroom_bookmark_update_failed,
                             chatRoomWrapper, e.getMessage());
                     Timber.w(errMag);

@@ -303,7 +303,7 @@ public class CaptchaDialog extends Dialog {
                 FormField urlField = dataForm.getField("ocr");
                 if (urlField != null) {
                     String urlString = urlField.getFirstValue();
-                    if (urlString.contains("http://")) {
+                    if (urlString.contains("https://")) {
                         URL uri = new URL(urlString);
                         bmCaptcha = BitmapFactory.decodeStream(uri.openConnection().getInputStream());
                     }

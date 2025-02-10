@@ -5,8 +5,6 @@
  */
 package org.jivesoftware.smackx.colibri;
 
-import androidx.annotation.NonNull;
-
 import org.jivesoftware.smackx.AbstractExtensionElement;
 
 import org.atalk.service.neomedia.MediaDirection;
@@ -2293,7 +2291,6 @@ public class ColibriConferenceIQ extends IQ
              *
              * @return returns state name.
              */
-            @NonNull
             public String toString()
             {
                 return name;

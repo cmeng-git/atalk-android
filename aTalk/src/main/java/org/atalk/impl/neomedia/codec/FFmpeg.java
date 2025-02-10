@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.codec;
@@ -14,8 +14,7 @@ import java.nio.ByteOrder;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class FFmpeg
-{
+public class FFmpeg {
     /**
      * No pts value.
      */
@@ -24,7 +23,7 @@ public class FFmpeg
     public static final int AV_NUM_DATA_POINTERS = 8;
 
     /**
-     *  Audio channel masks.
+     * Audio channel masks.
      */
     public static final int AV_CH_LAYOUT_STEREO = 3;
     public static final int AV_CH_LAYOUT_MONO = 4;
@@ -218,8 +217,7 @@ public class FFmpeg
     static {
         System.loadLibrary("jnffmpeg");
 
-        if (ByteOrder.nativeOrder().equals(ByteOrder.BIG_ENDIAN))
-        {
+        if (ByteOrder.nativeOrder().equals(ByteOrder.BIG_ENDIAN)) {
             PIX_FMT_RGB24 = av_get_pix_fmt("rgb24");
 
             PIX_FMT_RGB32 = av_get_pix_fmt("argb");
@@ -228,8 +226,7 @@ public class FFmpeg
             PIX_FMT_BGR32 = av_get_pix_fmt("abgr");
             PIX_FMT_BGR32_1 = av_get_pix_fmt("bgra");
         }
-        else
-        {
+        else {
             PIX_FMT_RGB24 = av_get_pix_fmt("bgr24");
 
             PIX_FMT_RGB32 = av_get_pix_fmt("bgra");
@@ -255,6 +252,7 @@ public class FFmpeg
      * Allocate memory.
      *
      * @param size size to allocate
+     *
      * @return native pointer or 0 if av_malloc failed
      */
     public static native long av_malloc(int size);
@@ -263,6 +261,7 @@ public class FFmpeg
      * Allocates a new <code>AVCodecContext</code>.
      *
      * @param codec
+     *
      * @return native pointer to the new <code>AVCodecContext</code>
      */
     public static native long avcodec_alloc_context3(long codec);
@@ -282,6 +281,7 @@ public class FFmpeg
      * Close an AVCodecContext
      *
      * @param ctx pointer to AVCodecContex
+     *
      * @return 0 if success, -1 otherwise
      */
     public static native int avcodec_close(long ctx);
@@ -296,6 +296,7 @@ public class FFmpeg
      * @param got_picture if the decoding has produced a valid picture
      * @param buf the input buffer
      * @param buf_size input buffer size
+     *
      * @return number of bytes written to buff if success
      */
     public static native int avcodec_decode_video(long ctx, long frame, boolean[] got_picture,
@@ -308,6 +309,7 @@ public class FFmpeg
      * @param avframe frame decoded
      * @param src input buffer
      * @param src_length input buffer size
+     *
      * @return number of bytes written to buff if success
      */
     public static native int avcodec_decode_video(long ctx, long avframe, long src, int src_length);
@@ -324,6 +326,7 @@ public class FFmpeg
      * For PCM audio the number of samples read from samples is equal to <code>buf_size</code>*
      * <code>input_sample_size</code>/<code>output_sample_size</code>.
      * @param samples_offset the offset in the input buffer containing the samples
+     *
      * @return on error a negative value is returned, on success zero or the number of bytes used to
      * encode the data read from the input buffer
      */
@@ -337,6 +340,7 @@ public class FFmpeg
      * @param buff the output buffer
      * @param buf_size output buffer size
      * @param frame frame to encode
+     *
      * @return number of bytes written to buff if success
      */
     public static native int avcodec_encode_video(long ctx, byte[] buff, int buf_size, long frame);
@@ -345,6 +349,7 @@ public class FFmpeg
      * Find a registered decoder with a matching ID.
      *
      * @param id <code>CodecID</code> of the requested encoder
+     *
      * @return an <code>AVCodec</code> encoder if one was found; <code>0</code>, otherwise
      */
     public static native long avcodec_find_decoder(int id);
@@ -353,6 +358,7 @@ public class FFmpeg
      * Finds a registered encoder with a matching codec ID.
      *
      * @param id <code>CodecID</code> of the requested encoder
+     *
      * @return an <code>AVCodec</code> encoder if one was found; <code>0</code>, otherwise
      */
     public static native long avcodec_find_encoder(int id);
@@ -367,8 +373,7 @@ public class FFmpeg
      *
      * @param frame an <code>AVFrame *</code> value which points to the <code>AVFrame</code> instance to be freed
      */
-    public static void avcodec_free_frame(long frame)
-    {
+    public static void avcodec_free_frame(long frame) {
         // Invoke the native function avcodec_free_frame(AVFrame **).
         av_free(frame);
     }
@@ -381,6 +386,7 @@ public class FFmpeg
      * @param ctx the <code>AVCodecContext</code> which will be set up to use the specified <code>AVCodec</code>
      * @param codec the <code>AVCodec</code> to use within the <code>AVCodecContext</code>
      * @param options
+     *
      * @return zero on success, a negative value on error
      */
     public static native int avcodec_open2(long ctx, long codec, String... options);
@@ -406,6 +412,7 @@ public class FFmpeg
      * libavcodec upon {@link #avcodec_open(long, long)}.
      *
      * @param ctx the <code>AVCodecContext</code> to get the samples per packet of
+     *
      * @return the samples per packet of the specified <code>AVCodecContext</code>
      */
     public static native int avcodeccontext_get_frame_size(long ctx);
@@ -414,6 +421,7 @@ public class FFmpeg
      * Get height of the video.
      *
      * @param ctx pointer to AVCodecContext
+     *
      * @return video height
      */
     public static native int avcodeccontext_get_height(long ctx);
@@ -422,6 +430,7 @@ public class FFmpeg
      * Get pixel format.
      *
      * @param ctx pointer to AVCodecContext
+     *
      * @return pixel format
      */
     public static native int avcodeccontext_get_pix_fmt(long ctx);
@@ -430,6 +439,7 @@ public class FFmpeg
      * Get width of the video.
      *
      * @param ctx pointer to AVCodecContext
+     *
      * @return video width
      */
     public static native int avcodeccontext_get_width(long ctx);
@@ -440,7 +450,7 @@ public class FFmpeg
      * @param ctx AVCodecContext pointer
      * @param b_frame_strategy strategy
      */
-    public static native void avcodeccontext_set_b_frame_strategy(long ctx,  int b_frame_strategy);
+    public static native void avcodeccontext_set_b_frame_strategy(long ctx, int b_frame_strategy);
 
     /**
      * Sets the average bit rate of the specified <code>AVCodecContext</code>. The property is to be set
@@ -480,6 +490,7 @@ public class FFmpeg
      * @param ch_Layout the AVChannelLayout
      */
     public static native void avcodeccontext_set_ch_layout(long ctx, int ch_Layout);
+
     public static native void avcodeccontext_set_nb_channels(long ctx, int nb_channels);
 
     public static native void avcodeccontext_set_chromaoffset(long ctx, int chromaoffset);
@@ -614,6 +625,7 @@ public class FFmpeg
      * @param graph a pointer to the <code>AVFilterGraph</code> instance to check the validity of and
      * configure
      * @param log_ctx the <code>AVClass</code> context to be used for logging
+     *
      * @return <code>0</code> on success; a negative <code>AVERROR</code> on error
      */
     public static native int avfilter_graph_config(long graph, long log_ctx);
@@ -633,6 +645,7 @@ public class FFmpeg
      * instance with the specified name is to be found
      * @param name the name of the <code>AVFilterContext</code> instance which is to be found in the
      * specified <code>graph</code>
+     *
      * @return the filter graph pointer
      */
     public static native long avfilter_graph_get_filter(long graph, String name);
@@ -645,6 +658,7 @@ public class FFmpeg
      * @param inputs a pointer to a linked list to the inputs of the graph if any; otherwise, <code>0</code>
      * @param outputs a pointer to a linked list to the outputs of the graph if any; otherwise, <code>0</code>
      * @param log_ctx the <code>AVClass</code> context to be used for logging
+     *
      * @return <code>0</code> on success; a negative <code>AVERROR</code> on error
      */
     public static native int avfilter_graph_parse(long graph, String filters, long inputs,
@@ -733,6 +747,7 @@ public class FFmpeg
      * @param dstH height destination image
      * @param dstFormat destination format
      * @param flags flags
+     *
      * @return cached SwsContext pointer
      */
     public static native long sws_getCachedContext(long ctx, int srcW, int srcH, int srcFormat,
@@ -749,6 +764,7 @@ public class FFmpeg
      * @param dstFormat destination format
      * @param dstW width of destination image
      * @param dstH height destination image
+     *
      * @return 0 if success, -1 otherwise
      */
     public static native int sws_scale(long ctx, long src, int srcSliceY, int srcSliceH,
@@ -768,6 +784,7 @@ public class FFmpeg
      * @param dstFormat destination format
      * @param dstW width of destination image
      * @param dstH height destination image
+     *
      * @return 0 if success, -1 otherwise
      */
     public static native int sws_scale(long ctx, Object src, int srcFormat, int srcW, int srcH,

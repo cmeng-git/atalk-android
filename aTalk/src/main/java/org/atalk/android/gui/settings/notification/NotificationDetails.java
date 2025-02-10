@@ -31,12 +31,12 @@ import net.java.sip.communicator.service.notification.event.NotificationActionTy
 import net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent;
 import net.java.sip.communicator.util.ServiceUtils;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.actionbar.ActionBarToggleFragment;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.impl.androidresources.AndroidResourceServiceImpl;
-import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.resources.ResourceManagementService;
 
 /**
@@ -46,7 +46,7 @@ import org.atalk.service.resources.ResourceManagementService;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class NotificationDetails extends OSGiActivity
+public class NotificationDetails extends BaseActivity
         implements NotificationChangeListener, ActionBarToggleFragment.ActionBarToggleModel {
     /**
      * Event type extra key
@@ -114,8 +114,8 @@ public class NotificationDetails extends OSGiActivity
         if (eventType == null)
             throw new IllegalArgumentException();
 
-        this.notificationService = ServiceUtils.getService(AndroidGUIActivator.bundleContext, NotificationService.class);
-        this.rms = ServiceUtils.getService(AndroidGUIActivator.bundleContext, ResourceManagementService.class);
+        this.notificationService = ServiceUtils.getService(AppGUIActivator.bundleContext, NotificationService.class);
+        this.rms = ServiceUtils.getService(AppGUIActivator.bundleContext, ResourceManagementService.class);
 
         setContentView(R.layout.notification_details);
         this.description = findViewById(R.id.description);

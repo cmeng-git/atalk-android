@@ -16,7 +16,7 @@ import net.java.sip.communicator.service.protocol.AdHocChatRoom;
 import net.java.sip.communicator.service.protocol.OperationSetAdHocMultiUserChat;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.conference.AdHocChatRoomProviderWrapper;
 import org.atalk.android.gui.chat.conference.AdHocChatRoomWrapper;
@@ -43,7 +43,7 @@ public class AdHocChatRoomList {
      * Initializes the list of ad-hoc chat rooms.
      */
     public void loadList() {
-        BundleContext bundleContext = AndroidGUIActivator.bundleContext;
+        BundleContext bundleContext = AppGUIActivator.bundleContext;
         mDB = DatabaseBackend.getWritableDB();
 
         ServiceReference[] serRefs = null;
@@ -57,7 +57,7 @@ public class AdHocChatRoomList {
         if (serRefs != null) {
             for (ServiceReference<ProtocolProviderService> serRef : serRefs) {
                 ProtocolProviderService protocolProvider
-                        = AndroidGUIActivator.bundleContext.getService(serRef);
+                        = AppGUIActivator.bundleContext.getService(serRef);
                 OperationSetAdHocMultiUserChat adHocMultiUserChatOpSet
                         = protocolProvider.getOperationSet(OperationSetAdHocMultiUserChat.class);
                 if (adHocMultiUserChatOpSet != null) {
@@ -148,8 +148,7 @@ public class AdHocChatRoomList {
 
     /**
      * Returns the <code>AdHocChatRoomWrapper</code> that correspond to the given <code>AdHocChatRoom
-     * </code>. If the list of ad-hoc chat rooms
-     * doesn't contain a corresponding wrapper - returns null.
+     * </code>. If the list of ad-hoc chat rooms doesn't contain a corresponding wrapper - returns null.
      *
      * @param adHocChatRoom the <code>ChatRoom</code> that we're looking for
      *

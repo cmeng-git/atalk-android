@@ -21,8 +21,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public abstract class ViewDependentProvider<T>
-{
+public abstract class ViewDependentProvider<T> {
     /**
      * Timeout for dispose surface operation
      */
@@ -74,8 +73,7 @@ public abstract class ViewDependentProvider<T>
      * @param activity parent <code>Activity</code> that manages the <code>container</code>.
      * @param container the container that will hold maintained <code>View</code>.
      */
-    public ViewDependentProvider(Activity activity, ViewGroup container)
-    {
+    public ViewDependentProvider(Activity activity, ViewGroup container) {
         mActivity = activity;
         mContainer = container;
     }
@@ -84,8 +82,7 @@ public abstract class ViewDependentProvider<T>
      * Checks if the view is currently created. If not creates new <code>View</code> and adds it to the
      * <code>container</code>.
      */
-    protected void ensureViewCreated()
-    {
+    protected void ensureViewCreated() {
         if (view == null) {
             mActivity.runOnUiThread(() -> {
                 view = createViewInstance();
@@ -102,8 +99,7 @@ public abstract class ViewDependentProvider<T>
      *
      * @return maintained <code>View</code> object.
      */
-    public View getView()
-    {
+    public View getView() {
         return view;
     }
 
@@ -112,21 +108,18 @@ public abstract class ViewDependentProvider<T>
      *
      * @param size user selected video size independent of the device orientation
      */
-    public void setVideoSize(Dimension size)
-    {
+    public void setVideoSize(Dimension size) {
         mVideoSize = size;
     }
 
-    public Dimension getVideoSize()
-    {
+    public Dimension getVideoSize() {
         return mVideoSize;
     }
 
     /**
      * Checks if maintained view exists and removes if from the <code>container</code>.
      */
-    protected void ensureViewDestroyed()
-    {
+    protected void ensureViewDestroyed() {
         if (view != null) {
             final View viewToRemove = view;
             view = null;
@@ -143,8 +136,7 @@ public abstract class ViewDependentProvider<T>
      *
      * @param obj provided object instance.
      */
-    synchronized protected void onObjectCreated(T obj)
-    {
+    synchronized protected void onObjectCreated(T obj) {
         this.providedObject = obj;
         this.notifyAll();
     }
@@ -156,8 +148,7 @@ public abstract class ViewDependentProvider<T>
      *
      * @return provided object.
      */
-    synchronized public T obtainObject()
-    {
+    synchronized public T obtainObject() {
         ensureViewCreated();
         if (this.providedObject == null) {
             try {
@@ -180,24 +171,21 @@ public abstract class ViewDependentProvider<T>
      *
      * @return the object if it is currently held by this provider or <code>null</code> otherwise.
      */
-    synchronized public T tryObtainObject()
-    {
+    synchronized public T tryObtainObject() {
         return providedObject;
     }
 
     /**
      * Should be called by subclasses when object is destroyed.
      */
-    synchronized protected void onObjectDestroyed()
-    {
+    synchronized protected void onObjectDestroyed() {
         releaseObject();
     }
 
     /**
      * Should be called by the consumer to release the object.
      */
-    public void onObjectReleased()
-    {
+    public void onObjectReleased() {
         releaseObject();
         // Remove the view once it's released
         ensureViewDestroyed();
@@ -206,8 +194,7 @@ public abstract class ViewDependentProvider<T>
     /**
      * Releases the subject object and notifies all threads waiting on the lock.
      */
-    synchronized protected void releaseObject()
-    {
+    synchronized protected void releaseObject() {
         if (providedObject != null) {
             providedObject = null;
             this.notifyAll();
@@ -218,8 +205,7 @@ public abstract class ViewDependentProvider<T>
      * Blocks the current thread until subject object is released. It should be used to block UI thread
      * before the <code>View</code> is hidden.
      */
-    synchronized public void waitForObjectRelease()
-    {
+    synchronized public void waitForObjectRelease() {
         if (providedObject != null) {
             try {
                 Timber.i("Waiting for object release... %s", hashCode());

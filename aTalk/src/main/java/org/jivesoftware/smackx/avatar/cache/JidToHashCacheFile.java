@@ -17,129 +17,123 @@
 
 package org.jivesoftware.smackx.avatar.cache;
 
-import org.jivesoftware.smack.util.stringencoder.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.jivesoftware.smack.util.stringencoder.Base32;
+import org.jivesoftware.smack.util.stringencoder.StringEncoder;
 import org.jxmpp.jid.BareJid;
-
-import java.io.*;
-import java.util.logging.*;
-
-import static android.R.attr.id;
 
 /**
  * An implementation of an JidToHashCache which store the data of the filesystem.
  *
  * @author Eng Chong Meng
  */
-public class JidToHashCacheFile implements JidToHashCache
-{
-	private static final Logger LOGGER = Logger.getLogger(JidToHashCacheFile.class.getName());
-	private File mStoreDir;
-	private StringEncoder filenameEncoder;
+public class JidToHashCacheFile implements JidToHashCache {
+    private static final Logger LOGGER = Logger.getLogger(JidToHashCacheFile.class.getName());
+    private final File mStoreDir;
+    private final StringEncoder<String> filenameEncoder;
 
-	/**
-	 * Create a JidToHashCache.
-	 * /**
-	 * Creates a new directory for keeping JidToHashCache object.
-	 * <p>
-	 * Default filename encoder {@link Base32}, as this will work on all file systems,
+    /**
+     * Create a JidToHashCache.
+     * /**
+     * Creates a new directory for keeping JidToHashCache object.
+     * <p>
+     * Default filename encoder {@link Base32}, as this will work on all file systems,
      * both case-sensitive and case-insensitive. It does however produce longer filenames.
-	 *
-	 * @param storeDir
-	 * 		The directory used to store the data.
-	 */
-	public JidToHashCacheFile(final File storeDir)
-	{
-		if (storeDir.exists() && !storeDir.isDirectory())
-			throw new IllegalArgumentException("The store directory must be a directory");
-		mStoreDir = storeDir;
-		mStoreDir.mkdirs();
-		filenameEncoder = Base32.getStringEncoder();
-	}
+     *
+     * @param storeDir The directory used to store the data.
+     */
+    public JidToHashCacheFile(final File storeDir) {
+        if (storeDir.exists() && !storeDir.isDirectory())
+            throw new IllegalArgumentException("The store directory must be a directory");
+        mStoreDir = storeDir;
+        mStoreDir.mkdirs();
+        filenameEncoder = Base32.getStringEncoder();
+    }
 
-	@Override
-	public void addHashByJid(BareJid bareJid, String hash)
-	{
-		File jidFile = getFileFor(bareJid);
-		DataOutputStream dos = null;
-		try {
-			if (jidFile.exists() || jidFile.createNewFile()) {
-				dos = new DataOutputStream(new FileOutputStream(jidFile));
-				dos.writeUTF(hash);
+    @Override
+    public void addHashByJid(BareJid bareJid, String hash) {
+        File jidFile = getFileFor(bareJid);
+        DataOutputStream dos = null;
+        try {
+            if (jidFile.exists() || jidFile.createNewFile()) {
+                dos = new DataOutputStream(new FileOutputStream(jidFile));
+                dos.writeUTF(hash);
+            }
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to write imageHash info to file: " + jidFile.getName(), e);
+        } finally {
+            try {
+                if (dos != null)
+                    dos.close();
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Error while closing stream: " + jidFile.getName(), e);
+            }
+        }
+    }
+
+    @Override
+    public String getHashForJid(BareJid id) {
+        String hash = null;
+        File file = getFileFor(id);
+
+        // No information available for the id, so just return
+        if (!file.exists())
+            return null;
+
+        DataInputStream dis = null;
+        try {
+            dis = new DataInputStream(new FileInputStream(file));
+            hash = dis.readUTF();
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Could not restore photoHash from file: " + id, e);
+        } finally {
+            try {
+                if (dis != null)
+                    dis.close();
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Error while closing stream: " + id, e);
+            }
+        }
+        return hash;
+    }
+
+    @Override
+    public boolean contains(BareJid id) {
+        File file = getFileFor(id);
+        return file.exists();
+    }
+
+    /**
+     * Purge the obsoleted file from mStoreDir
+     */
+    @Override
+    public boolean purgeItemFor(BareJid id) {
+        File file = getFileFor(id);
+        return file.exists() && file.delete();
+    }
+
+    private File getFileFor(BareJid id) {
+        String filename = filenameEncoder.encode(id.toString());
+        return new File(mStoreDir, filename);
+    }
+
+    @Override
+    public boolean emptyCache() {
+        File[] files = mStoreDir.listFiles();
+        boolean status = false;
+        if (files != null) {
+			for (File file : files) {
+				status = file.delete();
 			}
 		}
-		catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Failed to write imageHash info to file: " + id, e);
-		} finally {
-			try {
-				if (dos != null)
-					dos.close();
-			}
-			catch (IOException e) {
-				LOGGER.log(Level.WARNING, "Error while closing stream: " + id, e);
-			}
-		}
-	}
-
-	@Override
-	public String getHashForJid(BareJid id)
-	{
-		String hash = null;
-		File file = getFileFor(id);
-
-		// No information available for the id, so just return
-		if (!file.exists())
-			return null;
-
-		DataInputStream dis = null;
-		try {
-			dis = new DataInputStream(new FileInputStream(file));
-			hash = dis.readUTF();
-		}
-		catch (IOException e) {
-			LOGGER.log(Level.WARNING, "Could not restore photoHash from file: " + id, e);
-		} finally {
-			try {
-				if (dis != null)
-					dis.close();
-			}
-			catch (IOException e) {
-				LOGGER.log(Level.WARNING, "Error while closing stream: " + id, e);
-			}
-		}
-		return hash;
-	}
-
-	@Override
-	public boolean contains(BareJid id)
-	{
-		File file = getFileFor(id);
-		return file.exists();
-	}
-
-	/**
-	 * Purge the obsoleted file from mStoreDir
-	 */
-	@Override
-	public boolean purgeItemFor(BareJid id)
-	{
-		File file = getFileFor(id);
-		return file.exists() && file.delete();
-	}
-
-	private File getFileFor(BareJid id)
-	{
-		String filename = filenameEncoder.encode(id.toString());
-		return new File(mStoreDir, filename);
-	}
-
-	@Override
-	public boolean emptyCache()
-	{
-		File[] files = mStoreDir.listFiles();
-		boolean status = true;
-		for (File file : files) {
-			status = file.delete();
-		}
-		return status;
-	}
+        return status;
+    }
 }

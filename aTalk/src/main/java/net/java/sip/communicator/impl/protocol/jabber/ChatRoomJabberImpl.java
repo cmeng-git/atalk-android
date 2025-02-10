@@ -53,7 +53,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.conference.CaptchaDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
@@ -325,7 +325,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         invitationRejectionListeners = new InvitationRejectionListeners();
         multiUserChat.addInvitationRejectionListener(invitationRejectionListeners);
 
-        ConferenceChatManager conferenceChatManager = AndroidGUIActivator.getUIService().getConferenceChatManager();
+        ConferenceChatManager conferenceChatManager = AppGUIActivator.getUIService().getConferenceChatManager();
         addMessageListener(conferenceChatManager);
     }
 

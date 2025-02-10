@@ -18,13 +18,12 @@ package org.jivesoftware.smackx.externalservicediscovery;
 import static net.java.sip.communicator.impl.netaddr.NetworkAddressManagerServiceImpl.STUN_SRV_NAME;
 import static net.java.sip.communicator.impl.netaddr.NetworkAddressManagerServiceImpl.TURN_SRV_NAME;
 
-import android.text.TextUtils;
-
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
 import org.ice4j.ice.harvest.StunCandidateHarvester;
 import org.ice4j.ice.harvest.TurnCandidateHarvester;
 import org.ice4j.security.LongTermCredential;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.XMPPConnection;
 
 import java.nio.charset.StandardCharsets;
@@ -54,7 +53,7 @@ public class IceCandidateHarvester
                     int port = service.getPort();
                     String transport = service.getTransport();
 
-                    if (TextUtils.isEmpty(host) || TextUtils.isEmpty(transport) || port < 0) {
+                    if (StringUtils.isEmpty(host) || StringUtils.isEmpty(transport) || port < 0) {
                         continue;
                     }
 

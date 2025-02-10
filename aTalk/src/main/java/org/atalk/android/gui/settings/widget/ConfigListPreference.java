@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.settings.widget;
@@ -13,7 +13,7 @@ import androidx.preference.ListPreference;
 import androidx.preference.PreferenceManager;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.service.configuration.ConfigurationService;
 
 /**
@@ -86,7 +86,7 @@ public class ConfigListPreference extends ListPreference {
      */
     @Override
     protected String getPersistedString(String defaultReturnValue) {
-        ConfigurationService configService = AndroidGUIActivator.getConfigurationService();
+        ConfigurationService configService = AppGUIActivator.getConfigurationService();
         if (configService == null)
             return defaultReturnValue;
 
@@ -100,7 +100,7 @@ public class ConfigListPreference extends ListPreference {
     protected boolean persistString(String value) {
         super.persistString(value);
 
-        ConfigurationService configService = AndroidGUIActivator.getConfigurationService();
+        ConfigurationService configService = AppGUIActivator.getConfigurationService();
         if (configService == null)
             return false;
 
@@ -135,7 +135,7 @@ public class ConfigListPreference extends ListPreference {
 
     /**
      * {@inheritDoc}
-     *
+     * <p>
      * Additionally checks if current value is equal to disable dependents value.
      */
     @Override

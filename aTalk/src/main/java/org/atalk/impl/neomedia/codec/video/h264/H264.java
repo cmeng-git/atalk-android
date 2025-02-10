@@ -3,8 +3,7 @@ package org.atalk.impl.neomedia.codec.video.h264;
 /**
  * Common utilities and constants for H264.
  */
-public class H264
-{
+public class H264 {
     /**
      * The bytes to prefix any NAL unit to be output by this
      * <code>DePacketizer</code> and given to a H.264 decoder. Includes
@@ -37,21 +36,18 @@ public class H264
     /**
      * Check if Single-Time Aggregation Packet (STAP-A) NAL unit is correctly formed.
      *
-     * @param data            STAP-A payload
-     * @param offset          Starting position of NAL unit
+     * @param data STAP-A payload
+     * @param offset Starting position of NAL unit
      * @param lengthRemaining Bytes left in STAP-A
+     *
      * @return True if STAP-A NAL Unit is correct
      */
-    static boolean verifyStapANaluLengths(byte[] data, int offset, int lengthRemaining)
-    {
-        if (data.length < offset + lengthRemaining)
-        {
+    static boolean verifyStapANaluLengths(byte[] data, int offset, int lengthRemaining) {
+        if (data.length < offset + lengthRemaining) {
             return false;
         }
-        while (lengthRemaining != 0)
-        {
-            if (lengthRemaining < kNalUSize)
-            {
+        while (lengthRemaining != 0) {
+            if (lengthRemaining < kNalUSize) {
                 return false;
             }
             int naluSize = kNalUSize + getUint16(data, offset);
@@ -61,8 +57,7 @@ public class H264
         return true;
     }
 
-    static int getUint16(byte[] data, int offset)
-    {
+    static int getUint16(byte[] data, int offset) {
         return ((data[offset] & 0xff) << 8) | (data[offset + 1] & 0xff);
     }
 }

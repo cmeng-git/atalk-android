@@ -29,7 +29,7 @@ import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
 import org.apache.commons.text.StringEscapeUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 
 import timber.log.Timber;
 
@@ -605,7 +605,7 @@ public class ChatMessageImpl implements ChatMessage {
         final IMessage imessage = evt.getSourceMessage();
         final Contact contact = evt.getSourceContact();
         final String sender = !evt.getSender().isEmpty() ? evt.getSender()
-                : AndroidGUIActivator.getContactListService().findMetaContactByContact(contact).getDisplayName();
+                : AppGUIActivator.getContactListService().findMetaContactByContact(contact).getDisplayName();
 
         return new ChatMessageImpl(contact.getAddress(), sender,
                 evt.getTimestamp(), evt.getEventType(), imessage, evt.getCorrectedMessageUID(), ChatMessage.DIR_IN);

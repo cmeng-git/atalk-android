@@ -6,6 +6,11 @@
  */
 package net.java.sip.communicator.plugin.otr;
 
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 import net.java.otr4j.OtrPolicy;
 import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.gui.UIService;
@@ -28,11 +33,6 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 import timber.log.Timber;
 
 /**
@@ -43,8 +43,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class OtrActivator extends AbstractServiceDependentActivator implements ServiceListener
-{
+public class OtrActivator extends AbstractServiceDependentActivator implements ServiceListener {
     /**
      * A property used in configuration to disable the OTR plugin.
      */
@@ -105,10 +104,10 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
      * Gets an {@link AccountID} by its UID.
      *
      * @param uid The {@link AccountID} UID.
+     *
      * @return The {@link AccountID} with the requested UID or null.
      */
-    public static AccountID getAccountIDByUID(String uid)
-    {
+    public static AccountID getAccountIDByUID(String uid) {
         if ((uid == null) || (uid.length() < 1))
             return null;
 
@@ -131,8 +130,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
      *
      * @return a {@link List} of {@link AccountID}.
      */
-    public static List<AccountID> getAllAccountIDs()
-    {
+    public static List<AccountID> getAllAccountIDs() {
         Map<Object, ProtocolProviderFactory> providerFactoriesMap = getProtocolProviderFactories();
 
         if (providerFactoriesMap == null)
@@ -146,8 +144,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
         return accountIDs;
     }
 
-    private static Map<Object, ProtocolProviderFactory> getProtocolProviderFactories()
-    {
+    private static Map<Object, ProtocolProviderFactory> getProtocolProviderFactories() {
         ServiceReference[] serRefs;
 
         try {
@@ -173,13 +170,11 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
      * @return the ui service class.
      */
     @Override
-    public Class<?> getDependentServiceClass()
-    {
+    public Class<?> getDependentServiceClass() {
         return UIService.class;
     }
 
-    private void handleProviderAdded(ProtocolProviderService provider)
-    {
+    private void handleProviderAdded(ProtocolProviderService provider) {
         OperationSetInstantMessageTransform opSetMessageTransform
                 = provider.getOperationSet(OperationSetInstantMessageTransform.class);
 
@@ -189,8 +184,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
             Timber.log(TimberLog.FINER, "Service did not have a transform op. set.");
     }
 
-    private void handleProviderRemoved(ProtocolProviderService provider)
-    {
+    private void handleProviderRemoved(ProtocolProviderService provider) {
         // check whether the provider has a basic im operation set
         OperationSetInstantMessageTransform opSetMessageTransform
                 = provider.getOperationSet(OperationSetInstantMessageTransform.class);
@@ -203,8 +197,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
      * Implements ServiceListener#serviceChanged(ServiceEvent).
      */
     @Override
-    public void serviceChanged(ServiceEvent serviceEvent)
-    {
+    public void serviceChanged(ServiceEvent serviceEvent) {
         Object sService = bundleContext.getService(serviceEvent.getServiceReference());
 
         if (TimberLog.isTraceEnable) {
@@ -231,8 +224,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
      * @param context the context to set.
      */
     @Override
-    public void setBundleContext(BundleContext context)
-    {
+    public void setBundleContext(BundleContext context) {
         bundleContext = context;
     }
 
@@ -240,11 +232,11 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
      * Implements AbstractServiceDependentActivator#start(UIService).
      *
      * @param dependentService the service this activator is waiting.
+     *
      * @see ChatSecuritySettings #onSharedPreferenceChanged(SharedPreferences, String)
      */
     @Override
-    public void start(Object dependentService)
-    {
+    public void start(Object dependentService) {
         // Init all public static references used by other OTR classes
         uiService = (UIService) dependentService;
         configService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
@@ -274,7 +266,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
         ServiceReference<ProtocolProviderService>[] protocolProviderRefs
                 = ServiceUtils.getServiceReferences(bundleContext, ProtocolProviderService.class);
 
-        if ((protocolProviderRefs != null) && (protocolProviderRefs.length > 0)) {
+        if (protocolProviderRefs.length > 0) {
             Timber.d("Found %d already installed providers.", protocolProviderRefs.length);
             for (ServiceReference<ProtocolProviderService> protocolProviderRef : protocolProviderRefs) {
                 ProtocolProviderService provider = bundleContext.getService(protocolProviderRef);
@@ -288,8 +280,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
      */
     @Override
     public void stop(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         // Unregister transformation layer.
         // start listening for newly register or removed protocol providers
         bundleContext.removeServiceListener(this);
@@ -298,7 +289,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
         if (otrContactManager != null)
             bundleContext.removeServiceListener(otrContactManager);
 
-        ServiceReference[] protocolProviderRefs;
+        ServiceReference<?>[] protocolProviderRefs;
         try {
             protocolProviderRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
         } catch (InvalidSyntaxException ex) {
@@ -306,9 +297,9 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
             return;
         }
 
-        if ((protocolProviderRefs != null) && (protocolProviderRefs.length > 0)) {
+        if (protocolProviderRefs != null) {
             // in case we found any
-            for (ServiceReference protocolProviderRef : protocolProviderRefs) {
+            for (ServiceReference<?> protocolProviderRef : protocolProviderRefs) {
                 ProtocolProviderService provider = (ProtocolProviderService) bundleContext.getService(protocolProviderRef);
                 handleProviderRemoved(provider);
             }
@@ -320,8 +311,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
      *
      * @return the <code>MetaContactListService</code> obtained from the bundle context
      */
-    public static MetaContactListService getContactListService()
-    {
+    public static MetaContactListService getContactListService() {
         if (metaCListService == null) {
             metaCListService = ServiceUtils.getService(bundleContext, MetaContactListService.class);
         }
@@ -333,8 +323,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
      *
      * @return the service giving access to message history.
      */
-    public static MessageHistoryService getMessageHistoryService()
-    {
+    public static MessageHistoryService getMessageHistoryService() {
         if (messageHistoryService == null) {
             messageHistoryService = ServiceUtils.getService(bundleContext, MessageHistoryService.class);
         }

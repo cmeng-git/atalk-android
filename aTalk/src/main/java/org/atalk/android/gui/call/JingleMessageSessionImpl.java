@@ -39,8 +39,8 @@ import net.java.sip.communicator.util.GuiUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
-import org.atalk.impl.androidnotification.VibrateHandlerImpl;
-import org.atalk.impl.androidtray.NotificationPopupHandler;
+import org.atalk.impl.appnotification.VibrateHandlerImpl;
+import org.atalk.impl.appstray.NotificationPopupHandler;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -180,7 +180,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
 
         OperationSetBasicTelephonyJabberImpl telephonyJabber = jmStateListeners.get(connection);
         if (telephonyJabber != null)
-            AndroidCallUtil.createCall(aTalkApp.getInstance(), telephonyJabber.getProtocolProvider(), mRemote, isVideoCall);
+            AppCallUtil.createCall(aTalkApp.getInstance(), telephonyJabber.getProtocolProvider(), mRemote, isVideoCall);
     }
 
     /**
@@ -256,7 +256,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
         if (aTalk.isMediaCallAllowed(false)) {
             notifyOnStateChange(connection, JingleMessageType.propose, mRemote, sid);
             // v3.0.5: always starts with heads-up notification for JingleMessage call propose
-            AndroidCallListener.startIncomingCallNotification(mRemote, sid, SystrayService.JINGLE_MESSAGE_PROPOSE, isVideoCall);
+            AppCallListener.startIncomingCallNotification(mRemote, sid, SystrayService.JINGLE_MESSAGE_PROPOSE, isVideoCall);
         }
         else {
             sendJingleMessageReject(sid);

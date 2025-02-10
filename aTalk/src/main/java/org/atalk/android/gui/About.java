@@ -156,14 +156,6 @@ public class About extends BaseActivity implements View.OnClickListener {
             // new String[]{"", ""},
     };
 
-    /**
-     * Default CSS styles used to format the change log.
-     */
-    public static final String DEFAULT_CSS =
-            "h1 { margin-left: 0px; font-size: 1.2em; }" + "\n" +
-                    "li { margin-left: 0px; font-size: 0.9em;}" + "\n" +
-                    "ul { padding-left: 2em; }";
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about);
@@ -176,7 +168,7 @@ public class About extends BaseActivity implements View.OnClickListener {
         atakUrl.setOnClickListener(this);
 
         TextView atalkHelp = findViewById(R.id.atalk_help);
-        atalkHelp.setTextColor(getResources().getColor(R.color.blue50));
+        atalkHelp.setTextColor(getResources().getColor(R.color.blue50, null));
         atalkHelp.setOnClickListener(this);
 
         findViewById(R.id.ok_button).setOnClickListener(this);
@@ -216,7 +208,7 @@ public class About extends BaseActivity implements View.OnClickListener {
                     @Override
                     public void run() {
                         UpdateService updateService
-                                = ServiceUtils.getService(AndroidGUIActivator.bundleContext, UpdateService.class);
+                                = ServiceUtils.getService(AppGUIActivator.bundleContext, UpdateService.class);
                         if (updateService != null) {
                             updateService.checkForUpdates();
                         }
@@ -227,7 +219,7 @@ public class About extends BaseActivity implements View.OnClickListener {
                 aTalkApp.showSendLogsDialog();
                 break;
             case R.id.history_log:
-                ChangeLog cl = new ChangeLog(this, DEFAULT_CSS);
+                ChangeLog cl = new ChangeLog(this);
                 cl.getFullLogDialog().show();
                 break;
             case R.id.atalk_help:
@@ -253,9 +245,7 @@ public class About extends BaseActivity implements View.OnClickListener {
         StringBuilder html = new StringBuilder()
                 .append("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>")
                 .append("<html><head><style type=\"text/css\">")
-                .append(DEFAULT_CSS)
                 .append("</style></head><body>");
-
 
         StringBuilder xeps = new StringBuilder().append("<ul>");
         for (String[] feature : SUPPORTED_XEP) {
@@ -267,7 +257,7 @@ public class About extends BaseActivity implements View.OnClickListener {
         }
         xeps.append("</ul>");
 
-        html.append(String.format(getString(R.string.app_xep), xeps.toString()))
+        html.append(String.format(getString(R.string.app_xep), xeps))
                 .append("</p><hr/><p>");
 
         StringBuilder libs = new StringBuilder().append("<ul>");
@@ -280,7 +270,7 @@ public class About extends BaseActivity implements View.OnClickListener {
         }
         libs.append("</ul>");
 
-        html.append(String.format(getString(R.string.app_libraries), libs.toString()))
+        html.append(String.format(getString(R.string.app_libraries), libs))
                 .append("</p><hr/><p>");
         html.append("</body></html>");
 

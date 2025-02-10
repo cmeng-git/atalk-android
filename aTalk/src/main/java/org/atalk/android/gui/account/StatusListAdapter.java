@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.util.AndroidImageUtil;
+import org.atalk.android.util.AppImageUtil;
 
 import java.util.Iterator;
 import java.util.List;
@@ -31,9 +31,9 @@ public class StatusListAdapter extends ArrayAdapter<PresenceStatus>
      *
      * @param objects {@link Iterator} for a set of {@link PresenceStatus}
      */
-    public StatusListAdapter(@NonNull Context context, int resource, @NonNull List<PresenceStatus> objects)
+    public StatusListAdapter(@NonNull Context context, int resId, @NonNull List<PresenceStatus> objects)
     {
-        super(context, resource, objects);
+        super(context, resId, objects);
         inflater = LayoutInflater.from(context);
     }
 
@@ -59,7 +59,7 @@ public class StatusListAdapter extends ArrayAdapter<PresenceStatus>
         statusNameView.setText(statusName);
 
         // Set status icon
-        Bitmap presenceIcon = AndroidImageUtil.bitmapFromBytes(presenceStatus.getStatusIcon());
+        Bitmap presenceIcon = AppImageUtil.bitmapFromBytes(presenceStatus.getStatusIcon());
         statusIconView.setImageBitmap(presenceIcon);
         return statusItemView;
     }

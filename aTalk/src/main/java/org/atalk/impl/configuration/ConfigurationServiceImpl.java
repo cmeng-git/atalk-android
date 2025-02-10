@@ -41,8 +41,7 @@ import timber.log.Timber;
 /**
  * A straightforward implementation of the <code>ConfigurationService</code> using an XML or a
  * .properties file for storing properties. Currently only <code>String</code> properties are
- * meaningfully saved (we should probably consider how and whether we should take care of the
- * rest).
+ * meaningfully saved (we should probably consider how and whether we should take care of the rest).
  *
  * @author Emil Ivov
  * @author Damian Minkov
@@ -98,7 +97,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @see #defaultProperties
      */
-    private Map<String, String> immutableDefaultProperties = new HashMap<>();
+    private final Map<String, String> immutableDefaultProperties = new HashMap<>();
 
     /**
      * A set of properties deployed with the application during install time. Contrary to the
@@ -106,7 +105,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * with call to the <code>setProperty()</code> methods. Still, re-setting one of these properties
      * to <code>null</code> would cause for its initial value to be restored.
      */
-    private Map<String, String> defaultProperties = new HashMap<>();
+    private final Map<String, String> defaultProperties = new HashMap<>();
 
     /**
      * Our event dispatcher.
@@ -384,7 +383,6 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * property names that have prefixes longer than the specified <code>prefix</code> param.
      *
      * Example:
-     *
      * Imagine a configuration service instance containing 2 properties only:<br>
      * <code>
      * net.java.sip.communicator.PROP1=value1<br>
@@ -416,7 +414,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         Set<String> propertyNameSet;
         String[] namesArray;
 
-        if (immutableDefaultProperties.size() > 0) {
+        if (!immutableDefaultProperties.isEmpty()) {
             propertyNameSet = immutableDefaultProperties.keySet();
             namesArray = propertyNameSet.toArray(new String[0]);
             getPropertyNamesByPrefix(prefix, exactPrefixMatch, namesArray, resultKeySet);
@@ -426,7 +424,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         getPropertyNamesByPrefix(prefix, exactPrefixMatch, store.getPropertyNames(prefix), resultKeySet);
 
         // finally, get property names from mutable default property set.
-        if (defaultProperties.size() > 0) {
+        if (!defaultProperties.isEmpty()) {
             propertyNameSet = defaultProperties.keySet();
             namesArray = propertyNameSet.toArray(new String[0]);
             getPropertyNamesByPrefix(prefix, exactPrefixMatch, namesArray, resultKeySet);
@@ -861,7 +859,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
         if (scHomeDirLocation == null) {
             // no luck, check whether user has specified a custom name in the system properties
-            // return "/data/user/0/org.atalk.android/files" linked to /data/data/..
+            // return "/data/user/0/org.atalk.ohos/files" linked to /data/data/..
             scHomeDirLocation = getSystemProperty(PNAME_SC_HOME_DIR_LOCATION);
 
             if (scHomeDirLocation == null)
@@ -894,7 +892,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
         if (scHomeDirName == null) {
             // no luck, check whether user has specified a custom name in the system properties
-            // return "/data/user/0/org.atalk.android/files" linked to /data/data/..
+            // return "/data/user/0/org.atalk.ohos/files" linked to /data/data/..
             scHomeDirName = getSystemProperty(PNAME_SC_HOME_DIR_NAME);
 
             if (scHomeDirName == null)
@@ -1143,7 +1141,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         String stringValue = getString(propertyName);
         int intValue = defaultValue;
 
-        if ((stringValue != null) && (stringValue.length() > 0)) {
+        if ((stringValue != null) && (!stringValue.isEmpty())) {
             try {
                 intValue = Integer.parseInt(stringValue);
             } catch (NumberFormatException ex) {
@@ -1163,7 +1161,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         String stringValue = getString(propertyName);
         double doubleValue = defaultValue;
 
-        if ((stringValue != null) && (stringValue.length() > 0)) {
+        if ((stringValue != null) && (!stringValue.isEmpty())) {
             try {
                 doubleValue = Double.parseDouble(stringValue);
             } catch (NumberFormatException ex) {
@@ -1198,7 +1196,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         String stringValue = getString(propertyName);
         long longValue = defaultValue;
 
-        if ((stringValue != null) && (stringValue.length() > 0)) {
+        if ((stringValue != null) && (!stringValue.isEmpty())) {
             try {
                 longValue = Long.parseLong(stringValue);
             } catch (NumberFormatException ex) {
@@ -1394,7 +1392,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
             hasJNLP = false;
         }
         String jwsVersion = System.getProperty("javawebstart.version");
-        if (jwsVersion != null && jwsVersion.length() > 0) {
+        if (jwsVersion != null && !jwsVersion.isEmpty()) {
             hasJNLP = true;
         }
         return hasJNLP;
@@ -1437,13 +1435,13 @@ public class ConfigurationServiceImpl implements ConfigurationService
                 String name = (String) entry.getKey();
                 String value = (String) entry.getValue();
 
-                if (name == null || value == null || name.trim().length() == 0) {
+                if (name == null || value == null || name.trim().isEmpty()) {
                     continue;
                 }
 
                 if (name.startsWith("*")) {
                     name = name.substring(1);
-                    if (name.trim().length() == 0) {
+                    if (name.trim().isEmpty()) {
                         continue;
                     }
 

@@ -31,15 +31,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 
 import java.util.Arrays;
 
 import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
-
 
 /**
  * The credentials fragment can be used to retrieve username, password, the "store password" option status, login
@@ -58,7 +57,7 @@ import org.atalk.android.gui.util.ViewUtil;
  *
  * @author Eng Chong Meng
  */
-public class CredentialsFragment extends Fragment {
+public class CredentialsFragment extends BaseFragment {
     /**
      * Pre-entered login argument.
      */

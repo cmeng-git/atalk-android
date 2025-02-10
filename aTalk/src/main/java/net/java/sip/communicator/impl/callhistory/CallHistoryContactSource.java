@@ -15,6 +15,12 @@
  */
 package net.java.sip.communicator.impl.callhistory;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import net.java.sip.communicator.service.callhistory.CallHistoryQuery;
 import net.java.sip.communicator.service.callhistory.CallRecord;
 import net.java.sip.communicator.service.callhistory.event.CallHistoryQueryListener;
@@ -30,12 +36,6 @@ import net.java.sip.communicator.service.contactsource.SourceContact;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * The <code>CallHistoryContactSource</code> is the contact source for the call history.
  *
@@ -43,15 +43,13 @@ import java.util.List;
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-public class CallHistoryContactSource implements ContactSourceService
-{
+public class CallHistoryContactSource implements ContactSourceService {
     /**
      * Returns the display name of this contact source.
      *
      * @return the display name of this contact source
      */
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return aTalkApp.getResString(R.string.call_history_name);
     }
 
@@ -59,10 +57,10 @@ public class CallHistoryContactSource implements ContactSourceService
      * Creates query for the given <code>searchString</code>.
      *
      * @param queryString the string to search for
+     *
      * @return the created query
      */
-    public ContactQuery createContactQuery(String queryString)
-    {
+    public ContactQuery createContactQuery(String queryString) {
         return createContactQuery(queryString, 50);
     }
 
@@ -71,11 +69,11 @@ public class CallHistoryContactSource implements ContactSourceService
      *
      * @param queryString the string to search for
      * @param contactCount the maximum count of result contacts
+     *
      * @return the created query
      */
-    public ContactQuery createContactQuery(String queryString, int contactCount)
-    {
-        if (queryString != null && queryString.length() > 0) {
+    public ContactQuery createContactQuery(String queryString, int contactCount) {
+        if (queryString != null && !queryString.isEmpty()) {
             return new CallHistoryContactQuery(CallHistoryActivator.getCallHistoryService()
                     .findByPeer(queryString, contactCount));
         }
@@ -89,8 +87,7 @@ public class CallHistoryContactSource implements ContactSourceService
      * The <code>CallHistoryContactQuery</code> contains information about a current
      * query to the contact source.
      */
-    private class CallHistoryContactQuery implements ContactQuery
-    {
+    private class CallHistoryContactQuery implements ContactQuery {
         /**
          * A list of all registered query listeners.
          */
@@ -127,8 +124,7 @@ public class CallHistoryContactSource implements ContactSourceService
          *
          * @param callRecords the list of call records, which are the result of this query
          */
-        public CallHistoryContactQuery(Collection<CallRecord> callRecords)
-        {
+        public CallHistoryContactQuery(Collection<CallRecord> callRecords) {
             recordsIter = callRecords.iterator();
             Iterator<CallRecord> recordsIter = callRecords.iterator();
 
@@ -140,13 +136,10 @@ public class CallHistoryContactSource implements ContactSourceService
         }
 
         @Override
-        public void start()
-        {
+        public void start() {
             if (callHistoryQuery != null) {
-                callHistoryQuery.addQueryListener(new CallHistoryQueryListener()
-                {
-                    public void callRecordReceived(CallRecordEvent event)
-                    {
+                callHistoryQuery.addQueryListener(new CallHistoryQueryListener() {
+                    public void callRecordReceived(CallRecordEvent event) {
                         if (getStatus() == ContactQuery.QUERY_CANCELED)
                             return;
 
@@ -156,8 +149,7 @@ public class CallHistoryContactSource implements ContactSourceService
                         fireQueryEvent(contact);
                     }
 
-                    public void queryStatusChanged(CallHistoryQueryStatusEvent event)
-                    {
+                    public void queryStatusChanged(CallHistoryQueryStatusEvent event) {
                         status = event.getEventType();
                         fireQueryStatusEvent(status);
                     }
@@ -184,8 +176,7 @@ public class CallHistoryContactSource implements ContactSourceService
          *
          * @param callHistoryQuery the query used to track the call history
          */
-        public CallHistoryContactQuery(CallHistoryQuery callHistoryQuery)
-        {
+        public CallHistoryContactQuery(CallHistoryQuery callHistoryQuery) {
             this.callHistoryQuery = callHistoryQuery;
         }
 
@@ -195,8 +186,7 @@ public class CallHistoryContactSource implements ContactSourceService
          *
          * @param l the <code>ContactQueryListener</code> to add
          */
-        public void addContactQueryListener(ContactQueryListener l)
-        {
+        public void addContactQueryListener(ContactQueryListener l) {
             synchronized (queryListeners) {
                 queryListeners.add(l);
             }
@@ -205,8 +195,7 @@ public class CallHistoryContactSource implements ContactSourceService
         /**
          * This query could not be canceled.
          */
-        public void cancel()
-        {
+        public void cancel() {
             status = QUERY_CANCELED;
 
             if (callHistoryQuery != null)
@@ -220,8 +209,7 @@ public class CallHistoryContactSource implements ContactSourceService
          * @return the status of this query
          */
         @Override
-        public int getStatus()
-        {
+        public int getStatus() {
             return status;
         }
 
@@ -231,8 +219,7 @@ public class CallHistoryContactSource implements ContactSourceService
          *
          * @param l the <code>ContactQueryListener</code> to remove
          */
-        public void removeContactQueryListener(ContactQueryListener l)
-        {
+        public void removeContactQueryListener(ContactQueryListener l) {
             synchronized (queryListeners) {
                 queryListeners.remove(l);
             }
@@ -243,8 +230,7 @@ public class CallHistoryContactSource implements ContactSourceService
          *
          * @return a list containing the results of this query
          */
-        public List<SourceContact> getQueryResults()
-        {
+        public List<SourceContact> getQueryResults() {
             return sourceContacts;
         }
 
@@ -255,8 +241,7 @@ public class CallHistoryContactSource implements ContactSourceService
          * @return the <code>ContactSourceService</code>, where this query was first
          * initiated
          */
-        public ContactSourceService getContactSource()
-        {
+        public ContactSourceService getContactSource() {
             return CallHistoryContactSource.this;
         }
 
@@ -266,8 +251,7 @@ public class CallHistoryContactSource implements ContactSourceService
          *
          * @param contact the <code>SourceContact</code> this event is about
          */
-        private void fireQueryEvent(SourceContact contact)
-        {
+        private void fireQueryEvent(SourceContact contact) {
             ContactReceivedEvent event = new ContactReceivedEvent(this, contact, showMoreLabelAllowed);
 
             Collection<ContactQueryListener> listeners;
@@ -285,8 +269,7 @@ public class CallHistoryContactSource implements ContactSourceService
          *
          * @param newStatus the new status
          */
-        private void fireQueryStatusEvent(int newStatus)
-        {
+        private void fireQueryStatusEvent(int newStatus) {
             Collection<ContactQueryListener> listeners;
             ContactQueryStatusEvent event = new ContactQueryStatusEvent(this, newStatus);
 
@@ -298,8 +281,7 @@ public class CallHistoryContactSource implements ContactSourceService
                 l.queryStatusChanged(event);
         }
 
-        public String getQueryString()
-        {
+        public String getQueryString() {
             return callHistoryQuery.getQueryString();
         }
     }
@@ -310,8 +292,7 @@ public class CallHistoryContactSource implements ContactSourceService
      *
      * @return the type of this contact source
      */
-    public int getType()
-    {
+    public int getType() {
         return HISTORY_TYPE;
     }
 
@@ -320,8 +301,7 @@ public class CallHistoryContactSource implements ContactSourceService
      *
      * @return the index of the contact source in the result list
      */
-    public int getIndex()
-    {
+    public int getIndex() {
         return -1;
     }
 }

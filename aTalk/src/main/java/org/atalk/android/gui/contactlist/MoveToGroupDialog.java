@@ -19,9 +19,9 @@ import net.java.sip.communicator.service.contactlist.MetaContactListException;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
+import org.atalk.android.gui.dialogs.BaseDialogFragment;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.service.osgi.OSGiDialogFragment;
 
 import timber.log.Timber;
 
@@ -31,7 +31,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class MoveToGroupDialog extends OSGiDialogFragment implements DialogInterface.OnClickListener {
+public class MoveToGroupDialog extends BaseDialogFragment implements DialogInterface.OnClickListener {
     /**
      * Meta UID arg key.
      */
@@ -71,7 +71,7 @@ public class MoveToGroupDialog extends OSGiDialogFragment implements DialogInter
         View contentView = inflater.inflate(R.layout.move_to_group, container, false);
 
         getDialog().setTitle(R.string.move_contact);
-        this.metaContact = AndroidGUIActivator.getContactListService()
+        this.metaContact = AppGUIActivator.getContactListService()
                 .findMetaContactByMetaUID(getArguments().getString(META_CONTACT_UID));
 
         String UserId = getArguments().getString(USER_ID);
@@ -100,7 +100,7 @@ public class MoveToGroupDialog extends OSGiDialogFragment implements DialogInter
             @Override
             public void run() {
                 try {
-                    AndroidGUIActivator.getContactListService().moveMetaContact(metaContact, selectedItem);
+                    AppGUIActivator.getContactListService().moveMetaContact(metaContact, selectedItem);
                 } catch (MetaContactListException e) {
                     Timber.e(e, "%s", e.getMessage());
                     DialogActivity.showDialog(aTalkApp.getInstance(),

@@ -1,5 +1,21 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.2.0 (402000)
+Release Date:   02/10/2024
+Author:         cmeng
+- Reimplement deprecated classes/methods i.e. onBackPressed and AsyncTask with new functions.
+- Fix show aTalk icon MissingForegroundServiceTypeException; use NotificationManager.notify() instead.
+- Need to add READ_EXTERNAL_STORAGE permission (Files and Media) request for android API-32.
+- Implement newly added READ_MEDIA_VISUAL_USER_SELECTED permission for android API-34.
+- Do not launch BatteryOptimization permission request within a dialog, else parseResult is based on dialog click.
+- ActivityResultContract#parseResult on BatteryOptimization request must return isOptimizingBattery() state.
+- UpdateServiceImpl#isLatestVersion need to close inputStream after access end.
+- Add BaseActivity, BaseFragment, BaseDialogFragment and BasePreferenceFragment classes, and subclass OSGi unrelated classes to these instead; Remove unused OSGi classes.
+- Remove all imageStreaming classes, aTalk does not support desktop sharing.
+- Clean up app sources and rename some packages names.
+- Update all app used libraries to the latest compatible releases.
+
+=========================================================================
 Version:        4.1.1 (401010)
 Release Date:   06/10/2024
 Author:         cmeng

@@ -58,11 +58,6 @@ public class JPanel extends JComponent implements Accessible {
 		
 	}
 
-	public void add(JComboBox cbAction, GridBagConstraints c) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public void add(JButton btnVerifyFingerprint) {
 		// TODO Auto-generated method stub
 		

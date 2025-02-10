@@ -18,8 +18,7 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class FileHistoryActivator implements BundleActivator
-{
+public class FileHistoryActivator implements BundleActivator {
     /**
      * A <code>FileHistoryService</code> service reference.
      */
@@ -29,12 +28,12 @@ public class FileHistoryActivator implements BundleActivator
      * Initialize and start file history
      *
      * @param bundleContext BundleContext
+     *
      * @throws Exception if initializing and starting file history fails
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
-        ServiceReference refHistory = bundleContext.getServiceReference(HistoryService.class.getName());
+            throws Exception {
+        ServiceReference<?> refHistory = bundleContext.getServiceReference(HistoryService.class.getName());
         HistoryService historyService = (HistoryService) bundleContext.getService(refHistory);
 
         // Create and start the file history service.
@@ -51,11 +50,11 @@ public class FileHistoryActivator implements BundleActivator
      * Stops this bundle.
      *
      * @param bundleContext the <code>BundleContext</code>
+     *
      * @throws Exception if the stop operation goes wrong
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         if (fileHistoryService != null)
             fileHistoryService.stop(bundleContext);
     }

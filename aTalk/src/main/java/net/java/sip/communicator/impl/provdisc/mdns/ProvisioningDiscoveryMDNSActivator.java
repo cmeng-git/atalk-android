@@ -28,26 +28,22 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class ProvisioningDiscoveryMDNSActivator
-        implements BundleActivator
-{
+public class ProvisioningDiscoveryMDNSActivator implements BundleActivator {
     /**
      * MDNS provisioning service.
      */
-    private static ProvisioningDiscoveryServiceMDNSImpl provisioningService =
-            new ProvisioningDiscoveryServiceMDNSImpl();
+    private static final ProvisioningDiscoveryServiceMDNSImpl provisioningService = new ProvisioningDiscoveryServiceMDNSImpl();
 
     /**
      * Starts the mDNS provisioning service
      *
      * @param bundleContext the <code>BundleContext</code> as provided by the OSGi framework.
+     *
      * @throws Exception if anything goes wrong
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
-        bundleContext.registerService(ProvisioningDiscoveryService.class.getName(),
-                provisioningService, null);
+            throws Exception {
+        bundleContext.registerService(ProvisioningDiscoveryService.class.getName(), provisioningService, null);
         Timber.i("DNS provisioning discovery Service [REGISTERED]");
     }
 
@@ -55,11 +51,11 @@ public class ProvisioningDiscoveryMDNSActivator
      * Stops the mDNS provisioning service.
      *
      * @param bundleContext the <code>BundleContext</code> as provided by the OSGi framework.
+     *
      * @throws Exception if anything goes wrong
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         Timber.i("mDNS provisioning discovery Service ...[STOPPED]");
     }
 }

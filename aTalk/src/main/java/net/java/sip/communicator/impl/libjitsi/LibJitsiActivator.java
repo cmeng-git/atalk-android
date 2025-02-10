@@ -1,17 +1,15 @@
 package net.java.sip.communicator.impl.libjitsi;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
 import org.atalk.service.libjitsi.LibJitsi;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
-public class LibJitsiActivator implements BundleActivator
-{
+public class LibJitsiActivator implements BundleActivator {
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         Method start;
         try {
             start = LibJitsi.class.getDeclaredMethod("start", Object.class);
@@ -36,7 +34,6 @@ public class LibJitsiActivator implements BundleActivator
     }
 
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
     }
 }

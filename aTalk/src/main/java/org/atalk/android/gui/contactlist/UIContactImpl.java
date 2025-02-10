@@ -17,7 +17,7 @@ import android.graphics.drawable.Drawable;
 
 import net.java.sip.communicator.service.gui.UIContact;
 
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 
 /**
  * The <code>UIContactImpl</code> class extends the <code>UIContact</code> in order to add some more
@@ -91,7 +91,7 @@ public abstract class UIContactImpl extends UIContact {
      * @return if enabled the address with removed domain part
      */
     protected String filterAddressDisplay(String addressToDisplay) {
-        if (!AndroidGUIActivator.getConfigurationService().getBoolean(FILTER_DOMAIN_IN_TIP_ADDRESSES, false))
+        if (!AppGUIActivator.getConfigurationService().getBoolean(FILTER_DOMAIN_IN_TIP_ADDRESSES, false))
             return addressToDisplay;
 
         int ix = addressToDisplay.indexOf("@");

@@ -39,9 +39,7 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class JNIEncoder extends AbstractCodec2
-        implements RTCPFeedbackMessageListener
-{
+public class JNIEncoder extends AbstractCodec2 implements RTCPFeedbackMessageListener {
     /**
      * The available presets we can use with the encoder.
      */
@@ -150,10 +148,10 @@ public class JNIEncoder extends AbstractCodec2
      * Checks the configuration and returns the profile to use.
      *
      * @param profile the profile setting.
+     *
      * @return the profile FFmpeg to use.
      */
-    private static int getProfileForConfig(String profile)
-    {
+    private static int getProfileForConfig(String profile) {
         if (BASELINE_PROFILE.equalsIgnoreCase(profile))
             return FFmpeg.FF_PROFILE_H264_BASELINE;
         else if (HIGH_PROFILE.equalsIgnoreCase(profile))
@@ -244,8 +242,7 @@ public class JNIEncoder extends AbstractCodec2
     /**
      * Initializes a new <code>JNIEncoder</code> instance.
      */
-    public JNIEncoder()
-    {
+    public JNIEncoder() {
         super("H.264 Encoder", VideoFormat.class, SUPPORTED_OUTPUT_FORMATS);
 
         inputFormats = new Format[]{new YUVFormat(
@@ -266,8 +263,7 @@ public class JNIEncoder extends AbstractCodec2
      * Closes this <code>Codec</code>.
      */
     @Override
-    protected void doClose()
-    {
+    protected void doClose() {
         if (avctx != 0) {
             FFmpeg.avcodec_close(avctx);
             FFmpeg.av_free(avctx);
@@ -294,8 +290,7 @@ public class JNIEncoder extends AbstractCodec2
      * Opens this <code>Codec</code>.
      */
     @Override
-    protected void doOpen() throws ResourceUnavailableException
-    {
+    protected void doOpen() throws ResourceUnavailableException {
         /*
          * An Encoder translates raw media data in (en)coded media data.
          * Consequently, the size of the output is equal to the size of the input.
@@ -465,11 +460,11 @@ public class JNIEncoder extends AbstractCodec2
      *
      * @param inBuffer input buffer
      * @param outBuffer output buffer
+     *
      * @return <code>BUFFER_PROCESSED_OK</code> if buffer has been successfully processed
      */
     @Override
-    protected int doProcess(Buffer inBuffer, Buffer outBuffer)
-    {
+    protected int doProcess(Buffer inBuffer, Buffer outBuffer) {
         YUVFormat format = (YUVFormat) inBuffer.getFormat();
         Dimension formatSize = format.getSize();
         int width = formatSize.width;
@@ -477,7 +472,7 @@ public class JNIEncoder extends AbstractCodec2
 
         if (width > 0 && height > 0
                 && (width != mWidth || height != mHeight)) {
-            Timber.d("H264 encode video size changed: [width=%s, height=%s]=>%s",  mWidth, mHeight, formatSize);
+            Timber.d("H264 encode video size changed: [width=%s, height=%s]=>%s", mWidth, mHeight, formatSize);
 
             doClose();
             try {
@@ -522,10 +517,10 @@ public class JNIEncoder extends AbstractCodec2
      * Gets the matching output formats for a specific format.
      *
      * @param inputFormat input format
+     *
      * @return array for formats matching input format
      */
-    protected Format[] getMatchingOutputFormats(Format inputFormat)
-    {
+    protected Format[] getMatchingOutputFormats(Format inputFormat) {
         VideoFormat inputVideoFormat = (VideoFormat) inputFormat;
 
         String[] packetizationModes = (this.packetizationMode == null)
@@ -552,8 +547,7 @@ public class JNIEncoder extends AbstractCodec2
      *
      * @return <code>true</code> if the encoding of <code>avFrame</code> is to produce a keyframe; otherwise <code>false</code>
      */
-    private boolean isKeyFrame()
-    {
+    private boolean isKeyFrame() {
         boolean keyFrame;
 
         if (forceKeyFrame) {
@@ -590,8 +584,7 @@ public class JNIEncoder extends AbstractCodec2
      *
      * @return <code>true</code> if this <code>JNIEncoder</code> has honored the request for a key frame; otherwise <code>false</code>
      */
-    private boolean keyFrameRequest()
-    {
+    private boolean keyFrameRequest() {
         long now = System.currentTimeMillis();
 
         if (now > (lastKeyFrameRequestTime + PLI_INTERVAL)) {
@@ -608,8 +601,7 @@ public class JNIEncoder extends AbstractCodec2
      * event such as the feedback message type and the payload type
      */
     @Override
-    public void rtcpFeedbackMessageReceived(RTCPFeedbackMessageEvent ev)
-    {
+    public void rtcpFeedbackMessageReceived(RTCPFeedbackMessageEvent ev) {
         /*
          * If RTCP message is a Picture Loss Indication (PLI) or a Full Intra-frame Request (FIR)
          * the encoder will force the next frame to be a keyframe.
@@ -632,8 +624,7 @@ public class JNIEncoder extends AbstractCodec2
      *
      * @param additionalCodecSettings the additional settings to be set on this <code>Codec</code>
      */
-    public void setAdditionalCodecSettings(Map<String, String> additionalCodecSettings)
-    {
+    public void setAdditionalCodecSettings(Map<String, String> additionalCodecSettings) {
         this.additionalCodecSettings = additionalCodecSettings;
     }
 
@@ -644,8 +635,7 @@ public class JNIEncoder extends AbstractCodec2
      * @param keyFrameControl the <code>KeyFrameControl</code> to be used by this <code>JNIEncoder</code> as a means of
      * control over its key frame-related logic
      */
-    public void setKeyFrameControl(KeyFrameControl keyFrameControl)
-    {
+    public void setKeyFrameControl(KeyFrameControl keyFrameControl) {
         if (this.keyFrameControl != keyFrameControl) {
             if ((this.keyFrameControl != null) && (keyFrameRequestee != null))
                 this.keyFrameControl.removeKeyFrameRequestee(keyFrameRequestee);
@@ -661,12 +651,12 @@ public class JNIEncoder extends AbstractCodec2
      * Sets the <code>Format</code> in which this <code>Codec</code> is to output media data.
      *
      * @param format the <code>Format</code> in which this <code>Codec</code> is to output media data
+     *
      * @return the <code>Format</code> in which this <code>Codec</code> is currently configured to output
      * media data or <code>null</code> if <code>format</code> was found to be incompatible with this <code>Codec</code>
      */
     @Override
-    public Format setOutputFormat(Format format)
-    {
+    public Format setOutputFormat(Format format) {
         //  Return null if mismatch output format
         if (!(format instanceof VideoFormat)
                 || (null == AbstractCodec2.matches(format, getMatchingOutputFormats(inputFormat))))
@@ -713,8 +703,7 @@ public class JNIEncoder extends AbstractCodec2
      * @param packetizationMode the packetization mode to be used for the H.264 RTP payload output by this
      * <code>JNIEncoder</code> and the associated packetizer
      */
-    public void setPacketizationMode(String packetizationMode)
-    {
+    public void setPacketizationMode(String packetizationMode) {
         /*
          * RFC 3984 "RTP Payload Format for H.264 Video", packetization-mode:
          * This parameter signals the properties of an RTP payload type or the capabilities of a receiver implementation.

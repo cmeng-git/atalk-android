@@ -16,16 +16,14 @@
  */
 package org.atalk.android.plugin.permissions;
 
-import android.util.Log;
-
 import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
 
-public class PermissionsErrorListener implements PermissionRequestErrorListener
-{
+import timber.log.Timber;
+
+public class PermissionsErrorListener implements PermissionRequestErrorListener {
     @Override
-    public void onError(DexterError error)
-    {
-        Log.e("Dexter", "There was an error: " + error.toString());
+    public void onError(DexterError error) {
+        Timber.e("There was an error: %s", error.toString());
     }
 }

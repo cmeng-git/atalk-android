@@ -5,6 +5,9 @@
  */
 package net.java.sip.communicator.plugin.provisioning;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.service.gui.ConfigurationForm;
 import net.java.sip.communicator.service.gui.LazyConfigurationForm;
@@ -20,9 +23,6 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-
 import timber.log.Timber;
 
 /**
@@ -30,8 +30,7 @@ import timber.log.Timber;
  * configuration (DHCP, manual, ...), retrieve configuration file and push properties to the
  * <code>ConfigurationService</code>.
  */
-public class ProvisioningActivator implements BundleActivator
-{
+public class ProvisioningActivator implements BundleActivator {
     /**
      * The current BundleContext.
      */
@@ -79,11 +78,11 @@ public class ProvisioningActivator implements BundleActivator
      * Starts this bundle
      *
      * @param bundleContext BundleContext
+     *
      * @throws Exception if anything goes wrong during the start of the bundle
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         ProvisioningActivator.bundleContext = bundleContext;
         String url = null;
         provisioningService = new ProvisioningServiceImpl();
@@ -105,14 +104,14 @@ public class ProvisioningActivator implements BundleActivator
         if (StringUtils.isBlank(method) || method.equals("NONE")) {
             return;
         }
-        ServiceReference serviceReferences[] = bundleContext.getServiceReferences(
-                ProvisioningDiscoveryService.class.getName(), null);
+        ServiceReference<?>[] serviceReferences
+                = bundleContext.getServiceReferences(ProvisioningDiscoveryService.class.getName(), null);
 
         /*
          * search the provisioning discovery implementation that correspond to the method name
          */
         if (serviceReferences != null) {
-            for (ServiceReference ref : serviceReferences) {
+            for (ServiceReference<?> ref : serviceReferences) {
                 ProvisioningDiscoveryService provdisc = (ProvisioningDiscoveryService) bundleContext.getService(ref);
 
                 if (provdisc.getMethodName().equals(method)) {
@@ -132,11 +131,11 @@ public class ProvisioningActivator implements BundleActivator
      * Stops this bundle
      *
      * @param bundleContext BundleContext
+     *
      * @throws Exception if anything goes wrong during the stop of the bundle
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         ProvisioningActivator.bundleContext = null;
         Timber.d("Provisioning discovery [STOPPED]");
     }
@@ -146,10 +145,9 @@ public class ProvisioningActivator implements BundleActivator
      *
      * @return the <code>UIService</code> obtained from the bundle context
      */
-    public static UIService getUIService()
-    {
+    public static UIService getUIService() {
         if (uiService == null) {
-            ServiceReference uiReference = bundleContext.getServiceReference(UIService.class.getName());
+            ServiceReference<?> uiReference = bundleContext.getServiceReference(UIService.class.getName());
             uiService = (UIService) bundleContext.getService(uiReference);
         }
         return uiService;
@@ -160,10 +158,9 @@ public class ProvisioningActivator implements BundleActivator
      *
      * @return the <code>ResourceManagementService</code> obtained from the bundle context
      */
-    public static ResourceManagementService getResourceService()
-    {
+    public static ResourceManagementService getResourceService() {
         if (resourceService == null) {
-            ServiceReference resourceReference
+            ServiceReference<?> resourceReference
                     = bundleContext.getServiceReference(ResourceManagementService.class.getName());
             resourceService = (ResourceManagementService) bundleContext.getService(resourceReference);
         }
@@ -176,10 +173,9 @@ public class ProvisioningActivator implements BundleActivator
      *
      * @return a currently valid implementation of the ConfigurationService.
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configurationService == null) {
-            ServiceReference confReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
+            ServiceReference<?> confReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
             configurationService = (ConfigurationService) bundleContext.getService(confReference);
         }
         return configurationService;
@@ -191,10 +187,9 @@ public class ProvisioningActivator implements BundleActivator
      *
      * @return a currently valid implementation of the CredentialsStorageService.
      */
-    public static CredentialsStorageService getCredentialsStorageService()
-    {
+    public static CredentialsStorageService getCredentialsStorageService() {
         if (credentialsService == null) {
-            ServiceReference credentialsReference
+            ServiceReference<?> credentialsReference
                     = bundleContext.getServiceReference(CredentialsStorageService.class.getName());
             credentialsService = (CredentialsStorageService) bundleContext.getService(credentialsReference);
         }
@@ -207,10 +202,9 @@ public class ProvisioningActivator implements BundleActivator
      *
      * @return a currently valid implementation of the NetworkAddressManagerService.
      */
-    public static NetworkAddressManagerService getNetworkAddressManagerService()
-    {
+    public static NetworkAddressManagerService getNetworkAddressManagerService() {
         if (netaddrService == null) {
-            ServiceReference netaddrReference
+            ServiceReference<?> netaddrReference
                     = bundleContext.getServiceReference(NetworkAddressManagerService.class.getName());
             netaddrService = (NetworkAddressManagerService) bundleContext.getService(netaddrReference);
         }
@@ -222,8 +216,7 @@ public class ProvisioningActivator implements BundleActivator
      *
      * @return a currently valid implementation of <code>ProvisioningService</code>
      */
-    public static ProvisioningServiceImpl getProvisioningService()
-    {
+    public static ProvisioningServiceImpl getProvisioningService() {
         return provisioningService;
     }
 }

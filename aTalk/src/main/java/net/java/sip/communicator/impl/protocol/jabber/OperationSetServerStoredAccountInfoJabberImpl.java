@@ -336,8 +336,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
                 // instead publish avatar via 'XEP-0084: User Avatar'
                 byte[] avatar = ((ImageDetail) detail).getBytes();
                 if ((avatar != null) && (avatar.length > 0)) {
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.length);
-                    if (!userAvatarManager.publishAvatar(bitmap)) {
+                    if (!userAvatarManager.publishAvatar(avatar)) {
                         Timber.w("Publish avatar failed for: %s", xmppConnection.getUser());
                     }
                     vCard.setAvatar(avatar); // for XEP-0153

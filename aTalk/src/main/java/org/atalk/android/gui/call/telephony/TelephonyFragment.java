@@ -35,6 +35,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTelephonyJabberImpl;
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.OperationSet;
@@ -44,20 +48,16 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.account.Account;
 import org.atalk.android.gui.account.AccountsListAdapter;
-import org.atalk.android.gui.call.AndroidCallUtil;
+import org.atalk.android.gui.call.AppCallUtil;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.osgi.OSGiFragment;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * This activity allows user to make pbx phone call via the selected service gateway.
@@ -67,51 +67,35 @@ import java.util.List;
  *
  * @author Eng Chong Meng
  */
-public class TelephonyFragment extends OSGiFragment
-{
+public class TelephonyFragment extends BaseFragment {
     public static final String TELEPHONY_TAG = "telephonyFragment";
     private static String mLastJid = null;
     private static String mDomainJid;
 
-    private Context mContext;
-    FragmentActivity fragmentActivity;
     private Spinner accountsSpinner;
     private RecipientSelectView vRecipient;
     private TextView vTelephonyDomain;
 
     private ProtocolProviderService mPPS;
 
-    public TelephonyFragment()
-    {
+    public TelephonyFragment() {
         mDomainJid = null;
     }
 
-    public static TelephonyFragment newInstance(String domainJid)
-    {
+    public static TelephonyFragment newInstance(String domainJid) {
         TelephonyFragment telephonyFragment = new TelephonyFragment();
         mDomainJid = domainJid;
         return telephonyFragment;
     }
 
     @Override
-    public void onAttach(@NonNull Context context)
-    {
-        super.onAttach(context);
-        mContext = context;
-        fragmentActivity = getActivity();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View content = inflater.inflate(R.layout.telephony, container, false);
 
         vRecipient = content.findViewById(R.id.address);
-        vRecipient.addTextChangedListener(new TextWatcher()
-        {
-            public void afterTextChanged(Editable s)
-            {
+        vRecipient.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
                 if (!vRecipient.isEmpty()) {
                     mLastJid = vRecipient.getAddresses()[0].getAddress();
                 }
@@ -121,12 +105,10 @@ public class TelephonyFragment extends OSGiFragment
                 }
             }
 
-            public void beforeTextChanged(CharSequence s, int start, int count, int after)
-            {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
-            public void onTextChanged(CharSequence s, int start, int before, int count)
-            {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
         if (mLastJid != null)
@@ -135,11 +117,9 @@ public class TelephonyFragment extends OSGiFragment
         vTelephonyDomain = content.findViewById(R.id.telephonyDomain);
 
         accountsSpinner = content.findViewById(R.id.selectAccountSpinner);
-        accountsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
+        accountsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
-            {
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 Account selectedAcc = (Account) accountsSpinner.getSelectedItem();
                 mPPS = selectedAcc.getProtocolProvider();
                 JabberAccountID accountJID = (JabberAccountID) mPPS.getAccountID();
@@ -163,8 +143,7 @@ public class TelephonyFragment extends OSGiFragment
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parentView)
-            {
+            public void onNothingSelected(AdapterView<?> parentView) {
                 // your code here
             }
         });
@@ -177,8 +156,7 @@ public class TelephonyFragment extends OSGiFragment
     /**
      * Initializes accountIDs spinner selector with existing registered accounts.
      */
-    private void initAccountSpinner()
-    {
+    private void initAccountSpinner() {
         int idx = 0;
         int selectedIdx = -1;
         List<AccountID> accounts = new ArrayList<>();
@@ -210,8 +188,7 @@ public class TelephonyFragment extends OSGiFragment
     /**
      * Initializes the button click actions.
      */
-    private void initButton(final View content)
-    {
+    private void initButton(final View content) {
         final Button buttonAudio = content.findViewById(R.id.button_audio);
         buttonAudio.setOnClickListener(v -> onCallClicked(false));
 
@@ -227,8 +204,7 @@ public class TelephonyFragment extends OSGiFragment
      *
      * @param videoCall vide call is true else audio call
      */
-    private void onCallClicked(boolean videoCall)
-    {
+    private void onCallClicked(boolean videoCall) {
         String recipient;
         if (!vRecipient.isEmpty()) {
             recipient = vRecipient.getAddresses()[0].getAddress();
@@ -263,15 +239,14 @@ public class TelephonyFragment extends OSGiFragment
                 mPPS.getOperationSet(OperationSetBasicTelephony.class);
         basicTelephony.initSid();
 
-        AndroidCallUtil.createCall(mContext, mPPS, phoneJid, videoCall);
+        AppCallUtil.createCall(mContext, mPPS, phoneJid, videoCall);
         closeFragment();
     }
 
-    public boolean closeFragment()
-    {
-        Fragment phoneFragment = fragmentActivity.getSupportFragmentManager().findFragmentByTag(TELEPHONY_TAG);
+    public boolean closeFragment() {
+        Fragment phoneFragment = mFragmentActivity.getSupportFragmentManager().findFragmentByTag(TELEPHONY_TAG);
         if (phoneFragment != null) {
-            fragmentActivity.getSupportFragmentManager().beginTransaction().remove(phoneFragment).commit();
+            mFragmentActivity.getSupportFragmentManager().beginTransaction().remove(phoneFragment).commit();
             return true;
         }
         return false;

@@ -13,6 +13,9 @@
  */
 package net.java.sip.communicator.impl.callhistory;
 
+import java.util.Hashtable;
+import java.util.Map;
+
 import net.java.sip.communicator.service.callhistory.CallHistoryService;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.history.HistoryService;
@@ -26,9 +29,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import java.util.Hashtable;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -38,8 +38,7 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class CallHistoryActivator implements BundleActivator
-{
+public class CallHistoryActivator implements BundleActivator {
     /**
      * The bundle context.
      */
@@ -64,11 +63,11 @@ public class CallHistoryActivator implements BundleActivator
      * Initialize and start call history
      *
      * @param bc the <code>BundleContext</code>
+     *
      * @throws Exception if initializing and starting call history fails
      */
     public void start(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         bundleContext = bc;
 
         HistoryService historyService = ServiceUtils.getService(bundleContext, HistoryService.class);
@@ -88,11 +87,11 @@ public class CallHistoryActivator implements BundleActivator
      * Stops this bundle.
      *
      * @param bundleContext the <code>BundleContext</code>
+     *
      * @throws Exception if the stop operation goes wrong
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         if (callHistoryService != null)
             callHistoryService.stop(bundleContext);
     }
@@ -102,8 +101,7 @@ public class CallHistoryActivator implements BundleActivator
      *
      * @return the instance of <code>CallHistoryService</code> created in this activator
      */
-    public static CallHistoryService getCallHistoryService()
-    {
+    public static CallHistoryService getCallHistoryService() {
         return callHistoryService;
     }
 
@@ -112,8 +110,7 @@ public class CallHistoryActivator implements BundleActivator
      *
      * @return the <code>ResourceManagementService</code>, through which we will access all resources.
      */
-    public static ResourceManagementService getResources()
-    {
+    public static ResourceManagementService getResources() {
         if (resourcesService == null) {
             resourcesService = ServiceUtils.getService(bundleContext, ResourceManagementService.class);
         }
@@ -125,8 +122,7 @@ public class CallHistoryActivator implements BundleActivator
      *
      * @return all <code>ProtocolProviderFactory</code>s obtained from the bundle context
      */
-    public static Map<Object, ProtocolProviderFactory> getProtocolProviderFactories()
-    {
+    public static Map<Object, ProtocolProviderFactory> getProtocolProviderFactories() {
         ServiceReference[] serRefs = null;
 
         try {
@@ -136,12 +132,10 @@ public class CallHistoryActivator implements BundleActivator
             return null;
         }
 
-        Map<Object, ProtocolProviderFactory> providerFactoriesMap = new Hashtable();
-        if (serRefs.length != 0) {
-            for (ServiceReference<ProtocolProviderService> serRef : serRefs) {
-                ProtocolProviderFactory providerFactory = (ProtocolProviderFactory) bundleContext.getService(serRef);
-                providerFactoriesMap.put(serRef.getProperty(ProtocolProviderFactory.PROTOCOL), providerFactory);
-            }
+        Map<Object, ProtocolProviderFactory> providerFactoriesMap = new Hashtable<>();
+        for (ServiceReference<ProtocolProviderService> serRef : serRefs) {
+            ProtocolProviderFactory providerFactory = (ProtocolProviderFactory) bundleContext.getService(serRef);
+            providerFactoriesMap.put(serRef.getProperty(ProtocolProviderFactory.PROTOCOL), providerFactory);
         }
         return providerFactoriesMap;
     }

@@ -18,9 +18,7 @@ package org.atalk.android.gui.call;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -49,6 +47,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.callhistory.CallHistoryActivator;
 import net.java.sip.communicator.service.callhistory.CallHistoryService;
@@ -69,15 +68,15 @@ import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusCha
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.BaseActivity;
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.util.EntityListHelper;
-import org.atalk.service.osgi.OSGiActivity;
-import org.atalk.service.osgi.OSGiFragment;
 import org.jetbrains.annotations.NotNull;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
@@ -89,7 +88,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class CallHistoryFragment extends OSGiFragment
+public class CallHistoryFragment extends BaseFragment
         implements View.OnClickListener, ContactPresenceStatusListener, EntityListHelper.TaskCompleteListener,
         DatePicker.OnDateChangedListener, TimePicker.OnTimeChangedListener {
     /**
@@ -122,25 +121,9 @@ public class CallHistoryFragment extends OSGiFragment
     private int mYear, mMonth, mDay;
 
     /**
-     * UI thread handler used to call all operations that access data model. This guarantees that
-     * it's accessed from the main thread.
-     */
-    protected final Handler uiHandler = OSGiActivity.uiHandler;
-
-    /**
      * View for room configuration title description from the room configuration form
      */
     private TextView mTitle;
-    private Context mContext = null;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mContext = context;
-    }
 
     /**
      * {@inheritDoc}
@@ -274,7 +257,7 @@ public class CallHistoryFragment extends OSGiFragment
          * Retrieve the call history records from locally stored database
          * Populate the fragment with the call record for use in getView()
          */
-        private class getCallRecords extends AsyncTask<Void, Void, Void> {
+        private class getCallRecords {
             final Date mEndDate;
 
             public getCallRecords(Date date) {
@@ -284,8 +267,20 @@ public class CallHistoryFragment extends OSGiFragment
                 callListView.clearChoices();
             }
 
-            @Override
-            protected Void doInBackground(Void... params) {
+            public void execute() {
+                Executors.newSingleThreadExecutor().execute(() -> {
+                    doInBackground();
+
+                    BaseActivity.uiHandler.post(() -> {
+                        if (!callRecords.isEmpty()) {
+                            callHistoryAdapter.notifyDataSetChanged();
+                        }
+                        setTitle();
+                    });
+                });
+            }
+
+            private void doInBackground() {
                 initMetaContactList();
                 Collection<CallRecord> callRecordPPS;
                 CallHistoryService CHS = CallHistoryActivator.getCallHistoryService();
@@ -298,19 +293,10 @@ public class CallHistoryFragment extends OSGiFragment
                         String userUuId = accountId.getAccountUid();
 
                         callRecordPPS = CHS.findByEndDate(userUuId, mEndDate);
-                        if (callRecordPPS.size() != 0)
+                        if (!callRecordPPS.isEmpty())
                             callRecords.addAll(callRecordPPS);
                     }
                 }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void result) {
-                if (callRecords.size() > 0) {
-                    callHistoryAdapter.notifyDataSetChanged();
-                }
-                setTitle();
             }
         }
     }
@@ -384,7 +370,7 @@ public class CallHistoryFragment extends OSGiFragment
      * Initializes the adapter data.
      */
     public void initMetaContactList() {
-        MetaContactListService contactListService = AndroidGUIActivator.getContactListService();
+        MetaContactListService contactListService = AppGUIActivator.getContactListService();
         if (contactListService != null) {
             addContacts(contactListService.getRoot());
         }
@@ -415,7 +401,7 @@ public class CallHistoryFragment extends OSGiFragment
 
     @Override
     public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt) {
-        uiHandler.post(() -> callHistoryAdapter.notifyDataSetChanged());
+        BaseActivity.uiHandler.post(() -> callHistoryAdapter.notifyDataSetChanged());
     }
 
     @Override
@@ -456,7 +442,7 @@ public class CallHistoryFragment extends OSGiFragment
                     case R.id.callVideoButton:
                         if (viewHolder != null) {
                             boolean isVideoCall = viewHolder.callVideoButton.isPressed();
-                            AndroidCallUtil.createAndroidCall(aTalkApp.getInstance(), jid,
+                            AppCallUtil.createAndroidCall(aTalkApp.getInstance(), jid,
                                     viewHolder.callVideoButton, isVideoCall);
                         }
                         break;

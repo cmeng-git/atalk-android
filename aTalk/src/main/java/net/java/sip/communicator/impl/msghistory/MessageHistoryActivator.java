@@ -25,8 +25,7 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class MessageHistoryActivator implements BundleActivator
-{
+public class MessageHistoryActivator implements BundleActivator {
     /**
      * The <code>BundleContext</code> of the service.
      */
@@ -53,8 +52,7 @@ public class MessageHistoryActivator implements BundleActivator
      *
      * @return the <code>MetaContactListService</code> obtained from the bundle context
      */
-    public static MetaContactListService getContactListService()
-    {
+    public static MetaContactListService getContactListService() {
         if (metaCListService == null) {
             metaCListService = ServiceUtils.getService(bundleContext, MetaContactListService.class);
         }
@@ -66,8 +64,7 @@ public class MessageHistoryActivator implements BundleActivator
      *
      * @return the <code>MessageHistoryService</code> registered to the bundle context
      */
-    public static MessageHistoryServiceImpl getMessageHistoryService()
-    {
+    public static MessageHistoryServiceImpl getMessageHistoryService() {
         return msgHistoryService;
     }
 
@@ -76,8 +73,7 @@ public class MessageHistoryActivator implements BundleActivator
      *
      * @return the <code>ResourceManagementService</code>, through which we will access all resources.
      */
-    public static ResourceManagementService getResources()
-    {
+    public static ResourceManagementService getResources() {
         if (resourcesService == null) {
             resourcesService = ServiceUtils.getService(bundleContext, ResourceManagementService.class);
         }
@@ -89,8 +85,7 @@ public class MessageHistoryActivator implements BundleActivator
      *
      * @return the <code>ConfigurationService</code> obtained from the bundle context
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configService == null) {
             configService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
         }
@@ -101,13 +96,13 @@ public class MessageHistoryActivator implements BundleActivator
      * Initialize and start message history
      *
      * @param bc the BundleContext
+     *
      * @throws Exception if initializing and starting message history service fails
      */
     public void start(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         bundleContext = bc;
-        ServiceReference refHistory = bundleContext.getServiceReference(HistoryService.class.getName());
+        ServiceReference<?> refHistory = bundleContext.getServiceReference(HistoryService.class.getName());
         HistoryService historyService = (HistoryService) bundleContext.getService(refHistory);
 
         // Create and start the message history service.
@@ -124,11 +119,11 @@ public class MessageHistoryActivator implements BundleActivator
      * Stops this bundle.
      *
      * @param bundleContext the <code>BundleContext</code>
+     *
      * @throws Exception if the stop operation goes wrong
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         if (msgHistoryService != null)
             msgHistoryService.stop(bundleContext);
     }

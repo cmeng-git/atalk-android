@@ -34,8 +34,7 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class JNIDecoder extends AbstractCodec2
-{
+public class JNIDecoder extends AbstractCodec2 {
     /**
      * The default output <code>VideoFormat</code>.
      */
@@ -89,8 +88,7 @@ public class JNIDecoder extends AbstractCodec2
     /**
      * Initializes a new <code>JNIDecoder</code> instance which is to decode H.264 NAL units into frames in YUV format.
      */
-    public JNIDecoder()
-    {
+    public JNIDecoder() {
         super("H.264 Decoder", VideoFormat.class, SUPPORTED_OUTPUT_FORMATS);
 
         /*
@@ -109,10 +107,10 @@ public class JNIDecoder extends AbstractCodec2
      * Check <code>Format</code>.
      *
      * @param format <code>Format</code> to check
+     *
      * @return true if <code>Format</code> is H264_RTP
      */
-    public boolean checkFormat(Format format)
-    {
+    public boolean checkFormat(Format format) {
         return format.getEncoding().equals(Constants.H264_RTP);
     }
 
@@ -120,8 +118,7 @@ public class JNIDecoder extends AbstractCodec2
      * Close <code>Codec</code>.
      */
     @Override
-    protected void doClose()
-    {
+    protected void doClose() {
         Timber.d("Closing decoder");
         FFmpeg.avcodec_close(avctx);
         FFmpeg.av_free(avctx);
@@ -138,8 +135,7 @@ public class JNIDecoder extends AbstractCodec2
      * Init the codec instances.
      */
     @Override
-    protected void doOpen() throws ResourceUnavailableException
-    {
+    protected void doOpen() throws ResourceUnavailableException {
         Timber.d("Opening decoder");
         if (avframe != null) {
             avframe.free();
@@ -175,11 +171,11 @@ public class JNIDecoder extends AbstractCodec2
      *
      * @param inBuf input <code>Buffer</code>
      * @param outBuf output <code>Buffer</code>
+     *
      * @return <code>BUFFER_PROCESSED_OK</code> if <code>in</code> has been successfully processed
      */
     @Override
-    protected int doProcess(Buffer inBuf, Buffer outBuf)
-    {
+    protected int doProcess(Buffer inBuf, Buffer outBuf) {
         // Ask FFmpeg to decode.
         got_picture[0] = false;
         // TODO Take into account the offset of the input Buffer.
@@ -202,7 +198,7 @@ public class JNIDecoder extends AbstractCodec2
         // cmeng (20210309) = decoded avframe.width and avframe.height; does not get updated when inBuf video data is rotated.
         // There h264 currently cannot support auto rotation when remote camera is rotated. VP8 is OK
         if ((width > 0) && (height > 0) && ((mWidth != width) || (mHeight != height))) {
-            Timber.d("H264 decode video size changed: [width=%s, height=%s]=>[width=%s, height=%s]",  mWidth, mHeight, width, height);
+            Timber.d("H264 decode video size changed: [width=%s, height=%s]=>[width=%s, height=%s]", mWidth, mHeight, width, height);
 
             mWidth = width;
             mHeight = height;
@@ -240,10 +236,10 @@ public class JNIDecoder extends AbstractCodec2
      * Ensure frame rate.
      *
      * @param frameRate frame rate
+     *
      * @return frame rate
      */
-    private float ensureFrameRate(float frameRate)
-    {
+    private float ensureFrameRate(float frameRate) {
         return frameRate;
     }
 
@@ -251,10 +247,10 @@ public class JNIDecoder extends AbstractCodec2
      * Get matching outputs for a specified input <code>Format</code>.
      *
      * @param inputFormat input <code>Format</code>
+     *
      * @return array of matching outputs or null if there are no matching outputs.
      */
-    protected Format[] getMatchingOutputFormats(Format inputFormat)
-    {
+    protected Format[] getMatchingOutputFormats(Format inputFormat) {
         VideoFormat inputVideoFormat = (VideoFormat) inputFormat;
 
         return new Format[]{new AVFrameFormat(
@@ -269,8 +265,7 @@ public class JNIDecoder extends AbstractCodec2
      * @return "H.264 Decoder"
      */
     @Override
-    public String getName()
-    {
+    public String getName() {
         return PLUGIN_NAME;
     }
 
@@ -278,11 +273,11 @@ public class JNIDecoder extends AbstractCodec2
      * Get all supported output <code>Format</code>s.
      *
      * @param inputFormat input <code>Format</code> to determine corresponding output <code>Format/code>s
+     *
      * @return an array of supported output <code>Format</code>s
      */
     @Override
-    public Format[] getSupportedOutputFormats(Format inputFormat)
-    {
+    public Format[] getSupportedOutputFormats(Format inputFormat) {
         Format[] supportedOutputFormats;
 
         if (inputFormat == null) {
@@ -307,8 +302,7 @@ public class JNIDecoder extends AbstractCodec2
      * <code>JNIDecoder</code> has been configured. For example, takes into account the format
      * parameter <code>sprop-parameter-sets</code> if it is specified by the input <code>Format</code>.
      */
-    private void handleFmtps()
-    {
+    private void handleFmtps() {
         try {
             Format f = getInputFormat();
             if (f instanceof ParameterizedVideoFormat) {
@@ -365,12 +359,12 @@ public class JNIDecoder extends AbstractCodec2
      * Sets the <code>Format</code> of the media data to be input for processing in this <code>Codec</code>.
      *
      * @param format the <code>Format</code> of the media data to be input for processing in this <code>Codec</code>
+     *
      * @return the <code>Format</code> of the media data to be input for processing in this <code>Codec</code> if
      * <code>format</code> is compatible with this <code>Codec</code>; otherwise, <code>null</code>
      */
     @Override
-    public Format setInputFormat(Format format)
-    {
+    public Format setInputFormat(Format format) {
         Format setFormat = super.setInputFormat(format);
         if (setFormat != null)
             reset();
@@ -384,8 +378,7 @@ public class JNIDecoder extends AbstractCodec2
      * @param keyFrameControl the <code>KeyFrameControl</code> to be used by this <code>DePacketizer</code> as a means of
      * control over its key frame-related logic
      */
-    public void setKeyFrameControl(KeyFrameControl keyFrameControl)
-    {
+    public void setKeyFrameControl(KeyFrameControl keyFrameControl) {
         this.keyFrameControl = keyFrameControl;
     }
 }

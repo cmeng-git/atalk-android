@@ -17,8 +17,7 @@ import java.nio.FloatBuffer;
 /**
  * Code for rendering a texture onto a surface using OpenGL ES 2.0.
  */
-public class CameraSurfaceRenderer
-{
+public class CameraSurfaceRenderer {
     /**
      * Float size constant
      */
@@ -78,8 +77,7 @@ public class CameraSurfaceRenderer
     private int positionHandle;
     private int textureHandle;
 
-    public CameraSurfaceRenderer()
-    {
+    public CameraSurfaceRenderer() {
         triangleVertices = ByteBuffer
                 .allocateDirect(triangleVerticesData.length * FLOAT_SIZE_BYTES)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
@@ -88,13 +86,11 @@ public class CameraSurfaceRenderer
         Matrix.setIdentityM(stMatrix, 0);
     }
 
-    public int getTextureId()
-    {
+    public int getTextureId() {
         return textureID;
     }
 
-    public void drawFrame(SurfaceTexture st)
-    {
+    public void drawFrame(SurfaceTexture st) {
         checkGlError("onDrawFrame start");
         st.getTransformMatrix(stMatrix);
 
@@ -133,8 +129,7 @@ public class CameraSurfaceRenderer
     /**
      * Initializes GL state. Call this after the EGL surface has been created and made current.
      */
-    public void surfaceCreated()
-    {
+    public void surfaceCreated() {
         program = createProgram(VERTEX_SHADER, FRAGMENT_SHADER);
         if (program == 0) {
             throw new RuntimeException("failed creating program");
@@ -176,8 +171,7 @@ public class CameraSurfaceRenderer
         checkGlError("glTexParameter");
     }
 
-    private int loadShader(int shaderType, String source)
-    {
+    private int loadShader(int shaderType, String source) {
         int shader = GLES20.glCreateShader(shaderType);
         checkGlError("glCreateShader type=" + shaderType);
         GLES20.glShaderSource(shader, source);
@@ -193,8 +187,7 @@ public class CameraSurfaceRenderer
         return shader;
     }
 
-    private int createProgram(String vertexSource, String fragmentSource)
-    {
+    private int createProgram(String vertexSource, String fragmentSource) {
         int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexSource);
         if (vertexShader == 0) {
             return 0;
@@ -225,8 +218,7 @@ public class CameraSurfaceRenderer
         return program;
     }
 
-    public void checkGlError(String op)
-    {
+    public void checkGlError(String op) {
         int error;
         if ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
             System.err.println(op + ": glError " + error);
@@ -234,8 +226,7 @@ public class CameraSurfaceRenderer
         }
     }
 
-    public void release()
-    {
+    public void release() {
         if (program != 0) {
             GLES20.glDeleteProgram(program);
             program = 0;

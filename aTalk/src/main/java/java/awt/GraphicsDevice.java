@@ -28,5 +28,4 @@ public abstract class GraphicsDevice
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

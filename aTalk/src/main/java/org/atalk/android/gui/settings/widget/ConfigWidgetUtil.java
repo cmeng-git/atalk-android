@@ -18,7 +18,7 @@ import androidx.preference.EditTextPreference.OnBindEditTextListener;
 import androidx.preference.Preference;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.impl.neomedia.codec.video.AndroidDecoder;
 import org.atalk.impl.neomedia.codec.video.AndroidEncoder;
 import org.atalk.service.configuration.ConfigurationService;
@@ -29,7 +29,7 @@ import org.atalk.service.configuration.ConfigurationService;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-class ConfigWidgetUtil implements OnBindEditTextListener {
+public class ConfigWidgetUtil implements OnBindEditTextListener {
     /**
      * The parent <code>Preference</code> handled by this instance.
      */
@@ -52,7 +52,7 @@ class ConfigWidgetUtil implements OnBindEditTextListener {
      *
      * @param parent the <code>Preference</code> that will be handled by this instance.
      */
-    ConfigWidgetUtil(Preference parent) {
+    public ConfigWidgetUtil(Preference parent) {
         this.parent = parent;
     }
 
@@ -62,7 +62,7 @@ class ConfigWidgetUtil implements OnBindEditTextListener {
      * @param parent the <code>Preference</code> that will be handled by this instance.
      * @param mapSummary indicates whether value should be displayed as a summary
      */
-    ConfigWidgetUtil(Preference parent, boolean mapSummary) {
+    public ConfigWidgetUtil(Preference parent, boolean mapSummary) {
         this.parent = parent;
         this.mapSummary = true;
     }
@@ -107,12 +107,12 @@ class ConfigWidgetUtil implements OnBindEditTextListener {
      *
      * @param value the new value to persist.
      */
-    void handlePersistValue(final Object value) {
+    public void handlePersistValue(final Object value) {
         updateSummary(value);
         Thread store = new Thread() {
             @Override
             public void run() {
-                ConfigurationService confService = AndroidGUIActivator.getConfigurationService();
+                ConfigurationService confService = AppGUIActivator.getConfigurationService();
                 if (confService != null) {
                     confService.setProperty(parent.getKey(), value);
                     if (parent.getKey().equals(AndroidDecoder.HW_DECODING_ENABLE_PROPERTY)) {
@@ -139,7 +139,7 @@ class ConfigWidgetUtil implements OnBindEditTextListener {
      * @param value the value to persist.
      */
     private void setSurfaceOption(String key, Object value) {
-        AndroidGUIActivator.getConfigurationService().setProperty(key, value);
+        AppGUIActivator.getConfigurationService().setProperty(key, value);
         ConfigCheckBox surfaceEnable = parent.getPreferenceManager().findPreference(key);
         if (surfaceEnable != null) {
             surfaceEnable.setChecked((Boolean) value);

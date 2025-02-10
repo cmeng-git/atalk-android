@@ -25,6 +25,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
@@ -33,7 +36,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.osgi.OSGiDialogFragment;
+import org.atalk.android.gui.dialogs.BaseDialogFragment;
 import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -43,9 +46,6 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import timber.log.Timber;
 
 /**
@@ -53,8 +53,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class ChatRoomBookmarkDialog extends OSGiDialogFragment
-{
+public class ChatRoomBookmarkDialog extends BaseDialogFragment {
     private MUCServiceImpl mucService;
     private ChatRoomWrapper mChatRoomWrapper;
     private OnFinishedCallback finishedCallback = null;
@@ -78,8 +77,7 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
      * @param chatRoomWrapper the <code>ChatRoomWrapper</code> whom attributes are to be modified.
      * @param callback to be call on dialog closed.
      */
-    public static ChatRoomBookmarkDialog getInstance(ChatRoomWrapper chatRoomWrapper, OnFinishedCallback callback)
-    {
+    public static ChatRoomBookmarkDialog getInstance(ChatRoomWrapper chatRoomWrapper, OnFinishedCallback callback) {
         ChatRoomBookmarkDialog dialog = new ChatRoomBookmarkDialog();
         dialog.mucService = MUCActivator.getMUCService();
         dialog.mChatRoomWrapper = chatRoomWrapper;
@@ -91,8 +89,7 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
     }
 
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (getDialog() != null)
             getDialog().setTitle(R.string.chatroom_bookmark_title);
 
@@ -130,8 +127,7 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
      * Creates the providers comboBox and filling its content with the current available chatRooms
      * Add available server chatRooms to the chatRoomList when providers changes
      */
-    private void initBookmarkedConference()
-    {
+    private void initBookmarkedConference() {
         ProtocolProviderService pps = mChatRoomWrapper.getProtocolProvider();
         String accountId = pps.getAccountID().getAccountJid();
         // getNickName() always returns a valid or default nickname string
@@ -147,8 +143,7 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
         mBookmark.setChecked(mChatRoomWrapper.isBookmarked());
     }
 
-    private void closeDialog()
-    {
+    private void closeDialog() {
         if (finishedCallback != null)
             finishedCallback.onCloseDialog();
         dismiss();
@@ -157,8 +152,7 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
     /**
      * Update the bookmarks on server.
      */
-    private boolean updateBookmarkedConference()
-    {
+    private boolean updateBookmarkedConference() {
         List<EntityBareJid> bookmarkedEntityList = new ArrayList<>();
         boolean success = true;
 
@@ -200,7 +194,7 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
                 mucService.joinChatRoom(mChatRoomWrapper, nickStr, pwd);
             }
         } catch (SmackException.NoResponseException | SmackException.NotConnectedException
-                | XMPPException.XMPPErrorException | InterruptedException | XmppStringprepException e) {
+                 | XMPPException.XMPPErrorException | InterruptedException | XmppStringprepException e) {
             String errMag = aTalkApp.getResString(R.string.chatroom_bookmark_update_failed,
                     mChatRoomWrapper, e.getMessage());
             Timber.w(errMag);
@@ -210,8 +204,7 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
         return success;
     }
 
-    public interface OnFinishedCallback
-    {
+    public interface OnFinishedCallback {
         void onCloseDialog();
     }
 }

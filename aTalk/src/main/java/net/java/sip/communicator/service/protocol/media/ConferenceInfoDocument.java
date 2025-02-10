@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
+import android.text.TextUtils;
+
 import org.atalk.util.xml.XMLException;
 import org.atalk.util.xml.XMLUtils;
 import org.w3c.dom.Document;
@@ -14,6 +16,7 @@ import org.w3c.dom.NodeList;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -198,15 +201,7 @@ public class ConferenceInfoDocument
     public ConferenceInfoDocument(String xml)
             throws XMLException
     {
-        byte[] bytes;
-
-        try {
-            bytes = xml.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException uee) {
-            Timber.w(uee, "Failed to gets bytes from String for the UTF-8 charset");
-            bytes = xml.getBytes();
-        }
-
+        byte[] bytes = xml.getBytes(StandardCharsets.UTF_8);
         try {
             document = XMLUtils.newDocumentBuilderFactory().newDocumentBuilder()
                     .parse(new ByteArrayInputStream(bytes));
@@ -258,7 +253,7 @@ public class ConferenceInfoDocument
 
         // temporary
         String sid = confInfo.getSid();
-        if (sid != null && !sid.equals(""))
+        if (!TextUtils.isEmpty(sid))
             setSid(sid);
 
         setEntity(confInfo.getEntity());

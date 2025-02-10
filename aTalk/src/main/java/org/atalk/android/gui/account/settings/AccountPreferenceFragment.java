@@ -23,9 +23,9 @@ import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
+import org.atalk.android.gui.settings.BasePreferenceFragment;
 import org.atalk.android.gui.settings.util.SummaryMapper;
-import org.atalk.service.osgi.OSGiPreferenceFragment;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -39,9 +39,8 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  * @author MilanKral
  */
-public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
-        implements SharedPreferences.OnSharedPreferenceChangeListener
-{
+public abstract class AccountPreferenceFragment extends BasePreferenceFragment
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
     /**
      * Account unique ID extra key
      */
@@ -117,8 +116,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      *
      * @param preferencesResourceId the ID of preferences xml file for current protocol
      */
-    public AccountPreferenceFragment(int preferencesResourceId)
-    {
+    public AccountPreferenceFragment(int preferencesResourceId) {
         this.preferencesResourceId = preferencesResourceId;
     }
 
@@ -145,8 +143,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      *
      * @return currently used <code>AccountRegistrationWizard</code>.
      */
-    protected AccountRegistrationWizard getWizard()
-    {
+    protected AccountRegistrationWizard getWizard() {
         return wizard;
     }
 
@@ -155,8 +152,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      *
      * @return currently edited {@link AccountID}.
      */
-    protected AccountID getAccountID()
-    {
+    protected AccountID getAccountID() {
         return mAccountID;
     }
 
@@ -165,8 +161,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      *
      * @return <code>true</code> if preference views have been initialized with values from the registration object.
      */
-    protected boolean isInitialized()
-    {
+    protected boolean isInitialized() {
         return initialized;
     }
 
@@ -174,10 +169,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * {@inheritDoc}
      */
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
-    {
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the preferences from the given resource
-        super.onCreatePreferences(savedInstanceState, rootKey);
         setPrefTitle(R.string.account_settings);
         setPreferencesFromResource(preferencesResourceId, rootKey);
 
@@ -227,33 +220,11 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * Unregisters preference listeners. Get executed when a Dialog is displayed.
      */
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         shPrefs.unregisterOnSharedPreferenceChangeListener(this);
         shPrefs.unregisterOnSharedPreferenceChangeListener(summaryMapper);
         dismissOperationInProgressDialog();
         super.onStop();
-    }
-
-    /**
-     * Method fired when OSGI context is attached, but after the <code>View</code> is created.
-     */
-    @Override
-    protected void onOSGiConnected()
-    {
-        super.onOSGiConnected();
-    }
-
-    /**
-     * Fired when OSGI is started and the <code>bundleContext</code> is available.
-     *
-     * @param bundleContext the OSGI bundle context.
-     */
-    @Override
-    public void start(BundleContext bundleContext)
-            throws Exception
-    {
-        super.start(bundleContext);
     }
 
     /**
@@ -262,8 +233,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      *
      * @param account the {@link AccountID} that will be edited
      */
-    public void loadAccount(AccountID account)
-    {
+    public void loadAccount(AccountID account) {
         mAccountID = account;
         wizard = findRegistrationService(account.getProtocolName());
         if (wizard == null)
@@ -295,8 +265,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * Stores <code>initialized</code> flag.
      */
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState)
-    {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_INIT_FLAG, initialized);
     }
@@ -305,16 +274,16 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * Finds the wizard for given protocol name
      *
      * @param protocolName the name of the protocol
+     *
      * @return {@link AccountRegistrationWizard} for given <code>protocolName</code>
      */
-    AccountRegistrationWizard findRegistrationService(String protocolName)
-    {
-        ServiceReference[] accountWizardRefs;
+    AccountRegistrationWizard findRegistrationService(String protocolName) {
+        ServiceReference<?>[] accountWizardRefs;
         try {
-            BundleContext context = AndroidGUIActivator.bundleContext;
+            BundleContext context = AppGUIActivator.bundleContext;
             accountWizardRefs = context.getServiceReferences(AccountRegistrationWizard.class.getName(), null);
 
-            for (ServiceReference accountWizardRef : accountWizardRefs) {
+            for (ServiceReference<?> accountWizardRef : accountWizardRefs) {
                 AccountRegistrationWizard wizard = (AccountRegistrationWizard) context.getService(accountWizardRef);
                 if (wizard.getProtocolName().equals(protocolName))
                     return wizard;
@@ -340,24 +309,21 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      *
      * @return the string that should be used as preference summary when no value has been set.
      */
-    protected String getEmptyPreferenceStr()
-    {
+    protected String getEmptyPreferenceStr() {
         return getString(R.string.settings_not_set);
     }
 
     /**
      * Should be called by subclasses to indicate that some changes has been made to the account
      */
-    protected static void setUncommittedChanges()
-    {
+    protected static void setUncommittedChanges() {
         uncommittedChanges = true;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void onSharedPreferenceChanged(SharedPreferences shPrefs, String key)
-    {
+    public void onSharedPreferenceChanged(SharedPreferences shPrefs, String key) {
         uncommittedChanges = true;
     }
 
@@ -369,8 +335,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     /**
      * Commits the changes and shows "in progress" dialog
      */
-    public void commitChanges()
-    {
+    public void commitChanges() {
         if (!uncommittedChanges) {
             mActivity.finish();
             return;
@@ -394,8 +359,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     /**
      * Shows the "in progress" dialog with a TOT of 5S if commit hangs
      */
-    private void displayOperationInProgressDialog()
-    {
+    private void displayOperationInProgressDialog() {
         Context context = getView().getRootView().getContext();
         CharSequence title = getResources().getText(R.string.commit_progress_title);
         CharSequence msg = getResources().getText(R.string.commit_progress_message);
@@ -410,8 +374,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     /**
      * Hides the "in progress" dialog
      */
-    private void dismissOperationInProgressDialog()
-    {
+    private void dismissOperationInProgressDialog() {
         Timber.d("Dismiss mProgressDialog: %s", mProgressDialog);
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();

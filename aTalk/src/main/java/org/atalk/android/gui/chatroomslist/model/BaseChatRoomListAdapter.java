@@ -18,7 +18,6 @@ package org.atalk.android.gui.chatroomslist.model;
 
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +37,7 @@ import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chatroomslist.ChatRoomBookmarkDialog;
@@ -45,7 +45,6 @@ import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.model.UIGroupRenderer;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.widgets.UnreadCountCustomView;
-import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bookmarks.BookmarkManager;
@@ -60,12 +59,6 @@ import timber.log.Timber;
  */
 public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
         implements View.OnClickListener, View.OnLongClickListener, ChatRoomBookmarkDialog.OnFinishedCallback {
-    /**
-     * UI thread handler used to call all operations that access data model. This guarantees that
-     * it's accessed from the main thread.
-     */
-    protected final Handler uiHandler = OSGiActivity.uiHandler;
-
     /**
      * The chatRoom list view.
      */
@@ -140,7 +133,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     public void expandAllGroups() {
         // Expand group view only when chatRoomListView is in focus (UI mode) - not null
         // cmeng - do not use isFocused() - may not in sync with actual
-        uiHandler.post(() -> {
+        BaseActivity.uiHandler.post(() -> {
             // FFR:  v2.1.5 NPE even with pre-check for non-null, so add catch exception
             if (chatRoomListView != null) {
                 int count = getGroupCount();

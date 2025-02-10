@@ -38,7 +38,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -87,7 +87,7 @@ public class MetaContactChatSession extends ChatSession
 
         // Obtain the MetaContactListService and add this class to it as a
         // listener of all events concerning the contact list.
-        metaContactListService = AndroidGUIActivator.getContactListService();
+        metaContactListService = AppGUIActivator.getContactListService();
         if (metaContactListService != null)
             metaContactListService.addMetaContactListListener(this);
     }
@@ -114,7 +114,7 @@ public class MetaContactChatSession extends ChatSession
      */
     @Override
     public Collection<Object> getHistory(int count) {
-        final MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
+        final MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
         // could be "disabled" from the user through one of the configuration forms.
@@ -134,7 +134,7 @@ public class MetaContactChatSession extends ChatSession
      */
     @Override
     public Collection<Object> getHistoryBeforeDate(Date date, int count) {
-        final MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
+        final MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
         // could be "disabled" from the user through one of the configuration forms.
@@ -155,7 +155,7 @@ public class MetaContactChatSession extends ChatSession
      */
     @Override
     public Collection<Object> getHistoryAfterDate(Date date, int count) {
-        final MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
+        final MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
         // could be "disabled" from the user through one of the configuration forms.
@@ -174,7 +174,7 @@ public class MetaContactChatSession extends ChatSession
     @Override
     public Date getHistoryStartDate() {
         Date startHistoryDate = new Date(0);
-        MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
+        MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
         // could be "disabled" from the user through one of the configuration forms.
@@ -211,7 +211,7 @@ public class MetaContactChatSession extends ChatSession
     @Override
     public Date getHistoryEndDate() {
         Date endHistoryDate = new Date(0);
-        MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
+        MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
         // could be "disabled" from the user through one of the configuration forms.
@@ -420,7 +420,7 @@ public class MetaContactChatSession extends ChatSession
                 ChatRoomMember metaChatContact = (ChatRoomMember) chatSourceContact;
                 Contact contact = metaChatContact.getContact();
                 MetaContact parentMetaContact
-                        = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
+                        = AppGUIActivator.getContactListService().findMetaContactByContact(contact);
                 if (parentMetaContact != null && parentMetaContact.equals(metaContact))
                     return chatContact;
             }

@@ -35,7 +35,7 @@ import net.java.sip.communicator.service.protocol.OperationSetSmsMessaging;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.chat.conference.AdHocChatRoomProviderWrapper;
 import org.atalk.android.gui.chat.conference.AdHocChatRoomWrapper;
 import org.atalk.android.gui.chat.conference.AdHocConferenceChatSession;
@@ -400,7 +400,7 @@ public class ChatSessionManager {
             return null;
         }
         else {
-            MetaContactListService mcls = AndroidGUIActivator.getContactListService();
+            MetaContactListService mcls = AppGUIActivator.getContactListService();
             if (mcls != null)
                 metaContact = mcls.findMetaContactByContact(contact);
 
@@ -434,7 +434,7 @@ public class ChatSessionManager {
         }
         // Create new chatPanel only if it does not exist.
         else if (chatMode == MC_CHAT) {
-            MetaContact metaContact = AndroidGUIActivator.getContactListService().findMetaContactByMetaUID(chatId);
+            MetaContact metaContact = AppGUIActivator.getContactListService().findMetaContactByMetaUID(chatId);
             if (metaContact != null) {
                 chatPanel = createChat(metaContact);
             }
@@ -540,7 +540,7 @@ public class ChatSessionManager {
     public static ChatPanel getMultiChat(AdHocChatRoom adHocChatRoom, boolean create) {
         synchronized (chatSyncRoot) {
             AdHocChatRoomList chatRoomList
-                    = AndroidGUIActivator.getUIService().getConferenceChatManager().getAdHocChatRoomList();
+                    = AppGUIActivator.getUIService().getConferenceChatManager().getAdHocChatRoomList();
 
             // Search in the chat room's list for a chat room that correspond to the given one.
             AdHocChatRoomWrapper chatRoomWrapper = chatRoomList.findChatRoomWrapperFromAdHocChatRoom(adHocChatRoom);

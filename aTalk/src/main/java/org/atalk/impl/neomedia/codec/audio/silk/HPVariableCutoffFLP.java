@@ -136,7 +136,7 @@ public class HPVariableCutoffFLP
 		// {
 		// throw new IOException("Unexpected End of Stream");
 		// }
-		// b_q28[ii] = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
+		// b_q28[ii] = ByteBufferFmj.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
 		// }
 		// catch (IOException e)
 		// {
@@ -192,7 +192,7 @@ public class HPVariableCutoffFLP
 		// {
 		// throw new IOException("Unexpected End of Stream");
 		// }
-		// a_q28[ii] = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
+		// a_q28[ii] = ByteBufferFmj.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
 		// }
 		// catch (IOException e)
 		// {
@@ -248,7 +248,7 @@ public class HPVariableCutoffFLP
 		// {
 		// throw new IOException("Unexpected End of Stream");
 		// }
-		// in_hp_state[ii] = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
+		// in_hp_state[ii] = ByteBufferFmj.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
 		// }
 		// catch (IOException e)
 		// {
@@ -304,7 +304,7 @@ public class HPVariableCutoffFLP
 		// {
 		// throw new IOException("Unexpected End of Stream");
 		// }
-		// in_test[ii] = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getShort();
+		// in_test[ii] = ByteBufferFmj.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getShort();
 		// }
 		// catch (IOException e)
 		// {

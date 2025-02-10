@@ -30,8 +30,7 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class ProvisioningDiscoveryDHCPActivator implements BundleActivator
-{
+public class ProvisioningDiscoveryDHCPActivator implements BundleActivator {
     /**
      * DHCP provisioning service.
      */
@@ -52,11 +51,11 @@ public class ProvisioningDiscoveryDHCPActivator implements BundleActivator
      *
      * @param bundleContext the <code>BundleContext</code> as provided by the OSGi
      * framework.
+     *
      * @throws Exception if anything goes wrong
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         bundleContext.registerService(ProvisioningDiscoveryService.class.getName(), provisioningService, null);
 
         ProvisioningDiscoveryDHCPActivator.bundleContext = bundleContext;
@@ -68,11 +67,11 @@ public class ProvisioningDiscoveryDHCPActivator implements BundleActivator
      *
      * @param bundleContext the <code>BundleContext</code> as provided by the OSGi
      * framework.
+     *
      * @throws Exception if anything goes wrong
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         ProvisioningDiscoveryDHCPActivator.bundleContext = null;
         Timber.i("DHCP provisioning discovery Service ...[STOPPED]");
     }
@@ -85,8 +84,7 @@ public class ProvisioningDiscoveryDHCPActivator implements BundleActivator
      * @return a currently valid implementation of the
      * NetworkAddressManagerService .
      */
-    public static NetworkAddressManagerService getNetworkAddressManagerService()
-    {
+    public static NetworkAddressManagerService getNetworkAddressManagerService() {
         if (networkAddressManagerService == null) {
             ServiceReference confReference = bundleContext.getServiceReference(NetworkAddressManagerService.class.getName());
             networkAddressManagerService = (NetworkAddressManagerService) bundleContext.getService(confReference);

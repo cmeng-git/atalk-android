@@ -16,8 +16,11 @@
  */
 package org.atalk.android.gui.util;
 
+import static android.text.Html.FROM_HTML_MODE_LEGACY;
+
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
@@ -26,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.concurrent.Executors;
 
 /**
  * Utility class that implements <code>Html.ImageGetter</code> interface and can be used
@@ -33,20 +37,18 @@ import java.net.URLConnection;
  *
  * @author Eng Chong Meng
  */
-public class XhtmlImageParser implements Html.ImageGetter
-{
-    private TextView mTextView;
-    private String XhtmlString;
+public class XhtmlImageParser implements Html.ImageGetter {
+    private final TextView mTextView;
+    private final String XhtmlString;
 
     /**
-     * Construct the XhtmlImageParser which will execute AsyncTask and refresh the TextView
+     * Construct the XhtmlImageParser which will execute in async and refresh the TextView
      * Usage: htmlTextView.setText(Html.fromHtml(HtmlString, new XhtmlImageParser(htmlTextView, HtmlString), null));
      *
      * @param tv the textView to be populated with return result
      * @param str the xhtml string
      */
-    public XhtmlImageParser(TextView tv, String str)
-    {
+    public XhtmlImageParser(TextView tv, String str) {
         mTextView = tv;
         XhtmlString = str;
     }
@@ -55,8 +57,7 @@ public class XhtmlImageParser implements Html.ImageGetter
      * {@inheritDoc}
      */
     @Override
-    public Drawable getDrawable(String source)
-    {
+    public Drawable getDrawable(String source) {
         HttpGetDrawableTask httpGetDrawableTask = new HttpGetDrawableTask();
         httpGetDrawableTask.execute(source);
         return null;
@@ -65,26 +66,22 @@ public class XhtmlImageParser implements Html.ImageGetter
     /**
      * Execute fetch url image as async task: else 'android.os.NetworkOnMainThreadException'
      */
-    public class HttpGetDrawableTask extends AsyncTask<String, Void, Drawable>
-    {
-        @Override
-        protected Drawable doInBackground(String... params)
-        {
-            String source = params[0];
-            return getDrawable(source);
-        }
+    public class HttpGetDrawableTask {
+        public void execute(String... params) {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                String urlString = params[0];
+                final Drawable urlDrawable = getDrawable(urlString);
 
-        @Override
-        protected void onPostExecute(Drawable result)
-        {
-            final Drawable urlDrawable = result;
-            if (urlDrawable != null) {
-                mTextView.setText(Html.fromHtml(XhtmlString, source -> urlDrawable, null));
-            }
-            else {
-                mTextView.setText(Html.fromHtml(XhtmlString, null, null));
-            }
-            mTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (urlDrawable != null) {
+                        mTextView.setText(Html.fromHtml(XhtmlString, FROM_HTML_MODE_LEGACY, source -> urlDrawable, null));
+                    }
+                    else {
+                        mTextView.setText(Html.fromHtml(XhtmlString, FROM_HTML_MODE_LEGACY, null, null));
+                    }
+                    mTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                });
+            });
         }
 
         /***
@@ -94,8 +91,7 @@ public class XhtmlImageParser implements Html.ImageGetter
          * @param urlString url string
          * @return drawable
          */
-        public Drawable getDrawable(String urlString)
-        {
+        public Drawable getDrawable(String urlString) {
             try {
                 // urlString = "https://cmeng-git.github.io/atalk/img/09.atalk_avatar.png";
                 urlString = urlString.replace("http:", "https:");

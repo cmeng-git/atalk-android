@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.impl.history;
@@ -17,42 +17,37 @@ import org.osgi.framework.ServiceRegistration;
  * @author Alexander Pelov
  * @author Lubomir Marinov
  */
-public class HistoryActivator implements BundleActivator
-{
-	/**
-	 * The service registration.
-	 */
-	private ServiceRegistration<?> serviceRegistration;
+public class HistoryActivator implements BundleActivator {
+    /**
+     * The service registration.
+     */
+    private ServiceRegistration<?> serviceRegistration;
 
-	/**
-	 * Initialize and start history service
-	 *
-	 * @param bundleContext
-	 *        the <code>BundleContext</code>
-	 * @throws Exception
-	 *         if initializing and starting history service fails
-	 */
-	public void start(BundleContext bundleContext)
-		throws Exception
-	{
-		serviceRegistration = bundleContext.registerService(HistoryService.class.getName(),
-				new HistoryServiceImpl(bundleContext), null);
-	}
+    /**
+     * Initialize and start history service
+     *
+     * @param bundleContext the <code>BundleContext</code>
+     *
+     * @throws Exception if initializing and starting history service fails
+     */
+    public void start(BundleContext bundleContext)
+            throws Exception {
+        serviceRegistration = bundleContext.registerService(HistoryService.class.getName(),
+                new HistoryServiceImpl(bundleContext), null);
+    }
 
-	/**
-	 * Stops this bundle.
-	 *
-	 * @param bundleContext
-	 *        the <code>BundleContext</code>
-	 * @throws Exception
-	 *         if the stop operation goes wrong
-	 */
-	public void stop(BundleContext bundleContext)
-		throws Exception
-	{
-		if (serviceRegistration != null) {
-			serviceRegistration.unregister();
-			serviceRegistration = null;
-		}
-	}
+    /**
+     * Stops this bundle.
+     *
+     * @param bundleContext the <code>BundleContext</code>
+     *
+     * @throws Exception if the stop operation goes wrong
+     */
+    public void stop(BundleContext bundleContext)
+            throws Exception {
+        if (serviceRegistration != null) {
+            serviceRegistration.unregister();
+            serviceRegistration = null;
+        }
+    }
 }

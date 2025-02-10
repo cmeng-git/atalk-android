@@ -26,9 +26,9 @@ import net.java.sip.communicator.service.notification.event.NotificationEventTyp
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.UtilActivator;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.service.osgi.OSGiActivity;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.service.resources.ResourceManagementService;
 
 /**
@@ -37,7 +37,7 @@ import org.atalk.service.resources.ResourceManagementService;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class NotificationSettings extends OSGiActivity {
+public class NotificationSettings extends BaseActivity {
     public static final String NOTICE_PREFIX = "notificationconfig.event.";
 
     /**
@@ -56,7 +56,7 @@ public class NotificationSettings extends OSGiActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.notificationService = ServiceUtils.getService(AndroidGUIActivator.bundleContext, NotificationService.class);
+        this.notificationService = ServiceUtils.getService(AppGUIActivator.bundleContext, NotificationService.class);
         setContentView(R.layout.list_layout);
     }
 

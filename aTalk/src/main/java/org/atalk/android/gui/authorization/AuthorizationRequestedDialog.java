@@ -15,11 +15,11 @@ import android.widget.Spinner;
 
 import net.java.sip.communicator.service.protocol.AuthorizationResponse;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.contactlist.MetaContactGroupAdapter;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.osgi.OSGiActivity;
 
 /**
  * The dialog is displayed when someone wants to add us to his contact list and the authorization
@@ -28,7 +28,7 @@ import org.atalk.service.osgi.OSGiActivity;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AuthorizationRequestedDialog extends OSGiActivity {
+public class AuthorizationRequestedDialog extends BaseActivity {
     /**
      * Request id managed by <code>AuthorizationHandlerImpl</code>.
      */

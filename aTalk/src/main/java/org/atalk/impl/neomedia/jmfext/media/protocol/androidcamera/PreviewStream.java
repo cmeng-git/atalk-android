@@ -28,12 +28,6 @@ import android.view.SurfaceHolder;
 
 import androidx.annotation.NonNull;
 
-import org.atalk.android.gui.call.VideoCallActivity;
-import org.atalk.android.gui.call.VideoHandlerFragment;
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.impl.neomedia.device.util.PreviewSurfaceProvider;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -41,6 +35,12 @@ import java.util.LinkedList;
 
 import javax.media.Buffer;
 import javax.media.control.FormatControl;
+
+import org.atalk.android.gui.call.VideoCallActivity;
+import org.atalk.android.gui.call.VideoHandlerFragment;
+import org.atalk.impl.neomedia.codec.AbstractCodec2;
+import org.atalk.impl.neomedia.device.util.PreviewSurfaceProvider;
+import org.atalk.impl.timberlog.TimberLog;
 
 import timber.log.Timber;
 
@@ -51,8 +51,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class PreviewStream extends CameraStreamBase
-{
+public class PreviewStream extends CameraStreamBase {
     /**
      * Buffers queue for camera2 YUV420_888 multi plan image buffered data
      */
@@ -66,8 +65,7 @@ public class PreviewStream extends CameraStreamBase
      * @param dataSource parent <code>DataSource</code>.
      * @param formatControl format control used by this instance.
      */
-    public PreviewStream(DataSource dataSource, FormatControl formatControl)
-    {
+    public PreviewStream(DataSource dataSource, FormatControl formatControl) {
         super(dataSource, formatControl);
     }
 
@@ -76,8 +74,7 @@ public class PreviewStream extends CameraStreamBase
      */
     @Override
     public void start()
-            throws IOException
-    {
+            throws IOException {
         super.start();
         startImpl();
     }
@@ -87,8 +84,7 @@ public class PreviewStream extends CameraStreamBase
      */
     @Override
     public void stop()
-            throws IOException
-    {
+            throws IOException {
         super.stop();
         // close the local video preview surface
         if (mSurfaceProvider != null)
@@ -100,8 +96,7 @@ public class PreviewStream extends CameraStreamBase
      * aTalk native camera acquired YUV420 preview is always in landscape mode
      */
     @Override
-    protected void onInitPreview()
-    {
+    protected void onInitPreview() {
         try {
             /*
              * set up the target surfaces for local video preview display; Before calling obtainObject(),
@@ -131,18 +126,15 @@ public class PreviewStream extends CameraStreamBase
             // mPreviewRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, mSensorOrientation);
 
             mCameraDevice.createCaptureSession(Arrays.asList(previewSurface, mImageReader.getSurface()),
-                    new CameraCaptureSession.StateCallback()
-                    {
+                    new CameraCaptureSession.StateCallback() {
                         @Override
-                        public void onConfigured(@NonNull CameraCaptureSession session)
-                        {
+                        public void onConfigured(@NonNull CameraCaptureSession session) {
                             mCaptureSession = session;
                             updateCaptureRequest();
                         }
 
                         @Override
-                        public void onConfigureFailed(@NonNull CameraCaptureSession session)
-                        {
+                        public void onConfigureFailed(@NonNull CameraCaptureSession session) {
                             Timber.e("Camera capture session config failed: %s", session);
                         }
                     }, null);
@@ -155,8 +147,7 @@ public class PreviewStream extends CameraStreamBase
      * Update the camera capture request.
      * Start the camera capture session with repeating request for smoother video streaming.
      */
-    protected void updateCaptureRequest()
-    {
+    protected void updateCaptureRequest() {
         // The camera is already closed, so abort
         if (null == mCameraDevice) {
             Timber.e("Camera capture session config - camera closed, return");
@@ -215,12 +206,12 @@ public class PreviewStream extends CameraStreamBase
      * (PreviewStream.java:188)#lambda$new$0$PreviewStream: OnImage available exception: index=345623 out of bounds (limit=345600)
      *
      * @param buffer streaming data buffer to be filled
+     *
      * @throws IOException on image buffer not accessible
      */
     @Override
     public void read(Buffer buffer)
-            throws IOException
-    {
+            throws IOException {
         Image image;
         synchronized (bufferQueue) {
             image = bufferQueue.removeLast();
@@ -255,9 +246,9 @@ public class PreviewStream extends CameraStreamBase
     }
 
     /**
-     * http://www.wordsaretoys.com/2013/10/25/roll-that-camera-zombie-rotation-and-coversion-from-yv12-to-yuv420planar/
+     * <a href="http://www.wordsaretoys.com/2013/10/25/roll-that-camera-zombie-rotation-and-coversion-from-yv12-to-yuv420planar/">...</a>
      * Original code has been modified for camera2 UV420_888 and optimised for aTalk rotation without stretching the image
-     *
+     * <p>
      * Transform android YUV420_888 image orientation according to camera orientation.
      * ## Swap: means swapping the x & y coordinates, which provides a 90-degree anticlockwise rotation,
      * ## Flip: means mirroring the image for a 180-degree rotation, adjusted for inversion by for camera2
@@ -267,8 +258,7 @@ public class PreviewStream extends CameraStreamBase
      * @param width final output stream image width.
      * @param height final output stream image height.
      */
-    private void YUV420PlanarRotate(Image image, byte[] output, int width, int height)
-    {
+    private void YUV420PlanarRotate(Image image, byte[] output, int width, int height) {
         // Init w * h parameters: Assuming input preview buffer dimension is always in landscape mode
         int wi = width - 1;
         int hi = height - 1;

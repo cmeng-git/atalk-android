@@ -20,24 +20,24 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
+
+import java.util.Objects;
 
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.android.gui.util.PreferenceUtil;
-import org.atalk.service.osgi.OSGiPreferenceFragment;
 
 /**
  * The preferences fragment implements for QuietTime settings.
  *
  * @author Eng Chong Meng
  */
-public class QuietTimeFragment extends OSGiPreferenceFragment
+public class QuietTimeFragment extends BasePreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener, PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback {
     // QuietTime
     public static final String P_KEY_QUIET_HOURS_ENABLE = "pref.key.quiet_hours_enable";
@@ -57,7 +57,6 @@ public class QuietTimeFragment extends OSGiPreferenceFragment
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the quiet time preferences from an XML resource
-        super.onCreatePreferences(savedInstanceState, rootKey);
         setPreferencesFromResource(R.xml.quiet_time_preferences, rootKey);
     }
 
@@ -103,7 +102,7 @@ public class QuietTimeFragment extends OSGiPreferenceFragment
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key) {
-        switch (key) {
+        switch (Objects.requireNonNull(key)) {
             case P_KEY_QUIET_HOURS_ENABLE:
                 ConfigurationUtils.setQuiteHoursEnable(shPreferences.getBoolean(P_KEY_QUIET_HOURS_ENABLE, true));
                 break;
@@ -117,25 +116,13 @@ public class QuietTimeFragment extends OSGiPreferenceFragment
     }
 
     /**
-     * Must override getCallbackFragment() to get PreferenceFragmentCompat to callback onPreferenceDisplayDialog();
-     * else Cannot display dialog for an unknown Preference type: TimePreference. Make sure to implement
-     * onPreferenceDisplayDialog() to handle displaying a custom dialog for this Preference.
-     *
-     * @return This fragment reference that implements OnPreferenceDisplayDialogCallback
-     */
-    @Override
-    public Fragment getCallbackFragment() {
-        return this;
-    }
-
-    /**
      * @param caller The fragment containing the preference requesting the dialog
      * @param pref The preference requesting the dialog
      *
      * @return {@code true} if the dialog creation has been handled
      */
     @Override
-    public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragmentCompat caller, Preference pref) {
+    public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragmentCompat caller, @NonNull Preference pref) {
         if (pref instanceof TimePreference) {
             TimePickerPreferenceDialog dialogFragment = TimePickerPreferenceDialog.newInstance((TimePreference) pref);
             dialogFragment.setTargetFragment(this, 0);

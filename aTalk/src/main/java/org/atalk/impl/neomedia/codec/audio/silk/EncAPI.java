@@ -204,7 +204,7 @@ public class EncAPI {
                 // {
                 // throw new IOException("Unexpected End of Stream");
                 // }
-                // inputbuf[ii] = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getShort();
+                // inputbuf[ii] = ByteBufferFmj.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getShort();
                 // }
                 // catch (IOException e)
                 // {

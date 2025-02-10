@@ -69,11 +69,15 @@ public class UpdateServiceImpl implements UpdateService {
             "https://atalk.sytes.net/releases/atalk-android/version.properties"
     };
 
+    // filename is case-sensitive
+    private static final String fileNameApk = String.format("aTalk-%s-%s.apk", BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE);
+    // github apk is in the release directory; for apk download
+    private static final String urlApk = "https://github.com/cmeng-git/atalk-android/releases/download/%s/";
+
     /**
      * Apk mime type constant.
      */
     private static final String APK_MIME_TYPE = "application/vnd.android.package-archive";
-    private static final String fileNameApk = String.format("aTalk-%s-%s.apk", BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE);
 
     /**
      * The download link for the installed application
@@ -91,7 +95,6 @@ public class UpdateServiceImpl implements UpdateService {
      */
     private String latestVersion;
     private long latestVersionCode;
-
     private boolean mIsLatest = false;
 
     /* DownloadManager Broadcast Receiver Handler */
@@ -180,7 +183,7 @@ public class UpdateServiceImpl implements UpdateService {
         int lastJobStatus = DownloadManager.ERROR_UNKNOWN;
 
         List<Long> previousDownloads = getOldDownloads();
-        if (previousDownloads.size() > 0) {
+        if (!previousDownloads.isEmpty()) {
             long lastDownload = previousDownloads.get(previousDownloads.size() - 1);
 
             lastJobStatus = checkDownloadStatus(lastDownload);
@@ -426,17 +429,23 @@ public class UpdateServiceImpl implements UpdateService {
         for (String aLink : updateLinks) {
             try {
                 if (isValidateLink(aLink)) {
-                    InputStream in = mHttpConnection.getInputStream();
+                    InputStream inputStream = mHttpConnection.getInputStream();
                     Properties mProperties = new Properties();
-                    mProperties.load(in);
+                    mProperties.load(inputStream);
+                    inputStream.close();
 
                     latestVersion = mProperties.getProperty("last_version");
                     latestVersionCode = Long.parseLong(mProperties.getProperty("last_version_code"));
 
-                    String aLinkPrefix = aLink.substring(0, aLink.lastIndexOf("/") + 1);
-                    downloadLink = aLinkPrefix + fileNameApk;
+                    if (aLink.contains("github")) {
+                        downloadLink = urlApk.replace("%s", latestVersion) + fileNameApk;
+                    }
+                    else {
+                        String aLinkPrefix = aLink.substring(0, aLink.lastIndexOf("/") + 1);
+                        downloadLink = aLinkPrefix + fileNameApk;
+                    }
                     if (isValidateLink(downloadLink)) {
-                        // return true is current running application is already the latest
+                        // return true if current running application is already the latest
                         return (currentVersionCode >= latestVersionCode);
                     }
                     else {
@@ -447,7 +456,6 @@ public class UpdateServiceImpl implements UpdateService {
                 Timber.w("Could not retrieve version.properties for checking: %s", e.getMessage());
             }
         }
-
         // return true if all failed to force update.
         return true;
     }

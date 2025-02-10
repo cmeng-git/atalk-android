@@ -623,7 +623,7 @@
     <string name="url_example">https://www.example.com</string>
     <string name="volume_control_title">Tingkat penguatan volume output</string>
     <string name="volume_control_tooltip">Menyesuaikan volume</string>
-    <string name="volume_gain_level">Level penguatan volume: %1$s %%</string>
+    <string name="volume_gain_level">Level penguatan volume: %1$d%%</string>
     <string name="waiting_for_authorization">Menunggu otorisasi</string>
     <string name="warning">Peringatan</string>
     <string name="call_in_progress_warning">Tidak dapat melakukan ini selama panggilan</string>
@@ -811,7 +811,7 @@
     <string name="update_download_failed">Gagal mengunduh pembaruan baru!</string>
     <string name="update_check_update">Periksa pembaruan</string>
     <string name="update_version_invalid">apk yang diunduh tidak cocok; sebenarnya: %1$s (%2$s)</string>
-    <string name="update_vew_version_available">Versi perangkat lunak baru ( %1$s) tersedia.</string>
+    <string name="update_new_version_available">Versi perangkat lunak baru ( %1$s) tersedia.</string>
 
     <!-- account info -->
     <string name="accountinfo_about_me">Tentang Saya:</string>
@@ -1378,8 +1378,8 @@
     <!-- Video codecs -->
     <string name="settings_direct_surface_decode">Gunakan dekode permukaan langsung</string>
     <string name="settings_direct_surface_encode">Gunakan pengkodean permukaan langsung</string>
-    <string name="settings_hw_decode">Gunakan decoding perangkat keras (restart diperlukan)</string>
-    <string name="settings_hw_encode">Gunakan pengkodean perangkat keras (restart diperlukan)</string>
+    <string name="settings_hw_decode">Gunakan decoding perangkat keras</string>
+    <string name="settings_hw_encode">Gunakan pengkodean perangkat keras</string>
     <string name="settings_media_codec_list">MediaCodecs</string>
     <string name="settings_media_codec_list_summary">Daftar pembuat enkode/dekoder internal</string>
     <string name="settings_restart_require">Perlu memulai ulang aTalk</string>
@@ -1518,7 +1518,7 @@
     <string name="permission_camera">Camera</string>
     <string name="permission_contacts">Kontak</string>
     <string name="permission_location">Lokasi</string>
-    <string name="permission_microphone">Audio</string>
+    <string name="permission_microphone">Mikropon</string>
     <string name="permission_music">Musik dan Audio</string>
     <string name="permission_notifications">Notifikasi</string>
     <string name="permission_phone">Telepon</string>

@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.impl.androidtray.NotificationPopupHandler;
+import org.atalk.impl.appstray.NotificationPopupHandler;
 import org.atalk.persistance.FileBackend;
 
 import timber.log.Timber;

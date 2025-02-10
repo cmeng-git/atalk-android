@@ -824,7 +824,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         OperationSetAutoAnswerJabberImpl autoAnswerOpSet = (OperationSetAutoAnswerJabberImpl)
                 getProtocolProvider().getOperationSet(OperationSetBasicAutoAnswer.class);
 
-        // See AndroidCallListener#onCallEvent(): For auto-answer to work properly for JingleMessage incoming call:
+        // See AppCallListener#onCallEvent(): For auto-answer to work properly for JingleMessage incoming call:
         // Setting answerOnJingleMessageAccept flag gets trigger only after <ringing/>; as this method is handled via separate thread;
         if (autoAnswerOpSet != null) {
             autoAnswerOpSet.autoAnswer(this, directions, jingle);

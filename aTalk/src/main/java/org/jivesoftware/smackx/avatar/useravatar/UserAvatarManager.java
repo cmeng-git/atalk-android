@@ -18,10 +18,12 @@
 package org.jivesoftware.smackx.avatar.useravatar;
 
 import android.graphics.Bitmap;
-import android.text.TextUtils;
+import android.graphics.BitmapFactory;
 
-import java.io.ByteArrayOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -30,11 +32,14 @@ import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarData;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarMetadata;
@@ -110,61 +115,42 @@ public class UserAvatarManager extends AvatarManager {
      * Before updating the avatar metadata node, the publisher MUST make sure that the avatar data
      * is available at the data node or URL
      *
-     * @param bitmap the avatar to publish after conversation
+     * @param avatar the avatar to publish after conversation
      *
      * @return true on success false otherwise
      */
-    public boolean publishAvatar(Bitmap bitmap) {
+    public boolean publishAvatar(byte[] avatar) {
         AvatarMetadata meta = new AvatarMetadata();
 
         // The png format is mandatory for interoperability
-        AvatarMetadata.Info png = publishBitmap(bitmap, Bitmap.CompressFormat.PNG, JPEG_QUALITY);
-        meta.addInfo(png);
-        return publishAvatarMetaData(png.getId(), meta);
+        AvatarMetadata.Info avInfo = getAvInfo(avatar);
+        meta.addInfo(avInfo);
+        return publishAvatarMetaData(avInfo.getId(), meta);
     }
 
     /**
      * Send this bitmap to the avatar data node of the pep server.
      *
-     * @param bmp the avatar bitmap
-     * @param format the image format to publish this data
-     * @param quality the compression quality use for JPEG compression
+     * @param byteData the avatar bytes
      *
      * @return the resulting info associate with this bitmap.
      */
-    private AvatarMetadata.Info publishBitmap(Bitmap bmp, Bitmap.CompressFormat format, int quality) {
-        byte[] data = getBitmapByte(bmp, format, quality);
-        String dataId = getAvatarHash(data);
-        publishAvatarData(dataId, data);
+    private AvatarMetadata.Info getAvInfo(byte[] byteData) {
+        String dataId = getAvatarHash(byteData);
+        publishAvatarData(dataId, byteData);
 
         // save a copy of data in persistent storage and update its index
-        addAvatarImageByAvatarId(dataId, data);
+        addAvatarImageByAvatarId(dataId, byteData);
         addJidToAvatarHashIndex(mAccount, dataId);
 
         String mimeType = "image/png";
-        if (Bitmap.CompressFormat.JPEG == format)
-            mimeType = "image/jpeg";
-        AvatarMetadata.Info info = new AvatarMetadata.Info(dataId, mimeType, data.length);
-        info.setHeight(bmp.getHeight());
-        info.setWidth(bmp.getWidth());
-        return info;
-    }
+        ByteArrayInputStream stream = new ByteArrayInputStream(byteData);
+        Bitmap avatar = BitmapFactory.decodeStream(stream);
 
-    /**
-     * Convert the bitmap to a byte array.
-     *
-     * @param bitmap the avatar bitmap
-     * @param format the resulting image format
-     * @param quality the compression quality use for JPEG compression
-     *
-     * @return the bitmap data or a array of 0 element on error
-     */
-    private byte[] getBitmapByte(Bitmap bitmap, Bitmap.CompressFormat format, int quality) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        if (bitmap.compress(format, quality, bos))
-            return bos.toByteArray();
-        else
-            return new byte[0];
+        AvatarMetadata.Info info = new AvatarMetadata.Info(dataId, mimeType, byteData.length);
+        info.setHeight(avatar.getHeight());
+        info.setWidth(avatar.getWidth());
+        return info;
     }
 
     /**
@@ -242,12 +228,9 @@ public class UserAvatarManager extends AvatarManager {
                 pubSubNode.publish(item);
                 return true;
             }
-        } catch (SmackException.NotConnectedException | InterruptedException e) {
-            e.printStackTrace();
-        } catch (XMPPException.XMPPErrorException e) {
-            e.printStackTrace();
-        } catch (SmackException.NoResponseException e) {
-            e.printStackTrace();
+        } catch (SmackException.NotConnectedException | InterruptedException
+                 | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
+            LOGGER.log(Level.WARNING, "Error in nodePublish: " + e.getMessage());
         }
         return false;
     }
@@ -285,7 +268,7 @@ public class UserAvatarManager extends AvatarManager {
      */
     public boolean downloadAvatar(EntityBareJid from, String avatarId, Info info) {
         /* acts if only new avatarId is received. null => client not ready so no action; also it is still connected */
-        if (!TextUtils.isEmpty(avatarId) && isAvatarNew(from, avatarId) && (mConnection != null)) {
+        if (!StringUtils.isEmpty(avatarId) && isAvatarNew(from, avatarId) && (mConnection != null)) {
             try {
                 String oldAvatarId = getAvatarHashByJid(from);
                 AvatarRetriever retriever = AvatarRetrieverFactory.getRetriever(mConnection, from, info);
@@ -304,7 +287,7 @@ public class UserAvatarManager extends AvatarManager {
                  * - the currentAvatarHash is single user owner
                  * - skip if currentAvatarHash.equals(avatarId) => cache and persistent not sync
                  */
-                if (!TextUtils.isEmpty(oldAvatarId) && !oldAvatarId.equals(avatarId)
+                if (!StringUtils.isEmpty(oldAvatarId) && !oldAvatarId.equals(avatarId)
                         && !isHashMultipleOwner(from, oldAvatarId))
                     persistentAvatarCache.purgeItemFor(oldAvatarId);
 
@@ -349,7 +332,7 @@ public class UserAvatarManager extends AvatarManager {
             boolean isOwnSelf = (mAccount != null) && mAccount.isParentOf(from);
 
             List<Info> infos = event.getInfo();
-            if (infos.size() > 0) {
+            if (!infos.isEmpty()) {
                 Info info = selectAvatar(infos);
                 String newAvatarId = info.getId();
 

@@ -26,15 +26,13 @@ import javax.media.ResourceUnavailableException;
 import javax.media.format.RGBFormat;
 import javax.media.format.VideoFormat;
 
-
 /**
  * Implements an H.264 decoder using OpenMAX.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class OMXDecoder extends AbstractCodec2
-{
+public class OMXDecoder extends AbstractCodec2 {
     /**
      * The list of <code>Format</code>s of video data supported as input by <code>OMXDecoder</code> instances.
      */
@@ -62,8 +60,7 @@ public class OMXDecoder extends AbstractCodec2
     /**
      * Initializes a new <code>OMXDecoder</code> instance.
      */
-    public OMXDecoder()
-    {
+    public OMXDecoder() {
         super("H.264 OpenMAX Decoder", VideoFormat.class, SUPPORTED_OUTPUT_FORMATS);
         inputFormats = SUPPORTED_INPUT_FORMATS;
     }
@@ -71,8 +68,7 @@ public class OMXDecoder extends AbstractCodec2
     private static native void close(long ptr);
 
     @Override
-    protected void doClose()
-    {
+    protected void doClose() {
         if (ptr != 0) {
             close(ptr);
             ptr = 0;
@@ -92,16 +88,14 @@ public class OMXDecoder extends AbstractCodec2
      */
     @Override
     protected void doOpen()
-            throws ResourceUnavailableException
-    {
+            throws ResourceUnavailableException {
         ptr = open(null);
         if (ptr == 0)
             throw new ResourceUnavailableException("open");
     }
 
     @Override
-    protected int doProcess(Buffer inputBuffer, Buffer outputBuffer)
-    {
+    protected int doProcess(Buffer inputBuffer, Buffer outputBuffer) {
         return BUFFER_PROCESSED_OK;
     }
 }

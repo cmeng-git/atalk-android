@@ -24,42 +24,38 @@ import org.osgi.framework.BundleContext;
 /**
  * @author Damian Minkov
  */
-public class ContactSourceActivator
-		implements BundleActivator {
-	/**
-	 * OSGi bundle context.
-	 */
-	public static BundleContext bundleContext;
+public class ContactSourceActivator implements BundleActivator {
+    /**
+     * OSGi bundle context.
+     */
+    public static BundleContext bundleContext;
 
-	/**
-	 * The registered PhoneNumberI18nService.
-	 */
-	private static PhoneNumberI18nService phoneNumberI18nService;
+    /**
+     * The registered PhoneNumberI18nService.
+     */
+    private static PhoneNumberI18nService phoneNumberI18nService;
 
 
-	@Override
-	public void start(BundleContext bundleContext)
-			throws Exception {
-		ContactSourceActivator.bundleContext = bundleContext;
-	}
+    @Override
+    public void start(BundleContext bundleContext)
+            throws Exception {
+        ContactSourceActivator.bundleContext = bundleContext;
+    }
 
-	@Override
-	public void stop(BundleContext bundleContext)
-			throws Exception {
-	}
+    @Override
+    public void stop(BundleContext bundleContext)
+            throws Exception {
+    }
 
-	/**
-	 * Returns the PhoneNumberI18nService.
-	 *
-	 * @return returns the PhoneNumberI18nService.
-	 */
-	public static PhoneNumberI18nService getPhoneNumberI18nService() {
-		if (phoneNumberI18nService == null) {
-			phoneNumberI18nService
-					= ServiceUtils.getService(
-					bundleContext,
-					PhoneNumberI18nService.class);
-		}
-		return phoneNumberI18nService;
-	}
+    /**
+     * Returns the PhoneNumberI18nService.
+     *
+     * @return returns the PhoneNumberI18nService.
+     */
+    public static PhoneNumberI18nService getPhoneNumberI18nService() {
+        if (phoneNumberI18nService == null) {
+            phoneNumberI18nService = ServiceUtils.getService(bundleContext, PhoneNumberI18nService.class);
+        }
+        return phoneNumberI18nService;
+    }
 }

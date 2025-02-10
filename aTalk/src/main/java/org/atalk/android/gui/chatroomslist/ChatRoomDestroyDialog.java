@@ -29,13 +29,13 @@ import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.osgi.OSGiFragment;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -45,7 +45,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
  *
  * @author Eng Chong Meng
  */
-public class ChatRoomDestroyDialog extends OSGiFragment {
+public class ChatRoomDestroyDialog extends BaseFragment {
     private ChatRoomWrapper chatRoomWrapper;
     private ChatPanel chatPanel;
 

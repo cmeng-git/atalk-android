@@ -16,6 +16,14 @@ import android.view.Surface;
 
 import androidx.annotation.NonNull;
 
+import java.awt.Dimension;
+import java.io.IOException;
+import java.util.Collections;
+
+import javax.media.Buffer;
+import javax.media.control.FormatControl;
+
+import org.atalk.android.BaseActivity;
 import org.atalk.android.gui.call.VideoCallActivity;
 import org.atalk.android.gui.call.VideoHandlerFragment;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
@@ -25,14 +33,6 @@ import org.atalk.impl.neomedia.device.util.CameraSurfaceRenderer;
 import org.atalk.impl.neomedia.device.util.CodecInputSurface;
 import org.atalk.impl.neomedia.device.util.OpenGLContext;
 import org.atalk.impl.neomedia.device.util.OpenGlCtxProvider;
-import org.atalk.service.osgi.OSGiActivity;
-
-import java.awt.Dimension;
-import java.io.IOException;
-import java.util.Collections;
-
-import javax.media.Buffer;
-import javax.media.control.FormatControl;
 
 import timber.log.Timber;
 
@@ -41,7 +41,7 @@ import timber.log.Timber;
  * obtained from <code>MediaCodec</code>. Then it is passed as preview surface to the camera init.
  * Note: <code>Surface</code> instance is passed through buffer objects in read method;
  * this stream #onInitPreview() won't start until it is provided.
- *
+ * <p>
  * In order to display local camera preview in the app, <code>TextureView</code> is created in video
  * call <code>Activity</code>. It is used to create Open GL context that shares video texture and can
  * render it. Rendering is done here on camera capture <code>Thread</code>.
@@ -49,9 +49,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class SurfaceStream extends CameraStreamBase
-        implements SurfaceTexture.OnFrameAvailableListener
-{
+public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.OnFrameAvailableListener {
     /**
      * <code>OpenGlCtxProvider</code> used by this instance.
      */
@@ -109,8 +107,7 @@ public class SurfaceStream extends CameraStreamBase
      * @param parent parent <code>DataSource</code>.
      * @param formatControl format control used by this instance.
      */
-    SurfaceStream(DataSource parent, FormatControl formatControl)
-    {
+    SurfaceStream(DataSource parent, FormatControl formatControl) {
         super(parent, formatControl);
     }
 
@@ -119,8 +116,7 @@ public class SurfaceStream extends CameraStreamBase
      */
     @Override
     public void start()
-            throws IOException
-    {
+            throws IOException {
         super.start();
         if (captureThread == null)
             startCaptureThread();
@@ -129,14 +125,11 @@ public class SurfaceStream extends CameraStreamBase
     }
 
     // Start the captureThread
-    private void startCaptureThread()
-    {
+    private void startCaptureThread() {
         run = true;
-        captureThread = new Thread()
-        {
+        captureThread = new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 captureLoop();
             }
         };
@@ -149,11 +142,11 @@ public class SurfaceStream extends CameraStreamBase
      * Note: onInitPreview is executed in the mBackgroundHandler thread
      *
      * @param surface Encoder Surface object obtained from <code>MediaCodec</code> via read().
+     *
      * @see AndroidEncoder#configureMediaCodec(MediaCodec, String)
      * link: https://www.khronos.org/registry/EGL/sdk/docs/man/html/eglMakeCurrent.xhtml
      */
-    private void initSurfaceConsumer(Surface surface)
-    {
+    private void initSurfaceConsumer(Surface surface) {
         // Get user selected default video resolution
         DeviceConfiguration deviceConfig = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration();
         Dimension videoSize = deviceConfig.getVideoSize();
@@ -189,8 +182,7 @@ public class SurfaceStream extends CameraStreamBase
      * {@inheritDoc}
      */
     @Override
-    protected void onInitPreview()
-    {
+    protected void onInitPreview() {
         try {
             // Init capturing parameters for camera image for remote video streaming, and local preview display
             // @see also initSurfaceConsumer();
@@ -209,18 +201,15 @@ public class SurfaceStream extends CameraStreamBase
             // mCameraDevice.createCaptureSession(Arrays.asList(mEncoderSurface.getSurface(), mPreviewSurface), //Collections.singletonList(mPreviewSurface),
 
             mCameraDevice.createCaptureSession(Collections.singletonList(mPreviewSurface),
-                    new CameraCaptureSession.StateCallback()
-                    {
+                    new CameraCaptureSession.StateCallback() {
                         @Override
-                        public void onConfigured(@NonNull CameraCaptureSession session)
-                        {
+                        public void onConfigured(@NonNull CameraCaptureSession session) {
                             mCaptureSession = session;
                             updateCaptureRequest();
                         }
 
                         @Override
-                        public void onConfigureFailed(@NonNull CameraCaptureSession session)
-                        {
+                        public void onConfigureFailed(@NonNull CameraCaptureSession session) {
                             Timber.e("Camera capture session configure failed: %s", session);
                         }
                     }, mBackgroundHandler);
@@ -232,8 +221,7 @@ public class SurfaceStream extends CameraStreamBase
     /**
      * Update the camera preview. {@link # startPreview()} needs to be called in advance.
      */
-    protected void updateCaptureRequest()
-    {
+    protected void updateCaptureRequest() {
         if (null == mCameraDevice) {
             Timber.e("Camera capture session config - camera closed, return");
             return;
@@ -251,8 +239,7 @@ public class SurfaceStream extends CameraStreamBase
     /**
      * Capture thread loop.
      */
-    private void captureLoop()
-    {
+    private void captureLoop() {
         // Wait for input surface to be returned before proceed
         // Post an empty frame to init encoder, and get the surface that is provided in read() method
         while (run && (mCameraDevice == null)) {
@@ -296,8 +283,7 @@ public class SurfaceStream extends CameraStreamBase
      * Latches the next buffer into the texture. Must be called from the thread that created the OutputSurface object.
      * Wait for a max of 2.5s Timer
      */
-    private void acquireNewImage()
-    {
+    private void acquireNewImage() {
         final int TIMEOUT_MS = 2500;
 
         // Timber.d("Waiting for onFrameAvailable!");
@@ -328,8 +314,7 @@ public class SurfaceStream extends CameraStreamBase
      * @param st the SurfaceTexture that set for this callback
      */
     @Override
-    public void onFrameAvailable(SurfaceTexture st)
-    {
+    public void onFrameAvailable(SurfaceTexture st) {
         synchronized (frameSyncObject) {
             frameAvailable = true;
             frameSyncObject.notifyAll();
@@ -339,10 +324,9 @@ public class SurfaceStream extends CameraStreamBase
     /**
      * Paints the local preview on UI thread by posting paint job and waiting for the UI handler to complete its job.
      */
-    private void paintLocalPreview()
-    {
+    private void paintLocalPreview() {
         paintDone = false;
-        OSGiActivity.uiHandler.post(() -> {
+        BaseActivity.uiHandler.post(() -> {
             try {
                 // OpenGLContext mDisplayTV = myCtxProvider.tryObtainObject();
                 /*
@@ -399,8 +383,7 @@ public class SurfaceStream extends CameraStreamBase
      * this must be executed within the SurfaceTextureManage#onFrameAvailable() thread;
      * Only happen in camera2 implementation
      */
-    private void pushEncoderData()
-    {
+    private void pushEncoderData() {
         // Pushes the received image frame to the android encoder input surface
         // mEncoderSurface.makeCurrent();
         // myCtxProvider.configureTransform(mPreviewSize.width, mPreviewSize.height);
@@ -416,8 +399,7 @@ public class SurfaceStream extends CameraStreamBase
      */
     @Override
     public void read(Buffer buffer)
-            throws IOException
-    {
+            throws IOException {
         Surface surface;
         if (mCaptureSession != null) {
             buffer.setFormat(mFormat);
@@ -435,8 +417,7 @@ public class SurfaceStream extends CameraStreamBase
      */
     @Override
     public void stop()
-            throws IOException
-    {
+            throws IOException {
         run = false;
         if (captureThread != null) {
             try {

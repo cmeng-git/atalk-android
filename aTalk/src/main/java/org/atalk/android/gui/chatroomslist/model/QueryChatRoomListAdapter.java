@@ -16,8 +16,6 @@
  */
 package org.atalk.android.gui.chatroomslist.model;
 
-import android.os.Handler;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +29,10 @@ import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.contactsource.SourceContact;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.BaseActivity;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.model.UIGroupRenderer;
-import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.ServiceReference;
 
 import timber.log.Timber;
@@ -46,11 +44,6 @@ import timber.log.Timber;
  */
 public class QueryChatRoomListAdapter extends BaseChatRoomListAdapter
         implements UIGroupRenderer, ContactQueryListener {
-    /**
-     * Handler used to execute stuff on UI thread.
-     */
-    private final Handler uiHandler = OSGiActivity.uiHandler;
-
     /**
      * The meta contact list used as a base contact source. It is capable of filtering contacts
      * itself without queries.
@@ -90,11 +83,11 @@ public class QueryChatRoomListAdapter extends BaseChatRoomListAdapter
      */
     private List<ContactSourceService> getSources() {
         ServiceReference<ContactSourceService>[] serRefs
-                = ServiceUtils.getServiceReferences(AndroidGUIActivator.bundleContext, ContactSourceService.class);
+                = ServiceUtils.getServiceReferences(AppGUIActivator.bundleContext, ContactSourceService.class);
 
         List<ContactSourceService> contactSources = new ArrayList<>(serRefs.length);
         for (ServiceReference<ContactSourceService> serRef : serRefs) {
-            ContactSourceService contactSource = AndroidGUIActivator.bundleContext.getService(serRef);
+            ContactSourceService contactSource = AppGUIActivator.bundleContext.getService(serRef);
             if (contactSource.getType() == ContactSourceService.SEARCH_TYPE) {
                 contactSources.add(contactSource);
             }
@@ -220,7 +213,7 @@ public class QueryChatRoomListAdapter extends BaseChatRoomListAdapter
                 return;
             }
 
-            uiHandler.post(() -> {
+            BaseActivity.uiHandler.post(() -> {
                 if (!queries.contains(query)) {
                     Timber.w("Received event for cancelled query: %s", query);
                     return;

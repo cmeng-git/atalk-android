@@ -23,17 +23,24 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.CallState;
 import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.controller.SimpleDragController;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.AppUtils;
 import org.atalk.impl.neomedia.codec.video.AndroidDecoder;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
@@ -43,17 +50,10 @@ import org.atalk.impl.neomedia.device.util.PreviewSurfaceProvider;
 import org.atalk.impl.neomedia.device.util.ViewDependentProvider;
 import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.CameraStreamBase;
 import org.atalk.service.neomedia.ViewAccessor;
-import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.event.SizeChangeVideoEvent;
 import org.atalk.util.event.VideoEvent;
 import org.atalk.util.event.VideoListener;
 import org.jetbrains.annotations.NotNull;
-
-import java.awt.Component;
-import java.awt.Dimension;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -63,13 +63,11 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class VideoHandlerFragment extends OSGiFragment implements View.OnLongClickListener
-{
+public class VideoHandlerFragment extends BaseFragment implements View.OnLongClickListener {
     /**
      * Default remote video view dimension (aTalk default) - must also be valid for OpenGL else crash
      * Note: Other dimension ratio e.g. (1x1) will cause Invalid Operation in OpenGL
      * Static variable must only be init in constructor for android Fragment
-     *
      * Assuming the received video is in portrait and using aTalk default
      */
     @SuppressWarnings("SuspiciousNameCombination")
@@ -169,8 +167,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     /**
      * Create a new instance of <code>VideoHandlerFragment</code>.
      */
-    public VideoHandlerFragment()
-    {
+    public VideoHandlerFragment() {
         setHasOptionsMenu(true);
     }
 
@@ -179,14 +176,12 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      *
      * @param activity VideoCall Activity
      */
-    public void setRemoteVideoChangeListener(VideoCallActivity activity)
-    {
+    public void setRemoteVideoChangeListener(VideoCallActivity activity) {
         mCallActivity = activity;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState)
-    {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         remoteVideoContainer = mCallActivity.findViewById(R.id.remoteVideoContainer);
         localPreviewContainer = mCallActivity.findViewById(R.id.localPreviewContainer);
@@ -194,11 +189,9 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
         ctrlButtonsGroup = mCallActivity.findViewById(R.id.button_Container);
 
         // (must be done after layout or 0 sizes will be returned)
-        ctrlButtonsGroup.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
-        {
+        ctrlButtonsGroup.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void onGlobalLayout()
-            {
+            public void onGlobalLayout() {
                 // We know the size of all components at this point, so we can init layout
                 // dependent stuff. Initial call info margin adjustment
                 updateCallInfoMargin();
@@ -241,8 +234,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         if (mCall == null) {
             Timber.e("Call is null");
@@ -268,11 +260,9 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * Restores local video state if it was enabled or on first video call entry; The local preview size is
      * configured to be proportional to the actually camera captured video dimension with the default width.
      * The localPreview can either be localPreviewSurface or mLocalPreviewGlCtxProvider
-     *
      * Note: runOnUiThread(0 for view as this may be call from non-main thread
      */
-    public void initLocalPreviewContainer(ViewDependentProvider<?> provider)
-    {
+    public void initLocalPreviewContainer(ViewDependentProvider<?> provider) {
         Timber.d("init Local Preview Container %s (%s)", mVideoLocalLastState.get(mCall.getCallId()), provider);
         if (provider != null) {
             currentPreviewProvider = provider;
@@ -301,8 +291,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
 
         // Make sure to join the switch camera thread
@@ -341,8 +330,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
         // Release shared video component
         remoteVideoContainer.removeAllViews();
@@ -350,8 +338,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
         AndroidCamera selectedCamera = AndroidCamera.getSelectedCameraDevInfo();
@@ -376,11 +363,11 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * Switch to alternate camera on the device when user toggles the camera
      *
      * @param item the user clicked menu item
+     *
      * @return return true is activation is from menu item R.id.switch_camera
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.switch_camera) {
             startCameraSwitchThread(item);
             return true;
@@ -392,11 +379,11 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * Long press camera icon changes to alternate camera available on the device.
      *
      * @param v the clicked view
+     *
      * @return return true is activation is from R.id.button_call_video
      */
     @Override
-    public boolean onLongClick(View v)
-    {
+    public boolean onLongClick(View v) {
         if (v.getId() == R.id.button_call_video) {
             // Do not proceed if no alternate camera (i.e. mCameraToggle == null) is available on the device
             if (mCameraToggle != null) {
@@ -413,8 +400,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      *
      * @param item Menu Item
      */
-    private void startCameraSwitchThread(MenuItem item)
-    {
+    private void startCameraSwitchThread(MenuItem item) {
         // Ignore action if camera switching is in progress
         if (cameraSwitchThread != null)
             return;
@@ -435,11 +421,9 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
 
         // Timber.w("New Camera selected: %s", newDevice.getName());
         // Switch the camera in separate thread
-        cameraSwitchThread = new Thread()
-        {
+        cameraSwitchThread = new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 if (newDevice != null) {
                     CameraStreamBase instance = CameraStreamBase.getInstance();
                     instance.switchCamera(newDevice.getLocator(), isLocalVideoEnabled());
@@ -457,8 +441,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      *
      * @param callVideoButton local video button <code>View</code>.
      */
-    private void onLocalVideoButtonClicked(View callVideoButton)
-    {
+    private void onLocalVideoButtonClicked(View callVideoButton) {
         if (aTalk.isMediaCallAllowed(true)) {
             initLocalVideoState(!isLocalVideoEnabled());
         }
@@ -467,8 +450,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     /**
      * Initialize the Call Video Button to its proper state
      */
-    private void initLocalVideoState(boolean isVideoEnable)
-    {
+    private void initLocalVideoState(boolean isVideoEnable) {
         setLocalVideoEnabled(isVideoEnable);
         if (!isCameraEnable) {
             mCallVideoButton.setImageResource(R.drawable.call_video_no_dark);
@@ -489,8 +471,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      *
      * @return <code>true</code> if local video is enabled.
      */
-    public boolean isLocalVideoEnabled()
-    {
+    public boolean isLocalVideoEnabled() {
         return CallManager.isLocalVideoEnabled(mCall);
     }
 
@@ -499,8 +480,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      *
      * @param enable flag indicating local video status to be set.
      */
-    private void setLocalVideoEnabled(boolean enable)
-    {
+    private void setLocalVideoEnabled(boolean enable) {
         if (mCall == null) {
             Timber.e("Call instance is null (the call has ended already?)");
             return;
@@ -515,8 +495,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      *
      * @param callPeer the <code>CallPeer</code> to which we add a video listener
      */
-    private void addVideoListener(final CallPeer callPeer)
-    {
+    private void addVideoListener(final CallPeer callPeer) {
         ProtocolProviderService pps = callPeer.getProtocolProvider();
         if (pps == null)
             return;
@@ -526,21 +505,17 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             return;
 
         if (callPeerVideoListener == null) {
-            callPeerVideoListener = new VideoListener()
-            {
-                public void videoAdded(VideoEvent event)
-                {
+            callPeerVideoListener = new VideoListener() {
+                public void videoAdded(VideoEvent event) {
                     handleVideoEvent(callPeer, event);
                 }
 
-                public void videoRemoved(VideoEvent event)
-                {
+                public void videoRemoved(VideoEvent event) {
                     // Timber.w(new Exception(), "Call Peer: %s; event: %s", callPeer, event);
                     handleVideoEvent(callPeer, event);
                 }
 
-                public void videoUpdate(VideoEvent event)
-                {
+                public void videoUpdate(VideoEvent event) {
                     handleVideoEvent(callPeer, event);
                 }
             };
@@ -554,8 +529,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * @param callPeer the corresponding call peer
      * @param event the <code>VideoEvent</code> that notified us
      */
-    public void handleVideoEvent(CallPeer callPeer, final VideoEvent event)
-    {
+    public void handleVideoEvent(CallPeer callPeer, final VideoEvent event) {
         if (event.isConsumed())
             return;
         event.consume();
@@ -581,8 +555,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     /**
      * Removes remote video listener.
      */
-    private void removeVideoListener()
-    {
+    private void removeVideoListener() {
         Iterator<? extends CallPeer> calPeers = mCall.getCallPeers();
         if (calPeers.hasNext()) {
             CallPeer callPeer = calPeers.next();
@@ -605,14 +578,13 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * Initializes remote video for the call. Visual component is always null on initial setup;
      * but non-null on phone rotate: Need to re-init remote video on screen rotation. However device
      * rotation is currently handled by onConfigurationChanged, so handleRemoteVideoEvent will not be called
-     *
+     * <p>
      * Let remote handleVideoEvent triggers the initial setup.
      * Multiple quick access to GLSurfaceView can cause problem.
      *
      * @param callPeer owner of video object.
      */
-    private void initRemoteVideo(CallPeer callPeer)
-    {
+    private void initRemoteVideo(CallPeer callPeer) {
         ProtocolProviderService pps = callPeer.getProtocolProvider();
         Component visualComponent = null;
 
@@ -636,8 +608,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * No null on the remote device rotated; need to re-init remote video on screen rotation
      * @param scvEvent the <code>SizeChangeVideoEvent</code> event if was supplied.
      */
-    private void handleRemoteVideoEvent(final Component visualComponent, final SizeChangeVideoEvent scvEvent)
-    {
+    private void handleRemoteVideoEvent(final Component visualComponent, final SizeChangeVideoEvent scvEvent) {
         if (visualComponent instanceof ViewAccessor) {
             remoteVideoAccessor = (ViewAccessor) visualComponent;
         }
@@ -688,11 +659,11 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * @param visualComponent remote video <code>Component</code>, <code>null</code> if not available
      * @param remoteVideoView the remote video <code>View</code> if already created, or <code>null</code> otherwise
      * @param scvEvent the <code>SizeChangeVideoEvent</code> if was supplied during event handling or <code>null</code> otherwise.
+     *
      * @return selected preferred remote video size.
      */
     private Dimension selectRemotePreferredSize(Component visualComponent, View remoteVideoView,
-            SizeChangeVideoEvent scvEvent)
-    {
+            SizeChangeVideoEvent scvEvent) {
         // There is no remote video View, so returns the default video dimension.
         if ((remoteVideoView == null) || (visualComponent == null)) {
             return new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -730,8 +701,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * @param remoteVideoView the remote video <code>View</code> if available or <code>null</code> otherwise.
      * @param preferredSize preferred size of remote video <code>View</code>.
      */
-    private void doAlignRemoteVideo(View remoteVideoView, Dimension preferredSize)
-    {
+    private void doAlignRemoteVideo(View remoteVideoView, Dimension preferredSize) {
         if (remoteVideoView != null) {
             // GLSurfaceView frequent changes can cause error, so change only if necessary
             boolean sizeChange = remoteVideoContainer.setVideoPreferredSize(preferredSize, initOnPhoneOrientationChange);
@@ -795,21 +765,18 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      *
      * @return <code>true</code> if local video is currently visible.
      */
-    public boolean isLocalVideoVisible()
-    {
+    public boolean isLocalVideoVisible() {
         return localPreviewContainer.getChildCount() > 0;
     }
 
-    public boolean isRemoteVideoVisible()
-    {
+    public boolean isRemoteVideoVisible() {
         return remoteVideoContainer.getChildCount() > 0;
     }
 
     /**
      * Block the program until camera is stopped to prevent from crashing on not existing preview surface.
      */
-    void ensureCameraClosed()
-    {
+    void ensureCameraClosed() {
         localPreviewSurface.waitForObjectRelease();
         // TODO: remote display must be released too (but the DataSource must be paused)
         // remoteVideoSurfaceHandler.waitForObjectRelease();
@@ -818,8 +785,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     /**
      * Positions call info group buttons.
      */
-    void updateCallInfoMargin()
-    {
+    void updateCallInfoMargin() {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) callInfoGroup.getLayoutParams();
 
         int marginBottom = 0;
@@ -833,7 +799,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
 
             if (marginBottom < ctrlButtonsHeight
                     && ctrlButtonsGroup.getVisibility() == View.VISIBLE) {
-                marginBottom = ctrlButtonsHeight + AndroidUtils.pxToDp(10);
+                marginBottom = ctrlButtonsHeight + AppUtils.pxToDp(10);
             }
 
             // This can be used if we want to keep it on the same height
@@ -846,16 +812,14 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     }
 
     // Parent container activity must implement this interface for callback from this fragment
-    public interface OnRemoteVideoChangeListener
-    {
+    public interface OnRemoteVideoChangeListener {
         void onRemoteVideoChange(boolean isRemoteVideoVisible);
     }
 
     /**
      * Init both the local and remote video container on device rotation.
      */
-    public void initVideoViewOnRotation()
-    {
+    public void initVideoViewOnRotation() {
         if (isLocalVideoEnabled()) {
             initLocalPreviewContainer(currentPreviewProvider);
         }
@@ -865,5 +829,4 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             handleRemoteVideoEvent((Component) remoteVideoAccessor, null);
         }
     }
-
 }

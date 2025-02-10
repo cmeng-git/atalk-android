@@ -29,9 +29,9 @@ import androidx.appcompat.app.ActionBar;
 import java.util.ArrayList;
 import java.util.Set;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.service.osgi.OSGiActivity;
 
 /**
  * ShareActivity is defined as SingleTask, to avoid multiple instances being created if user does not exit
@@ -43,7 +43,7 @@ import org.atalk.service.osgi.OSGiActivity;
  *
  * @author Eng Chong Meng
  */
-public class ShareActivity extends OSGiActivity {
+public class ShareActivity extends BaseActivity {
     /**
      * A reference of the share object
      */

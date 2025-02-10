@@ -4,15 +4,18 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the
  * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
 package net.java.sip.communicator.impl.muc;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
@@ -38,8 +41,7 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
-import java.util.LinkedList;
-import java.util.List;
+import timber.log.Timber;
 
 /**
  * The activator for the chat room contact source bundle.
@@ -47,8 +49,7 @@ import java.util.List;
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-public class MUCActivator implements BundleActivator
-{
+public class MUCActivator implements BundleActivator {
     /**
      * The configuration property to disable
      */
@@ -125,8 +126,7 @@ public class MUCActivator implements BundleActivator
      * @param context the bundle context where we register and obtain services.
      */
     public void start(BundleContext context)
-            throws Exception
-    {
+            throws Exception {
         bundleContext = context;
         if (getConfigurationService().getBoolean(DISABLED_PROPERTY, false))
             return;
@@ -137,8 +137,7 @@ public class MUCActivator implements BundleActivator
     }
 
     public void stop(BundleContext context)
-            throws Exception
-    {
+            throws Exception {
         if (protocolProviderRegListener != null) {
             bundleContext.removeServiceListener(protocolProviderRegListener);
         }
@@ -152,8 +151,7 @@ public class MUCActivator implements BundleActivator
      *
      * @return the MUC service instance.
      */
-    public static MUCServiceImpl getMUCService()
-    {
+    public static MUCServiceImpl getMUCService() {
         return mucService;
     }
 
@@ -162,8 +160,7 @@ public class MUCActivator implements BundleActivator
      *
      * @return the chat room contact source
      */
-    public static ChatRoomContactSourceService getContactSource()
-    {
+    public static ChatRoomContactSourceService getContactSource() {
         return chatRoomContactSource;
     }
 
@@ -174,8 +171,7 @@ public class MUCActivator implements BundleActivator
      * @return a reference to a ResourceManagementService implementation currently registered in
      * the bundle context or null if no such implementation was found.
      */
-    public static ResourceManagementService getResources()
-    {
+    public static ResourceManagementService getResources() {
         if (resources == null) {
             resources = ServiceUtils.getService(bundleContext, ResourceManagementService.class);
         }
@@ -187,8 +183,7 @@ public class MUCActivator implements BundleActivator
      *
      * @return the <code>ConfigurationService</code> obtained from the bundle context
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configService == null) {
             configService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
         }
@@ -200,8 +195,7 @@ public class MUCActivator implements BundleActivator
      *
      * @return the <code>AccountManager</code> obtained from the bundle context
      */
-    public static AccountManager getAccountManager()
-    {
+    public static AccountManager getAccountManager() {
         if (accountManager == null) {
             accountManager = ServiceUtils.getService(bundleContext, AccountManager.class);
         }
@@ -213,8 +207,7 @@ public class MUCActivator implements BundleActivator
      *
      * @return the <code>AlertUIService</code> obtained from the bundle context
      */
-    public static AlertUIService getAlertUIService()
-    {
+    public static AlertUIService getAlertUIService() {
         if (alertUIService == null) {
             alertUIService = ServiceUtils.getService(bundleContext, AlertUIService.class);
         }
@@ -227,8 +220,7 @@ public class MUCActivator implements BundleActivator
      *
      * @return a currently valid implementation of the CredentialsStorageService.
      */
-    public static CredentialsStorageService getCredentialsStorageService()
-    {
+    public static CredentialsStorageService getCredentialsStorageService() {
         if (credentialsService == null) {
             credentialsService = ServiceUtils.getService(bundleContext, CredentialsStorageService.class);
         }
@@ -240,8 +232,7 @@ public class MUCActivator implements BundleActivator
      *
      * @return a list of all currently registered providers
      */
-    public static List<ProtocolProviderService> getChatRoomProviders()
-    {
+    public static List<ProtocolProviderService> getChatRoomProviders() {
         if (chatRoomProviders != null)
             return chatRoomProviders;
 
@@ -253,10 +244,10 @@ public class MUCActivator implements BundleActivator
         try {
             serRefs = bundleContext.getServiceReferences(ProtocolProviderFactory.class.getName(), null);
         } catch (InvalidSyntaxException e) {
-            e.printStackTrace();
+            Timber.e("Exception: %s", e.getMessage());
         }
 
-        if ((serRefs != null) && (serRefs.length != 0)) {
+        if (serRefs != null) {
             for (ServiceReference<ProtocolProviderFactory> ppfSerRef : serRefs) {
                 ProtocolProviderFactory providerFactory = bundleContext.getService(ppfSerRef);
 
@@ -273,13 +264,11 @@ public class MUCActivator implements BundleActivator
     /**
      * Listens for <code>ProtocolProviderService</code> registrations.
      */
-    private static class ProtocolProviderRegListener implements ServiceListener
-    {
+    private static class ProtocolProviderRegListener implements ServiceListener {
         /**
          * Handles service change events.
          */
-        public void serviceChanged(ServiceEvent event)
-        {
+        public void serviceChanged(ServiceEvent event) {
             ServiceReference<?> serviceRef = event.getServiceReference();
 
             // if the event is caused by a bundle being stopped, we don't want to know
@@ -311,8 +300,7 @@ public class MUCActivator implements BundleActivator
      *
      * @param protocolProvider the <code>ProtocolProviderService</code> to add
      */
-    private static void handleProviderAdded(ProtocolProviderService protocolProvider)
-    {
+    private static void handleProviderAdded(ProtocolProviderService protocolProvider) {
         if (protocolProvider.getOperationSet(OperationSetMultiUserChat.class) != null
                 && !chatRoomProviders.contains(protocolProvider)) {
             chatRoomProviders.add(protocolProvider);
@@ -325,8 +313,7 @@ public class MUCActivator implements BundleActivator
      *
      * @param protocolProvider the <code>ProtocolProviderService</code> to remove
      */
-    private static void handleProviderRemoved(ProtocolProviderService protocolProvider)
-    {
+    private static void handleProviderRemoved(ProtocolProviderService protocolProvider) {
         chatRoomProviders.remove(protocolProvider);
     }
 
@@ -335,8 +322,7 @@ public class MUCActivator implements BundleActivator
      *
      * @return the <code>UIService</code> obtained from the bundle context
      */
-    public static UIService getUIService()
-    {
+    public static UIService getUIService() {
         if (uiService == null) {
             uiService = ServiceUtils.getService(bundleContext, UIService.class);
         }
@@ -348,8 +334,7 @@ public class MUCActivator implements BundleActivator
      *
      * @return the <code>GlobalDisplayDetailsService</code> obtained from the bundle context
      */
-    public static GlobalDisplayDetailsService getGlobalDisplayDetailsService()
-    {
+    public static GlobalDisplayDetailsService getGlobalDisplayDetailsService() {
         if (globalDisplayDetailsService == null) {
             globalDisplayDetailsService = ServiceUtils.getService(bundleContext, GlobalDisplayDetailsService.class);
         }
@@ -361,8 +346,7 @@ public class MUCActivator implements BundleActivator
      *
      * @return the service giving access to message history.
      */
-    public static MessageHistoryService getMessageHistoryService()
-    {
+    public static MessageHistoryService getMessageHistoryService() {
         if (messageHistoryService == null)
             messageHistoryService = ServiceUtils.getService(bundleContext, MessageHistoryService.class);
         return messageHistoryService;

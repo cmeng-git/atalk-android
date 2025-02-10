@@ -44,9 +44,9 @@ import net.java.sip.communicator.service.gui.AuthenticationWindowService;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.impl.androidcertdialog.X509CertificateView;
+import org.atalk.impl.appcertdialog.X509CertificateView;
 import org.atalk.persistance.FilePathHelper;
-import org.atalk.service.osgi.OSGiDialogFragment;
+import org.atalk.android.gui.dialogs.BaseDialogFragment;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
@@ -75,9 +75,8 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class CertConfigEntryDialog extends OSGiDialogFragment
-        implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener
-{
+public class CertConfigEntryDialog extends BaseDialogFragment
+        implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
     // ------------------------------------------------------------------------
     // Fields and services
     // ------------------------------------------------------------------------
@@ -116,8 +115,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     // Stop cboKeyStoreType from triggering on first entry
     private boolean newInstall = false;
 
-    public static CertConfigEntryDialog getInstance(CertificateConfigEntry entry, OnFinishedCallback callback)
-    {
+    public static CertConfigEntryDialog getInstance(CertificateConfigEntry entry, OnFinishedCallback callback) {
         CertConfigEntryDialog dialog = new CertConfigEntryDialog();
         mEntry = entry;
         finishedCallback = callback;
@@ -125,8 +123,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     }
 
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         cs = CertConfigActivator.getCertService();
         mContext = getContext();
         View contentView = inflater.inflate(R.layout.cert_tls_entry_config, container, false);
@@ -193,8 +190,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     /**
      * Initialization the edited certificate or add new certificate
      */
-    public void CertConfigEntryInit()
-    {
+    public void CertConfigEntryInit() {
         String displayName = mEntry.getDisplayName();
         txtDisplayName.setText(displayName);
         txtKeyStore.setText(mEntry.getKeyStore());
@@ -218,8 +214,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
      * b. loadAliases() must execute after loadKeyStore()
      * c. loadAliases() needs to be in UI thread as it access to UI components
      */
-    private void initKeyStoreAlias()
-    {
+    private void initKeyStoreAlias() {
         new Thread(() -> {
             try {
                 mKeyStore = loadKeyStore();
@@ -237,21 +232,23 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
      * password, the user is being asked by an authentication dialog.
      *
      * @return The loaded keystore
+     *
      * @throws KeyStoreException when something goes wrong
      * @throws UnrecoverableEntryException Happen in android Note-5 (not working)
      */
     private KeyStore loadKeyStore()
-            throws KeyStoreException, UnrecoverableEntryException
-    {
+            throws KeyStoreException, UnrecoverableEntryException {
         String keyStore = ViewUtil.toString(txtKeyStore);
         if (keyStore == null)
             return null;
 
-        final File f = new File(keyStore);
-        final String keyStoreType = ((KeyStoreType) cboKeyStoreType.getSelectedItem()).getName();
+        final File file = new File(keyStore);
+        if (!file.exists())
+            return null;
 
+        final String keyStoreType = ((KeyStoreType) cboKeyStoreType.getSelectedItem()).getName();
         if (PKCS11.equals(keyStoreType)) {
-            String config = "name=" + f.getName() + "\nlibrary=" + f.getAbsoluteFile();
+            String config = "name=" + file.getName() + "\nlibrary=" + file.getAbsoluteFile();
             try {
                 Class<?> pkcs11c = Class.forName("sun.security.pkcs11.SunPKCS11");
                 Constructor<?> c = pkcs11c.getConstructor(InputStream.class);
@@ -262,7 +259,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
             }
         }
 
-        KeyStore.Builder ksBuilder = KeyStore.Builder.newInstance(keyStoreType, null, f,
+        KeyStore.Builder ksBuilder = KeyStore.Builder.newInstance(keyStoreType, null, file,
                 new KeyStore.CallbackHandlerProtection(callbacks -> {
                     for (Callback cb : callbacks) {
                         if (!(cb instanceof PasswordCallback)) {
@@ -277,7 +274,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
                             AuthenticationWindowService authenticationWindowService
                                     = CertificateVerificationActivator.getAuthenticationWindowService();
 
-                            AuthenticationWindowService.AuthenticationWindow aw = authenticationWindowService.create(f.getName(), null, keyStoreType, false,
+                            AuthenticationWindowService.AuthenticationWindow aw = authenticationWindowService.create(file.getName(), null, keyStoreType, false,
                                     false, null, null, null, null, null, null, null);
 
                             aw.setAllowSavePassword(!PKCS11.equals(keyStoreType));
@@ -305,8 +302,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     /**
      * Load the certificate entry aliases from the chosen keystore.
      */
-    private void loadAliases()
-    {
+    private void loadAliases() {
         if (mKeyStore == null)
             return;
 
@@ -326,8 +322,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
      * Opens a FileChooserDialog to let the user pick a keystore and tries to
      * auto-detect the keystore type using the file extension
      */
-    private ActivityResultLauncher<String> browseKeyStore()
-    {
+    private ActivityResultLauncher<String> browseKeyStore() {
         return registerForActivityResult(new ActivityResultContracts.GetContent(), fileUri -> {
             if (fileUri != null) {
                 File inFile = new File(FilePathHelper.getFilePath(mContext, fileUri));
@@ -360,8 +355,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     }
 
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
         switch (v.getId()) {
             case R.id.showCert:
                 showSelectedCertificate();
@@ -397,8 +391,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-    {
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.show_password:
                 ViewUtil.showPassword(txtKeyStorePassword, isChecked);
@@ -413,8 +406,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapter, View view, int position, long id)
-    {
+    public void onItemSelected(AdapterView<?> adapter, View view, int position, long id) {
         switch (adapter.getId()) {
             case R.id.cboKeyStoreType:
                 // Proceed if new install or != NONE. First item always get selected onEntry
@@ -433,12 +425,10 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent)
-    {
+    public void onNothingSelected(AdapterView<?> parent) {
     }
 
-    private void showSelectedCertificate()
-    {
+    private void showSelectedCertificate() {
         try {
             Certificate[] chain = mKeyStore.getCertificateChain(cboAlias.getSelectedItem().toString());
             // must use getActivity: otherwise -> token null is not valid; is your activity running?
@@ -449,8 +439,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
         }
     }
 
-    private int getIndexForType(KeyStoreType type)
-    {
+    private int getIndexForType(KeyStoreType type) {
         for (int i = 0; i < keyStoreTypes.size(); i++) {
             if (keyStoreTypes.get(i).equals(type)) {
                 return i;
@@ -459,8 +448,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
         return -1;
     }
 
-    private int getIndexForAlias(String alias)
-    {
+    private int getIndexForAlias(String alias) {
         if (alias != null) {
             for (int i = 0; i < aliasAdapter.getCount(); i++) {
                 if (alias.equals(aliasAdapter.getItem(i)))
@@ -470,15 +458,13 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
         return -1;
     }
 
-    private void closeDialog(Boolean success)
-    {
+    private void closeDialog(Boolean success) {
         if (finishedCallback != null)
             finishedCallback.onCloseDialog(success, mEntry);
         dismiss();
     }
 
-    public interface OnFinishedCallback
-    {
+    public interface OnFinishedCallback {
         void onCloseDialog(Boolean success, CertificateConfigEntry entry);
     }
 }

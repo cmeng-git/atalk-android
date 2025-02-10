@@ -17,28 +17,28 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ThemeHelper;
 import org.atalk.android.gui.util.ThemeHelper.Theme;
 import org.atalk.impl.neomedia.codec.video.CodecInfo;
-import org.atalk.service.osgi.OSGiActivity;
 
 /**
  * Activity that lists video <code>MediaCodec</code>s available in the system.
- *
+ * <p>
  * Meaning of the colors:</br><br/>
  * * blue - codec will be used in call<br/>
  * * white / black - one of the codecs for particular media type, but it won't be used
  * as there is another codec before it on the list<br/>
  * * grey500 - codec is banned and won't be used<br/>
- *
+ * <p>
  * Click on codec to toggle it's banned state. Changes are not persistent between
  * aTalk restarts so restarting aTalk restores default values.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class MediaCodecList extends OSGiActivity implements AdapterView.OnItemClickListener {
+public class MediaCodecList extends BaseActivity implements AdapterView.OnItemClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

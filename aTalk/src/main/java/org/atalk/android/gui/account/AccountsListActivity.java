@@ -7,8 +7,6 @@ package org.atalk.android.gui.account;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,9 +32,10 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.account.settings.AccountPreferenceActivity;
 import org.atalk.android.gui.contactlist.AddGroupDialog;
 import org.atalk.android.gui.dialogs.DialogActivity;
@@ -44,7 +43,6 @@ import org.atalk.android.gui.dialogs.ProgressDialog;
 import org.atalk.android.plugin.certconfig.TLS_Configuration;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
-import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -57,8 +55,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AccountsListActivity extends OSGiActivity
-{
+public class AccountsListActivity extends BaseActivity {
     /**
      * The list adapter for accounts
      */
@@ -85,24 +82,22 @@ public class AccountsListActivity extends OSGiActivity
     private static AccountEnableThread accEnableThread;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setMainTitle(R.string.account);
 
-        if (AndroidGUIActivator.bundleContext == null) {
+        if (AppGUIActivator.bundleContext == null) {
             // No OSGi Exists
             Timber.e("OSGi not initialized");
             finish();
             return;
         }
         setContentView(R.layout.account_list);
-        this.accountManager = ServiceUtils.getService(AndroidGUIActivator.bundleContext, AccountManager.class);
+        this.accountManager = ServiceUtils.getService(AppGUIActivator.bundleContext, AccountManager.class);
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
 
         // Need to refresh the list each time in case account might be removed in other Activity.
@@ -111,8 +106,7 @@ public class AccountsListActivity extends OSGiActivity
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         // Unregisters presence status listeners
         if (listAdapter != null) {
             listAdapter.deinitStatusListeners();
@@ -124,8 +118,7 @@ public class AccountsListActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.account_settings_menu, menu);
         return true;
@@ -135,8 +128,7 @@ public class AccountsListActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.add_account:
@@ -167,8 +159,7 @@ public class AccountsListActivity extends OSGiActivity
     /**
      * Initializes the accounts table.
      */
-    private void accountsInit()
-    {
+    private void accountsInit() {
         // Create accounts array
         Collection<AccountID> accountIDCollection = AccountUtils.getStoredAccounts();
 
@@ -184,8 +175,7 @@ public class AccountsListActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
-    {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         getMenuInflater().inflate(R.menu.account_ctx_menu, menu);
 
@@ -201,8 +191,7 @@ public class AccountsListActivity extends OSGiActivity
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item)
-    {
+    public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.remove:
                 AccountDeleteDialog.create(this, clickedAccount, account -> listAdapter.remove(account));
@@ -229,8 +218,7 @@ public class AccountsListActivity extends OSGiActivity
      *
      * @param account the <code>Account</code> for which preference settings will be opened.
      */
-    private void startPreferenceActivity(Account account)
-    {
+    private void startPreferenceActivity(Account account) {
         Intent preferences = AccountPreferenceActivity.getIntent(this, account.getAccountID());
         startActivity(preferences);
     }
@@ -240,8 +228,7 @@ public class AccountsListActivity extends OSGiActivity
      *
      * @param account the <code>Account</code> for which settings will be opened.
      */
-    private void startPresenceActivity(Account account)
-    {
+    private void startPresenceActivity(Account account) {
         Intent statusIntent = new Intent(this, AccountInfoPresenceActivity.class);
         statusIntent.putExtra(AccountInfoPresenceActivity.INTENT_ACCOUNT_ID,
                 account.getAccountID().getAccountUid());
@@ -253,8 +240,7 @@ public class AccountsListActivity extends OSGiActivity
      *
      * @param accountId the {@link AccountID} for whom the persistent to be purged from the device
      */
-    public static void removeAccountPersistentStore(AccountID accountId)
-    {
+    public static void removeAccountPersistentStore(AccountID accountId) {
         ProtocolProviderService pps = accountId.getProtocolProvider();
         if (pps instanceof ProtocolProviderServiceJabberImpl) {
             ProtocolProviderServiceJabberImpl jabberProvider = (ProtocolProviderServiceJabberImpl) pps;
@@ -291,8 +277,7 @@ public class AccountsListActivity extends OSGiActivity
     /**
      * Class responsible for creating list row Views
      */
-    class AccountStatusListAdapter extends AccountsListAdapter
-    {
+    class AccountStatusListAdapter extends AccountsListAdapter {
         /**
          * Toast instance
          */
@@ -303,8 +288,7 @@ public class AccountsListActivity extends OSGiActivity
          *
          * @param accounts array of currently stored accounts
          */
-        AccountStatusListAdapter(Collection<AccountID> accounts)
-        {
+        AccountStatusListAdapter(Collection<AccountID> accounts) {
             super(AccountsListActivity.this, R.layout.account_list_row, -1, accounts, false);
         }
 
@@ -312,8 +296,7 @@ public class AccountsListActivity extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        protected View getView(boolean isDropDown, final Account account, ViewGroup parent, LayoutInflater inflater)
-        {
+        protected View getView(boolean isDropDown, final Account account, ViewGroup parent, LayoutInflater inflater) {
             // Creates the list view
             View rowView = super.getView(isDropDown, account, parent, inflater);
 
@@ -368,8 +351,7 @@ public class AccountsListActivity extends OSGiActivity
     /**
      * The thread that runs enable/disable operations
      */
-    class AccountEnableThread extends Thread
-    {
+    class AccountEnableThread extends Thread {
         /**
          * The {@link AccountID} that will be enabled or disabled
          */
@@ -385,15 +367,13 @@ public class AccountsListActivity extends OSGiActivity
          * @param account the {@link AccountID} that will be enabled or disabled
          * @param enable flag indicates if this is enable or disable operation
          */
-        AccountEnableThread(AccountID account, boolean enable)
-        {
+        AccountEnableThread(AccountID account, boolean enable) {
             this.account = account;
             this.enable = enable;
         }
 
         @Override
-        public void run()
-        {
+        public void run() {
             try {
                 if (enable)
                     accountManager.loadAccount(account);
@@ -402,7 +382,7 @@ public class AccountsListActivity extends OSGiActivity
                 }
             } catch (OperationFailedException e) {
                 String message = "Failed to " + (enable ? "load" : "unload") + " " + account;
-                new Handler(Looper.getMainLooper()).post(() ->
+                runOnUiThread(() ->
                         new AlertDialog.Builder(AccountsListActivity.this)
                                 .setTitle(R.string.error)
                                 .setMessage(message)

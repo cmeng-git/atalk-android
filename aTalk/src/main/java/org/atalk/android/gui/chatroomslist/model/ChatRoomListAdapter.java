@@ -36,6 +36,7 @@ import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.apache.commons.lang3.StringUtils;
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatPanel;
@@ -258,7 +259,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
         for (ChatRoomProviderWrapper provider : providers) {
             List<ChatRoomWrapper> chatRoomWrappers = initBookmarkChatRooms(provider);
 
-            if ((chatRoomWrappers != null) && (chatRoomWrappers.size() > 0)) {
+            if ((chatRoomWrappers != null) && (!chatRoomWrappers.isEmpty())) {
                 addGroup(provider);
 
                 // Use Iterator to avoid ConcurrentModificationException on addChatRoom();
@@ -462,7 +463,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
      */
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        if (mCrWrapperList.size() > 0) {
+        if (!mCrWrapperList.isEmpty()) {
             TreeSet<ChatRoomWrapper> crWrapperList = getCrWrapperList(groupPosition);
             if (crWrapperList != null) {
                 int i = 0;
@@ -514,7 +515,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
                         filteredList.add(crWrapper);
                     }
                 }
-                if (filteredList.size() > 0) {
+                if (!filteredList.isEmpty()) {
                     mCrpWrapperGroup.add(crpWrapper);
                     mCrWrapperList.add(filteredList);
                 }
@@ -536,7 +537,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
             int groupIndex = originalCrpWrapperGroup.indexOf(crpWrapper);
             if (groupIndex != -1) {
                 TreeSet<ChatRoomWrapper> orgCrwList = getOriginalCrWrapperList(groupIndex);
-                if ((orgCrwList != null) && (orgCrwList.size() > 0)) {
+                if ((orgCrwList != null) && (!orgCrwList.isEmpty())) {
                     mCrpWrapperGroup.add(crpWrapper);
                     mCrWrapperList.add(orgCrwList);
                 }
@@ -621,7 +622,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
                 || (!mCrpWrapperGroup.contains(crpWrapper))) {
 
             List<ChatRoomWrapper> chatRoomWrappers = crpWrapper.getChatRooms();
-            if (chatRoomWrappers.size() > 0) {
+            if (!chatRoomWrappers.isEmpty()) {
                 addGroup(crpWrapper);
 
                 for (ChatRoomWrapper crWrapper : chatRoomWrappers) {
@@ -678,6 +679,6 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
      * it's accessed from the single thread.
      */
     private void uiChangeUpdate() {
-        uiHandler.post(this::notifyDataSetChanged);
+        BaseActivity.uiHandler.post(this::notifyDataSetChanged);
     }
 }

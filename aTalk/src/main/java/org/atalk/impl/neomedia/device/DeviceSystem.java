@@ -174,8 +174,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier {
                 classNames = new String[]{
                         // MediaRecorderSystem not working for API-23; so remove the support
                         // OSUtils.IS_ANDROID ? ".MediaRecorderSystem" : null,
-                        ".AndroidCameraSystem",
-                        ".ImgStreamingSystem"
+                        ".AndroidCameraSystem"
                 };
                 break;
             default:

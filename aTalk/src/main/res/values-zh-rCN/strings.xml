@@ -637,7 +637,7 @@
     <string name="url_example">https://www.example.com</string>
     <string name="volume_control_title">输出音量增益级别</string>
     <string name="volume_control_tooltip">调整音量</string>
-    <string name="volume_gain_level">音量增益级别：%1$s%%</string>
+    <string name="volume_gain_level">音量增益级别：%1$d%%</string>
     <string name="waiting_for_authorization">等待授权</string>
     <string name="warning">警告</string>
     <string name="call_in_progress_warning">通话中不能这样做</string>
@@ -821,7 +821,7 @@
     <string name="update_download_failed">无法下载新更新！</string>
     <string name="update_check_update">检查更新</string>
     <string name="update_version_invalid">下载的apk不匹配； 实际：%1$s (%2$s)</string>
-    <string name="update_vew_version_available">有新的软件版本 (%1$s) 可用。</string>
+    <string name="update_new_version_available">有新的软件版本 (%1$s) 可用。</string>
 
     <!-- account info -->
     <string name="accountinfo_about_me">关于本人：</string>
@@ -1388,8 +1388,8 @@
     <!-- Video codecs -->
     <string name="settings_direct_surface_decode">使用直接表面解码</string>
     <string name="settings_direct_surface_encode">使用直接表面编码</string>
-    <string name="settings_hw_decode">使用硬件解码（需要重启）</string>
-    <string name="settings_hw_encode">使用硬件编码（需要重启）</string>
+    <string name="settings_hw_decode">使用硬件解码</string>
+    <string name="settings_hw_encode">使用硬件编码</string>
     <string name="settings_media_codec_list">MediaCodecs</string>
     <string name="settings_media_codec_list_summary">内置媒体编码器/解码器列表</string>
     <string name="settings_restart_require">要求重启 aTalk</string>
@@ -1528,7 +1528,7 @@
     <string name="permission_camera">相机</string>
     <string name="permission_contacts">联系人</string>
     <string name="permission_location">位置</string>
-    <string name="permission_microphone">音频</string>
+    <string name="permission_microphone">麦克风</string>
     <string name="permission_music">音乐与音频</string>
     <string name="permission_notifications">通知</string>
     <string name="permission_phone">电话</string>

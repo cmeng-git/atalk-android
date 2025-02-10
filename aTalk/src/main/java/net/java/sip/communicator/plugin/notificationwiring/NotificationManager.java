@@ -83,8 +83,8 @@ import net.java.sip.communicator.service.systray.SystrayService;
 import org.apache.commons.text.StringEscapeUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.AndroidUIServiceImpl;
+import org.atalk.android.gui.AppGUIActivator;
+import org.atalk.android.gui.AppUIServiceImpl;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatPanel;
@@ -92,7 +92,7 @@ import org.atalk.android.gui.chat.ChatTransport;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.util.AndroidImageUtil;
+import org.atalk.android.util.AppImageUtil;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.event.SrtpListener;
@@ -238,7 +238,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             contactIcon = contact.getImage(false);
             if (contactIcon == null) {
-                contactIcon = AndroidImageUtil.getImageBytes(aTalkApp.getInstance(), R.drawable.person_photo);
+                contactIcon = AppImageUtil.getImageBytes(aTalkApp.getInstance(), R.drawable.person_photo);
             }
         } else if (chatDescriptor instanceof ChatRoom) {
             ChatRoom chatRoom = (ChatRoom) chatDescriptor;
@@ -681,7 +681,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         }
 
         // Obtain the multi user chat operation set & Manager.
-        AndroidUIServiceImpl uiService = AndroidGUIActivator.getUIService();
+        AppUIServiceImpl uiService = AppGUIActivator.getUIService();
         if (uiService != null) {
             ConferenceChatManager conferenceChatManager = uiService.getConferenceChatManager();
 
@@ -746,7 +746,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         }
 
         // Obtain the multi user chat operation set & Manager.
-        AndroidUIServiceImpl uiService = AndroidGUIActivator.getUIService();
+        AppUIServiceImpl uiService = AppGUIActivator.getUIService();
         ConferenceChatManager conferenceChatManager = uiService.getConferenceChatManager();
 
         OperationSetMultiUserChat multiChatOpSet = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
@@ -1105,7 +1105,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * @param contact the message recipient to which the unread count is to be updated
      */
     public static void updateMessageCount(Contact contact) {
-        MetaContact metaContact = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
+        MetaContact metaContact = AppGUIActivator.getContactListService().findMetaContactByContact(contact);
         if (metaContact != null) {
             int unreadCount = metaContact.getUnreadCount() + 1;
             metaContact.setUnreadCount(unreadCount);
@@ -1532,7 +1532,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             long currentTime = System.currentTimeMillis();
             String fromJid = evt.getMessage().getFrom().toString();
-            if (proactiveTimer.size() > 0) {
+            if (!proactiveTimer.isEmpty()) {
                 // first remove chatDescriptors that have been here longer than the timeout to avoid memory leaks
                 Iterator<Map.Entry<Object, Long>> entries = proactiveTimer.entrySet().iterator();
                 while (entries.hasNext()) {

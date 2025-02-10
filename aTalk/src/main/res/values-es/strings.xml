@@ -640,7 +640,7 @@
     <string name="url_example">https://www.ejemplo.com</string>
     <string name="volume_control_title">Nivel de ganancia de volumen de salida</string>
     <string name="volume_control_tooltip">Ajustar el volumen</string>
-    <string name="volume_gain_level">Nivel de ganancia de volumen: %1$s%%</string>
+    <string name="volume_gain_level">Nivel de ganancia de volumen: %1$d%%</string>
     <string name="waiting_for_authorization">Esperando autorización</string>
     <string name="warning">Advertencia</string>
     <string name="call_in_progress_warning">No se puede hacer esto durante una llamada</string>
@@ -829,7 +829,7 @@
     <string name="update_download_failed">¡Error al descargar la nueva actualización!</string>
     <string name="update_check_update">Comprobar actualizaciones</string>
     <string name="update_version_invalid">El apk descargado no coincide; real: %1$s (%2$s)</string>
-    <string name="update_vew_version_available">Una nueva versión de software (%1$s) está disponible.</string>
+    <string name="update_new_version_available">Una nueva versión de software (%1$s) está disponible.</string>
 
     <!-- account info -->
     <string name="accountinfo_about_me">Sobre mi:</string>
@@ -1402,8 +1402,8 @@
     <!-- Video codecs -->
     <string name="settings_direct_surface_decode">Usar decodificación directa de superficie</string>
     <string name="settings_direct_surface_encode">Usar codificación de superficie directa</string>
-    <string name="settings_hw_decode">Usar decodificación por hardware (se requiere reiniciar)</string>
-    <string name="settings_hw_encode">Usar codificación por hardware (se requiere reiniciar)</string>
+    <string name="settings_hw_decode">Usar decodificación por hardware</string>
+    <string name="settings_hw_encode">Usar codificación por hardware</string>
     <string name="settings_media_codec_list">Códecs multimedia</string>
     <string name="settings_media_codec_list_summary">Lista de codificadores/decodificadores multimedia incorporados</string>
     <string name="settings_restart_require">Se necesita reiniciar aTalk</string>
@@ -1542,7 +1542,7 @@
     <string name="permission_camera">Cámara</string>
     <string name="permission_contacts">Contactos</string>
     <string name="permission_location">Localización</string>
-    <string name="permission_microphone">Audio</string>
+    <string name="permission_microphone">Micrófono</string>
     <string name="permission_music">Música y audio</string>
     <string name="permission_notifications">Notificaciones</string>
     <string name="permission_phone">Teléfono</string>

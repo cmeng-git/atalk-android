@@ -12,16 +12,15 @@ import android.provider.ContactsContract.Contacts.Data;
 import androidx.annotation.Nullable;
 import androidx.loader.content.AsyncTaskLoader;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Recipient>>
-{
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+
+public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Recipient>> {
     /*
      * Indexes of the fields in the projection. This must match the order in {@link #PROJECTION}.
      */
@@ -63,8 +62,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
     private List<RecipientSelectView.Recipient> cachedRecipients;
     private ForceLoadContentObserver observerContact, observerKey;
 
-    public RecipientLoader(Context context, String query)
-    {
+    public RecipientLoader(Context context, String query) {
         super(context);
         this.query = query;
         this.lookupKeyUri = null;
@@ -73,8 +71,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
         contentResolver = context.getContentResolver();
     }
 
-    public RecipientLoader(Context context, Address... addresses)
-    {
+    public RecipientLoader(Context context, Address... addresses) {
         super(context);
         this.query = null;
         this.addresses = addresses;
@@ -83,8 +80,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
         contentResolver = context.getContentResolver();
     }
 
-    public RecipientLoader(Context context, Uri contactUri, boolean isLookupKey)
-    {
+    public RecipientLoader(Context context, Uri contactUri, boolean isLookupKey) {
         super(context);
         this.query = null;
         this.addresses = null;
@@ -94,8 +90,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
     }
 
     @Override
-    public List<RecipientSelectView.Recipient> loadInBackground()
-    {
+    public List<RecipientSelectView.Recipient> loadInBackground() {
         List<RecipientSelectView.Recipient> recipients = new ArrayList<>();
         Map<String, RecipientSelectView.Recipient> recipientMap = new HashMap<>();
 
@@ -122,8 +117,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
     }
 
     private void fillContactDataFromAddresses(Address[] addresses, List<RecipientSelectView.Recipient> recipients,
-            Map<String, RecipientSelectView.Recipient> recipientMap)
-    {
+            Map<String, RecipientSelectView.Recipient> recipientMap) {
         for (Address address : addresses) {
             // TODO actually query contacts - not sure if this is possible in a single query tho :(
             RecipientSelectView.Recipient recipient = new RecipientSelectView.Recipient(address);
@@ -133,8 +127,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
     }
 
     private void fillContactDataFromPhoneContentUri(Uri contactUri, List<RecipientSelectView.Recipient> recipients,
-            Map<String, RecipientSelectView.Recipient> recipientMap)
-    {
+            Map<String, RecipientSelectView.Recipient> recipientMap) {
         Cursor cursor = contentResolver.query(contactUri, PROJECTION, null, null, null);
         if (cursor == null) {
             return;
@@ -143,8 +136,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
     }
 
     private void fillContactDataFromLookupKey(Uri lookupKeyUri, List<RecipientSelectView.Recipient> recipients,
-            Map<String, RecipientSelectView.Recipient> recipientMap)
-    {
+            Map<String, RecipientSelectView.Recipient> recipientMap) {
         // We could use the contact id from the URI directly, but getting it from the lookup key is safer
         Uri contactContentUri = Contacts.lookupContact(contentResolver, lookupKeyUri);
         if (contactContentUri == null) {
@@ -163,13 +155,11 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
         fillContactDataFromCursor(cursor, recipients, recipientMap);
     }
 
-    private static String getContactIdFromContactUri(Uri contactUri)
-    {
+    private static String getContactIdFromContactUri(Uri contactUri) {
         return contactUri.getLastPathSegment();
     }
 
-    private Cursor getNicknameCursor(String nickname)
-    {
+    private Cursor getNicknameCursor(String nickname) {
         nickname = "%" + nickname + "%";
         Uri queryUriForNickname = ContactsContract.Data.CONTENT_URI;
 
@@ -186,8 +176,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
 
     @SuppressWarnings("ConstantConditions")
     private void fillContactDataFromQuery(String query, List<RecipientSelectView.Recipient> recipients,
-            Map<String, RecipientSelectView.Recipient> recipientMap)
-    {
+            Map<String, RecipientSelectView.Recipient> recipientMap) {
         boolean foundValidCursor = false;
         foundValidCursor |= fillContactDataFromNickname(query, recipients, recipientMap);
         foundValidCursor |= fillContactDataFromNameAndPhone(query, recipients, recipientMap);
@@ -197,8 +186,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
         }
     }
 
-    private void registerContentObserver()
-    {
+    private void registerContentObserver() {
         if (observerContact != null) {
             observerContact = new ForceLoadContentObserver();
             contentResolver.registerContentObserver(Phone.CONTENT_URI, false, observerContact);
@@ -207,8 +195,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
 
     @SuppressWarnings("ConstantConditions")
     private boolean fillContactDataFromNickname(String nickname, List<RecipientSelectView.Recipient> recipients,
-            Map<String, RecipientSelectView.Recipient> recipientMap)
-    {
+            Map<String, RecipientSelectView.Recipient> recipientMap) {
         boolean hasContact = false;
         Uri queryUri = Phone.CONTENT_URI;
         Cursor nicknameCursor = getNicknameCursor(nickname);
@@ -234,8 +221,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
     }
 
     private boolean fillContactDataFromNameAndPhone(String query, List<RecipientSelectView.Recipient> recipients,
-            Map<String, RecipientSelectView.Recipient> recipientMap)
-    {
+            Map<String, RecipientSelectView.Recipient> recipientMap) {
         query = "%" + query + "%";
         Uri queryUri = Phone.CONTENT_URI;
 
@@ -257,14 +243,12 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
     }
 
     private void fillContactDataFromCursor(Cursor cursor, List<RecipientSelectView.Recipient> recipients,
-            Map<String, RecipientSelectView.Recipient> recipientMap)
-    {
+            Map<String, RecipientSelectView.Recipient> recipientMap) {
         fillContactDataFromCursor(cursor, recipients, recipientMap, null);
     }
 
     private void fillContactDataFromCursor(Cursor cursor, List<RecipientSelectView.Recipient> recipients,
-            Map<String, RecipientSelectView.Recipient> recipientMap, @Nullable String prefilledName)
-    {
+            Map<String, RecipientSelectView.Recipient> recipientMap, @Nullable String prefilledName) {
         while (cursor.moveToNext()) {
             String name = prefilledName != null ? prefilledName : cursor.getString(INDEX_NAME);
             String phone = cursor.getString(INDEX_PHONE);
@@ -304,8 +288,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
     }
 
     @Override
-    public void deliverResult(List<RecipientSelectView.Recipient> data)
-    {
+    public void deliverResult(List<RecipientSelectView.Recipient> data) {
         cachedRecipients = data;
         if (isStarted()) {
             super.deliverResult(data);
@@ -313,8 +296,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
     }
 
     @Override
-    protected void onStartLoading()
-    {
+    protected void onStartLoading() {
         if (cachedRecipients != null) {
             super.deliverResult(cachedRecipients);
             return;
@@ -325,8 +307,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
     }
 
     @Override
-    protected void onAbandon()
-    {
+    protected void onAbandon() {
         super.onAbandon();
 
         if (observerKey != null) {

@@ -190,11 +190,11 @@ public class ServiceDiscoveryHelper {
                 while (!stopped) {
                     Jid entityToProcess;
                     synchronized (entities) {
-                        if (entities.size() == 0) {
+                        if (entities.isEmpty()) {
                             try {
                                 entities.wait();
                             } catch (InterruptedException ex) {
-                                ex.printStackTrace();
+                                Timber.e("DiscoveryInfoRetriever: %s", ex.getMessage());
                             }
                         }
                         entityToProcess = entities.get(0);

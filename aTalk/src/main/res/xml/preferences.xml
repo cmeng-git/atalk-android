@@ -66,7 +66,7 @@
             android:title="@string/settings_ssl_certificate">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:targetClass="org.atalk.impl.androidcertdialog.ConnectionInfo"
+                android:targetClass="org.atalk.impl.appcertdialog.ConnectionInfo"
                 android:targetPackage="org.atalk.android" />
         </Preference>
 

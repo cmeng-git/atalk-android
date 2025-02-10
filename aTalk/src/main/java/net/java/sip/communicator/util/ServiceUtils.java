@@ -15,8 +15,7 @@ import org.osgi.framework.ServiceReference;
  * @author Lyubomir Marinov
  * @author Pawel Domas
  */
-public class ServiceUtils
-{
+public class ServiceUtils {
     /**
      * Gets an OSGi service registered in a specific <code>BundleContext</code> by its <code>Class</code>
      *
@@ -24,11 +23,11 @@ public class ServiceUtils
      * @param bundleContext the <code>BundleContext</code> in which the service to get has been registered
      * @param serviceClass the <code>Class</code> with which the service to get has been registered in the
      * <code>bundleContext</code>
+     *
      * @return the OSGi service registered in <code>bundleContext</code> with the specified
      * <code>serviceClass</code> if such a service exists there; otherwise, <code>null</code>
      */
-    public static <T> T getService(BundleContext bundleContext, Class<T> serviceClass)
-    {
+    public static <T> T getService(BundleContext bundleContext, Class<T> serviceClass) {
         ServiceReference<T> serviceReference = null;
         if ((bundleContext != null) && (serviceClass != null))
             serviceReference = bundleContext.getServiceReference(serviceClass);
@@ -41,11 +40,11 @@ public class ServiceUtils
      *
      * @param bundleContext the <code>BundleContext</code> in which the services to get have been registered
      * @param serviceClass the <code>Class</code> of the OSGi service references to get
+     *
      * @return the OSGi service references registered in <code>bundleContext</code> with the specified
      * <code>serviceClass</code> if such a services exists there; otherwise, an empty <code>Collection</code>
      */
-    public static ServiceReference[] getServiceReferences(BundleContext bundleContext, Class<?> serviceClass)
-    {
+    public static ServiceReference[] getServiceReferences(BundleContext bundleContext, Class<?> serviceClass) {
         ServiceReference[] serviceReferences;
         try {
             serviceReferences = bundleContext.getServiceReferences(serviceClass.getName(), null);
@@ -62,7 +61,6 @@ public class ServiceUtils
     /**
      * Prevents the creation of <code>ServiceUtils</code> instances.
      */
-    private ServiceUtils()
-    {
+    private ServiceUtils() {
     }
 }

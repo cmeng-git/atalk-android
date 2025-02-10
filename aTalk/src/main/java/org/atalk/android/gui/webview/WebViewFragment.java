@@ -44,10 +44,10 @@ import java.util.Stack;
 
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.service.osgi.OSGiFragment;
 import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
@@ -59,7 +59,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 @SuppressLint("SetJavaScriptEnabled")
-public class WebViewFragment extends OSGiFragment implements OnKeyListener {
+public class WebViewFragment extends BaseFragment implements OnKeyListener {
     private WebView webview;
     private ProgressBar progressbar;
     private static final Stack<String> urlStack = new Stack<>();
@@ -196,7 +196,7 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener {
             InputStream input = connection.getInputStream();
             return BitmapFactory.decodeStream(input);
         } catch (IOException e) {
-            e.printStackTrace();
+            Timber.w("Exception %s", e.getMessage());
             return null;
         }
     }

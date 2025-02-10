@@ -41,8 +41,10 @@ import androidx.annotation.NonNull;
 import androidx.core.location.LocationListenerCompat;
 import androidx.core.location.LocationManagerCompat;
 import androidx.core.location.LocationRequestCompat;
-import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -57,8 +59,6 @@ import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import java.util.ArrayList;
-
 import timber.log.Timber;
 
 /**
@@ -68,8 +68,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  * @author Alex O'Ree
  */
-public class OsmFragment extends Fragment implements LocationListenerCompat, IOrientationConsumer
-{
+public class OsmFragment extends BaseFragment implements LocationListenerCompat, IOrientationConsumer {
     private static final int MENU_LAST_ID = Menu.FIRST;
 
     private MyLocationNewOverlay mLocationOverlay;
@@ -107,8 +106,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
     private boolean mHasBearing = false;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = (OsmActivity) getActivity();
         Criteria criteria = new Criteria();
@@ -124,16 +122,14 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.osm_followme, null);
         mMapView = v.findViewById(R.id.mapview);
         return v;
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
-    {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         final DisplayMetrics dm = mActivity.getResources().getDisplayMetrics();
 
         GpsMyLocationProvider mGpsMyLocationProvider = new GpsMyLocationProvider(mActivity);
@@ -191,8 +187,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
 
     @SuppressLint("MissingPermission")
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         if (mMapView != null) {
             mMapView.onResume();
@@ -236,8 +231,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
         if (mMapView != null) {
             mMapView.onPause();
@@ -266,8 +260,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
     }
 
     @Override
-    public void onDestroyView()
-    {
+    public void onDestroyView() {
         super.onDestroyView();
         if (mMapView != null)
             mMapView.onDetach();
@@ -286,8 +279,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         try {
             mMapView.getOverlayManager().onCreateOptionsMenu(menu, MENU_LAST_ID, mMapView);
         } catch (NullPointerException npe) {
@@ -297,26 +289,22 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
     }
 
     @Override
-    public void onPrepareOptionsMenu(@NonNull Menu menu)
-    {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         mMapView.getOverlayManager().onPrepareOptionsMenu(menu, MENU_LAST_ID, mMapView);
         super.onPrepareOptionsMenu(menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item)
-    {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return mMapView.getOverlayManager().onOptionsItemSelected(item, MENU_LAST_ID, mMapView);
     }
 
-    public void invalidateMapView()
-    {
+    public void invalidateMapView() {
         mMapView.invalidate();
     }
 
     @SuppressLint("MissingPermission")
-    private void updateFollowMe(boolean isFollowMe)
-    {
+    private void updateFollowMe(boolean isFollowMe) {
         if (isFollowMe) {
             mLocationOverlay.enableFollowLocation();
             btFollowMe.setImageResource(R.drawable.ic_follow_me_on);
@@ -331,8 +319,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
         }
     }
 
-    private void setDeviceOrientation()
-    {
+    private void setDeviceOrientation() {
         int orientation;
         int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
         switch (rotation) {
@@ -359,14 +346,13 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
         }
 
         // Lock the device in current screen orientation
-            mActivity.setRequestedOrientation(orientation);
+        mActivity.setRequestedOrientation(orientation);
     }
 
     /*
      * Adjusts the desired map rotation based on device orientation and compass-trueNorth/gps-bearing heading
      */
-    private void setMapOrientation(float direction)
-    {
+    private void setMapOrientation(float direction) {
         float t = (360 - direction - mDeviceOrientation);
         if (t < 0) {
             t += 360;
@@ -387,8 +373,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
     // Only use the compass bit if we aren't moving, since gps is more accurate when we are moving.
     // aTalk always uses Compass if available, for screen orientation alignment
     @Override
-    public void onOrientationChanged(float orientationToMagneticNorth, IOrientationProvider source)
-    {
+    public void onOrientationChanged(float orientationToMagneticNorth, IOrientationProvider source) {
         // if (gpsSpeed < gpsSpeedThreshold || !mHasBearing) {
         if (mOrientationSupported) {
             GeomagneticField gmField = new GeomagneticField(lat, lon, alt, timeOfFix);
@@ -405,8 +390,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
     }
 
     @Override
-    public void onLocationChanged(Location location)
-    {
+    public void onLocationChanged(Location location) {
         if (GeoConstants.FOLLOW_ME_FIX == mLocationFetchMode) {
             mLocation = location;
         }
@@ -432,8 +416,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
      *
      * @param location the new location location to animate to
      */
-    public void showLocation(Location location)
-    {
+    public void showLocation(Location location) {
         if (mMapView != null) {
             mLocation = location;
             mMapView.getController().animateTo(new GeoPoint(location));
@@ -448,13 +431,12 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
      *
      * @param locations the ArrayList<Location>
      */
-    public void startLocationFollowMe(final ArrayList<Location> locations)
-    {
+    public void startLocationFollowMe(final ArrayList<Location> locations) {
         mThread = new Thread(() -> {
             for (final Location xLocation : locations) {
                 try {
                     Thread.sleep(2000);
-                    mActivity.runOnUiThread(() -> showLocation(xLocation));
+                    runOnUiThread(() -> showLocation(xLocation));
                 } catch (InterruptedException ex) {
                     break;
                 } catch (Exception ex) {

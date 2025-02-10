@@ -29,19 +29,18 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class DnsUtilActivator implements BundleActivator
-{
+public class DnsUtilActivator implements BundleActivator {
     /**
      * Calls <code>Thread.setUncaughtExceptionHandler()</code>
      *
      * @param context The execution context of the bundle being started (unused).
+     *
      * @throws Exception If this method throws an exception, this bundle is marked as stopped and the Framework
      * will remove this bundle's listeners, unregister all services registered by this
      * bundle, and release all services used by this bundle.
      */
     public void start(BundleContext context)
-            throws Exception
-    {
+            throws Exception {
         // Fall back to use miniDns 0.3.2 AndroidUsingExec instead
         // Init miniDNS Resolver for android 21/23 requirements
         // DnsClient.removeDNSServerLookupMechanism(AndroidUsingExec.INSTANCE);
@@ -55,12 +54,12 @@ public class DnsUtilActivator implements BundleActivator
      * Doesn't do anything.
      *
      * @param context The execution context of the bundle being stopped.
+     *
      * @throws Exception If this method throws an exception, the bundle is still marked as stopped, and the
      * Framework will remove the bundle's listeners, unregister all services registered by
      * the bundle, and release all services used by the bundle.
      */
     public void stop(BundleContext context)
-            throws Exception
-    {
+            throws Exception {
     }
 }

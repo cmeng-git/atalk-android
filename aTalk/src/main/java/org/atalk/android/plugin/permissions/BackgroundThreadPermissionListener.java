@@ -27,31 +27,25 @@ import com.karumi.dexter.listener.PermissionRequest;
 /**
  * Sample listener that shows how to handle permission request callbacks on a background thread
  */
-public class BackgroundThreadPermissionListener extends AppPermissionListener
-{
+public class BackgroundThreadPermissionListener extends AppPermissionListener {
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
-    private Handler handler = new Handler(Looper.getMainLooper());
-
-    public BackgroundThreadPermissionListener(PermissionsActivity activity)
-    {
+    public BackgroundThreadPermissionListener(PermissionsActivity activity) {
         super(activity);
     }
 
     @Override
-    public void onPermissionGranted(final PermissionGrantedResponse response)
-    {
+    public void onPermissionGranted(final PermissionGrantedResponse response) {
         handler.post(() -> BackgroundThreadPermissionListener.super.onPermissionGranted(response));
     }
 
     @Override
-    public void onPermissionDenied(final PermissionDeniedResponse response)
-    {
+    public void onPermissionDenied(final PermissionDeniedResponse response) {
         handler.post(() -> BackgroundThreadPermissionListener.super.onPermissionDenied(response));
     }
 
     @Override
-    public void onPermissionRationaleShouldBeShown(final PermissionRequest permission, final PermissionToken token)
-    {
+    public void onPermissionRationaleShouldBeShown(final PermissionRequest permission, final PermissionToken token) {
         handler.post(()
                 -> BackgroundThreadPermissionListener.super.onPermissionRationaleShouldBeShown(permission, token));
     }

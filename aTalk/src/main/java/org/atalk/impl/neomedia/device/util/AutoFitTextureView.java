@@ -24,23 +24,19 @@ import timber.log.Timber;
 /**
  * A {@link TextureView} that can be adjusted to a specified aspect ratio.
  */
-public class AutoFitTextureView extends TextureView
-{
+public class AutoFitTextureView extends TextureView {
     protected int mRatioWidth = 0;
     protected int mRatioHeight = 0;
 
-    public AutoFitTextureView(Context context)
-    {
+    public AutoFitTextureView(Context context) {
         this(context, null);
     }
 
-    public AutoFitTextureView(Context context, AttributeSet attrs)
-    {
+    public AutoFitTextureView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AutoFitTextureView(Context context, AttributeSet attrs, int defStyle)
-    {
+    public AutoFitTextureView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -52,8 +48,7 @@ public class AutoFitTextureView extends TextureView
      * @param width Relative horizontal size
      * @param height Relative vertical size
      */
-    public void setAspectRatio(int width, int height)
-    {
+    public void setAspectRatio(int width, int height) {
         if (width < 0 || height < 0) {
             throw new IllegalArgumentException("Size cannot be negative.");
         }
@@ -72,8 +67,7 @@ public class AutoFitTextureView extends TextureView
      * @param heightMeasureSpec
      */
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-    {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);

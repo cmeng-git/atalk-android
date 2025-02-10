@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.plugin.jabberaccregwizz;
 
+import java.util.Hashtable;
+
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
 import net.java.sip.communicator.service.gui.UIService;
@@ -16,16 +18,13 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import java.util.Hashtable;
-
 /**
  * Registers the <code>SIPAccountRegistrationWizard</code> in the UI Service.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class JabberAccountRegistrationActivator implements BundleActivator
-{
+public class JabberAccountRegistrationActivator implements BundleActivator {
     public static BundleContext bundleContext;
 
     /**
@@ -41,11 +40,11 @@ public class JabberAccountRegistrationActivator implements BundleActivator
      * Starts this bundle.
      *
      * @param bc BundleContext
+     *
      * @throws Exception
      */
     public void start(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         bundleContext = bc;
         ServiceReference<?> uiServiceRef = bundleContext.getServiceReference(UIService.class.getName());
         jabberRegistration = new AccountRegistrationImpl();
@@ -55,8 +54,7 @@ public class JabberAccountRegistrationActivator implements BundleActivator
     }
 
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
     }
 
     /**
@@ -64,8 +62,7 @@ public class JabberAccountRegistrationActivator implements BundleActivator
      *
      * @return the <code>ProtocolProviderFactory</code> for the Jabber protocol
      */
-    public static ProtocolProviderFactory getJabberProtocolProviderFactory()
-    {
+    public static ProtocolProviderFactory getJabberProtocolProviderFactory() {
         return ProtocolProviderFactory.getProtocolProviderFactory(bundleContext, ProtocolNames.JABBER);
     }
 
@@ -74,8 +71,7 @@ public class JabberAccountRegistrationActivator implements BundleActivator
      *
      * @return the <code>ConfigurationService</code> obtained from the bundle context
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configService == null) {
             ServiceReference<?> serviceReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
             configService = (ConfigurationService) bundleContext.getService(serviceReference);
@@ -88,8 +84,7 @@ public class JabberAccountRegistrationActivator implements BundleActivator
      *
      * @return the <code>CertificateService</code> obtained from the bundle context
      */
-    public static CertificateService getCertificateService()
-    {
+    public static CertificateService getCertificateService() {
         if (certService == null) {
             ServiceReference<?> serviceReference
                     = bundleContext.getServiceReference(CertificateService.class.getName());

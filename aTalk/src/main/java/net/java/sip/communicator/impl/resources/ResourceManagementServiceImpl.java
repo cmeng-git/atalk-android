@@ -178,7 +178,7 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     {
         String path = getImagePath(streamKey);
 
-        if (path == null || path.length() == 0) {
+        if (path == null || path.isEmpty()) {
             Timber.w("Missing resource for key: %s", streamKey);
             return null;
         }

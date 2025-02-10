@@ -6,16 +6,16 @@
  */
 package org.atalk.impl.neomedia.codec.video;
 
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.impl.neomedia.codec.FFmpeg;
-
 import java.awt.Dimension;
 
 import javax.media.Buffer;
 import javax.media.Effect;
 import javax.media.Format;
 import javax.media.ResourceUnavailableException;
+
+import org.atalk.impl.neomedia.codec.AbstractCodec2;
+import org.atalk.impl.neomedia.codec.FFmpeg;
+import org.atalk.impl.timberlog.TimberLog;
 
 import timber.log.Timber;
 
@@ -28,11 +28,9 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class HFlip extends AbstractCodec2
-        implements Effect
-{
+        implements Effect {
     /**
-     * The list of <code>Format</code>s supported by <code>HFlip</code> instances as
-     * input and output.
+     * The list of <code>Format</code>s supported by <code>HFlip</code> instances as input and output.
      */
     private static final Format[] SUPPORTED_FORMATS = new Format[]{new AVFrameFormat()};
 
@@ -97,8 +95,7 @@ public class HFlip extends AbstractCodec2
     /**
      * Initializes a new <code>HFlip</code> instance.
      */
-    public HFlip()
-    {
+    public HFlip() {
         super("FFmpeg HFlip Filter", AVFrameFormat.class, SUPPORTED_FORMATS);
     }
 
@@ -108,8 +105,7 @@ public class HFlip extends AbstractCodec2
      * @see AbstractCodec2#doClose()
      */
     @Override
-    protected synchronized void doClose()
-    {
+    protected synchronized void doClose() {
         try {
             if (outputFrame != 0) {
                 FFmpeg.avcodec_free_frame(outputFrame);
@@ -123,14 +119,12 @@ public class HFlip extends AbstractCodec2
     /**
      * Opens this <code>Effect</code>.
      *
-     * @throws ResourceUnavailableException if any of the required resource
-     * cannot be allocated
+     * @throws ResourceUnavailableException if any of the required resource cannot be allocated
      * @see AbstractCodec2#doOpen()
      */
     @Override
     protected synchronized void doOpen()
-            throws ResourceUnavailableException
-    {
+            throws ResourceUnavailableException {
         outputFrame = FFmpeg.avcodec_alloc_frame();
         if (outputFrame == 0) {
             String reason = "avcodec_alloc_frame: " + outputFrame;
@@ -145,14 +139,15 @@ public class HFlip extends AbstractCodec2
      *
      * @param inputBuffer the <code>Buffer</code> that contains the media data to be processed
      * @param outputBuffer the <code>Buffer</code> in which to store the processed media data
+     *
      * @return <code>BUFFER_PROCESSED_OK</code> if the processing is successful
+     *
      * @see AbstractCodec2#doProcess(Buffer, Buffer)
      */
     @Override
     protected synchronized int doProcess(
             Buffer inputBuffer,
-            Buffer outputBuffer)
-    {
+            Buffer outputBuffer) {
         // Make sure the graph is configured with the current Format i.e. size and pixFmt.
         AVFrameFormat format = (AVFrameFormat) inputBuffer.getFormat();
         Dimension size = format.getSize();
@@ -204,8 +199,7 @@ public class HFlip extends AbstractCodec2
         return BUFFER_PROCESSED_OK;
     }
 
-    private boolean allocateFfmpegGraph(AVFrameFormat format, Dimension size, int pixFmt)
-    {
+    private boolean allocateFfmpegGraph(AVFrameFormat format, Dimension size, int pixFmt) {
         if (graph != 0) {
             return true;
         }
@@ -292,8 +286,7 @@ public class HFlip extends AbstractCodec2
      * Resets the state of this <code>PlugIn</code>.
      */
     @Override
-    public synchronized void reset()
-    {
+    public synchronized void reset() {
         if (graph != 0) {
             FFmpeg.avfilter_graph_free(graph);
             graph = 0;

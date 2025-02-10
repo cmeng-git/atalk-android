@@ -18,9 +18,7 @@ package org.atalk.android.gui.chat.chatsession;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +41,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
@@ -68,19 +67,19 @@ import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusLis
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.atalk.android.BaseActivity;
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.call.AndroidCallUtil;
+import org.atalk.android.gui.AppGUIActivator;
+import org.atalk.android.gui.call.AppCallUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.ChatSessionManager;
-import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.widgets.UnreadCountCustomView;
-import org.atalk.service.osgi.OSGiActivity;
-import org.atalk.service.osgi.OSGiFragment;
+import org.atalk.android.util.AppImageUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jxmpp.jid.BareJid;
@@ -96,7 +95,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class ChatSessionFragment extends OSGiFragment implements View.OnClickListener, View.OnLongClickListener,
+public class ChatSessionFragment extends BaseFragment implements View.OnClickListener, View.OnLongClickListener,
         EntityListHelper.TaskCompleteListener, ContactPresenceStatusListener, ChatRoomListChangeListener {
     /**
      * bit-7 of the ChatSession#STATUS is to hide session from UI if set
@@ -145,16 +144,9 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
     private MUCServiceImpl mucService;
 
     /**
-     * UI thread handler used to call all operations that access data model. This guarantees that
-     * it's accessed from the main thread.
-     */
-    protected final Handler uiHandler = OSGiActivity.uiHandler;
-
-    /**
      * View for room configuration title description from the room configuration form
      */
     private TextView mTitle;
-    private static Context mContext = null;
     private MessageHistoryServiceImpl mMHS;
 
     /**
@@ -163,7 +155,6 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        mContext = context;
         mMHS = MessageHistoryActivator.getMessageHistoryService();
 
         mucService = MUCActivator.getMUCService();
@@ -214,7 +205,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
          * @param sessionUuid session Uuid
          */
         public void removeItem(String sessionUuid) {
-            int index = 0;
+            int index = -1;
             for (ChatSessionRecord cdRecord : sessionRecords) {
                 if (cdRecord.getSessionUuid().equals(sessionUuid))
                     break;
@@ -222,8 +213,10 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
             }
 
             // ConcurrentModificationException if perform within the loop
-            if (index < sessionRecords.size())
+            if (index != -1 && ++index < sessionRecords.size()) {
                 removeItem(index);
+                notifyDataSetChanged();
+            }
         }
 
         /**
@@ -302,7 +295,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
                 BareJid bareJid = chatSessionRecord.getEntityBareJid();
                 byte[] avatar = AvatarManager.getAvatarImageByJid(bareJid);
                 if (avatar != null) {
-                    chatRecordViewHolder.avatar.setImageBitmap(AndroidImageUtil.bitmapFromBytes(avatar));
+                    chatRecordViewHolder.avatar.setImageBitmap(AppImageUtil.bitmapFromBytes(avatar));
                 }
                 else {
                     chatRecordViewHolder.avatar.setImageResource(R.drawable.person_photo);
@@ -332,7 +325,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
          * Retrieve all the chat sessions saved locally in the database
          * Populate the fragment with the chat session for each getView()
          */
-        private class getChatSessionRecords extends AsyncTask<Void, Void, Void> {
+        private class getChatSessionRecords {
             final Date mEndDate;
 
             public getChatSessionRecords(Date date) {
@@ -342,8 +335,20 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
                 chatSessionListView.clearChoices();
             }
 
-            @Override
-            protected Void doInBackground(Void... params) {
+            public void execute() {
+                Executors.newSingleThreadExecutor().execute(() -> {
+                    doInBackground();
+
+                    runOnUiThread(() -> {
+                        if (!sessionRecords.isEmpty()) {
+                            chatSessionAdapter.notifyDataSetChanged();
+                        }
+                        setTitle();
+                    });
+                });
+            }
+
+            private void doInBackground() {
                 initMetaContactList();
                 Collection<ChatSessionRecord> csRecordPPS;
 
@@ -354,19 +359,10 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
                         String userUid = pps.getAccountID().getAccountUid();
 
                         csRecordPPS = mMHS.findSessionByEndDate(userUid, mEndDate);
-                        if (csRecordPPS.size() != 0)
+                        if (!csRecordPPS.isEmpty())
                             sessionRecords.addAll(csRecordPPS);
                     }
                 }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void result) {
-                if (sessionRecords.size() > 0) {
-                    chatSessionAdapter.notifyDataSetChanged();
-                }
-                setTitle();
             }
         }
     }
@@ -463,7 +459,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
      * Initializes the adapter data.
      */
     public void initMetaContactList() {
-        MetaContactListService contactListService = AndroidGUIActivator.getContactListService();
+        MetaContactListService contactListService = AppGUIActivator.getContactListService();
         if (contactListService != null) {
             addContacts(contactListService.getRoot());
         }
@@ -494,7 +490,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
 
     @Override
     public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt) {
-        uiHandler.post(() -> chatSessionAdapter.notifyDataSetChanged());
+        BaseActivity.uiHandler.post(() -> chatSessionAdapter.notifyDataSetChanged());
     }
 
     /**
@@ -502,7 +498,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
      */
     @Override
     public void contentChanged(ChatRoomListChangeEvent evt) {
-        uiHandler.post(() -> chatSessionAdapter.notifyDataSetChanged());
+        BaseActivity.uiHandler.post(() -> chatSessionAdapter.notifyDataSetChanged());
     }
 
     @Override
@@ -517,9 +513,17 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
      * Creates the providers comboBox and filling its content with the current available chatRooms.
      * Add all available server's chatRooms to the chatRoomList when providers changed.
      */
-    private class InitChatRoomWrapper extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
+    private class InitChatRoomWrapper {
+        public void execute() {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                doInBackground();
+
+                runOnUiThread(() -> {
+                });
+            });
+        }
+
+        private void doInBackground() {
             chatRoomList.clear();
             chatRoomWrapperList.clear();
 
@@ -545,7 +549,6 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
                     chatRoomWrapperList.put(room, mucService.findChatRoomWrapperFromChatRoomID(room, pps));
                 }
             }
-            return null;
         }
     }
 
@@ -591,14 +594,14 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
                     case R.id.callButton:
                         if (jid instanceof DomainBareJid) {
                             TelephonyFragment extPhone = TelephonyFragment.newInstance(contact.getAddress());
-                            ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
+                             mFragmentActivity.getSupportFragmentManager().beginTransaction()
                                     .replace(android.R.id.content, extPhone, TelephonyFragment.TELEPHONY_TAG).commit();
                             break;
                         }
 
                     case R.id.callVideoButton:
                         boolean isVideoCall = viewHolder.callVideoButton.isPressed();
-                        AndroidCallUtil.createAndroidCall(aTalkApp.getInstance(), jid,
+                        AppCallUtil.createAndroidCall(aTalkApp.getInstance(), jid,
                                 viewHolder.callVideoButton, isVideoCall);
                         break;
 
@@ -653,7 +656,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
      * themselves do not have individual item click listeners.
      */
     private class PopupMenuItemClick implements PopupMenu.OnMenuItemClickListener {
-        private ChatSessionRecord mSessionRecord;
+        private final ChatSessionRecord mSessionRecord;
 
         PopupMenuItemClick(ChatSessionRecord sessionRecord) {
             mSessionRecord = sessionRecord;
@@ -749,7 +752,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
             }
 
             // Allow removal of new chatRoom if join failed
-            if (AndroidGUIActivator.getConfigurationService()
+            if (AppGUIActivator.getConfigurationService()
                     .getBoolean(MUCService.REMOVE_ROOM_ON_FIRST_JOIN_FAILED, false)) {
                 final ChatRoomWrapper crWrapper = chatRoomWrapper;
 
@@ -758,7 +761,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
                         return;
 
                     // if we failed for some reason, then close and remove the room
-                    AndroidGUIActivator.getUIService().closeChatRoomWindow(crWrapper);
+                    AppGUIActivator.getUIService().closeChatRoomWindow(crWrapper);
                     MUCActivator.getMUCService().removeChatRoom(crWrapper);
                 });
             }

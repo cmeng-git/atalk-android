@@ -5,6 +5,10 @@
  */
 package net.java.sip.communicator.util;
 
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Map;
+
 import net.java.sip.communicator.service.gui.AlertUIService;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.protocol.AccountManager;
@@ -23,10 +27,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -37,8 +37,7 @@ import timber.log.Timber;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionHandler
-{
+public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionHandler {
     private static ConfigurationService configurationService;
     private static ResourceManagementService resourceService;
     private static UIService uiService;
@@ -52,13 +51,13 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      * Calls <code>Thread.setUncaughtExceptionHandler()</code>
      *
      * @param context The execution context of the bundle being started (unused).
+     *
      * @throws Exception If this method throws an exception, this bundle is marked as stopped and the Framework
      * will remove this bundle's listeners, unregister all services registered by this
      * bundle, and release all services used by this bundle.
      */
     public void start(BundleContext context)
-            throws Exception
-    {
+            throws Exception {
         bundleContext = context;
         if (OSUtils.IS_ANDROID)
             loadLoggingConfig();
@@ -71,8 +70,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      * Loads logging config if any. Need to be loaded in order to activate logging and need to be
      * activated after bundle context is initialized.
      */
-    private void loadLoggingConfig()
-    {
+    private void loadLoggingConfig() {
         try {
             Class.forName("net.java.sip.communicator.util.JavaUtilLoggingConfig").newInstance();
         } catch (Throwable t) {
@@ -90,8 +88,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      * @param thread the thread
      * @param exc the exception
      */
-    public void uncaughtException(Thread thread, Throwable exc)
-    {
+    public void uncaughtException(Thread thread, Throwable exc) {
         Timber.e(exc, "An uncaught exception occurred in thread = %s and message was: %s", thread, exc.getMessage());
     }
 
@@ -99,13 +96,13 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      * Doesn't do anything.
      *
      * @param context The execution context of the bundle being stopped.
+     *
      * @throws Exception If this method throws an exception, the bundle is still marked as stopped, and the
      * Framework will remove the bundle's listeners, unregister all services registered by
      * the bundle, and release all services used by the bundle.
      */
     public void stop(BundleContext context)
-            throws Exception
-    {
+            throws Exception {
     }
 
     /**
@@ -113,8 +110,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      *
      * @return the <code>ConfigurationService</code>
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configurationService == null) {
             configurationService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
         }
@@ -126,8 +122,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      *
      * @return the service giving access to all application resources.
      */
-    public static ResourceManagementService getResources()
-    {
+    public static ResourceManagementService getResources() {
         if (resourceService == null) {
             resourceService = ResourceManagementServiceUtils.getService(bundleContext);
         }
@@ -141,8 +136,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      * @return the <code>UIService</code> instance registered in the <code>BundleContext</code> of the
      * <code>UtilActivator</code>
      */
-    public static UIService getUIService()
-    {
+    public static UIService getUIService() {
         if (uiService == null)
             uiService = ServiceUtils.getService(bundleContext, UIService.class);
         return uiService;
@@ -153,8 +147,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      *
      * @return the <code>FileAccessService</code> obtained from the bundle context
      */
-    public static FileAccessService getFileAccessService()
-    {
+    public static FileAccessService getFileAccessService() {
         if (fileAccessService == null) {
             fileAccessService = ServiceUtils.getService(bundleContext, FileAccessService.class);
         }
@@ -166,8 +159,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      *
      * @return an instance of the <code>MediaService</code> obtained from the bundle context
      */
-    public static MediaService getMediaService()
-    {
+    public static MediaService getMediaService() {
         if (mediaService == null) {
             mediaService = ServiceUtils.getService(bundleContext, MediaService.class);
         }
@@ -181,8 +173,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      * @return the <code>UIService</code> instance registered in the <code>BundleContext</code> of the
      * <code>UtilActivator</code>
      */
-    public static MediaConfigurationService getMediaConfiguration()
-    {
+    public static MediaConfigurationService getMediaConfiguration() {
         return ServiceUtils.getService(bundleContext, MediaConfigurationService.class);
     }
 
@@ -191,8 +182,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      *
      * @return all <code>ProtocolProviderFactory</code>s obtained from the bundle context
      */
-    public static Map<Object, ProtocolProviderFactory> getProtocolProviderFactories()
-    {
+    public static Map<Object, ProtocolProviderFactory> getProtocolProviderFactories() {
         Collection<ServiceReference<ProtocolProviderFactory>> serRefs = null;
         Map<Object, ProtocolProviderFactory> providerFactoriesMap = new Hashtable<>();
 
@@ -201,7 +191,6 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
             if (bundleContext != null)
                 serRefs = bundleContext.getServiceReferences(ProtocolProviderFactory.class, null);
         } catch (InvalidSyntaxException ex) {
-            serRefs = null;
             Timber.e("LoginManager : %s", ex.getMessage());
         }
 
@@ -219,8 +208,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      *
      * @return the <code>AccountManager</code> obtained from the bundle context
      */
-    public static AccountManager getAccountManager()
-    {
+    public static AccountManager getAccountManager() {
         if (accountManager == null) {
             accountManager = ServiceUtils.getService(bundleContext, AccountManager.class);
         }
@@ -232,8 +220,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      *
      * @return the <code>AlertUIService</code> obtained from the bundle context
      */
-    public static AlertUIService getAlertUIService()
-    {
+    public static AlertUIService getAlertUIService() {
         if (alertUIService == null) {
             alertUIService = ServiceUtils.getService(bundleContext, AlertUIService.class);
         }

@@ -29,7 +29,7 @@ import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 
 /**
  * The <code>PresenceFilter</code> is used to filter offline contacts from the contact list.
@@ -67,7 +67,7 @@ public class PresenceFilter implements ContactListFilter {
 
         // Add this query to the filterQuery.
         filterQuery.addContactQuery(query);
-        List<ContactSourceService> filterSources = AndroidGUIActivator.getContactSources();
+        List<ContactSourceService> filterSources = AppGUIActivator.getContactSources();
 
         int maxIndex = 0;
         for (ContactSourceService filterSource : filterSources) {
@@ -94,10 +94,10 @@ public class PresenceFilter implements ContactListFilter {
         // Closes this filter to indicate that we finished adding queries to it.
         filterQuery.close();
 
-        // query.addContactQueryListener(AndroidGUIActivator.getContactList());
+        // query.addContactQueryListener(AppGUIActivator.getContactList());
         int resultCount = 0;
 
-        addMatching(AndroidGUIActivator.getContactListService().getRoot(), query, resultCount);
+        addMatching(AppGUIActivator.getContactListService().getRoot(), query, resultCount);
 
         query.fireQueryEvent(query.isCanceled()
                 ? MetaContactQueryStatusEvent.QUERY_CANCELED
@@ -251,7 +251,7 @@ public class PresenceFilter implements ContactListFilter {
         //						}
         //					}
 
-        // AndroidGUIActivator.getContactList().addContact(newUIContact, uiGroup, true, true);
+        // AppGUIActivator.getContactList().addContact(newUIContact, uiGroup, true, true);
         //					query.setInitialResultCount(resultCount);
         //				}
         //				else {
@@ -276,7 +276,7 @@ public class PresenceFilter implements ContactListFilter {
             //						uiGroup = MetaContactListSource.createUIGroup(subgroup);
             //				}
             //
-            //				AndroidGUIActivator.getContactList().addGroup(uiGroup, true);
+            //				AppGUIActivator.getContactList().addGroup(uiGroup, true);
             //				addMatching(subgroup, query, resultCount);
             //			}
         }

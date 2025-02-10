@@ -19,15 +19,13 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class NotificationServiceActivator implements BundleActivator
-{
+public class NotificationServiceActivator implements BundleActivator {
     protected static BundleContext bundleContext;
     private static ConfigurationService configService;
     private ServiceRegistration<?> notificationService;
 
     public void start(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         bundleContext = bc;
         notificationService = bundleContext.registerService(NotificationService.class.getName(),
                 new NotificationServiceImpl(), null);
@@ -35,8 +33,7 @@ public class NotificationServiceActivator implements BundleActivator
     }
 
     public void stop(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         notificationService.unregister();
         Timber.d("Notification Service ...[STOPPED]");
     }
@@ -46,10 +43,9 @@ public class NotificationServiceActivator implements BundleActivator
      *
      * @return the <code>ConfigurationService</code> obtained from the bundle context
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configService == null) {
-            ServiceReference configReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
+            ServiceReference<?> configReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
             configService = (ConfigurationService) bundleContext.getService(configReference);
         }
         return configService;

@@ -29,12 +29,12 @@ import java.util.Set;
 import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 import net.java.sip.communicator.util.UtilActivator;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.settings.BasePreferenceFragment;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.service.neomedia.SDesControl;
-import org.atalk.service.osgi.OSGiActivity;
-import org.atalk.service.osgi.OSGiPreferenceFragment;
 
 import ch.imvs.sdes4j.srtp.SrtpCryptoSuite;
 
@@ -45,7 +45,7 @@ import ch.imvs.sdes4j.srtp.SrtpCryptoSuite;
  * @author Eng Chong Meng
  * @author MilanKral
  */
-public class SecurityActivity extends OSGiActivity implements SecurityProtocolsDialogFragment.DialogClosedListener {
+public class SecurityActivity extends BaseActivity implements SecurityProtocolsDialogFragment.DialogClosedListener {
     /**
      * The intent's extra key for passing the {@link SecurityAccountRegistration}
      */
@@ -129,7 +129,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
     /**
      * Fragment handles {@link Preference}s used for manipulating security settings.
      */
-    public static class SecurityPreferenceFragment extends OSGiPreferenceFragment
+    public static class SecurityPreferenceFragment extends BasePreferenceFragment
             implements SharedPreferences.OnSharedPreferenceChangeListener {
         private static final String STATE_SEC_REG = "security_reg";
 
@@ -146,7 +146,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPrefTitle(R.string.settings_messaging_security);
             if (savedInstanceState == null) {
-                Intent intent = getActivity().getIntent();
+                Intent intent = ((Activity) mContext).getIntent();
                 securityReg = (SecurityAccountRegistration) intent.getSerializableExtra(EXTR_KEY_SEC_REGISTRATION);
             }
             else {
@@ -324,7 +324,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
          * Sets the cipher suites preference summary
          */
         private void updateCipherSuitesSummary() {
-            MultiSelectListPreference ml = (MultiSelectListPreference) findPreference(PREF_KEY_SEC_CIPHER_SUITES);
+            MultiSelectListPreference ml = findPreference(PREF_KEY_SEC_CIPHER_SUITES);
             String summary = getCipherSuitesSummary(ml);
             ml.setSummary(summary);
         }
@@ -362,29 +362,33 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
 
         public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key) {
             hasChanges = true;
-            if (key.equals(PREF_KEY_SEC_ENABLED)) {
-                securityReg.setCallEncryption(shPreferences.getBoolean(PREF_KEY_SEC_ENABLED, true));
-            }
-            else if (key.equals(PREF_KEY_SEC_SIPZRTP_ATTR)) {
-                updateZRTpOptionSummary();
-                securityReg.setSipZrtpAttribute(shPreferences.getBoolean(key, true));
-            }
-            else if (key.equals(PREF_KEY_SEC_DTLS_CERT_SA)) {
-                ListPreference lp = findPreference(key);
-                String certSA = lp.getValue();
-                lp.setSummary(certSA);
-                securityReg.setDtlsCertSa(certSA);
-            }
-            else if (key.equals(PREF_KEY_SEC_SAVP_OPTION)) {
-                ListPreference lp = findPreference(key);
-                int idx = lp.findIndexOfValue(lp.getValue());
-                securityReg.setSavpOption(idx);
-            }
-            else if (key.equals(PREF_KEY_SEC_CIPHER_SUITES)) {
-                MultiSelectListPreference ml = findPreference(key);
-                String summary = getCipherSuitesSummary(ml);
-                ml.setSummary(summary);
-                securityReg.setSDesCipherSuites(summary);
+            switch (key) {
+                case PREF_KEY_SEC_ENABLED:
+                    securityReg.setCallEncryption(shPreferences.getBoolean(PREF_KEY_SEC_ENABLED, true));
+                    break;
+                case PREF_KEY_SEC_SIPZRTP_ATTR:
+                    updateZRTpOptionSummary();
+                    securityReg.setSipZrtpAttribute(shPreferences.getBoolean(key, true));
+                    break;
+                case PREF_KEY_SEC_DTLS_CERT_SA: {
+                    ListPreference lp = findPreference(key);
+                    String certSA = lp.getValue();
+                    lp.setSummary(certSA);
+                    securityReg.setDtlsCertSa(certSA);
+                    break;
+                }
+                case PREF_KEY_SEC_SAVP_OPTION: {
+                    ListPreference lp = findPreference(key);
+                    int idx = lp.findIndexOfValue(lp.getValue());
+                    securityReg.setSavpOption(idx);
+                    break;
+                }
+                case PREF_KEY_SEC_CIPHER_SUITES:
+                    MultiSelectListPreference ml = findPreference(key);
+                    String summary = getCipherSuitesSummary(ml);
+                    ml.setSummary(summary);
+                    securityReg.setSDesCipherSuites(summary);
+                    break;
             }
         }
     }

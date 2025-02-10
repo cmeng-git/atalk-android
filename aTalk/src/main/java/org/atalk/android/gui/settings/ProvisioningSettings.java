@@ -11,15 +11,14 @@ import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
 
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 
 import org.apache.commons.lang3.StringUtils;
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.osgi.OSGiPreferenceActivity;
 
 /**
  * Provisioning preferences Settings.
@@ -27,7 +26,7 @@ import org.atalk.service.osgi.OSGiPreferenceActivity;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ProvisioningSettings extends OSGiPreferenceActivity {
+public class ProvisioningSettings extends BaseActivity {
     /**
      * {@inheritDoc}
      */
@@ -38,7 +37,7 @@ public class ProvisioningSettings extends OSGiPreferenceActivity {
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
     }
 
-    public static class MyPreferenceFragment extends PreferenceFragmentCompat
+    public static class MyPreferenceFragment extends BasePreferenceFragment
             implements SharedPreferences.OnSharedPreferenceChangeListener {
         /**
          * Used preference keys
@@ -74,13 +73,13 @@ public class ProvisioningSettings extends OSGiPreferenceActivity {
 
             // Load UUID
             EditTextPreference edtPref = findPreference(P_KEY_UUID);
-            edtPref.setText(AndroidGUIActivator.getConfigurationService().getString(edtPref.getKey()));
+            edtPref.setText(AppGUIActivator.getConfigurationService().getString(edtPref.getKey()));
 
-            CredentialsStorageService cSS = AndroidGUIActivator.getCredentialsStorageService();
+            CredentialsStorageService cSS = AppGUIActivator.getCredentialsStorageService();
             String password = cSS.loadPassword(P_KEY_PASS);
 
             Preference forgetPass = findPreference(P_KEY_FORGET_PASS);
-            ConfigurationService config = AndroidGUIActivator.getConfigurationService();
+            ConfigurationService config = AppGUIActivator.getConfigurationService();
             // Enable clear credentials button if password exists
             if (StringUtils.isNotEmpty(password)) {
                 forgetPass.setEnabled(true);
@@ -107,8 +106,8 @@ public class ProvisioningSettings extends OSGiPreferenceActivity {
             askForget.setTitle(R.string.remove)
                     .setMessage(R.string.provisioning_remove_credentials_message)
                     .setPositiveButton(R.string.yes, (dialog, which) -> {
-                        AndroidGUIActivator.getCredentialsStorageService().removePassword(P_KEY_PASS);
-                        AndroidGUIActivator.getConfigurationService().removeProperty(P_KEY_USER);
+                        AppGUIActivator.getCredentialsStorageService().removePassword(P_KEY_PASS);
+                        AppGUIActivator.getConfigurationService().removeProperty(P_KEY_USER);
 
                         usernamePreference.setText("");
                         passwordPreference.setText("");
@@ -140,7 +139,7 @@ public class ProvisioningSettings extends OSGiPreferenceActivity {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(P_KEY_PROVISIONING_METHOD)) {
                 if ("NONE".equals(sharedPreferences.getString(P_KEY_PROVISIONING_METHOD, null))) {
-                    AndroidGUIActivator.getConfigurationService().setProperty(P_KEY_URL, null);
+                    AppGUIActivator.getConfigurationService().setProperty(P_KEY_URL, null);
                 }
             }
         }

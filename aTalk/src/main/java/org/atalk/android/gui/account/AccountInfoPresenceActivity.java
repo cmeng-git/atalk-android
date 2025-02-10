@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
@@ -31,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultCaller;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -47,7 +47,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 
 import com.yalantis.ucrop.UCrop;
 
@@ -84,19 +84,18 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusServi
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.account.settings.AccountPreferenceActivity;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.contactlist.ContactInfoActivity;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.util.event.EventListener;
-import org.atalk.service.osgi.OSGiActivity;
+import org.atalk.android.util.AppImageUtil;
 import org.atalk.util.SoftKeyboard;
 import org.jivesoftware.smackx.avatar.AvatarManager;
-import org.osgi.framework.BundleContext;
 
 import timber.log.Timber;
 
@@ -117,7 +116,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AccountInfoPresenceActivity extends OSGiActivity
+public class AccountInfoPresenceActivity extends BaseActivity
         implements EventListener<AccountEvent>, DialogActivity.DialogListener,
         SoftKeyboard.SoftKeyboardChanged, DatePicker.OnDateChangedListener {
     private DatePicker mDatePicker;
@@ -243,7 +242,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             return;
         }
 
-        mAccount = new Account(accountID, AndroidGUIActivator.bundleContext, this);
+        mAccount = new Account(accountID, AppGUIActivator.bundleContext, this);
         mAccount.addAccountEventListener(this);
         protocolProvider = mAccount.getProtocolProvider();
 
@@ -274,6 +273,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 loadDetails();
             }
         }
+        getOnBackPressedDispatcher().addCallback(backPressedCallback);
     }
 
     @Override
@@ -285,9 +285,8 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     }
 
     @Override
-    protected void stop(BundleContext bundleContext)
-            throws Exception {
-        super.stop(bundleContext);
+    protected void onStop() {
+        super.onStop();
         if (progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
     }
@@ -301,15 +300,14 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        if (!hasChanges && !hasStatusChanges) {
-            super.onBackPressed();
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            if (hasChanges || hasStatusChanges) {
+                checkUnsavedChanges();
+            }
         }
-        else {
-            checkUnsavedChanges();
-        }
-    }
+    };
 
     /**
      * Create and initialize the view with actual values
@@ -620,56 +618,44 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     /**
      * Loads details in separate thread.
      */
-    private class DetailsLoadWorker extends AsyncTask<Void, Void, Iterator<GenericDetail>> {
-        @Override
-        public void onPreExecute() {
-        }
+    private class DetailsLoadWorker {
+        public void execute() {
+            /*
+             * Called on the event dispatching thread (not on the worker thread)
+             * after the {@code construct} method has returned.
+             */
+            Executors.newSingleThreadExecutor().execute(() -> {
+                Iterator<GenericDetail> allDetails = accountInfoOpSet.getAllAvailableDetails();
+                runOnUiThread(() -> {
+                    if (allDetails != null) {
+                        while (allDetails.hasNext()) {
+                            GenericDetail detail = allDetails.next();
+                            loadDetail(detail);
+                        }
 
-        @Override
-        protected Iterator<GenericDetail> doInBackground(Void... params) {
-            return accountInfoOpSet.getAllAvailableDetails();
-        }
+                        // Setup textFields' editable state and addTextChangedListener if enabled
+                        boolean isEditable;
+                        for (Class<? extends GenericDetail> editable : detailToTextField.keySet()) {
+                            EditText field = detailToTextField.get(editable);
+                            isEditable = accountInfoOpSet.isDetailClassEditable(editable);
 
-        /**
-         * Called on the event dispatching thread (not on the worker thread)
-         * after the {@code construct} method has returned.
-         */
-        @Override
-        protected void onPostExecute(Iterator<GenericDetail> result) {
-            Iterator<GenericDetail> allDetails = null;
-            try {
-                allDetails = get();
-            } catch (InterruptedException | ExecutionException e) {
-                Timber.w("Exception in loading account details: %s", e.getMessage());
-            }
-
-            if (allDetails != null) {
-                while (allDetails.hasNext()) {
-                    GenericDetail detail = allDetails.next();
-                    loadDetail(detail);
-                }
-
-                // Setup textFields' editable state and addTextChangedListener if enabled
-                boolean isEditable;
-                for (Class<? extends GenericDetail> editable : detailToTextField.keySet()) {
-                    EditText field = detailToTextField.get(editable);
-                    isEditable = accountInfoOpSet.isDetailClassEditable(editable);
-
-                    if (editable.equals(BirthDateDetail.class))
-                        mCalenderButton.setEnabled(isEditable);
-                    else if (editable.equals(ImageDetail.class))
-                        avatarView.setEnabled(isEditable);
-                    else {
-                        if (field != null) {
-                            field.setEnabled(isEditable);
-                            if (isEditable)
-                                field.addTextChangedListener(editTextWatcher);
+                            if (editable.equals(BirthDateDetail.class))
+                                mCalenderButton.setEnabled(isEditable);
+                            else if (editable.equals(ImageDetail.class))
+                                avatarView.setEnabled(isEditable);
+                            else {
+                                if (field != null) {
+                                    field.setEnabled(isEditable);
+                                    if (isEditable)
+                                        field.addTextChangedListener(editTextWatcher);
+                                }
+                            }
                         }
                     }
-                }
-            }
-            // get user avatar via XEP-0084
-            getUserAvatarData();
+                    // get user avatar via XEP-0084
+                    getUserAvatarData();
+                });
+            });
         }
     }
 
@@ -812,12 +798,12 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 else {
                     try {
                         Uri imageUri = Uri.parse(sCommand);
-                        Bitmap bmp = AndroidImageUtil.scaledBitmapFromContentUri(this,
+                        Bitmap bmp = AppImageUtil.scaledBitmapFromContentUri(this,
                                 imageUri, AVATAR_PREFERRED_SIZE, AVATAR_PREFERRED_SIZE);
 
                         // Convert to bytes if not null
                         if (bmp != null) {
-                            final byte[] rawImage = AndroidImageUtil.convertToBytes(bmp, 100);
+                            final byte[] rawImage = AppImageUtil.convertToBytes(bmp, 100);
 
                             newDetail = new ImageDetail("avatar", rawImage);
                             changeDetail(avatarDetail, newDetail);
@@ -1203,6 +1189,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * and produce an output of type O
      *
      * @return an instant of ActivityResultLauncher<String>
+     *
      * @see ActivityResultCaller
      */
     private ActivityResultLauncher<String> getAvatarContent() {
@@ -1242,7 +1229,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 if (resultUri == null)
                     break;
                 try {
-                    Bitmap bmp = AndroidImageUtil.scaledBitmapFromContentUri(this, resultUri,
+                    Bitmap bmp = AppImageUtil.scaledBitmapFromContentUri(this, resultUri,
                             AVATAR_PREFERRED_SIZE, AVATAR_PREFERRED_SIZE);
                     if (bmp == null) {
                         Timber.e("Failed to obtain bitmap from: %s", data);
@@ -1287,7 +1274,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 // Try to publish selected status
                 Timber.d("Publishing status %s msg: %s", status, text);
                 GlobalStatusService globalStatus
-                        = ServiceUtils.getService(AndroidGUIActivator.bundleContext, GlobalStatusService.class);
+                        = ServiceUtils.getService(AppGUIActivator.bundleContext, GlobalStatusService.class);
 
                 ProtocolProviderService pps = mAccount.getProtocolProvider();
                 // cmeng: set state to false to force it to execute offline->online
@@ -1312,7 +1299,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         if (eventObject.getEventType() != AccountEvent.AVATAR_CHANGE) {
             return;
         }
-
         runOnUiThread(() -> {
             Account account = eventObject.getSource();
             avatarView.setImageDrawable(account.getAvatarIcon());

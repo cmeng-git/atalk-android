@@ -621,7 +621,7 @@
     <string name="url_example">https://www.beispiel.de</string>
     <string name="volume_control_title">Ausgabe-Lautstärke</string>
     <string name="volume_control_tooltip">Lautstärke anpassen</string>
-    <string name="volume_gain_level">Lautstärke: %1$s%%</string>
+    <string name="volume_gain_level">Lautstärke: %1$d%%</string>
     <string name="waiting_for_authorization">Warten auf Autorisierung</string>
     <string name="warning">Warnung</string>
 	<string name="call_in_progress_warning">Kann dies während eines Anrufs nicht ausführen</string>
@@ -802,7 +802,7 @@
     <string name="update_download_failed">Fehler beim Herunterladen des neuen Updates!</string>
     <string name="update_check_update">Nach Updates suchen</string>
     <string name="update_version_invalid">Heruntergeladene apk stimmt nicht überein; tatsächlich: %1$s (%2$s)</string>
-    <string name="update_vew_version_available">Eine neue Softwareversion (%1$s) ist verfügbar.</string>
+    <string name="update_new_version_available">Eine neue Softwareversion (%1$s) ist verfügbar.</string>
 
     <!-- account info -->
     <string name="accountinfo_about_me">Über mich:</string>
@@ -1360,8 +1360,8 @@
     <!-- Video codecs -->
     <string name="settings_direct_surface_decode">Direct Surface Decoding verwenden</string>
     <string name="settings_direct_surface_encode">Direct Surface Encoding verwenden</string>
-    <string name="settings_hw_decode">Hardware-Decodierung verwenden (Neustart erforderlich)</string>
-    <string name="settings_hw_encode">Hardwarekodierung verwenden (Neustart erforderlich)</string>
+    <string name="settings_hw_decode">Hardware-Decodierung verwenden</string>
+    <string name="settings_hw_encode">Hardwarekodierung verwenden</string>
     <string name="settings_media_codec_list">MediaCodecs</string>
     <string name="settings_media_codec_list_summary">Liste der integrierten Medien Encoder/Decoder</string>
     <string name="settings_restart_require">Erfordert aTalk Neustart</string>
@@ -1499,7 +1499,7 @@
     <string name="permission_camera">Kamera</string>
     <string name="permission_contacts">Kontakte</string>
     <string name="permission_location">Standort</string>
-    <string name="permission_microphone">Audio</string>
+    <string name="permission_microphone">Mikrofon</string>
     <string name="permission_music">Musik und Audio</string>
     <string name="permission_notifications">Benachrichtigungen</string>
     <string name="permission_phone">Telefon</string>

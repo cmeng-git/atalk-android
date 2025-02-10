@@ -13,11 +13,11 @@ import android.view.animation.AnimationUtils;
 
 import androidx.annotation.Nullable;
 
-import org.atalk.android.R;
-import org.atalk.service.osgi.OSGiFragment;
-
 import java.util.Timer;
 import java.util.TimerTask;
+
+import org.atalk.android.BaseFragment;
+import org.atalk.android.R;
 
 import timber.log.Timber;
 
@@ -29,8 +29,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AutoHideController extends OSGiFragment implements Animation.AnimationListener
-{
+public class AutoHideController extends BaseFragment implements Animation.AnimationListener {
     /**
      * Argument key for the identifier of <code>View</code> that will be auto hidden. It must exist in the parent
      * <code>Activity</code> view hierarchy.
@@ -72,8 +71,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
      * {@inheritDoc}
      */
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState)
-    {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Activity activity = getActivity();
 
@@ -98,18 +96,24 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
      * {@inheritDoc}
      */
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
-
         show();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+        cancelAutoHideTask();
     }
 
     /**
      * Makes sure that hide task is scheduled. Cancels the previous one if is currently scheduled.
      */
-    private void reScheduleAutoHideTask()
-    {
+    private void reScheduleAutoHideTask() {
         // Cancel pending task if exists
         cancelAutoHideTask();
 
@@ -118,21 +122,9 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-
-        cancelAutoHideTask();
-    }
-
-    /**
      * Makes sure the hide task is cancelled.
      */
-    private void cancelAutoHideTask()
-    {
+    private void cancelAutoHideTask() {
         if (autoHideTimer != null) {
             autoHideTimer.cancel();
             autoHideTimer = null;
@@ -142,8 +134,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
     /**
      * Hides controlled <code>View</code>
      */
-    public void hide()
-    {
+    public void hide() {
         if (!isViewVisible())
             return;
 
@@ -156,8 +147,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
     /**
      * Shows controlled <code>View</code> and/or resets hide delay timer.
      */
-    public void show()
-    {
+    public void show() {
         if (view == null) {
             Timber.e("The view has not been created yet");
             return;
@@ -181,8 +171,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
      *
      * @return <code>true</code> if controlled <code>View</code> is currently visible.
      */
-    private boolean isViewVisible()
-    {
+    private boolean isViewVisible() {
         return view.getVisibility() == View.VISIBLE;
     }
 
@@ -190,8 +179,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
      * {@inheritDoc}
      */
     @Override
-    public void onAnimationStart(Animation animation)
-    {
+    public void onAnimationStart(Animation animation) {
         // if(animation == inAnimation)
         // {
         // view.setVisibility(View.VISIBLE);
@@ -203,8 +191,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
      * {@inheritDoc}
      */
     @Override
-    public void onAnimationEnd(Animation animation)
-    {
+    public void onAnimationEnd(Animation animation) {
         // If it's hide animation and the task wasn't cancelled
         if (animation == outAnimation && autoHideTimer == null) {
             view.setVisibility(View.GONE);
@@ -219,18 +206,15 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
      * {@inheritDoc}
      */
     @Override
-    public void onAnimationRepeat(Animation animation)
-    {
+    public void onAnimationRepeat(Animation animation) {
     }
 
     /**
      * Hide <code>View</code> timer task class.
      */
-    class AutoHideTask extends TimerTask
-    {
+    class AutoHideTask extends TimerTask {
         @Override
-        public void run()
-        {
+        public void run() {
             runOnUiThread(AutoHideController.this::hide);
         }
     }
@@ -239,8 +223,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
      * Interface which can be used for listening to controlled view visibility state changes. Must be implemented by
      * the parent <code>Activity</code>, which will be registered as a listener when this fragment is created.
      */
-    public interface AutoHideListener
-    {
+    public interface AutoHideListener {
         /**
          * Fired when controlled <code>View</code> visibility is changed by this controller.
          *
@@ -255,10 +238,10 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
      *
      * @param viewId identifier of the <code>View</code> that will be auto hidden
      * @param hideTimeout auto hide delay in ms
+     *
      * @return new parametrized instance of <code>AutoHideController</code>.
      */
-    public static AutoHideController getInstance(int viewId, long hideTimeout)
-    {
+    public static AutoHideController getInstance(int viewId, long hideTimeout) {
         AutoHideController ahCtrl = new AutoHideController();
 
         Bundle args = new Bundle();

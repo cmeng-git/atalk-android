@@ -132,7 +132,7 @@ public class PresenceStatusHandler implements ServiceListener, RegistrationState
                 presenceStatus = onlineStatus;
         }
 
-        GlobalStatusService gbsService = AndroidGUIActivator.getGlobalStatusService();
+        GlobalStatusService gbsService = AppGUIActivator.getGlobalStatusService();
         if (protocolProvider.isRegistered() && (gbsService != null)
                 && !presence.getPresenceStatus().equals(presenceStatus)) {
             gbsService.publishStatus(protocolProvider, presenceStatus, false);

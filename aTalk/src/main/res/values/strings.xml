@@ -637,7 +637,7 @@
     <string name="url_example">https://www.example.com</string>
     <string name="volume_control_title">Output volume gain level</string>
     <string name="volume_control_tooltip">Adjust volume</string>
-    <string name="volume_gain_level">Volume gain level: %1$s%%</string>
+    <string name="volume_gain_level">Volume gain level: %1$d%%</string>
     <string name="waiting_for_authorization">Waiting for authorization</string>
     <string name="warning">Warning</string>
     <string name="call_in_progress_warning">Cannot do this during a call</string>
@@ -821,7 +821,7 @@
     <string name="update_download_failed">Failed to download new update!</string>
     <string name="update_check_update">Check for updates</string>
     <string name="update_version_invalid">Downloaded apk does not match; actual: %1$s (%2$s)</string>
-    <string name="update_vew_version_available">A new software version (%1$s) is available.</string>
+    <string name="update_new_version_available">A new software version (%1$s) is available.</string>
 
     <!-- account info -->
     <string name="accountinfo_about_me">About Me:</string>
@@ -1388,8 +1388,8 @@
     <!-- Video codecs -->
     <string name="settings_direct_surface_decode">Use direct surface decoding</string>
     <string name="settings_direct_surface_encode">Use direct surface encoding</string>
-    <string name="settings_hw_decode">Use hardware decoding (restart required)</string>
-    <string name="settings_hw_encode">Use hardware encoding (restart required)</string>
+    <string name="settings_hw_decode">Use hardware decoding</string>
+    <string name="settings_hw_encode">Use hardware encoding</string>
     <string name="settings_media_codec_list">MediaCodecs</string>
     <string name="settings_media_codec_list_summary">List of built-in media encoders/decoders</string>
     <string name="settings_restart_require">Require to restart aTalk</string>

@@ -19,8 +19,7 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class MetaHistoryActivator implements BundleActivator
-{
+public class MetaHistoryActivator implements BundleActivator {
     /**
      * The <code>MetaHistoryService</code> reference.
      */
@@ -30,11 +29,11 @@ public class MetaHistoryActivator implements BundleActivator
      * Initialize and start meta history
      *
      * @param bundleContext BundleContext
+     *
      * @throws Exception if initializing and starting meta history service fails
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         // Create and start the meta history service.
         metaHistoryService = new MetaHistoryServiceImpl();
         metaHistoryService.start(bundleContext);
@@ -47,11 +46,11 @@ public class MetaHistoryActivator implements BundleActivator
      * Stops this bundle.
      *
      * @param bundleContext the <code>BundleContext</code>
+     *
      * @throws Exception if the stop operation goes wrong
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         if (metaHistoryService != null)
             metaHistoryService.stop(bundleContext);
     }

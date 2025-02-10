@@ -22,22 +22,17 @@ import org.osgi.framework.ServiceRegistration;
 /**
  * Activates libjitsi in an OSGi environment.
  */
-public class LibJitsiActivator
-    implements BundleActivator
-{
+public class LibJitsiActivator implements BundleActivator {
     private ServiceRegistration<LibJitsi> service;
 
     public void start(BundleContext bundleContext)
-        throws Exception
-    {
+            throws Exception {
         LibJitsi impl = LibJitsi.start(bundleContext);
-        service =
-            bundleContext.registerService(LibJitsi.class, impl, null);
+        service = bundleContext.registerService(LibJitsi.class, impl, null);
     }
 
     public void stop(BundleContext bundleContext)
-        throws Exception
-    {
+            throws Exception {
         service.unregister();
         LibJitsi.stop();
     }

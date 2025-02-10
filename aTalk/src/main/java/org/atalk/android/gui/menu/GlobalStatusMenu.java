@@ -39,12 +39,12 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusServi
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ServiceUtils;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.account.StatusListAdapter;
 import org.atalk.android.gui.widgets.ActionMenuItem;
-import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
@@ -53,14 +53,13 @@ import org.osgi.framework.ServiceReference;
 
 import timber.log.Timber;
 
-public class GlobalStatusMenu extends OSGiActivity
+public class GlobalStatusMenu extends BaseActivity
         implements OnDismissListener, ServiceListener, ProviderPresenceStatusListener {
     private final FragmentActivity mActivity;
     private final LayoutInflater mInflater;
     private final PopupWindow mWindow;
     private final WindowManager mWindowManager;
     private View mRootView;
-    private Drawable mBackground = null;
 
     private boolean mDidAction;
     private int mAnimStyle;
@@ -101,17 +100,17 @@ public class GlobalStatusMenu extends OSGiActivity
         setRootViewId(R.layout.status_menu);
         mAnimStyle = ANIM_AUTO;
         mChildPos = 0;
-        globalStatus = ServiceUtils.getService(AndroidGUIActivator.bundleContext, GlobalStatusService.class);
+        globalStatus = ServiceUtils.getService(AppGUIActivator.bundleContext, GlobalStatusService.class);
 
         // start listening for newly register or removed protocol providers
         // cmeng: bundleContext can be null from field ??? can have problem in status update when blocked
         // This happens when Activity is recreated by the system after OSGi service has been
         // killed (and the whole process)
-        if (AndroidGUIActivator.bundleContext == null) {
+        if (AppGUIActivator.bundleContext == null) {
             Timber.e("OSGi service probably not initialized");
             return;
         }
-        AndroidGUIActivator.bundleContext.addServiceListener(this);
+        AppGUIActivator.bundleContext.addServiceListener(this);
     }
 
     /**
@@ -173,39 +172,19 @@ public class GlobalStatusMenu extends OSGiActivity
     }
 
     /**
-     * On show
-     */
-    private void onShow() {
-    }
-
-    /**
      * On pre show
      */
     private void preShow() {
         if (mRootView == null)
             throw new IllegalStateException("setContentView was not called with a view to display.");
 
-        onShow();
-        if (mBackground == null)
-            mWindow.setBackgroundDrawable(new BitmapDrawable(null, (Bitmap) null));
-        else
-            mWindow.setBackgroundDrawable(mBackground);
-
+        mWindow.setBackgroundDrawable(new BitmapDrawable(null, (Bitmap) null));
         mWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
         mWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
         mWindow.setTouchable(true);
         mWindow.setFocusable(true);
         mWindow.setOutsideTouchable(true);
         mWindow.setContentView(mRootView);
-    }
-
-    /**
-     * Set background drawable.
-     *
-     * @param background Background drawable
-     */
-    public void setBackgroundDrawable(Drawable background) {
-        mBackground = background;
     }
 
     /**
@@ -528,12 +507,12 @@ public class GlobalStatusMenu extends OSGiActivity
      */
     public void serviceChanged(ServiceEvent event) {
         // if the event is caused by a bundle being stopped, we don't want to know
-        ServiceReference serviceRef = event.getServiceReference();
+        ServiceReference<?> serviceRef = event.getServiceReference();
         if (serviceRef.getBundle().getState() == Bundle.STOPPING)
             return;
 
         // bundleContext == null on exit
-        BundleContext bundleContext = AndroidGUIActivator.bundleContext;
+        BundleContext bundleContext = AppGUIActivator.bundleContext;
         if (bundleContext == null)
             return;
         Object service = bundleContext.getService(serviceRef);

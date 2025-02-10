@@ -37,7 +37,7 @@ import net.java.sip.communicator.util.account.AccountUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.contactlist.UIContactImpl;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.service.neomedia.MediaService;
@@ -790,7 +790,7 @@ public class CallManager
         {
             if (!video) {
                 // if it is not video let's check for available audio codec and available audio devices
-                MediaService mediaService = AndroidGUIActivator.getMediaService();
+                MediaService mediaService = AppGUIActivator.getMediaService();
                 MediaDevice dev = mediaService.getDefaultDevice(MediaType.AUDIO, MediaUseCase.CALL);
 
                 List<MediaFormat> formats = getAudioFormats(dev, protocolProvider);
@@ -1558,6 +1558,6 @@ public class CallManager
     private static void normalizePhoneNumbers(String[] callees)
     {
         for (int i = 0; i < callees.length; i++)
-            callees[i] = AndroidGUIActivator.getPhoneNumberI18nService().normalize(callees[i]);
+            callees[i] = AppGUIActivator.getPhoneNumberI18nService().normalize(callees[i]);
     }
 }

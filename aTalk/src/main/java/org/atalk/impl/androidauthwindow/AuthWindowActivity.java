@@ -8,10 +8,10 @@ package org.atalk.impl.androidauthwindow;
 import android.os.Bundle;
 import android.view.View;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.osgi.OSGiActivity;
 
 /**
  * Activity controls authentication dialog for <code>AuthenticationWindowService</code>.
@@ -19,8 +19,7 @@ import org.atalk.service.osgi.OSGiActivity;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AuthWindowActivity extends OSGiActivity
-{
+public class AuthWindowActivity extends BaseActivity {
     /**
      * Request id key.
      */
@@ -41,8 +40,7 @@ public class AuthWindowActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         long requestId = getIntent().getLongExtra(REQUEST_ID_EXTRA, -1);
         if (requestId == -1)
@@ -96,8 +94,7 @@ public class AuthWindowActivity extends OSGiActivity
      *
      * @param v ok button's <code>View</code>
      */
-    public void onOkClicked(View v)
-    {
+    public void onOkClicked(View v) {
         String userName = ViewUtil.getTextViewValue(contentView, R.id.username);
         String password = ViewUtil.getTextViewValue(contentView, R.id.password);
         if ((userName == null) || (password == null)) {
@@ -117,8 +114,7 @@ public class AuthWindowActivity extends OSGiActivity
      *
      * @param v cancel button's <code>View</code>
      */
-    public void onCancelClicked(View v)
-    {
+    public void onCancelClicked(View v) {
         cancelled = true;
         finish();
     }
@@ -127,8 +123,7 @@ public class AuthWindowActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         mAuthWindow.setCanceled(cancelled);
         mAuthWindow.windowClosed();
         super.onDestroy();

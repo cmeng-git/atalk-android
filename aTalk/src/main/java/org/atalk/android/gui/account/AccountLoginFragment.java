@@ -8,6 +8,7 @@ package org.atalk.android.gui.account;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,22 +23,22 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.apache.commons.lang3.StringUtils;
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.plugin.certconfig.CertConfigActivator;
-import org.atalk.service.osgi.OSGiFragment;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The <code>AccountLoginFragment</code> is used for creating new account, but can be also used to obtain
@@ -47,8 +48,7 @@ import java.util.Map;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AccountLoginFragment extends OSGiFragment implements AdapterView.OnItemSelectedListener
-{
+public class AccountLoginFragment extends BaseFragment implements AdapterView.OnItemSelectedListener {
     /**
      * The username property name.
      */
@@ -94,19 +94,17 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
     /**
      * A map of <row, CertificateConfigEntry>
      */
-    private Map<Integer, CertificateConfigEntry> mCertEntryList = new LinkedHashMap<>();
-
-    private Context mContext;
+    private final Map<Integer, CertificateConfigEntry> mCertEntryList = new LinkedHashMap<>();
 
     /**
      * Creates new <code>AccountLoginFragment</code> with optionally filled login and password fields.
      *
      * @param login optional login text that will be filled on the form.
      * @param password optional password text that will be filled on the form.
+     *
      * @return new instance of parametrized <code>AccountLoginFragment</code>.
      */
-    public static AccountLoginFragment createInstance(String login, String password)
-    {
+    public static AccountLoginFragment createInstance(String login, String password) {
         AccountLoginFragment fragment = new AccountLoginFragment();
 
         Bundle args = new Bundle();
@@ -120,10 +118,8 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(@NonNull Context context)
-    {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        mContext = context;
         if (context instanceof AccountLoginListener) {
             this.loginListener = (AccountLoginListener) context;
         }
@@ -136,8 +132,7 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
      * {@inheritDoc}
      */
     @Override
-    public void onDetach()
-    {
+    public void onDetach() {
         super.onDetach();
         loginListener = null;
     }
@@ -146,8 +141,7 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View content = inflater.inflate(R.layout.account_create_new, container, false);
         spinnerNwk = content.findViewById(R.id.networkSpinner);
         ArrayAdapter<CharSequence> adapterNwk = ArrayAdapter.createFromResource(mContext,
@@ -198,8 +192,7 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
     /**
      * Certificate spinner list for selection
      */
-    private void initCertList()
-    {
+    private void initCertList() {
         List<String> certList = new ArrayList<>();
 
         List<CertificateConfigEntry> certEntries = new ArrayList<>();
@@ -220,8 +213,7 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
         spinnerCert.setOnItemSelectedListener(this);
     }
 
-    private void initializeViewListeners()
-    {
+    private void initializeViewListeners() {
         mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
                 -> ViewUtil.showPassword(mPasswordField, isChecked));
         mClientCertCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
@@ -233,8 +225,7 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
     /**
      * Initializes the sign in button.
      */
-    private void initButton(final View content)
-    {
+    private void initButton(final View content) {
         final Button signInButton = content.findViewById(R.id.buttonSignIn);
         signInButton.setEnabled(true);
 
@@ -282,11 +273,10 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
         });
 
         final Button cancelButton = content.findViewById(R.id.buttonCancel);
-        cancelButton.setOnClickListener(v -> getActivity().finish());
+        cancelButton.setOnClickListener(v -> ((Activity) mContext).finish());
     }
 
-    private void updateCertEntryViewVisibility(boolean isEnabled)
-    {
+    private void updateCertEntryViewVisibility(boolean isEnabled) {
         if (isEnabled) {
             spinnerCert.setVisibility(View.VISIBLE);
         }
@@ -295,8 +285,7 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
         }
     }
 
-    private void updateViewVisibility(boolean IsServerOverridden)
-    {
+    private void updateViewVisibility(boolean IsServerOverridden) {
         if (IsServerOverridden) {
             mServerIpField.setVisibility(View.VISIBLE);
             mServerPortField.setVisibility(View.VISIBLE);
@@ -312,8 +301,7 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
      *
      * @param protocolProvider the <code>ProtocolProviderService</code>, corresponding to the account to store
      */
-    private void storeAndroidAccount(ProtocolProviderService protocolProvider)
-    {
+    private void storeAndroidAccount(ProtocolProviderService protocolProvider) {
         Map<String, String> accountProps = protocolProvider.getAccountID().getAccountProperties();
 
         String username = accountProps.get(ProtocolProviderFactory.USER_ID);
@@ -346,23 +334,20 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id)
-    {
+    public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
         if (adapter.getId() == R.id.clientCertEntry) {
             mCertEntry = mCertEntryList.get(pos);
         }
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent)
-    {
+    public void onNothingSelected(AdapterView<?> parent) {
     }
 
     /**
      * The interface is used to notify listener when user click the sign-in button.
      */
-    public interface AccountLoginListener
-    {
+    public interface AccountLoginListener {
         /**
          * Method is called when user click the sign in button.
          *

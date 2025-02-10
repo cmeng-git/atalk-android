@@ -5,9 +5,6 @@
  */
 package org.atalk.impl.neomedia.codec;
 
-import net.sf.fmj.media.AbstractCodec;
-import net.sf.fmj.media.AbstractPlugIn;
-
 import java.awt.Dimension;
 
 import javax.media.Buffer;
@@ -17,14 +14,16 @@ import javax.media.PlugIn;
 import javax.media.ResourceUnavailableException;
 import javax.media.format.YUVFormat;
 
+import net.sf.fmj.media.AbstractCodec;
+import net.sf.fmj.media.AbstractPlugIn;
+
 /**
  * Extends FMJ's <code>AbstractCodec</code> to make it even easier to implement a <code>Codec</code>.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class AbstractCodec2 extends AbstractCodec
-{
+public abstract class AbstractCodec2 extends AbstractCodec {
     /**
      * The <code>Buffer</code> flag which indicates that the respective <code>Buffer</code> contains audio
      * data which has been decoded as a result of the operation of FEC.
@@ -68,11 +67,11 @@ public abstract class AbstractCodec2 extends AbstractCodec
      * and the same input Buffer multiple times.
      * @param seqNo the current sequence number. May be equal to <code>lastSeqNo</code> for the purposes of
      * Codec implementations which repeatedly process the same input Buffer multiple times.
+     *
      * @return the number of sequences (between <code>lastSeqNo</code> and <code>seqNo</code>) which have
      * been lost i.e. which have not been received
      */
-    public static int calculateLostSeqNoCount(long lastSeqNo, long seqNo)
-    {
+    public static int calculateLostSeqNoCount(long lastSeqNo, long seqNo) {
         if (lastSeqNo == Buffer.SEQUENCE_UNKNOWN)
             return 0;
 
@@ -95,11 +94,11 @@ public abstract class AbstractCodec2 extends AbstractCodec
      * of valid RTP sequence number values.
      *
      * @param seqNo the sequence number to increment
+     *
      * @return a sequence number which represents an increment over the specified <code>seqNo</code>
      * within the range of valid RTP sequence number values.
      */
-    public static long incrementSeqNo(long seqNo)
-    {
+    public static long incrementSeqNo(long seqNo) {
         seqNo++;
         if (seqNo > SEQUENCE_MAX)
             seqNo = SEQUENCE_MIN;
@@ -111,18 +110,17 @@ public abstract class AbstractCodec2 extends AbstractCodec
      *
      * @param in input format
      * @param outs array of output formats
+     *
      * @return the first output format that is supported
      */
-    public static Format matches(Format in, Format[] outs)
-    {
+    public static Format matches(Format in, Format[] outs) {
         for (Format out : outs)
             if (in.matches(out))
                 return out;
         return null;
     }
 
-    public static YUVFormat specialize(YUVFormat yuvFormat, Class<?> dataType)
-    {
+    public static YUVFormat specialize(YUVFormat yuvFormat, Class<?> dataType) {
         Dimension size = yuvFormat.getSize();
         int strideY = yuvFormat.getStrideY();
 
@@ -182,11 +180,11 @@ public abstract class AbstractCodec2 extends AbstractCodec
      * of <code>buffer</code> at the time of the invocation of the method if the value of the
      * <code>data</code> property of <code>buffer</code> is an array of <code>byte</code> whose length is
      * less than <code>newSize</code>; otherwise, <code>false</code>
+     *
      * @return an array of <code>byte</code>s which is the value of the <code>data</code> property of
      * <code>buffer</code> and whose length is at least <code>newSize</code> number of bytes
      */
-    public static byte[] validateByteArraySize(Buffer buffer, int newSize, boolean arraycopy)
-    {
+    public static byte[] validateByteArraySize(Buffer buffer, int newSize, boolean arraycopy) {
         Object data = buffer.getData();
         byte[] newBytes;
 
@@ -253,8 +251,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
      * @param formatClass the <code>Class</code> of input and output <code>Format</code>s supported by the new instance
      * @param supportedOutputFormats the list of <code>Format</code>s supported by the new instance as output
      */
-    protected AbstractCodec2(String name, Class<? extends Format> formatClass, Format[] supportedOutputFormats)
-    {
+    protected AbstractCodec2(String name, Class<? extends Format> formatClass, Format[] supportedOutputFormats) {
         this.formatClass = formatClass;
         this.name = name;
         this.supportedOutputFormats = supportedOutputFormats;
@@ -267,8 +264,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
     }
 
     @Override
-    public void close()
-    {
+    public void close() {
         if (!opened)
             return;
 
@@ -277,8 +273,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
         super.close();
     }
 
-    protected void discardOutputBuffer(Buffer outputBuffer)
-    {
+    protected void discardOutputBuffer(Buffer outputBuffer) {
         outputBuffer.setDiscard(true);
     }
 
@@ -303,11 +298,11 @@ public abstract class AbstractCodec2 extends AbstractCodec
      *
      * @param inputFormat the <code>Format</code> of the input for which the supported
      * output <code>Format</code>s are to be returned
+     *
      * @return an array of <code>Format</code>s supported by this <code>Codec</code> as output when the
      * input is in the specified <code>inputFormat</code>
      */
-    protected Format[] getMatchingOutputFormats(Format inputFormat)
-    {
+    protected Format[] getMatchingOutputFormats(Format inputFormat) {
         /*
          * An Effect is a Codec that does not modify the Format of the data, it modifies the contents.
          */
@@ -319,8 +314,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return (name == null) ? super.getName() : name;
     }
 
@@ -328,12 +322,13 @@ public abstract class AbstractCodec2 extends AbstractCodec
      * Implements {@link AbstractCodec#getSupportedOutputFormats(Format)}.
      *
      * @param inputFormat input format
+     *
      * @return array of supported output format
+     *
      * @see AbstractCodec#getSupportedOutputFormats(Format)
      */
     @Override
-    public Format[] getSupportedOutputFormats(Format inputFormat)
-    {
+    public Format[] getSupportedOutputFormats(Format inputFormat) {
         if (inputFormat == null)
             return supportedOutputFormats;
 
@@ -355,8 +350,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
      */
     @Override
     public void open()
-            throws ResourceUnavailableException
-    {
+            throws ResourceUnavailableException {
         if (opened)
             return;
 
@@ -370,13 +364,14 @@ public abstract class AbstractCodec2 extends AbstractCodec
      *
      * @param inBuf input buffer
      * @param outBuf out buffer
+     *
      * @return <code>BUFFER_PROCESSED_OK</code> if the specified <code>inBuff</code> was successfully
      * processed or <code>BUFFER_PROCESSED_FAILED</code> if the specified was not successfully processed
+     *
      * @see AbstractCodec#process(Buffer, Buffer)
      */
     @Override
-    public int process(Buffer inBuf, Buffer outBuf)
-    {
+    public int process(Buffer inBuf, Buffer outBuf) {
         if (!checkInputBuffer(inBuf))
             return BUFFER_PROCESSED_FAILED;
         if (isEOM(inBuf)) {
@@ -433,8 +428,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
     }
 
     @Override
-    public Format setInputFormat(Format format)
-    {
+    public Format setInputFormat(Format format) {
         if (!formatClass.isInstance(format)
                 || (matches(format, inputFormats) == null))
             return null;
@@ -443,8 +437,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
     }
 
     @Override
-    public Format setOutputFormat(Format format)
-    {
+    public Format setOutputFormat(Format format) {
         if (!formatClass.isInstance(format)
                 || (matches(format, getMatchingOutputFormats(inputFormat)) == null))
             return null;
@@ -461,15 +454,13 @@ public abstract class AbstractCodec2 extends AbstractCodec
      * @param length the length to set on <code>outputBuffer</code>
      * @param offset the offset to set on <code>outputBuffer</code>
      */
-    protected void updateOutput(Buffer outputBuffer, Format format, int length, int offset)
-    {
+    protected void updateOutput(Buffer outputBuffer, Format format, int length, int offset) {
         outputBuffer.setFormat(format);
         outputBuffer.setLength(length);
         outputBuffer.setOffset(offset);
     }
 
-    protected short[] validateShortArraySize(Buffer buffer, int newSize)
-    {
+    protected short[] validateShortArraySize(Buffer buffer, int newSize) {
         Object data = buffer.getData();
         short[] newShorts;
 
@@ -492,9 +483,10 @@ public abstract class AbstractCodec2 extends AbstractCodec
     }
 
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+
     public static String bytesToHex(byte[] bytes, int length) {
         int k = 0;
-        char[] hexChars = new char[length * 2 + length/4];
+        char[] hexChars = new char[length * 2 + length / 4];
         for (int j = 0; j < length; j++) {
             int v = bytes[j] & 0xFF;
             hexChars[j * 2 + k] = HEX_ARRAY[v >>> 4];

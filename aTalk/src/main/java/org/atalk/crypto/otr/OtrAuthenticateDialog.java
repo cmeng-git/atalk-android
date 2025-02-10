@@ -9,21 +9,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import net.java.sip.communicator.plugin.otr.*;
+import java.security.PublicKey;
+import java.util.Date;
+import java.util.UUID;
+
+import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
+import net.java.sip.communicator.plugin.otr.ScOtrEngineImpl;
+import net.java.sip.communicator.plugin.otr.ScOtrKeyManager;
+import net.java.sip.communicator.plugin.otr.ScSessionID;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.IMessage;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
-
-import java.security.PublicKey;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * OTR buddy authenticate dialog. Takes OTR session's UUID as an extra.
@@ -31,8 +34,7 @@ import java.util.UUID;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class OtrAuthenticateDialog extends OSGiActivity
-{
+public class OtrAuthenticateDialog extends BaseActivity {
     /**
      * Key name for OTR session's UUID.
      */
@@ -43,14 +45,13 @@ public class OtrAuthenticateDialog extends OSGiActivity
      */
     private OtrContact otrContact;
     private String remoteFingerprint;
-    private ScOtrKeyManager keyManager = OtrActivator.scOtrKeyManager;
+    private final ScOtrKeyManager keyManager = OtrActivator.scOtrKeyManager;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.otr_authenticate_dialog);
         setTitle(R.string.plugin_otr_authbuddydialog_TITLE);
@@ -91,8 +92,7 @@ public class OtrAuthenticateDialog extends OSGiActivity
      *
      * @param v ok button's <code>View</code>.
      */
-    public void onOkClicked(View v)
-    {
+    public void onOkClicked(View v) {
         if (ViewUtil.isCompoundChecked(getContentView(), R.id.verifyButton)) {
             keyManager.verify(otrContact, remoteFingerprint);
 
@@ -114,8 +114,7 @@ public class OtrAuthenticateDialog extends OSGiActivity
      *
      * @param v the cancel button's <code>View</code>
      */
-    public void onCancelClicked(View v)
-    {
+    public void onCancelClicked(View v) {
         finish();
     }
 
@@ -123,10 +122,10 @@ public class OtrAuthenticateDialog extends OSGiActivity
      * Creates parametrized <code>Intent</code> of buddy authenticate dialog.
      *
      * @param uuid the UUID of OTR session.
+     *
      * @return buddy authenticate dialog parametrized with given OTR session's UUID.
      */
-    public static Intent createIntent(UUID uuid)
-    {
+    public static Intent createIntent(UUID uuid) {
         Intent intent = new Intent(aTalkApp.getInstance(), OtrAuthenticateDialog.class);
         intent.putExtra(EXTRA_SESSION_UUID, uuid);
 

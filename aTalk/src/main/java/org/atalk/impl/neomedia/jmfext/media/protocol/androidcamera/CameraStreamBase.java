@@ -33,17 +33,6 @@ import android.util.Size;
 
 import androidx.annotation.NonNull;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.call.VideoCallActivity;
-import org.atalk.android.gui.call.VideoHandlerFragment;
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.impl.neomedia.NeomediaServiceUtils;
-import org.atalk.impl.neomedia.device.DeviceConfiguration;
-import org.atalk.impl.neomedia.device.util.AndroidCamera;
-import org.atalk.impl.neomedia.device.util.CameraUtils;
-import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
-
 import java.awt.Dimension;
 import java.io.IOException;
 import java.util.concurrent.Semaphore;
@@ -54,6 +43,17 @@ import javax.media.MediaLocator;
 import javax.media.control.FormatControl;
 import javax.media.format.VideoFormat;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.call.VideoCallActivity;
+import org.atalk.android.gui.call.VideoHandlerFragment;
+import org.atalk.impl.neomedia.NeomediaServiceUtils;
+import org.atalk.impl.neomedia.device.DeviceConfiguration;
+import org.atalk.impl.neomedia.device.util.AndroidCamera;
+import org.atalk.impl.neomedia.device.util.CameraUtils;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
+import org.atalk.impl.timberlog.TimberLog;
+
 import timber.log.Timber;
 
 /**
@@ -62,8 +62,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
-{
+public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource> {
     private static CameraStreamBase mInstance;
 
     /**
@@ -133,7 +132,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
 
     /**
      * Flag indicates the system is in the process of shutting down the camera and ImageReader:
-     * Do not access the ImageReader else: https://issuetracker.google.com/issues/203238264
+     * Do not access the ImageReader else: <a href="https://issuetracker.google.com/issues/203238264">...</a>
      */
     protected boolean inTransition = true;
 
@@ -169,16 +168,14 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
      * @param parent parent <code>DataSource</code>.
      * @param formatControl format control used by this stream.
      */
-    CameraStreamBase(DataSource parent, FormatControl formatControl)
-    {
+    CameraStreamBase(DataSource parent, FormatControl formatControl) {
         super(parent, formatControl);
         dataSource = parent;
         mCameraId = AndroidCamera.getCameraId(parent.getLocator());
         mInstance = this;
     }
 
-    public static CameraStreamBase getInstance()
-    {
+    public static CameraStreamBase getInstance() {
         return mInstance;
     }
 
@@ -195,8 +192,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
      */
     @SuppressLint("MissingPermission")
     protected void startImpl()
-            throws IOException
-    {
+            throws IOException {
         try {
             if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
                 throw new RuntimeException("Time out waiting to lock camera opening.");
@@ -222,7 +218,6 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
             mFormat = (VideoFormat) streamFormats[0].clone();
             Timber.d("Camera data stream format #2: %s=>%s", videoSize, mFormat);
             initPreviewOrientation(true);
-
             cameraManager.openCamera(mCameraId, mStateCallback, mBackgroundHandler);
         } catch (SecurityException e) {
             Timber.e("openCamera: %s", e.getMessage());
@@ -240,14 +235,12 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
      * Update swap and flip for YUV420PlanarRotate();
      * Set local preview display orientation according to device rotation and sensor orientation
      * Currently android phone device has 90/270 for back and front cameras native orientation
-     *
      * Note: valid Sensor orientations: 0, 90, 270; 180 is not reported by android camera sensors
      *
      * @param initFormat Sending video orientation always in upright position when set to true;
      * Set to false on device rotation requires the remote device to rotate accordingly to view image upright
      */
-    public void initPreviewOrientation(boolean initFormat)
-    {
+    private void initPreviewOrientation(boolean initFormat) {
         // Set preview display orientation according to device rotation
         if (initFormat) {
             mPreviewOrientation = CameraUtils.getPreviewOrientation(mCameraId);
@@ -282,27 +275,23 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
     /**
      * {@link CameraDevice.StateCallback} is called when {@link CameraDevice} changes its status.
      */
-    private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback()
-    {
+    private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
         @Override
-        public void onOpened(@NonNull CameraDevice cameraDevice)
-        {
+        public void onOpened(@NonNull CameraDevice cameraDevice) {
             mCameraDevice = cameraDevice;
             onInitPreview();
             mCameraOpenCloseLock.release();
         }
 
         @Override
-        public void onDisconnected(@NonNull CameraDevice cameraDevice)
-        {
+        public void onDisconnected(@NonNull CameraDevice cameraDevice) {
             mCameraDevice.close();
             mCameraDevice = null;
             mCameraOpenCloseLock.release();
         }
 
         @Override
-        public void onError(@NonNull CameraDevice cameraDevice, int error)
-        {
+        public void onError(@NonNull CameraDevice cameraDevice, int error) {
             String errMessage;
             switch (error) {
                 case ERROR_CAMERA_IN_USE:
@@ -347,8 +336,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
      *
      * @return stream formats.
      */
-    private Format[] getStreamFormats()
-    {
+    private Format[] getStreamFormats() {
         FormatControl[] formatControls = dataSource.getFormatControls();
         final int count = formatControls.length;
         Format[] streamFormats = new Format[count];
@@ -386,8 +374,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
      */
     @Override
     public void stop()
-            throws IOException
-    {
+            throws IOException {
         closeCamera();
         stopBackgroundThread();
         super.stop();
@@ -396,8 +383,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
     /**
      * Closes the current {@link CameraDevice}.
      */
-    protected void closeCamera()
-    {
+    protected void closeCamera() {
         if (mCameraDevice != null) {
             try {
                 inTransition = true;
@@ -430,15 +416,14 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
     /**
      * Triggered on device rotation to init the remote video orientation sending;
      * initFormat == true has synchronised problem between imageReader data and YUV swap if not handled properly
-     *
+     * <p>
      * On Samsung J7 implementation, seems at times mCaptureSession and mCameraDevice can be null etc;
      * If exception happen, then reInit the whole camera sequence
      *
      * @param initFormat Sending video orientation always in upright position when set to true;
      * Set to false on device rotation requires the remote device to rotate accordingly to view image upright
      */
-    public void initPreviewOnRotation(boolean initFormat)
-    {
+    public void initPreviewOnRotation(boolean initFormat) {
         if (initFormat) {
             inTransition = true;
             try {
@@ -459,8 +444,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
         }
     }
 
-    private void reInitCamera()
-    {
+    private void reInitCamera() {
         VideoHandlerFragment videoFragment = VideoCallActivity.getVideoFragment();
         closeCamera();
 
@@ -480,8 +464,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
      * @param cameraLocator MediaLocator
      * @param isLocalVideoEnable true is local video is enabled for sending
      */
-    public void switchCamera(MediaLocator cameraLocator, boolean isLocalVideoEnable)
-    {
+    public void switchCamera(MediaLocator cameraLocator, boolean isLocalVideoEnable) {
         AndroidCamera.setSelectedCamera(cameraLocator);
         mCameraId = AndroidCamera.getCameraId(cameraLocator);
 
@@ -504,8 +487,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
      *
      * @return time elapsed in millis between subsequent calls to this method.
      */
-    protected long calcStats()
-    {
+    protected long calcStats() {
         // Measure moving average
         long current = System.currentTimeMillis();
         long delay = (current - last);
@@ -522,8 +504,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
     }
 
     // ===============================================================
-    private void startBackgroundThread()
-    {
+    private void startBackgroundThread() {
         if (backgroundThread == null) {
             backgroundThread = new HandlerThread("CameraBackground");
             backgroundThread.start();
@@ -531,8 +512,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
         }
     }
 
-    private void stopBackgroundThread()
-    {
+    private void stopBackgroundThread() {
         if (backgroundThread != null) {
             backgroundThread.quitSafely();
             try {

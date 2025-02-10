@@ -103,12 +103,7 @@ public final class StringUtils
      */
     public static byte[] getUTF8Bytes(String string)
     {
-        try {
-            return string.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException exc) {
-            // shouldn't happen. UTF-8 is always supported, anyways ... if this happens, we'll cheat
-            return string.getBytes();
-        }
+        return string.getBytes(StandardCharsets.UTF_8);
     }
 
     /**

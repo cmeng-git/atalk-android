@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.jinglemessage;
 
-import androidx.annotation.NonNull;
-
 /**
  * Implements <code>ExtensionElement</code> for XEP-0353: Jingle Message Initiation 0.4.0 (2021-11-27).
  * @see <a href="https://xmpp.org/extensions/xep-0353.html">XEP-0353: Jingle Message Initiation</a>
@@ -35,7 +33,6 @@ public enum JingleMessageType {
     JingleMessageType() {
     }
 
-    @NonNull
     @Override
     public String toString() {
         return name();

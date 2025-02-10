@@ -236,12 +236,12 @@ public class HistoryServiceImpl implements HistoryService
     private void findDatFiles(List<File> vect, File directory)
     {
         File[] files = directory.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isDirectory()) {
-                findDatFiles(vect, files[i]);
+        for (File file : files) {
+            if (file.isDirectory()) {
+                findDatFiles(vect, file);
             }
-            else if (DATA_FILE.equalsIgnoreCase(files[i].getName())) {
-                vect.add(files[i]);
+            else if (DATA_FILE.equalsIgnoreCase(file.getName())) {
+                vect.add(file);
             }
         }
     }

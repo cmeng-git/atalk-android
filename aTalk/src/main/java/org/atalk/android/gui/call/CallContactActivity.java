@@ -12,8 +12,8 @@ import android.telephony.PhoneNumberUtils;
 
 import androidx.annotation.NonNull;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.gui.aTalk;
-import org.atalk.service.osgi.OSGiActivity;
 
 /**
  * Tha <code>CallContactActivity</code> can be used to call contact. The phone number can be filled
@@ -22,7 +22,7 @@ import org.atalk.service.osgi.OSGiActivity;
  * @author Yana Stamcheva
  * @author Pawel Domas
  */
-public class CallContactActivity extends OSGiActivity {
+public class CallContactActivity extends BaseActivity {
     protected CallContactFragment ccFragment;
 
     /**

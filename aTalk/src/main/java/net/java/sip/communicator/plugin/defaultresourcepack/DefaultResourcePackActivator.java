@@ -4,14 +4,20 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
 package net.java.sip.communicator.plugin.defaultresourcepack;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
 
 import net.java.sip.communicator.service.resources.ColorPack;
 import net.java.sip.communicator.service.resources.ImagePack;
@@ -22,28 +28,20 @@ import net.java.sip.communicator.service.resources.SoundPack;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-
 import timber.log.Timber;
 
 /**
  * @author damencho
  * @author Eng Chong Meng
  */
-public class DefaultResourcePackActivator implements BundleActivator
-{
+public class DefaultResourcePackActivator implements BundleActivator {
     static BundleContext bundleContext;
 
     // buffer for ressource files found
     private static Hashtable<String, Iterator<String>> ressourcesFiles = new Hashtable<>();
 
     public void start(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         bundleContext = bc;
 
         DefaultColorPackImpl colPackImpl = new DefaultColorPackImpl();
@@ -75,8 +73,7 @@ public class DefaultResourcePackActivator implements BundleActivator
     }
 
     public void stop(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
     }
 
     /**
@@ -84,16 +81,13 @@ public class DefaultResourcePackActivator implements BundleActivator
      *
      * @param path the path pointing to the properties files.
      */
-    protected static Iterator<String> findResourcePaths(String path, String pattern)
-    {
+    protected static Iterator<String> findResourcePaths(String path, String pattern) {
         Iterator<String> bufferedResult = ressourcesFiles.get(path + pattern);
         if (bufferedResult != null) {
             return bufferedResult;
         }
 
         ArrayList<String> propertiesList = new ArrayList<>();
-
-        @SuppressWarnings("unchecked")
         Enumeration<URL> propertiesUrls = bundleContext.getBundle().findEntries(path, pattern, false);
 
         if (propertiesUrls != null) {

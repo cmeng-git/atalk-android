@@ -7,7 +7,7 @@ package org.atalk.android.gui.chat;
 
 import android.graphics.drawable.Drawable;
 
-import org.atalk.android.gui.util.AndroidImageUtil;
+import org.atalk.android.util.AppImageUtil;
 
 /**
  * The <code>ChatContact</code> is a wrapping class for the <code>Contact</code> and <code>ChatRoomMember</code> interface.
@@ -100,7 +100,7 @@ public abstract class ChatContact<T>
             this.avatar = null;
         }
         if ((this.avatar == null) && (this.avatarBytes != null) && (this.avatarBytes.length > 0))
-            this.avatar = AndroidImageUtil.getScaledRoundedIcon(this.avatarBytes,
+            this.avatar = AppImageUtil.getScaledRoundedIcon(this.avatarBytes,
                     AVATAR_ICON_WIDTH, AVATAR_ICON_HEIGHT);
         return this.avatar;
     }

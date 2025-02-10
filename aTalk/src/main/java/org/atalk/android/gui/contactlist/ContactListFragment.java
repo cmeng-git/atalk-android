@@ -41,9 +41,10 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.Account;
 import org.atalk.android.gui.account.AccountInfoPresenceActivity;
@@ -58,7 +59,6 @@ import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.osgi.OSGiFragment;
 import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smackx.blocking.BlockingCommandManager;
@@ -73,7 +73,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ContactListFragment extends OSGiFragment
+public class ContactListFragment extends BaseFragment
         implements OnGroupClickListener, EntityListHelper.TaskCompleteListener {
     /**
      * Search options menu items.
@@ -126,7 +126,6 @@ public class ContactListFragment extends OSGiFragment
     private static int scrollTopPosition;
 
     private int eraseMode = -1;
-    private Context mContext = null;
 
     /**
      * Creates new instance of <code>ContactListFragment</code>.
@@ -140,17 +139,8 @@ public class ContactListFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mContext = context;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (AndroidGUIActivator.bundleContext == null) {
+        if (AppGUIActivator.bundleContext == null) {
             return null;
         }
 
@@ -571,7 +561,7 @@ public class ContactListFragment extends OSGiFragment
         new Thread() {
             @Override
             public void run() {
-                AndroidLoginRenderer loginRenderer = AndroidGUIActivator.getLoginRenderer();
+                AndroidLoginRenderer loginRenderer = AppGUIActivator.getLoginRenderer();
                 AuthorizationRequest request = (loginRenderer == null) ?
                         null : loginRenderer.getAuthorizationHandler().createAuthorizationRequest(contact);
                 if (request == null)

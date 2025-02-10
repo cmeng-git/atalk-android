@@ -10,16 +10,16 @@ package javax.media;
  */
 public interface Player extends MediaHandler, Controller
 {
-    public void addController(Controller newController)
+    void addController(Controller newController)
             throws IncompatibleTimeBaseException;
 
-    public java.awt.Component getControlPanelComponent();
+    java.awt.Component getControlPanelComponent();
 
-    public GainControl getGainControl();
+    GainControl getGainControl();
 
-    public java.awt.Component getVisualComponent();
+    java.awt.Component getVisualComponent();
 
-    public void removeController(Controller oldController);
+    void removeController(Controller oldController);
 
-    public void start();
+    void start();
 }

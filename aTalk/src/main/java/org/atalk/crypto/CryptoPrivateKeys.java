@@ -45,11 +45,11 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
-import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.omemo.OmemoManager;
@@ -66,7 +66,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class CryptoPrivateKeys extends OSGiActivity {
+public class CryptoPrivateKeys extends BaseActivity {
     private static final String OTR = "OTR:";
     private static final String OMEMO = "OMEMO:";
 

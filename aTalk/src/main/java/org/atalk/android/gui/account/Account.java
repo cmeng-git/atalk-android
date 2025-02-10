@@ -28,7 +28,7 @@ import net.java.sip.communicator.util.UtilActivator;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.gui.util.AccountUtil;
-import org.atalk.android.gui.util.AndroidImageUtil;
+import org.atalk.android.util.AppImageUtil;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.gui.util.event.EventListenerList;
 import org.atalk.impl.timberlog.TimberLog;
@@ -135,7 +135,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
             blob = protocolProvider.getProtocolIcon().getIcon(ProtocolIcon.ICON_SIZE_32x32);
 
         if (blob != null)
-            return AndroidImageUtil.drawableFromBytes(blob);
+            return AppImageUtil.drawableFromBytes(blob);
 
         String iconPath = mAccountID.getAccountPropertyString(
                 ProtocolProviderFactory.ACCOUNT_ICON_PATH);
@@ -143,7 +143,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
         if (iconPath != null) {
             blob = loadIcon(iconPath);
             if (blob != null)
-                return AndroidImageUtil.drawableFromBytes(blob);
+                return AppImageUtil.drawableFromBytes(blob);
         }
 
         return null;
@@ -424,7 +424,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
             byte[] statusBlob = presence.getPresenceStatus().getStatusIcon();
 
             if (statusBlob != null)
-                return AndroidImageUtil.drawableFromBytes(statusBlob);
+                return AppImageUtil.drawableFromBytes(statusBlob);
         }
 
         return AccountUtil.getDefaultPresenceIcon(activityContext, mAccountID.getProtocolName());
@@ -483,7 +483,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
             avatarIcon = AccountUtil.getDefaultAvatarIcon(activityContext);
         }
         else {
-            avatarIcon = AndroidImageUtil.drawableFromBytes(newAvatar);
+            avatarIcon = AppImageUtil.drawableFromBytes(newAvatar);
         }
     }
 

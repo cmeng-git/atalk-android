@@ -26,13 +26,13 @@ import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.dialogs.BaseDialogFragment;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.MediaStreamStats;
 import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.service.neomedia.ZrtpControl;
-import org.atalk.service.osgi.OSGiDialogFragment;
 import org.atalk.util.MediaType;
 
 // Disambiguation
@@ -45,7 +45,7 @@ import org.atalk.util.MediaType;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class CallInfoDialogFragment extends OSGiDialogFragment {
+public class CallInfoDialogFragment extends BaseDialogFragment {
     /**
      * The extra key pointing to the "call key" that will be used to retrieve active call from {@link CallManager}.
      */
@@ -160,7 +160,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment {
     private void doUpdateView() {
         CallConference conference = call.getConference();
         List<Call> calls = conference.getCalls();
-        if (calls.size() == 0)
+        if (calls.isEmpty())
             return;
 
         Call aCall = calls.get(0);
@@ -175,7 +175,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment {
         setTextViewValue(R.id.transport, preferredTransport.toString());
 
         List<CallPeer> callPeers = conference.getCallPeers();
-        if (callPeers.size() == 0)
+        if (callPeers.isEmpty())
             return;
         constructPeerInfo(callPeers.get(0));
     }
@@ -225,7 +225,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment {
         if (iceStateVisible) {
             Resources resources = getResources();
             int strId = resources.getIdentifier("service_gui_callinfo_ICE_STATE_" + iceState.toUpperCase(Locale.US),
-                    "string", getActivity().getPackageName());
+                    "string", mFragmentActivity.getPackageName());
             setTextViewValue(R.id.iceState, resources.getString(strId));
         }
 

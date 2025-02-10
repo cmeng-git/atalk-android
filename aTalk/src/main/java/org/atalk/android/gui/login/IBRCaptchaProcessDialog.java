@@ -52,7 +52,7 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusServi
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.util.ViewUtil;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionListener;
@@ -267,7 +267,7 @@ public class IBRCaptchaProcessDialog extends Dialog {
             List<FormField> formFields = mDataForm.getFields();
             for (FormField formField : formFields) {
                 Type type = formField.getType();
-                String var = formField.getVariable();
+                String var = formField.getFieldName();
 
                 if ((type == Type.hidden) || (type == Type.fixed))
                     continue;
@@ -334,8 +334,8 @@ public class IBRCaptchaProcessDialog extends Dialog {
         new Thread(() -> {
             try {
                 if (!TextUtils.isEmpty(urlString)) {
-                    URL uri = new URL(urlString);
-                    mCaptcha = BitmapFactory.decodeStream(uri.openConnection().getInputStream());
+                    URL url = new URL(urlString);
+                    mCaptcha = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                     showCaptchaContent();
                 }
             } catch (IOException e) {
@@ -367,7 +367,7 @@ public class IBRCaptchaProcessDialog extends Dialog {
         // Re-trigger IBR if user click OK - let login takes over
         mOKButton.setOnClickListener(v -> {
             closeDialog();
-            GlobalStatusService globalStatusService = AndroidGUIActivator.getGlobalStatusService();
+            GlobalStatusService globalStatusService = AppGUIActivator.getGlobalStatusService();
             globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
         });
 

@@ -26,7 +26,7 @@ import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 
 import org.atalk.android.R;
-import org.atalk.service.osgi.OSGiDialogFragment;
+import org.atalk.android.gui.dialogs.BaseDialogFragment;
 
 import java.security.PublicKey;
 import java.util.*;
@@ -39,7 +39,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class OTRv3OutgoingSessionSwitcher extends OSGiDialogFragment
+public class OTRv3OutgoingSessionSwitcher extends BaseDialogFragment
         implements AdapterView.OnItemClickListener, View.OnClickListener
 {
     /**

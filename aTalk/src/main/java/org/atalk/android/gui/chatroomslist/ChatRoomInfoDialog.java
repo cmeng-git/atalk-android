@@ -17,7 +17,6 @@
 package org.atalk.android.gui.chatroomslist;
 
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +26,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
@@ -34,7 +34,7 @@ import net.java.sip.communicator.service.protocol.ChatRoomMember;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
-import org.atalk.service.osgi.OSGiDialogFragment;
+import org.atalk.android.gui.dialogs.BaseDialogFragment;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
@@ -49,7 +49,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class ChatRoomInfoDialog extends OSGiDialogFragment {
+public class ChatRoomInfoDialog extends BaseDialogFragment {
     private View contentView;
     private ChatRoomWrapper mChatRoomWrapper;
 
@@ -80,15 +80,20 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment {
     /**
      * Retrieve the chatRoom info from server and populate the fragment with the available information
      */
-    private class getRoomInfo extends AsyncTask<Void, Void, RoomInfo> {
+    private class getRoomInfo {
         String errMsg;
 
-        @Override
-        protected void onPreExecute() {
+        public void execute() {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                final RoomInfo roomInfo = doInBackground();
+
+                runOnUiThread(() -> {
+                    onPostExecute(roomInfo);
+                });
+            });
         }
 
-        @Override
-        protected RoomInfo doInBackground(Void... params) {
+        private RoomInfo doInBackground() {
             ChatRoomProviderWrapper crpWrapper = mChatRoomWrapper.getParentProvider();
             if (crpWrapper != null) {
                 ProtocolProviderService pps = crpWrapper.getProtocolProvider();
@@ -108,11 +113,8 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment {
             return null;
         }
 
-        @Override
-        protected void onPostExecute(RoomInfo chatRoomInfo) {
+        private void onPostExecute(RoomInfo chatRoomInfo) {
             String EMPTY = "";
-
-            super.onPostExecute(chatRoomInfo);
             if (chatRoomInfo != null) {
                 TextView textView = contentView.findViewById(R.id.roominfo_name);
                 textView.setText(chatRoomInfo.getName());

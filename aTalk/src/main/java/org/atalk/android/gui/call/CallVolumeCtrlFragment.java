@@ -5,12 +5,12 @@
  */
 package org.atalk.android.gui.call;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.impl.neomedia.MediaServiceImpl;
@@ -18,7 +18,6 @@ import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.service.neomedia.VolumeControl;
 import org.atalk.service.neomedia.event.VolumeChangeEvent;
 import org.atalk.service.neomedia.event.VolumeChangeListener;
-import org.atalk.service.osgi.OSGiFragment;
 
 /**
  * Fragment used to control call volume. Key events for volume up and down have to be captured by the parent
@@ -29,8 +28,7 @@ import org.atalk.service.osgi.OSGiFragment;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChangeListener
-{
+public class CallVolumeCtrlFragment extends BaseFragment implements VolumeChangeListener {
     /**
      * Current volume gain "position" in range from 0 to 10.
      */
@@ -52,18 +50,16 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
     private Toast toast;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        audioManager = (AudioManager)  aTalkApp.getInstance().getSystemService(Context.AUDIO_SERVICE);
+        audioManager = (AudioManager) aTalkApp.getInstance().getSystemService(Context.AUDIO_SERVICE);
         MediaServiceImpl mediaService = NeomediaActivator.getMediaServiceImpl();
         if (mediaService != null)
             volumeControl = mediaService.getOutputVolumeControl();
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         if (volumeControl == null)
             return;
@@ -80,8 +76,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         if (volumeControl != null) {
             volumeControl.removeVolumeChangeListener(this);
         }
@@ -97,16 +92,14 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
      *
      * @return current volume index for <code>AudioManager.STREAM_VOICE_CALL</code>.
      */
-    private int getAudioStreamVolume()
-    {
+    private int getAudioStreamVolume() {
         return audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
     }
 
     /**
      * Method should be called by the parent <code>Activity</code> when volume up key is pressed.
      */
-    public void onKeyVolUp()
-    {
+    public void onKeyVolUp() {
         int controlMode = AudioManager.ADJUST_RAISE;
         if (position < 5) {
             controlMode = AudioManager.ADJUST_SAME;
@@ -127,8 +120,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
     /**
      * Method should be called by the parent <code>Activity</code> when volume down key is pressed.
      */
-    public void onKeyVolDown()
-    {
+    public void onKeyVolDown() {
         int controlMode = AudioManager.ADJUST_LOWER;
         if (position > 5) {
             // We adjust the same just to show the gui
@@ -147,29 +139,22 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
         }
     }
 
-    private int calcPosition(float volumeGain)
-    {
+    private int calcPosition(float volumeGain) {
         return (int) ((volumeGain / getVolumeCtrlRange()) * 10f);
     }
 
-    private void setVolumeGain(int newPosition)
-    {
+    private void setVolumeGain(int newPosition) {
         float newVolume = getVolumeCtrlRange() * (((float) newPosition) / 10f);
         this.position = calcPosition(volumeControl.setVolume(newVolume));
     }
 
     @Override
-    public void volumeChange(VolumeChangeEvent volumeChangeEvent)
-    {
-        position = calcPosition(volumeChangeEvent.getLevel() / getVolumeCtrlRange());
+    public void volumeChange(VolumeChangeEvent volumeChangeEvent) {
         runOnUiThread(() -> {
-            Activity parent = getActivity();
-            if (parent == null)
-                return;
-
-            String txt = aTalkApp.getResString(R.string.volume_gain_level, position * 10);
+            position = calcPosition(volumeChangeEvent.getLevel() / getVolumeCtrlRange());
+            String txt = mContext.getString(R.string.volume_gain_level, position * 10);
             if (toast == null) {
-                toast = Toast.makeText(parent, txt, Toast.LENGTH_SHORT);
+                toast = Toast.makeText(mContext, txt, Toast.LENGTH_SHORT);
             }
             else {
                 toast.setText(txt);
@@ -183,8 +168,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
      *
      * @return the volume control range calculated for current volume control min and max values.
      */
-    private float getVolumeCtrlRange()
-    {
+    private float getVolumeCtrlRange() {
         return volumeControl.getMaxValue() - volumeControl.getMinValue();
     }
 }

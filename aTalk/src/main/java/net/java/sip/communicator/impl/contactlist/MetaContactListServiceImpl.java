@@ -186,7 +186,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             // first discover the icq service then find the protocol provider service
             ppsRefs = mBundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
         } catch (InvalidSyntaxException e) {
-            e.printStackTrace();
+            Timber.e("Exception: %s", e.getMessage());
         }
         // in case we found any, retrieve the root groups for all protocol providers and create the meta contact list
         if (ppsRefs != null) {
@@ -767,7 +767,6 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         MetaContactImpl metaContactImpl = null;
         synchronized (contact) {
             MetaContact checkContact = findMetaContactByContact(contact);
-
             if (checkContact == null) {
                 metaContactImpl = new MetaContactImpl();
                 ((MetaContactGroupImpl) newParentMetaGroup).addMetaContact(metaContactImpl);
@@ -848,7 +847,6 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
         synchronized (contact) {
             MetaContact checkContact = findMetaContactByContact(contact);
-
             if (checkContact == null) {
                 ((MetaContactImpl) newParentMetaContact).addProtoContact(contact);
             }

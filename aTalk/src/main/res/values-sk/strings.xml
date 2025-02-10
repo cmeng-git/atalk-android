@@ -635,7 +635,7 @@
     <string name="url_example">https://www.example.com</string>
     <string name="volume_control_title">Úroveň zosilnenia výstupného objemu</string>
     <string name="volume_control_tooltip">Nastavte hlasitosť</string>
-    <string name="volume_gain_level">Úroveň nárastu objemu: %1$s %%</string>
+    <string name="volume_gain_level">Úroveň nárastu objemu: %1$d%%</string>
     <string name="waiting_for_authorization">Čaká sa na autorizáciu</string>
     <string name="warning">Výstraha</string>
     <string name="call_in_progress_warning">Počas hovoru to nie je možné</string>
@@ -819,7 +819,7 @@
     <string name="update_download_failed">Nepodarilo sa stiahnuť novú aktualizáciu!</string>
     <string name="update_check_update">Skontroluj aktualizácie</string>
     <string name="update_version_invalid">Stiahnutý súbor apk sa nezhoduje; skutočné: %1$s (%2$s)</string>
-    <string name="update_vew_version_available">K dispozícii je nová verzia softvéru (%1$s).</string>
+    <string name="update_new_version_available">K dispozícii je nová verzia softvéru (%1$s).</string>
 
     <!-- account info -->
     <string name="accountinfo_about_me">O mne:</string>
@@ -1384,8 +1384,8 @@
     <!-- Video codecs -->
     <string name="settings_direct_surface_decode">Použiť priame dekódovanie povrchu</string>
     <string name="settings_direct_surface_encode">Použiť priame kódovanie povrchu</string>
-    <string name="settings_hw_decode">Použiť hardvérové dekódovanie (vyžaduje sa reštart)</string>
-    <string name="settings_hw_encode">Použite hardvérové kódovanie (vyžaduje sa reštart)</string>
+    <string name="settings_hw_decode">Použiť hardvérové dekódovanie</string>
+    <string name="settings_hw_encode">Použite hardvérové kódovanie</string>
     <string name="settings_media_codec_list">MediaCodecs</string>
     <string name="settings_media_codec_list_summary">Zoznam vstavaných kodérov / dekodérov médií</string>
     <string name="settings_restart_require">Vyžadovať reštartovanie aTalk</string>

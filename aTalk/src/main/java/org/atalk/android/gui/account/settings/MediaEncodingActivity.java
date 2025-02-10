@@ -22,6 +22,7 @@ import java.util.Map;
 import net.java.sip.communicator.service.protocol.EncodingsRegistrationUtil;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.gui.actionbar.ActionBarToggleFragment;
 import org.atalk.impl.neomedia.MediaServiceImpl;
@@ -29,7 +30,6 @@ import org.atalk.impl.neomedia.MediaUtils;
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.MediaType;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +46,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class MediaEncodingActivity extends OSGiActivity
+public class MediaEncodingActivity extends BaseActivity
         implements ActionBarToggleFragment.ActionBarToggleModel {
     /**
      * The intent's key for {@link MediaType}

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
-import android.os.Build
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -15,14 +14,9 @@ internal object Utils {
         var connected: Boolean
         (context.let {
             val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val networkCapabilities = cm.activeNetwork ?: return false
-                val actNw = cm.getNetworkCapabilities(networkCapabilities) ?: return false
-                connected = actNw.hasCapability(NET_CAPABILITY_INTERNET)
-            } else {
-                val netInfo = cm.activeNetworkInfo
-                connected = netInfo?.isConnectedOrConnecting == true
-            }
+            val network = cm.activeNetwork ?: return false
+            val actNw = cm.getNetworkCapabilities(network) ?: return false
+            connected = actNw.hasCapability(NET_CAPABILITY_INTERNET)
         })
         return connected
     }

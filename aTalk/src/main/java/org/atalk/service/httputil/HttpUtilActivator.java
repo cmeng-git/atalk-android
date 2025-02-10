@@ -32,8 +32,7 @@ import org.osgi.framework.ServiceReference;
  *
  * @author Damian Minkov
  */
-public class HttpUtilActivator implements BundleActivator
-{
+public class HttpUtilActivator implements BundleActivator {
     /**
      * The service we use to interact with user regarding certificates.
      */
@@ -66,10 +65,9 @@ public class HttpUtilActivator implements BundleActivator
      * @return the CertificateVerification service.
      */
     public static CertificateService
-    getCertificateVerificationService()
-    {
+    getCertificateVerificationService() {
         if (guiCertificateVerification == null) {
-            ServiceReference guiVerifyReference = bundleContext.getServiceReference(CertificateService.class.getName());
+            ServiceReference<?> guiVerifyReference = bundleContext.getServiceReference(CertificateService.class.getName());
             if (guiVerifyReference != null)
                 guiCertificateVerification = (CertificateService) bundleContext.getService(guiVerifyReference);
         }
@@ -82,10 +80,9 @@ public class HttpUtilActivator implements BundleActivator
      *
      * @return a currently valid implementation of the CredentialsStorageService.
      */
-    public static CredentialsStorageService getCredentialsService()
-    {
+    public static CredentialsStorageService getCredentialsService() {
         if (credentialsService == null) {
-            ServiceReference confReference = bundleContext.getServiceReference(CredentialsStorageService.class.getName());
+            ServiceReference<?> confReference = bundleContext.getServiceReference(CredentialsStorageService.class.getName());
             credentialsService = (CredentialsStorageService) bundleContext.getService(confReference);
         }
         return credentialsService;
@@ -95,11 +92,11 @@ public class HttpUtilActivator implements BundleActivator
      * Start the bundle.
      *
      * @param bundleContext
+     *
      * @throws Exception
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         HttpUtilActivator.bundleContext = bundleContext;
     }
 
@@ -107,11 +104,11 @@ public class HttpUtilActivator implements BundleActivator
      * Stops the bundle.
      *
      * @param bundleContext
+     *
      * @throws Exception
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         guiCertificateVerification = null;
         credentialsService = null;
         resourceService = null;
@@ -123,8 +120,7 @@ public class HttpUtilActivator implements BundleActivator
      *
      * @return the service giving access to all application resources.
      */
-    public static ResourceManagementService getResources()
-    {
+    public static ResourceManagementService getResources() {
         if (resourceService == null) {
             resourceService = ResourceManagementServiceUtils.getService(bundleContext);
         }
@@ -137,8 +133,7 @@ public class HttpUtilActivator implements BundleActivator
      *
      * @return a currently valid implementation of the ConfigurationService.
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configurationService == null) {
             configurationService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
         }
@@ -150,8 +145,7 @@ public class HttpUtilActivator implements BundleActivator
      *
      * @return return service to show authentication window.
      */
-    public static AuthenticationWindowService getAuthenticationWindowService()
-    {
+    public static AuthenticationWindowService getAuthenticationWindowService() {
         return ServiceUtils.getService(bundleContext, AuthenticationWindowService.class);
     }
 }

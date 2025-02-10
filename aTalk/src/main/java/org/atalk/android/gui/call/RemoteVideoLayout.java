@@ -23,15 +23,14 @@ import timber.log.Timber;
  * Layout that aligns remote video <code>View</code> by stretching it to max screen width or height.
  * It also controls whether call control buttons group should be auto hidden or stay visible all the time.
  * This layout will work only with <code>VideoCallActivity</code>.
- *
+ * <p>
  * IMPORTANT: it can't be done from <code>Activity</code>, because just after the views are created,
  * we don't know their sizes yet(return 0 or invalid).
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class RemoteVideoLayout extends LinearLayout
-{
+public class RemoteVideoLayout extends LinearLayout {
     /**
      * Last saved preferred video size used to calculate the max screen scaling.
      * Must set to null for sizeChange detection on first layout init; and when the remote view is removed
@@ -48,18 +47,15 @@ public class RemoteVideoLayout extends LinearLayout
      */
     private int lastChildCount = -1;
 
-    public RemoteVideoLayout(Context context)
-    {
+    public RemoteVideoLayout(Context context) {
         super(context);
     }
 
-    public RemoteVideoLayout(Context context, AttributeSet attrs)
-    {
+    public RemoteVideoLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public RemoteVideoLayout(Context context, AttributeSet attrs, int defStyle)
-    {
+    public RemoteVideoLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -70,14 +66,15 @@ public class RemoteVideoLayout extends LinearLayout
      *
      * @param videoSize received video stream size
      * @param requestLayout true to force relayout request
+     *
      * @return <code>false</code> if no change is required for remoteVideoViewContainer dimension update
      * to playback the newly received video size:
+     *
      * @see AndroidDecoder#configureMediaCodec(MediaCodec, String)
      */
-    public boolean setVideoPreferredSize(Dimension videoSize, boolean requestLayout)
-    {
+    public boolean setVideoPreferredSize(Dimension videoSize, boolean requestLayout) {
         preferredSizeChanged = requestLayout || (preferredSize == null)
-               || Math.abs(preferredSize.width / preferredSize.height - videoSize.width / videoSize.height) > 0.01f;
+                || Math.abs(preferredSize.width / preferredSize.height - videoSize.width / videoSize.height) > 0.01f;
 
         preferredSize = videoSize;
         requestLayout();
@@ -85,8 +82,7 @@ public class RemoteVideoLayout extends LinearLayout
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-    {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int childCount = getChildCount();
         if ((childCount == lastChildCount) && !preferredSizeChanged) {

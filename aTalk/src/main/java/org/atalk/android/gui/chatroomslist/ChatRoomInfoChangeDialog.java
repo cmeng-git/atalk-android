@@ -16,7 +16,6 @@
  */
 package org.atalk.android.gui.chatroomslist;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,22 +27,21 @@ import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.osgi.OSGiFragment;
 
 /**
  * The dialog allows user to change nickName and/or Subject.
  *
  * @author Eng Chong Meng
  */
-public class ChatRoomInfoChangeDialog extends OSGiFragment {
+public class ChatRoomInfoChangeDialog extends BaseFragment {
     private static final String EXTRA_CHATROOM = "chatRoom";
     private static final String EXTRA_NICK = "nick";
     private static final String EXTRA_Subject = "subject";
 
-    private Context mContext;
     private ChatRoomWrapper mChatRoomWrapper;
 
     /**
@@ -70,11 +68,9 @@ public class ChatRoomInfoChangeDialog extends OSGiFragment {
     /**
      * Create chatRoom info change dialog
      *
-     * @param context the parent <code>Context</code>
      * @param chatRoomWrapper chatRoom wrapper
      */
-    public void show(Context context, ChatRoomWrapper chatRoomWrapper) {
-        mContext = context;
+    public void show(ChatRoomWrapper chatRoomWrapper) {
         mChatRoomWrapper = chatRoomWrapper;
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
 
@@ -86,10 +82,10 @@ public class ChatRoomInfoChangeDialog extends OSGiFragment {
 
         fragmentBundle.putString(EXTRA_Subject, chatRoom.getSubject());
 
-        DialogActivity.showCustomDialog(context,
-                context.getString(R.string.chatroom_change_info),
+        DialogActivity.showCustomDialog(mContext,
+                mContext.getString(R.string.chatroom_change_info),
                 ChatRoomInfoChangeDialog.class.getName(), fragmentBundle,
-                context.getString(R.string.apply),
+                mContext.getString(R.string.apply),
                 new ChatRoomInfoChangeDialog.DialogListenerImpl(), null);
     }
 

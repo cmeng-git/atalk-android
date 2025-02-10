@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import androidx.annotation.NonNull;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -182,7 +180,6 @@ public enum JingleAction {
      *
      * @return Returns the name of this <code>JingleAction</code> (e.g. "session-initiate" or "transport-accept").
      */
-    @NonNull
     @Override
     public String toString() {
         return asString;

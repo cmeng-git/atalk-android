@@ -13,7 +13,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.dialogs.DialogActivity;
 
 import timber.log.Timber;
@@ -35,7 +35,7 @@ public class ContactListUtils {
             @Override
             public void run() {
                 try {
-                    AndroidGUIActivator.getContactListService().createMetaContact(protocolProvider, group, contactAddress);
+                    AppGUIActivator.getContactListService().createMetaContact(protocolProvider, group, contactAddress);
                 } catch (MetaContactListException ex) {
                     Timber.e("Add Contact error: %s", ex.getMessage());
                     Context ctx = aTalkApp.getInstance();

@@ -49,7 +49,7 @@ import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.persistance.FileBackend;
@@ -109,7 +109,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
         fragmentSFC.mChatType = chatType;
 
         fragmentSFC.mStickerMode = stickerMode;
-        fragmentSFC.mFHS = (FileHistoryServiceImpl) AndroidGUIActivator.getFileHistoryService();
+        fragmentSFC.mFHS = (FileHistoryServiceImpl) AppGUIActivator.getFileHistoryService();
         return fragmentSFC;
     }
 

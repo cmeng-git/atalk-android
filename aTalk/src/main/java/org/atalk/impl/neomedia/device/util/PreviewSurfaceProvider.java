@@ -22,15 +22,13 @@ import timber.log.Timber;
  * currently used {@link CameraDevice} state.
  * The surface must be present before the camera is started and for this purpose
  * {@link #obtainObject()} method shall be used.
- *
+ * <p>
  * When the call is ended, before the <code>Activity</code> is finished we should ensure that the camera
  * has been stopped (which is done by video telephony internals), so we should wait for it to be
  * disposed by invoking method {@link #waitForObjectRelease()}. It will block current
  * <code>Thread</code> until it happens or an <code>Exception</code> will be thrown if timeout occurs.
  */
-public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
-        implements SurfaceHolder.Callback
-{
+public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder> implements SurfaceHolder.Callback {
     private AutoFitSurfaceView mSurfaceView;
 
     /**
@@ -47,15 +45,13 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      * @param setZMediaOverlay if set to <code>true</code> then the <code>SurfaceView</code> will be
      * displayed on the top of other surfaces e.g. local camera surface preview
      */
-    public PreviewSurfaceProvider(AppCompatActivity parent, ViewGroup container, boolean setZMediaOverlay)
-    {
+    public PreviewSurfaceProvider(AppCompatActivity parent, ViewGroup container, boolean setZMediaOverlay) {
         super(parent, container);
         this.setZMediaOverlay = setZMediaOverlay;
     }
 
     @Override
-    protected View createViewInstance()
-    {
+    protected View createViewInstance() {
         mSurfaceView = new AutoFitSurfaceView(mActivity);
         mSurfaceView.getHolder().addCallback(this);
         if (setZMediaOverlay)
@@ -63,11 +59,11 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
         return mSurfaceView;
     }
 
-    public void setAspectRatio(int width, int height)
-    {
+    public void setAspectRatio(int width, int height) {
         if (mSurfaceView != null) {
             mSurfaceView.setAspectRatio(width, height);
-        } else {
+        }
+        else {
             Timber.w(" setAspectRatio for mSurfaceView is null");
         }
     }
@@ -79,8 +75,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      * @return {@link SurfaceHolder} instance that will be used for local video preview
      */
     @Override
-    public SurfaceHolder obtainObject()
-    {
+    public SurfaceHolder obtainObject() {
         // Timber.e(new Exception("Obtain Object for testing only"));
         return super.obtainObject();
     }
@@ -89,8 +84,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      * Method is called when <code>Camera</code> is stopped and it's safe to release the {@link Surface} object.
      */
     @Override
-    public void onObjectReleased()
-    {
+    public void onObjectReleased() {
         super.onObjectReleased();
     }
 
@@ -100,26 +94,25 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      * @return current {@link Display} rotation as one of values:
      * {@link Surface#ROTATION_0}, {@link Surface#ROTATION_90}, {@link Surface#ROTATION_180}, {@link Surface#ROTATION_270}.
      */
-    public int getDisplayRotation()
-    {
+    public int getDisplayRotation() {
         return mActivity.getWindowManager().getDefaultDisplay().getRotation();
     }
 
     // ============== SurfaceHolder.Callback ================== //
+
     /**
      * This is called immediately after the surface is first created. Implementations of this should
      * start up whatever rendering code they desire. Note that only one thread can ever draw into a
      * {@link Surface}, so you should not draw into the Surface here if your normal rendering will
      * be in another thread.
-     *
+     * <p>
      * Must setFixedSize() to the user selected video size, to ensure local preview is in correct aspect ratio
-     * https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession(android.hardware.camera2.params.SessionConfiguration)
+     <a href="  * https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession(android.hardware.camera2.params.SessionConfigurat">...</a>ion)
      *
      * @param holder The SurfaceHolder whose surface is being created.
      */
     @Override
-    public void surfaceCreated(SurfaceHolder holder)
-    {
+    public void surfaceCreated(SurfaceHolder holder) {
         // Timber.d("SurfaceHolder created setFixedSize: %s", mVideoSize);
         if (mVideoSize != null) {
             holder.setFixedSize(mVideoSize.width, mVideoSize.height);
@@ -138,11 +131,10 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      * @param height The new height of the surface.
      */
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
-    {
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         /*
-         * surfaceChange event is mainly triggered by local video preview change by user; currently
-         * not implemented in android aTalk. Hence no action is required.
+         * surfaceChange event is mainly triggered by local video preview change by user;
+         * currently not implemented in android aTalk. Hence no action is required.
          * Note: the event get trigger whenever there is an init of the local video preview e.g. init or toggle camera
          * Timber.w("Preview surface change size: %s x %s", width, height);
          */
@@ -156,7 +148,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
         // try {
         //     mCamera.stopPreview();
         // } catch (Exception e){
-                // ignore: tried to stop a non-existent preview
+        // ignore: tried to stop a non-existent preview
         // }
 
         // set preview size and make any resize, rotate or reformatting changes here
@@ -178,8 +170,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      * @param holder The SurfaceHolder whose surface is being destroyed.
      */
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder)
-    {
+    public void surfaceDestroyed(SurfaceHolder holder) {
         onObjectDestroyed();
     }
 }

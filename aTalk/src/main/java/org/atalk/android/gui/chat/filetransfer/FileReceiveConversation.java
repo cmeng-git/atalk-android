@@ -16,7 +16,6 @@
  */
 package org.atalk.android.gui.chat.filetransfer;
 
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +23,7 @@ import android.view.ViewGroup;
 
 import java.io.File;
 import java.util.Date;
+import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
@@ -41,7 +41,7 @@ import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatMessage;
 
@@ -82,7 +82,7 @@ public class FileReceiveConversation extends FileTransferConversation
         fragmentRFC.fileTransferRequest = request;
         fragmentRFC.msgUuid = request.getID();
         fragmentRFC.mDate = GuiUtils.formatDateTime(date);
-        fragmentRFC.mFHS = (FileHistoryServiceImpl) AndroidGUIActivator.getFileHistoryService();
+        fragmentRFC.mFHS = (FileHistoryServiceImpl) AppGUIActivator.getFileHistoryService();
 
         // need to enable ScFileTransferListener for FileReceiveConversation reject/cancellation.
         opSet.addFileTransferListener(fragmentRFC);
@@ -226,26 +226,25 @@ public class FileReceiveConversation extends FileTransferConversation
     /**
      * Accepts the file in a new thread.
      */
-    private class AcceptFile extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        public void onPreExecute() {
+    private class AcceptFile {
+        public void execute() {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                doInBackground();
+
+                runOnUiThread(() -> {
+                    if (mFileTransfer != null) {
+                        setFileTransfer(mFileTransfer, fileTransferRequest.getFileSize());
+                    }
+                });
+            });
         }
 
-        @Override
-        protected Boolean doInBackground(Void... params) {
+        protected void doInBackground() {
             fileTransferRequest.acceptFile();
             // Remove previously added listener (no further required), that notify for request cancellations if any.
             fileTransferOpSet.removeFileTransferListener(FileReceiveConversation.this);
             if (mFileTransfer != null) {
                 mChatFragment.addActiveFileTransfer(mFileTransfer.getID(), mFileTransfer, msgViewId);
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (mFileTransfer != null) {
-                setFileTransfer(mFileTransfer, fileTransferRequest.getFileSize());
             }
         }
     }

@@ -7,16 +7,16 @@ package org.atalk.android.gui.call;
 
 import android.widget.TextView;
 
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.util.GuiUtils;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
-import org.atalk.service.osgi.OSGiFragment;
-
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import timber.log.Timber;
 
@@ -26,8 +26,7 @@ import timber.log.Timber;
  *
  * @author Pawel Domas
  */
-public class CallTimerFragment extends OSGiFragment
-{
+public class CallTimerFragment extends BaseFragment {
     /**
      * Indicates if the call timer has been started.
      */
@@ -48,8 +47,7 @@ public class CallTimerFragment extends OSGiFragment
      *
      * @param callPeer the <code>CallPeer</code> for which we're tracking the call duration.
      */
-    public void callPeerAdded(CallPeer callPeer)
-    {
+    public void callPeerAdded(CallPeer callPeer) {
         CallPeerState currentState = callPeer.getState();
         if ((currentState == CallPeerState.CONNECTED || CallPeerState.isOnHold(currentState)) && !isCallTimerStarted()) {
             callStartDate = new Date(callPeer.getCallDurationStartTime());
@@ -61,8 +59,7 @@ public class CallTimerFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         doUpdateCallDuration();
     }
@@ -71,8 +68,7 @@ public class CallTimerFragment extends OSGiFragment
      * Called when an activity is destroyed.
      */
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         if (isCallTimerStarted()) {
             stopCallTimer();
         }
@@ -82,16 +78,14 @@ public class CallTimerFragment extends OSGiFragment
     /**
      * Updates the call duration string. Invoked on UI thread.
      */
-    public void updateCallDuration()
-    {
+    public void updateCallDuration() {
         runOnUiThread(this::doUpdateCallDuration);
     }
 
     /**
      * Updates the call duration string.
      */
-    private void doUpdateCallDuration()
-    {
+    private void doUpdateCallDuration() {
         if (callStartDate == null || getActivity() == null)
             return;
 
@@ -104,8 +98,7 @@ public class CallTimerFragment extends OSGiFragment
     /**
      * Starts the timer that counts call duration.
      */
-    public void startCallTimer()
-    {
+    public void startCallTimer() {
         if (callStartDate == null) {
             this.callStartDate = new Date();
         }
@@ -124,8 +117,7 @@ public class CallTimerFragment extends OSGiFragment
     /**
      * Stops the timer that counts call duration.
      */
-    public void stopCallTimer()
-    {
+    public void stopCallTimer() {
         this.callDurationTimer.cancel();
     }
 
@@ -134,19 +126,16 @@ public class CallTimerFragment extends OSGiFragment
      *
      * @return {@code true</code> if the call timer has been started, otherwise returns <code>false}
      */
-    public boolean isCallTimerStarted()
-    {
+    public boolean isCallTimerStarted() {
         return isCallTimerStarted;
     }
 
     /**
      * Each second refreshes the time label to show to the user the exact duration of the call.
      */
-    private class CallTimerTask extends TimerTask
-    {
+    private class CallTimerTask extends TimerTask {
         @Override
-        public void run()
-        {
+        public void run() {
             updateCallDuration();
         }
     }

@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.util.AndroidImageUtil;
+import org.atalk.android.util.AppImageUtil;
 
 import timber.log.Timber;
 
@@ -49,28 +49,6 @@ public class ActionBarUtil {
                 actionBar.setTitle(title);
         }
     }
-
-//    public static void setPrefTitle(AppCompatActivity activity, int resId) {
-//        ActionBar actionBar = activity.getSupportActionBar();
-//        String title = activity.getResources().getString(resId);
-//
-//        // Some activities don't have ActionBar
-//        if (actionBar != null) {
-//            if (actionBar.getCustomView() != null) {
-//                TextView titleText = activity.findViewById(R.id.actionBarTitle);
-//                if (titleText != null) {
-//                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) titleText.getLayoutParams();
-//                    params.addRule(RelativeLayout.CENTER_IN_PARENT);
-//                    titleText.setLayoutParams(params);
-//
-//                    titleText.setTextSize(Dimension.PX, 20f);
-//                    titleText.setText(title);
-//                }
-//            }
-//            else
-//                actionBar.setTitle(title);
-//        }
-//    }
 
     /**
      * Sets the action bar subtitle for the given activity. The text may contain
@@ -138,7 +116,7 @@ public class ActionBarUtil {
     public static void setStatusIcon(AppCompatActivity activity, byte[] statusIcon) {
         ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {
-            Bitmap avatarStatusBmp = AndroidImageUtil.bitmapFromBytes(statusIcon);
+            Bitmap avatarStatusBmp = AppImageUtil.bitmapFromBytes(statusIcon);
             if (avatarStatusBmp != null) {
                 ImageView actionBarStatus = activity.findViewById(R.id.globalStatusIcon);
                 // actionBarStatus is null while search option is selected
@@ -166,7 +144,7 @@ public class ActionBarUtil {
         BitmapDrawable avatarBmp = null;
         if (avatar != null) {
             if (avatar.length < 256 * 1024) {
-                avatarBmp = AndroidImageUtil.roundedDrawableFromBytes(avatar);
+                avatarBmp = AppImageUtil.roundedDrawableFromBytes(avatar);
             }
             else {
                 Timber.e("Avatar image is too large: %s", avatar.length);

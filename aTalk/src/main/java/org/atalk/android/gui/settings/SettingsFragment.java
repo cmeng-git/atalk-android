@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 
 import java.awt.Dimension;
@@ -41,7 +42,7 @@ import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.android.gui.util.LocaleHelper;
@@ -55,7 +56,6 @@ import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.osgi.OSGiPreferenceFragment;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -68,7 +68,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  * @author MilanKral
  */
-public class SettingsFragment extends OSGiPreferenceFragment
+public class SettingsFragment extends BasePreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     // PreferenceScreen and PreferenceCategories
     private static final String P_KEY_MEDIA_CALL = "pref.cat.settings.media_call";
@@ -135,7 +135,6 @@ public class SettingsFragment extends OSGiPreferenceFragment
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the preferences from an XML resource
-        super.onCreatePreferences(savedInstanceState, rootKey);
         setPreferencesFromResource(R.xml.preferences, rootKey);
     }
 
@@ -145,9 +144,9 @@ public class SettingsFragment extends OSGiPreferenceFragment
     @Override
     public void onResume() {
         super.onResume();
-        setPrefTitle(R.string.system_settings);
+        mActivity.setTitle(R.string.system_settings);
 
-        // FFR: v2.1.5 NPE; use UtilActivator instead of AndroidGUIActivator which was initialized much later
+        // FFR: v2.1.5 NPE; use UtilActivator instead of AppGUIActivator which was initialized much later
         mConfigService = UtilActivator.getConfigurationService();
         mPreferenceScreen = getPreferenceScreen();
         shPrefs = getPreferenceManager().getSharedPreferences();
@@ -378,7 +377,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
         // GeoPreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_AUTO_UPDATE_CHECK_ENABLE,
         //		cfg.getBoolean(AUTO_UPDATE_CHECK_ENABLE, true));
 
-        BundleContext bc = AndroidGUIActivator.bundleContext;
+        BundleContext bc = AppGUIActivator.bundleContext;
         ServiceReference[] handlerRefs = ServiceUtils.getServiceReferences(bc, PopupMessageHandler.class);
 
         String[] names = new String[handlerRefs.length + 1]; // +1 Auto
@@ -519,7 +518,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
      * @return implementation of <code>PopupMessageHandler</code> for given class name registered in OSGI context.
      */
     private PopupMessageHandler getHandlerForClassName(String clazz) {
-        BundleContext bc = AndroidGUIActivator.bundleContext;
+        BundleContext bc = AppGUIActivator.bundleContext;
         ServiceReference[] handlerRefs = ServiceUtils.getServiceReferences(bc, PopupMessageHandler.class);
 
         for (ServiceReference<PopupMessageHandler> sRef : handlerRefs) {
@@ -605,7 +604,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
              */
             case P_KEY_POPUP_HANDLER:
                 String handler = shPreferences.getString(P_KEY_POPUP_HANDLER, "Auto");
-                SystrayService systray = AndroidGUIActivator.getSystrayService();
+                SystrayService systray = AppGUIActivator.getSystrayService();
                 if ("Auto".equals(handler)) {
                     // "Auto" selected. Delete the user's preference and select the best available handler.
                     ConfigurationUtils.setPopupHandlerConfig(null);

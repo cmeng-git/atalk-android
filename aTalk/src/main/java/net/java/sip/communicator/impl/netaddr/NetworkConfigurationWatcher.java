@@ -303,7 +303,7 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
                     addresses.add(inetAddress);
                 }
 
-                if (addresses.size() > 0)
+                if (!addresses.isEmpty())
                     currentActiveInterfaces.put(networkInterface.getName(), addresses);
             }
         }

@@ -23,8 +23,7 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class NotificationWiringActivator implements BundleActivator
-{
+public class NotificationWiringActivator implements BundleActivator {
     protected static BundleContext bundleContext;
     private static NotificationService notificationService;
     private static ResourceManagementService resourcesService;
@@ -32,19 +31,17 @@ public class NotificationWiringActivator implements BundleActivator
     private static MediaService mediaService;
 
     public void start(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         bundleContext = bc;
         // Get the notification service implementation
-        ServiceReference notifReference = bundleContext.getServiceReference(NotificationService.class.getName());
+        ServiceReference<?> notifReference = bundleContext.getServiceReference(NotificationService.class.getName());
         notificationService = (NotificationService) bundleContext.getService(notifReference);
         new NotificationManager().init();
         Timber.d("Notification wiring plugin ...[REGISTERED]");
     }
 
     public void stop(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         Timber.d("Notification handler Service ...[STOPPED]");
     }
 
@@ -53,8 +50,7 @@ public class NotificationWiringActivator implements BundleActivator
      *
      * @return the <code>NotificationService</code> obtained from the bundle context
      */
-    public static NotificationService getNotificationService()
-    {
+    public static NotificationService getNotificationService() {
         return notificationService;
     }
 
@@ -63,8 +59,7 @@ public class NotificationWiringActivator implements BundleActivator
      *
      * @return the <code>ResourceManagementService</code>, through which we will access all resources.
      */
-    public static ResourceManagementService getResources()
-    {
+    public static ResourceManagementService getResources() {
         if (resourcesService == null) {
             resourcesService = ServiceUtils.getService(bundleContext, ResourceManagementService.class);
         }
@@ -76,8 +71,7 @@ public class NotificationWiringActivator implements BundleActivator
      *
      * @return the current implementation of the <code>UIService</code>
      */
-    public static UIService getUIService()
-    {
+    public static UIService getUIService() {
         if (uiService == null) {
             uiService = ServiceUtils.getService(bundleContext, UIService.class);
         }
@@ -89,8 +83,7 @@ public class NotificationWiringActivator implements BundleActivator
      *
      * @return an instance of the <code>MediaService</code> obtained from the bundle context
      */
-    public static MediaService getMediaService()
-    {
+    public static MediaService getMediaService() {
         if (mediaService == null) {
             mediaService = ServiceUtils.getService(bundleContext, MediaService.class);
         }

@@ -31,8 +31,7 @@ import org.osgi.framework.BundleContext;
  *
  * @author Yana Stamcheva
  */
-public class CertificateVerificationActivator implements BundleActivator
-{
+public class CertificateVerificationActivator implements BundleActivator {
     /**
      * The bundle context for this bundle.
      */
@@ -62,11 +61,11 @@ public class CertificateVerificationActivator implements BundleActivator
      * Called when this bundle is started.
      *
      * @param bc The execution context of the bundle being started.
+     *
      * @throws Exception if the bundle is not correctly started
      */
     public void start(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         bundleContext = bc;
         bundleContext.registerService(CertificateService.class.getName(), new CertificateServiceImpl(), null);
     }
@@ -76,14 +75,14 @@ public class CertificateVerificationActivator implements BundleActivator
      * bundle-specific activities necessary to stop the bundle.
      *
      * @param bc The execution context of the bundle being stopped.
+     *
      * @throws Exception If this method throws an exception, the bundle is
      * still marked as stopped, and the Framework will remove the bundle's
      * listeners, unregister all services registered by the bundle, and
      * release all services used by the bundle.
      */
     public void stop(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         configService = null;
         resourcesService = null;
         credService = null;
@@ -95,8 +94,7 @@ public class CertificateVerificationActivator implements BundleActivator
      *
      * @return the <code>ConfigurationService</code> obtained from the bundle context
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configService == null) {
             configService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
         }
@@ -108,8 +106,7 @@ public class CertificateVerificationActivator implements BundleActivator
      *
      * @return the <code>ResourceManagementService</code>, through which we will access all resources.
      */
-    public static ResourceManagementService getResources()
-    {
+    public static ResourceManagementService getResources() {
         if (resourcesService == null) {
             resourcesService = ServiceUtils.getService(bundleContext, ResourceManagementService.class);
         }
@@ -121,8 +118,7 @@ public class CertificateVerificationActivator implements BundleActivator
      *
      * @return the <code>CredentialsStorageService</code>, through which we will access all passwords.
      */
-    public static CredentialsStorageService getCredService()
-    {
+    public static CredentialsStorageService getCredService() {
         if (credService == null) {
             credService = ServiceUtils.getService(bundleContext, CredentialsStorageService.class);
         }
@@ -134,8 +130,7 @@ public class CertificateVerificationActivator implements BundleActivator
      *
      * @return the <code>VerifyCertificateDialogService</code>, through which we will use to create dialogs.
      */
-    public static VerifyCertificateDialogService getCertificateDialogService()
-    {
+    public static VerifyCertificateDialogService getCertificateDialogService() {
         if (certificateDialogService == null) {
             certificateDialogService = ServiceUtils.getService(bundleContext, VerifyCertificateDialogService.class);
         }
@@ -147,8 +142,7 @@ public class CertificateVerificationActivator implements BundleActivator
      *
      * @return return service to show authentication window.
      */
-    public static AuthenticationWindowService getAuthenticationWindowService()
-    {
+    public static AuthenticationWindowService getAuthenticationWindowService() {
         return ServiceUtils.getService(bundleContext, AuthenticationWindowService.class);
     }
 }

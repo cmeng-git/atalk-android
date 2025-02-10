@@ -5,6 +5,9 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.java.sip.communicator.service.calendar.CalendarService;
 
 import org.atalk.impl.timberlog.TimberLog;
@@ -15,9 +18,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -30,8 +30,7 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class ProtocolProviderActivator implements BundleActivator
-{
+public class ProtocolProviderActivator implements BundleActivator {
     /**
      * The {@code ServiceRegistration} of the {@code AccountManager} implementation
      * registered as a service by this activator and cached so that the service in question can be
@@ -80,8 +79,7 @@ public class ProtocolProviderActivator implements BundleActivator
      * @return the {@code ConfigurationService} to be used by the classes in the bundle
      * represented by {@code ProtocolProviderActivator}
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if ((configurationService == null) && (bundleContext != null)) {
             ServiceReference<?> svrReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
             configurationService = (ConfigurationService) bundleContext.getService(svrReference);
@@ -96,8 +94,7 @@ public class ProtocolProviderActivator implements BundleActivator
      * @return the {@code ResourceManagementService} to be used by the classes in the bundle
      * represented by {@code ProtocolProviderActivator}
      */
-    public static ResourceManagementService getResourceService()
-    {
+    public static ResourceManagementService getResourceService() {
         if (resourceService == null) {
             resourceService = (ResourceManagementService) bundleContext.getService(bundleContext
                     .getServiceReference(ResourceManagementService.class.getName()));
@@ -112,8 +109,7 @@ public class ProtocolProviderActivator implements BundleActivator
      * @return the {@code CalendarService} to be used by the classes in the bundle represented
      * by {@code ProtocolProviderActivator}
      */
-    public static CalendarService getCalendarService()
-    {
+    public static CalendarService getCalendarService() {
         if (calendarService == null) {
             ServiceReference<?> serviceReference = bundleContext
                     .getServiceReference(CalendarService.class.getName());
@@ -128,15 +124,15 @@ public class ProtocolProviderActivator implements BundleActivator
      * Returns a <code>ProtocolProviderFactory</code> for a given protocol provider.
      *
      * @param protocolName the name of the protocol, which factory we're looking for
+     *
      * @return a <code>ProtocolProviderFactory</code> for a given protocol provider
      */
-    public static ProtocolProviderFactory getProtocolProviderFactory(String protocolName)
-    {
+    public static ProtocolProviderFactory getProtocolProviderFactory(String protocolName) {
         String osgiFilter = "(" + ProtocolProviderFactory.PROTOCOL + "=" + protocolName + ")";
         ProtocolProviderFactory protocolProviderFactory = null;
 
         try {
-            ServiceReference[] serRefs
+            ServiceReference<?>[] serRefs
                     = bundleContext.getServiceReferences(ProtocolProviderFactory.class.getName(), osgiFilter);
 
             if ((serRefs != null) && (serRefs.length != 0)) {
@@ -157,8 +153,7 @@ public class ProtocolProviderActivator implements BundleActivator
      * @param bundleContext the {@code BundleContext} in which the bundle activation represented by this
      * {@code BundleActivator} executes
      */
-    public void start(BundleContext bundleContext)
-    {
+    public void start(BundleContext bundleContext) {
         ProtocolProviderActivator.bundleContext = bundleContext;
         accountManager = new AccountManager(bundleContext);
         accountManagerServiceRegistration
@@ -175,8 +170,7 @@ public class ProtocolProviderActivator implements BundleActivator
      * @param bundleContext the {@code BundleContext} in which the bundle activation represented by this
      * {@code BundleActivator} executes
      */
-    public void stop(BundleContext bundleContext)
-    {
+    public void stop(BundleContext bundleContext) {
         if (accountManagerServiceRegistration != null) {
             accountManagerServiceRegistration.unregister();
             accountManagerServiceRegistration = null;
@@ -200,9 +194,8 @@ public class ProtocolProviderActivator implements BundleActivator
      *
      * @return all protocol providers currently registered.
      */
-    public static List<ProtocolProviderService> getProtocolProviders()
-    {
-        ServiceReference[] serRefs = null;
+    public static List<ProtocolProviderService> getProtocolProviders() {
+        ServiceReference<?>[] serRefs = null;
         try {
             // get all registered provider factories
             serRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
@@ -225,8 +218,7 @@ public class ProtocolProviderActivator implements BundleActivator
      *
      * @return <code>AccountManager</code> of the protocol
      */
-    public static AccountManager getAccountManager()
-    {
+    public static AccountManager getAccountManager() {
         return accountManager;
     }
 
@@ -235,8 +227,7 @@ public class ProtocolProviderActivator implements BundleActivator
      *
      * @return OSGI bundle context.
      */
-    public static BundleContext getBundleContext()
-    {
+    public static BundleContext getBundleContext() {
         return bundleContext;
     }
 }

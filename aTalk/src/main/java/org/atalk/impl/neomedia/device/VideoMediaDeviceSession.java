@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.media.Buffer;
 import javax.media.Codec;
@@ -1252,7 +1253,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
      */
     public void setOutputSize(Dimension size)
     {
-        boolean equal = (size == null) ? (outputSize == null) : size.equals(outputSize);
+        boolean equal = Objects.equals(size, outputSize);
 
         if (!equal) {
             outputSize = size;

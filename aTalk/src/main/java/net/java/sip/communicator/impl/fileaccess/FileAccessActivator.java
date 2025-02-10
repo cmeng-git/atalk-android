@@ -26,17 +26,16 @@ import org.osgi.framework.BundleContext;
  * @author Alexander Pelov
  * @author Lyubomir Marinov
  */
-public class FileAccessActivator implements BundleActivator
-{
+public class FileAccessActivator implements BundleActivator {
     /**
      * Initialize and start file service
      *
      * @param bundleContext the <code>BundleContext</code>
+     *
      * @throws Exception if initializing and starting file service fails
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         FileAccessService fileAccessService = LibJitsi.getFileAccessService();
         if (fileAccessService != null) {
             bundleContext.registerService(FileAccessService.class.getName(), fileAccessService, null);
@@ -47,10 +46,10 @@ public class FileAccessActivator implements BundleActivator
      * Stops this bundle.
      *
      * @param bundleContext the <code>BundleContext</code>
+     *
      * @throws Exception if the stop operation goes wrong
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
     }
 }

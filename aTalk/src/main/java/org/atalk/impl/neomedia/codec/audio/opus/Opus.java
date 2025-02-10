@@ -47,7 +47,7 @@ public class Opus
     /**
      * The maximum size of a packet we can create. Since we're only creating packets with a single
      * frame, that's a 1 byte TOC + the maximum frame size.
-     * See http://tools.ietf.org/html/rfc6716#section-3.2
+     * See <a href="http://tools.ietf.org/html/rfc6716#section-3.2">...</a>
      */
     public static final int MAX_PACKET = 1 + 1275;
 

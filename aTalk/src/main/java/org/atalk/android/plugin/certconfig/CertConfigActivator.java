@@ -32,23 +32,19 @@ import org.osgi.framework.BundleContext;
  * @author Ingo Bauersachs
  * @author Eng Chong Meng
  */
-public class CertConfigActivator implements BundleActivator
-{
+public class CertConfigActivator implements BundleActivator {
     private static BundleContext bundleContext;
 
     public void start(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         bundleContext = bc;
     }
 
     public void stop(BundleContext arg0)
-            throws Exception
-    {
+            throws Exception {
     }
 
-    static BundleContext getBundleContext()
-    {
+    static BundleContext getBundleContext() {
         return bundleContext;
     }
 
@@ -58,8 +54,7 @@ public class CertConfigActivator implements BundleActivator
      *
      * @return a currently valid implementation of the ConfigurationService.
      */
-    public static ConfigurationService getConfigService()
-    {
+    public static ConfigurationService getConfigService() {
         return ServiceUtils.getService(bundleContext, ConfigurationService.class);
     }
 
@@ -69,8 +64,7 @@ public class CertConfigActivator implements BundleActivator
      *
      * @return a currently valid implementation of the CertificateService.
      */
-    public static CertificateService getCertService()
-    {
+    public static CertificateService getCertService() {
         return ServiceUtils.getService(bundleContext, CertificateService.class);
     }
 
@@ -80,8 +74,7 @@ public class CertConfigActivator implements BundleActivator
      *
      * @return a currently valid implementation of the UIService.
      */
-    public static UIService getUIService()
-    {
+    public static UIService getUIService() {
         return ServiceUtils.getService(bundleContext, UIService.class);
     }
 
@@ -91,8 +84,7 @@ public class CertConfigActivator implements BundleActivator
      *
      * @return a currently valid implementation of the CredentialsStorageService.
      */
-    public static CredentialsStorageService getCredService()
-    {
+    public static CredentialsStorageService getCredService() {
         return ServiceUtils.getService(bundleContext, CredentialsStorageService.class);
     }
 }

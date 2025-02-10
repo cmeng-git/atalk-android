@@ -1,6 +1,6 @@
 package org.atalk.impl.appupdate;
 
-import static org.atalk.impl.androidtray.NotificationPopupHandler.getPendingIntentFlag;
+import static org.atalk.impl.appstray.NotificationPopupHandler.getPendingIntentFlag;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
@@ -17,9 +17,9 @@ import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.settings.SettingsFragment;
-import org.atalk.impl.androidnotification.AndroidNotifications;
+import org.atalk.impl.appnotification.AppNotifications;
 import org.atalk.service.configuration.ConfigurationService;
 
 public class OnlineUpdateService extends IntentService {
@@ -58,7 +58,7 @@ public class OnlineUpdateService extends IntentService {
                         break;
                     case ACTION_UPDATE_AVAILABLE:
                         UpdateServiceImpl updateService = (UpdateServiceImpl) ServiceUtils
-                                .getService(AndroidGUIActivator.bundleContext, UpdateService.class);
+                                .getService(AppGUIActivator.bundleContext, UpdateService.class);
                         if (updateService != null) {
                             updateService.checkForUpdates();
                         }
@@ -76,20 +76,19 @@ public class OnlineUpdateService extends IntentService {
 
     private void checkAppUpdate() {
         boolean isAutoUpdateCheckEnable = true;
-        ConfigurationService cfg = AndroidGUIActivator.getConfigurationService();
+        ConfigurationService cfg = AppGUIActivator.getConfigurationService();
         if (cfg != null)
             isAutoUpdateCheckEnable = cfg.getBoolean(SettingsFragment.AUTO_UPDATE_CHECK_ENABLE, true);
 
-        UpdateService updateService = ServiceUtils.getService(AndroidGUIActivator.bundleContext, UpdateService.class);
+        UpdateService updateService = ServiceUtils.getService(AppGUIActivator.bundleContext, UpdateService.class);
         if (updateService != null) {
             boolean isLatest = updateService.isLatestVersion();
 
             if (!isLatest) {
                 NotificationCompat.Builder nBuilder;
-                nBuilder = new NotificationCompat.Builder(this, AndroidNotifications.DEFAULT_GROUP);
+                nBuilder = new NotificationCompat.Builder(this, AppNotifications.DEFAULT_GROUP);
 
-                String msgString = getString(R.string.update_vew_version_available,
-                        updateService.getLatestVersion());
+                String msgString = getString(R.string.update_new_version_available, updateService.getLatestVersion());
                 nBuilder.setSmallIcon(R.drawable.ic_notification);
                 nBuilder.setWhen(System.currentTimeMillis());
                 nBuilder.setAutoCancel(true);

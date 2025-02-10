@@ -112,7 +112,7 @@ public class EncodeFrameFLP
 		// {
 		// throw new IOException("Unexpected End of Stream");
 		// }
-		// pin_hp[ii] = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getShort();
+		// pin_hp[ii] = ByteBufferFmj.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getShort();
 		// }
 		// catch (IOException e)
 		// {
@@ -176,7 +176,7 @@ public class EncodeFrameFLP
 		// {
 		// throw new IOException("Unexpected End of Stream");
 		// }
-		// pin_hp_lp[ii] = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getShort();
+		// pin_hp_lp[ii] = ByteBufferFmj.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getShort();
 		// }
 		// catch (IOException e)
 		// {
@@ -232,7 +232,7 @@ public class EncodeFrameFLP
 		// {
 		// throw new IOException("Unexpected End of Stream");
 		// }
-		// x_buf[ii] = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+		// x_buf[ii] = ByteBufferFmj.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 		// }
 		// catch (IOException e)
 		// {
@@ -293,7 +293,7 @@ public class EncodeFrameFLP
 		// {
 		// throw new IOException("Unexpected End of Stream");
 		// }
-		// x_buf[ii] = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+		// x_buf[ii] = ByteBufferFmj.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 		// }
 		// catch (IOException e)
 		// {
@@ -357,7 +357,7 @@ public class EncodeFrameFLP
 		// {
 		// throw new IOException("Unexpected End of Stream");
 		// }
-		// x_buf[ii] = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+		// x_buf[ii] = ByteBufferFmj.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 		// // NLSF[ii] = nlsf[ii];
 		// }
 		// catch (IOException e)

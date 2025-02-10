@@ -17,21 +17,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 
+import java.util.Collection;
+
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.osgi.framework.BundleContext;
-
-import java.util.Collection;
 
 import timber.log.Timber;
 
@@ -42,34 +41,11 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class CallContactFragment extends OSGiFragment {
-    /**
-     * The bundle context.
-     */
-    private BundleContext bundleContext;
-
+public class CallContactFragment extends BaseFragment {
     /**
      * Optional phone number argument.
      */
     public static String ARG_PHONE_NUMBER = "arg.phone_number";
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public synchronized void start(BundleContext bundleContext)
-            throws Exception {
-        super.start(bundleContext);
-        /*
-         * If there are unit tests to be run, do not run anything else and just perform
-         * the unit tests.
-         */
-        if (System.getProperty("net.java.sip.communicator.slick.runner.TEST_LIST") != null)
-            return;
-
-        this.bundleContext = bundleContext;
-        initAndroidAccounts();
-    }
 
     /**
      * {@inheritDoc}
@@ -96,6 +72,33 @@ public class CallContactFragment extends OSGiFragment {
             ViewUtil.setTextViewValue(content, R.id.callField, phoneNumber);
         }
         return content;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        /*
+         * If there are unit tests to be run, do not run anything else and just perform
+         * the unit tests.
+         */
+        if (System.getProperty("net.java.sip.communicator.slick.runner.TEST_LIST") != null)
+            return;
+        initAndroidAccounts();
+    }
+
+    /**
+     * Loads Android accounts.
+     */
+    public void initAndroidAccounts() {
+        if (aTalk.hasPermission(getActivity(), true,
+                aTalk.PRC_GET_CONTACTS, Manifest.permission.GET_ACCOUNTS)) {
+            android.accounts.AccountManager androidAccManager = android.accounts.AccountManager.get(getActivity());
+            Account[] androidAccounts = androidAccManager.getAccountsByType(getString(R.string.aTalk_account_type));
+            for (Account account : androidAccounts) {
+                System.err.println("ACCOUNT======" + account);
+            }
+        }
     }
 
     /**
@@ -125,7 +128,7 @@ public class CallContactFragment extends OSGiFragment {
                     mProvider = provider;
                 }
             } catch (XmppStringprepException e) {
-                e.printStackTrace();
+                Timber.e("Exception %s", e.getMessage());
             }
         }
         if (menu.size() > 1)
@@ -151,20 +154,6 @@ public class CallContactFragment extends OSGiFragment {
                 }
             }
         }.start();
-    }
-
-    /**
-     * Loads Android accounts.
-     */
-    public void initAndroidAccounts() {
-        if (aTalk.hasPermission(getActivity(), true,
-                aTalk.PRC_GET_CONTACTS, Manifest.permission.GET_ACCOUNTS)) {
-            android.accounts.AccountManager androidAccManager = android.accounts.AccountManager.get(getActivity());
-            Account[] androidAccounts = androidAccManager.getAccountsByType(getString(R.string.aTalk_account_type));
-            for (Account account : androidAccounts) {
-                System.err.println("ACCOUNT======" + account);
-            }
-        }
     }
 
     /**

@@ -19,8 +19,7 @@ import org.osgi.framework.ServiceReference;
  *
  * @author Damian Minkov
  */
-public abstract class AbstractServiceDependentActivator implements BundleActivator
-{
+public abstract class AbstractServiceDependentActivator implements BundleActivator {
     /**
      * The service we are dependent on.
      */
@@ -33,8 +32,7 @@ public abstract class AbstractServiceDependentActivator implements BundleActivat
      */
     @Override
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         setBundleContext(bundleContext);
 
         if (getDependentService(bundleContext) == null) {
@@ -77,10 +75,10 @@ public abstract class AbstractServiceDependentActivator implements BundleActivat
      * Obtain the dependent service. Null if missing.
      *
      * @param context the current context to use for obtaining.
+     *
      * @return the dependent service object or null.
      */
-    private Object getDependentService(BundleContext context)
-    {
+    private Object getDependentService(BundleContext context) {
         if (dependentService == null) {
             ServiceReference<?> serviceRef = context.getServiceReference(getDependentServiceClass().getName());
             if (serviceRef != null)
@@ -94,17 +92,15 @@ public abstract class AbstractServiceDependentActivator implements BundleActivat
      * the dependent service implementation to become available, invokes
      * {@link #start(Object)} and un-registers itself.
      */
-    private class DependentServiceListener implements ServiceListener
-    {
+    private class DependentServiceListener implements ServiceListener {
         private final BundleContext context;
-        DependentServiceListener(BundleContext context)
-        {
+
+        DependentServiceListener(BundleContext context) {
             this.context = context;
         }
 
         @Override
-        public void serviceChanged(ServiceEvent serviceEvent)
-        {
+        public void serviceChanged(ServiceEvent serviceEvent) {
             Object depService = getDependentService(context);
             if (depService != null) {
                 /*

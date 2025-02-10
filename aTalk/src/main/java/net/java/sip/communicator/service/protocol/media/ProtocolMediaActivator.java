@@ -22,8 +22,7 @@ import timber.log.Timber;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class ProtocolMediaActivator implements BundleActivator
-{
+public class ProtocolMediaActivator implements BundleActivator {
     /**
      * Bundle context from OSGi.
      */
@@ -49,13 +48,13 @@ public class ProtocolMediaActivator implements BundleActivator
      * activities necessary to start this bundle.
      *
      * @param context The execution context of the bundle being started.
+     *
      * @throws Exception If this method throws an exception, this bundle is marked as stopped and the
      * Framework will remove this bundle's listeners, unregister all services registered by
      * this bundle, and release all services used by this bundle.
      */
     public void start(BundleContext context)
-            throws Exception
-    {
+            throws Exception {
         ProtocolMediaActivator.bundleContext = context;
         Timber.i("Protocol Media Started.");
     }
@@ -65,13 +64,13 @@ public class ProtocolMediaActivator implements BundleActivator
      * activities necessary to stop the bundle.
      *
      * @param context The execution context of the bundle being stopped.
+     *
      * @throws Exception If this method throws an exception, the bundle is still marked as stopped, and the
      * Framework will remove the bundle's listeners, unregister all services registered by
      * the bundle, and release all services used by the bundle.
      */
     public void stop(BundleContext context)
-            throws Exception
-    {
+            throws Exception {
         configurationService = null;
         mediaService = null;
         networkAddressManagerService = null;
@@ -82,8 +81,7 @@ public class ProtocolMediaActivator implements BundleActivator
      *
      * @return a reference to the BundleContext instance that we were started with.
      */
-    public static BundleContext getBundleContext()
-    {
+    public static BundleContext getBundleContext() {
         return bundleContext;
     }
 
@@ -93,8 +91,7 @@ public class ProtocolMediaActivator implements BundleActivator
      *
      * @return a currently valid implementation of the ConfigurationService.
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configurationService == null) {
             configurationService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
         }
@@ -108,8 +105,7 @@ public class ProtocolMediaActivator implements BundleActivator
      * @return a reference to a <code>MediaService</code> implementation currently registered in the
      * bundle context or null if no such implementation was found.
      */
-    public static MediaService getMediaService()
-    {
+    public static MediaService getMediaService() {
         if (mediaService == null) {
             mediaService = ServiceUtils.getService(bundleContext, MediaService.class);
         }
@@ -122,11 +118,9 @@ public class ProtocolMediaActivator implements BundleActivator
      *
      * @return a currently valid implementation of the <code>NetworkAddressManagerService</code>
      */
-    public static NetworkAddressManagerService getNetworkAddressManagerService()
-    {
+    public static NetworkAddressManagerService getNetworkAddressManagerService() {
         if (networkAddressManagerService == null) {
-            networkAddressManagerService = ServiceUtils.getService(bundleContext,
-                    NetworkAddressManagerService.class);
+            networkAddressManagerService = ServiceUtils.getService(bundleContext, NetworkAddressManagerService.class);
         }
         return networkAddressManagerService;
     }

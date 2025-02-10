@@ -53,20 +53,14 @@ import org.atalk.android.gui.contactlist.model.MetaGroupExpandHandler;
  * @author Eng Chong Meng
  */
 public class ConferenceCallInviteDialog extends Dialog implements OnChildClickListener, DialogInterface.OnShowListener {
-    private static boolean MUC_OFFLINE_ALLOW = true;
+    private static final boolean MUC_OFFLINE_ALLOW = true;
 
     private Button mInviteButton;
-    private Button mCancelButton;
 
     /**
      * Contact list data model.
      */
     protected MetaContactListAdapter contactListAdapter;
-
-    /**
-     * Meta contact groups expand memory.
-     */
-    private MetaGroupExpandHandler listExpandHandler;
 
     /**
      * The contact list view.
@@ -101,7 +95,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
     /**
      * The previously selected protocol provider, with which this dialog has been instantiated.
      */
-    private ProtocolProviderService preselectedProtocolProvider;
+    private final ProtocolProviderService preselectedProtocolProvider;
 
     /**
      * Indicates whether this conference invite dialog is associated with a Jitsi Videobridge invite.
@@ -129,34 +123,6 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
         if (preselectedProtocolProvider == null)
             initAccountSelectorPanel(protocolProviders);
         setOnShowListener(this);
-    }
-
-    /**
-     * Constructs the <code>ConferenceCallInviteDialog</code>.
-     */
-    public ConferenceCallInviteDialog(Context mContext) {
-        this(mContext, null, null, null, false);
-    }
-
-    /**
-     * Creates an instance of <code>ConferenceCallInviteDialog</code> by specifying an already created
-     * conference. To use when inviting contacts to an existing conference is needed.
-     *
-     * @param conference the existing <code>CallConference</code>
-     */
-    public ConferenceCallInviteDialog(Context mContext, CallConference conference) {
-        this(mContext, conference, null, null, false);
-    }
-
-    /**
-     * Creates an instance of <code>ConferenceCallInviteDialog</code> by specifying an already created
-     * conference. To use when inviting contacts to an existing conference is needed.
-     *
-     * @param conference the existing <code>CallConference</code>
-     */
-    public ConferenceCallInviteDialog(Context mContext, CallConference conference,
-            ProtocolProviderService preselectedProtocolProvider, boolean isJitsiVideobridge) {
-        this(mContext, conference, preselectedProtocolProvider, null, isJitsiVideobridge);
     }
 
     /**
@@ -211,7 +177,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
 
         mInviteButton.setOnClickListener(v -> {
             List<MetaContact> mContacts = new LinkedList<>(mucContactList.values());
-            if (mContacts.size() != 0) {
+            if (!mContacts.isEmpty()) {
                 if (isJitsiVideobridge)
                     inviteJitsiVideobridgeContacts(preselectedProtocolProvider, mContacts);
                 else
@@ -223,7 +189,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
             }
         });
 
-        mCancelButton = this.findViewById(R.id.buttonCancel);
+        Button mCancelButton = this.findViewById(R.id.buttonCancel);
         mCancelButton.setOnClickListener(v -> closeDialog());
         // this.initContactListData();
     }
@@ -231,8 +197,8 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
     private void initListAdapter() {
         contactListView.setAdapter(getContactListAdapter());
 
-        // Attach contact groups expand memory
-        listExpandHandler = new MetaGroupExpandHandler(contactListAdapter, contactListView);
+        // Attach Meta contact groups expand memory
+        MetaGroupExpandHandler listExpandHandler = new MetaGroupExpandHandler(contactListAdapter, contactListView);
         listExpandHandler.bindAndRestore();
 
         // setDialogMode to true to avoid contacts being filtered
@@ -330,7 +296,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
      */
     private void initAccountSelectorPanel(List<ProtocolProviderService> protocolProviders) {
         // Initialize the account selector box.
-        if (protocolProviders != null && protocolProviders.size() > 0)
+        if (protocolProviders != null && !protocolProviders.isEmpty())
             this.initAccountListData(protocolProviders);
         else
             this.initAccountListData();
@@ -403,7 +369,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
         }
 
         // Invite all selected.
-        if (callees.size() > 0) {
+        if (!callees.isEmpty()) {
             selectedProviderCallees.put(preselectedProtocolProvider, callees);
 
             if (conference != null) {

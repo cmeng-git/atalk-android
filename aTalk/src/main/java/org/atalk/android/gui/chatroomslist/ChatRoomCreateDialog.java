@@ -19,8 +19,9 @@ package org.atalk.android.gui.chatroomslist;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,6 +31,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
@@ -42,7 +50,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.ComboBox;
@@ -52,12 +60,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bookmarks.BookmarkManager;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.util.XmppStringUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -123,7 +125,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 
         chatRoomComboBox = findViewById(R.id.chatRoom_Combo);
         chatRoomComboBox.setOnItemClickListener(this);
-        new initComboBox().execute();
+        new InitComboBox().execute();
 
         accountsSpinner = findViewById(R.id.jid_Accounts_Spinner);
         // Init AccountSpinner only after initComboBox(), else onItemSelected() will get trigger.
@@ -164,9 +166,28 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
      * Creates the providers comboBox and filling its content with the current available chatRooms.
      * Add all available server's chatRooms to the chatRoomList when providers changed.
      */
-    private class initComboBox extends AsyncTask<Void, Void, List<String>> {
-        @Override
-        protected List<String> doInBackground(Void... params) {
+    private class InitComboBox {
+        public void execute() {
+
+            Executors.newSingleThreadExecutor().execute(() -> {
+                final List<String> chatRoomList = doInBackground();
+
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (chatRoomList.isEmpty())
+                        chatRoomList.add(CHATROOM);
+
+                    chatRoomComboBox.setText(chatRoomList.get(0));
+                    // Must do this after setText as it clear the list; otherwise only one item in the list
+                    chatRoomComboBox.setSuggestionSource(chatRoomList);
+
+                    // Update the dialog form fields with all the relevant values, for first chatRoomWrapperList entry if available.
+                    if (!chatRoomWrapperList.isEmpty())
+                        onItemClick(null, chatRoomComboBox, 0, 0);
+                });
+            });
+        }
+
+        private List<String> doInBackground() {
             chatRoomList.clear();
             chatRoomWrapperList.clear();
 
@@ -192,21 +213,6 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
             }
             return chatRoomList;
         }
-
-        @Override
-        protected void onPostExecute(List<String> result) {
-            super.onPostExecute(result);
-            if (chatRoomList.size() == 0)
-                chatRoomList.add(CHATROOM);
-
-            chatRoomComboBox.setText(chatRoomList.get(0));
-            // Must do this after setText as it clear the list; otherwise only one item in the list
-            chatRoomComboBox.setSuggestionSource(chatRoomList);
-
-            // Update the dialog form fields with all the relevant values, for first chatRoomWrapperList entry if available.
-            if (!chatRoomWrapperList.isEmpty())
-                onItemClick(null, chatRoomComboBox, 0, 0);
-        }
     }
 
     private void closeDialog() {
@@ -220,7 +226,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         String nickName = ViewUtil.toString(nicknameField);
         String chatRoomField = chatRoomComboBox.getText();
 
-        boolean mEnable = ((chatRoomField!= null) && (nickName != null) && (getSelectedProvider() != null));
+        boolean mEnable = ((chatRoomField != null) && (nickName != null) && (getSelectedProvider() != null));
         if (mEnable) {
             mJoinButton.setEnabled(true);
             mJoinButton.setAlpha(1.0f);
@@ -233,7 +239,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 
     @Override
     public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
-        new initComboBox().execute();
+        new InitComboBox().execute();
     }
 
     @Override
@@ -286,7 +292,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         if (TextUtils.isEmpty(nickName) && (getSelectedProvider() != null)) {
             ProtocolProviderService pps = getSelectedProvider().getProtocolProvider();
             if (pps != null) {
-                nickName = AndroidGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
+                nickName = AppGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
                 if ((nickName == null) || nickName.contains("@"))
                     nickName = XmppStringUtils.parseLocalpart(pps.getAccountID().getAccountJid());
             }
@@ -383,7 +389,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                 }
 
                 // Allow removal of new chatRoom if join failed
-                if (AndroidGUIActivator.getConfigurationService()
+                if (AppGUIActivator.getConfigurationService()
                         .getBoolean(MUCService.REMOVE_ROOM_ON_FIRST_JOIN_FAILED, false)) {
                     final ChatRoomWrapper crWrapper = chatRoomWrapper;
 
@@ -392,7 +398,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                             return;
 
                         // if we failed for some reason, then close and remove the room
-                        AndroidGUIActivator.getUIService().closeChatRoomWindow(crWrapper);
+                        AppGUIActivator.getUIService().closeChatRoomWindow(crWrapper);
                         MUCActivator.getMUCService().removeChatRoom(crWrapper);
                     });
                 }

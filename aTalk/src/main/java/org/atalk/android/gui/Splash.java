@@ -53,6 +53,7 @@ public class Splash extends BaseActivity {
             Timber.d("End of Splash screen Timer");
             mProgressBar.clearAnimation();
             myImageView.clearAnimation();
+            // must exit splash screen
             finish();
         }, 800);
     }

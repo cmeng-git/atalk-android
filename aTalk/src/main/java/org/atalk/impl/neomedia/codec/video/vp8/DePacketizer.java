@@ -28,9 +28,9 @@ import timber.log.Timber;
 
 /**
  * A depacketizer from VP8 codec.
- * See {@link "https://tools.ietf.org/html/rfc7741"}
- * See {@link "https://tools.ietf.org/html/draft-ietf-payload-vp8-17"}
- *
+ * See {@link "<a href="https://tools.ietf.org/html/rfc7741">...</a>"}
+ * See {@link "<a href="https://tools.ietf.org/html/draft-ietf-payload-vp8-17">...</a>"}
+ * <p>
  * Stores the RTP payloads (VP8 payload descriptor stripped) from RTP packets belonging to a
  * single VP8 compressed frame. Maps an RTP sequence number to a buffer which contains the payload.
  *
@@ -38,8 +38,7 @@ import timber.log.Timber;
  * @author George Politis
  * @author Eng Chong Meng
  */
-public class DePacketizer extends AbstractCodec2
-{
+public class DePacketizer extends AbstractCodec2 {
     private final SortedMap<Integer, Container> data = new TreeMap<>(RTPUtils.sequenceNumberComparator);
 
     /**
@@ -101,13 +100,12 @@ public class DePacketizer extends AbstractCodec2
      * Initializes a new <code>AbstractCodec2</code> instance with a specific <code>PlugIn</code> name, a
      * specific <code>Class</code> of input and output <code>Format</code>s, and a specific list of
      * <code>Format</code>s supported as output.
-     *
+     * <p>
      * name: the <code>PlugIn</code> name of the new instance
      * VideoFormat.class: the <code>Class</code> of input and output <code>Format</code>s supported by the new instance
      * VideoFormat: the list of <code>Format</code>s supported by the new instance as output @Super parameters
      */
-    public DePacketizer()
-    {
+    public DePacketizer() {
         super("VP8 RTP DePacketizer", VideoFormat.class,
                 new VideoFormat[]{new VideoFormat(Constants.VP8)});
         inputFormats = new VideoFormat[]{new VideoFormat(Constants.VP8_RTP)};
@@ -117,8 +115,7 @@ public class DePacketizer extends AbstractCodec2
      * {@inheritDoc}
      */
     @Override
-    protected void doClose()
-    {
+    protected void doClose() {
     }
 
     /**
@@ -126,16 +123,14 @@ public class DePacketizer extends AbstractCodec2
      */
     @Override
     protected void doOpen()
-            throws ResourceUnavailableException
-    {
+            throws ResourceUnavailableException {
         Timber.log(TimberLog.FINER, "Opened VP8 dePacketizer");
     }
 
     /**
      * Re-initializes the fields which store information about the currently held data. Empties <code>data</code>.
      */
-    private void reinit()
-    {
+    private void reinit() {
         firstSeq = lastSeq = -1;
         timestamp = -1L;
         pictureId = -1;
@@ -158,8 +153,7 @@ public class DePacketizer extends AbstractCodec2
      *
      * @return <code>true</code> if the currently help VP8 compressed frame is complete, <code>false</code> otherwise.
      */
-    private boolean frameComplete()
-    {
+    private boolean frameComplete() {
         return haveStart && haveEnd && !haveMissing();
     }
 
@@ -170,8 +164,7 @@ public class DePacketizer extends AbstractCodec2
      * @return <code>true</code> if there are packets with sequence numbers between
      * <code>firstSeq</code> and <code>lastSeq</code> which are *not* stored in <code>data</code>.
      */
-    private boolean haveMissing()
-    {
+    private boolean haveMissing() {
         Set<Integer> seqs = data.keySet();
         int s = firstSeq;
         while (s != lastSeq) {
@@ -186,8 +179,7 @@ public class DePacketizer extends AbstractCodec2
      * {@inheritDoc}
      */
     @Override
-    protected int doProcess(Buffer inBuffer, Buffer outBuffer)
-    {
+    protected int doProcess(Buffer inBuffer, Buffer outBuffer) {
         byte[] inData = (byte[]) inBuffer.getData();
         int inOffset = inBuffer.getOffset();
         int inLength = inBuffer.getLength();
@@ -228,7 +220,7 @@ public class DePacketizer extends AbstractCodec2
                     outBuffer.setDiscard(true);
                     return BUFFER_PROCESSED_OK;
                 }
-                // ReSync the firstSeq if process has dropped out data; must do this else MediaCodec decoder has problem
+                // ReSync the firstSeq if process has dropped out data; must do this else Codec decoder has problem
                 else if (RTPUtils.sequenceNumberComparator.compare(inSeq, firstSeq) > 0) {
                     firstSeq = inSeq;
                 }
@@ -327,10 +319,10 @@ public class DePacketizer extends AbstractCodec2
      * @param buf the byte buffer to check
      * @param off the offset in the byte buffer where the actual data starts
      * @param len the length of the data in the byte buffer
+     *
      * @return true if the buffer contains a VP8 key frame at offset <code>offset</code>.
      */
-    public static boolean isKeyFrame(byte[] buf, int off, int len)
-    {
+    public static boolean isKeyFrame(byte[] buf, int off, int len) {
         // Check if this is the start of a VP8 partition in the payload descriptor.
         if (!DePacketizer.VP8PayloadDescriptor.isValid(buf, off, len)) {
             return false;
@@ -346,10 +338,9 @@ public class DePacketizer extends AbstractCodec2
 
     /**
      * A class that represents the VP8 Payload Descriptor structure defined
-     * in {@link "https://tools.ietf.org/html/rfc7741"}
+     * in {@link "<a href="https://tools.ietf.org/html/rfc7741">...</a>"}
      */
-    public static class VP8PayloadDescriptor
-    {
+    public static class VP8PayloadDescriptor {
         /**
          * The bitmask for the TL0PICIDX field.
          */
@@ -424,10 +415,10 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that holds the VP8 packet.
          * @param off the offset in the byte buffer where the VP8 packet starts.
          * @param len the length of the VP8 packet.
+         *
          * @return the TID/Y/KEYIDX extension byte, if that's set, -1 otherwise.
          */
-        private static byte getTidYKeyIdxExtensionByte(byte[] buf, int off, int len)
-        {
+        private static byte getTidYKeyIdxExtensionByte(byte[] buf, int off, int len) {
             if (buf == null || buf.length < off + len || len < 2) {
                 return -1;
             }
@@ -450,10 +441,10 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that holds the VP8 packet.
          * @param off the offset in the byte buffer where the VP8 packet starts.
          * @param len the length of the VP8 packet.
+         *
          * @return the temporal layer index (TID), if that's set, -1 otherwise.
          */
-        public static int getTemporalLayerIndex(byte[] buf, int off, int len)
-        {
+        public static int getTemporalLayerIndex(byte[] buf, int off, int len) {
             byte tidYKeyIdxByte = getTidYKeyIdxExtensionByte(buf, off, len);
 
             return tidYKeyIdxByte != -1 && (buf[off + 1] & T_BIT) != 0 ? (tidYKeyIdxByte & TID_MASK) >> 6 : tidYKeyIdxByte;
@@ -465,10 +456,10 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that holds the VP8 packet.
          * @param off the offset in the byte buffer where the VP8 packet starts.
          * @param len the length of the VP8 packet.
+         *
          * @return the 1 layer sync bit (Y BIT), if that's set, -1 otherwise.
          */
-        public static int getFirstLayerSyncBit(byte[] buf, int off, int len)
-        {
+        public static int getFirstLayerSyncBit(byte[] buf, int off, int len) {
             byte tidYKeyIdxByte = getTidYKeyIdxExtensionByte(buf, off, len);
 
             return tidYKeyIdxByte != -1 ? (tidYKeyIdxByte & Y_BIT) >> 5 : tidYKeyIdxByte;
@@ -480,10 +471,10 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that holds the VP8 packet.
          * @param off the offset in the byte buffer where the VP8 packet starts.
          * @param len the length of the VP8 packet.
+         *
          * @return the temporal key frame index (KEYIDX), if that's set, -1 otherwise.
          */
-        public static int getTemporalKeyFrameIndex(byte[] buf, int off, int len)
-        {
+        public static int getTemporalKeyFrameIndex(byte[] buf, int off, int len) {
             byte tidYKeyIdxByte = getTidYKeyIdxExtensionByte(buf, off, len);
 
             return tidYKeyIdxByte != -1 && (buf[off + 1] & K_BIT) != 0 ? (tidYKeyIdxByte & KEYIDX_MASK) : tidYKeyIdxByte;
@@ -494,11 +485,11 @@ public class DePacketizer extends AbstractCodec2
          * according to <code>startOfPartition</code>, and all other bits set to 0.
          *
          * @param startOfPartition whether to 'start of partition' bit should be set
+         *
          * @return a simple Payload Descriptor, with PartID = 0, the 'start of partition' bit set
          * according to <code>startOfPartition</code>, and all other bits set to 0.
          */
-        public static byte[] create(boolean startOfPartition)
-        {
+        public static byte[] create(boolean startOfPartition) {
             byte[] pd = new byte[1];
             pd[0] = startOfPartition ? (byte) 0x10 : 0;
             return pd;
@@ -509,12 +500,12 @@ public class DePacketizer extends AbstractCodec2
          * <code>offset</code> in <code>input</code>. The size is between 1 and 6.
          *
          * @param baf the <code>ByteArrayBuffer</code> that holds the VP8 payload descriptor.
+         *
          * @return The size in bytes of the Payload Descriptor at offset
          * <code>offset</code> in <code>input</code>, or -1 if the input is not a valid
          * VP8 Payload Descriptor. The size is between 1 and 6.
          */
-        public static int getSize(ByteArrayBuffer baf)
-        {
+        public static int getSize(ByteArrayBuffer baf) {
             if (baf == null) {
                 return -1;
             }
@@ -528,12 +519,12 @@ public class DePacketizer extends AbstractCodec2
          * @param input input
          * @param offset offset
          * @param length length
+         *
          * @return The size in bytes of the Payload Descriptor at offset
          * <code>offset</code> in <code>input</code>, or -1 if the input is not a valid
          * VP8 Payload Descriptor. The size is between 1 and 6.
          */
-        public static int getSize(byte[] input, int offset, int length)
-        {
+        public static int getSize(byte[] input, int offset, int length) {
             if (!isValid(input, offset, length))
                 return -1;
 
@@ -561,10 +552,10 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that contains the VP8 payload.
          * @param off the offset in the byte buffer where the VP8 payload starts.
          * @param len the length of the VP8 payload in the byte buffer.
+         *
          * @return true if the VP8 payload contains a picture ID, false otherwise.
          */
-        public static boolean hasPictureId(byte[] buf, int off, int len)
-        {
+        public static boolean hasPictureId(byte[] buf, int off, int len) {
             return isValid(buf, off, len)
                     && (buf[off] & X_BIT) != 0 && (buf[off + 1] & I_BIT) != 0;
         }
@@ -576,10 +567,10 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that contains the VP8 payload.
          * @param off the offset in the byte buffer where the VP8 payload starts.
          * @param len the length of the VP8 payload in the byte buffer.
+         *
          * @return true if the VP8 payload contains an extended picture ID, false otherwise.
          */
-        public static boolean hasExtendedPictureId(byte[] buf, int off, int len)
-        {
+        public static boolean hasExtendedPictureId(byte[] buf, int off, int len) {
             return hasPictureId(buf, off, len) && (buf[off + 2] & M_BIT) != 0;
         }
 
@@ -588,11 +579,11 @@ public class DePacketizer extends AbstractCodec2
          *
          * @param input
          * @param offset
+         *
          * @return the value of the PictureID field of a VP8 Payload Descriptor,
          * or -1 if the fields is not present.
          */
-        public static int getPictureId(byte[] input, int offset)
-        {
+        public static int getPictureId(byte[] input, int offset) {
             if (input == null
                     || !hasPictureId(input, offset, input.length - offset)) {
                 return -1;
@@ -614,11 +605,11 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that contains the VP8 payload.
          * @param off the offset in the byte buffer where the VP8 payload starts.
          * @param len the length of the VP8 payload in the byte buffer.
+         *
          * @return true if the operation succeeded, false otherwise.
          */
         public static boolean setExtendedPictureId(
-                byte[] buf, int off, int len, int val)
-        {
+                byte[] buf, int off, int len, int val) {
             if (!hasExtendedPictureId(buf, off, len)) {
                 return false;
             }
@@ -635,10 +626,10 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that contains the VP8 payload.
          * @param off the offset in the byte buffer where the VP8 payload starts.
          * @param len the length of the VP8 payload in the byte buffer.
+         *
          * @return true if the operation succeeded, false otherwise.
          */
-        public static boolean setTL0PICIDX(byte[] buf, int off, int len, int val)
-        {
+        public static boolean setTL0PICIDX(byte[] buf, int off, int len, int val) {
             if (!isValid(buf, off, len)
                     || (buf[off] & X_BIT) == 0 || (buf[off + 1] & L_BIT) == 0) {
                 return false;
@@ -662,11 +653,11 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that contains the VP8 payload.
          * @param off the offset in the byte buffer where the VP8 payload starts.
          * @param len the length of the VP8 payload in the byte buffer.
+         *
          * @return true if the arguments specify a valid buffer, false
          * otherwise.
          */
-        public static boolean isValid(byte[] buf, int off, int len)
-        {
+        public static boolean isValid(byte[] buf, int off, int len) {
             return buf != null && buf.length >= off + len && off > -1 && len > 0;
         }
 
@@ -676,11 +667,11 @@ public class DePacketizer extends AbstractCodec2
          *
          * @param input input
          * @param offset offset
+         *
          * @return <code>true</code> if the '<code>start of partition</code>' bit is set,
          * <code>false</code> otherwise.
          */
-        public static boolean isStartOfPartition(byte[] input, int offset)
-        {
+        public static boolean isStartOfPartition(byte[] input, int offset) {
             return (input[offset] & S_BIT) != 0;
         }
 
@@ -691,12 +682,12 @@ public class DePacketizer extends AbstractCodec2
          *
          * @param input input
          * @param offset offset
+         *
          * @return <code>true</code> if both the '<code>start of partition</code>' bit
          * is set and the <code>PID</code> fields has value 0 in the VP8 Payload
          * Descriptor at offset <code>offset</code> in <code>input</code>.
          */
-        public static boolean isStartOfFrame(byte[] input, int offset)
-        {
+        public static boolean isStartOfFrame(byte[] input, int offset) {
             return isStartOfPartition(input, offset)
                     && getPartitionId(input, offset) == 0;
         }
@@ -707,11 +698,11 @@ public class DePacketizer extends AbstractCodec2
          *
          * @param input input
          * @param offset offset
+         *
          * @return the value of the <code>PID</code> (partition ID) field of the
          * VP8 Payload Descriptor at offset <code>offset</code> in <code>input</code>.
          */
-        public static int getPartitionId(byte[] input, int offset)
-        {
+        public static int getPartitionId(byte[] input, int offset) {
             return input[offset] & 0x07;
         }
 
@@ -721,10 +712,10 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that holds the VP8 payload descriptor.
          * @param off the offset in the byte buffer where the payload descriptor starts.
          * @param len the length of the payload descriptor in the byte buffer.
+         *
          * @return true if the non-reference bit is NOT set, false otherwise.
          */
-        public static boolean isReference(byte[] buf, int off, int len)
-        {
+        public static boolean isReference(byte[] buf, int off, int len) {
             return (buf[off] & N_BIT) == 0;
         }
 
@@ -734,10 +725,10 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that holds the VP8 payload descriptor.
          * @param off the offset in the byte buffer where the payload descriptor starts.
          * @param len the length of the payload descriptor in the byte buffer.
+         *
          * @return the TL0PICIDX from the payload descriptor.
          */
-        public static int getTL0PICIDX(byte[] buf, int off, int len)
-        {
+        public static int getTL0PICIDX(byte[] buf, int off, int len) {
             int sz = getSize(buf, off, len);
             if (sz < 1) {
                 return -1;
@@ -753,10 +744,10 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that holds the VP8 payload descriptor.
          * @param off the offset in the byte buffer where the payload descriptor starts.
          * @param len the length of the payload descriptor in the byte buffer.
+         *
          * @return Descriptive string of the vp8 info
          */
-        public static String toString(byte[] buf, int off, int len)
-        {
+        public static String toString(byte[] buf, int off, int len) {
             return "VP8PayloadDescriptor" +
                     "[size=" + getSize(buf, off, len) +
                     ", tid=" + getTemporalLayerIndex(buf, off, len) +
@@ -772,8 +763,7 @@ public class DePacketizer extends AbstractCodec2
      * A class that represents the VP8 Payload Header structure defined
      * in {@link "https://tools.ietf.org/html/rfc7741"}
      */
-    public static class VP8PayloadHeader
-    {
+    public static class VP8PayloadHeader {
         /**
          * P bit of the Payload Descriptor.
          */
@@ -786,8 +776,7 @@ public class DePacketizer extends AbstractCodec2
          * @return true if the <code>P</code> (inverse key frame flag) field of the
          * VP8 Payload Header at offset <code>offset</code> in <code>input</code> is 0, false otherwise.
          */
-        public static boolean isKeyFrame(byte[] input, int offset)
-        {
+        public static boolean isKeyFrame(byte[] input, int offset) {
             // When set to 0 the current frame is a key frame.  When set to 1
             // the current frame is an interframe. Defined in [RFC6386]
 
@@ -800,8 +789,7 @@ public class DePacketizer extends AbstractCodec2
      *
      * @author George Politis
      */
-    public static class VP8KeyframeHeader
-    {
+    public static class VP8KeyframeHeader {
         /*
          * From RFC 6386, the keyframe header has this format.
          *
@@ -816,8 +804,7 @@ public class DePacketizer extends AbstractCodec2
         /**
          * @return the height of this instance.
          */
-        public static int getHeight(byte[] buf, int off)
-        {
+        public static int getHeight(byte[] buf, int off) {
             return (((buf[off + 6] & 0xff) << 8) | buf[off + 5] & 0xff) & 0x3fff;
         }
     }
@@ -825,8 +812,7 @@ public class DePacketizer extends AbstractCodec2
     /**
      * A simple container for a <code>byte[]</code> and an integer.
      */
-    private static class Container
-    {
+    private static class Container {
         /**
          * This <code>Container</code>'s data.
          */

@@ -27,6 +27,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.ViewGroup;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -132,6 +134,7 @@ public class aTalk extends MainMenuActivity {
         mPager.setPageTransformer(true, new DepthPageTransformer());
 
         handleIntent(getIntent(), savedInstanceState);
+        getOnBackPressedDispatcher().addCallback(backPressedCallback);
 
         // allow 15 seconds for first launch login to complete before showing history log if the activity is still active
         ChangeLog cl = new ChangeLog(this);
@@ -217,25 +220,27 @@ public class aTalk extends MainMenuActivity {
      * Back button. If Telephony fragment is shown, backKey closes the fragment only.
      * The call finish() on this activity and pops the back stack.
      */
-    @Override
-    public void onBackPressed() {
-        if (mPager.getCurrentItem() == 0) {
-            // mTelephony is not null if Telephony is closed by Cancel button.
-            if (mTelephony != null) {
-                if (!mTelephony.closeFragment()) {
-                    super.onBackPressed();
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            if (mPager.getCurrentItem() == 0) {
+                // mTelephony is not null if Telephony is closed by Cancel button.
+                if (mTelephony != null) {
+                    if (!mTelephony.closeFragment()) {
+                        finish();
+                    }
+                    mTelephony = null;
                 }
-                mTelephony = null;
+                else {
+                    finish();
+                }
             }
             else {
-                super.onBackPressed();
+                // Otherwise, select the previous page.
+                mPager.setCurrentItem(mPager.getCurrentItem() - 1);
             }
         }
-        else {
-            // Otherwise, select the previous page.
-            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-        }
-    }
+    };
 
     /**
      * Called when an activity is destroyed.
@@ -268,7 +273,7 @@ public class aTalk extends MainMenuActivity {
     /**
      * A simple pager adapter that represents 3 Screen Slide PageFragment objects, in sequence.
      */
-    private class MainPagerAdapter extends FragmentPagerAdapter {
+    private static class MainPagerAdapter extends FragmentPagerAdapter {
         private MainPagerAdapter(FragmentManager fm) {
             // Must use BEHAVIOR_SET_USER_VISIBLE_HINT to see conference list on first slide to conference view
             // super(fm, BEHAVIOR_SET_USER_VISIBLE_HINT); not valid anymore after change to BaseChatRoomListAdapter
@@ -399,7 +404,7 @@ public class aTalk extends MainMenuActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, int @NotNull [] grantResults) {
         Timber.d("onRequestPermissionsResult: %s => %s", requestCode, permissions);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PRC_RECORD_AUDIO) {

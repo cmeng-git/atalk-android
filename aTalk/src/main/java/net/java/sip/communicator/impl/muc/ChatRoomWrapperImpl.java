@@ -27,7 +27,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.util.event.PropertyChangeNotifier;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -358,7 +358,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      * @param pps the ProtocolProviderService
      */
     private String getDefaultNickname(ProtocolProviderService pps) {
-        String nickName = AndroidGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
+        String nickName = AppGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
         if ((nickName == null) || nickName.contains("@"))
             nickName = XmppStringUtils.parseLocalpart(pps.getAccountID().getAccountJid());
 

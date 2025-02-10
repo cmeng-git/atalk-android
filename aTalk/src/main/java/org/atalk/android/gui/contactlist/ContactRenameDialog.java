@@ -19,10 +19,10 @@ import net.java.sip.communicator.service.contactlist.MetaContactListException;
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
+import org.atalk.android.gui.dialogs.BaseDialogFragment;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.osgi.OSGiDialogFragment;
 
 import timber.log.Timber;
 
@@ -32,7 +32,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ContactRenameDialog extends OSGiDialogFragment
+public class ContactRenameDialog extends BaseDialogFragment
         implements DialogInterface.OnClickListener {
     /**
      * Meta UID arg key.
@@ -59,7 +59,7 @@ public class ContactRenameDialog extends OSGiDialogFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getDialog().setTitle(R.string.contact_rename_title);
-        this.metaContact = AndroidGUIActivator.getContactListService()
+        this.metaContact = AppGUIActivator.getContactListService()
                 .findMetaContactByMetaUID(getArguments().getString(META_CONTACT_UID));
 
         View contentView = inflater.inflate(R.layout.contact_rename, container, false);
@@ -91,7 +91,7 @@ public class ContactRenameDialog extends OSGiDialogFragment
             @Override
             public void run() {
                 try {
-                    AndroidGUIActivator.getContactListService().renameMetaContact(metaContact, newDisplayName);
+                    AppGUIActivator.getContactListService().renameMetaContact(metaContact, newDisplayName);
                 } catch (MetaContactListException e) {
                     Timber.e(e, "%s", e.getMessage());
                     showErrorMessage(e.getMessage());

@@ -33,8 +33,7 @@ import org.osgi.framework.ServiceRegistration;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class LoggingUtilsActivator implements BundleActivator
-{
+public class LoggingUtilsActivator implements BundleActivator {
     /**
      * The OSGI bundle context.
      */
@@ -79,11 +78,11 @@ public class LoggingUtilsActivator implements BundleActivator
      * Creates and register logging configuration.
      *
      * @param bundleContext OSGI bundle context
+     *
      * @throws Exception if error creating configuration.
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         LoggingUtilsActivator.bundleContext = bundleContext;
         getConfigurationService().setProperty(DISABLED_PROP, "true");
 
@@ -97,8 +96,7 @@ public class LoggingUtilsActivator implements BundleActivator
      * @param bundleContext the OSGI bundle context
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         logUploadServReg.unregister();
         logUploadImpl.dispose();
     }
@@ -108,10 +106,9 @@ public class LoggingUtilsActivator implements BundleActivator
      *
      * @return the <code>ResourceManagementService</code> obtained from the bundle context
      */
-    public static ResourceManagementService getResourceService()
-    {
+    public static ResourceManagementService getResourceService() {
         if (resourceService == null) {
-            ServiceReference resourceReference
+            ServiceReference<?> resourceReference
                     = bundleContext.getServiceReference(ResourceManagementService.class.getName());
             resourceService = (ResourceManagementService) bundleContext.getService(resourceReference);
         }
@@ -124,10 +121,9 @@ public class LoggingUtilsActivator implements BundleActivator
      *
      * @return a currently valid implementation of the ConfigurationService.
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configurationService == null) {
-            ServiceReference serviceReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
+            ServiceReference<?> serviceReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
             configurationService = (ConfigurationService) bundleContext.getService(serviceReference);
         }
         return configurationService;
@@ -136,7 +132,7 @@ public class LoggingUtilsActivator implements BundleActivator
     /*
      * (cmeng: for android)
      * Returns a reference to a FileAccessService implementation currently registered in the bundle context
-      * or null if no such implementation was found.
+     * or null if no such implementation was found.
      *
      * @return a currently valid implementation of the FileAccessService .
      *
@@ -144,8 +140,7 @@ public class LoggingUtilsActivator implements BundleActivator
      *
      * @return the <code>FileAccessService</code> obtained from the bundle context
      */
-    public static FileAccessService getFileAccessService()
-    {
+    public static FileAccessService getFileAccessService() {
         if (fileAccessService == null) {
             fileAccessService = ServiceUtils.getService(bundleContext, FileAccessService.class);
         }
@@ -157,8 +152,7 @@ public class LoggingUtilsActivator implements BundleActivator
      *
      * @return the <code>NotificationService</code> obtained from the bundle context
      */
-    public static NotificationService getNotificationService()
-    {
+    public static NotificationService getNotificationService() {
         if (notificationService == null) {
             notificationService = ServiceUtils.getService(bundleContext, NotificationService.class);
         }

@@ -17,7 +17,6 @@
 package org.atalk.android.gui.chatroomslist;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -36,12 +35,19 @@ import android.widget.TextView;
 
 import androidx.fragment.app.FragmentManager;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.gui.util.MultiSelectionSpinner;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.osgi.OSGiFragment;
 import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -55,12 +61,6 @@ import org.jivesoftware.smackx.xdata.ListSingleFormField;
 import org.jivesoftware.smackx.xdata.form.FillableForm;
 import org.jivesoftware.smackx.xdata.form.Form;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -68,8 +68,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class ChatRoomConfiguration extends OSGiFragment
-{
+public class ChatRoomConfiguration extends BaseFragment {
     /**
      * Declare as static to support rotation, otherwise crash when user rotate
      * Instead of using save Bundle approach
@@ -77,7 +76,6 @@ public class ChatRoomConfiguration extends OSGiFragment
     private static ChatRoomWrapper mChatRoomWrapper;
     private static ChatRoomConfigListener mCrcListener = null;
 
-    private Context mContext;
     private MultiUserChat multiUserChat;
 
     /**
@@ -93,7 +91,7 @@ public class ChatRoomConfiguration extends OSGiFragment
     /**
      * Map contains a list of the user selected/changed room properties
      */
-    private Map<String, Object> configUpdates = new HashMap<>();
+    private final Map<String, Object> configUpdates = new HashMap<>();
 
     /**
      * The Room configuration list view adapter for user selection
@@ -108,11 +106,10 @@ public class ChatRoomConfiguration extends OSGiFragment
     /**
      * Constructs the <code>ChatRoomConfiguration</code>.
      *
-     * @param mContext the <code>ChatActivity</code> corresponding to the <code>Chat Session</code>
      * @param chatRoomWrapper user joined ChatRoomWrapper for the <code>Chat Session</code>
+     * @param crcListener ChatRoomConfigListener
      */
-    public static ChatRoomConfiguration getInstance(ChatRoomWrapper chatRoomWrapper, ChatRoomConfigListener crcListener)
-    {
+    public static ChatRoomConfiguration getInstance(ChatRoomWrapper chatRoomWrapper, ChatRoomConfigListener crcListener) {
         ChatRoomConfiguration fragment = new ChatRoomConfiguration();
         mChatRoomWrapper = chatRoomWrapper;
         mCrcListener = crcListener;
@@ -123,10 +120,7 @@ public class ChatRoomConfiguration extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        mContext = this.getContext();
-
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.chatroom_config, container, false);
         mTitle = contentView.findViewById(R.id.config_title);
 
@@ -135,23 +129,21 @@ public class ChatRoomConfiguration extends OSGiFragment
         configListView.setAdapter(configListAdapter);
 
         Button cancelButton = contentView.findViewById(R.id.rcb_Cancel);
-        cancelButton.setOnClickListener(v -> onBackPressed());
+        cancelButton.setOnClickListener(v -> handleBackPressed());
 
         Button submitButton = contentView.findViewById(R.id.rcb_Submit);
         submitButton.setOnClickListener(v -> {
             if (processRoomConfiguration())
-                onBackPressed();
+                handleBackPressed();
         });
 
         return contentView;
     }
 
     /**
-     * Use internal or call from ChatActivity: method not supported in a fragment.
-     * Fragment does not support onBackPressed method.
+     * Use locally or call from ChatActivity. Fragment does not support onBackPressed method.
      */
-    public void onBackPressed()
-    {
+    public void handleBackPressed() {
         FragmentManager fm = getParentFragmentManager();
         if (fm.getBackStackEntryCount() > 0) {
             fm.popBackStack();
@@ -165,8 +157,7 @@ public class ChatRoomConfiguration extends OSGiFragment
      * Process the user selected room configurations (in configAnswers) and submit them to server.
      * Note: any properties for no persistent room will be reset to default when last participant left.
      */
-    private boolean processRoomConfiguration()
-    {
+    private boolean processRoomConfiguration() {
         Map<String, Object> updates = Collections.synchronizedMap(configUpdates);
         for (Map.Entry<String, Object> entry : updates.entrySet()) {
             String variable = entry.getKey();
@@ -194,7 +185,7 @@ public class ChatRoomConfiguration extends OSGiFragment
             try {
                 multiUserChat.sendConfigurationForm(replyForm);
             } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
-                    | SmackException.NotConnectedException | InterruptedException e) {
+                     | SmackException.NotConnectedException | InterruptedException e) {
                 Timber.w("Room configuration submit exception: %s", e.getMessage());
             }
         }
@@ -204,37 +195,31 @@ public class ChatRoomConfiguration extends OSGiFragment
     /**
      * Adapter displaying all the available room configuration properties for user selection.
      */
-    private class ConfigListAdapter extends BaseAdapter
-    {
-        private LayoutInflater mInflater;
+    private class ConfigListAdapter extends BaseAdapter {
+        private final LayoutInflater mInflater;
 
-        private ConfigListAdapter(LayoutInflater inflater)
-        {
+        private ConfigListAdapter(LayoutInflater inflater) {
             mInflater = inflater;
-            new getRoomConfig().execute();
+            new RoomConfigInfo().execute();
         }
 
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return formFields.size();
         }
 
         @Override
-        public Object getItem(int position)
-        {
+        public Object getItem(int position) {
             return formFields.get(position);
         }
 
         @Override
-        public long getItemId(int position)
-        {
+        public long getItemId(int position) {
             return position;
         }
 
         @Override
-        public int getItemViewType(int position)
-        {
+        public int getItemViewType(int position) {
             int viewType = -1;
 
             FormField formField = formFields.get(position);
@@ -245,20 +230,17 @@ public class ChatRoomConfiguration extends OSGiFragment
         }
 
         @Override
-        public int getViewTypeCount()
-        {
+        public int getViewTypeCount() {
             return FormField.Type.values().length;
         }
 
         @Override
-        public boolean isEmpty()
-        {
+        public boolean isEmpty() {
             return getCount() == 0;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
+        public View getView(int position, View convertView, ViewGroup parent) {
             List<Option> ffOptions;
             List<String> optionList = new ArrayList<>();
             List<String> valueList = new ArrayList<>();
@@ -287,7 +269,7 @@ public class ChatRoomConfiguration extends OSGiFragment
                                 cb.setChecked((Boolean) objValue);
                             }
                             else {
-                                cb.setChecked(((BooleanFormField)ff).getValueAsBoolean());
+                                cb.setChecked(((BooleanFormField) ff).getValueAsBoolean());
                             }
                             cb.setOnCheckedChangeListener((cb1, isChecked) -> configUpdates.put(fieldName, isChecked));
                             break;
@@ -306,7 +288,6 @@ public class ChatRoomConfiguration extends OSGiFragment
                             }
 
                             // Create both optionList and valueList both using optLabels as keys
-                            mapOption.clear();
                             ffOptions = ((ListMultiFormField) ff).getOptions();
                             for (Option option : ffOptions) {
                                 String optLabel = option.getLabel();
@@ -340,7 +321,6 @@ public class ChatRoomConfiguration extends OSGiFragment
                             textLabel = convertView.findViewById(R.id.cr_attr_label);
                             textLabel.setText(label);
 
-                            mapOption.clear();
                             ffOptions = ((ListSingleFormField) ff).getOptions();
                             for (Option option : ffOptions) {
                                 String optLabel = option.getLabel();
@@ -361,18 +341,15 @@ public class ChatRoomConfiguration extends OSGiFragment
                             }
 
                             spinner.setSelection(valueList.indexOf(firstValue), false);
-                            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                            {
+                            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                 @Override
-                                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
-                                {
+                                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                                     String optSelected = optionList.get(position);
                                     configUpdates.put(fieldName, mapOption.get(optSelected));
                                 }
 
                                 @Override
-                                public void onNothingSelected(AdapterView<?> parentView)
-                                {
+                                public void onNothingSelected(AdapterView<?> parentView) {
                                     // your code here
                                 }
                             });
@@ -391,24 +368,20 @@ public class ChatRoomConfiguration extends OSGiFragment
                             editText = convertView.findViewById(R.id.passwordField);
                             editText.setText(firstValue);
 
-                            editText.addTextChangedListener(new TextWatcher()
-                            {
+                            editText.addTextChangedListener(new TextWatcher() {
                                 @Override
-                                public void afterTextChanged(Editable s)
-                                {
+                                public void afterTextChanged(Editable s) {
                                     if (s != null) {
                                         configUpdates.put(fieldName, s.toString());
                                     }
                                 }
 
                                 @Override
-                                public void beforeTextChanged(CharSequence s, int start, int count, int after)
-                                {
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                                 }
 
                                 @Override
-                                public void onTextChanged(CharSequence s, int start, int before, int count)
-                                {
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
                                 }
                             });
 
@@ -431,24 +404,20 @@ public class ChatRoomConfiguration extends OSGiFragment
                             editText = convertView.findViewById(R.id.cr_attr_value);
                             editText.setText(firstValue);
 
-                            editText.addTextChangedListener(new TextWatcher()
-                            {
+                            editText.addTextChangedListener(new TextWatcher() {
                                 @Override
-                                public void afterTextChanged(Editable s)
-                                {
+                                public void afterTextChanged(Editable s) {
                                     if (s != null) {
                                         configUpdates.put(fieldName, s.toString());
                                     }
                                 }
 
                                 @Override
-                                public void beforeTextChanged(CharSequence s, int start, int count, int after)
-                                {
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                                 }
 
                                 @Override
-                                public void onTextChanged(CharSequence s, int start, int before, int count)
-                                {
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
                                 }
                             });
                             break;
@@ -476,45 +445,43 @@ public class ChatRoomConfiguration extends OSGiFragment
          * Retrieve the chatRoom configuration fields from the server and init the default replyFrom
          * Populate the fragment with the available options in getView()
          */
-        private class getRoomConfig extends AsyncTask<Void, Void, Form>
-        {
-            @Override
-            protected void onPreExecute()
-            {
+        private class RoomConfigInfo {
+            public RoomConfigInfo() {
                 MultiUserChatManager mMucMgr
                         = MultiUserChatManager.getInstanceFor(mChatRoomWrapper.getProtocolProvider().getConnection());
                 multiUserChat = mMucMgr.getMultiUserChat(mChatRoomWrapper.getEntityBareJid());
             }
 
-            @Override
-            protected Form doInBackground(Void... params)
-            {
+            public void execute() {
+                Executors.newSingleThreadExecutor().execute(() -> {
+                    final Form initForm = doInBackground();
+
+                    runOnUiThread(() -> {
+                        if (initForm != null) {
+                            mTitle.setText(initForm.getTitle());
+
+                            formFields = initForm.getDataForm().getFields();
+                            replyForm = initForm.getFillableForm();
+                        }
+                        configListAdapter.notifyDataSetChanged();
+                    });
+                });
+            }
+
+            private Form doInBackground() {
                 Form initForm = null;
                 try {
                     initForm = multiUserChat.getConfigurationForm();
                 } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
-                        | SmackException.NotConnectedException | InterruptedException e) {
+                         | SmackException.NotConnectedException | InterruptedException e) {
                     Timber.w("Exception in get room configuration form %s", e.getMessage());
                 }
                 return initForm;
             }
-
-            @Override
-            protected void onPostExecute(Form initForm)
-            {
-                if (initForm != null) {
-                    mTitle.setText(initForm.getTitle());
-
-                    formFields = initForm.getDataForm().getFields();
-                    replyForm = initForm.getFillableForm();
-                }
-                configListAdapter.notifyDataSetChanged();
-            }
         }
     }
 
-    public interface ChatRoomConfigListener
-    {
+    public interface ChatRoomConfigListener {
         void onConfigComplete(Map<String, Object> configUpdates);
     }
 }

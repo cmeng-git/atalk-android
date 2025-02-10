@@ -37,7 +37,8 @@ import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusCha
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.BaseActivity;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.PresenceFilter;
@@ -133,7 +134,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      * Initializes the adapter data.
      */
     public void initModelData() {
-        contactListService = AndroidGUIActivator.getContactListService();
+        contactListService = AppGUIActivator.getContactListService();
         if (contactListService != null) {
             addContacts(contactListService.getRoot(), true);
             contactListService.addMetaContactListListener(this);
@@ -459,7 +460,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
         if (groupIndex >= 0) {
             int contactIndex = getChildIndex(getContactList(groupIndex), metaContact);
             if (contactIndex >= 0) {
-                uiHandler.post(() -> updateBlockStatus(groupIndex, contactIndex, contact));
+                BaseActivity.uiHandler.post(() -> updateBlockStatus(groupIndex, contactIndex, contact));
             }
         }
     }
@@ -471,7 +472,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactAdded(MetaContactEvent evt) {
         Timber.d("CONTACT ADDED: %s", evt.getSourceMetaContact());
-        uiHandler.post(() -> {
+        BaseActivity.uiHandler.post(() -> {
             addContact(evt.getParentGroup(), evt.getSourceMetaContact());
             notifyDataSetChanged();
         });
@@ -494,7 +495,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactRemoved(MetaContactEvent evt) {
         Timber.d("CONTACT REMOVED: %s", evt.getSourceMetaContact());
-        uiHandler.post(() -> {
+        BaseActivity.uiHandler.post(() -> {
             removeContact(evt.getParentGroup(), evt.getSourceMetaContact());
             notifyDataSetChanged();
         });
@@ -561,7 +562,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
         }
 
         // Note: use refreshModelData - create other problems with contacts = null
-        uiHandler.post(this::notifyDataSetChanged);
+        BaseActivity.uiHandler.post(this::notifyDataSetChanged);
     }
 
     /**
@@ -571,7 +572,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactRenamed(final MetaContactRenamedEvent evt) {
         Timber.d("CONTACT RENAMED: %s", evt.getSourceMetaContact());
-        uiHandler.post(() -> updateDisplayName(evt.getSourceMetaContact()));
+        BaseActivity.uiHandler.post(() -> updateDisplayName(evt.getSourceMetaContact()));
     }
 
     /**
@@ -581,7 +582,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void protoContactAdded(final ProtoContactEvent evt) {
         Timber.d("PROTO CONTACT ADDED: %s", evt.getNewParent());
-        uiHandler.post(() -> updateStatus(evt.getNewParent()));
+        BaseActivity.uiHandler.post(() -> updateStatus(evt.getNewParent()));
     }
 
     /**
@@ -611,7 +612,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void protoContactRemoved(final ProtoContactEvent evt) {
         Timber.d("PROTO CONTACT REMOVED: %s", evt.getProtoContact().getAddress());
-        uiHandler.post(() -> updateStatus(evt.getOldParent()));
+        BaseActivity.uiHandler.post(() -> updateStatus(evt.getOldParent()));
     }
 
     /**
@@ -621,7 +622,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void protoContactMoved(final ProtoContactEvent evt) {
         Timber.d("PROTO CONTACT MOVED: %s", evt.getProtoContact().getAddress());
-        uiHandler.post(() -> {
+        BaseActivity.uiHandler.post(() -> {
             updateStatus(evt.getOldParent());
             updateStatus(evt.getNewParent());
         });
@@ -642,7 +643,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
         // filtered = false; to add new group to both originalGroups and Groups even with zero contact
         addContacts(metaGroup, false);
 
-        uiHandler.post(this::notifyDataSetChanged);
+        BaseActivity.uiHandler.post(this::notifyDataSetChanged);
     }
 
     /**
@@ -662,7 +663,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactGroupRemoved(MetaContactGroupEvent evt) {
         Timber.d("META CONTACT GROUP REMOVED: %s", evt.getSourceMetaContactGroup());
-        uiHandler.post(() -> {
+        BaseActivity.uiHandler.post(() -> {
             removeGroup(evt.getSourceMetaContactGroup());
             notifyDataSetChanged();
         });
@@ -678,7 +679,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void childContactsReordered(MetaContactGroupEvent evt) {
         // Timber.d("Child contacts reordered");
-        uiHandler.post(() -> {
+        BaseActivity.uiHandler.post(() -> {
             MetaContactGroup group = evt.getSourceMetaContactGroup();
             int origGroupIndex = originalGroups.indexOf(group);
             int groupIndex = groups.indexOf(group);
@@ -717,7 +718,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactAvatarUpdated(final MetaContactAvatarUpdateEvent evt) {
         Timber.log(TimberLog.FINER, "metaContact avatar updated: %s", evt.getSourceMetaContact());
-        uiHandler.post(() -> updateAvatar(evt.getSourceMetaContact()));
+        BaseActivity.uiHandler.post(() -> updateAvatar(evt.getSourceMetaContact()));
     }
 
     /**
@@ -731,7 +732,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        if (contacts.size() > 0) {
+        if (!contacts.isEmpty()) {
             TreeSet<MetaContact> contactList = getContactList(groupPosition);
             if (contactList != null) {
                 int i = 0;
@@ -768,7 +769,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      * @param query the query we'd like to match
      */
     public void filterData(String query) {
-        uiHandler.post(() -> {
+        BaseActivity.uiHandler.post(() -> {
             currentFilterQuery = query.toLowerCase(Locale.US);
             groups.clear();
             contacts.clear();
@@ -907,7 +908,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     @Override
     public void contactPresenceStatusChanged(final ContactPresenceStatusChangeEvent event) {
-        uiHandler.post(() -> {
+        BaseActivity.uiHandler.post(() -> {
             // Timber.d("Contact status change on UI: %s => %s", mDialogMode, event.getSourceContact());
             //  mDialogMode: just update the status icon without sorting
             if (mDialogMode) {
@@ -1046,7 +1047,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     //	 * Initializes the list of available contact sources for this contact list.
     //	 */
     //	private void initContactSources() {
-    //		List<ContactSourceService> contactSources = AndroidGUIActivator.getContactSources();
+    //		List<ContactSourceService> contactSources = AppGUIActivator.getContactSources();
     //		for (ContactSourceService contactSource : contactSources) {
     //			if (!(contactSource instanceof AsyncContactSourceService)
     //					|| ((AsyncContactSourceService) contactSource).canBeUsedToSearchContacts()) {
@@ -1059,7 +1060,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     ////					mContactSources.add(extContactSource);
     //			}
     //		}
-    ////		AndroidGUIActivator.bundleContext.addServiceListener(new ContactSourceServiceListener());
+    ////		AppGUIActivator.bundleContext.addServiceListener(new ContactSourceServiceListener());
     //	}
     //
     //	/**

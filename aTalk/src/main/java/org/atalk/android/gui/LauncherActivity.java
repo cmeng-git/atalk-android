@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.impl.androidnotification.NotificationHelper;
+import org.atalk.impl.appnotification.NotificationHelper;
 import org.atalk.service.SystemEventReceiver;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiService;

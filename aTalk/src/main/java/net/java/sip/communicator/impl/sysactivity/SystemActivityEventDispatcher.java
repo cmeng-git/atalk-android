@@ -140,7 +140,7 @@ public class SystemActivityEventDispatcher implements Runnable {
 
             eventsToDispatch.notifyAll();
 
-            if (dispatcherThread == null && listeners.size() > 0) {
+            if (dispatcherThread == null && !listeners.isEmpty()) {
                 dispatcherThread = new Thread(this);
                 dispatcherThread.start();
             }
@@ -181,7 +181,7 @@ public class SystemActivityEventDispatcher implements Runnable {
                 List<SystemActivityChangeListener> listenersCopy;
 
                 synchronized (eventsToDispatch) {
-                    if (eventsToDispatch.size() == 0) {
+                    if (eventsToDispatch.isEmpty()) {
                         try {
                             eventsToDispatch.wait();
                         } catch (InterruptedException ignore) {
@@ -190,7 +190,7 @@ public class SystemActivityEventDispatcher implements Runnable {
 
                     //no point in dispatching if there's no one
                     //listening
-                    if (listeners.size() == 0)
+                    if (listeners.isEmpty())
                         continue;
 
                     //store the ref of the listener in case someone resets
@@ -204,7 +204,7 @@ public class SystemActivityEventDispatcher implements Runnable {
                     }
                 }
 
-                if (eventToProcess != null && listenersCopy != null) {
+                if (eventToProcess != null) {
                     if (eventToProcess.getValue() > 0)
                         synchronized (this) {
                             try {
@@ -217,8 +217,6 @@ public class SystemActivityEventDispatcher implements Runnable {
                         fireSystemActivityEvent(eventToProcess.getKey(), listenersCopy.get(i));
                     }
                 }
-                eventToProcess = null;
-                listenersCopy = null;
             }
         } catch (Throwable t) {
             Timber.e(t, "Error dispatching thread ended unexpectedly");

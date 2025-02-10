@@ -14,11 +14,10 @@ import net.java.otr4j.OtrPolicy;
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.util.UtilActivator;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.gui.util.PreferenceUtil;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.osgi.OSGiActivity;
-import org.atalk.service.osgi.OSGiPreferenceFragment;
 
 /**
  * Chat security settings screen with Omemo preferences - modified for aTalk
@@ -26,7 +25,7 @@ import org.atalk.service.osgi.OSGiPreferenceFragment;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ChatSecuritySettings extends OSGiActivity {
+public class ChatSecuritySettings extends BaseActivity {
     // Preference mKeys
     static private final String P_KEY_CRYPTO_ENABLE = "pref.key.crypto.enable";
 
@@ -58,14 +57,13 @@ public class ChatSecuritySettings extends OSGiActivity {
     /**
      * The preferences fragment implements OTR settings.
      */
-    public static class SettingsFragment extends OSGiPreferenceFragment
+    public static class SettingsFragment extends BasePreferenceFragment
             implements SharedPreferences.OnSharedPreferenceChangeListener {
         /**
          * {@inheritDoc}
          */
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            super.onCreatePreferences(savedInstanceState, rootKey);
             addPreferencesFromResource(R.xml.security_preferences);
         }
 

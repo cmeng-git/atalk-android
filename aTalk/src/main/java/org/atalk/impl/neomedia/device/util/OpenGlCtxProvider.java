@@ -15,6 +15,8 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+
 import org.atalk.android.aTalkApp;
 import org.atalk.impl.timberlog.TimberLog;
 
@@ -23,16 +25,15 @@ import timber.log.Timber;
 /**
  * Provider of Open GL context. Currently use to provide 'shared context' for recording/streaming video; and it
  * is used for rendering the local video preview.
- *
+ * <p>
  * Note: A TextureView object wraps a SurfaceTexture, responding to callbacks and acquiring new buffers.
- * link: https://source.android.com/devices/graphics/arch-tv
+ * link: <a href="https://source.android.com/devices/graphics/arch-tv">...</a>
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
 public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
-        implements TextureView.SurfaceTextureListener
-{
+        implements TextureView.SurfaceTextureListener {
     /**
      * The <code>OpenGLContext</code>.
      */
@@ -51,14 +52,12 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
      * @param activity parent <code>Activity</code>.
      * @param container the container that will hold maintained <code>View</code>.
      */
-    public OpenGlCtxProvider(Activity activity, ViewGroup container)
-    {
+    public OpenGlCtxProvider(Activity activity, ViewGroup container) {
         super(activity, container);
     }
 
     @Override
-    protected View createViewInstance()
-    {
+    protected View createViewInstance() {
         mTextureView = new AutoFitTextureView(mActivity);
         mTextureView.setSurfaceTextureListener(this);
         Timber.d("TextView created: %s", mTextureView);
@@ -71,8 +70,7 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
      * @param width The width of `mTextureView`
      * @param height The height of `mTextureView`
      */
-    public void setAspectRatio(int width, int height)
-    {
+    public void setAspectRatio(int width, int height) {
         if (mTextureView != null) {
             mTextureView.setAspectRatio(width, height);
         }
@@ -84,8 +82,7 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
     /**
      * ConfigureTransform with the previously setup mTextureView size
      */
-    public void setTransformMatrix()
-    {
+    public void setTransformMatrix() {
         configureTransform(mTextureView.mRatioWidth, mTextureView.mRatioHeight);
     }
 
@@ -93,7 +90,7 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
      * Configures the necessary {@link android.graphics.Matrix} transformation to `mTextureView`.
      * This method should be called after the camera preview size is determined
      * and also the size of `mTextureView` is fixed.
-     *
+     * <p>
      * Note: The transform is not working when the local preview container is very first setup;
      * Subsequence device rotation work but it also affects change the stream video; so far unable to solve
      * this problem.
@@ -101,8 +98,7 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
      * @param viewWidth The width of `mTextureView`
      * @param viewHeight The height of `mTextureView`
      */
-    public void configureTransform(int viewWidth, int viewHeight)
-    {
+    public void configureTransform(int viewWidth, int viewHeight) {
         RectF viewRect = new RectF(0, 0, viewWidth, viewHeight);
         float centerX = viewRect.centerX();
         float centerY = viewRect.centerY();
@@ -135,8 +131,7 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
     /**
      * The method has problem to get the surface image to fill the local container size.
      */
-    private void configureTransform2(int viewWidth, int viewHeight)
-    {
+    private void configureTransform2(int viewWidth, int viewHeight) {
         RectF viewRect = new RectF(0, 0, viewWidth, viewHeight);
         float centerX = viewRect.centerX();
         float centerY = viewRect.centerY();
@@ -178,16 +173,14 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
 
     // ========= SurfaceTextureListener implementation ========= //
     @Override
-    synchronized public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height)
-    {
+    synchronized public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
         mGLContext = new OpenGLContext(false, surface, EGL14.EGL_NO_CONTEXT);
         onObjectCreated(mGLContext);
         Timber.d("onSurfaceTexture Available with dimension: [%s x %s] (%s)", width, height, mVideoSize);
     }
 
     @Override
-    synchronized public boolean onSurfaceTextureDestroyed(SurfaceTexture surface)
-    {
+    synchronized public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surface) {
         onObjectDestroyed();
         // Release context only when the View is destroyed
         if (mGLContext != null) {
@@ -198,15 +191,13 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
     }
 
     @Override
-    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height)
-    {
+    public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
         Timber.d("onSurfaceTexture SizeChanged: [%s x %s]", width, height);
         configureTransform(width, height);
     }
 
     @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface)
-    {
+    public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
         Timber.log(TimberLog.FINER, "onSurfaceTextureUpdated");
         textureUpdated = true;
     }

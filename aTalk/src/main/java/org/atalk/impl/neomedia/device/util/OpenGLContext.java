@@ -18,8 +18,7 @@ import timber.log.Timber;
 /**
  * Code for EGL context handling
  */
-public class OpenGLContext
-{
+public class OpenGLContext {
     private static final int EGL_RECORDABLE_ANDROID = 0x3142;
 
     private EGLDisplay mEGLDisplay = EGL14.EGL_NO_DISPLAY;
@@ -29,8 +28,7 @@ public class OpenGLContext
     /**
      * Prepares EGL. We want a GLES 2.0 context and a surface that supports recording.
      */
-    public OpenGLContext(boolean recorder, Object objSurface, EGLContext sharedContext)
-    {
+    public OpenGLContext(boolean recorder, Object objSurface, EGLContext sharedContext) {
         mEGLDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY);
         if (mEGLDisplay == EGL14.EGL_NO_DISPLAY) {
             throw new RuntimeException("unable to get EGL14 display");
@@ -56,8 +54,7 @@ public class OpenGLContext
         checkEglError("eglCreateWindowSurface");
     }
 
-    private EGLConfig chooseEglConfig(EGLDisplay eglDisplay, boolean recorder)
-    {
+    private EGLConfig chooseEglConfig(EGLDisplay eglDisplay, boolean recorder) {
         EGLConfig[] configs = new EGLConfig[1];
         int[] attribList;
         if (recorder) {
@@ -90,8 +87,7 @@ public class OpenGLContext
      * Discards all resources held by this class, notably the EGL context. Also releases the Surface
      * that was passed to our constructor.
      */
-    public void release()
-    {
+    public void release() {
         if (mEGLDisplay != EGL14.EGL_NO_DISPLAY) {
             // Android is unusual in that it uses a reference-counted EGLDisplay.  So for
             // every eglInitialize() we need an eglTerminate().
@@ -106,8 +102,7 @@ public class OpenGLContext
         mEGLSurface = EGL14.EGL_NO_SURFACE;
     }
 
-    public void makeCurrent()
-    {
+    public void makeCurrent() {
         EGLContext ctx = EGL14.eglGetCurrentContext();
         EGLSurface surface = EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW);
         if (!mEGLContext.equals(ctx) || !mEGLSurface.equals(surface)) {
@@ -121,8 +116,7 @@ public class OpenGLContext
     /**
      * Sets "no surface" and "no context" on the current display.
      */
-    public void releaseEGLSurfaceContext()
-    {
+    public void releaseEGLSurfaceContext() {
         if (mEGLDisplay != EGL14.EGL_NO_DISPLAY) {
             EGL14.eglMakeCurrent(mEGLDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE,
                     EGL14.EGL_NO_CONTEXT);
@@ -132,8 +126,7 @@ public class OpenGLContext
     /**
      * Calls eglSwapBuffers. Use this to "publish" the current frame.
      */
-    public void swapBuffers()
-    {
+    public void swapBuffers() {
         if (!EGL14.eglSwapBuffers(mEGLDisplay, mEGLSurface)) {
             throw new RuntimeException("Cannot swap buffers");
         }
@@ -143,8 +136,7 @@ public class OpenGLContext
     /**
      * Sends the presentation time stamp to EGL. Time is expressed in nanoseconds.
      */
-    public void setPresentationTime(long nsecs)
-    {
+    public void setPresentationTime(long nsecs) {
         EGLExt.eglPresentationTimeANDROID(mEGLDisplay, mEGLSurface, nsecs);
         checkEglError("eglPresentationTimeANDROID");
     }
@@ -152,16 +144,15 @@ public class OpenGLContext
     /**
      * Checks for EGL errors. Throws an exception if one is found.
      */
-    private void checkEglError(String msg)
-    {
+    private void checkEglError(String msg) {
         int error;
         if ((error = EGL14.eglGetError()) != EGL14.EGL_SUCCESS) {
+            // aTalkApp.showToastMessage(msg + ": EGL error: 0x" + Integer.toHexString(error));
             throw new RuntimeException(msg + ": EGL error: 0x" + Integer.toHexString(error));
         }
     }
 
-    public EGLContext getContext()
-    {
+    public EGLContext getContext() {
         return mEGLContext;
     }
 }

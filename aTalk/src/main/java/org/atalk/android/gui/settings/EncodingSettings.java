@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 
 import java.util.List;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.gui.account.settings.MediaEncodingActivity;
 import org.atalk.android.gui.account.settings.MediaEncodingsFragment;
@@ -17,14 +18,13 @@ import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.MediaType;
 
 /**
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class EncodingSettings extends OSGiActivity {
+public class EncodingSettings extends BaseActivity {
     public static final String EXTRA_MEDIA_TYPE = "media_type";
     public static final String MEDIA_TYPE_AUDIO = "media_type.AUDIO";
     public static final String MEDIA_TYPE_VIDEO = "media_type.VIDEO";

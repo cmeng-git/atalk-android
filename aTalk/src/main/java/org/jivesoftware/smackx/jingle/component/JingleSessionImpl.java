@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.jingle.component;
 
-import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -77,7 +75,6 @@ public class JingleSessionImpl extends JingleSession {
             this.state = state;
         }
 
-        @NonNull
         @Override
         public String toString() {
             return state;
@@ -144,7 +141,7 @@ public class JingleSessionImpl extends JingleSession {
             throw new IllegalStateException("Session is not in pending state.");
         }
 
-        if (contentImpls.values().size() == 0) {
+        if (contentImpls.values().isEmpty()) {
             LOGGER.log(Level.WARNING, "0 contents!");
         }
 

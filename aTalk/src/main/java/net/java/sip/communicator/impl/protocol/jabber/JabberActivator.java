@@ -208,7 +208,7 @@ public class JabberActivator implements BundleActivator {
      */
     public static UIService getUIService() {
         if (uiService == null) {
-            ServiceReference uiServiceReference = bundleContext.getServiceReference(UIService.class.getName());
+            ServiceReference<?> uiServiceReference = bundleContext.getServiceReference(UIService.class.getName());
             uiService = (UIService) bundleContext.getService(uiServiceReference);
         }
         return uiService;
@@ -236,7 +236,7 @@ public class JabberActivator implements BundleActivator {
      */
     public static MediaService getMediaService() {
         if (mediaService == null) {
-            ServiceReference mediaServiceReference = bundleContext.getServiceReference(MediaService.class.getName());
+            ServiceReference<?> mediaServiceReference = bundleContext.getServiceReference(MediaService.class.getName());
             mediaService = (MediaService) bundleContext.getService(mediaServiceReference);
         }
         return mediaService;
@@ -250,7 +250,7 @@ public class JabberActivator implements BundleActivator {
      */
     public static NetworkAddressManagerService getNetworkAddressManagerService() {
         if (networkAddressManagerService == null) {
-            ServiceReference confReference
+            ServiceReference<?> confReference
                     = bundleContext.getServiceReference(NetworkAddressManagerService.class.getName());
             networkAddressManagerService = (NetworkAddressManagerService) bundleContext.getService(confReference);
         }
@@ -265,7 +265,7 @@ public class JabberActivator implements BundleActivator {
      */
     public static CredentialsStorageService getCredentialsStorageService() {
         if (credentialsService == null) {
-            ServiceReference confReference = bundleContext.getServiceReference(CredentialsStorageService.class.getName());
+            ServiceReference<?> confReference = bundleContext.getServiceReference(CredentialsStorageService.class.getName());
             credentialsService = (CredentialsStorageService) bundleContext.getService(confReference);
         }
         return credentialsService;
@@ -279,7 +279,7 @@ public class JabberActivator implements BundleActivator {
      */
     public static HIDService getHIDService() {
         if (hidService == null) {
-            ServiceReference hidReference = bundleContext.getServiceReference(HIDService.class.getName());
+            ServiceReference<?> hidReference = bundleContext.getServiceReference(HIDService.class.getName());
             if (hidReference == null)
                 return null;
             hidService = (HIDService) bundleContext.getService(hidReference);
@@ -310,7 +310,7 @@ public class JabberActivator implements BundleActivator {
      */
     public static VersionService getVersionService() {
         if (versionService == null) {
-            ServiceReference versionServiceReference = bundleContext.getServiceReference(VersionService.class.getName());
+            ServiceReference<?> versionServiceReference = bundleContext.getServiceReference(VersionService.class.getName());
             versionService = (VersionService) bundleContext.getService(versionServiceReference);
         }
         return versionService;

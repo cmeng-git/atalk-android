@@ -24,23 +24,19 @@ import timber.log.Timber;
 /**
  * A {@link SurfaceView} that can be adjusted to a specified aspect ratio.
  */
-public class AutoFitSurfaceView extends SurfaceView
-{
+public class AutoFitSurfaceView extends SurfaceView {
     private int mRatioWidth = 0;
     private int mRatioHeight = 0;
 
-    public AutoFitSurfaceView(Context context)
-    {
+    public AutoFitSurfaceView(Context context) {
         this(context, null);
     }
 
-    public AutoFitSurfaceView(Context context, AttributeSet attrs)
-    {
+    public AutoFitSurfaceView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AutoFitSurfaceView(Context context, AttributeSet attrs, int defStyle)
-    {
+    public AutoFitSurfaceView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -52,8 +48,7 @@ public class AutoFitSurfaceView extends SurfaceView
      * @param width Relative horizontal size
      * @param height Relative vertical size
      */
-    public void setAspectRatio(int width, int height)
-    {
+    public void setAspectRatio(int width, int height) {
         if (width < 0 || height < 0) {
             throw new IllegalArgumentException("Size cannot be negative.");
         }
@@ -73,8 +68,7 @@ public class AutoFitSurfaceView extends SurfaceView
      * @param heightMeasureSpec
      */
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-    {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);

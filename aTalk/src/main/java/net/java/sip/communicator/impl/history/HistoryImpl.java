@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidParameterException;
 import java.util.Iterator;
 import java.util.SortedMap;
@@ -322,7 +323,7 @@ public class HistoryImpl implements History
         resultDocStr.append("</history>");
 
         try {
-            Document result = this.historyServiceImpl.parse(new ByteArrayInputStream(resultDocStr.toString().getBytes("UTF-8")));
+            Document result = this.historyServiceImpl.parse(new ByteArrayInputStream(resultDocStr.toString().getBytes(StandardCharsets.UTF_8)));
 
             // parsing is ok . lets overwrite with correct values
             Timber.log(TimberLog.FINER, "File fixed will write to disk!");
@@ -372,7 +373,7 @@ public class HistoryImpl implements History
     private boolean isValidXML(String str)
     {
         try {
-            this.historyServiceImpl.parse(new ByteArrayInputStream(str.getBytes("UTF-8")));
+            this.historyServiceImpl.parse(new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception ex) {
             Timber.e("not valid xml %s: %s",  str, ex.getMessage());
             return false;

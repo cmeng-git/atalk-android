@@ -53,15 +53,15 @@ import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.util.ThemeHelper;
 import org.atalk.android.gui.util.ThemeHelper.Theme;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.crypto.omemo.FingerprintStatus;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.persistance.DatabaseBackend;
-import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
@@ -74,7 +74,7 @@ import org.jivesoftware.smackx.omemo.trust.TrustState;
  *
  * @author Eng Chong Meng
  */
-public class CryptoDeviceFingerPrints extends OSGiActivity {
+public class CryptoDeviceFingerPrints extends BaseActivity {
     private static final String OTR = "OTR:";
     private static final String OMEMO = "OMEMO:";
 
@@ -119,7 +119,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity {
     Map<String, String> getDeviceFingerPrints() {
         // Get the protocol providers and meta-contactList service
         Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
-        MetaContactListService mclService = AndroidGUIActivator.getContactListService();
+        MetaContactListService mclService = AppGUIActivator.getContactListService();
         List<String> fpList;
 
         // Get all the omemoDevices' fingerPrints from database

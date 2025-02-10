@@ -8,7 +8,6 @@ package org.atalk.android.gui.chat.conference;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -18,7 +17,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
@@ -65,7 +64,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.LauncherActivity;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatPanel;
@@ -118,7 +117,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 adHocChatRoomList.loadList();
             }
         }.start();
-        AndroidGUIActivator.bundleContext.addServiceListener(this);
+        AppGUIActivator.bundleContext.addServiceListener(this);
     }
 
     /**
@@ -453,7 +452,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 || LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_DROPPED.equals(eventType)) {
             if (chatRoomWrapper != null) {
                 if (StringUtils.isEmpty(evt.getReason())) {
-                    AndroidGUIActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
+                    AppGUIActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
                 }
                 else {
                     // send some system messages informing for the reason of leaving
@@ -576,7 +575,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         if (chatRoom != null)
             leaveChatRoom(chatRoomWrapper);
 
-        AndroidGUIActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
+        AppGUIActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
         MUCActivator.getMUCService().removeChatRoom(chatRoomWrapper);
 
     }
@@ -611,7 +610,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     public void leaveChatRoom(ChatRoomWrapper chatRoomWrapper) {
         ChatRoomWrapper leavedRoomWrapped = MUCActivator.getMUCService().leaveChatRoom(chatRoomWrapper);
         if (leavedRoomWrapped != null) {
-            // AndroidGUIActivator.getUIService().closeChatRoomWindow(leavedRoomWrapped);
+            // AppGUIActivator.getUIService().closeChatRoomWindow(leavedRoomWrapped);
         }
     }
 
@@ -694,9 +693,9 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         if (eType == Bundle.STOPPING)
             return;
 
-        // AndroidGUIActivator.bundleContext can be null on application exit
-        if (AndroidGUIActivator.bundleContext != null) {
-            Object service = AndroidGUIActivator.bundleContext.getService(event.getServiceReference());
+        // AppGUIActivator.bundleContext can be null on application exit
+        if (AppGUIActivator.bundleContext != null) {
+            Object service = AppGUIActivator.bundleContext.getService(event.getServiceReference());
 
             // we don't care if the source service is not a protocol provider
             if (service instanceof ProtocolProviderService) {
@@ -718,7 +717,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     /**
      * Joins an ad-hoc chat room in an asynchronous way.
      */
-    private static class JoinAdHocChatRoomTask extends AsyncTask<Void, Void, String> {
+    private static class JoinAdHocChatRoomTask {
         private static final String SUCCESS = "Success";
         private static final String AUTHENTICATION_FAILED = "AuthenticationFailed";
         private static final String REGISTRATION_REQUIRED = "RegistrationRequired";
@@ -731,12 +730,20 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             this.adHocChatRoomWrapper = chatRoomWrapper;
         }
 
+        public void execute() {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                final String result = doInBackground();
+
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    onPostExecute(result);
+                });
+            });
+        }
+
         /**
          * @return SUCCESS if success, otherwise the error code
-         * {@link AsyncTask #doInBackground(Void... params)} to perform all asynchronous tasks.
          */
-        @Override
-        protected String doInBackground(Void... params) {
+        private String doInBackground() {
             AdHocChatRoom chatRoom = adHocChatRoomWrapper.getAdHocChatRoom();
 
             try {
@@ -761,17 +768,9 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         }
 
         /**
-         * {@link AsyncTask #onPostExecute(String)} onPostExecute()} to perform
          * UI changes after the ad-hoc chat room join task has finished.
          */
-        @Override
-        protected void onPostExecute(String result) {
-            String returnCode = null;
-            try {
-                returnCode = get();
-            } catch (InterruptedException | ExecutionException ignore) {
-            }
-
+        private void onPostExecute(String returnCode) {
             ConfigurationUtils.updateChatRoomStatus(adHocChatRoomWrapper.getProtocolProvider(),
                     adHocChatRoomWrapper.getAdHocChatRoomID(), GlobalStatusEnum.ONLINE_STATUS);
 
@@ -786,7 +785,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             }
             else {
                 errorMessage = aTalkApp.getResString(R.string.chatroom_join_failed_reason,
-                        adHocChatRoomWrapper.getAdHocChatRoomName(), result);
+                        adHocChatRoomWrapper.getAdHocChatRoomName(), returnCode);
             }
 
             if (!SUCCESS.equals(returnCode) && !AUTHENTICATION_FAILED.equals(returnCode)) {

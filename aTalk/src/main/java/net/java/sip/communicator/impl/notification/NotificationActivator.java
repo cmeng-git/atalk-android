@@ -27,8 +27,7 @@ import timber.log.Timber;
  *
  * @author Yana Stamcheva
  */
-public class NotificationActivator implements BundleActivator
-{
+public class NotificationActivator implements BundleActivator {
     protected static BundleContext bundleContext;
 
     private static AudioNotifierService audioNotifierService;
@@ -52,11 +51,10 @@ public class NotificationActivator implements BundleActivator
     private static ConfigurationService configurationService;
 
     public void start(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         bundleContext = bc;
         // Get the notification service implementation
-        ServiceReference notifReference = bundleContext.getServiceReference(NotificationService.class.getName());
+        ServiceReference<?> notifReference = bundleContext.getServiceReference(NotificationService.class.getName());
         notificationService = (NotificationService) bundleContext.getService(notifReference);
 
         commandHandler = new CommandNotificationHandlerImpl();
@@ -73,8 +71,7 @@ public class NotificationActivator implements BundleActivator
     }
 
     public void stop(BundleContext bc)
-            throws Exception
-    {
+            throws Exception {
         notificationService.removeActionHandler(commandHandler.getActionType());
         notificationService.removeActionHandler(logMessageHandler.getActionType());
         notificationService.removeActionHandler(popupMessageHandler.getActionType());
@@ -88,10 +85,9 @@ public class NotificationActivator implements BundleActivator
      *
      * @return the <code>AudioNotifierService</code> obtained from the bundle context
      */
-    public static AudioNotifierService getAudioNotifier()
-    {
+    public static AudioNotifierService getAudioNotifier() {
         if (audioNotifierService == null) {
-            ServiceReference serviceReference = bundleContext.getServiceReference(AudioNotifierService.class.getName());
+            ServiceReference<?> serviceReference = bundleContext.getServiceReference(AudioNotifierService.class.getName());
 
             if (serviceReference != null)
                 audioNotifierService = (AudioNotifierService) bundleContext.getService(serviceReference);
@@ -104,8 +100,7 @@ public class NotificationActivator implements BundleActivator
      *
      * @return the <code>SystrayService</code> obtained from the bundle context
      */
-    public static SystrayService getSystray()
-    {
+    public static SystrayService getSystray() {
         if (systrayService == null) {
             systrayService = ServiceUtils.getService(bundleContext, SystrayService.class);
         }
@@ -119,8 +114,7 @@ public class NotificationActivator implements BundleActivator
      * @return a reference to an UIService implementation currently registered in the bundle context
      * or null if no such implementation was found.
      */
-    public static UIService getUIService()
-    {
+    public static UIService getUIService() {
         if (uiService == null)
             uiService = ServiceUtils.getService(bundleContext, UIService.class);
         return uiService;
@@ -132,8 +126,7 @@ public class NotificationActivator implements BundleActivator
      *
      * @return a currently valid implementation of the ConfigurationService.
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configurationService == null) {
             configurationService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
         }

@@ -7,6 +7,51 @@ package org.atalk.impl.neomedia;
 
 import androidx.annotation.NonNull;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Window;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.media.CaptureDeviceInfo;
+import javax.media.Codec;
+import javax.media.ConfigureCompleteEvent;
+import javax.media.ControllerEvent;
+import javax.media.ControllerListener;
+import javax.media.Format;
+import javax.media.Manager;
+import javax.media.MediaLocator;
+import javax.media.NotConfiguredError;
+import javax.media.Player;
+import javax.media.Processor;
+import javax.media.RealizeCompleteEvent;
+import javax.media.UnsupportedPlugInException;
+import javax.media.control.TrackControl;
+import javax.media.format.RGBFormat;
+import javax.media.protocol.DataSource;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
 import com.sun.media.util.Registry;
 
 import org.atalk.android.R;
@@ -60,51 +105,6 @@ import org.atalk.util.event.PropertyChangeNotifier;
 import org.atalk.util.swing.VideoContainer;
 import org.json.JSONObject;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Window;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.media.CaptureDeviceInfo;
-import javax.media.Codec;
-import javax.media.ConfigureCompleteEvent;
-import javax.media.ControllerEvent;
-import javax.media.ControllerListener;
-import javax.media.Format;
-import javax.media.Manager;
-import javax.media.MediaLocator;
-import javax.media.NotConfiguredError;
-import javax.media.Player;
-import javax.media.Processor;
-import javax.media.RealizeCompleteEvent;
-import javax.media.UnsupportedPlugInException;
-import javax.media.control.TrackControl;
-import javax.media.format.RGBFormat;
-import javax.media.protocol.DataSource;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-
 import timber.log.Timber;
 
 /**
@@ -115,8 +115,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  * @author MilanKral
  */
-public class MediaServiceImpl extends PropertyChangeNotifier implements MediaService
-{
+public class MediaServiceImpl extends PropertyChangeNotifier implements MediaService {
     /**
      * The name of the <code>boolean</code> <code>ConfigurationService</code> property which indicates
      * whether the detection of audio <code>CaptureDevice</code>s is to be disabled. The default value
@@ -266,8 +265,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     /**
      * Initializes a new <code>MediaServiceImpl</code> instance.
      */
-    public MediaServiceImpl()
-    {
+    public MediaServiceImpl() {
         /*
          * XXX The deviceConfiguration is initialized and referenced by this instance so adding
          * deviceConfigurationPropertyChangeListener does not need a matching removal.
@@ -293,23 +291,23 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * enable the new instance to send and receive media.
      *
      * @param device the <code>MediaDevice</code> to be used by the new instance for capture and playback of media
+     *
      * @return a newly-created <code>MediaStream</code> which will use the specified <code>device</code>
      * for capture and playback of media
+     *
      * @see MediaService#createMediaStream(MediaDevice)
      */
-    public MediaStream createMediaStream(@NonNull MediaDevice device)
-    {
+    public MediaStream createMediaStream(@NonNull MediaDevice device) {
         return createMediaStream(null, device);
     }
 
     /**
      * {@inheritDoc}
-     *
+     * <p>
      * Implements {@link MediaService#createMediaStream(MediaType)}. Initializes a new
      * <code>AudioMediaStreamImpl</code> or <code>VideoMediaStreamImpl</code> in accord with <code>mediaType</code>
      */
-    public MediaStream createMediaStream(@NonNull MediaType mediaType)
-    {
+    public MediaStream createMediaStream(@NonNull MediaType mediaType) {
         return createMediaStream(mediaType, null, null, null);
     }
 
@@ -321,19 +319,19 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * sending and receiving media
      * @param device the <code>MediaDevice</code> that the new <code>MediaStream</code> instance is to use for both
      * capture and playback of media exchanged via the specified <code>connector</code>
+     *
      * @return a new <code>MediaStream</code> instance
+     *
      * @see MediaService#createMediaStream(StreamConnector, MediaDevice)
      */
-    public MediaStream createMediaStream(StreamConnector connector, MediaDevice device)
-    {
+    public MediaStream createMediaStream(StreamConnector connector, MediaDevice device) {
         return createMediaStream(connector, device, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public MediaStream createMediaStream(StreamConnector connector, MediaType mediaType)
-    {
+    public MediaStream createMediaStream(StreamConnector connector, MediaType mediaType) {
         return createMediaStream(connector, mediaType, null);
     }
 
@@ -346,19 +344,19 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @param device the <code>MediaDevice</code> that the new <code>MediaStream</code> instance is to use for both
      * capture and playback of media exchanged via the specified <code>connector</code>
      * @param srtpControl a control which is already created, used to control the SRTP operations.
+     *
      * @return a new <code>MediaStream</code> instance
+     *
      * @see MediaService#createMediaStream(StreamConnector, MediaDevice)
      */
-    public MediaStream createMediaStream(StreamConnector connector, MediaDevice device, SrtpControl srtpControl)
-    {
+    public MediaStream createMediaStream(StreamConnector connector, MediaDevice device, SrtpControl srtpControl) {
         return createMediaStream(null, connector, device, srtpControl);
     }
 
     /**
      * {@inheritDocs}
      */
-    public MediaStream createMediaStream(StreamConnector connector, MediaType mediaType, SrtpControl srtpControl)
-    {
+    public MediaStream createMediaStream(StreamConnector connector, MediaType mediaType, SrtpControl srtpControl) {
         return createMediaStream(mediaType, connector, null, srtpControl);
     }
 
@@ -375,11 +373,11 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @param connector the <code>StreamConnector</code> to be used by the new instance if non-<code>null</code>
      * @param device the <code>MediaDevice</code> to be used by the instance if non- <code>null</code>
      * @param srtpControl the <code>SrtpControl</code> to be used by the new instance if non- <code>null</code>
+     *
      * @return a new <code>MediaStream</code> instance
      */
     private MediaStream createMediaStream(MediaType mediaType, StreamConnector connector,
-            MediaDevice device, SrtpControl srtpControl)
-    {
+            MediaDevice device, SrtpControl srtpControl) {
         // Make sure that mediaType and device are in accord.
         if (mediaType == null) {
             if (device == null)
@@ -409,13 +407,14 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      *
      * @param device the <code>MediaDevice</code> which is to be used by the returned <code>MediaDevice</code> to
      * actually capture and play back media
+     *
      * @return a new <code>MediaDevice</code> instance which uses <code>device</code> to capture and play
      * back media and performs mixing of the captured media and the media played back by any
      * other users of the returned <code>MediaDevice</code> instance
+     *
      * @see MediaService#createMixer(MediaDevice)
      */
-    public MediaDevice createMixer(MediaDevice device)
-    {
+    public MediaDevice createMixer(MediaDevice device) {
         switch (device.getMediaType()) {
             case AUDIO:
                 return new AudioMixerMediaDevice((AudioMediaDeviceImpl) device);
@@ -436,12 +435,13 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @param mediaType a <code>MediaType</code> value indicating the type of media to be handled by the
      * <code>MediaDevice</code> to be obtained
      * @param useCase the <code>MediaUseCase</code> to obtain the <code>MediaDevice</code> list for
+     *
      * @return the default <code>MediaDevice</code> for the specified <code>mediaType</code> if such a
      * <code>MediaDevice</code> exists; otherwise, <code>null</code>
+     *
      * @see MediaService#getDefaultDevice(MediaType, MediaUseCase)
      */
-    public MediaDevice getDefaultDevice(MediaType mediaType, @NonNull MediaUseCase useCase)
-    {
+    public MediaDevice getDefaultDevice(MediaType mediaType, @NonNull MediaUseCase useCase) {
         CaptureDeviceInfo captureDeviceInfo;
         switch (mediaType) {
             case AUDIO:
@@ -489,8 +489,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      *
      * @return the <code>CaptureDevice</code> user choices such as the default audio and video capture devices.
      */
-    public DeviceConfiguration getDeviceConfiguration()
-    {
+    public DeviceConfiguration getDeviceConfiguration() {
         return deviceConfiguration;
     }
 
@@ -500,16 +499,17 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      *
      * @param mediaType the <code>MediaType</code> to obtain the <code>MediaDevice</code> list for
      * @param useCase the <code>MediaUseCase</code> to obtain the <code>MediaDevice</code> list for
+     *
      * @return a new <code>List</code> of <code>MediaDevice</code>s known to this <code>MediaService</code> and
      * handling the specified <code>MediaType</code>. The returned <code>List</code> is a copy of the
      * internal storage and, consequently, modifications to it do not affect this instance.
      * Despite the fact that a new <code>List</code> instance is returned by each call to this
      * method, the <code>MediaDevice</code> instances are the same if they are still known to this
      * <code>MediaService</code> to be available.
+     *
      * @see MediaService#getDevices(MediaType, MediaUseCase)
      */
-    public List<MediaDevice> getDevices(@NonNull MediaType mediaType, @NonNull MediaUseCase useCase)
-    {
+    public List<MediaDevice> getDevices(@NonNull MediaType mediaType, @NonNull MediaUseCase useCase) {
         List<? extends CaptureDeviceInfo> cdis;
         List<MediaDeviceImpl> privateDevices;
 
@@ -617,8 +617,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      *
      * @return the current encoding configuration -- the instance that contains the global settings.
      */
-    public EncodingConfiguration getCurrentEncodingConfiguration()
-    {
+    public EncodingConfiguration getCurrentEncodingConfiguration() {
         return currentEncodingConfiguration;
     }
 
@@ -628,10 +627,10 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      *
      * @return the <code>MediaFormatFactory</code> through which <code>MediaFormat</code> instances may be
      * created for the purposes of working with the <code>MediaStream</code>s created by this <code>MediaService</code>
+     *
      * @see MediaService#getFormatFactory()
      */
-    public MediaFormatFactory getFormatFactory()
-    {
+    public MediaFormatFactory getFormatFactory() {
         if (formatFactory == null)
             formatFactory = new MediaFormatFactoryImpl();
         return formatFactory;
@@ -644,8 +643,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @return the one and only <code>MediaDevice</code> instance with <code>MediaDirection</code> not
      * allowing sending and <code>MediaType</code> equal to <code>AUDIO</code>
      */
-    private MediaDevice getNonSendAudioDevice()
-    {
+    private MediaDevice getNonSendAudioDevice() {
         if (nonSendAudioDevice == null)
             nonSendAudioDevice = new AudioMediaDeviceImpl();
         return nonSendAudioDevice;
@@ -658,8 +656,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @return the one and only <code>MediaDevice</code> instance with <code>MediaDirection</code> not
      * allowing sending and <code>MediaType</code> equal to <code>VIDEO</code>
      */
-    private MediaDevice getNonSendVideoDevice()
-    {
+    private MediaDevice getNonSendVideoDevice() {
         if (nonSendVideoDevice == null)
             nonSendVideoDevice = new MediaDeviceImpl(MediaType.VIDEO);
         return nonSendVideoDevice;
@@ -668,8 +665,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     /**
      * {@inheritDoc}
      */
-    public SrtpControl createSrtpControl(SrtpControlType srtpControlType, final byte[] myZid)
-    {
+    public SrtpControl createSrtpControl(SrtpControlType srtpControlType, final byte[] myZid) {
         switch (srtpControlType) {
             case DTLS_SRTP:
                 return new DtlsControlImpl();
@@ -686,10 +682,10 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * Gets the <code>VolumeControl</code> which controls the volume level of audio output/playback.
      *
      * @return the <code>VolumeControl</code> which controls the volume level of audio output/playback
+     *
      * @see MediaService#getOutputVolumeControl()
      */
-    public VolumeControl getOutputVolumeControl()
-    {
+    public VolumeControl getOutputVolumeControl() {
         if (outputVolumeControl == null) {
             outputVolumeControl = new BasicVolumeControl(VolumeControl.PLAYBACK_VOLUME_LEVEL_PROPERTY_NAME);
         }
@@ -700,10 +696,10 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * Gets the <code>VolumeControl</code> which controls the volume level of audio input/capture.
      *
      * @return the <code>VolumeControl</code> which controls the volume level of audio input/capture
+     *
      * @see MediaService#getInputVolumeControl()
      */
-    public VolumeControl getInputVolumeControl()
-    {
+    public VolumeControl getInputVolumeControl() {
         if (inputVolumeControl == null) {
             // If available, use hardware.
             try {
@@ -728,8 +724,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      *
      * @return screens
      */
-    public List<ScreenDevice> getAvailableScreenDevices()
-    {
+    public List<ScreenDevice> getAvailableScreenDevices() {
         ScreenDevice[] screens = ScreenDeviceImpl.getAvailableScreenDevices();
         List<ScreenDevice> screenList;
 
@@ -745,8 +740,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      *
      * @return default screen device
      */
-    public ScreenDevice getDefaultScreenDevice()
-    {
+    public ScreenDevice getDefaultScreenDevice() {
         return ScreenDeviceImpl.getDefaultScreenDevice();
     }
 
@@ -755,12 +749,13 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * and plays back media using a specific <code>MediaDevice</code>.
      *
      * @param device the <code>MediaDevice</code> which is used for media capture and playback by the call to be recorded
+     *
      * @return a new <code>Recorder</code> instance that can be used to record a call which captures
      * and plays back media using the specified <code>MediaDevice</code>
+     *
      * @see MediaService#createRecorder(MediaDevice)
      */
-    public Recorder createRecorder(@NonNull MediaDevice device)
-    {
+    public Recorder createRecorder(@NonNull MediaDevice device) {
         if (device instanceof AudioMixerMediaDevice)
             return new RecorderImpl((AudioMixerMediaDevice) device);
         else
@@ -771,8 +766,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * {@inheritDoc}
      */
     @Override
-    public Recorder createRecorder(@NonNull RTPTranslator translator)
-    {
+    public Recorder createRecorder(@NonNull RTPTranslator translator) {
         return new RecorderRtpImpl(translator);
     }
 
@@ -789,8 +783,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      */
     @NonNull
     @Override
-    public Map<MediaFormat, Byte> getDynamicPayloadTypePreferences()
-    {
+    public Map<MediaFormat, Byte> getDynamicPayloadTypePreferences() {
         if (dynamicPayloadTypePreferences == null) {
             dynamicPayloadTypePreferences = new HashMap<>();
 
@@ -872,11 +865,11 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @param device the video device
      * @param preferredWidth the width we prefer for the component
      * @param preferredHeight the height we prefer for the component
+     *
      * @return the preview component.
      */
     @Override
-    public Object getVideoPreviewComponent(MediaDevice device, int preferredWidth, int preferredHeight)
-    {
+    public Object getVideoPreviewComponent(MediaDevice device, int preferredWidth, int preferredHeight) {
         String noPreviewText = aTalkApp.getResString(R.string.media_configform_preview);
         JLabel noPreview = new JLabel(noPreviewText);
 
@@ -912,10 +905,8 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
                 videoContainer.addHierarchyListener(listener);
                 final MediaLocator locator = dataSource.getLocator();
 
-                player.addControllerListener(new ControllerListener()
-                {
-                    public void controllerUpdate(ControllerEvent event)
-                    {
+                player.addControllerListener(new ControllerListener() {
+                    public void controllerUpdate(ControllerEvent event) {
                         controllerUpdateForPreview(event, videoContainer, locator, listener);
                     }
                 });
@@ -939,8 +930,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @param listener the hierarchy listener we created for the video container.
      */
     private static void controllerUpdateForPreview(ControllerEvent event,
-            JComponent videoContainer, MediaLocator locator, VideoContainerHierarchyListener listener)
-    {
+            JComponent videoContainer, MediaLocator locator, VideoContainerHierarchyListener listener) {
         if (event instanceof ConfigureCompleteEvent) {
             Processor player = (Processor) event.getSourceController();
 
@@ -994,8 +984,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @param preview the preview component.
      * @param player the player.
      */
-    private static void showPreview(final JComponent previewContainer, final Component preview, final Player player)
-    {
+    private static void showPreview(final JComponent previewContainer, final Component preview, final Player player) {
         if (!SwingUtilities.isEventDispatchThread()) {
             SwingUtilities.invokeLater(() -> showPreview(previewContainer, preview, player));
             return;
@@ -1022,8 +1011,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      *
      * @param player the player.
      */
-    private static void disposePlayer(final Player player)
-    {
+    private static void disposePlayer(final Player player) {
         // launch disposing preview player in separate thread will lock renderer and can produce
         // lock if user has quickly requested preview component and can lock ui thread
         new Thread(() -> {
@@ -1040,10 +1028,10 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @param height height of the part
      * @param x origin of the x coordinate (relative to the full desktop)
      * @param y origin of the y coordinate (relative to the full desktop)
+     *
      * @return <code>MediaDevice</code> representing the part of desktop or null if problem
      */
-    public MediaDevice getMediaDeviceForPartialDesktopStreaming(int width, int height, int x, int y)
-    {
+    public MediaDevice getMediaDeviceForPartialDesktopStreaming(int width, int height, int x, int y) {
         MediaDevice device;
         String name = "Partial desktop streaming";
         Dimension size;
@@ -1108,10 +1096,10 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * If the <code>MediaDevice</code> corresponds to partial desktop streaming device.
      *
      * @param mediaDevice <code>MediaDevice</code>
+     *
      * @return true if <code>MediaDevice</code> is a partial desktop streaming device, false otherwise
      */
-    public boolean isPartialStreaming(MediaDevice mediaDevice)
-    {
+    public boolean isPartialStreaming(MediaDevice mediaDevice) {
         if (mediaDevice == null)
             return false;
 
@@ -1124,10 +1112,10 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * Find the screen device that contains specified point.
      *
      * @param p point coordinates
+     *
      * @return screen device that contains point
      */
-    public ScreenDevice getScreenForPoint(Point p)
-    {
+    public ScreenDevice getScreenForPoint(Point p) {
         for (ScreenDevice dev : getAvailableScreenDevices())
             if (dev.containsPoint(p))
                 return dev;
@@ -1138,10 +1126,10 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * Gets the origin of a specific desktop streaming device.
      *
      * @param mediaDevice the desktop streaming device to get the origin on
+     *
      * @return the origin of the specified desktop streaming device
      */
-    public Point getOriginForDesktopStreamingDevice(MediaDevice mediaDevice)
-    {
+    public Point getOriginForDesktopStreamingDevice(MediaDevice mediaDevice) {
         MediaDeviceImpl dev = (MediaDeviceImpl) mediaDevice;
         CaptureDeviceInfo cdi = dev.getCaptureDeviceInfo();
 
@@ -1172,8 +1160,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @param listener the new <code>Recorder.Listener</code> to be added to the list of listeners interested in
      * notifications from <code>Recorder</code>s.
      */
-    public void addRecorderListener(Recorder.Listener listener)
-    {
+    public void addRecorderListener(Recorder.Listener listener) {
         synchronized (recorderListeners) {
             if (!recorderListeners.contains(listener))
                 recorderListeners.add(listener);
@@ -1187,8 +1174,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @param listener the existing <code>Listener</code> to be removed from the list of listeners interested in
      * notifications from <code>Recorder</code>s
      */
-    public void removeRecorderListener(Recorder.Listener listener)
-    {
+    public void removeRecorderListener(Recorder.Listener listener) {
         synchronized (recorderListeners) {
             recorderListeners.remove(listener);
         }
@@ -1199,8 +1185,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      *
      * @return currently registered <code>Recorder.Listener</code>s.
      */
-    public Iterator<Recorder.Listener> getRecorderListeners()
-    {
+    public Iterator<Recorder.Listener> getRecorderListeners() {
         return recorderListeners.iterator();
     }
 
@@ -1210,8 +1195,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @param event a <code>PropertyChangeEvent</code> which specifies the name of the property which had its
      * value changed and the old and the new values of that property
      */
-    private void deviceConfigurationPropertyChange(PropertyChangeEvent event)
-    {
+    private void deviceConfigurationPropertyChange(PropertyChangeEvent event) {
         String propertyName = event.getPropertyName();
 
         /*
@@ -1241,10 +1225,10 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      *
      * @return a new <code>RTPTranslator</code> which is to forward RTP and RTCP traffic between
      * multiple <code>MediaStream</code>s
+     *
      * @see MediaService#createRTPTranslator()
      */
-    public RTPTranslator createRTPTranslator()
-    {
+    public RTPTranslator createRTPTranslator() {
         return new RTPTranslatorImpl();
     }
 
@@ -1255,8 +1239,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @return <code>true</code> if the loading of the JMF/FMJ <code>Registry</code> has been disabled;
      * otherwise, <code>false</code>
      */
-    public static boolean isJmfRegistryDisableLoad()
-    {
+    public static boolean isJmfRegistryDisableLoad() {
         return jmfRegistryDisableLoad;
     }
 
@@ -1267,8 +1250,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * @param mediaServiceImpl the <code>MediaServiceImpl</code> instance which has caused the need to perform the
      * one-time initialization
      */
-    private static void postInitializeOnce(MediaServiceImpl mediaServiceImpl)
-    {
+    private static void postInitializeOnce(MediaServiceImpl mediaServiceImpl) {
         /*
          * Some SecureRandom() implementations like SHA1PRNG call /dev/random to seed themselves
          * on first use. Call SecureRandom early to avoid blocking when establishing
@@ -1284,8 +1266,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * Sets up FMJ for execution. For example, sets properties which instruct FMJ whether it is to
      * create a log, where the log is to be created.
      */
-    private static void setupFMJ()
-    {
+    private static void setupFMJ() {
         /*
          * FMJ now uses java.util.logging.Logger, but only logs if allowLogging is set in its
          * registry. Since the levels can be configured through properties for the
@@ -1349,8 +1330,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      *
      * @return a new {@link EncodingConfiguration} instance.
      */
-    public EncodingConfiguration createEmptyEncodingConfiguration()
-    {
+    public EncodingConfiguration createEmptyEncodingConfiguration() {
         return new EncodingConfigurationImpl();
     }
 
@@ -1361,10 +1341,10 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * disabling the support for, respectively, {@link MediaType#AUDIO} and {@link MediaType#VIDEO}.
      *
      * @param mediaType the <code>MediaType</code> to be determined whether the support for it is enabled
+     *
      * @return <code>true</code> if the support for the specified <code>mediaType</code> is enabled; otherwise, <code>false</code>
      */
-    public static boolean isMediaTypeSupportEnabled(MediaType mediaType)
-    {
+    public static boolean isMediaTypeSupportEnabled(MediaType mediaType) {
         String propertyName;
 
         switch (mediaType) {
@@ -1384,8 +1364,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     /**
      * {@inheritDoc}
      */
-    public String getRtpCname()
-    {
+    public String getRtpCname() {
         return rtpCname;
     }
 
@@ -1393,8 +1372,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * The listener which will be notified for changes in the video container. Whether the
      * container is displayable or not we will stop the player or start it.
      */
-    private static class VideoContainerHierarchyListener implements HierarchyListener
-    {
+    private static class VideoContainerHierarchyListener implements HierarchyListener {
         /**
          * The parent window.
          */
@@ -1426,8 +1404,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
          * @param container the video container.
          * @param player the player.
          */
-        VideoContainerHierarchyListener(JComponent container, Player player)
-        {
+        VideoContainerHierarchyListener(JComponent container, Player player) {
             this.container = container;
             this.player = player;
         }
@@ -1438,16 +1415,14 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
          *
          * @param preview the preview.
          */
-        void setPreview(Component preview)
-        {
+        void setPreview(Component preview) {
             this.preview = preview;
         }
 
         /**
          * Disposes player and cleans listeners as we will no longer need them.
          */
-        public void dispose()
-        {
+        public void dispose() {
             if (windowListener != null) {
                 if (window != null) {
                     window.removeWindowListener(windowListener);
@@ -1473,8 +1448,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
          *
          * @param event the event for the change.
          */
-        public void hierarchyChanged(HierarchyEvent event)
-        {
+        public void hierarchyChanged(HierarchyEvent event) {
             if ((event.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) == 0)
                 return;
 
@@ -1493,11 +1467,9 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
             if (windowListener == null) {
                 window = SwingUtilities.windowForComponent(container);
                 if (window != null) {
-                    windowListener = new WindowAdapter()
-                    {
+                    windowListener = new WindowAdapter() {
                         @Override
-                        public void windowClosing(WindowEvent event)
-                        {
+                        public void windowClosing(WindowEvent event) {
                             dispose();
                         }
                     };
@@ -1512,8 +1484,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      */
     @Override
     public RecorderEventHandler createRecorderEventHandlerJson(String filename)
-            throws IOException
-    {
+            throws IOException {
         return new RecorderEventHandlerJSONImpl(filename);
     }
 }

@@ -31,8 +31,7 @@ import timber.log.Timber;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class NetaddrActivator implements BundleActivator
-{
+public class NetaddrActivator implements BundleActivator {
     /**
      * The OSGi bundle context.
      */
@@ -50,16 +49,16 @@ public class NetaddrActivator implements BundleActivator
 
     /**
      * Creates a NetworkAddressManager, starts it, and registers it as a NetworkAddressManagerService.
+     *
+     * @param bundleContext OSGI bundle context
+     *
+     * @throws Exception if starting the NetworkAddressManagerFails.
      * @see MappingCandidateHarvesters#initialize() for static harvesters creation
      * @see net.java.sip.communicator.util.NetworkUtils
      * @see net.java.sip.communicator.util.launchutils.LaunchArgHandler#handleIPv4Enforcement()
-     *
-     * @param bundleContext OSGI bundle context
-     * @throws Exception if starting the NetworkAddressManagerFails.
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         /*
          * Here we load static properties that should be elsewhere, end ugly property set;
          */
@@ -76,7 +75,7 @@ public class NetaddrActivator implements BundleActivator
          * ice4j dependency lib org.bitlet.weupnp is used in uPnP Harvester; but not working for android:
          * see https://github.com/bitletorg/weupnp/issues/20'
          * Must redefine the xmp parser for weupnp for android;
-        */
+         */
         System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
 
         // keep a reference to the bundle context for later usage.
@@ -98,8 +97,7 @@ public class NetaddrActivator implements BundleActivator
      *
      * @return a currently valid implementation of the ConfigurationService.
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configurationService == null) {
             configurationService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
         }
@@ -111,8 +109,7 @@ public class NetaddrActivator implements BundleActivator
      *
      * @param bundleContext the OSGI bundle context
      */
-    public void stop(BundleContext bundleContext)
-    {
+    public void stop(BundleContext bundleContext) {
         if (networkAMS != null)
             networkAMS.stop();
         Timber.d("Network Address Manager Service ...[STOPPED]");
@@ -125,8 +122,7 @@ public class NetaddrActivator implements BundleActivator
      *
      * @return a reference to the BundleContext instance that we were started with.
      */
-    static BundleContext getBundleContext()
-    {
+    static BundleContext getBundleContext() {
         return bundleContext;
     }
 }

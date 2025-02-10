@@ -16,6 +16,8 @@
  */
 package org.atalk.crypto.omemo;
 
+import static org.atalk.android.R.id.fingerprint;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,9 +33,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.omemo.OmemoManager;
@@ -47,14 +49,12 @@ import org.jxmpp.jid.BareJid;
 
 import timber.log.Timber;
 
-import static org.atalk.android.R.id.fingerprint;
-
 /**
  * OMEMO buddy authenticate dialog.
  *
  * @author Eng Chong Meng
  */
-public class OmemoAuthenticateDialog extends OSGiActivity {
+public class OmemoAuthenticateDialog extends BaseActivity {
     public final static String Corrupted_OmemoKey = "Corrupted OmemoKey, purge?";
 
     private static OmemoManager mOmemoManager;

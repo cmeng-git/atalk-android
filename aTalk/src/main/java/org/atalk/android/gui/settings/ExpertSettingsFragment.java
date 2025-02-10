@@ -14,23 +14,25 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceScreen;
 
+import java.util.Objects;
+
 import org.atalk.android.R;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.settings.util.SummaryMapper;
+import org.atalk.android.gui.settings.widget.ConfigWidgetUtil;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.impl.neomedia.device.AudioSystem;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.impl.neomedia.device.DeviceSystem;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
-import org.atalk.service.osgi.OSGiPreferenceFragment;
 
 /**
  * The preferences fragment implements for Expert settings.
  *
  * @author Eng Chong Meng
  */
-public class ExpertSettingsFragment extends OSGiPreferenceFragment
+public class ExpertSettingsFragment extends BasePreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     // Advance video/audio settings
     private static final String PC_KEY_ADVANCED = "pref.cat.settings.advanced";
@@ -71,7 +73,6 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the expert_preferences from an XML resource
-        super.onCreatePreferences(savedInstanceState, rootKey);
         setPreferencesFromResource(R.xml.expert_preferences, rootKey);
         setPrefTitle(R.string.settings_expert);
     }
@@ -202,11 +203,10 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
 
     /**
      * Update the android codec preferences enabled status based on camera device selected option.
-     *
      * Note: Current aTalk implementation requires direct surface option to be enabled in order
      * for fmj to use the android codec if enabled. So couple both the surface and codec options
      *
-     * @see ConfigWidgetUtil#handlePersistValue(final Object value)
+     * @see ConfigWidgetUtil#handlePersistValue(Object)
      */
     private void updateHwCodecStatus() {
         AndroidCamera selectedCamera = AndroidCamera.getSelectedCameraDevInfo();
@@ -218,7 +218,6 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
         findPreference(P_KEY_VIDEO_HW_ENCODE).setEnabled(enableMediaCodecs);
         findPreference(P_KEY_VIDEO_HW_DECODE).setEnabled(enableMediaCodecs);
 
-        // findPreference(P_KEY_VIDEO_ENC_DIRECT_SURFACE).setEnabled(AndroidUtils.hasAPI(18));
         findPreference(P_KEY_VIDEO_ENC_DIRECT_SURFACE).setEnabled(false);
         findPreference(P_KEY_VIDEO_DEC_DIRECT_SURFACE).setEnabled(false);
     }
@@ -228,71 +227,74 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
      */
     public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key) {
         // Echo cancellation
-        if (key.equals(P_KEY_AUDIO_ECHO_CANCEL)) {
-            mAudioSystem.setEchoCancel(shPreferences.getBoolean(P_KEY_AUDIO_ECHO_CANCEL, true));
-        }
-        // Auto gain control
-        else if (key.equals(P_KEY_AUDIO_AGC)) {
-            mAudioSystem.setAutomaticGainControl(shPreferences.getBoolean(P_KEY_AUDIO_AGC, true));
-        }
-        // Noise reduction
-        else if (key.equals(P_KEY_AUDIO_DENOISE)) {
-            mAudioSystem.setDenoise(shPreferences.getBoolean(P_KEY_AUDIO_DENOISE, true));
-        }
-        // Frame rate
-        else if (key.equals(P_KEY_VIDEO_LIMIT_FPS) || key.equals(P_KEY_VIDEO_TARGET_FPS)) {
-            boolean isLimitOn = shPreferences.getBoolean(P_KEY_VIDEO_LIMIT_FPS, false);
-            if (isLimitOn) {
-                EditTextPreference fpsPref = findPreference(P_KEY_VIDEO_TARGET_FPS);
-                String fpsStr = fpsPref.getText();
-                if (!TextUtils.isEmpty(fpsStr)) {
-                    int fps = Integer.parseInt(fpsStr);
-                    if (fps > 30) {
-                        fps = 30;
+        switch (Objects.requireNonNull(key)) {
+            case P_KEY_AUDIO_ECHO_CANCEL:
+                mAudioSystem.setEchoCancel(shPreferences.getBoolean(P_KEY_AUDIO_ECHO_CANCEL, true));
+                break;
+            // Auto gain control
+            case P_KEY_AUDIO_AGC:
+                mAudioSystem.setAutomaticGainControl(shPreferences.getBoolean(P_KEY_AUDIO_AGC, true));
+                break;
+            // Noise reduction
+            case P_KEY_AUDIO_DENOISE:
+                mAudioSystem.setDenoise(shPreferences.getBoolean(P_KEY_AUDIO_DENOISE, true));
+                break;
+            // Frame rate
+            case P_KEY_VIDEO_LIMIT_FPS:
+            case P_KEY_VIDEO_TARGET_FPS:
+                boolean isLimitOn = shPreferences.getBoolean(P_KEY_VIDEO_LIMIT_FPS, false);
+                if (isLimitOn) {
+                    EditTextPreference fpsPref = findPreference(P_KEY_VIDEO_TARGET_FPS);
+                    String fpsStr = fpsPref.getText();
+                    if (!TextUtils.isEmpty(fpsStr)) {
+                        int fps = Integer.parseInt(fpsStr);
+                        if (fps > 30) {
+                            fps = 30;
+                        }
+                        else if (fps < 5) {
+                            fps = 5;
+                        }
+                        mDeviceConfig.setFrameRate(fps);
+                        fpsPref.setText(Integer.toString(fps));
                     }
-                    else if (fps < 5) {
-                        fps = 5;
+                }
+                else {
+                    mDeviceConfig.setFrameRate(DeviceConfiguration.DEFAULT_VIDEO_FRAMERATE);
+                }
+                break;
+            // Max bandwidth
+            case P_KEY_VIDEO_MAX_BANDWIDTH:
+                String resStr = shPreferences.getString(P_KEY_VIDEO_MAX_BANDWIDTH, null);
+                if (!TextUtils.isEmpty(resStr)) {
+                    int maxBw = Integer.parseInt(resStr);
+                    if (maxBw > 999) {
+                        maxBw = 999;
                     }
-                    mDeviceConfig.setFrameRate(fps);
-                    fpsPref.setText(Integer.toString(fps));
+                    else if (maxBw < 1) {
+                        maxBw = 1;
+                    }
+                    mDeviceConfig.setVideoRTPPacingThreshold(maxBw);
                 }
-            }
-            else {
-                mDeviceConfig.setFrameRate(DeviceConfiguration.DEFAULT_VIDEO_FRAMERATE);
-            }
-        }
-        // Max bandwidth
-        else if (key.equals(P_KEY_VIDEO_MAX_BANDWIDTH)) {
-            String resStr = shPreferences.getString(P_KEY_VIDEO_MAX_BANDWIDTH, null);
-            if (!TextUtils.isEmpty(resStr)) {
-                int maxBw = Integer.parseInt(resStr);
-                if (maxBw > 999) {
-                    maxBw = 999;
+                else {
+                    mDeviceConfig.setVideoRTPPacingThreshold(DeviceConfiguration.DEFAULT_VIDEO_RTP_PACING_THRESHOLD);
                 }
-                else if (maxBw < 1) {
-                    maxBw = 1;
+                ((EditTextPreference) findPreference(P_KEY_VIDEO_MAX_BANDWIDTH))
+                        .setText(Integer.toString(mDeviceConfig.getVideoRTPPacingThreshold()));
+                break;
+            // Video bit rate
+            case P_KEY_VIDEO_BITRATE:
+                String bitrateStr = shPreferences.getString(P_KEY_VIDEO_BITRATE, "");
+                int bitrate = 0;
+                if (bitrateStr != null) {
+                    bitrate = !TextUtils.isEmpty(bitrateStr)
+                            ? Integer.parseInt(bitrateStr) : DeviceConfiguration.DEFAULT_VIDEO_BITRATE;
                 }
-                mDeviceConfig.setVideoRTPPacingThreshold(maxBw);
-            }
-            else {
-                mDeviceConfig.setVideoRTPPacingThreshold(DeviceConfiguration.DEFAULT_VIDEO_RTP_PACING_THRESHOLD);
-            }
-            ((EditTextPreference) findPreference(P_KEY_VIDEO_MAX_BANDWIDTH))
-                    .setText(Integer.toString(mDeviceConfig.getVideoRTPPacingThreshold()));
-        }
-        // Video bit rate
-        else if (key.equals(P_KEY_VIDEO_BITRATE)) {
-            String bitrateStr = shPreferences.getString(P_KEY_VIDEO_BITRATE, "");
-            int bitrate = 0;
-            if (bitrateStr != null) {
-                bitrate = !TextUtils.isEmpty(bitrateStr)
-                        ? Integer.parseInt(bitrateStr) : DeviceConfiguration.DEFAULT_VIDEO_BITRATE;
-            }
-            if (bitrate < 1) {
-                bitrate = 1;
-            }
-            mDeviceConfig.setVideoBitrate(bitrate);
-            ((EditTextPreference) findPreference(P_KEY_VIDEO_BITRATE)).setText(Integer.toString(bitrate));
+                if (bitrate < 1) {
+                    bitrate = 1;
+                }
+                mDeviceConfig.setVideoBitrate(bitrate);
+                ((EditTextPreference) findPreference(P_KEY_VIDEO_BITRATE)).setText(Integer.toString(bitrate));
+                break;
         }
     }
 }

@@ -35,7 +35,7 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(GeoConstants.INTENT_LOCATION_RECEIVED)) {
+        if (GeoConstants.INTENT_LOCATION_RECEIVED.equals(intent.getAction())) {
             Location location = intent.getParcelableExtra(GeoIntentKey.LOCATION);
             String locAddress = intent.getStringExtra(GeoIntentKey.ADDRESS);
             geoLocationListener.onLocationReceived(location, locAddress);

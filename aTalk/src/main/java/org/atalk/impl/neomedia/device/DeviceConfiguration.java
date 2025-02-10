@@ -5,17 +5,6 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.impl.neomedia.MediaServiceImpl;
-import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
-import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.MediaUseCase;
-import org.atalk.service.neomedia.codec.Constants;
-import org.atalk.util.MediaType;
-import org.atalk.util.OSUtils;
-import org.atalk.util.event.PropertyChangeNotifier;
-
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -33,6 +22,17 @@ import javax.media.PlugInManager;
 import javax.media.Renderer;
 import javax.media.format.VideoFormat;
 
+import org.atalk.impl.neomedia.MediaServiceImpl;
+import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
+import org.atalk.impl.timberlog.TimberLog;
+import org.atalk.service.configuration.ConfigurationService;
+import org.atalk.service.libjitsi.LibJitsi;
+import org.atalk.service.neomedia.MediaUseCase;
+import org.atalk.service.neomedia.codec.Constants;
+import org.atalk.util.MediaType;
+import org.atalk.util.OSUtils;
+import org.atalk.util.event.PropertyChangeNotifier;
+
 import timber.log.Timber;
 
 /**
@@ -46,8 +46,7 @@ import timber.log.Timber;
  * @author Vincent Lucas
  * @author Eng Chong Meng
  */
-public class DeviceConfiguration extends PropertyChangeNotifier implements PropertyChangeListener
-{
+public class DeviceConfiguration extends PropertyChangeNotifier implements PropertyChangeListener {
     /**
      * The name of the <code>DeviceConfiguration</code> property which represents the device used by
      * <code>DeviceConfiguration</code> for audio capture.
@@ -107,12 +106,12 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * The default video width.
      */
-    public static final int DEFAULT_VIDEO_WIDTH = 1280;
+    public static final int DEFAULT_VIDEO_WIDTH = 720;
 
     /**
      * The default video height.
      */
-    public static final int DEFAULT_VIDEO_HEIGHT = 720;
+    public static final int DEFAULT_VIDEO_HEIGHT = 480;
 
     /**
      * The default value for video maximum bandwidth.
@@ -172,15 +171,15 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
             // new Dimension(160, 120), // QQVGA
             // new Dimension(176, 144), // QCIF
             // new Dimension(320, 200), // QVGA
-            new Dimension(320, 240), // QVGA
+            new Dimension(320, 240),    // QVGA
             // new Dimension(352, 288), // CIF
-            new Dimension(640, 480), // VGA
-            new Dimension(720, 480), // DV NTSC
+            new Dimension(640, 480),    // VGA
+            new Dimension(720, 480),    // DV NTSC
             // new Dimension(800, 450), // < QHD - not support by camera preview
-            new Dimension(960, 720), // Panasonic DVCPRO100
-            new Dimension(1280, 720), // HDTV
-            new Dimension(1440, 1080), // HDV 1080
-            new Dimension(1920, 1080) // HD
+            new Dimension(960, 720),    // Panasonic DVCPRO100
+            new Dimension(1280, 720),   // HDTV
+            new Dimension(1440, 1080),  // HDV 1080
+            new Dimension(1920, 1080)   // HD
     };
 
     /**
@@ -192,8 +191,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * Fixes the list of <code>Renderer</code>s registered with FMJ in order to resolve operating system-specific issues.
      */
-    private static void fixRenderers()
-    {
+    private static void fixRenderers() {
         @SuppressWarnings("unchecked")
         Vector<String> renderers = PlugInManager.getPlugInList(null, null, PlugInManager.RENDERER);
 
@@ -270,8 +268,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * Initializes a new <code>DeviceConfiguration</code> instance.
      */
-    public DeviceConfiguration()
-    {
+    public DeviceConfiguration() {
         ConfigurationService cfg = LibJitsi.getConfigurationService();
 
         setAudioSystemIsDisabled = (cfg != null)
@@ -310,8 +307,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      * default/automatic selection of &quot;None&quot; to an <code>DeviceSystem</code> which has started
      * providing at least one device at runtime.
      */
-    private void addDeviceSystemPropertyChangeListener()
-    {
+    private void addDeviceSystemPropertyChangeListener() {
         // Track all kinds of DeviceSystems i.e audio and video.
         for (MediaType mediaType : MediaType.values()) {
             DeviceSystem[] deviceSystems = DeviceSystem.getDeviceSystems(mediaType);
@@ -330,8 +326,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * Detects audio capture devices configured through JMF and disable audio if none was found.
      */
-    private void extractConfiguredAudioCaptureDevices()
-    {
+    private void extractConfiguredAudioCaptureDevices() {
         if (!MediaServiceImpl.isMediaTypeSupportEnabled(MediaType.AUDIO))
             return;
 
@@ -397,8 +392,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * Detects capture devices configured through JMF and disable audio and/or video transmission if none were found.
      */
-    private void extractConfiguredCaptureDevices()
-    {
+    private void extractConfiguredCaptureDevices() {
         extractConfiguredAudioCaptureDevices();
         extractConfiguredVideoCaptureDevices();
     }
@@ -407,10 +401,10 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      * Returns the configured video capture device with the specified output format.
      *
      * @param formats the output format array of the video format.
+     *
      * @return CaptureDeviceInfo for the video device.
      */
-    private CaptureDeviceInfo extractConfiguredVideoCaptureDevice(Format[] formats)
-    {
+    private CaptureDeviceInfo extractConfiguredVideoCaptureDevice(Format[] formats) {
         ConfigurationService cfg = LibJitsi.getConfigurationService();
         String videoDevName = (cfg == null) ? null : cfg.getString(PROP_VIDEO_DEVICE);
         CaptureDeviceInfo videoCaptureDevice = null;
@@ -448,8 +442,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * Detects video capture devices configured through JMF and disable video if none was found.
      */
-    public void extractConfiguredVideoCaptureDevices()
-    {
+    public void extractConfiguredVideoCaptureDevices() {
         if (!MediaServiceImpl.isMediaTypeSupportEnabled(MediaType.VIDEO))
             return;
 
@@ -471,8 +464,8 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
             videoCaptureDevice = extractConfiguredVideoCaptureDevice(formats);
             if (videoCaptureDevice != null)
                 Timber.i("Found configured video device: %s <= %s.", videoDevName, videoCaptureDevice.getName());
-			else 
-				Timber.w("No Video Device was found for %s.", videoDevName);
+            else
+                Timber.w("No Video Device was found for %s.", videoDevName);
         }
     }
 
@@ -481,8 +474,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      *
      * @return the CaptureDeviceInfo of a device that we could use for audio capture.
      */
-    public CaptureDeviceInfo2 getAudioCaptureDevice()
-    {
+    public CaptureDeviceInfo2 getAudioCaptureDevice() {
         AudioSystem audioSystem = getAudioSystem();
         return (audioSystem == null) ? null : audioSystem.getSelectedDevice(AudioSystem.DataFlow.CAPTURE);
     }
@@ -490,14 +482,12 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * @return the audioNotifyDevice
      */
-    public CaptureDeviceInfo getAudioNotifyDevice()
-    {
+    public CaptureDeviceInfo getAudioNotifyDevice() {
         AudioSystem audioSystem = getAudioSystem();
         return (audioSystem == null) ? null : audioSystem.getSelectedDevice(AudioSystem.DataFlow.NOTIFY);
     }
 
-    public AudioSystem getAudioSystem()
-    {
+    public AudioSystem getAudioSystem() {
         return audioSystem;
     }
 
@@ -509,8 +499,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      * @return an array of <code>CaptureDeviceInfo</code> describing the audio capture devices available
      * through this <code>DeviceConfiguration</code>
      */
-    public List<CaptureDeviceInfo2> getAvailableAudioCaptureDevices()
-    {
+    public List<CaptureDeviceInfo2> getAvailableAudioCaptureDevices() {
         return audioSystem.getDevices(AudioSystem.DataFlow.CAPTURE);
     }
 
@@ -520,8 +509,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      *
      * @return an array of available <code>AudioSystem</code>s
      */
-    public AudioSystem[] getAvailableAudioSystems()
-    {
+    public AudioSystem[] getAvailableAudioSystems() {
         AudioSystem[] audioSystems = AudioSystem.getAudioSystems();
         if ((audioSystems == null) || (audioSystems.length == 0))
             return audioSystems;
@@ -566,11 +554,11 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      * and represent acceptable values for {@link #setVideoCaptureDevice(CaptureDeviceInfo, boolean)}
      *
      * @param useCase extract video capture devices that correspond to this <code>MediaUseCase</code>
+     *
      * @return an array of <code>CaptureDeviceInfo</code> describing the video capture devices available
      * through this <code>DeviceConfiguration</code>
      */
-    public List<CaptureDeviceInfo> getAvailableVideoCaptureDevices(MediaUseCase useCase)
-    {
+    public List<CaptureDeviceInfo> getAvailableVideoCaptureDevices(MediaUseCase useCase) {
         Format[] formats = new Format[]{
                 new AVFrameFormat(),
                 new VideoFormat(Constants.ANDROID_SURFACE),
@@ -606,8 +594,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      *
      * @return echo cancel filter length in milliseconds
      */
-    public long getEchoCancelFilterLengthInMillis()
-    {
+    public long getEchoCancelFilterLengthInMillis() {
         ConfigurationService cfg = LibJitsi.getConfigurationService();
         long value = DEFAULT_AUDIO_ECHOCANCEL_FILTER_LENGTH_IN_MILLIS;
 
@@ -623,8 +610,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      * @return the frame rate set on this <code>DeviceConfiguration</code>. The default value is
      * {@link #DEFAULT_VIDEO_FRAMERATE}
      */
-    public int getFrameRate()
-    {
+    public int getFrameRate() {
         if (frameRate == -1) {
             ConfigurationService cfg = LibJitsi.getConfigurationService();
             int value = DEFAULT_VIDEO_FRAMERATE;
@@ -641,8 +627,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      *
      * @return the video codec bitrate. The default value is {@link #DEFAULT_VIDEO_BITRATE}.
      */
-    public int getVideoBitrate()
-    {
+    public int getVideoBitrate() {
         if (videoBitrate == -1) {
             ConfigurationService cfg = LibJitsi.getConfigurationService();
             int value = DEFAULT_VIDEO_BITRATE;
@@ -662,10 +647,10 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      * Returns a device that we could use for video capture.
      *
      * @param useCase <code>MediaUseCase</code> that will determined device we will use
+     *
      * @return the CaptureDeviceInfo of a device that we could use for video capture.
      */
-    public CaptureDeviceInfo getVideoCaptureDevice(MediaUseCase useCase)
-    {
+    public CaptureDeviceInfo getVideoCaptureDevice(MediaUseCase useCase) {
         CaptureDeviceInfo dev = null;
 
         switch (useCase) {
@@ -689,8 +674,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      *
      * @return the maximum allowed video bandwidth. The default value is {@link #DEFAULT_VIDEO_RTP_PACING_THRESHOLD}.
      */
-    public int getVideoRTPPacingThreshold()
-    {
+    public int getVideoRTPPacingThreshold() {
         if (videoMaxBandwidth == -1) {
             ConfigurationService cfg = LibJitsi.getConfigurationService();
             int value = DEFAULT_VIDEO_RTP_PACING_THRESHOLD;
@@ -711,8 +695,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      *
      * @return the video size set on this <code>DeviceConfiguration</code>
      */
-    public Dimension getVideoSize()
-    {
+    public Dimension getVideoSize() {
         if (videoSize == null) {
             ConfigurationService cfg = LibJitsi.getConfigurationService();
             int width = DEFAULT_VIDEO_WIDTH;
@@ -735,8 +718,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      * @param ev the <code>PropertyChangeEvent</code> to notify this <code>PropertyChangeListener</code> about
      * and which describes the source and other specifics of the notification
      */
-    public void propertyChange(PropertyChangeEvent ev)
-    {
+    public void propertyChange(PropertyChangeEvent ev) {
         String propertyName = ev.getPropertyName();
 
         if (AUDIO_CAPTURE_DEVICE.equals(propertyName)
@@ -799,8 +781,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      * Registers the custom <code>Renderer</code> implementations defined by class name in
      * {@link #CUSTOM_RENDERERS} with JMF.
      */
-    private void registerCustomRenderers()
-    {
+    private void registerCustomRenderers() {
         @SuppressWarnings("unchecked")
         Vector<String> renderers = PlugInManager.getPlugInList(null, null, PlugInManager.RENDERER);
         boolean audioSupportIsDisabled = !MediaServiceImpl.isMediaTypeSupportEnabled(MediaType.AUDIO);
@@ -871,8 +852,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
         }
     }
 
-    public void setAudioSystem(AudioSystem audioSystem, boolean save)
-    {
+    public void setAudioSystem(AudioSystem audioSystem, boolean save) {
         if (this.audioSystem != audioSystem) {
             if (setAudioSystemIsDisabled && save) {
                 throw new IllegalStateException(MediaServiceImpl.DISABLE_SET_AUDIO_SYSTEM_PNAME);
@@ -913,8 +893,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      *
      * @param frameRate the frame rate to be set on this <code>DeviceConfiguration</code>
      */
-    public void setFrameRate(int frameRate)
-    {
+    public void setFrameRate(int frameRate) {
         this.frameRate = frameRate;
 
         ConfigurationService cfg = LibJitsi.getConfigurationService();
@@ -931,8 +910,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      *
      * @param videoBitrate the video codec bitrate
      */
-    public void setVideoBitrate(int videoBitrate)
-    {
+    public void setVideoBitrate(int videoBitrate) {
         this.videoBitrate = videoBitrate;
 
         ConfigurationService cfg = LibJitsi.getConfigurationService();
@@ -951,8 +929,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      * <code>DeviceConfiguration</code> for video capture.
      * @param save whether we will save this option or not.
      */
-    public void setVideoCaptureDevice(CaptureDeviceInfo device, boolean save)
-    {
+    public void setVideoCaptureDevice(CaptureDeviceInfo device, boolean save) {
         if (videoCaptureDevice != device) {
             CaptureDeviceInfo oldDevice = videoCaptureDevice;
             videoCaptureDevice = device;
@@ -976,8 +953,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      *
      * @param videoMaxBandwidth the maximum allowed video bandwidth
      */
-    public void setVideoRTPPacingThreshold(int videoMaxBandwidth)
-    {
+    public void setVideoRTPPacingThreshold(int videoMaxBandwidth) {
         this.videoMaxBandwidth = videoMaxBandwidth;
 
         ConfigurationService cfg = LibJitsi.getConfigurationService();
@@ -995,8 +971,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      *
      * @param videoSize the video size to be set on this <code>DeviceConfiguration</code>
      */
-    public void setVideoSize(Dimension videoSize)
-    {
+    public void setVideoSize(Dimension videoSize) {
         ConfigurationService cfg = LibJitsi.getConfigurationService();
         if (cfg != null) {
             cfg.setProperty(PROP_VIDEO_HEIGHT, videoSize.height);

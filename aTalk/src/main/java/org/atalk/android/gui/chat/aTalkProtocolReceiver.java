@@ -3,10 +3,10 @@ package org.atalk.android.gui.chat;
 import android.content.Intent;
 import android.os.Bundle;
 
-import org.atalk.service.osgi.OSGiActivity;
-
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import org.atalk.android.BaseActivity;
 
 import timber.log.Timber;
 
@@ -14,11 +14,9 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class aTalkProtocolReceiver extends OSGiActivity
-{
+public class aTalkProtocolReceiver extends BaseActivity {
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();

@@ -5,19 +5,16 @@
  */
 package org.atalk.impl.neomedia.codec;
 
+import static android.media.MediaCodecList.REGULAR_CODECS;
+
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 import android.media.MediaFormat;
 
-import org.atalk.impl.neomedia.codec.video.AVFrame;
-import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
-import org.atalk.impl.neomedia.codec.video.ByteBuffer;
-import org.atalk.impl.neomedia.jmfext.media.protocol.ByteBufferPool;
-import org.atalk.service.neomedia.codec.Constants;
-
 import java.awt.Dimension;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -27,6 +24,12 @@ import javax.media.Buffer;
 import javax.media.Format;
 import javax.media.ResourceUnavailableException;
 import javax.media.format.VideoFormat;
+
+import org.atalk.impl.neomedia.codec.video.AVFrame;
+import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
+import org.atalk.impl.neomedia.codec.video.ByteBufferFmj;
+import org.atalk.impl.neomedia.jmfext.media.protocol.ByteBufferPool;
+import org.atalk.service.neomedia.codec.Constants;
 
 import timber.log.Timber;
 
@@ -48,7 +51,13 @@ public class AndroidMediaCodec extends AbstractCodec2 {
      * The map of FMJ <code>Format</code> encodings to <code>MediaCodec</code> mime types which allows
      * converting between the two.
      */
-    private static final String[] FMJ_ENCODINGS_TO_MEDIA_CODEC_TYPES;
+    protected static final String[] FMJ_ENCODINGS_TO_MEDIA_CODEC_TYPES;
+
+    /**
+     * The map of <code>FFmpeg</code> pixel formats to <code>MediaCodec</code> <code>colorFormat</code>s which
+     * allows converting between the two.
+     */
+    protected static final int[] PIX_FMTS_TO_MEDIA_CODEC_COLOR_FORMATS;
 
     /**
      * The mime type of H.264-encoded media data as defined by Android's <code>MediaCodec</code> class.
@@ -60,12 +69,6 @@ public class AndroidMediaCodec extends AbstractCodec2 {
      * the terms of Android's <code>MediaCodec</code> class is unknown.
      */
     private static final int OMX_COLOR_FormatUnused = 0;
-
-    /**
-     * The map of <code>FFmpeg</code> pixel formats to <code>MediaCodec</code> <code>colorFormat</code>s which
-     * allows converting between the two.
-     */
-    private static final int[] PIX_FMTS_TO_MEDIA_CODEC_COLOR_FORMATS;
 
     /**
      * The list of <code>Format</code>s of media data supported as input by <code>AndroidMediaCodec</code> instances.
@@ -87,6 +90,8 @@ public class AndroidMediaCodec extends AbstractCodec2 {
      */
     private static final String VP9_MEDIA_CODEC_TYPE = "video/x-vnd.on2.vp9";
 
+    private static final MediaCodecInfo[] mCodecInfos;
+
     static {
         /*
          * AndroidMediaCodec is an FMJ Codec and, consequently, defines the various formats of media
@@ -96,9 +101,12 @@ public class AndroidMediaCodec extends AbstractCodec2 {
         FMJ_ENCODINGS_TO_MEDIA_CODEC_TYPES = new String[]{
                 Constants.H264, H264_MEDIA_CODEC_TYPE,
                 Constants.VP9, VP9_MEDIA_CODEC_TYPE,
-                Constants.VP8, VP8_MEDIA_CODEC_TYPE};
+                Constants.VP8, VP8_MEDIA_CODEC_TYPE
+        };
+
         PIX_FMTS_TO_MEDIA_CODEC_COLOR_FORMATS = new int[]{
-                FFmpeg.PIX_FMT_NV12, MediaCodecInfo.CodecCapabilities.COLOR_TI_FormatYUV420PackedSemiPlanar};
+                FFmpeg.PIX_FMT_NV12, MediaCodecInfo.CodecCapabilities.COLOR_FormatRGBAFlexible
+        };
 
         /*
          * The Formats supported by AndroidMediaCodec as input and output are the mime types and
@@ -113,9 +121,8 @@ public class AndroidMediaCodec extends AbstractCodec2 {
         List<Format> supportedInputFormats = new ArrayList<>();
         List<Format> supportedOutputFormats = new ArrayList<>();
 
-        MediaCodecInfo[] mCodecInfos = new MediaCodecList(MediaCodecList.REGULAR_CODECS).getCodecInfos();
+        mCodecInfos = new MediaCodecList(REGULAR_CODECS).getCodecInfos();
         for (MediaCodecInfo codecInfo : mCodecInfos) {
-
             String[] supportedTypes = codecInfo.getSupportedTypes();
             for (String supportedType : supportedTypes) {
                 /*
@@ -139,7 +146,6 @@ public class AndroidMediaCodec extends AbstractCodec2 {
                     continue;
 
                 int[] colorFormats = capabilities.colorFormats;
-
                 if ((colorFormats == null) || (colorFormats.length == 0))
                     continue;
 
@@ -205,7 +211,6 @@ public class AndroidMediaCodec extends AbstractCodec2 {
                             s.append("; ");
 
                         MediaCodecInfo.CodecProfileLevel profileLevel = profileLevels[i];
-
                         s.append("profile= ").append(profileLevel.profile).append(", level= ")
                                 .append(profileLevel.level);
                     }
@@ -214,7 +219,6 @@ public class AndroidMediaCodec extends AbstractCodec2 {
                 Timber.d("%s", s);
             }
         }
-
         SUPPORTED_INPUT_FORMATS = supportedInputFormats.toArray(EMPTY_FORMATS);
         SUPPORTED_OUTPUT_FORMATS = supportedOutputFormats.toArray(EMPTY_FORMATS);
     }
@@ -230,8 +234,7 @@ public class AndroidMediaCodec extends AbstractCodec2 {
      *
      * @return the result of the invocation of the method on the specified <code>codecInfo</code>
      */
-    private static MediaCodecInfo.CodecCapabilities getCapabilitiesForType(
-            MediaCodecInfo codecInfo, String type) {
+    private static MediaCodecInfo.CodecCapabilities getCapabilitiesForType(MediaCodecInfo codecInfo, String type) {
         MediaCodecInfo.CodecCapabilities capabilities;
 
         try {
@@ -262,7 +265,6 @@ public class AndroidMediaCodec extends AbstractCodec2 {
                 break;
             }
         }
-
         return (pixfmt == FFmpeg.PIX_FMT_NONE) ? null : new AVFrameFormat(pixfmt);
     }
 
@@ -285,7 +287,6 @@ public class AndroidMediaCodec extends AbstractCodec2 {
                 break;
             }
         }
-
         return (encoding == null) ? null : new VideoFormat(encoding);
     }
 
@@ -375,7 +376,7 @@ public class AndroidMediaCodec extends AbstractCodec2 {
 
     /**
      * A <code>byte</code> in the form of an array which is used to copy the bytes of a
-     * <code>java.nio.ByteBuffer</code> into native memory (because the <code>memcpy</code> implementation
+     * <code>java.nio.ByteBufferFmj</code> into native memory (because the <code>memcpy</code> implementation
      * requires an array. Allocated once to reduce garbage collection.
      */
     private final byte[] b = new byte[1];
@@ -396,20 +397,16 @@ public class AndroidMediaCodec extends AbstractCodec2 {
 
     /**
      * The <code>MediaCodec.BufferInfo</code> instance which is populated by {@link #mediaCodec} to
-     * describe the offset and length/size of the <code>java.nio.ByteBuffer</code>s it utilizes.
+     * describe the offset and length/size of the <code>java.nio.ByteBufferFmj</code>s it utilizes.
      * Allocated once to reduce garbage collection at runtime.
      */
     private final MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
-
-    private java.nio.ByteBuffer[] inputBuffers;
 
     /**
      * Android's <code>MediaCodec</code> instance which is wrapped by this instance and which performs
      * the very media processing (during the execution of {@link #doProcess(Buffer, Buffer)}).
      */
     private MediaCodec mediaCodec;
-
-    private java.nio.ByteBuffer[] outputBuffers;
 
     /**
      * The mime type defined in the terms of Android's <code>MediaCodec</code> class with which
@@ -447,8 +444,6 @@ public class AndroidMediaCodec extends AbstractCodec2 {
                  * domain values is significant so clearing it is impossible.
                  */
                 colorFormat = OMX_COLOR_FormatUnused;
-                inputBuffers = null;
-                outputBuffers = null;
                 type = null;
             }
         }
@@ -499,16 +494,6 @@ public class AndroidMediaCodec extends AbstractCodec2 {
      * {@inheritDoc}
      */
     protected int doProcess(Buffer inputBuffer, Buffer outputBuffer) {
-        Format inputFormat = inputBuffer.getFormat();
-
-        if ((inputFormat != null)
-                && (inputFormat != this.inputFormat)
-                && !inputFormat.equals(inputFormat)
-                && (null == setInputFormat(inputFormat))) {
-            return BUFFER_PROCESSED_FAILED;
-        }
-        inputFormat = this.inputFormat;
-
         /*
          * FIXME The implementation of AndroidMediaCodec is incomplete by relying on inputFormat
          * having Format.byteArray dataType.
@@ -517,103 +502,93 @@ public class AndroidMediaCodec extends AbstractCodec2 {
             return BUFFER_PROCESSED_FAILED;
         }
 
-        Format outputFormat = this.outputFormat;
-
         /*
          * FIXME The implementation of AndroidMediaCodec is incomplete by relying on outputFormat
          * being an AVFrameFormat instance.
          */
+        Format outputFormat = this.outputFormat;
         if (!(outputFormat instanceof AVFrameFormat))
             return BUFFER_PROCESSED_FAILED;
 
-        int mediaCodecOutputIndex = mediaCodec.dequeueOutputBuffer(info, 0);
-        /*
-         * We will first exhaust the output of mediaCodec and then we will feed input into it.
-         */
         int processed = INPUT_BUFFER_NOT_CONSUMED | OUTPUT_BUFFER_NOT_FILLED;
-
-        if (MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED == mediaCodecOutputIndex) {
-            outputBuffers = mediaCodec.getOutputBuffers();
-        }
-        else if (0 <= mediaCodecOutputIndex) {
-            int outputLength = 0;
-            java.nio.ByteBuffer byteBuffer = null;
+        int outputLength = info.size;
+        if (outputLength > 0) {
+            int mediaCodecOutputIndex = MediaCodec.INFO_TRY_AGAIN_LATER;
+            ByteBuffer byteBuffer = null;
 
             try {
-                if ((outputLength = info.size) > 0) {
-                    byteBuffer = outputBuffers[mediaCodecOutputIndex];
+                // We will first exhaust the output of mediaCodec and then we will feed input into it.
+                mediaCodecOutputIndex = mediaCodec.dequeueOutputBuffer(info, 0);
+                if (0 <= mediaCodecOutputIndex) {
+                    byteBuffer = mediaCodec.getOutputBuffer(mediaCodecOutputIndex);
+                    if (byteBuffer != null) {
+                        ByteBufferFmj avFrameData = avFrame.getData();
+                        AVFrameFormat avFrameFormat = (AVFrameFormat) outputFormat;
 
-                    ByteBuffer avFrameData = avFrame.getData();
-                    AVFrameFormat avFrameFormat = (AVFrameFormat) outputFormat;
-
-                    if ((avFrameData == null) || (avFrameData.getCapacity() < outputLength)) {
-                        avFrameData = byteBufferPool.getBuffer(outputLength);
-                        if ((avFrameData == null)
-                                || (avFrame.avpicture_fill(avFrameData, avFrameFormat) < 0)) {
-                            processed = BUFFER_PROCESSED_FAILED;
-                        }
-                    }
-                    if (processed != BUFFER_PROCESSED_FAILED) {
-                        long ptr = avFrameData.getPtr();
-
-                        for (int i = info.offset, end = i + outputLength; i < end; i++) {
-                            b[0] = byteBuffer.get(i);
-                            FFmpeg.memcpy(ptr, b, 0, b.length);
-                            ptr++;
+                        if ((avFrameData == null) || (avFrameData.getCapacity() < outputLength)) {
+                            avFrameData = byteBufferPool.getBuffer(outputLength);
+                            if ((avFrameData == null) || (avFrame.avpicture_fill(avFrameData, avFrameFormat) < 0)) {
+                                processed = BUFFER_PROCESSED_FAILED;
+                            }
                         }
 
-                        outputBuffer.setData(avFrame);
-                        outputBuffer.setFormat(outputFormat);
-                        outputBuffer.setLength(outputLength);
-                        outputBuffer.setOffset(0);
+                        if (processed != BUFFER_PROCESSED_FAILED) {
+                            long ptr = avFrameData.getPtr();
 
-                        processed &= ~OUTPUT_BUFFER_NOT_FILLED;
+                            for (int i = info.offset, end = i + outputLength; i < end; i++) {
+                                b[0] = byteBuffer.get(i);
+                                FFmpeg.memcpy(ptr, b, 0, b.length);
+                                ptr++;
+                            }
+                            outputBuffer.setData(avFrame);
+                            outputBuffer.setFormat(outputFormat);
+                            outputBuffer.setLength(outputLength);
+                            outputBuffer.setOffset(0);
+                            processed &= ~OUTPUT_BUFFER_NOT_FILLED;
+                        }
                     }
                 }
             } finally {
                 // Well, it was recommended by the Internet.
                 if (byteBuffer != null)
                     byteBuffer.clear();
-
-                mediaCodec.releaseOutputBuffer(mediaCodecOutputIndex,
-                        /* render */false);
+                mediaCodec.releaseOutputBuffer(mediaCodecOutputIndex, false);
             }
-            /*
-             * We will first exhaust the output of mediaCodec and then we will feed input into it.
-             */
-            if ((processed == BUFFER_PROCESSED_FAILED) || (outputLength > 0))
-                return processed;
         }
+        if ((processed == BUFFER_PROCESSED_FAILED) || (outputLength > 0))
+            return processed;
 
-        int mediaCodecInputIndex = MediaCodec.INFO_TRY_AGAIN_LATER;// mediaCodec.dequeueInputBuffer(DEQUEUE_INPUT_BUFFER_TIMEOUT);
+        // Process inputBuffer data
+        int mediaCodecInputOffset = 0;
+        int mediaCodecInputLength = 0;
+        int mediaCodecInputIndex = MediaCodec.INFO_TRY_AGAIN_LATER;
 
-        if (0 <= mediaCodecInputIndex) {
-            int mediaCodecInputOffset = 0;
-            int mediaCodecInputLength = 0;
+        try {
+            // We will first exhaust the input of mediaCodec and then we will feed input into it.
+            mediaCodecInputIndex = mediaCodec.dequeueInputBuffer(DEQUEUE_INPUT_BUFFER_TIMEOUT);
+            if (0 <= mediaCodecInputIndex) {
+                ByteBuffer byteBuffer = mediaCodec.getInputBuffer(mediaCodecInputIndex);
+                if (byteBuffer != null) {
+                    int fmjLength = inputBuffer.getLength();
 
-            try {
-                java.nio.ByteBuffer byteBuffer = inputBuffers[mediaCodecInputIndex];
-                int fmjLength = inputBuffer.getLength();
+                    mediaCodecInputLength = Math.min(byteBuffer.capacity(), fmjLength);
+                    byte[] bytes = (byte[]) inputBuffer.getData();
+                    int fmjOffset = inputBuffer.getOffset();
 
-                mediaCodecInputLength = Math.min(byteBuffer.capacity(), fmjLength);
+                    for (int dst = 0, src = fmjOffset; dst < mediaCodecInputLength; dst++, src++) {
+                        byteBuffer.put(dst, bytes[src]);
+                    }
 
-                byte[] bytes = (byte[]) inputBuffer.getData();
-                int fmjOffset = inputBuffer.getOffset();
-
-                for (int dst = 0, src = fmjOffset; dst < mediaCodecInputLength; dst++, src++) {
-                    byteBuffer.put(dst, bytes[src]);
+                    if (mediaCodecInputLength == fmjLength)
+                        processed &= ~INPUT_BUFFER_NOT_CONSUMED;
+                    else {
+                        inputBuffer.setLength(fmjLength - mediaCodecInputLength);
+                        inputBuffer.setOffset(fmjOffset + mediaCodecInputLength);
+                    }
                 }
-
-                if (mediaCodecInputLength == fmjLength)
-                    processed &= ~INPUT_BUFFER_NOT_CONSUMED;
-                else {
-                    inputBuffer.setLength(fmjLength - mediaCodecInputLength);
-                    inputBuffer.setOffset(fmjOffset + mediaCodecInputLength);
-                }
-            } finally {
-                mediaCodec.queueInputBuffer(mediaCodecInputIndex, mediaCodecInputOffset,
-                        mediaCodecInputLength, 0, 0);
             }
+        } finally {
+            mediaCodec.queueInputBuffer(mediaCodecInputIndex, mediaCodecInputOffset, mediaCodecInputLength, 0, 0);
         }
         return processed;
     }
@@ -628,11 +603,8 @@ public class AndroidMediaCodec extends AbstractCodec2 {
          * Formats supported by this AndroidMediaCodec is the set of the output formats supported by
          * the multiple MediaCodecs in question.
          */
-
         List<Format> outputFormats = new LinkedList<>();
-
-        for (int codecIndex = 0, codecCount = MediaCodecList.getCodecCount(); codecIndex < codecCount; codecIndex++) {
-            MediaCodecInfo codecInfo = MediaCodecList.getCodecInfoAt(codecIndex);
+        for (MediaCodecInfo codecInfo : mCodecInfos) {
             String[] supportedTypes = codecInfo.getSupportedTypes();
 
             if (codecInfo.isEncoder()) {
@@ -652,9 +624,7 @@ public class AndroidMediaCodec extends AbstractCodec2 {
                                 }
                             }
                             if (matches) {
-                                /*
-                                 * The supported input Formats are the supportedTypes.
-                                 */
+                                // The supported input Formats are the supportedTypes.
                                 Format outputFormat = getFmjFormatFromMediaCodecType(supportedType);
 
                                 if ((outputFormat != null) && !outputFormats.contains(outputFormat)) {
@@ -670,13 +640,12 @@ public class AndroidMediaCodec extends AbstractCodec2 {
                 for (String supportedType : supportedTypes) {
                     if (matchesMediaCodecType(inputFormat, supportedType)) {
                         /* The supported output Formats are the colorFormats. */
-                        MediaCodecInfo.CodecCapabilities capabilities
-                                = getCapabilitiesForType(codecInfo, supportedType);
+                        MediaCodecInfo.CodecCapabilities capabilities = getCapabilitiesForType(codecInfo, supportedType);
 
                         if (capabilities != null) {
                             int[] colorFormats = capabilities.colorFormats;
 
-                            if ((colorFormats != null) && (colorFormats.length != 0)) {
+                            if (colorFormats != null) {
                                 for (int colorFormat : colorFormats) {
                                     Format outputFormat = getFmjFormatFromMediaCodecColorFormat(colorFormat);
 
@@ -691,14 +660,12 @@ public class AndroidMediaCodec extends AbstractCodec2 {
                 }
             }
         }
-
         return outputFormats.toArray(EMPTY_FORMATS);
     }
 
     /**
-     * Configures and starts {@link #mediaCodec} if the <code>inputFormat</code> and
-     * <code>outputFormat</code> properties of this <code>Codec</code> have already been assigned suitable
-     * values.
+     * Configures and starts {@link #mediaCodec} if the <code>inputFormat</code> and <code>outputFormat</code>
+     * properties of this <code>Codec</code> have already been assigned suitable values.
      */
     private void maybeConfigureAndStart() {
         /*
@@ -732,16 +699,13 @@ public class AndroidMediaCodec extends AbstractCodec2 {
             return;
 
         /*
-         * Find a MediaCodecInfo which supports the specified inputFormat and outputFormat of this
-         * instance, initialize a MediaCodec from it to be wrapped by this instance, configure it
-         * and start it.
+         * Find a MediaCodecInfo which supports the specified inputFormat and outputFormat of this instance,
+         * initialize a MediaCodec from it to be wrapped by this instance, configure it and start it.
          */
         MediaCodecInfo codecInfo = null;
-        for (int codecIndex = 0, codecCount = MediaCodecList.getCodecCount(); codecIndex < codecCount; codecIndex++) {
-            codecInfo = MediaCodecList.getCodecInfoAt(codecIndex);
-
+        for (MediaCodecInfo cInfo : mCodecInfos) {
             Format typeFormat, colorFormatFormat;
-            if (codecInfo.isEncoder()) {
+            if (cInfo.isEncoder()) {
                 typeFormat = outputFormat;
                 colorFormatFormat = inputFormat;
             }
@@ -750,13 +714,12 @@ public class AndroidMediaCodec extends AbstractCodec2 {
                 colorFormatFormat = outputFormat;
             }
 
-            String[] supportedTypes = codecInfo.getSupportedTypes();
+            String[] supportedTypes = cInfo.getSupportedTypes();
             for (String supportedType : supportedTypes) {
                 if (!matchesMediaCodecType(typeFormat, supportedType))
                     continue;
 
-                MediaCodecInfo.CodecCapabilities capabilities = getCapabilitiesForType(codecInfo,
-                        supportedType);
+                MediaCodecInfo.CodecCapabilities capabilities = getCapabilitiesForType(cInfo, supportedType);
                 if (capabilities == null)
                     continue;
 
@@ -766,37 +729,33 @@ public class AndroidMediaCodec extends AbstractCodec2 {
 
                 for (int colorFormat : colorFormats) {
                     if (matchesMediaCodecColorFormat(colorFormatFormat, colorFormat)) {
-                        // We have found a MediaCodecInfo which supports
-                        // inputFormat and outputFormat.
+                        // We have found a MediaCodecInfo which supports inputFormat and outputFormat.
                         this.colorFormat = colorFormat;
                         this.type = supportedType;
                         break;
                     }
                 }
 
-                // Have we found a MediaCodecInfo which supports inputFormat and
-                // outputFormat yet?
+                // Have we found a MediaCodecInfo which supports inputFormat and outputFormat yet?
                 if ((this.colorFormat != OMX_COLOR_FormatUnused) && (this.type != null)) {
+                    codecInfo = cInfo;
                     break;
                 }
             }
 
-            // Have we found a MediaCodecInfo which supports inputFormat and
-            // outputFormat yet?
-            if ((this.colorFormat != OMX_COLOR_FormatUnused) && (this.type != null)) {
+            // We found a MediaCodecInfo which supports inputFormat and outputFormat, so break off.
+            if (codecInfo != null) {
                 break;
             }
         }
 
-        // Have we found a MediaCodecInfo which supports inputFormat and
-        // outputFormat yet?
-        if ((this.colorFormat != OMX_COLOR_FormatUnused) && (this.type != null)) {
+        // Have we found a MediaCodecInfo which supports inputFormat and outputFormat yet?
+        if (codecInfo != null) {
             MediaCodec mediaCodec = null;
             try {
                 mediaCodec = MediaCodec.createByCodecName(codecInfo.getName());
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Timber.w("Error in creating decoder: %s", e.getMessage());
             }
 
             if (mediaCodec != null) {
@@ -828,16 +787,12 @@ public class AndroidMediaCodec extends AbstractCodec2 {
                 mediaCodec.start();
 
                 this.mediaCodec = mediaCodec;
-                inputBuffers = mediaCodec.getInputBuffers();
-                outputBuffers = mediaCodec.getOutputBuffers();
-
                 if (avFrame == null)
                     avFrame = new AVFrame();
             }
         }
 
-        // At this point, mediaCodec should have successfully been initialized,
-        // configured and started.
+        // At this point, mediaCodec should have successfully been initialized, configured and started.
         if (this.mediaCodec == null)
             throw new IllegalStateException("mediaCodec");
     }

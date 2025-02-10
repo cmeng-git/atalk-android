@@ -16,7 +16,7 @@ import android.media.audiofx.NoiseSuppressor;
 import android.os.Process;
 
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.AppUtils;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.impl.neomedia.device.AudioSystem;
@@ -280,9 +280,6 @@ public class DataSource extends AbstractPullBufferCaptureDevice
          */
         private void configureEffects()
         {
-            if (!AndroidUtils.hasAPI(16))
-                return;
-
             // Must enable to improve AEC to avoid audio howling on speaker phone enabled
             aTalkApp.getAudioManager().setMode(AudioManager.MODE_IN_COMMUNICATION);
             AudioSystem audioSystem = AudioSystem.getAudioSystem(AudioSystem.LOCATOR_PROTOCOL_AUDIORECORD);

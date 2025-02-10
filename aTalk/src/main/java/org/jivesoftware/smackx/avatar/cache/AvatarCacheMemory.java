@@ -25,82 +25,70 @@ import java.io.*;
  * An avatar cache which store the avatars in memory.
  *
  * @author Eng Chong Meng
- *
  */
-public class AvatarCacheMemory implements AvatarCache
-{
-	private static final int BUFFER_SIZE = 1024;
-	private LruCache<String, byte[]> mCache;
+public class AvatarCacheMemory implements AvatarCache {
+    private static final int BUFFER_SIZE = 1024;
+    private LruCache<String, byte[]> mCache;
 
-	/**
-	 * Create a MemoryVCardAvatarCache.
-	 *
-	 * @param maxSize
-	 * 		the maximum number of objects the cache will hold. -1 means the cache has no max size.
-	 * @param maxLifeTime
-	 * 		the maximum amount of time (in ms) objects can exist in cache before being deleted.
-	 * 		-1 means objects never expire.
-	 */
-	public AvatarCacheMemory(final int maxSize, final long maxLifeTime)
-	{
-		// mCache = new LruCache<String, byte[]>(maxSize, maxLifeTime);
-		mCache = new LruCache<String, byte[]>(maxSize);
-	}
+    /**
+     * Create a MemoryVCardAvatarCache.
+     *
+     * @param maxSize the maximum number of objects the cache will hold. -1 means the cache has no max size.
+     * @param maxLifeTime the maximum amount of time (in ms) objects can exist in cache before being deleted.
+     * -1 means objects never expire.
+     */
+    public AvatarCacheMemory(final int maxSize, final long maxLifeTime) {
+        // mCache = new LruCache<String, byte[]>(maxSize, maxLifeTime);
+        mCache = new LruCache<String, byte[]>(maxSize);
+    }
 
-	@Override
-	public void addAvatarByHash(String photoHash, byte[] data)
-	{
-		mCache.put(photoHash, data);
-	}
+    @Override
+    public void addAvatarByHash(String photoHash, byte[] data) {
+        mCache.put(photoHash, data);
+    }
 
-	@Override
-	public void addAvatarByHash(String photoHash, InputStream in)
-	{
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		try {
-			byte[] data = new byte[BUFFER_SIZE];
-			int nbread;
-			try {
-				while ((nbread = in.read(data)) != -1) {
-					os.write(data, 0, nbread);
-				}
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
-		} finally {
-			try {
-				in.close();
-				os.close();
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		mCache.put(photoHash, os.toByteArray());
-	}
+    @Override
+    public void addAvatarByHash(String photoHash, InputStream in) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            byte[] data = new byte[BUFFER_SIZE];
+            int nbread;
+            try {
+                while ((nbread = in.read(data)) != -1) {
+                    os.write(data, 0, nbread);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } finally {
+            try {
+                in.close();
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        mCache.put(photoHash, os.toByteArray());
+    }
 
-	@Override
-	public byte[] getAvatarForHash(String photoHash)
-	{
-		return mCache.get(photoHash);
-	}
+    @Override
+    public byte[] getAvatarForHash(String photoHash) {
+        return mCache.get(photoHash);
+    }
 
-	@Override
-	public boolean contains(String photoHash)
-	{
-		return mCache.containsKey(photoHash);
-	}
+    @Override
+    public boolean contains(String photoHash) {
+        return mCache.containsKey(photoHash);
+    }
 
-	@Override
-	public boolean purgeItemFor(String photoHash)
-	{
-		return (mCache.remove(photoHash) != null);
-	}
+    @Override
+    public boolean purgeItemFor(String photoHash) {
+        return (mCache.remove(photoHash) != null);
+    }
 
-	@Override
-	public boolean emptyCache() {
-		mCache.clear();
-		return true;
-	}
+    @Override
+    public boolean emptyCache() {
+        mCache.clear();
+        return true;
+    }
 }

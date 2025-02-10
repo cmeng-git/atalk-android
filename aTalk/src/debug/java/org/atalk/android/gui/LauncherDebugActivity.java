@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.impl.androidnotification.NotificationHelper;
+import org.atalk.impl.appnotification.NotificationHelper;
 import org.atalk.impl.appupdate.OnlineUpdateService;
 import org.atalk.service.SystemEventReceiver;
 import org.atalk.service.osgi.OSGiActivity;
@@ -25,12 +25,12 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The splash screen fragment displays animated aTalk logo and indeterminate progress indicators.
- *
+ * <p>
  * TODO: Eventually add exit option to the launcher Currently it's not possible to cancel OSGi
  * startup. Attempt to stop service during startup is causing immediate service restart after
  * shutdown even with synchronization of onCreate and OnDestroy commands. Maybe there is still
  * some reference to OSGI service being held at that time ?
- *
+ * <p>
  * TODO: Prevent from recreating this Activity on startup. On startup when this Activity is
  * recreated it will also destroy OSGiService which is currently not handled properly. Options
  * specified in AndroidManifest.xml should cover most cases for now:
@@ -39,8 +39,7 @@ import org.osgi.framework.BundleContext;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class LauncherDebugActivity extends OSGiActivity
-{
+public class LauncherDebugActivity extends OSGiActivity {
     /**
      * Argument that holds an <code>Intent</code> that will be started once OSGi startup is finished.
      */
@@ -55,8 +54,7 @@ public class LauncherDebugActivity extends OSGiActivity
     private boolean startOnReboot = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         setupStrictMode();
         super.onCreate(savedInstanceState);
 
@@ -94,16 +92,8 @@ public class LauncherDebugActivity extends OSGiActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mProgressBar.clearAnimation();
-        myImageView.clearAnimation();
-    }
-
-    @Override
     protected void start(BundleContext osgiContext)
-            throws Exception
-    {
+            throws Exception {
         super.start(osgiContext);
         runOnUiThread(() -> {
             if (restoreIntent != null) {
@@ -130,9 +120,14 @@ public class LauncherDebugActivity extends OSGiActivity
         });
     }
 
-    private void setupStrictMode()
-    {
-        // #TODO - change all disk access to using thread
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mProgressBar.clearAnimation();
+        myImageView.clearAnimation();
+    }
+
+    private void setupStrictMode() {
         // cmeng - disable android.os.StrictMode$StrictModeDisk Access Violation
         StrictMode.ThreadPolicy old = StrictMode.getThreadPolicy();
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder(old)

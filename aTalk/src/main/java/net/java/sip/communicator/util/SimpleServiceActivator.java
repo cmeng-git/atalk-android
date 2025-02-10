@@ -20,8 +20,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public abstract class SimpleServiceActivator<T> implements BundleActivator
-{
+public abstract class SimpleServiceActivator<T> implements BundleActivator {
     /**
      * Class of the service
      */
@@ -43,8 +42,7 @@ public abstract class SimpleServiceActivator<T> implements BundleActivator
      * @param serviceClass class of service that will be registered on bundle startup
      * @param serviceName service name that wil be used in log messages
      */
-    public SimpleServiceActivator(Class<?> serviceClass, String serviceName)
-    {
+    public SimpleServiceActivator(Class<?> serviceClass, String serviceName) {
         this.serviceClass = serviceClass;
         this.serviceName = serviceName;
     }
@@ -53,11 +51,11 @@ public abstract class SimpleServiceActivator<T> implements BundleActivator
      * Initialize and start the service.
      *
      * @param bundleContext the <code>BundleContext</code>
+     *
      * @throws Exception if initializing and starting this service fails
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         serviceImpl = createServiceImpl();
         bundleContext.registerService(serviceClass.getName(), serviceImpl, null);
         Timber.i("%s REGISTERED", serviceName);
@@ -67,11 +65,11 @@ public abstract class SimpleServiceActivator<T> implements BundleActivator
      * Stops this bundle.
      *
      * @param bundleContext the <code>BundleContext</code>
-     * @throws @Exception if the stop operation goes wrong
+     *
+     * @throws Exception if the stop operation goes wrong
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
     }
 
     /**

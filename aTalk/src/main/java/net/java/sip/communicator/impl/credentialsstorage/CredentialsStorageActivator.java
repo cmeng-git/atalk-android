@@ -30,8 +30,7 @@ import timber.log.Timber;
  * @author Dmitri Melnikov
  * @author Eng Chong Meng
  */
-public class CredentialsStorageActivator implements BundleActivator
-{
+public class CredentialsStorageActivator implements BundleActivator {
     /**
      * The {@link BundleContext}.
      */
@@ -42,8 +41,7 @@ public class CredentialsStorageActivator implements BundleActivator
      *
      * @return return master password service to display input dialog.
      */
-    public static MasterPasswordInputService getMasterPasswordInputService()
-    {
+    public static MasterPasswordInputService getMasterPasswordInputService() {
         return ServiceUtils.getService(bundleContext, MasterPasswordInputService.class);
     }
 
@@ -56,11 +54,11 @@ public class CredentialsStorageActivator implements BundleActivator
      * Starts the credentials storage service
      *
      * @param bundleContext the <code>BundleContext</code> as provided from the OSGi framework
+     *
      * @throws Exception if anything goes wrong
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         CredentialsStorageActivator.bundleContext = bundleContext;
         impl = new CredentialsStorageServiceImpl();
         impl.start(bundleContext);
@@ -75,11 +73,11 @@ public class CredentialsStorageActivator implements BundleActivator
      * Unregisters the credentials storage service.
      *
      * @param bundleContext BundleContext
+     *
      * @throws Exception if anything goes wrong
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         impl.stop();
         Timber.i("The CredentialsStorageService stop method has been called.");
     }

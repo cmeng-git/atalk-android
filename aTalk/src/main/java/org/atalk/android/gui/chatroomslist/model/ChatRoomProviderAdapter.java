@@ -31,7 +31,7 @@ import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactlist.MetaContactListService;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.contactlist.AddGroupDialog;
 import org.atalk.android.gui.util.CollectionAdapter;
 
@@ -63,7 +63,7 @@ public class ChatRoomProviderAdapter extends CollectionAdapter<Object> {
     /**
      * Instance of used <code>AdapterView</code>.
      */
-    private AdapterView adapterView;
+    private AdapterView<?> adapterView;
 
     /**
      * Creates new instance of <code>MetaContactGroupAdapter</code>. It will be filled with all
@@ -91,17 +91,17 @@ public class ChatRoomProviderAdapter extends CollectionAdapter<Object> {
      * @param includeRoot <code>true</code> if "No group" item should be included
      * @param includeCreate <code>true</code> if "Create group" item should be included
      */
-    public ChatRoomProviderAdapter(Activity parent, AdapterView adapterView, boolean includeRoot, boolean includeCreate) {
+    public ChatRoomProviderAdapter(Activity parent, AdapterView<?> adapterView, boolean includeRoot, boolean includeCreate) {
         super(parent, getAllContactGroups(includeRoot, includeCreate).iterator());
         init(adapterView);
     }
 
     private void init(int adapterViewId) {
-        AdapterView aView = getParentActivity().findViewById(adapterViewId);
+        AdapterView<?> aView = getParentActivity().findViewById(adapterViewId);
         init(aView);
     }
 
-    private void init(AdapterView aView) {
+    private void init(AdapterView<?> aView) {
         this.adapterView = aView;
         this.dropDownLayout = android.R.layout.simple_spinner_dropdown_item;
         this.itemLayout = android.R.layout.simple_spinner_item;
@@ -133,7 +133,7 @@ public class ChatRoomProviderAdapter extends CollectionAdapter<Object> {
      * @return the list of all currently available <code>MetaContactGroup</code>.
      */
     private static List<Object> getAllContactGroups(boolean includeRoot, boolean includeCreateNew) {
-        MetaContactListService contactListService = AndroidGUIActivator.getContactListService();
+        MetaContactListService contactListService = AppGUIActivator.getContactListService();
 
         MetaContactGroup root = contactListService.getRoot();
         ArrayList<Object> merge = new ArrayList<>();
@@ -165,7 +165,7 @@ public class ChatRoomProviderAdapter extends CollectionAdapter<Object> {
         if (item.equals(ADD_NEW_OBJECT)) {
             tv.setText(R.string.create_group);
         }
-        else if (item.equals(AndroidGUIActivator.getContactListService().getRoot())) {
+        else if (item.equals(AppGUIActivator.getContactListService().getRoot())) {
             // Root
             tv.setText(R.string.no_group);
         }

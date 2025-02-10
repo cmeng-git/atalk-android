@@ -16,6 +16,8 @@
  */
 package org.atalk.android.plugin.permissions;
 
+import java.util.List;
+
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -23,23 +25,18 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
-import java.util.List;
-
-public class MultiplePermissionListener implements MultiplePermissionsListener
-{
+public class MultiplePermissionListener implements MultiplePermissionsListener {
 
     private final PermissionsActivity activity;
 
-    public MultiplePermissionListener(PermissionsActivity activity)
-    {
+    public MultiplePermissionListener(PermissionsActivity activity) {
         this.activity = activity;
     }
 
     @Override
-    public void onPermissionsChecked(MultiplePermissionsReport report)
-    {
-        activity.grantedPermissionResponses = report.getGrantedPermissionResponses();
-        activity.deniedPermissionResponses = report.getDeniedPermissionResponses();
+    public void onPermissionsChecked(MultiplePermissionsReport report) {
+        PermissionsActivity.grantedPermissionResponses = report.getGrantedPermissionResponses();
+        PermissionsActivity.deniedPermissionResponses = report.getDeniedPermissionResponses();
 
         for (PermissionGrantedResponse response : report.getGrantedPermissionResponses()) {
             activity.showPermissionGranted(response.getPermissionName());
@@ -51,8 +48,7 @@ public class MultiplePermissionListener implements MultiplePermissionsListener
     }
 
     @Override
-    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token)
-    {
+    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
         activity.showPermissionRationale(token);
         // token.continuePermissionRequest();
     }

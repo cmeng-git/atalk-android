@@ -16,9 +16,6 @@
  */
 package org.jivesoftware.smackx.avatar;
 
-import android.text.TextUtils;
-import android.util.LruCache;
-
 import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -44,6 +41,7 @@ import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
+import org.jxmpp.util.cache.LruCache;
 
 import timber.log.Timber;
 
@@ -191,7 +189,7 @@ public class AvatarManager extends Manager {
      * @param avatarImage Byte[] value of avatar image data.
      */
     protected static boolean addAvatarImageByAvatarId(String avatarId, byte[] avatarImage) {
-        if (!TextUtils.isEmpty(avatarId) && isAvatarNew(null, avatarId)) {
+        if (!StringUtils.isEmpty(avatarId) && isAvatarNew(null, avatarId)) {
             cacheAvatar.addAvatarByHash(avatarId, avatarImage);
             if (persistentAvatarCache != null)
                 persistentAvatarCache.addAvatarByHash(avatarId, avatarImage);
@@ -212,7 +210,7 @@ public class AvatarManager extends Manager {
             return null;
 
         String avatarId = getAvatarHash(avatarImage);
-        if (!TextUtils.isEmpty(avatarId)) {
+        if (!StringUtils.isEmpty(avatarId)) {
             addAvatarImageByAvatarId(avatarId, avatarImage);
         }
         return avatarId;
@@ -230,7 +228,7 @@ public class AvatarManager extends Manager {
             return null;
 
         byte[] avatarImage = new byte[0];  // default to no photo
-        if (avatarId.length() != 0) {
+        if (!avatarId.isEmpty()) {
             avatarImage = cacheAvatar.getAvatarForHash(avatarId);
             if ((avatarImage == null) && (persistentAvatarCache != null)) {
                 avatarImage = persistentAvatarCache.getAvatarForHash(avatarId);
@@ -284,7 +282,7 @@ public class AvatarManager extends Manager {
      */
     protected static void addJidToAvatarHashIndex(BareJid userId, String avatarHash) {
         // Create an index hash for the jid
-        if (!TextUtils.isEmpty(avatarHash)) {
+        if (!StringUtils.isEmpty(avatarHash)) {
             cacheJidToAvatarId.put(userId, avatarHash);
             if (persistentJidToHashIndex != null) {
                 persistentJidToHashIndex.addHashByJid(userId, avatarHash);
@@ -302,7 +300,7 @@ public class AvatarManager extends Manager {
         String avatarId = getAvatarHashByJid(jid);
         LOGGER.log(Level.INFO, "Purge avatar from store for: (" + jid + ") => " + avatarId);
 
-        if (!TextUtils.isEmpty(avatarId)) {
+        if (!StringUtils.isEmpty(avatarId)) {
             if (persistentAvatarCache != null) {
                 persistentAvatarCache.purgeItemFor(avatarId);
             }
@@ -353,7 +351,7 @@ public class AvatarManager extends Manager {
             BareJid contactJid = rosterEntry.getJid();
             if (!contactJid.equals(userId.toString())) {
                 String imageHash = getAvatarHashByJid(contactJid);
-                if (!TextUtils.isEmpty(imageHash) && imageHash.equals(avatarHash)) {
+                if (!StringUtils.isEmpty(imageHash) && imageHash.equals(avatarHash)) {
                     return true;
                 }
             }
@@ -414,7 +412,7 @@ public class AvatarManager extends Manager {
                     String imageHash = getAvatarHashByJid(contactJid);
 
                     // May purge multipleOwner's avatar info - leave them as it???
-                    if (!TextUtils.isEmpty(imageHash)) { // && isHashMultipleOwner(contactJid, imageHash))
+                    if (!StringUtils.isEmpty(imageHash)) { // && isHashMultipleOwner(contactJid, imageHash))
                         persistentJidToHashIndex.purgeItemFor(contactJid);
                         if (persistentAvatarCache != null)
                             persistentAvatarCache.purgeItemFor(imageHash);
@@ -429,7 +427,7 @@ public class AvatarManager extends Manager {
 
                 // Finally remove account own avatar info
                 String imageHash = getAvatarHashByJid(account);
-                if (!TextUtils.isEmpty(imageHash))
+                if (!StringUtils.isEmpty(imageHash))
                     persistentAvatarCache.purgeItemFor(imageHash);
                 persistentJidToHashIndex.purgeItemFor(account);
 

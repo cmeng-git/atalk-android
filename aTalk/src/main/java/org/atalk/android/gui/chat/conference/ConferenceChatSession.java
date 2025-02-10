@@ -38,12 +38,12 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.chat.ChatContact;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.ChatTransport;
-import org.atalk.android.gui.util.AndroidImageUtil;
+import org.atalk.android.util.AppImageUtil;
 
 /**
  * An implementation of <code>ChatSession</code> for conference chatting.
@@ -191,7 +191,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      */
     @Override
     public Collection<Object> getHistory(int count) {
-        final MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
+        final MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
         // could be "disabled" from the user through one of the configuration forms.
@@ -212,7 +212,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      */
     @Override
     public Collection<Object> getHistoryBeforeDate(Date date, int count) {
-        final MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
+        final MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
         // could be "disabled" from the user through one of the configuration forms.
@@ -232,7 +232,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      */
     @Override
     public Collection<Object> getHistoryAfterDate(Date date, int count) {
-        final MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
+        final MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
         // could be "disabled" from the user through one of the configuration forms.
@@ -250,7 +250,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      */
     @Override
     public Date getHistoryStartDate() {
-        MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
+        MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
         // could be "disabled" from the user through one of the configuration forms.
@@ -260,7 +260,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
         Date startHistoryDate = new Date(0);
         Collection<Object> firstMessage = metaHistory.findFirstMessagesAfter(chatHistoryFilter,
                 chatRoomWrapper.getChatRoom(), new Date(0), 1);
-        if (firstMessage.size() > 0) {
+        if (!firstMessage.isEmpty()) {
             Iterator<Object> i = firstMessage.iterator();
 
             Object o = i.next();
@@ -283,7 +283,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      */
     @Override
     public Date getHistoryEndDate() {
-        MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
+        MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
         // could be "disabled" from the user through one of the configuration forms.
@@ -293,7 +293,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
         Date endHistoryDate = new Date(0);
         Collection<Object> lastMessage = metaHistory.findLastMessagesBefore(chatHistoryFilter,
                 chatRoomWrapper.getChatRoom(), new Date(Long.MAX_VALUE), 1);
-        if (lastMessage.size() > 0) {
+        if (!lastMessage.isEmpty()) {
             Iterator<Object> i1 = lastMessage.iterator();
 
             Object o1 = i1.next();
@@ -489,7 +489,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
         PresenceStatus status = isJoined ? GlobalStatusEnum.ONLINE : GlobalStatusEnum.OFFLINE;
         return status.getStatusIcon();
 
-        // byte[] statusIcon = AndroidImageUtil.getImageBytes(this,
+        // byte[] statusIcon = AppImageUtil.getImageBytes(this,
         //     isJoined ? R.drawable.global_online : R.drawable.global_offline);
         // return statusIcon
     }
@@ -501,7 +501,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      */
     @Override
     public byte[] getChatAvatar() {
-        return AndroidImageUtil.getImageBytes(aTalkApp.getInstance(), R.drawable.ic_chatroom);
+        return AppImageUtil.getImageBytes(aTalkApp.getInstance(), R.drawable.ic_chatroom);
     }
 
     /**

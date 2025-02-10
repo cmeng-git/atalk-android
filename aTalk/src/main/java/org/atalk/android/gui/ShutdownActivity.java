@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
-import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiService;
 
 /**
@@ -23,7 +23,7 @@ import org.atalk.service.osgi.OSGiService;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ShutdownActivity extends OSGiActivity {
+public class ShutdownActivity extends BaseActivity {
     private ProgressBar mProgressBar;
 
     @Override

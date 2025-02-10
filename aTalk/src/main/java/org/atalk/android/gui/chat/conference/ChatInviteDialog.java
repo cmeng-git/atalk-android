@@ -213,7 +213,7 @@ public class ChatInviteDialog extends Dialog
 
     /**
      * Expands/collapses the group given by <code>groupPosition</code>.
-     *
+     * <p>
      * Group collapse will clear all highlight of selected contacts; On expansion
      * allow time for view to expand before proceed to refresh the selected contacts' highlight
      *

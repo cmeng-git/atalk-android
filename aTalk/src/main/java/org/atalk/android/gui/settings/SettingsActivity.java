@@ -7,19 +7,20 @@ package org.atalk.android.gui.settings;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import org.atalk.android.gui.call.AndroidCallUtil;
-import org.atalk.service.osgi.OSGiActivity;
+import org.atalk.android.BaseActivity;
+import org.atalk.android.gui.call.AppCallUtil;
 
 /**
  * <code>Activity</code> implements aTalk global settings.
  *
  * @author Eng Chong Meng
  */
-public class SettingsActivity extends OSGiActivity
+public class SettingsActivity extends BaseActivity
         implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     /**
      * {@inheritDoc}
@@ -29,7 +30,7 @@ public class SettingsActivity extends OSGiActivity
         super.onCreate(savedInstanceState);
 
         // We do not allow opening settings if there is a call currently active
-        if (AndroidCallUtil.checkCallInProgress(this))
+        if (AppCallUtil.checkCallInProgress(this))
             return;
 
         // Display the fragment as the android main content.
@@ -40,7 +41,7 @@ public class SettingsActivity extends OSGiActivity
     }
 
     @Override
-    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
+    public boolean onPreferenceStartFragment(@NonNull PreferenceFragmentCompat caller, Preference pref) {
         // Instantiate the new Fragment
         final Bundle args = pref.getExtras();
         final Fragment fragment = getSupportFragmentManager().getFragmentFactory().instantiate(

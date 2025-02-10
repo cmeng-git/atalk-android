@@ -30,12 +30,6 @@ import android.widget.Spinner;
 
 import androidx.fragment.app.FragmentTransaction;
 
-import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
-import net.java.sip.communicator.service.certificate.CertificateService;
-
-import org.atalk.android.R;
-import org.atalk.service.osgi.OSGiFragment;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.security.Security;
@@ -44,6 +38,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
+import net.java.sip.communicator.service.certificate.CertificateService;
+
+import org.atalk.android.BaseFragment;
+import org.atalk.android.R;
+
 import timber.log.Timber;
 
 /**
@@ -51,10 +51,9 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class TLS_Configuration extends OSGiFragment
+public class TLS_Configuration extends BaseFragment
         implements View.OnClickListener, CompoundButton.OnCheckedChangeListener,
-        AdapterView.OnItemSelectedListener, PropertyChangeListener, CertConfigEntryDialog.OnFinishedCallback
-{
+        AdapterView.OnItemSelectedListener, PropertyChangeListener, CertConfigEntryDialog.OnFinishedCallback {
     private CertificateService cvs;
 
     /**
@@ -76,12 +75,8 @@ public class TLS_Configuration extends OSGiFragment
     private Button cmdRemove;
     private Button cmdEdit;
 
-    private Context mContext;
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        mContext = getContext();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         cvs = CertConfigActivator.getCertService();
         CertConfigActivator.getConfigService().addPropertyChangeListener(this);
 
@@ -108,8 +103,7 @@ public class TLS_Configuration extends OSGiFragment
         return content;
     }
 
-    private void initCertSpinner()
-    {
+    private void initCertSpinner() {
         initCertList();
         certAdapter = new ArrayAdapter<>(mContext, R.layout.simple_spinner_item, mCertList);
         certAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
@@ -117,8 +111,7 @@ public class TLS_Configuration extends OSGiFragment
         certSpinner.setOnItemSelectedListener(this);
     }
 
-    private void initCertList()
-    {
+    private void initCertList() {
         mCertList.clear();
         List<CertificateConfigEntry> certEntries = cvs.getClientAuthCertificateConfigs();
         for (int idx = 0; idx < certEntries.size(); idx++) {
@@ -129,8 +122,7 @@ public class TLS_Configuration extends OSGiFragment
     }
 
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
         CertConfigEntryDialog dialog;
         FragmentTransaction ft = getParentFragmentManager().beginTransaction();
         ft.addToBackStack(null);
@@ -158,8 +150,7 @@ public class TLS_Configuration extends OSGiFragment
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-    {
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         String enabled = Boolean.valueOf(isChecked).toString();
         switch (buttonView.getId()) {
             case R.id.cb_crl:
@@ -180,8 +171,7 @@ public class TLS_Configuration extends OSGiFragment
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id)
-    {
+    public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
         if (adapter.getId() == R.id.cboCert) {
             certSpinner.setSelection(pos);
 
@@ -192,13 +182,11 @@ public class TLS_Configuration extends OSGiFragment
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent)
-    {
+    public void onNothingSelected(AdapterView<?> parent) {
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt)
-    {
+    public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().startsWith(CertificateService.PNAME_CLIENTAUTH_CERTCONFIG_BASE)) {
             initCertList();
             certAdapter.notifyDataSetChanged();
@@ -206,8 +194,7 @@ public class TLS_Configuration extends OSGiFragment
     }
 
     @Override
-    public void onCloseDialog(Boolean success, CertificateConfigEntry entry)
-    {
+    public void onCloseDialog(Boolean success, CertificateConfigEntry entry) {
         if (success) {
             CertConfigActivator.getCertService().setClientAuthCertificateConfig(entry);
         }

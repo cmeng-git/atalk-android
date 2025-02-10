@@ -69,6 +69,7 @@ import net.java.sip.communicator.util.ByteFormat;
 import net.java.sip.communicator.util.GuiUtils;
 import net.java.sip.communicator.util.UtilActivator;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.MyGlideApp;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -76,7 +77,6 @@ import org.atalk.android.gui.chat.ChatActivity;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.persistance.FileBackend;
-import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.httpfileupload.UploadProgressListener;
@@ -91,7 +91,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public abstract class FileTransferConversation extends OSGiFragment
+public abstract class FileTransferConversation extends BaseFragment
         implements OnClickListener, OnLongClickListener, FileTransferProgressListener,
         UploadProgressListener, SeekBar.OnSeekBarChangeListener {
     /**
@@ -375,7 +375,7 @@ public abstract class FileTransferConversation extends OSGiFragment
                 if (messageViewHolder.stickerView.getDrawable() == null) {
                     messageViewHolder.stickerView.setVisibility(View.VISIBLE);
                     Bitmap scaledThumbnail = Bitmap.createScaledBitmap(thumbnailIcon,
-                            thumbnailIcon.getWidth()*2, thumbnailIcon.getHeight()*2, false);
+                            thumbnailIcon.getWidth() * 2, thumbnailIcon.getHeight() * 2, false);
                     messageViewHolder.stickerView.setImageBitmap(scaledThumbnail);
                 }
             }
@@ -418,7 +418,7 @@ public abstract class FileTransferConversation extends OSGiFragment
         messageViewHolder.fileIcon.setOnClickListener(this);
 
         messageViewHolder.fileIcon.setOnLongClickListener(v -> {
-            Toast.makeText(v.getContext(), toolTip, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, toolTip, Toast.LENGTH_SHORT).show();
             return true;
         });
     }
@@ -810,7 +810,7 @@ public abstract class FileTransferConversation extends OSGiFragment
 
         PackageManager manager = mChatActivity.getPackageManager();
         List<ResolveInfo> info = manager.queryIntentActivities(intent, 0);
-        if (info.size() == 0) {
+        if (info.isEmpty()) {
             intent.setDataAndType(mUri, "*/*");
         }
         try {
@@ -910,7 +910,7 @@ public abstract class FileTransferConversation extends OSGiFragment
 
     /**
      * OnSeekBarChangeListener callback interface during multimedia playback
-     *
+     * <p>
      * A SeekBar callback that notifies clients when the progress level has been
      * changed. This includes changes that were initiated by the user through a
      * touch gesture or arrow key/trackball as well as changes that were initiated

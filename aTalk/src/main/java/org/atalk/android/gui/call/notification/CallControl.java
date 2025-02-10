@@ -28,7 +28,6 @@ import timber.log.Timber;
  * {@link #ACTION_TOGGLE_MUTE} - toggles between muted and not muted call state. <br/>
  * {@link #ACTION_TOGGLE_ON_HOLD} - toggles the on hold call state.
  * {@link #ACTION_HANGUP} - ends the call. <br/>
- * {@link #ACTION_TRANSFER_CALL} - start call transfer dialog. <br/>
  *
  * @author Pawel Domas
  * @author Eng Chong Meng

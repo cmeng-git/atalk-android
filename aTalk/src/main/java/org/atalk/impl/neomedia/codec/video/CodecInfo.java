@@ -11,12 +11,12 @@ import static android.media.MediaCodecList.REGULAR_CODECS;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 
-import org.atalk.service.neomedia.codec.Constants;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.atalk.service.neomedia.codec.Constants;
+import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
 
@@ -26,8 +26,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public abstract class CodecInfo
-{
+public abstract class CodecInfo {
     /**
      * The mime type of H.264-encoded media data as defined by Android's <code>MediaCodec</code> class.
      */
@@ -122,8 +121,7 @@ public abstract class CodecInfo
      * @param codecInfo the codec info object to encapsulate.
      * @param mediaType media type of the codec
      */
-    public CodecInfo(MediaCodecInfo codecInfo, String mediaType)
-    {
+    public CodecInfo(MediaCodecInfo codecInfo, String mediaType) {
         this.codecInfo = codecInfo;
         this.mediaType = mediaType;
         this.caps = codecInfo.getCapabilitiesForType(mediaType);
@@ -140,8 +138,7 @@ public abstract class CodecInfo
      *
      * @return codec name that can be used to obtain <code>MediaCodec</code>.
      */
-    public String getName()
-    {
+    public String getName() {
         return codecInfo.getName();
     }
 
@@ -150,10 +147,10 @@ public abstract class CodecInfo
      *
      * @param mimeType mime type of the codec.
      * @param isEncoder <code>true</code> if encoder should be returned or <code>false</code> for decoder.
+     *
      * @return the codec for given <code>mimeType</code>.
      */
-    public static CodecInfo getCodecForType(String mimeType, boolean isEncoder)
-    {
+    public static CodecInfo getCodecForType(String mimeType, boolean isEncoder) {
         for (CodecInfo codec : codecs) {
             if (!codec.isBanned()
                     && codec.mediaType.equals(mimeType)
@@ -169,15 +166,14 @@ public abstract class CodecInfo
      *
      * @return the list of detected codecs.
      */
-    public static List<CodecInfo> getSupportedCodecs()
-    {
+    public static List<CodecInfo> getSupportedCodecs() {
         return Collections.unmodifiableList(codecs);
     }
 
     /**
      * Returns the list of profiles supported.
      *
-     * @return the list of profiles supported.
+     * @return the array of profiles supported.
      */
     protected abstract Profile[] getProfileSet();
 
@@ -188,8 +184,7 @@ public abstract class CodecInfo
      */
     protected abstract Level[] getLevelSet();
 
-    private Profile getProfile(int profileInt)
-    {
+    private Profile getProfile(int profileInt) {
         for (Profile p : getProfileSet()) {
             if (p.value == profileInt)
                 return p;
@@ -197,8 +192,7 @@ public abstract class CodecInfo
         return new Profile("Unknown", profileInt);
     }
 
-    private Level getLevel(int levelInt)
-    {
+    private Level getLevel(int levelInt) {
         for (Level l : getLevelSet()) {
             if (l.value == levelInt)
                 return l;
@@ -206,8 +200,7 @@ public abstract class CodecInfo
         return new Level("Unknown", levelInt);
     }
 
-    public ProfileLevel[] getProfileLevels()
-    {
+    public ProfileLevel[] getProfileLevels() {
         if (profileLevels == null) {
             MediaCodecInfo.CodecProfileLevel[] plArray = caps.profileLevels;
             profileLevels = new ProfileLevel[plArray.length];
@@ -222,8 +215,7 @@ public abstract class CodecInfo
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder colorStr = new StringBuilder("\ncolors:\n");
         for (int i = 0; i < colors.size(); i++) {
             colorStr.append(colors.get(i));
@@ -242,8 +234,7 @@ public abstract class CodecInfo
         return codecInfo.getName() + "(" + getLibjitsiEncoding() + ")" + colorStr + plStr;
     }
 
-    public static CodecInfo getCodecInfo(MediaCodecInfo codecInfo)
-    {
+    public static CodecInfo getCodecInfo(MediaCodecInfo codecInfo) {
         String[] types = codecInfo.getSupportedTypes();
         for (String type : types) {
             try {
@@ -262,28 +253,23 @@ public abstract class CodecInfo
         return null;
     }
 
-    public void setBanned(boolean banned)
-    {
+    public void setBanned(boolean banned) {
         this.banned = banned;
     }
 
-    public boolean isBanned()
-    {
+    public boolean isBanned() {
         return banned;
     }
 
-    public boolean isEncoder()
-    {
+    public boolean isEncoder() {
         return codecInfo.isEncoder();
     }
 
-    public boolean isNominated()
-    {
+    public boolean isNominated() {
         return getCodecForType(mediaType, isEncoder()) == this;
     }
 
-    public String getLibjitsiEncoding()
-    {
+    public String getLibjitsiEncoding() {
         switch (mediaType) {
             case MEDIA_CODEC_TYPE_H264:
                 return Constants.H264;
@@ -296,67 +282,57 @@ public abstract class CodecInfo
         }
     }
 
-    public static class ProfileLevel
-    {
+    public static class ProfileLevel {
         private final Profile profile;
         private final Level level;
 
-        public ProfileLevel(Profile p, Level l)
-        {
+        public ProfileLevel(Profile p, Level l) {
             this.profile = p;
             this.level = l;
         }
 
         @NotNull
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "P: " + profile.toString() + " L: " + level.toString();
         }
     }
 
-    public static class Profile
-    {
+    public static class Profile {
         private final int value;
 
         private final String name;
 
-        public Profile(String name, int value)
-        {
+        public Profile(String name, int value) {
             this.value = value;
             this.name = name;
         }
 
         @NotNull
         @Override
-        public String toString()
-        {
+        public String toString() {
             return name + "(0x" + Integer.toString(value, 16) + ")";
         }
     }
 
-    public static class Level
-    {
+    public static class Level {
         private final int value;
 
         private final String name;
 
-        public Level(String name, int value)
-        {
+        public Level(String name, int value) {
             this.value = value;
             this.name = name;
         }
 
         @NotNull
         @Override
-        public String toString()
-        {
+        public String toString() {
             return name + "(0x" + Integer.toString(value, 16) + ")";
         }
     }
 
-    static class H264CodecInfo extends CodecInfo
-    {
+    static class H264CodecInfo extends CodecInfo {
         // from OMX_VIDEO_AVCPROFILETYPE
         private final CodecInfo.Profile[] PROFILES = new CodecInfo.Profile[]{
                 new Profile("AVCProfileBaseline", 0x01),
@@ -390,26 +366,22 @@ public abstract class CodecInfo
                 new Level("Level51", 0x8000)
         };
 
-        public H264CodecInfo(MediaCodecInfo codecInfo)
-        {
+        public H264CodecInfo(MediaCodecInfo codecInfo) {
             super(codecInfo, MEDIA_CODEC_TYPE_H264);
         }
 
         @Override
-        protected Profile[] getProfileSet()
-        {
+        protected Profile[] getProfileSet() {
             return PROFILES;
         }
 
         @Override
-        protected Level[] getLevelSet()
-        {
+        protected Level[] getLevelSet() {
             return LEVELS;
         }
     }
 
-    static class VP8CodecInfo extends CodecInfo
-    {
+    static class VP8CodecInfo extends CodecInfo {
         private final Profile[] PROFILES = new Profile[]{
                 // from OMX_VIDEO_VP8PROFILETYPE
                 new Profile("ProfileMain", 0x01)
@@ -423,26 +395,22 @@ public abstract class CodecInfo
                 new Level("VP8Level_Version3", 0x08)
         };
 
-        public VP8CodecInfo(MediaCodecInfo codecInfo)
-        {
+        public VP8CodecInfo(MediaCodecInfo codecInfo) {
             super(codecInfo, MEDIA_CODEC_TYPE_VP8);
         }
 
         @Override
-        protected Profile[] getProfileSet()
-        {
+        protected Profile[] getProfileSet() {
             return PROFILES;
         }
 
         @Override
-        protected Level[] getLevelSet()
-        {
+        protected Level[] getLevelSet() {
             return LEVELS;
         }
     }
 
-    static class VP9CodecInfo extends CodecInfo
-    {
+    static class VP9CodecInfo extends CodecInfo {
         private final Profile[] PROFILES = new Profile[]{
                 // from OMX_VIDEO_VP9PROFILETYPE
                 new Profile("VP9Profile0", 0x01),
@@ -473,20 +441,17 @@ public abstract class CodecInfo
                 new Level("VP9Level62", 0x2000)
         };
 
-        public VP9CodecInfo(MediaCodecInfo codecInfo)
-        {
+        public VP9CodecInfo(MediaCodecInfo codecInfo) {
             super(codecInfo, MEDIA_CODEC_TYPE_VP9);
         }
 
         @Override
-        protected Profile[] getProfileSet()
-        {
+        protected Profile[] getProfileSet() {
             return PROFILES;
         }
 
         @Override
-        protected Level[] getLevelSet()
-        {
+        protected Level[] getLevelSet() {
             return LEVELS;
         }
     }

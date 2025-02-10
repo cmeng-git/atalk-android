@@ -28,12 +28,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import java.util.ArrayList;
+
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.service.httputil.HttpConnectionManager;
 import org.osmdroid.config.Configuration;
-
-import java.util.ArrayList;
 
 import timber.log.Timber;
 
@@ -44,8 +44,7 @@ import timber.log.Timber;
  * @author Manuel Stahl
  * @author Eng Chong Meng
  */
-public class OsmActivity extends AppCompatActivity
-{
+public class OsmActivity extends AppCompatActivity {
     private static final String MAP_FRAGMENT_TAG = "org.osmdroid.MAP_FRAGMENT_TAG";
     private OsmFragment osmFragment;
     private Location mLocation;
@@ -62,11 +61,9 @@ public class OsmActivity extends AppCompatActivity
      *
      * @since 6.0
      */
-    private final BroadcastReceiver networkReceiver = new BroadcastReceiver()
-    {
+    private final BroadcastReceiver networkReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             try {
                 osmFragment.invalidateMapView();
             } catch (NullPointerException e) {
@@ -80,8 +77,7 @@ public class OsmActivity extends AppCompatActivity
      * Called when the activity is first created.
      */
     @Override
-    public void onCreate(final Bundle savedInstanceState)
-    {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.osm_map_main);
 
@@ -117,15 +113,13 @@ public class OsmActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         aTalkApp.setCurrentActivity(this);
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState)
-    {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(GeoIntentKey.LOCATION_FETCH_MODE, mLocationFetchMode);
         outState.putParcelable(GeoIntentKey.LOCATION, mLocation);
@@ -133,15 +127,13 @@ public class OsmActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onSupportNavigateUp()
-    {
-        onBackPressed();
+    public boolean onSupportNavigateUp() {
+        finish();
         return true;
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         unregisterReceiver(networkReceiver);
         super.onDestroy();
     }
@@ -151,8 +143,7 @@ public class OsmActivity extends AppCompatActivity
      *
      * @param location the new location to animate to
      */
-    public void showLocation(Location location)
-    {
+    public void showLocation(Location location) {
         if (osmFragment == null) {
             osmFragment = (OsmFragment) getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
         }

@@ -21,10 +21,10 @@ import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
 import net.java.sip.communicator.service.protocol.event.CallChangeListener;
 import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.gui.aTalk;
-import org.atalk.impl.androidtray.NotificationPopupHandler;
-import org.atalk.service.osgi.OSGiActivity;
+import org.atalk.impl.appstray.NotificationPopupHandler;
 
 import timber.log.Timber;
 
@@ -35,8 +35,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ReceivedCallActivity extends OSGiActivity implements CallChangeListener
-{
+public class ReceivedCallActivity extends BaseActivity implements CallChangeListener {
     /**
      * The identifier of the call.
      */
@@ -57,8 +56,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
      * data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.call_received);
 
@@ -84,7 +82,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
         if (extras != null) {
             mSid = extras.getString(CallManager.CALL_SID);
 
-           // Handling the incoming JingleCall
+            // Handling the incoming JingleCall
             call = CallManager.getActiveCall(mSid);
             if (call != null) {
                 // call.setAutoAnswer(mAutoAccept);
@@ -115,8 +113,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
      * {@inheritDoc}
      */
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         // Call is null for call via JingleMessage <propose/>
         if (call != null) {
@@ -133,8 +130,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
      * {@inheritDoc}
      */
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         if (call != null) {
             call.removeCallChangeListener(this);
         }
@@ -148,8 +144,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
      * @param call the call to answer
      * @param isVideoCall indicates if video shall be usede
      */
-    private void answerCall(final Call call, boolean isVideoCall)
-    {
+    private void answerCall(final Call call, boolean isVideoCall) {
         CallManager.answerCall(call, isVideoCall);
         runOnUiThread(() -> {
             Intent videoCall = VideoCallActivity.createVideoCallIntent(ReceivedCallActivity.this, mSid);
@@ -161,8 +156,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     /**
      * Hangs up the call and finishes this <code>Activity</code>.
      */
-    private void hangupCall()
-    {
+    private void hangupCall() {
         CallManager.hangupCall(call);
         finish();
     }
@@ -171,8 +165,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
      * {@inheritDoc}
      */
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
         // Block the back key action to end this activity.
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             // hangupCall();
@@ -186,8 +179,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
      *
      * @param evt the <code>CallPeerEvent</code> containing the source call and call peer.
      */
-    public void callPeerAdded(CallPeerEvent evt)
-    {
+    public void callPeerAdded(CallPeerEvent evt) {
 
     }
 
@@ -196,8 +188,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
      *
      * @param evt the <code>CallPeerEvent</code> containing the source call and call peer.
      */
-    public void callPeerRemoved(CallPeerEvent evt)
-    {
+    public void callPeerRemoved(CallPeerEvent evt) {
 
     }
 
@@ -206,8 +197,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
      *
      * @param evt the <code>CallChangeEvent</code> instance containing the source calls and its old and new state.
      */
-    public void callStateChanged(CallChangeEvent evt)
-    {
+    public void callStateChanged(CallChangeEvent evt) {
         Object callState = evt.getNewValue();
         if (CallState.CALL_ENDED.equals(callState)) {
             finish();

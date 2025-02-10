@@ -56,7 +56,7 @@
             android:key="pref.screen.jbr.telephony"
             android:summary="@string/jbr_telephony_summary"
             android:title="@string/jbr_telephony_voip_pbx"
-            app:fragment="org.atalk.android.gui.account.settings.TelephonyFragment" />
+            app:fragment="org.atalk.android.gui.account.settings.TelephonySettingFragment" />
 
         <Preference
             android:key="pref_cat_enc_video"

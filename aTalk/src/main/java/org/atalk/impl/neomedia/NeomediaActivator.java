@@ -5,6 +5,14 @@
  */
 package org.atalk.impl.neomedia;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+
 import net.java.sip.communicator.service.gui.ConfigurationForm;
 import net.java.sip.communicator.service.notification.NotificationAction;
 import net.java.sip.communicator.service.notification.NotificationData;
@@ -29,14 +37,6 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -48,8 +48,7 @@ import timber.log.Timber;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class NeomediaActivator implements BundleActivator
-{
+public class NeomediaActivator implements BundleActivator {
     /**
      * Indicates if the audio configuration form should be disabled, i.e. not visible to the user.
      */
@@ -133,11 +132,11 @@ public class NeomediaActivator implements BundleActivator
      * Starts the execution of the neomedia bundle in the specified context.
      *
      * @param bundleContext the context in which the neomedia bundle is to start executing
+     *
      * @throws Exception if an error occurs while starting the execution of the neomedia bundle in the specified context
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         if (aTalk.disableMediaServiceOnFault)
             return;
 
@@ -237,11 +236,11 @@ public class NeomediaActivator implements BundleActivator
      * Stops the execution of the neomedia bundle in the specified context.
      *
      * @param bundleContext the context in which the neomedia bundle is to stop executing
+     *
      * @throws Exception if an error occurs while stopping the execution of the neomedia bundle in the specified context
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         try {
             if (deviceConfigurationPropertyChangeListener != null) {
                 mediaServiceImpl.getDeviceConfiguration()
@@ -265,8 +264,7 @@ public class NeomediaActivator implements BundleActivator
      *
      * @return a currently valid implementation of the ConfigurationService.
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configurationService == null) {
             configurationService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
         }
@@ -279,8 +277,7 @@ public class NeomediaActivator implements BundleActivator
      *
      * @return a currently valid implementation of the FileAccessService .
      */
-    public static FileAccessService getFileAccessService()
-    {
+    public static FileAccessService getFileAccessService() {
         if (fileAccessService == null) {
             fileAccessService = ServiceUtils.getService(bundleContext, FileAccessService.class);
         }
@@ -292,8 +289,7 @@ public class NeomediaActivator implements BundleActivator
      *
      * @return the <code>MediaService</code> implementation instance registered by the neomedia bundle
      */
-    public static MediaServiceImpl getMediaServiceImpl()
-    {
+    public static MediaServiceImpl getMediaServiceImpl() {
         return mediaServiceImpl;
     }
 
@@ -309,8 +305,7 @@ public class NeomediaActivator implements BundleActivator
      * @return the <code>ResourceManagementService</code> instance which represents the resources such
      * as internationalized and localized text and images used by the neomedia bundle
      */
-    public static ResourceManagementService getResources()
-    {
+    public static ResourceManagementService getResources() {
         if (resources == null) {
             resources = ResourceManagementServiceUtils.getService(bundleContext);
         }
@@ -322,11 +317,10 @@ public class NeomediaActivator implements BundleActivator
      *
      * @return The <code>NotificationService</code> obtained from the bundle context.
      */
-    public static NotificationService getNotificationService()
-    {
+    public static NotificationService getNotificationService() {
         if (notificationService == null) {
             // Get the notification service implementation
-            ServiceReference notifReference = bundleContext.getServiceReference(NotificationService.class.getName());
+            ServiceReference<?> notifReference = bundleContext.getServiceReference(NotificationService.class.getName());
 
             notificationService = (NotificationService) bundleContext.getService(notifReference);
             if (notificationService != null) {
@@ -342,11 +336,10 @@ public class NeomediaActivator implements BundleActivator
     /**
      * A listener to the click on the popup message concerning device configuration changes.
      */
-    private class AudioDeviceConfigurationListener implements PropertyChangeListener/*
+    private static class AudioDeviceConfigurationListener implements PropertyChangeListener/*
      * ,
      * SystrayPopupMessageListener
-     */
-    {
+     */ {
         /**
          * A boolean used to verify that this listener registers only once to the popup message notification handler.
          */
@@ -358,8 +351,7 @@ public class NeomediaActivator implements BundleActivator
          *
          * @param enable True to register to the popup message notifcation handler. False to unregister.
          */
-        public void managePopupMessageListenerRegistration(boolean enable)
-        {
+        public void managePopupMessageListenerRegistration(boolean enable) {
             Iterator<NotificationHandler> notificationHandlers
                     = notificationService.getActionHandlers(NotificationAction.ACTION_POPUP_MESSAGE).iterator();
             NotificationHandler notificationHandler;
@@ -383,8 +375,7 @@ public class NeomediaActivator implements BundleActivator
          *
          * @param event The property change event which may concern the audio device.
          */
-        public void propertyChange(PropertyChangeEvent event)
-        {
+        public void propertyChange(PropertyChangeEvent event) {
             if (DeviceConfiguration.PROP_AUDIO_SYSTEM_DEVICES.equals(event.getPropertyName())) {
                 NotificationService notificationService = getNotificationService();
                 if (notificationService != null) {
@@ -431,8 +422,7 @@ public class NeomediaActivator implements BundleActivator
         //        }
     }
 
-    public static BundleContext getBundleContext()
-    {
+    public static BundleContext getBundleContext() {
         return bundleContext;
     }
 }

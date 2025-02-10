@@ -16,7 +16,6 @@
  */
 package org.atalk.android.gui.contactlist;
 
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.core.content.res.ResourcesCompat;
 
 import java.util.ArrayList;
@@ -45,11 +43,11 @@ import net.java.sip.communicator.service.protocol.event.ContactBlockingStatusLis
 import net.java.sip.communicator.util.StatusUtil;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.util.AndroidImageUtil;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.util.EntityListHelper;
-import org.atalk.service.osgi.OSGiActivity;
+import org.atalk.android.util.AppImageUtil;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.blocking.BlockingCommandManager;
@@ -61,7 +59,7 @@ import timber.log.Timber;
 /**
  * An activity to show all the blocked contacts; user may unblock any listed contact from this view.
  */
-public class ContactBlockListActivity extends OSGiActivity
+public class ContactBlockListActivity extends BaseActivity
         implements ContactBlockingStatusListener, View.OnLongClickListener {
     private final List<OperationSetPresence> presenceOpSets = new ArrayList<>();
 
@@ -76,18 +74,9 @@ public class ContactBlockListActivity extends OSGiActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            TextView tv = findViewById(R.id.actionBarTitle);
-            tv.setText(R.string.app_name);
-
-            tv = findViewById(R.id.actionBarStatus);
-            tv.setText(R.string.block_list_title);
-            actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.color_bg_share)));
-        }
-
         setContentView(R.layout.list_layout);
+        setMainTitle(R.string.block_list_title);
+
         ListView contactBlockList = findViewById(R.id.list);
         contactBlockList.setBackgroundResource(R.color.background_light);
 
@@ -147,7 +136,7 @@ public class ContactBlockListActivity extends OSGiActivity
 
         // Remove all volatile contacts on exit, else show up in contact list
         new Thread(() -> {
-            MetaContactListService metaContactListService = AndroidGUIActivator.getContactListService();
+            MetaContactListService metaContactListService = AppGUIActivator.getContactListService();
             for (Contact contact : volatileContacts) {
                 try {
                     metaContactListService.removeContact(contact);
@@ -182,7 +171,7 @@ public class ContactBlockListActivity extends OSGiActivity
         if (presenceStatus != null) {
             byte[] statusBlob = StatusUtil.getContactStatusIcon(presenceStatus);
             if (statusBlob != null)
-                return AndroidImageUtil.drawableFromBytes(statusBlob);
+                return AppImageUtil.drawableFromBytes(statusBlob);
         }
         return null;
     }
@@ -271,7 +260,7 @@ public class ContactBlockListActivity extends OSGiActivity
 
             // Set avatar.
             byte[] byteAvatar = AvatarManager.getAvatarImageByJid(contact.getJid().asBareJid());
-            Drawable avatar = AndroidImageUtil.roundedDrawableFromBytes(byteAvatar);
+            Drawable avatar = AppImageUtil.roundedDrawableFromBytes(byteAvatar);
             if (avatar == null) {
                 avatar = ResourcesCompat.getDrawable(getResources(),
                         contact.getJid() instanceof DomainBareJid ? R.drawable.domain_icon : R.drawable.contact_avatar, null);

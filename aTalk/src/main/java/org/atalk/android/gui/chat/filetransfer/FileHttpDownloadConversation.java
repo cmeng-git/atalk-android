@@ -36,7 +36,7 @@ import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.persistance.FileBackend;
@@ -82,7 +82,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         fragmentRFC.mDate = GuiUtils.formatDateTime(date);
         fragmentRFC.msgUuid = httpFileTransferJabber.getID();
         fragmentRFC.xferStatus = httpFileTransferJabber.getStatus();
-        fragmentRFC.mFHS = (FileHistoryServiceImpl) AndroidGUIActivator.getFileHistoryService();
+        fragmentRFC.mFHS = (FileHistoryServiceImpl) AppGUIActivator.getFileHistoryService();
 
         return fragmentRFC;
     }

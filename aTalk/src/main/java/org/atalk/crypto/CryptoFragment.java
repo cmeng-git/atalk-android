@@ -63,9 +63,10 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceListener;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatPanel;
@@ -77,7 +78,6 @@ import org.atalk.crypto.listener.CryptoModeChangeListener;
 import org.atalk.crypto.omemo.AndroidOmemoService;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.atalk.crypto.otr.OTRv3OutgoingSessionSwitcher;
-import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -109,7 +109,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class CryptoFragment extends OSGiFragment
+public class CryptoFragment extends BaseFragment
         implements ChatSessionManager.CurrentChatListener, ChatRoomMemberPresenceListener,
         OmemoAuthenticateDialog.AuthenticateListener {
     /**
@@ -199,7 +199,7 @@ public class CryptoFragment extends OSGiFragment
 
         // (OtrActivator.scOtrEngine == null)
         // This happens when Activity is recreated by the system after OSGi service has been killed (and the whole process)
-        if (AndroidGUIActivator.bundleContext == null) {
+        if (AppGUIActivator.bundleContext == null) {
             Timber.e("OSGi service probably not initialized");
             return;
         }
@@ -372,7 +372,7 @@ public class CryptoFragment extends OSGiFragment
             } catch (UndecidedOmemoIdentityException e) {
                 Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
                 Timber.w("There are undecided Omemo devices: %s", omemoDevices);
-                startActivity(OmemoAuthenticateDialog.createIntent(getContext(), mOmemoManager, omemoDevices, this));
+                startActivity(OmemoAuthenticateDialog.createIntent(mContext, mOmemoManager, omemoDevices, this));
                 allTrusted = false;
             } catch (InterruptedException | SmackException.NoResponseException | CryptoFailedException
                      | SmackException.NotConnectedException | SmackException.NotLoggedInException e) {
@@ -428,7 +428,7 @@ public class CryptoFragment extends OSGiFragment
             } catch (UndecidedOmemoIdentityException e) {
                 Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
                 Timber.w("There are undecided Omemo devices: %s", omemoDevices);
-                startActivity(OmemoAuthenticateDialog.createIntent(getContext(), mOmemoManager, omemoDevices, this));
+                startActivity(OmemoAuthenticateDialog.createIntent(mContext, mOmemoManager, omemoDevices, this));
                 allTrusted = false;
             } catch (NoOmemoSupportException | InterruptedException | SmackException.NoResponseException
                      | XMPPException.XMPPErrorException | CryptoFailedException
@@ -510,7 +510,7 @@ public class CryptoFragment extends OSGiFragment
             } catch (UndecidedOmemoIdentityException e) {
                 Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
                 Timber.w("There are undecided Omemo devices: %s", omemoDevices);
-                startActivity(OmemoAuthenticateDialog.createIntent(getContext(), mOmemoManager, omemoDevices, this));
+                startActivity(OmemoAuthenticateDialog.createIntent(mContext, mOmemoManager, omemoDevices, this));
             } catch (NoOmemoSupportException | InterruptedException | SmackException.NoResponseException
                      | XMPPException.XMPPErrorException | CryptoFailedException | IOException
                      | SmackException.NotConnectedException | SmackException.NotLoggedInException e) {

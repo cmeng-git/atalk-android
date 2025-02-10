@@ -6,6 +6,21 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="4.2.0 (02/10/2025)" versioncode="402000">
+        <change>Reimplement deprecated classes/methods i.e. onBackPressed and AsyncTask with new functions</change>
+        <change>Fix show aTalk icon MissingForegroundServiceTypeException; use NotificationManager.notify() instead</change>
+        <change>Need to add READ_EXTERNAL_STORAGE permission (Files and Media) request for android API-32</change>
+        <change>Implement newly added READ_MEDIA_VISUAL_USER_SELECTED permission for android API-34</change>
+        <change>Do not launch BatteryOptimization permission request within a dialog, else parseResult is based on dialog click</change>
+        <change>ActivityResultContract#parseResult on BatteryOptimization request must return isOptimizingBattery() state</change>
+        <change>UpdateServiceImpl#isLatestVersion need to close inputStream after access end</change>
+        <change>Add BaseActivity, BaseFragment, BaseDialogFragment and BasePreferenceFragment classes, and subclass OSGi unrelated classes to these instead; Remove unused OSGi classes</change>
+        <change>Remove all imageStreaming classes, aTalk does not support desktop sharing</change>
+        <change>Clean up app sources and rename some packages names</change>
+        <change>Update all app used libraries to the latest compatible releases</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="4.1.1 (06/10/2024)" versioncode="401010">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
         <change>Change default thumbnail size to 128x96 with jpeg compress 80% quality; better visibility and converse bandwidth</change>

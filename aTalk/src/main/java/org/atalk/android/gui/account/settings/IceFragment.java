@@ -19,8 +19,8 @@ import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistrati
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.settings.BasePreferenceFragment;
 import org.atalk.android.gui.settings.util.SummaryMapper;
-import org.atalk.service.osgi.OSGiPreferenceFragment;
 
 import timber.log.Timber;
 
@@ -29,7 +29,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class IceFragment extends OSGiPreferenceFragment
+public class IceFragment extends BasePreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     // ICE (General)
     private static final String P_KEY_ICE_ENABLED = "pref_key_ice_enabled";
@@ -176,20 +176,22 @@ public class IceFragment extends OSGiPreferenceFragment
             return;
 
         JabberPreferenceFragment.setUncommittedChanges();
-        if (key.equals(P_KEY_ICE_ENABLED)) {
-            jbrReg.setUseIce(shPrefs.getBoolean(P_KEY_ICE_ENABLED, true));
-        }
-        else if (key.equals(P_KEY_UPNP_ENABLED)) {
-            jbrReg.setUseUPNP(shPrefs.getBoolean(P_KEY_UPNP_ENABLED, true));
-        }
-        else if (key.equals(P_KEY_AUTO_DISCOVER_STUN)) {
-            jbrReg.setAutoDiscoverStun(shPrefs.getBoolean(P_KEY_AUTO_DISCOVER_STUN, true));
-        }
-        else if (key.equals(P_KEY_USE_JINGLE_NODES)) {
-            jbrReg.setUseJingleNodes(shPrefs.getBoolean(P_KEY_USE_JINGLE_NODES, true));
-        }
-        else if (key.equals(P_KEY_AUTO_RELAY_DISCOVERY)) {
-            jbrReg.setAutoDiscoverJingleNodes(shPrefs.getBoolean(P_KEY_AUTO_RELAY_DISCOVERY, true));
+        switch (key) {
+            case P_KEY_ICE_ENABLED:
+                jbrReg.setUseIce(shPrefs.getBoolean(P_KEY_ICE_ENABLED, true));
+                break;
+            case P_KEY_UPNP_ENABLED:
+                jbrReg.setUseUPNP(shPrefs.getBoolean(P_KEY_UPNP_ENABLED, true));
+                break;
+            case P_KEY_AUTO_DISCOVER_STUN:
+                jbrReg.setAutoDiscoverStun(shPrefs.getBoolean(P_KEY_AUTO_DISCOVER_STUN, true));
+                break;
+            case P_KEY_USE_JINGLE_NODES:
+                jbrReg.setUseJingleNodes(shPrefs.getBoolean(P_KEY_USE_JINGLE_NODES, true));
+                break;
+            case P_KEY_AUTO_RELAY_DISCOVERY:
+                jbrReg.setAutoDiscoverJingleNodes(shPrefs.getBoolean(P_KEY_AUTO_RELAY_DISCOVERY, true));
+                break;
         }
     }
 }

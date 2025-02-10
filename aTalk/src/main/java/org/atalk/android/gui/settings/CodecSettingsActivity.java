@@ -9,10 +9,8 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import androidx.preference.PreferenceFragmentCompat;
-
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
-import org.atalk.service.osgi.OSGiPreferenceActivity;
 
 /**
  * Base class for settings screens which only adds preferences from XML resource.
@@ -22,7 +20,7 @@ import org.atalk.service.osgi.OSGiPreferenceActivity;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class CodecSettingsActivity extends OSGiPreferenceActivity {
+public class CodecSettingsActivity extends BaseActivity {
     /**
      * Returns preference XML resource ID.
      *
@@ -54,7 +52,7 @@ public class CodecSettingsActivity extends OSGiPreferenceActivity {
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment(getPreferencesXmlId())).commit();
     }
 
-    public static class MyPreferenceFragment extends PreferenceFragmentCompat {
+    public static class MyPreferenceFragment extends BasePreferenceFragment {
         private final int mPreferResId;
 
         public MyPreferenceFragment(int preferResId) {

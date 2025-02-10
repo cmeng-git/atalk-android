@@ -32,7 +32,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.jivesoftware.smack.SmackException;
@@ -446,7 +446,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
             Timber.i("Update identityKey for: %s; %s; %s", contactDevice, contactKey.toString(), fingerprint);
             FingerprintStatus fpStatus = getFingerprintStatus(contactDevice, fingerprint);
             if (fpStatus == null) {
-                ConfigurationService mConfig = AndroidGUIActivator.getConfigurationService();
+                ConfigurationService mConfig = AppGUIActivator.getConfigurationService();
                 if (mConfig.isBlindTrustBeforeVerification()
                         && mDB.numTrustedKeys(bareJid) == 0) {
                     Timber.i("Blind trusted fingerprint for: %s", contactDevice);
@@ -527,7 +527,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
             }
             /* default null to undecided or trusted on first device pending BTBV option */
             else {
-                ConfigurationService mConfig = AndroidGUIActivator.getConfigurationService();
+                ConfigurationService mConfig = AppGUIActivator.getConfigurationService();
                 if (mConfig.isBlindTrustBeforeVerification()
                         && mDB.numTrustedKeys(device.getJid().toString()) == 0) {
                     return TrustState.trusted;
@@ -552,7 +552,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
                     fpStatus = FingerprintStatus.createActiveUndecided();
                     break;
                 case trusted:
-                    ConfigurationService mConfig = AndroidGUIActivator.getConfigurationService();
+                    ConfigurationService mConfig = AppGUIActivator.getConfigurationService();
                     if (mConfig.isBlindTrustBeforeVerification()
                             && mDB.numTrustedKeys(device.getJid().toString()) == 0) {
                         fpStatus = FingerprintStatus.createActiveTrusted();

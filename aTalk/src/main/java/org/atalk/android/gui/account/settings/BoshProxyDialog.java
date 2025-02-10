@@ -48,8 +48,7 @@ import org.atalk.service.configuration.ConfigurationService;
  *
  * @author Eng Chong Meng
  */
-public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, TextWatcher, DialogActivity.DialogListener
-{
+public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, TextWatcher, DialogActivity.DialogListener {
     public final static String NONE = "NONE";
     public final static String BOSH = "BOSH";
     public final static String HTTP = "HTTP";
@@ -83,7 +82,8 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
      */
     private boolean hasChanges;
 
-    private int mIndex = -1;
+    // Init to default selected so avoid false trigger on entry.
+    private int mIndex = 0;
 
     /**
      * Constructs the <code>Bosh-Proxy Dialog</code>.
@@ -91,8 +91,7 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
      * @param context the Context
      * @param jbrReg the JabberAccountRegistration
      */
-    public BoshProxyDialog(Context context, JabberAccountRegistration jbrReg)
-    {
+    public BoshProxyDialog(Context context, JabberAccountRegistration jbrReg) {
         super(context);
         mContext = context;
 
@@ -104,14 +103,12 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.settings_bosh_proxy);
         this.setContentView(R.layout.bosh_proxy_dialog);
 
         spinnerType = findViewById(R.id.boshProxyType);
-
         boshUrlSetting = findViewById(R.id.boshURL_setting);
         boshURL = findViewById(R.id.boshURL);
         boshURL.addTextChangedListener(this);
@@ -145,26 +142,15 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
 
         Button cancelButton = findViewById(R.id.button_Cancel);
         cancelButton.setOnClickListener(v -> checkUnsavedChanges());
+        setCancelable(false);
         setCanceledOnTouchOutside(false);
         hasChanges = false;
-    }
-
-    @Override
-    public void onBackPressed()
-    {
-        if (!hasChanges) {
-            super.onBackPressed();
-        }
-        else {
-            checkUnsavedChanges();
-        }
     }
 
     /**
      * initialize the Bosh-proxy dialog with the db stored values
      */
-    private void initBoshProxyDialog()
-    {
+    private void initBoshProxyDialog() {
         ArrayAdapter<CharSequence> adapterType = ArrayAdapter.createFromResource(mContext,
                 R.array.bosh_proxy_type, R.layout.simple_spinner_item);
         adapterType.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
@@ -192,8 +178,7 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id)
-    {
+    public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
         String type = (String) adapter.getItemAtPosition(pos);
         if (BOSH.equals(type)) {
             boshUrlSetting.setVisibility(View.VISIBLE);
@@ -209,16 +194,14 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent)
-    {
+    public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
     }
 
     /**
      * Save user entered Bosh-Proxy settings.
      */
-    private boolean saveBoshProxySettings()
-    {
+    private boolean saveBoshProxySettings() {
         Object sType = spinnerType.getSelectedItem();
         String type = (sType == null) ? NONE : sType.toString();
 
@@ -285,8 +268,7 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
     /**
      * check for any unsaved changes and alert user
      */
-    private void checkUnsavedChanges()
-    {
+    private void checkUnsavedChanges() {
         if (hasChanges) {
             DialogActivity.showConfirmDialog(mContext,
                     R.string.unsaved_changes_title,
@@ -303,8 +285,7 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
      *
      * @param dialog source <code>DialogActivity</code>.
      */
-    public boolean onConfirmClicked(DialogActivity dialog)
-    {
+    public boolean onConfirmClicked(DialogActivity dialog) {
         return mApplyButton.performClick();
     }
 
@@ -313,24 +294,20 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
      *
      * @param dialog source <code>DialogActivity</code>
      */
-    public void onDialogCancelled(DialogActivity dialog)
-    {
+    public void onDialogCancelled(DialogActivity dialog) {
         cancel();
     }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after)
-    {
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
     }
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count)
-    {
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
     }
 
     @Override
-    public void afterTextChanged(Editable s)
-    {
+    public void afterTextChanged(Editable s) {
         hasChanges = true;
     }
 }

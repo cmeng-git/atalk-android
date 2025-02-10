@@ -27,8 +27,8 @@ import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistrati
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.settings.BasePreferenceFragment;
 import org.atalk.android.gui.settings.util.SummaryMapper;
-import org.atalk.service.osgi.OSGiPreferenceFragment;
 
 import timber.log.Timber;
 
@@ -37,7 +37,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class XmppConnectionFragment extends OSGiPreferenceFragment
+public class XmppConnectionFragment extends BasePreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     // Account General
     private static final String P_KEY_GMAIL_NOTIFICATIONS = "pref_key_gmail_notifications";

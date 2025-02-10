@@ -146,7 +146,7 @@ public class FindPredCoefsFLP
 		// {
 		// throw new IOException("Unexpected End of Stream");
 		// }
-		// nlsf[ii] = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+		// nlsf[ii] = ByteBufferFmj.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 		// NLSF[ii] = nlsf[ii];
 		// }
 		// catch (IOException e)

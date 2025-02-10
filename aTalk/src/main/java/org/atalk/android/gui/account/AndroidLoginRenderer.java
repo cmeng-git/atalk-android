@@ -29,13 +29,13 @@ import net.java.sip.communicator.util.account.LoginRenderer;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.authorization.AuthorizationHandlerImpl;
-import org.atalk.android.gui.call.AndroidCallListener;
+import org.atalk.android.gui.call.AppCallListener;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.gui.util.AndroidImageUtil;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.util.AppImageUtil;
+import org.atalk.android.gui.util.AppUtils;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.gui.util.event.EventListenerList;
 import org.atalk.service.osgi.OSGiService;
@@ -108,7 +108,7 @@ public class AndroidLoginRenderer implements LoginRenderer
      */
     public AndroidLoginRenderer(SecurityAuthority defaultSecurityAuthority)
     {
-        androidCallListener = new AndroidCallListener();
+        androidCallListener = new AppCallListener();
         mSecurityAuthority = defaultSecurityAuthority;
         authorizationHandler = new AuthorizationHandlerImpl();
     }
@@ -253,7 +253,7 @@ public class AndroidLoginRenderer implements LoginRenderer
             return;
         }
 
-        AndroidUtils.updateGeneralNotification(aTalkApp.getInstance(), notificationID,
+        AppUtils.updateGeneralNotification(aTalkApp.getInstance(), notificationID,
                 aTalkApp.getResString(R.string.application_name), status, System.currentTimeMillis());
     }
 
@@ -285,7 +285,7 @@ public class AndroidLoginRenderer implements LoginRenderer
     public PresenceStatus getGlobalStatus()
     {
         if (globalStatus == null) {
-            GlobalStatusService gss = AndroidGUIActivator.getGlobalStatusService();
+            GlobalStatusService gss = AppGUIActivator.getGlobalStatusService();
             globalStatus = gss != null ? gss.getGlobalPresenceStatus() : GlobalStatusEnum.OFFLINE;
         }
         return globalStatus;
@@ -333,7 +333,7 @@ public class AndroidLoginRenderer implements LoginRenderer
     private void updateGlobalStatus()
     {
         // Only if the GUI is active (bundle context will be null on shutdown)
-        if (AndroidGUIActivator.bundleContext != null) {
+        if (AppGUIActivator.bundleContext != null) {
             // Invalidate local status image
             localStatusRaw = null;
             // Invalidate global status
@@ -352,13 +352,13 @@ public class AndroidLoginRenderer implements LoginRenderer
     public Drawable getLocalAvatarDrawable(ProtocolProviderService provider)
     {
         GlobalDisplayDetailsService displayDetailsService
-                = AndroidGUIActivator.getGlobalDisplayDetailsService();
+                = AppGUIActivator.getGlobalDisplayDetailsService();
 
         byte[] avatarImage = displayDetailsService.getDisplayAvatar(provider);
         // Re-create drawable only if avatar has changed
         if (avatarImage != localAvatarRaw) {
             localAvatarRaw = avatarImage;
-            localAvatar = AndroidImageUtil.roundedDrawableFromBytes(avatarImage);
+            localAvatar = AppImageUtil.roundedDrawableFromBytes(avatarImage);
         }
         return localAvatar;
     }
@@ -374,7 +374,7 @@ public class AndroidLoginRenderer implements LoginRenderer
         if (statusImage != localStatusRaw) {
             localStatusRaw = statusImage;
             localStatusDrawable = (localStatusRaw != null)
-                    ? AndroidImageUtil.drawableFromBytes(statusImage) : null;
+                    ? AppImageUtil.drawableFromBytes(statusImage) : null;
         }
         return localStatusDrawable;
     }

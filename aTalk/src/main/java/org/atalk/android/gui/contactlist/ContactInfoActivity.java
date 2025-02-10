@@ -53,11 +53,11 @@ import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkOrgani
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkPhoneDetail;
 
 import org.apache.commons.lang3.StringUtils;
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
-import org.atalk.android.gui.util.AndroidImageUtil;
-import org.atalk.service.osgi.OSGiActivity;
+import org.atalk.android.util.AppImageUtil;
 
 import timber.log.Timber;
 
@@ -77,8 +77,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  * @link ContactListFragment#getClickedContact()
  */
-
-public class ContactInfoActivity extends OSGiActivity
+public class ContactInfoActivity extends BaseActivity
         implements OperationSetServerStoredContactInfo.DetailsResponseListener {
     /**
      * Mapping between all supported by this plugin <code>ServerStoredDetails</code> and their
@@ -153,7 +152,7 @@ public class ContactInfoActivity extends OSGiActivity
             ImageView statusIconView = findViewById(R.id.presenceStatusIcon);
 
             // Set status icon
-            Bitmap presenceIcon = AndroidImageUtil.bitmapFromBytes(presenceStatus.getStatusIcon());
+            Bitmap presenceIcon = AppImageUtil.bitmapFromBytes(presenceStatus.getStatusIcon());
             statusIconView.setImageBitmap(presenceIcon);
 
             // Set status name

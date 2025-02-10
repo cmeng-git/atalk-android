@@ -21,8 +21,7 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class AVFrameFormat extends VideoFormat
-{
+public class AVFrameFormat extends VideoFormat {
     /**
      * The encoding of the <code>AVFrameFormat</code> instances.
      */
@@ -48,13 +47,32 @@ public class AVFrameFormat extends VideoFormat
     /**
      * Initializes a new <code>AVFrameFormat</code> instance with unspecified size, frame rate and FFmpeg colorspace.
      */
-    public AVFrameFormat()
-    {
+    public AVFrameFormat() {
         this(NOT_SPECIFIED, NOT_SPECIFIED);
     }
 
-    public AVFrameFormat(Dimension size, float frameRate, int pixFmt)
-    {
+    /**
+     * Initializes a new <code>AVFrameFormat</code> instance with a specific FFmpeg
+     * colorspace and unspecified size and frame rate.
+     *
+     * @param pixFmt the FFmpeg colorspace to be represented by the new instance
+     */
+    public AVFrameFormat(int pixFmt) {
+        this(pixFmt, NOT_SPECIFIED);
+    }
+
+    /**
+     * Initializes a new <code>AVFrameFormat</code> instance with a specific FFmpeg
+     * colorspace and unspecified size and frame rate.
+     *
+     * @param pixFmt the FFmpeg colorspace to be represented by the new instance
+     * @param deviceSystemPixFmt the <code>DeviceSystem</code>-specific colorspace to be represented by the new instance
+     */
+    public AVFrameFormat(int pixFmt, int deviceSystemPixFmt) {
+        this(null, NOT_SPECIFIED, pixFmt, deviceSystemPixFmt);
+    }
+
+    public AVFrameFormat(Dimension size, float frameRate, int pixFmt) {
         this(size, frameRate, pixFmt, NOT_SPECIFIED);
     }
 
@@ -66,8 +84,7 @@ public class AVFrameFormat extends VideoFormat
      * @param pixFmt the FFmpeg colorspace to be represented by the new instance
      * @param deviceSystemPixFmt the <code>DeviceSystem</code>-specific colorspace to be represented by the new instance
      */
-    public AVFrameFormat(Dimension size, float frameRate, int pixFmt, int deviceSystemPixFmt)
-    {
+    public AVFrameFormat(Dimension size, float frameRate, int pixFmt, int deviceSystemPixFmt) {
         super(AVFRAME, size, NOT_SPECIFIED, AVFrame.class, frameRate);
 
         if ((pixFmt == NOT_SPECIFIED) && (deviceSystemPixFmt != NOT_SPECIFIED)) {
@@ -80,36 +97,13 @@ public class AVFrameFormat extends VideoFormat
     }
 
     /**
-     * Initializes a new <code>AVFrameFormat</code> instance with a specific FFmpeg
-     * colorspace and unspecified size and frame rate.
-     *
-     * @param pixFmt the FFmpeg colorspace to be represented by the new instance
-     */
-    public AVFrameFormat(int pixFmt)
-    {
-        this(pixFmt, NOT_SPECIFIED);
-    }
-
-    /**
-     * Initializes a new <code>AVFrameFormat</code> instance with a specific FFmpeg
-     * colorspace and unspecified size and frame rate.
-     *
-     * @param pixFmt the FFmpeg colorspace to be represented by the new instance
-     * @param deviceSystemPixFmt the <code>DeviceSystem</code>-specific colorspace to be represented by the new instance
-     */
-    public AVFrameFormat(int pixFmt, int deviceSystemPixFmt)
-    {
-        this(null, NOT_SPECIFIED, pixFmt, deviceSystemPixFmt);
-    }
-
-    /**
      * Initializes a new <code>AVFrameFormat</code> instance which has the same properties as this instance.
      *
      * @return a new <code>AVFrameFormat</code> instance which has the same properties as this instance
      */
     @Override
-    public Object clone()
-    {
+    public Object clone() {
+        super.clone();
         AVFrameFormat f = new AVFrameFormat(getSize(), getFrameRate(), pixFmt, deviceSystemPixFmt);
         f.copy(this);
         return f;
@@ -121,8 +115,7 @@ public class AVFrameFormat extends VideoFormat
      * @param f the <code>Format</code> the properties of which are to be copied into this instance
      */
     @Override
-    protected void copy(Format f)
-    {
+    protected void copy(Format f) {
         super.copy(f);
 
         if (f instanceof AVFrameFormat) {
@@ -139,12 +132,12 @@ public class AVFrameFormat extends VideoFormat
      *
      * @param obj the <code>Object</code> to be determined whether it represents a value that is equal to the value represented
      * by this instance
+     *
      * @return <code>true</code> if the specified <code>obj</code> represents a value that is equal to the value represented by
      * this instance; otherwise, <code>false</code>
      */
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if ((obj instanceof AVFrameFormat) && super.equals(obj)) {
             AVFrameFormat avFrameFormat = (AVFrameFormat) obj;
 
@@ -159,8 +152,7 @@ public class AVFrameFormat extends VideoFormat
      *
      * @return the <code>DeviceSystem</code>-specific format represented by this instance
      */
-    public int getDeviceSystemPixFmt()
-    {
+    public int getDeviceSystemPixFmt() {
         return deviceSystemPixFmt;
     }
 
@@ -169,14 +161,12 @@ public class AVFrameFormat extends VideoFormat
      *
      * @return the native FFmpeg format represented by this instance
      */
-    public int getPixFmt()
-    {
+    public int getPixFmt() {
         return pixFmt;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return super.hashCode() + pixFmt;
     }
 
@@ -185,12 +175,12 @@ public class AVFrameFormat extends VideoFormat
      * specified <code>Format</code> does not match this one, the result is undefined.
      *
      * @param format the matching <code>Format</code> to intersect with this one
+     *
      * @return a <code>Format</code> with its attributes set to the attributes
      * common to this instance and the specified <code>format</code>
      */
     @Override
-    public Format intersects(Format format)
-    {
+    public Format intersects(Format format) {
         Format intersection = super.intersects(format);
 
         if (intersection != null) {
@@ -207,11 +197,11 @@ public class AVFrameFormat extends VideoFormat
      * definition of "match" given by {@link Format#matches(Format)}.
      *
      * @param format the <code>Format</code> to compare to this instance
+     *
      * @return <code>true</code> if the specified <code>format</code> matches this one; otherwise, <code>false</code>
      */
     @Override
-    public boolean matches(Format format)
-    {
+    public boolean matches(Format format) {
         boolean matches;
 
         if (super.matches(format)) {
@@ -229,8 +219,7 @@ public class AVFrameFormat extends VideoFormat
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder s = new StringBuilder(super.toString());
 
         if (pixFmt != NOT_SPECIFIED)

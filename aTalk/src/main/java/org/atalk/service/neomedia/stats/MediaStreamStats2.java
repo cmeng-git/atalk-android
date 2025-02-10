@@ -15,14 +15,13 @@
  */
 package org.atalk.service.neomedia.stats;
 
+import java.util.Collection;
+
 import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.MediaStreamStats;
 
-import java.util.Collection;
-
 /**
  * An extended interface for accessing the statistics of a {@link MediaStream}.
- *
  * The reason to extend the {@link MediaStreamStats} interface rather than
  * adding methods into it is to allow the implementation to reside in a separate class.
  * This is desirable in order to:
@@ -33,8 +32,7 @@ import java.util.Collection;
  *
  * @author Boris Grozev
  */
-public interface MediaStreamStats2 extends MediaStreamStats
-{
+public interface MediaStreamStats2 extends MediaStreamStats {
     /**
      * @return the instance which keeps aggregate statistics for the associated
      * {@link MediaStream} in the receive direction.

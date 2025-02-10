@@ -7,27 +7,24 @@ package org.atalk.impl.osgi;
 
 import android.os.Binder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.atalk.service.osgi.BundleContextHolder;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import timber.log.Timber;
 
 /**
  * @author Lyubomir Marinov
  */
-public class OSGiServiceBundleContextHolder extends Binder implements BundleActivator, BundleContextHolder
-{
-    private final List<BundleActivator> bundleActivators = new ArrayList<BundleActivator>();
+public class OSGiServiceBundleContextHolder extends Binder implements BundleActivator, BundleContextHolder {
+    private final List<BundleActivator> bundleActivators = new ArrayList<>();
 
     private BundleContext bundleContext;
 
-    public void addBundleActivator(BundleActivator bundleActivator)
-    {
+    public void addBundleActivator(BundleActivator bundleActivator) {
         if (bundleActivator == null)
             throw new NullPointerException("bundleActivator");
         else {
@@ -46,15 +43,13 @@ public class OSGiServiceBundleContextHolder extends Binder implements BundleActi
         }
     }
 
-    public BundleContext getBundleContext()
-    {
+    public BundleContext getBundleContext() {
         synchronized (bundleActivators) {
             return bundleContext;
         }
     }
 
-    public void removeBundleActivator(BundleActivator bundleActivator)
-    {
+    public void removeBundleActivator(BundleActivator bundleActivator) {
         if (bundleActivator != null) {
             synchronized (bundleActivators) {
                 bundleActivators.remove(bundleActivator);
@@ -63,16 +58,11 @@ public class OSGiServiceBundleContextHolder extends Binder implements BundleActi
     }
 
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         synchronized (bundleActivators) {
             this.bundleContext = bundleContext;
 
-            Iterator<BundleActivator> bundleActivatorIter = bundleActivators.iterator();
-
-            while (bundleActivatorIter.hasNext()) {
-                BundleActivator bundleActivator = bundleActivatorIter.next();
-
+            for (BundleActivator bundleActivator : bundleActivators) {
                 try {
                     bundleActivator.start(bundleContext);
                 } catch (Throwable t) {
@@ -86,15 +76,11 @@ public class OSGiServiceBundleContextHolder extends Binder implements BundleActi
     }
 
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         synchronized (bundleActivators) {
             try {
-                Iterator<BundleActivator> bundleActivatorIter = bundleActivators.iterator();
 
-                while (bundleActivatorIter.hasNext()) {
-                    BundleActivator bundleActivator = bundleActivatorIter.next();
-
+                for (BundleActivator bundleActivator : bundleActivators) {
                     try {
                         bundleActivator.stop(bundleContext);
                     } catch (Throwable t) {

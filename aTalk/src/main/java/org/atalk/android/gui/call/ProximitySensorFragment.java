@@ -15,9 +15,9 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +31,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ProximitySensorFragment extends Fragment implements SensorEventListener {
+public class ProximitySensorFragment extends BaseFragment implements SensorEventListener {
     /**
      * Proximity sensor managed used by this fragment.
      */
@@ -59,7 +59,7 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
     public void onResume() {
         super.onResume();
         SensorManager manager = aTalkApp.getSensorManager();
-        fm = getActivity().getSupportFragmentManager();
+        fm = mFragmentActivity.getSupportFragmentManager();
 
         // Skips if the sensor has been already attached
         if (proximitySensor != null) {

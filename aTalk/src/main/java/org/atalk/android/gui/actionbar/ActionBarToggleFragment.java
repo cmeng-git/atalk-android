@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
-import org.atalk.service.osgi.OSGiFragment;
 
 /**
  * Fragment adds a toggle button to the action bar with text description to the right of it.
@@ -25,7 +25,7 @@ import org.atalk.service.osgi.OSGiFragment;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ActionBarToggleFragment extends OSGiFragment {
+public class ActionBarToggleFragment extends BaseFragment {
     /**
      * Text description's argument key
      */
@@ -78,7 +78,7 @@ public class ActionBarToggleFragment extends OSGiFragment {
      * {@inheritDoc}
      */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.actionbar_toggle_menu, menu);
 
