@@ -58,8 +58,8 @@ android {
         namespace 'org.atalk.android'
         applicationId "org.atalk.android"
 
-        versionCode 401010
-        versionName "4.1.1"
+        versionCode 402000
+        versionName "4.2.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
