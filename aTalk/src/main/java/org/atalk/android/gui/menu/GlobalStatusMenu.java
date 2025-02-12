@@ -21,6 +21,7 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import java.beans.PropertyChangeEvent;
@@ -53,7 +54,7 @@ import org.osgi.framework.ServiceReference;
 
 import timber.log.Timber;
 
-public class GlobalStatusMenu extends BaseActivity
+public class GlobalStatusMenu
         implements OnDismissListener, ServiceListener, ProviderPresenceStatusListener {
     private final FragmentActivity mActivity;
     private final LayoutInflater mInflater;
@@ -544,7 +545,7 @@ public class GlobalStatusMenu extends BaseActivity
             // Timber.w("## ProtocolServiceProvider Added: " + pps);
             AccountID accountId = pps.getAccountID();
             String userJid = accountId.getAccountJid();
-            Drawable icon = aTalkApp.getAppResources().getDrawable(R.drawable.jabber_status_online);
+            Drawable icon = ResourcesCompat.getDrawable(aTalkApp.getAppResources(), R.drawable.jabber_status_online, null);
             ActionMenuItem actionItem = new ActionMenuItem(mChildPos++, userJid, icon);
             addActionItem(actionItem, pps);
         }
