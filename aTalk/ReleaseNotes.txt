@@ -1,7 +1,7 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Version:        4.2.0 (402000)
-Release Date:   02/10/2024
+Release Date:   02/10/2025
 Author:         cmeng
 - Reimplement deprecated classes/methods i.e. onBackPressed and AsyncTask with new functions.
 - Fix show aTalk icon MissingForegroundServiceTypeException; use NotificationManager.notify() instead.
