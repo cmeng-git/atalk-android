@@ -71,7 +71,7 @@ aTalk is an xmpp client designed for android and supports the following features
 * In-Band Registration with captcha option support
 * Multiple accounts creation
 * User selectable Themes support
-* Multi-language UI support (Bahasa Indonesia, Chinese Simplify, English, German, Portuguese, Russian, Slovak and Spanish)
+* Multi-language UI support (Bahasa Indonesia, Chinese Simplified, English, German, Portuguese (Brazil), Russian, Slovak and Spanish)
 
 ## XMPP Standards Implemented
 
@@ -220,7 +220,9 @@ Other contributors:
   These libraries sources include: opus, speex and ogg
 
 ## Feedback and Contributions
-Cannot found an UI language and would like to help; translate the content in [strings.xml](https://github.com/cmeng-git/atalk-android/blob/master/art/values-xlate/strings.xml).<br/>Create a pull request or forward the file to the developer.
+If you can't find your language in UI and would like to help then translate the app on https://toolate.othing.xyz/projects/atalk/.
+Or copy the [strings.xml](./aTalk/src/main/res/values/strings.xml) to `values-LOCALE` where the `LOCALE` is language-rCOUNTRY e.g. `pt-rBR`. 
+Then create a pull request or forward the file to the developer.
 
 If you have found bug, wish for new feature, or have other questions, [file an issue](https://github.com/cmeng-git/atalk-android/issues).
 
