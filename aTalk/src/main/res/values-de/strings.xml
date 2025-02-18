@@ -273,13 +273,13 @@
     <string name="create_group_first_wizard">Ihre Kontaktliste enthält keine Gruppen. Bitte erstelle zuerst eine Gruppe. (Datei/Gruppe erstellen).</string>
 
     <!-- About Dialog -->
-    <string name="aboutDialog_help"><a href="https://cmeng-git.github.io/atalk">Online hilfe</a></string>
+    <string name="aboutDialog_help"><a href="https://cmeng-git.github.io/atalk">Onlinehilfe</a></string>
     <string name="About">Über uns</string>
     <string name="version_">Version %1$s</string>
     <string name="help">Hilfe</string>
     <string name="check_new_version">Auf Updates prüfen</string>
     <string name="show_history_log">Verlauf zeigen</string>
-    <string name="online_help">Online hilfe</string>
+    <string name="online_help">Onlinehilfe</string>
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="http_authorization_request">HTTP-Autorisierungsanforderung</string>

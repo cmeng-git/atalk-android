@@ -286,7 +286,6 @@
     <!-- HTTP Authorization Request Dialog -->
     <string name="http_authorization_request">HTTP Authorization Request</string>
     <string name="http_authorization_request_instruction">HTTP (%1$s) Authorization for %2$s\nValidation code: %3$s\nDo you accept this request for account:\n%4$s?\n\nVerify given ID matches site if available</string>
-
     <string name="app_authors_fmt">Authors: %1$s</string>
     <string name="app_libraries">aTalk uses the following third-party libraries: %1$s</string>
     <string name="app_revision_fmt">Revision Information: %1$s</string>
@@ -706,7 +705,6 @@
     <string name="callinfo_view_certificate">View certificate</string>
     <string name="callinfo_video_size">Video size</string>
     <string name="callinfo_video_info">Video info</string>
-
     <string name="callinfo_adaptive_jitter_buffer">Adaptive jitter buffer:</string>
     <string name="callinfo_decoded_with_fec">Packets decoded with FEC:</string>
     <string name="callinfo_discarded_percent">Packets currently being discarded:</string>
@@ -1041,7 +1039,6 @@
     <string name="settings_bosh_proxy_summary">Setup connection via BOSH/Proxy for the account</string>
     <string name="bosh_proxy_url_null">BOSH URL field content cannot be empty</string>
     <string name="bosh_proxy_host_port_null">Proxy Host and Port fields content cannot be empty</string>
-
     <string name="bosh_proxy_type">Type:</string>
     <string name="bosh_proxy_url">BOSH URL:</string>
     <string name="bosh_proxy_use_http">Use HTTP Proxy</string>
@@ -1339,7 +1336,6 @@
     <string name="tts_enable">Enable Text &#x27A1; Speech</string>
     <string name="tts_synthesis">Enter text to speak or synthesized and save to file:</string>
     <string name="tts_voice">Default TTS voice:</string>
-
     <string name="loading_wait">Loading, please wait…</string>
 
     <!-- Remove special characters from phone number -->
@@ -1471,10 +1467,8 @@
     <string name="crypto_msg_omemo_session_unverified">Sending OMEMO messages to some unknown buddies with unverified fingerprints!</string>
     <string name="crypto_msg_omemo_session_unverified_untrusted">MultiUserChat with some buddies untrusted or with unverified fingerprints!</string>
     <string name="crypto_msg_omemo_session_verified">*** All buddies have been authenticated! ***</string>
-
     <string name="crypto_fingerprint_status">Verified: %1$s</string>
     <string name="crypto_no_key_present">No key present</string>
-
     <string name="crypto_fingerprint_copy">Fingerprint copied to clipboard!</string>
     <string name="crypto_omemo_distrust_messaging_stop">Stop further sending OMEMO message to buddy: %1$s</string>
     <string name="crypto_omemo_trust_messaging_resume">Resume sending OMEMO message to buddy: %1$s</string>
@@ -1535,7 +1529,6 @@
     <string name="permission_video">Photo &amp; Video</string>
     <string name="permission_storage">Storage</string>
     <string name="permission_hint">For application maximum performance and full features support, aTalk requires you to grant permissions for the following services. Without them, aTalk may not work or may have unexpected behavior!</string>
-
     <string name="permission_denied">DENIED</string>
     <string name="permission_granted">GRANTED</string>
     <string name="permission_denied_permanently">PERMANENTLY DENIED</string>
