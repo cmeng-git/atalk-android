@@ -139,7 +139,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
         return true;
     }
 
-    /*
+    /**
      * Requires TLS by default (i.e. it will not connect to a non-TLS server and will not fallback to clear-text)
      * BOSH connection does not support TLS - return false always
      *

@@ -46,6 +46,7 @@ import net.java.sip.communicator.util.account.AccountUtils;
 import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.gui.AppGUIActivator;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.util.AppImageUtil;
 import org.jivesoftware.smack.XMPPConnection;
@@ -75,7 +76,7 @@ public class ContactBlockListActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_layout);
-        setMainTitle(R.string.block_list_title);
+        ActionBarUtil.setSubtitle(this, getString(R.string.block_list_title));
 
         ListView contactBlockList = findViewById(R.id.list);
         contactBlockList.setBackgroundResource(R.color.background_light);

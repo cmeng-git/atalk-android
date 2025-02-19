@@ -58,8 +58,8 @@ android {
         namespace 'org.atalk.android'
         applicationId "org.atalk.android"
 
-        versionCode 402000
-        versionName "4.2.0"
+        versionCode 402010
+        versionName "4.2.1"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -219,7 +219,7 @@ dependencies {
     implementation 'androidx.activity:activity-ktx:1.9.3'
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
-    implementation 'androidx.fragment:fragment-ktx:1.8.5'
+    implementation 'androidx.fragment:fragment-ktx:1.8.6'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'

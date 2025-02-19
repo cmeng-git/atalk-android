@@ -1,5 +1,13 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.2.1 (402010)
+Release Date:   02/19/2025
+Author:         cmeng
+- BaseActivity#configureToolBar must handle and enable custom actionBar setup; else ShareActivity crash.
+- Update German and Russian string.xml files.
+- Remove unused classes/files.
+
+=========================================================================
 Version:        4.2.0 (402000)
 Release Date:   02/10/2025
 Author:         cmeng
@@ -122,7 +130,7 @@ Author:         cmeng
   tagged to Roster#presenceChanged() callback for process improvement.
 - ChatRoomCreateDialog: initAccountSpinner() only after initComboBox(); else onItemSelected() will trigger
   initComboBox() and second network access duplication;
-- Remove main menu 'Sign out' and 'Exit' options to prevent user unintentionally unregister himself from server;
+- Remove main menu 'Sign out' and 'Exit' options to prevent user unintentionally unregistered himself from server;
   e.g. unable to receive incoming call.
 - SmackConfiguration.setDefaultReplyTimeout to 10000 ms.
 

@@ -16,15 +16,21 @@
  */
 package org.atalk.android;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.TypedValue;
 import android.view.View;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.util.LocaleHelper;
@@ -47,6 +53,11 @@ public class BaseActivity extends AppCompatActivity {
     public final static Handler uiHandler = new Handler(Looper.getMainLooper());
 
     /**
+     * EXIT action listener that triggers closes the <code>Activity</code>
+     */
+    private final ExitActionListener exitListener = new ExitActionListener();
+
+    /**
      * Override AppCompatActivity#onCreate() to support Theme setting
      * Must setTheme() before super.onCreate(), otherwise user selected Theme is not working
      */
@@ -56,6 +67,10 @@ public class BaseActivity extends AppCompatActivity {
         ThemeHelper.setTheme(this);
         super.onCreate(savedInstanceState);
         configureToolBar();
+
+        // Registers exit action listener
+        ContextCompat.registerReceiver(this, exitListener,
+                new IntentFilter(ACTION_EXIT), ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     /**
@@ -66,6 +81,28 @@ public class BaseActivity extends AppCompatActivity {
     protected void attachBaseContext(Context base) {
         Context context = LocaleHelper.setLocale(base);
         super.attachBaseContext(context);
+    }
+
+    @Override
+    protected void onNewIntent(@NonNull Intent intent) {
+        super.onNewIntent(intent);
+        aTalkApp.setCurrentActivity(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        aTalkApp.setCurrentActivity(this);
+    }
+
+    /**
+     * Called when an activity is destroyed.
+     */
+    @Override
+    protected void onDestroy() {
+        // Unregisters exit action listener
+        super.onDestroy();
+        unregisterReceiver(exitListener);
     }
 
     /**
@@ -89,15 +126,30 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void configureToolBar() {
+        // Find the toolbar view inside the activity layout - aTalk cannot use ToolBar; has layout problems
+        // Toolbar toolbar = findViewById(R.id.my_toolbar);
+        // if (toolbar != null)
+        //   setSupportActionBar(toolbar);
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            // mActionBar.setDisplayOptions(ActionBar.DISPLAY_USE_LOGO | ActionBar.DISPLAY_SHOW_CUSTOM );
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setDisplayUseLogoEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setCustomView(R.layout.action_bar);
+
             // Disable up arrow on home activity
             Class<?> homeActivity = aTalkApp.getHomeScreenActivityClass();
             if (this.getClass().equals(homeActivity)) {
                 actionBar.setDisplayHomeAsUpEnabled(false);
                 actionBar.setHomeButtonEnabled(false);
+
+                TextView tv = findViewById(R.id.actionBarStatus);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
             }
             ActionBarUtil.setTitle(this, getTitle());
+            ActionBarUtil.setAvatar(this, R.drawable.ic_icon);
         }
     }
 
@@ -124,6 +176,16 @@ public class BaseActivity extends AppCompatActivity {
 
             actionBar.setLogo(R.drawable.ic_icon);
             actionBar.setTitle(resId);
+        }
+    }
+
+    /**
+     * Broadcast listener that listens for {@link #ACTION_EXIT} and then finishes this <code>Activity</code>
+     */
+    class ExitActionListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
         }
     }
 }

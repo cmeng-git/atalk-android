@@ -6,6 +6,13 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="4.2.1 (02/19/2025)" versioncode="402010">
+        <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>BaseActivity#configureToolBar must handle and enable custom actionBar setup; else ShareActivity crashes</change>
+        <change>Update German and Russian string.xml files</change>
+        <change>Remove unused classes/files</change>
+    </release>
+
     <release version="4.2.0 (02/10/2025)" versioncode="402000">
         <change>Reimplement deprecated classes/methods i.e. onBackPressed and AsyncTask with new functions</change>
         <change>Fix show aTalk icon MissingForegroundServiceTypeException; use NotificationManager.notify() instead</change>
@@ -22,7 +29,6 @@
     </release>
 
     <release version="4.1.1 (06/10/2024)" versioncode="401010">
-        <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
         <change>Change default thumbnail size to 128x96 with jpeg compress 80% quality; better visibility and converse bandwidth</change>
         <change>Minimize unnecessary OmemoManager #contactSupportsOmemo check; may block omemo message encryption and cause ANR</change>
         <change>Check for ConfigService availability, before proceed to handle any user setting changes</change>
