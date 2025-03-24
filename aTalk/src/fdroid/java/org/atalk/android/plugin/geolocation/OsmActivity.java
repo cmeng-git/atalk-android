@@ -25,11 +25,11 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.service.httputil.HttpConnectionManager;
