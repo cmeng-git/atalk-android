@@ -55,7 +55,7 @@ public class JingleMessageCallActivity extends BaseActivity implements JingleMes
      * Create the UI with call hang up button to retract call for outgoing call.
      * Incoming JingleMessage <propose/> will only sendJingleAccept(mSid), automatically only
      * if aTalk is not in locked screen; else show UI for user choice to accept or reject call.
-     * Note: hedds-up notification is not shown when device is in locked screen.
+     * Note: heads-up notification is not shown when device is in locked screen.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this
      * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).

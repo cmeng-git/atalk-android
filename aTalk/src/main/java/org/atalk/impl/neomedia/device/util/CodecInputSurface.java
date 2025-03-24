@@ -35,6 +35,7 @@ public class CodecInputSurface extends OpenGLContext {
     @Override
     public void release() {
         super.release();
-        mSurface.release();
+        if (mSurface != null)
+            mSurface.release();
     }
 }

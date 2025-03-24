@@ -92,6 +92,13 @@ public class LauncherDebugActivity extends OSGiActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mProgressBar.clearAnimation();
+        myImageView.clearAnimation();
+    }
+
+    @Override
     protected void start(BundleContext osgiContext)
             throws Exception {
         super.start(osgiContext);
@@ -120,14 +127,8 @@ public class LauncherDebugActivity extends OSGiActivity {
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mProgressBar.clearAnimation();
-        myImageView.clearAnimation();
-    }
-
     private void setupStrictMode() {
+        // #TODO - change all disk access to using thread
         // cmeng - disable android.os.StrictMode$StrictModeDisk Access Violation
         StrictMode.ThreadPolicy old = StrictMode.getThreadPolicy();
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder(old)

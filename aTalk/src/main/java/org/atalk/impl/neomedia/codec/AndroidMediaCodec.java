@@ -28,6 +28,7 @@ import javax.media.format.VideoFormat;
 import org.atalk.impl.neomedia.codec.video.AVFrame;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.impl.neomedia.codec.video.ByteBufferFmj;
+import org.atalk.impl.neomedia.codec.video.CodecInfo;
 import org.atalk.impl.neomedia.jmfext.media.protocol.ByteBufferPool;
 import org.atalk.service.neomedia.codec.Constants;
 
@@ -60,11 +61,6 @@ public class AndroidMediaCodec extends AbstractCodec2 {
     protected static final int[] PIX_FMTS_TO_MEDIA_CODEC_COLOR_FORMATS;
 
     /**
-     * The mime type of H.264-encoded media data as defined by Android's <code>MediaCodec</code> class.
-     */
-    private static final String H264_MEDIA_CODEC_TYPE = "video/avc";
-
-    /**
      * The constant defined by OpenMAX IL to signify that a <code>colorFormat</code> value defined in
      * the terms of Android's <code>MediaCodec</code> class is unknown.
      */
@@ -80,16 +76,6 @@ public class AndroidMediaCodec extends AbstractCodec2 {
      */
     private static final Format[] SUPPORTED_OUTPUT_FORMATS;
 
-    /**
-     * The mime type of VP8-encoded media data as defined by Android's <code>MediaCodec</code> class.
-     */
-    private static final String VP8_MEDIA_CODEC_TYPE = "video/x-vnd.on2.vp8";
-
-    /**
-     * The mime type of VP9-encoded media data as defined by Android's <code>MediaCodec</code> class.
-     */
-    private static final String VP9_MEDIA_CODEC_TYPE = "video/x-vnd.on2.vp9";
-
     private static final MediaCodecInfo[] mCodecInfos;
 
     static {
@@ -99,9 +85,9 @@ public class AndroidMediaCodec extends AbstractCodec2 {
          * to translate between the two domains of terms.
          */
         FMJ_ENCODINGS_TO_MEDIA_CODEC_TYPES = new String[]{
-                Constants.H264, H264_MEDIA_CODEC_TYPE,
-                Constants.VP9, VP9_MEDIA_CODEC_TYPE,
-                Constants.VP8, VP8_MEDIA_CODEC_TYPE
+                Constants.H264, CodecInfo.MEDIA_CODEC_TYPE_H264,
+                Constants.VP9, CodecInfo.MEDIA_CODEC_TYPE_VP9,
+                Constants.VP8, CodecInfo.MEDIA_CODEC_TYPE_VP8
         };
 
         PIX_FMTS_TO_MEDIA_CODEC_COLOR_FORMATS = new int[]{

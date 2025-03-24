@@ -9,6 +9,19 @@ import static org.atalk.impl.neomedia.format.MediaFormatImpl.FORMAT_PARAMETER_AT
 import static org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl.DEFAULT_SIGNATURE_AND_HASH_ALGORITHM;
 import static org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl.generateMyZid;
 
+import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallConference;
@@ -61,19 +74,6 @@ import org.jivesoftware.smackx.jingle_rtp.element.SrtpFingerprint;
 import org.jivesoftware.smackx.jingle_rtp.element.ZrtpHash;
 import org.jxmpp.jid.Jid;
 
-import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import ch.imvs.sdes4j.srtp.SrtpCryptoAttribute;
 import timber.log.Timber;
 
@@ -87,8 +87,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  * @author MilanKral
  */
-public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPeerJabberImpl>
-{
+public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPeerJabberImpl> {
     /**
      * Determines whether a specific XMPP feature is supported by both a specific
      * <code>ServiceDiscoveryManager</code> (may be referred to as the local peer) and a specific
@@ -100,12 +99,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * feature. If <code>discoverInfo</code> is <code>null</code>, it is considered to contain the specified feature.
      * @param feature the feature to be determined whether it is supported by both the specified
      * <code>discoveryManager</code> and the specified <code>discoverInfo</code>
+     *
      * @return <code>true</code> if the specified <code>feature</code> is supported by both the specified
      * <code>discoveryManager</code> and the specified <code>discoverInfo</code>; otherwise, <code>false</code>
      */
     private static boolean isFeatureSupported(ServiceDiscoveryManager discoveryManager,
-            DiscoverInfo discoverInfo, String feature)
-    {
+            DiscoverInfo discoverInfo, String feature) {
         return discoveryManager.includesFeature(feature)
                 && ((discoverInfo == null) || discoverInfo.containsFeature(feature));
     }
@@ -174,8 +173,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @param peer that <code>CallPeerJabberImpl</code> instance that we will be managing media for.
      */
-    public CallPeerMediaHandlerJabberImpl(CallPeerJabberImpl peer)
-    {
+    public CallPeerMediaHandlerJabberImpl(CallPeerJabberImpl peer) {
         super(peer, peer);
         qualityControls = new QualityControlWrapper(peer);
     }
@@ -186,10 +184,10 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * (i.e. it is still sending media), this method simply returns its current direction.
      *
      * @param stream the {@link MediaStreamTarget} whose post-hold direction we'd like to determine.
+     *
      * @return the {@link MediaDirection} that we need to set on <code>stream</code> once it is reactivate.
      */
-    private MediaDirection calculatePostHoldDirection(MediaStream stream)
-    {
+    private MediaDirection calculatePostHoldDirection(MediaStream stream) {
         MediaDirection streamDirection = stream.getDirection();
         if (streamDirection.allowsSending())
             return streamDirection;
@@ -222,8 +220,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * Closes the <code>CallPeerMediaHandler</code>.
      */
     @Override
-    public synchronized void close()
-    {
+    public synchronized void close() {
         super.close();
 //        OperationSetDesktopSharingClientJabberImpl client = (OperationSetDesktopSharingClientJabberImpl)
 //                peer.getProtocolProvider().getOperationSet(OperationSetDesktopSharingClient.class);
@@ -235,13 +232,14 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * Creates a {@link JingleContent}s of the streams for a specific <code>MediaDevice</code>.
      *
      * @param dev <code>MediaDevice</code>
+     *
      * @return the {@link JingleContent}s of stream that this handler is prepared to initiate.
+     *
      * @throws OperationFailedException if we fail to create the descriptions for reasons like problems with device
      * interaction, allocating ports, etc.
      */
     private JingleContent createContent(MediaDevice dev)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         MediaType mediaType = dev.getMediaType();
         // this is the direction to be used in the jingle session
         MediaDirection direction = dev.getDirection();
@@ -306,13 +304,14 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * Creates a {@link JingleContent} for a particular stream.
      *
      * @param mediaType <code>MediaType</code> of the content
+     *
      * @return a {@link JingleContent}
+     *
      * @throws OperationFailedException if we fail to create the descriptions for reasons like
      * - problems with device interaction, allocating ports, etc.
      */
     public JingleContent createContentForMedia(MediaType mediaType)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         MediaDevice dev = getDefaultDevice(mediaType);
         if (isDeviceActive(dev))
             return createContent(dev);
@@ -328,11 +327,11 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param direction the <code>MediaDirection</code> that we'd like to establish the stream in.
      * @param supportedExtensions the list of <code>RTPExtension</code>s that we'd like to advertise in the
      * <code>MediaDescription</code>.
+     *
      * @return a newly created {@link JingleContent} representing streams that we'd be able to handle.
      */
     private JingleContent createContentForOffer(List<MediaFormat> supportedFormats,
-            MediaDirection direction, List<RTPExtension> supportedExtensions)
-    {
+            MediaDirection direction, List<RTPExtension> supportedExtensions) {
         JingleContent content = JingleUtils.createDescription(
                 JingleContent.Creator.initiator,
                 supportedFormats.get(0).getMediaType().toString(),
@@ -351,12 +350,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @return a {@link List} containing the {@link JingleContent}s of streams that this
      * handler is prepared to initiate.
+     *
      * @throws OperationFailedException if we fail to create the descriptions for reasons like problems
      * with device interaction, allocating ports, etc.
      */
     public List<JingleContent> createContentList()
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         // Describe the media.
         List<JingleContent> mediaDescs = new ArrayList<>();
         for (MediaType mediaType : MediaType.values()) {
@@ -427,14 +426,15 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * <code>MediaDevice</code>s and local on-hold and video transmission preferences.
      *
      * @param mediaType <code>MediaType</code> of the content
+     *
      * @return a {@link List} containing the {@link JingleContent}s of streams that this
      * handler is prepared to initiate.
+     *
      * @throws OperationFailedException if we fail to create the descriptions for reasons like - problems with device
      * interaction, allocating ports, etc.
      */
     public List<JingleContent> createContentList(MediaType mediaType)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         MediaDevice dev = getDefaultDevice(mediaType);
         List<JingleContent> mediaDescs = new ArrayList<>();
 
@@ -462,8 +462,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param newValue the value of the property with the specified name after
      */
     @Override
-    protected void firePropertyChange(String property, Object oldValue, Object newValue)
-    {
+    protected void firePropertyChange(String property, Object oldValue, Object newValue) {
         super.firePropertyChange(property, oldValue, newValue);
     }
 
@@ -473,11 +472,11 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @return the last generated list of {@link JingleContent}s that the call peer could
      * use to send a <code>session-accept</code>.
+     *
      * @throws OperationFailedException if we fail to configure the media stream
      */
     public Iterable<JingleContent> generateSessionAccept()
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         TransportManagerJabberImpl transportManager = getTransportManager();
         Iterable<JingleContent> sessionAccept = transportManager.wrapupCandidateHarvest();
 
@@ -576,8 +575,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param description the <code>RtpDescriptionExtensionElement</code> to which a child element will be added.
      * @param ssrc the SSRC for the <code>SdpSourceGroup</code> to use.
      */
-    private void addSourceExtension(RtpDescription description, long ssrc)
-    {
+    private void addSourceExtension(RtpDescription description, long ssrc) {
         MediaType type = MediaType.parseString(description.getMedia());
         SdpSource.Builder srcBuilder = SdpSource.getBuilder()
                 .setSsrc(ssrc)
@@ -601,10 +599,10 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * Returns the local content of a specific content type (like audio or video).
      *
      * @param contentType content type name
+     *
      * @return remote <code>JingleContent</code> or null if not found
      */
-    public JingleContent getLocalContent(String contentType)
-    {
+    public JingleContent getLocalContent(String contentType) {
         for (String key : localContentMap.keySet()) {
             JingleContent content = localContentMap.get(key);
             if (content != null) {
@@ -621,8 +619,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @return a list of {@link JingleContent} <code>null</code> if not found
      */
-    public Iterable<JingleContent> getLocalContentList()
-    {
+    public Iterable<JingleContent> getLocalContentList() {
         return localContentMap.values();
     }
 
@@ -631,8 +628,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @return the implemented quality control.
      */
-    public QualityControl getQualityControl()
-    {
+    public QualityControl getQualityControl() {
         if (supportQualityControls) {
             return qualityControls;
         }
@@ -646,10 +642,10 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * Get the remote content of a specific content type (like audio or video).
      *
      * @param contentType content type name
+     *
      * @return remote <code>JingleContent</code> or null if not found
      */
-    public JingleContent getRemoteContent(String contentType)
-    {
+    public JingleContent getRemoteContent(String contentType) {
         for (String key : remoteContentMap.keySet()) {
             JingleContent content = remoteContentMap.get(key);
             RtpDescription description = content.getFirstChildElement(RtpDescription.class);
@@ -669,8 +665,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * <code>CallPeer</code> associated with this instance.
      */
     @Override
-    public long getRemoteSSRC(MediaType mediaType)
-    {
+    public long getRemoteSSRC(MediaType mediaType) {
         int[] ssrcs = getRemoteSSRCs(mediaType);
 
         /*
@@ -699,11 +694,11 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * implementation does not currently provide support for keeping track of multiple remote SSRCs.
      *
      * @param mediaType the <code>MediaType</code> of the RTP streams the SSRCs of which are to be returned
+     *
      * @return an array of <code>int</code> values which represent the SSRCs of RTP streams with the
      * specified <code>mediaType</code> known to be received by a <code>MediaStream</code> associated with this instance
      */
-    private int[] getRemoteSSRCs(MediaType mediaType)
-    {
+    private int[] getRemoteSSRCs(MediaType mediaType) {
         /*
          * If the Jitsi Videobridge server-side technology is utilized, a single MediaStream (per
          * MediaType) is shared among the participating CallPeers and, consequently, the remote
@@ -728,11 +723,11 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * TODO: this method can and should be simplified.
      *
      * @return the <code>TransportManager</code> implementation handling our address management
+     *
      * @see CallPeerMediaHandler#getTransportManager()
      */
     @Override
-    protected synchronized TransportManagerJabberImpl getTransportManager()
-    {
+    protected synchronized TransportManagerJabberImpl getTransportManager() {
         if (transportManager == null) {
             if (mPeer.isInitiator()) {
                 synchronized (transportManagerSyncRoot) {
@@ -842,8 +837,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @see CallPeerMediaHandler#queryTransportManager()
      */
     @Override
-    protected synchronized TransportManagerJabberImpl queryTransportManager()
-    {
+    protected synchronized TransportManagerJabberImpl queryTransportManager() {
         return transportManager;
     }
 
@@ -855,8 +849,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * sent by the remote peer represented by this instance.
      */
     @Override
-    public List<Component> getVisualComponents()
-    {
+    public List<Component> getVisualComponents() {
         /*
          * TODO The super is currently unable to provide the complete set of remote SSRCs (i.e. in
          * the case of no utilization of the Jitsi Videobridge server-side technology) so we
@@ -901,16 +894,17 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * <code>TransportManagerJabberImpl</code> to send <code>transport-info</code> <code>Jingle</code>s
      * from the local peer to the remote peer if this <code>TransportManagerJabberImpl</code>
      * wishes to utilize <code>transport-info</code>
+     *
      * @return the media descriptions of the local peer after the local candidate addresses have
      * been gathered as returned by
      * {@link TransportManagerJabberImpl#wrapupCandidateHarvest()}
+     *
      * @throws OperationFailedException if anything goes wrong while starting or wrapping up the gathering
      * of local candidate addresses
      */
     private List<JingleContent> harvestCandidates(List<JingleContent> remote,
             List<JingleContent> local, TransportInfoSender transportInfoSender)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         long startCandidateHarvestTime = System.currentTimeMillis();
         TransportManagerJabberImpl transportManager = getTransportManager();
         // Do not proceed if transport is null => NPE
@@ -973,15 +967,16 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * sendrecv, recvonly, or inactive).
      * @param rtpExtensions the list of <code>RTPExtension</code>s that should be enabled for this stream.
      * @param masterStream whether the stream to be used as master if secured
+     *
      * @return the newly created <code>MediaStream</code>.
+     *
      * @throws OperationFailedException if creating the stream fails for any reason (like for example accessing
      * the device or setting the format).
      */
     protected MediaStream initStream(String streamName, StreamConnector connector,
             MediaDevice device, MediaFormat format, MediaStreamTarget target,
             MediaDirection direction, List<RTPExtension> rtpExtensions, boolean masterStream)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         MediaStream stream = super.initStream(connector, device, format, target, direction, rtpExtensions, masterStream);
         if (stream != null)
             stream.setName(streamName);
@@ -1000,8 +995,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * well i.e. it has to stop related <code>PropertyChangeEvent</code>s fired by the super.
      */
     @Override
-    protected void mediaHandlerPropertyChange(PropertyChangeEvent ev)
-    {
+    protected void mediaHandlerPropertyChange(PropertyChangeEvent ev) {
         String propertyName = ev.getPropertyName();
 
         if ((AUDIO_REMOTE_SSRC.equals(propertyName) || VIDEO_REMOTE_SSRC.equals(propertyName))
@@ -1015,6 +1009,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * Handles the specified <code>answer</code> by creating and initializing the corresponding <code>MediaStream</code>s.
      *
      * @param contentList the Jingle answer
+     *
      * @throws OperationFailedException if we fail to handle <code>answer</code> for reasons like failing
      * to initialize media devices or streams.
      * @throws IllegalArgumentException if there's a problem with the syntax or the semantics of <code>answer</code>.
@@ -1023,8 +1018,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * instance to wait processing to stop (method setState in CallPeer).
      */
     public void processSessionAcceptContent(List<JingleContent> contentList)
-            throws OperationFailedException, IllegalArgumentException
-    {
+            throws OperationFailedException, IllegalArgumentException {
         /*
          * The answer given in session-accept may contain transport-related information compatible
          * with that carried in transport-info.
@@ -1061,8 +1055,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @param conferenceIQ the <code>ColibriConferenceIQ</code> which has been received
      */
-    void processColibriConferenceIQ(ColibriConferenceIQ conferenceIQ)
-    {
+    void processColibriConferenceIQ(ColibriConferenceIQ conferenceIQ) {
         /*
          * This CallPeerMediaHandler stores the media information but it does not store the colibri
          * Channels (which contain both media and transport information). The TransportManager
@@ -1120,6 +1113,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param content a <code>JingleContent</code>
      * @param modify if it corresponds to a content-modify for resolution change
      * @param masterStream whether the stream to be used as master
+     *
      * @throws OperationFailedException if we fail to handle <code>content</code> for reasons like failing to
      * initialize media devices or streams.
      * @throws IllegalArgumentException if there's a problem with the syntax or the semantics of <code>content</code>.
@@ -1129,8 +1123,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * stop (method setState in CallPeer).
      */
     private void processContent(JingleContent content, boolean modify, boolean masterStream)
-            throws OperationFailedException, IllegalArgumentException
-    {
+            throws OperationFailedException, IllegalArgumentException {
         RtpDescription description = content.getFirstChildElement(RtpDescription.class);
         MediaType mediaType = JingleUtils.getMediaType(content);
 
@@ -1264,13 +1257,13 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * is the first session description that this <code>MediaHandler</code> is seeing.
      *
      * @param offer the offer that we'd like to parse, handle and get an answer for.
+     *
      * @throws OperationFailedException if we have a problem satisfying the description received in
      * <code>offer</code> (e.g. failed to open a device or initialize a stream ...).
      * @throws IllegalArgumentException if there's a problem with <code>offer</code>'s format or semantics.
      */
     public void processOffer(final List<JingleContent> offer)
-            throws OperationFailedException, IllegalArgumentException
-    {
+            throws OperationFailedException, IllegalArgumentException {
         // prepare to generate answers to all the incoming descriptions
         final List<JingleContent> answer = new ArrayList<>(offer.size());
         boolean atLeastOneValidDescription = false;
@@ -1410,12 +1403,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @param contents the <code>JingleContent</code>s provided by the remote <code>peer</code> and
      * containing the transport-related information to be processed
+     *
      * @throws OperationFailedException if anything goes wrong while processing the transport-related information
      * provided by the remote <code>peer</code> in the specified set of <code>JingleContent</code>s
      */
     public void processTransportInfo(Iterable<JingleContent> contents)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         transportManager = getTransportManager();
         if (transportManager != null) {
             transportManager.startConnectivityEstablishment(contents);
@@ -1433,8 +1426,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * operation can synchronize to the mediaHandler instance to wait processing to stop (method setState in CallPeer).
      */
     public void reinitAllContents()
-            throws OperationFailedException, IllegalArgumentException
-    {
+            throws OperationFailedException, IllegalArgumentException {
         boolean masterStreamSet = false;
         for (String key : remoteContentMap.keySet()) {
             JingleContent content = remoteContentMap.get(key);
@@ -1467,6 +1459,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param name name of the Jingle content
      * @param content media content
      * @param modify if it corresponds to a content-modify for resolution change
+     *
      * @throws OperationFailedException if we fail to handle <code>content</code> for reasons like failing to
      * initialize media devices or streams.
      * @throws IllegalArgumentException if there's a problem with the syntax or the semantics of <code>content</code>.
@@ -1475,8 +1468,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * instance to wait processing to stop (method setState in CallPeer).
      */
     public void reinitContent(String name, JingleContent content, boolean modify)
-            throws OperationFailedException, IllegalArgumentException
-    {
+            throws OperationFailedException, IllegalArgumentException {
         JingleContent remoteContent = remoteContentMap.get(name);
 
         // Timber.w("Reinit Content: " + name + "; remoteContent: " + content + "; modify: " + modify);
@@ -1501,8 +1493,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * media content to be removed
      * @param name the name of the media content to be removed from this session
      */
-    private void removeContent(Map<String, JingleContent> contentMap, String name)
-    {
+    private void removeContent(Map<String, JingleContent> contentMap, String name) {
         JingleContent content = contentMap.remove(name);
         if (content != null) {
             RtpDescription description = content.getFirstChildElement(RtpDescription.class);
@@ -1518,8 +1509,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @param name the name of the media content to be removed from this session
      */
-    public void removeContent(String name)
-    {
+    public void removeContent(String name) {
         removeContent(localContentMap, name);
         removeContent(remoteContentMap, name);
 
@@ -1536,8 +1526,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * just put us off hold.
      */
     public void setRemotelyOnHold(boolean onHold)
-            throws SmackException.NotConnectedException, InterruptedException
-    {
+            throws SmackException.NotConnectedException, InterruptedException {
         this.remotelyOnHold = onHold;
 
         for (MediaType mediaType : MediaType.values()) {
@@ -1586,8 +1575,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @param value whether quality controls is supported..
      */
-    public void setSupportQualityControls(boolean value)
-    {
+    public void setSupportQualityControls(boolean value) {
         this.supportQualityControls = value;
     }
 
@@ -1597,12 +1585,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @param xmlns the Jingle transport XML namespace specifying the <code>TransportManager</code>
      * implementation type to be set on this instance to handle our address management
+     *
      * @throws IllegalArgumentException if the specified <code>xmlns</code> does not specify a (supported)
      * <code>TransportManager</code> implementation type
      */
     private void setTransportManager(String xmlns)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         // Is this really going to be an actual change?
         if ((transportManager != null) && transportManager.getXmlNamespace().equals(xmlns)) {
             return;
@@ -1640,8 +1628,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      */
     @Override
     public void start()
-            throws IllegalStateException
-    {
+            throws IllegalStateException {
         try {
             wrapupConnectivityEstablishment();
         } catch (OperationFailedException ofe) {
@@ -1658,12 +1645,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param errorCode the error code to be assigned to the new <code>OperationFailedException</code>
      * @param cause the <code>Throwable</code> that has caused the necessity to log an error and have a new
      * <code>OperationFailedException</code> thrown
+     *
      * @throws OperationFailedException the exception that we wanted this method to throw.
      */
     @Override
     protected void throwOperationFailedException(String message, int errorCode, Throwable cause)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         ProtocolProviderServiceJabberImpl.throwOperationFailedException(message, errorCode, cause);
     }
 
@@ -1677,8 +1664,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * of the <code>MediaStream</code>s managed by this <code>CallPeerMediaHandler</code>
      */
     private void wrapupConnectivityEstablishment()
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         TransportManagerJabberImpl transportManager = getTransportManager();
         transportManager.wrapupConnectivityEstablishment();
 
@@ -1696,11 +1682,11 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * <code>CallPeerMediaHandler</code> uses for media of type <code>mediaType</code>. Otherwise, returns <code>null</code>
      *
      * @param mediaType the <code>MediaType</code> for which to return a <code>ColibriConferenceIQ.Channel</code>
+     *
      * @return the <code>ColibriConferenceIQ.Channel</code> that this <code>CallPeerMediaHandler</code>
      * uses for media of type <code>mediaType</code> or <code>null</code>.
      */
-    private ColibriConferenceIQ.Channel getColibriChannel(MediaType mediaType)
-    {
+    private ColibriConferenceIQ.Channel getColibriChannel(MediaType mediaType) {
         ColibriConferenceIQ.Channel channel = null;
 
         if (mPeer.isJitsiVideobridge()) {
@@ -1719,8 +1705,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * accurate when we use a Videobridge.
      */
     @Override
-    public boolean isRemotelyOnHold()
-    {
+    public boolean isRemotelyOnHold() {
         return remotelyOnHold;
     }
 
@@ -1734,8 +1719,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      */
     @Override
     public void setLocallyOnHold(boolean locallyOnHold)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         if (mPeer.isJitsiVideobridge()) {
             this.locallyOnHold = locallyOnHold;
 
@@ -1770,8 +1754,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param mediaType The type of media (AUDIO or VIDEO).
      */
     private boolean addDtlsSrtpAdvertisedEncryption(boolean isInitiator,
-            JingleContent content, MediaType mediaType, boolean rtcpmux)
-    {
+            JingleContent content, MediaType mediaType, boolean rtcpmux) {
         if (mPeer.isJitsiVideobridge()) {
             return false;
         }
@@ -1789,8 +1772,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param mediaType The type of media (AUDIO or VIDEO).
      */
     boolean addDtlsSrtpAdvertisedEncryption(boolean isInitiator,
-            IceUdpTransport remoteTransport, MediaType mediaType, boolean rtcpmux)
-    {
+            IceUdpTransport remoteTransport, MediaType mediaType, boolean rtcpmux) {
         SrtpControls srtpControls = getSrtpControls();
         boolean b = false;
 
@@ -1863,8 +1845,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * <code>null</code> if the local peer is the initiator of the call.
      */
     private void setAndAddPreferredEncryptionProtocol(MediaType mediaType,
-            JingleContent localContent, JingleContent remoteContent, boolean rtcpmux)
-    {
+            JingleContent localContent, JingleContent remoteContent, boolean rtcpmux) {
         List<SrtpControlType> preferredEncryptionProtocols
                 = mPeer.getProtocolProvider().getAccountID().getSortedEnabledEncryptionProtocolList();
 
@@ -1898,11 +1879,11 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param localContent The element containing the media CONTENT and its TRANSPORT.
      * @param remoteContent The element containing the media CONTENT and its TRANSPORT for the remote peer. Null,
      * if the local peer is the initiator of the call.
+     *
      * @return <code>true</code> if any DTLS-SRTP element has been added to the specified
      * <code>localContent</code>; <code>false</code>, otherwise.
      */
-    private boolean setDtlsEncryptionOnContent(MediaType mediaType, JingleContent localContent, JingleContent remoteContent)
-    {
+    private boolean setDtlsEncryptionOnContent(MediaType mediaType, JingleContent localContent, JingleContent remoteContent) {
         boolean b = false;
         if (mPeer.isJitsiVideobridge()) {
             b = setDtlsEncryptionOnTransport(mediaType, localContent, remoteContent);
@@ -1962,8 +1943,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param localContent The element containing the media CONTENT and its TRANSPORT.
      */
     private boolean setDtlsEncryptionOnTransport(MediaType mediaType,
-            JingleContent localContent, JingleContent remoteContent)
-    {
+            JingleContent localContent, JingleContent remoteContent) {
         IceUdpTransport localTransport = localContent.getFirstChildElement(IceUdpTransport.class);
         boolean b = false;
         if (localTransport == null)
@@ -2043,8 +2023,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param localContents The elements containing the media CONTENT elements and their respective TRANSPORT elements.
      */
     private void setDtlsEncryptionOnTransports(List<JingleContent> remoteContents,
-            List<JingleContent> localContents)
-    {
+            List<JingleContent> localContents) {
         for (JingleContent localContent : localContents) {
             RtpDescription description = localContent.getFirstChildElement(RtpDescription.class);
 
@@ -2069,8 +2048,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param transports A <code>Collection</code> of XML namespaces of jingle transport elements to be set as the
      * supported jingle transports for this <code>CallPeerMediaHandlerJabberImpl</code>
      */
-    public void setSupportedTransports(Collection<String> transports)
-    {
+    public void setSupportedTransports(Collection<String> transports) {
         if (transports == null)
             return;
 
@@ -2105,8 +2083,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @return The state of inputevt support: true for enable, false for disable.
      */
-    public boolean getLocalInputEvtAware()
-    {
+    public boolean getLocalInputEvtAware() {
         return this.localInputEvtAware;
     }
 
@@ -2115,8 +2092,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @param enable new state of inputevt support
      */
-    public void setLocalInputEvtAware(boolean enable)
-    {
+    public void setLocalInputEvtAware(boolean enable) {
         localInputEvtAware = enable;
     }
 
@@ -2128,8 +2104,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * contains the PAYLOAD-TYPE and (more important here) the ENCRYPTION.
      * @param mediaType The type of media (AUDIO or VIDEO).
      */
-    private void addZrtpAdvertisedEncryption(boolean isInitiator, RtpDescription description, MediaType mediaType)
-    {
+    private void addZrtpAdvertisedEncryption(boolean isInitiator, RtpDescription description, MediaType mediaType) {
         // ZRTP is not supported in telephony conferences utilizing the
         // server-side technology Jitsi Videobridge yet.
         if (mPeer.isJitsiVideobridge())
@@ -2168,8 +2143,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * contains the PAYLOAD-TYPE and (more important here) the ENCRYPTION.
      * @param mediaType The type of media (AUDIO or VIDEO).
      */
-    private void addSDesAdvertisedEncryption(boolean isInitiator, RtpDescription description, MediaType mediaType)
-    {
+    private void addSDesAdvertisedEncryption(boolean isInitiator, RtpDescription description, MediaType mediaType) {
         // SDES is not supported in telephony conferences utilizing the
         // server-side technology Jitsi Videobridge yet.
         if (mPeer.isJitsiVideobridge())
@@ -2217,12 +2191,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param sDesControl The SDES based SRTP MediaStream encryption control.
      * @param srtpEncryption The ENCRYPTION element received from the
      * remote peer. This may contain the SDES crypto suites available for the remote peer.
+     *
      * @return The selected SDES crypto suite supported by both the local and
      * the remote peer. Or null, if there is no crypto suite supported by both of the peers.
      */
     private SrtpCryptoAttribute selectSdesCryptoSuite(boolean isInitiator, SDesControl sDesControl,
-            SrtpEncryption srtpEncryption)
-    {
+            SrtpEncryption srtpEncryption) {
         List<SdpCrypto> sdpCryptos = srtpEncryption.getCryptoList();
         List<SrtpCryptoAttribute> peerAttributes = new ArrayList<>(sdpCryptos.size());
 
@@ -2239,10 +2213,10 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @param srtpEncryption The ENCRYPTION element received from
      * the remote peer. This may contain the ZRTP packet element for the remote peer.
+     *
      * @return True if the remote peer supports ZRTP. False, otherwise.
      */
-    private boolean isRemoteZrtpCapable(SrtpEncryption srtpEncryption)
-    {
+    private boolean isRemoteZrtpCapable(SrtpEncryption srtpEncryption) {
         return (srtpEncryption.getChildElements(ZrtpHash.class) != null);
     }
 
@@ -2253,11 +2227,11 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param description The element containing the media DESCRIPTION and its encryption.
      * @param remoteDescription The element containing the media DESCRIPTION and
      * its encryption for the remote peer. Null, if the local peer is the initiator of the call.
+     *
      * @return True if the ZRTP element has been added to encryption. False, otherwise.
      */
     private boolean setZrtpEncryptionOnDescription(MediaType mediaType, RtpDescription description,
-            RtpDescription remoteDescription)
-    {
+            RtpDescription remoteDescription) {
         // ZRTP is not supported in telephony conferences utilizing the server-side technology Jitsi Videobridge yet.
         if (mPeer.isJitsiVideobridge())
             return false;
@@ -2331,11 +2305,11 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param localDescription The element containing the media DESCRIPTION and its encryption.
      * @param remoteDescription The element containing the media DESCRIPTION and
      * its encryption for the remote peer. Null, if the local peer is the initiator of the call.
+     *
      * @return True if the crypto element has been added to encryption. False, otherwise.
      */
     private boolean setSdesEncryptionOnDescription(MediaType mediaType, RtpDescription localDescription,
-            RtpDescription remoteDescription)
-    {
+            RtpDescription remoteDescription) {
         /*
          * SDES is not supported in telephony conferences utilizing the server-side technology Jitsi Videobridge yet.
          */
@@ -2430,11 +2404,11 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param localDescription The element containing the media DESCRIPTION and its encryption.
      * @param remoteDescription The element containing the media DESCRIPTION and
      * its encryption for the remote peer; <code>null</code> if the local peer is the initiator of the call.
+     *
      * @return <code>true</code> if the specified encryption protocol has been selected; <code>false</code>, otherwise
      */
     private boolean setAndAddPreferredEncryptionProtocol(SrtpControlType srtpControlType, MediaType mediaType,
-            RtpDescription localDescription, RtpDescription remoteDescription)
-    {
+            RtpDescription localDescription, RtpDescription remoteDescription) {
         /*
          * Neither SDES nor ZRTP is supported in telephony conferences utilizing the server-side technology
          * Jitsi Videobridge yet.

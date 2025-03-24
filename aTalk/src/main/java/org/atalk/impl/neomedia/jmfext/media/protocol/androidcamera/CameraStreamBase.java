@@ -82,11 +82,6 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
     protected CameraCharacteristics mCameraCharacteristics;
 
     /**
-     * In use camera rotation, adjusted for camera lens facing direction  - for video streaming
-     */
-    protected int mSensorOrientation;
-
-    /**
      * In use camera rotation, adjusted for camera lens facing direction  and device orientation - for video streaming
      */
     protected int mPreviewOrientation;

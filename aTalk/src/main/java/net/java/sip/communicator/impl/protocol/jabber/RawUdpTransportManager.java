@@ -5,6 +5,12 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 
@@ -21,12 +27,6 @@ import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportCandidate;
 import org.jivesoftware.smackx.jingle_rtp.element.RawUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 
-import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * A {@link TransportManagerJabberImpl} implementation that would only gather a single candidate
  * pair (i.e. RTP and RTCP).
@@ -36,8 +36,7 @@ import java.util.List;
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-public class RawUdpTransportManager extends TransportManagerJabberImpl
-{
+public class RawUdpTransportManager extends TransportManagerJabberImpl {
     /**
      * The list of <code>JingleContent</code>s which represents the local counterpart of the
      * negotiation between the local and the remote peers.
@@ -55,8 +54,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      *
      * @param callPeer the {@link CallPeer} whose traffic we will be taking care of.
      */
-    public RawUdpTransportManager(CallPeerJabberImpl callPeer)
-    {
+    public RawUdpTransportManager(CallPeerJabberImpl callPeer) {
         super(callPeer);
     }
 
@@ -64,8 +62,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * {@inheritDoc}
      */
     protected ExtensionElement createTransport(String media)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         MediaType mediaType = MediaType.parseString(media);
         return createTransport(mediaType, getStreamConnector(mediaType));
     }
@@ -76,10 +73,10 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> which uses the specified
      * <code>connector</code> or <code>channel</code>
      * @param connector the <code>StreamConnector</code> to be described within the transport element
+     *
      * @return a {@link RawUdpTransport} containing the RTP and RTCP candidates of the specified <code>connector</code>
      */
-    private RawUdpTransport createTransport(MediaType mediaType, StreamConnector connector)
-    {
+    private RawUdpTransport createTransport(MediaType mediaType, StreamConnector connector) {
         RawUdpTransport.Builder tpBuilder = RawUdpTransport.getBuilder();
         int generation = getCurrentGeneration();
 
@@ -112,8 +109,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
     /**
      * {@inheritDoc}
      */
-    protected ExtensionElement createTransportPacketExtension()
-    {
+    protected ExtensionElement createTransportPacketExtension() {
         return new RawUdpTransport();
     }
 
@@ -124,13 +120,14 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      *
      * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> which is to have its
      * <code>target</code> set to the returned <code>MediaStreamTarget</code>
+     *
      * @return the <code>MediaStreamTarget</code> to be used as the <code>target</code> of the
      * <code>MediaStream</code> with the specified <code>MediaType</code>
+     *
      * @see TransportManagerJabberImpl#getStreamTarget(MediaType)
      */
     @Override
-    public MediaStreamTarget getStreamTarget(MediaType mediaType)
-    {
+    public MediaStreamTarget getStreamTarget(MediaType mediaType) {
         ColibriConferenceIQ.Channel channel = getColibriChannel(mediaType, true /* local */);
         MediaStreamTarget streamTarget = null;
 
@@ -181,11 +178,11 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * the Jingle transport implemented by this <code>TransportManagerJabberImpl</code>.
      *
      * @return the XML namespace of the Jingle transport implemented by this <code>TransportManagerJabberImpl</code>
+     *
      * @see TransportManagerJabberImpl#getXmlNamespace()
      */
     @Override
-    public String getXmlNamespace()
-    {
+    public String getXmlNamespace() {
         return ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_RAW_UDP_0;
     }
 
@@ -196,11 +193,11 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      *
      * @param name the name of the content to be removed from the transport-related part of the session
      * represented by this <code>TransportManagerJabberImpl</code>
+     *
      * @see TransportManagerJabberImpl#removeContent(String)
      */
     @Override
-    public void removeContent(String name)
-    {
+    public void removeContent(String name) {
         if (local != null)
             removeContent(local, name);
         removeRemoteContent(name);
@@ -213,8 +210,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * @param name the name of the content to be removed from the remote counterpart of the negotiation
      * between the local and the remote peers
      */
-    private void removeRemoteContent(String name)
-    {
+    private void removeRemoteContent(String name) {
         for (Iterator<Iterable<JingleContent>> remoteIter = remotes.iterator(); remoteIter.hasNext(); ) {
             Iterable<JingleContent> remote = remoteIter.next();
 
@@ -233,8 +229,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      */
     protected ExtensionElement startCandidateHarvest(JingleContent theirContent,
             JingleContent ourContent, TransportInfoSender transportInfoSender, String media)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         return createTransportForStartCandidateHarvest(media);
     }
 
@@ -254,14 +249,14 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * wishes to utilize <code>transport-info</code>. Local candidate addresses sent by this
      * <code>TransportManagerJabberImpl</code> in <code>transport-info</code> are expected to not be
      * included in the result of {@link #wrapupCandidateHarvest()}.
+     *
      * @throws OperationFailedException if we fail to allocate a port number.
      * @see TransportManagerJabberImpl#startCandidateHarvest(List, List, TransportInfoSender)
      */
     @Override
     public void startCandidateHarvest(List<JingleContent> theirOffer,
             List<JingleContent> ourAnswer, TransportInfoSender transportInfoSender)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         this.local = ourAnswer;
         super.startCandidateHarvest(theirOffer, ourAnswer, transportInfoSender);
     }
@@ -273,13 +268,14 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      *
      * @param remote the collection of <code>JingleContent</code>s which represents the remote
      * counterpart of the negotiation between the local and the remote peer
+     *
      * @return <code>true</code> because <code>RawUdpTransportManager</code> does not perform connectivity checks
+     *
      * @see TransportManagerJabberImpl#startConnectivityEstablishment(Iterable)
      */
     @Override
     public boolean startConnectivityEstablishment(Iterable<JingleContent> remote)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         if ((remote != null) && !remotes.contains(remote)) {
             /*
              * The state of the session in Jingle is maintained by each peer and is modified by
@@ -297,15 +293,15 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
     }
 
     /**
-     * Simply returns the list of local candidates that we gathered during the harvest. This is a
-     * raw UDP transport manager so there's no real wrapping up to do.
+     * Simply returns the list of local candidates that we gathered during the harvest.
+     * This is a raw UDP transport manager so there's no real wrapping up to do.
      *
      * @return the list of local candidates that we gathered during the harvest
+     *
      * @see TransportManagerJabberImpl#wrapupCandidateHarvest()
      */
     @Override
-    public List<JingleContent> wrapupCandidateHarvest()
-    {
+    public List<JingleContent> wrapupCandidateHarvest() {
         return local;
     }
 
@@ -313,11 +309,11 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * Returns the extended type of the candidate selected if this transport manager is using ICE.
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return The extended type of the candidate selected if this transport manager is using ICE. Otherwise, returns null.
      */
     @Override
-    public String getICECandidateExtendedType(String streamName)
-    {
+    public String getICECandidateExtendedType(String streamName) {
         return null;
     }
 
@@ -327,8 +323,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * @return the current state of ICE processing.
      */
     @Override
-    public String getICEState()
-    {
+    public String getICEState() {
         return null;
     }
 
@@ -336,11 +331,11 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * Returns the ICE local host address.
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE local host address if this transport manager is using ICE. Otherwise, returns null.
      */
     @Override
-    public InetSocketAddress getICELocalHostAddress(String streamName)
-    {
+    public InetSocketAddress getICELocalHostAddress(String streamName) {
         return null;
     }
 
@@ -348,11 +343,11 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * Returns the ICE remote host address.
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE remote host address if this transport manager is using ICE. Otherwise, returns null.
      */
     @Override
-    public InetSocketAddress getICERemoteHostAddress(String streamName)
-    {
+    public InetSocketAddress getICERemoteHostAddress(String streamName) {
         return null;
     }
 
@@ -360,12 +355,12 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * Returns the ICE local reflexive address (server or peer reflexive).
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE local reflexive address. May be null if this transport manager is not using
      * ICE or if there is no reflexive address for the local candidate used.
      */
     @Override
-    public InetSocketAddress getICELocalReflexiveAddress(String streamName)
-    {
+    public InetSocketAddress getICELocalReflexiveAddress(String streamName) {
         return null;
     }
 
@@ -373,12 +368,12 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * Returns the ICE remote reflexive address (server or peer reflexive).
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE remote reflexive address. May be null if this transport manager is not using
      * ICE or if there is no reflexive address for the remote candidate used.
      */
     @Override
-    public InetSocketAddress getICERemoteReflexiveAddress(String streamName)
-    {
+    public InetSocketAddress getICERemoteReflexiveAddress(String streamName) {
         return null;
     }
 
@@ -386,12 +381,12 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * Returns the ICE local relayed address (server or peer relayed).
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE local relayed address. May be null if this transport manager is not using ICE
      * or if there is no relayed address for the local candidate used.
      */
     @Override
-    public InetSocketAddress getICELocalRelayedAddress(String streamName)
-    {
+    public InetSocketAddress getICELocalRelayedAddress(String streamName) {
         return null;
     }
 
@@ -399,12 +394,12 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * Returns the ICE remote relayed address (server or peer relayed).
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE remote relayed address. May be null if this transport manager is not using
      * ICE or if there is no relayed address for the remote candidate used.
      */
     @Override
-    public InetSocketAddress getICERemoteRelayedAddress(String streamName)
-    {
+    public InetSocketAddress getICERemoteRelayedAddress(String streamName) {
         return null;
     }
 
@@ -415,8 +410,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * or if the agent has nevers harvested.
      */
     @Override
-    public long getTotalHarvestingTime()
-    {
+    public long getTotalHarvestingTime() {
         return 0;
     }
 
@@ -424,12 +418,12 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * Returns the harvesting time (in ms) for the harvester given in parameter.
      *
      * @param harvesterName The class name if the harvester.
+     *
      * @return The harvesting time (in ms) for the harvester given in parameter. 0 if this harvester
      * does not exists, if the ICE agent is null, or if the agent has never harvested with this harvester.
      */
     @Override
-    public long getHarvestingTime(String harvesterName)
-    {
+    public long getHarvestingTime(String harvesterName) {
         return 0;
     }
 
@@ -439,8 +433,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * @return The number of harvesting for this agent.
      */
     @Override
-    public int getNbHarvesting()
-    {
+    public int getNbHarvesting() {
         return 0;
     }
 
@@ -448,11 +441,11 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * Returns the number of harvesting time for the harvester given in parameter.
      *
      * @param harvesterName The class name if the harvester.
+     *
      * @return The number of harvesting time for the harvester given in parameter.
      */
     @Override
-    public int getNbHarvesting(String harvesterName)
-    {
+    public int getNbHarvesting(String harvesterName) {
         return 0;
     }
 
@@ -460,8 +453,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * {@inheritDoc}
      */
     @Override
-    public void setRtcpmux(boolean rtcpmux)
-    {
+    public void setRtcpmux(boolean rtcpmux) {
         if (rtcpmux) {
             throw new IllegalArgumentException("rtcp mux not supported by " + getClass().getSimpleName());
         }

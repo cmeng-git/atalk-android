@@ -22,6 +22,8 @@ import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.android.gui.settings.widget.ConfigWidgetUtil;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
+import org.atalk.impl.neomedia.codec.video.AndroidDecoder;
+import org.atalk.impl.neomedia.codec.video.AndroidEncoder;
 import org.atalk.impl.neomedia.device.AudioSystem;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.impl.neomedia.device.DeviceSystem;
@@ -45,11 +47,11 @@ public class ExpertSettingsFragment extends BasePreferenceFragment
     private static final String P_KEY_AUDIO_DENOISE = "pref.key.audio.denoise";
 
     // Hardware encoding/decoding (>=API16)
-    private static final String P_KEY_VIDEO_HW_ENCODE = "neomedia.android.hw_encode";
-    private static final String P_KEY_VIDEO_HW_DECODE = "neomedia.android.hw_decode";
+    private static final String P_KEY_VIDEO_HW_ENCODE = AndroidEncoder.HW_ENCODING_ENABLE_PROPERTY; // "neomedia.android.hw_encode";
+    private static final String P_KEY_VIDEO_HW_DECODE = AndroidDecoder.HW_DECODING_ENABLE_PROPERTY; // "neomedia.android.hw_decode";
     // Direct surface encoding(hw encoding required and API18)
-    private static final String P_KEY_VIDEO_ENC_DIRECT_SURFACE = "neomedia.android.surface_encode";
-    private static final String P_KEY_VIDEO_DEC_DIRECT_SURFACE = "neomedia.android.surface_decode";
+    private static final String P_KEY_VIDEO_ENC_DIRECT_SURFACE = AndroidEncoder.DIRECT_SURFACE_ENCODE_PROPERTY; // "neomedia.android.surface_encode";
+    private static final String P_KEY_VIDEO_DEC_DIRECT_SURFACE = AndroidDecoder.DIRECT_SURFACE_DECODE_PROPERTY; // "neomedia.android.surface_decode";
 
     // Video advanced settings
     private static final String P_KEY_VIDEO_LIMIT_FPS = "pref.key.video.limit_fps";
@@ -294,6 +296,11 @@ public class ExpertSettingsFragment extends BasePreferenceFragment
                 }
                 mDeviceConfig.setVideoBitrate(bitrate);
                 ((EditTextPreference) findPreference(P_KEY_VIDEO_BITRATE)).setText(Integer.toString(bitrate));
+                break;
+            case P_KEY_VIDEO_HW_DECODE:
+            case P_KEY_VIDEO_HW_ENCODE:
+                // must get aTalk to restart onResume to make HW codec change effective
+                aTalk.setPrefChange(aTalk.HW_Codec_Change);
                 break;
         }
     }

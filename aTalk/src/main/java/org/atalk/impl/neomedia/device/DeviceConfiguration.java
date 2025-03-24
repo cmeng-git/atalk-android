@@ -168,18 +168,18 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      * The currently supported resolutions we will show as option for user selection.
      */
     public static final Dimension[] SUPPORTED_RESOLUTIONS = new Dimension[]{
-            // new Dimension(160, 120), // QQVGA
+            // new Dimension(160, 120), // 4:3 QQVGA
             // new Dimension(176, 144), // QCIF
-            // new Dimension(320, 200), // QVGA
-            new Dimension(320, 240),    // QVGA
+            new Dimension(320, 240),    // 4:3 QVGA
             // new Dimension(352, 288), // CIF
-            new Dimension(640, 480),    // VGA
+            new Dimension(640, 480),    // 4:3 VGA
             new Dimension(720, 480),    // DV NTSC
+            // new Dimension(768, 480),    // 16:10 Wide VGA
             // new Dimension(800, 450), // < QHD - not support by camera preview
             new Dimension(960, 720),    // Panasonic DVCPRO100
-            new Dimension(1280, 720),   // HDTV
+            new Dimension(1280, 720),   // 16:9 HDTV
             new Dimension(1440, 1080),  // HDV 1080
-            new Dimension(1920, 1080)   // HD
+            new Dimension(1920, 1080)   // 16:9 HD
     };
 
     /**

@@ -6,8 +6,15 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="4.2.1 (02/19/2025)" versioncode="402010">
+    <release version="4.2.2 (03/24/2025)" versioncode="402020">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Force aTalk to restart if user made changes to android HW Codec Expert settings; for them to be active</change>
+        <change>ZidFile length must not be zero if exist, else ZidFile.open will failed</change>
+        <change>Ensure android encoder inputSurface for remote video streaming is init only once, else video streaming will fail</change>
+        <change>Video resolution setting will use the closest match camera capability if exact match to user selected value is not available</change>
+    </release>
+
+    <release version="4.2.1 (02/19/2025)" versioncode="402010">
         <change>BaseActivity#configureToolBar must handle and enable custom actionBar setup; else ShareActivity crashes</change>
         <change>Update German and Russian string.xml files</change>
         <change>Remove unused classes/files</change>

@@ -5,19 +5,6 @@
  */
 package org.atalk.impl.configuration;
 
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.impl.configuration.xml.XMLConfigurationStore;
-import org.atalk.service.configuration.ConfigPropertyVetoException;
-import org.atalk.service.configuration.ConfigVetoableChangeListener;
-import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.fileaccess.FailSafeTransaction;
-import org.atalk.service.fileaccess.FileAccessService;
-import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.util.OSUtils;
-import org.atalk.util.PasswordUtil;
-import org.atalk.util.xml.XMLException;
-import org.jivesoftware.smack.util.StringUtils;
-
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,6 +23,19 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
+import org.atalk.impl.configuration.xml.XMLConfigurationStore;
+import org.atalk.impl.timberlog.TimberLog;
+import org.atalk.service.configuration.ConfigPropertyVetoException;
+import org.atalk.service.configuration.ConfigVetoableChangeListener;
+import org.atalk.service.configuration.ConfigurationService;
+import org.atalk.service.fileaccess.FailSafeTransaction;
+import org.atalk.service.fileaccess.FileAccessService;
+import org.atalk.service.libjitsi.LibJitsi;
+import org.atalk.util.OSUtils;
+import org.atalk.util.PasswordUtil;
+import org.atalk.util.xml.XMLException;
+import org.jivesoftware.smack.util.StringUtils;
+
 import timber.log.Timber;
 
 /**
@@ -50,8 +50,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ConfigurationServiceImpl implements ConfigurationService
-{
+public class ConfigurationServiceImpl implements ConfigurationService {
     /**
      * The name of the <code>ConfigurationStore</code> class to be used as the default when no
      * specific <code>ConfigurationStore</code> class is determined as necessary.
@@ -132,8 +131,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      */
     private ConfigurationStore store;
 
-    public ConfigurationServiceImpl()
-    {
+    public ConfigurationServiceImpl() {
         /*
          * XXX We explicitly delay the query for the FileAccessService implementation because
          * FileAccessServiceImpl looks for properties set by methods of ConfigurationServiceImpl
@@ -159,12 +157,12 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param propertyName the name of the property
      * @param property the object that we'd like to be come the new value of the property.
+     *
      * @throws ConfigPropertyVetoException in case someone is not happy with the change.
      */
     @Override
     public void setProperty(String propertyName, Object property)
-            throws ConfigPropertyVetoException
-    {
+            throws ConfigPropertyVetoException {
         setProperty(propertyName, property, false);
     }
 
@@ -180,12 +178,12 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param isSystem specifies whether or not the property being is a System property and should be
      * resolved against the system property set. If the property has previously been
      * specified as system then this value is internally forced to true.
+     *
      * @throws ConfigPropertyVetoException in case someone is not happy with the change.
      */
     @Override
     public void setProperty(String propertyName, Object property, boolean isSystem)
-            throws ConfigPropertyVetoException
-    {
+            throws ConfigPropertyVetoException {
         Object oldValue = getProperty(propertyName);
 
         // first check whether the change is ok with everyone
@@ -215,8 +213,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      */
     @Override
     public void setProperties(Map<String, Object> properties)
-            throws ConfigPropertyVetoException
-    {
+            throws ConfigPropertyVetoException {
         // first check whether the changes are ok with everyone
         Map<String, Object> oldValues = new HashMap<>(properties.size());
         for (Map.Entry<String, Object> property : properties.entrySet()) {
@@ -255,8 +252,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param isSystem <code>true</code> if the property with the specified name is to be set as a system
      * property; <code>false</code>, otherwise
      */
-    private void doSetProperty(String propertyName, Object property, boolean isSystem)
-    {
+    private void doSetProperty(String propertyName, Object property, boolean isSystem) {
         // once set system, a property remains system even if the user specified something else
         if (isSystemProperty(propertyName))
             isSystem = true;
@@ -294,8 +290,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param propertyName the name of the property to change.
      */
     @Override
-    public int removeProperty(String propertyName)
-    {
+    public int removeProperty(String propertyName) {
         List<String> childPropertyNames = getPropertyNamesByPrefix(propertyName, false);
         int size = childPropertyNames.size() + 1;
         // remove all child properties
@@ -324,8 +319,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param propertyName the name of the property to change.
      */
-    private void removePropertyInternal(String propertyName)
-    {
+    private void removePropertyInternal(String propertyName) {
         Object oldValue = getProperty(propertyName);
         // first check whether the change is ok with everyone
         if (changeEventDispatcher.hasVetoableChangeListeners(propertyName))
@@ -343,11 +337,11 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * Returns the value of the property with the specified name or null if no such property exists.
      *
      * @param propertyName the name of the property that is being queried.
+     *
      * @return the value of the property with the specified name.
      */
     @Override
-    public Object getProperty(String propertyName)
-    {
+    public Object getProperty(String propertyName) {
         Object result = immutableDefaultProperties.get(propertyName);
         if (result != null)
             return result;
@@ -369,8 +363,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @return a <code>java.util.List</code>containing all property names
      */
     @Override
-    public List<String> getAllPropertyNames(String name)
-    {
+    public List<String> getAllPropertyNames(String name) {
         List<String> resultKeySet = new LinkedList<>();
         Collections.addAll(resultKeySet, store.getPropertyNames(name));
         return resultKeySet;
@@ -402,12 +395,12 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param exactPrefixMatch a boolean indicating whether the returned property names should all have
      * a prefix that is an exact match of the the <code>prefix</code> param or whether properties with
      * prefixes that contain it but are longer than it are also accepted.
+     *
      * @return a <code>java.util.List</code>containing all property name String-s matching the
      * specified conditions.
      */
     @Override
-    public List<String> getPropertyNamesByPrefix(String prefix, boolean exactPrefixMatch)
-    {
+    public List<String> getPropertyNamesByPrefix(String prefix, boolean exactPrefixMatch) {
         HashSet<String> resultKeySet = new HashSet<>();
 
         // first fill in the names from the immutable default property set
@@ -445,11 +438,11 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * a prefix that is an exact match of the the <code>prefix</code> param or whether properties with
      * prefixes that contain it but are longer than it are also accepted.
      * @param names the list of names that we'd like to search.
+     *
      * @return a reference to the updated result set.
      */
     private Set<String> getPropertyNamesByPrefix(String prefix, boolean exactPrefixMatch,
-            String[] names, Set<String> resultSet)
-    {
+            String[] names, Set<String> resultSet) {
         for (String key : names) {
             // cmeng - A valid Property item must have a "." with suffix propertyName string
             int ix = key.lastIndexOf('.');
@@ -484,12 +477,12 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * an empty <code>List</code>. Thus, if the <code>suffix</code> argument contains a dot, nothing will be found.
      *
      * @param suffix the suffix for the property names to be returned
+     *
      * @return a <code>List</code> of <code>String</code>s containing the property names which contain the
      * specified <code>suffix</code>
      */
     @Override
-    public List<String> getPropertyNamesBySuffix(String suffix)
-    {
+    public List<String> getPropertyNamesBySuffix(String suffix) {
         List<String> resultKeySet = new LinkedList<>();
 
         for (String key : store.getPropertyNames(suffix)) {
@@ -507,8 +500,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param listener the PropertyChangeListener to be added
      */
     @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener)
-    {
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
         changeEventDispatcher.addPropertyChangeListener(listener);
     }
 
@@ -518,8 +510,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param listener the PropertyChangeListener to be removed
      */
     @Override
-    public void removePropertyChangeListener(PropertyChangeListener listener)
-    {
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
         changeEventDispatcher.removePropertyChangeListener(listener);
     }
 
@@ -530,8 +521,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param listener the PropertyChangeListener to be added
      */
     @Override
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener)
-    {
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         changeEventDispatcher.addPropertyChangeListener(propertyName, listener);
     }
 
@@ -542,8 +532,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param listener the PropertyChangeListener to be removed
      */
     @Override
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener)
-    {
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         changeEventDispatcher.removePropertyChangeListener(propertyName, listener);
     }
 
@@ -553,8 +542,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param listener the VetoableChangeListener to be added
      */
     @Override
-    public void addVetoableChangeListener(ConfigVetoableChangeListener listener)
-    {
+    public void addVetoableChangeListener(ConfigVetoableChangeListener listener) {
         changeEventDispatcher.addVetoableChangeListener(listener);
     }
 
@@ -564,8 +552,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param listener the VetoableChangeListener to be removed
      */
     @Override
-    public void removeVetoableChangeListener(ConfigVetoableChangeListener listener)
-    {
+    public void removeVetoableChangeListener(ConfigVetoableChangeListener listener) {
         changeEventDispatcher.removeVetoableChangeListener(listener);
     }
 
@@ -576,8 +563,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param listener the VetoableChangeListener to be added
      */
     @Override
-    public void addVetoableChangeListener(String propertyName, ConfigVetoableChangeListener listener)
-    {
+    public void addVetoableChangeListener(String propertyName, ConfigVetoableChangeListener listener) {
         changeEventDispatcher.addVetoableChangeListener(propertyName, listener);
     }
 
@@ -588,8 +574,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param listener the VetoableChangeListener to be removed
      */
     @Override
-    public void removeVetoableChangeListener(String propertyName, ConfigVetoableChangeListener listener)
-    {
+    public void removeVetoableChangeListener(String propertyName, ConfigVetoableChangeListener listener) {
         changeEventDispatcher.removeVetoableChangeListener(propertyName, listener);
     }
 
@@ -598,8 +583,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      */
     @Override
     public void reloadConfiguration()
-            throws IOException
-    {
+            throws IOException {
         this.configurationFile = null;
         File file = getConfigurationFile();
         if (file != null) {
@@ -629,8 +613,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      */
     @Override
     public synchronized void storeConfiguration()
-            throws IOException
-    {
+            throws IOException {
         storeConfiguration(getConfigurationFile());
     }
 
@@ -638,11 +621,11 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * Stores local properties in the specified configuration file.
      *
      * @param file a reference to the configuration file where properties should be stored.
+     *
      * @throws IOException if there was a problem writing to the specified file.
      */
     private void storeConfiguration(File file)
-            throws IOException
-    {
+            throws IOException {
         /*
          * If the configuration file is forcibly considered read-only, do not write it.
          */
@@ -689,8 +672,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @return the name of the configuration file currently used.
      */
     @Override
-    public String getConfigurationFilename()
-    {
+    public String getConfigurationFilename() {
         try {
             File file = getConfigurationFile();
             if (file != null)
@@ -702,8 +684,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
     }
 
     @Override
-    public boolean isBlindTrustBeforeVerification()
-    {
+    public boolean isBlindTrustBeforeVerification() {
         return getBoolean(PNAME_OMEMO_KEY_BLIND_TRUST, true);
     }
 
@@ -714,8 +695,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @return the configuration File currently used by the implementation.
      */
     private File getConfigurationFile()
-            throws IOException
-    {
+            throws IOException {
         if (this.configurationFile == null) {
             createConfigurationFile();
             /*
@@ -734,8 +714,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * {@link #configurationFile} and {@link #store} fields of this instance.
      */
     private void createConfigurationFile()
-            throws IOException
-    {
+            throws IOException {
         /*
          * Choose the format of the configuration file so with the slow and fast XML format when necessary.
          */
@@ -842,16 +821,14 @@ public class ConfigurationServiceImpl implements ConfigurationService
     }
 
     /**
-     * Returns the location of the directory where SIP Communicator is to store user specific data
-     * such as configuration files.
-     * Message and call history as well as is bundle repository are store SQL Database.
+     * Returns the location of the directory where SIP Communicator is to store user specific data such as
+     * configuration files. Message and call history as well as is bundle repository are store SQL Database.
      *
      * @return the location of the directory where SIP Communicator is to store user specific data
      * such as configuration files, message and call history as well as is bundle repository.
      */
     @Override
-    public String getScHomeDirLocation()
-    {
+    public String getScHomeDirLocation() {
         // first let's check whether we already have the name of the directory set as a configuration property
         String scHomeDirLocation = null;
         if (store != null)
@@ -882,8 +859,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * such as configuration files, message and call history as well as is bundle repository.
      */
     @Override
-    public String getScHomeDirName()
-    {
+    public String getScHomeDirName() {
         // first let's check whether we already have the name of the directory set as a configuration property
         String scHomeDirName = null;
 
@@ -922,11 +898,11 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * not be taken into account if the the configuration file name is forced through a system property.
      * @param create <code>true</code> to create the configuration file with the determined file name if it
      * does not exist; <code>false</code> to only figure out the file name of the configuration file without creating it
+     *
      * @return the configuration file currently used by the implementation.
      */
     private File getConfigurationFile(String extension, boolean create)
-            throws IOException
-    {
+            throws IOException {
         // see whether we have a user specified name for the conf file
         String pFileName = getSystemProperty(PNAME_CONFIGURATION_FILE_NAME);
         if (pFileName == null)
@@ -989,8 +965,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * specific <code>ConfigurationStore</code> <code>Class</code> is determined as necessary
      */
     @SuppressWarnings("unchecked")
-    private static Class<? extends ConfigurationStore> getDefaultConfigurationStoreClass()
-    {
+    private static Class<? extends ConfigurationStore> getDefaultConfigurationStoreClass() {
         Class<? extends ConfigurationStore> defaultConfigurationStoreClass = null;
 
         if (DEFAULT_CONFIGURATION_STORE_CLASS_NAME != null) {
@@ -1008,8 +983,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         return defaultConfigurationStoreClass;
     }
 
-    private static void copy(ConfigurationStore src, ConfigurationStore dest)
-    {
+    private static void copy(ConfigurationStore src, ConfigurationStore dest) {
         for (String name : src.getPropertyNames(""))
             if (src.isSystemProperty(name))
                 dest.setSystemProperty(name);
@@ -1022,11 +996,11 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param inputStream the {@code InputStream} the contents of which is to be output in the specified {@code File}
      * @param outputFile the {@code File} to write the contents of the specified {@code InputStream} into
+     *
      * @throws IOException IO Exception
      */
     private static void copy(InputStream inputStream, File outputFile)
-            throws IOException
-    {
+            throws IOException {
 
         try (OutputStream outputStream = new FileOutputStream(outputFile)) {
             byte[] bytes = new byte[4 * 1024];
@@ -1045,11 +1019,11 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * getString() methods which would automatically determine whether a property is system or not.
      *
      * @param propertyName the name of the property whose value we need.
+     *
      * @return the value of the property with name propertyName or null if the value had length 0
      * or only contained spaces tabs or new lines.
      */
-    private static String getSystemProperty(String propertyName)
-    {
+    private static String getSystemProperty(String propertyName) {
         String retval = System.getProperty(propertyName);
         return StringUtils.returnIfNotEmptyTrimmed(retval);
     }
@@ -1060,13 +1034,13 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * the returned property string had zero length or contained whitespaces only.
      *
      * @param propertyName the name of the property that is being queried.
+     *
      * @return the result of calling the property's toString method and null in case there was no
      * value mapped against the specified <code>propertyName</code>, or the returned string had zero
      * length or contained whitespaces only.
      */
     @Override
-    public String getString(String propertyName)
-    {
+    public String getString(String propertyName) {
         Object propValue = getProperty(propertyName);
         if (propValue == null)
             return null;
@@ -1082,13 +1056,13 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param propertyName the name of the property that is being queried.
      * @param defaultValue the value to be returned if the specified property name is not associated with a value
      * in this {@code ConfigurationService}
+     *
      * @return the result of calling the property's toString method and {@code defaultValue}
      * in case there was no value mapped against the specified <code>propertyName</code>, or the
      * returned string had zero length or contained whitespaces only.
      */
     @Override
-    public String getString(String propertyName, String defaultValue)
-    {
+    public String getString(String propertyName, String defaultValue) {
         String value = getString(propertyName);
         return StringUtils.isNullOrEmpty(value) ? defaultValue : value;
     }
@@ -1097,8 +1071,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * Implements ConfigurationService#getBoolean(String, boolean).
      */
     @Override
-    public boolean getBoolean(String propertyName, boolean defaultValue)
-    {
+    public boolean getBoolean(String propertyName, boolean defaultValue) {
         String value = getString(propertyName);
         return StringUtils.isNullOrEmpty(value) ? defaultValue : Boolean.parseBoolean(value);
     }
@@ -1109,8 +1082,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @return a (cached) reference to a <code>FileAccessService</code> implementation
      */
-    private synchronized FileAccessService getFileAccessService()
-    {
+    private synchronized FileAccessService getFileAccessService() {
         if ((faService == null) && !faServiceIsAssigned) {
             faService = LibJitsi.getFileAccessService();
             faServiceIsAssigned = true;
@@ -1130,14 +1102,14 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param defaultValue the value to be returned if parsing the value of the specified property name as a
      * signed decimal integer fails or there is no value associated with the specified
      * property name in this <code>ConfigurationService</code>
+     *
      * @return the value of the property with the specified name in this
      * <code>ConfigurationService</code> as a signed decimal integer; <code>defaultValue</code> if
      * parsing the value of the specified property name fails or no value is associated in this
      * <code>ConfigurationService</code> with the specified property name
      */
     @Override
-    public int getInt(String propertyName, int defaultValue)
-    {
+    public int getInt(String propertyName, int defaultValue) {
         String stringValue = getString(propertyName);
         int intValue = defaultValue;
 
@@ -1156,8 +1128,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * {@inheritDoc}
      */
     @Override
-    public double getDouble(String propertyName, double defaultValue)
-    {
+    public double getDouble(String propertyName, double defaultValue) {
         String stringValue = getString(propertyName);
         double doubleValue = defaultValue;
 
@@ -1185,14 +1156,14 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * signed decimal long integer fails or there is no value associated with the specified
      * property name in this
      * <code>ConfigurationService</code>
+     *
      * @return the value of the property with the specified name in this
      * <code>ConfigurationService</code> as a signed decimal long integer;
      * <code>defaultValue</code> if parsing the value of the specified property name fails or no value
      * is associated in this <code>ConfigurationService</code> with the specified property name
      */
     @Override
-    public long getLong(String propertyName, long defaultValue)
-    {
+    public long getLong(String propertyName, long defaultValue) {
         String stringValue = getString(propertyName);
         long longValue = defaultValue;
 
@@ -1212,12 +1183,12 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * previously declared as System
      *
      * @param propertyName the name of the property to verify
+     *
      * @return true if someone at some point specified that property to be system. (This could
      * have been either through a call to setProperty(string, true)) or by setting the system
      * attribute in the xml conf file to true.
      */
-    private boolean isSystemProperty(String propertyName)
-    {
+    private boolean isSystemProperty(String propertyName) {
         return store.isSystemProperty(propertyName);
     }
 
@@ -1225,8 +1196,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * Deletes the configuration file currently used by this implementation.
      */
     @Override
-    public void purgeStoredConfiguration()
-    {
+    public void purgeStoredConfiguration() {
         if (configurationFile != null) {
             configurationFile.delete();
             configurationFile = null;
@@ -1241,8 +1211,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * Changed that system properties are printed in INFO level and this way they
      * are included in the beginning of every users log file.
      */
-    private void debugPrintSystemProperties()
-    {
+    private void debugPrintSystemProperties() {
         try {
             // Password system properties
             Pattern exclusion = null;
@@ -1276,8 +1245,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * {@inheritDoc}
      */
     @Override
-    public void logConfigurationProperties(String excludePattern)
-    {
+    public void logConfigurationProperties(String excludePattern) {
         if (!TimberLog.isTraceEnable)
             return;
 
@@ -1306,8 +1274,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * method then parses these files and loads their contents as system properties. All such
      * files have to be in a location that's in the classpath.
      */
-    private void preloadSystemPropertyFiles()
-    {
+    private void preloadSystemPropertyFiles() {
         String propFilesListStr
                 = StringUtils.returnIfNotEmptyTrimmed(System.getProperty(SYS_PROPS_FILE_NAME_PROPERTY));
         if (propFilesListStr == null)
@@ -1341,11 +1308,11 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * implementation must use.
      *
      * @param clazz the {@link ConfigurationStore} that this configuration service instance instance has to use.
+     *
      * @throws IOException if loading properties from the specified store fails.
      */
     private void setConfigurationStore(Class<? extends ConfigurationStore> clazz)
-            throws IOException
-    {
+            throws IOException {
         String extension = null;
 
         if (PropertyConfigurationStore.class.isAssignableFrom(clazz))
@@ -1373,8 +1340,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * Loads the default property maps from the Jitsi installation directory then overrides them
      * with the default override values.
      */
-    private void loadDefaultProperties()
-    {
+    private void loadDefaultProperties() {
         loadDefaultProperties(DEFAULT_PROPS_FILE_NAME);
         loadDefaultProperties(DEFAULT_OVERRIDES_PROPS_FILE_NAME);
     }
@@ -1382,8 +1348,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
     /**
      * Tests whether the application has been launched using Java WebStart
      */
-    private boolean isLaunchedByWebStart()
-    {
+    private boolean isLaunchedByWebStart() {
         boolean hasJNLP;
         try {
             Class.forName("javax.jnlp.ServiceManager");
@@ -1404,8 +1369,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param fileName the name of the file we need to load.
      */
-    private void loadDefaultProperties(String fileName)
-    {
+    private void loadDefaultProperties(String fileName) {
         try {
             Properties fileProps = new Properties();
 

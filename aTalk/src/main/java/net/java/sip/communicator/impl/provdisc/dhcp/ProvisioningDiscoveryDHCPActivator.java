@@ -86,7 +86,7 @@ public class ProvisioningDiscoveryDHCPActivator implements BundleActivator {
      */
     public static NetworkAddressManagerService getNetworkAddressManagerService() {
         if (networkAddressManagerService == null) {
-            ServiceReference confReference = bundleContext.getServiceReference(NetworkAddressManagerService.class.getName());
+            ServiceReference<?> confReference = bundleContext.getServiceReference(NetworkAddressManagerService.class.getName());
             networkAddressManagerService = (NetworkAddressManagerService) bundleContext.getService(confReference);
         }
         return networkAddressManagerService;

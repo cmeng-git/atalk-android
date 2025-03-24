@@ -96,8 +96,8 @@ public class ProtocolProviderActivator implements BundleActivator {
      */
     public static ResourceManagementService getResourceService() {
         if (resourceService == null) {
-            resourceService = (ResourceManagementService) bundleContext.getService(bundleContext
-                    .getServiceReference(ResourceManagementService.class.getName()));
+            resourceService = (ResourceManagementService) bundleContext.getService(
+                    bundleContext.getServiceReference(ResourceManagementService.class.getName()));
         }
         return resourceService;
     }
@@ -111,8 +111,8 @@ public class ProtocolProviderActivator implements BundleActivator {
      */
     public static CalendarService getCalendarService() {
         if (calendarService == null) {
-            ServiceReference<?> serviceReference = bundleContext
-                    .getServiceReference(CalendarService.class.getName());
+            ServiceReference<?> serviceReference
+                    = bundleContext.getServiceReference(CalendarService.class.getName());
             if (serviceReference == null)
                 return null;
             calendarService = (CalendarService) bundleContext.getService(serviceReference);
@@ -203,7 +203,7 @@ public class ProtocolProviderActivator implements BundleActivator {
             Timber.e("ProtocolProviderActivator: %s", e.getMessage());
         }
 
-        List<ProtocolProviderService> providersList = new ArrayList<ProtocolProviderService>();
+        List<ProtocolProviderService> providersList = new ArrayList<>();
         if (serRefs != null) {
             for (ServiceReference<?> serRef : serRefs) {
                 ProtocolProviderService pp = (ProtocolProviderService) bundleContext.getService(serRef);

@@ -221,7 +221,7 @@ Other contributors:
 
 ## Feedback and Contributions
 If you can't find your language in UI and would like to help then translate the app on https://toolate.othing.xyz/projects/atalk/.
-Or copy the [strings.xml](./aTalk/src/main/res/values/strings.xml) to `values-LOCALE` where the `LOCALE` is language-rCOUNTRY e.g. `pt-rBR`. 
+Or copy the [strings.xml](./aTalk/src/main/res/values/strings.xml) to `values-LOCALE` where the `LOCALE` is language-COUNTRY e.g. `pt-rBR`. 
 Then create a pull request or forward the file to the developer.
 
 If you have found bug, wish for new feature, or have other questions, [file an issue](https://github.com/cmeng-git/atalk-android/issues).

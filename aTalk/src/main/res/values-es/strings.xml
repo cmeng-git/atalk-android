@@ -1395,9 +1395,10 @@
 
     <!-- Camera used -->
     <string name="settings_camera">Cámara</string>
-    <string name="settings_no_camera">No se ha encontrado ningún dispositivo con cámara</string>
+    <string name="settings_no_camera">No se encontró ningún dispositivo de cámara compatible</string>
     <string name="settings_use_back_camera">Usar la cámara trasera</string>
     <string name="settings_use_front_camera">Usar la cámara frontal</string>
+    <string name="settings_use_match_camera_resolution">Utilice la resolución de cámara más parecida: %1$s</string>
 
     <!-- Video codecs -->
     <string name="settings_direct_surface_decode">Usar decodificación directa de superficie</string>

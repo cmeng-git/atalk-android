@@ -6,17 +6,17 @@
  */
 package net.java.sip.communicator.util.launchutils;
 
-import net.java.sip.communicator.util.ScStdOut;
-
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.service.configuration.ConfigurationService;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
+
+import net.java.sip.communicator.util.ScStdOut;
+
+import org.atalk.impl.timberlog.TimberLog;
+import org.atalk.service.configuration.ConfigurationService;
 
 import timber.log.Timber;
 
@@ -28,8 +28,7 @@ import timber.log.Timber;
  * @author Emil Ivov <emcho at sip-communicator.org>
  * @author Eng Chong Meng
  */
-public class LaunchArgHandler
-{
+public class LaunchArgHandler {
     /**
      * Our class logger.
      */
@@ -125,8 +124,7 @@ public class LaunchArgHandler
     /**
      * Creates the sole instance of this class;
      */
-    private LaunchArgHandler()
-    {
+    private LaunchArgHandler() {
         InputStream versionPropertiesStream = getClass().getResourceAsStream(VERSION_PROPERTIES);
         boolean versionPropertiesAreLoaded = false;
         if (versionPropertiesStream != null) {
@@ -142,7 +140,7 @@ public class LaunchArgHandler
             }
         }
         if (!versionPropertiesAreLoaded) {
-            Timber.log(TimberLog.FINER,"Couldn't open version.properties");
+            Timber.log(TimberLog.FINER, "Couldn't open version.properties");
         }
 
         // Start url handler for Mac OS X.
@@ -161,8 +159,7 @@ public class LaunchArgHandler
      *
      * @return the singleton instance of the LauncherArgHandler.
      */
-    public static LaunchArgHandler getInstance()
-    {
+    public static LaunchArgHandler getInstance() {
         if (argHandler == null) {
             argHandler = new LaunchArgHandler();
         }
@@ -174,11 +171,11 @@ public class LaunchArgHandler
      * Does the actual argument handling.
      *
      * @param args the arguments the way we have received them from the main() method.
+     *
      * @return one of the ACTION_XXX fields defined here, intended to indicate
      * to the caller they action that they are supposed as a result of the arg handling.
      */
-    public int handleArgs(String[] args)
-    {
+    public int handleArgs(String[] args) {
         int returnAction = ACTION_CONTINUE;
 
         for (int i = 0; i < args.length; i++) {
@@ -258,8 +255,7 @@ public class LaunchArgHandler
     /**
      * Forces use of IPv6 addresses where possible. (This should one day become a default mode of operation.)
      */
-    private void handleIPv6Enforcement()
-    {
+    private void handleIPv6Enforcement() {
         System.setProperty("java.net.preferIPv4Stack", "false");
         System.setProperty("java.net.preferIPv6Addresses", "true");
     }
@@ -267,8 +263,7 @@ public class LaunchArgHandler
     /**
      * Forces non-support for IPv6 and use of IPv4 only.
      */
-    private void handleIPv4Enforcement()
-    {
+    private void handleIPv4Enforcement() {
         System.setProperty("java.net.preferIPv4Stack", "true");
         System.setProperty("java.net.preferIPv6Addresses", "false");
     }
@@ -278,8 +273,7 @@ public class LaunchArgHandler
      *
      * @param uri the uri that we'd like to pass to
      */
-    private void handleUri(String uri)
-    {
+    private void handleUri(String uri) {
         Timber.log(TimberLog.FINER, "Handling uri %s", uri);
         argDelegator.handleUri(uri);
     }
@@ -289,8 +283,7 @@ public class LaunchArgHandler
      *
      * @param arg the debug arg which we are not really using in this method.
      */
-    private void handleDebugArg(String arg)
-    {
+    private void handleDebugArg(String arg) {
         //first enable standard out printing
         ScStdOut.setStdOutPrintingEnabled(true);
 
@@ -315,11 +308,11 @@ public class LaunchArgHandler
      * Instructs SIP Communicator change the location of its home dir.
      *
      * @param configArg the arg containing the location of the new dir.
+     *
      * @return either ACTION_ERROR or ACTION_CONTINUE depending on whether or
      * not parsing the option went fine.
      */
-    private int handleConfigArg(String configArg)
-    {
+    private int handleConfigArg(String configArg) {
         if (configArg.startsWith("--config=")) {
             configArg = configArg.substring("--config=".length());
 
@@ -349,16 +342,15 @@ public class LaunchArgHandler
      * version.properties file which is created by ant during the build process.
      * If this file does not exist the method would print a default name and version string.
      */
-    private void handleVersionArg()
-    {
+    private void handleVersionArg() {
         String name = getApplicationName();
         String version = getVersion();
 
-        if (name == null || name.trim().length() == 0) {
+        if (name == null || name.trim().isEmpty()) {
             name = "atalk";
         }
 
-        if (version == null || version.trim().length() == 0) {
+        if (version == null || version.trim().isEmpty()) {
             version = "build.by.SVN";
         }
         System.out.println(name + " " + version);
@@ -370,8 +362,7 @@ public class LaunchArgHandler
      *
      * @return a String containing the version of the SC instance we are currently running.
      */
-    private String getVersion()
-    {
+    private String getVersion() {
         String version = versionProperties.getProperty(PNAME_VERSION);
         return version == null ? "build.by.SVN" : version;
     }
@@ -381,8 +372,7 @@ public class LaunchArgHandler
      *
      * @return the name of the application (i.e. SIP Communicator until we change our name some day.)
      */
-    private String getApplicationName()
-    {
+    private String getApplicationName() {
         String name = versionProperties.getProperty(PNAME_APPLICATION_NAME);
         return name == null ? "atalk" : name;
     }
@@ -392,8 +382,7 @@ public class LaunchArgHandler
      *
      * @return the package name of the application.
      */
-    private String getPackageName()
-    {
+    private String getPackageName() {
         String name = versionProperties.getProperty(PNAME_PACKAGE_NAME);
 
         return name == null ? "atalk" : name;
@@ -404,8 +393,7 @@ public class LaunchArgHandler
      *
      * @param arg the unknown argument we need to print
      */
-    public void handleUnknownArg(String arg)
-    {
+    public void handleUnknownArg(String arg) {
         System.out.println("Unknown argument: " + arg);
         handleHelpArg();
     }
@@ -414,8 +402,7 @@ public class LaunchArgHandler
      * Prints a help message containing usage instructions and descriptions of
      * all options currently supported by Jitsi.
      */
-    public void handleHelpArg()
-    {
+    public void handleHelpArg() {
         handleVersionArg();
 
         System.out.println("Usage: " + getPackageName() + " [OPTIONS] [uri-to-call]");
@@ -437,8 +424,7 @@ public class LaunchArgHandler
      * @return an error code that could help identify an error when
      * <code>handleArgs</code> returns ACTION_ERROR or 0 if everything went fine.
      */
-    public int getErrorCode()
-    {
+    public int getErrorCode() {
         return errorCode;
     }
 
@@ -449,8 +435,7 @@ public class LaunchArgHandler
      * @param delegationPeer the <code>delegationPeer</code> that should handle URIs
      * or <code>null</code> if we'd like to unset a previously set peer.
      */
-    public void setDelegationPeer(ArgDelegationPeer delegationPeer)
-    {
+    public void setDelegationPeer(ArgDelegationPeer delegationPeer) {
         this.argDelegator.setDelegationPeer(delegationPeer);
     }
 
@@ -463,8 +448,7 @@ public class LaunchArgHandler
      *
      * @param args the args that we need to handle.
      */
-    public void handleConcurrentInvocationRequestArgs(String[] args)
-    {
+    public void handleConcurrentInvocationRequestArgs(String[] args) {
         //if we have 1 or more args then we only care about the last one since
         //the only interinstance arg we currently know how to handle are URIs.
         //Change this if one day we implement fun stuff like inter instance command execution.

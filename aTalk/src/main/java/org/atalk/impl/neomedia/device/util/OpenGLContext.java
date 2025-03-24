@@ -39,16 +39,15 @@ public class OpenGLContext {
             mEGLDisplay = null;
             throw new RuntimeException("unable to initialize EGL14");
         }
-        Timber.i("EGL version: %s.%s", majorVersion[0], minorVersion[0]);
-
-        EGLConfig eglConfig = chooseEglConfig(mEGLDisplay, recorder);
+        // Timber.i("EGL version: %s.%s", majorVersion[0], minorVersion[0]);
 
         // Configure context for OpenGL ES 2.0.
+        EGLConfig eglConfig = chooseEglConfig(mEGLDisplay, recorder);
         int[] attrib_list = {EGL14.EGL_CONTEXT_CLIENT_VERSION, 2, EGL14.EGL_NONE};
         mEGLContext = EGL14.eglCreateContext(mEGLDisplay, eglConfig, sharedContext, attrib_list, 0);
         checkEglError("eglCreateContext");
 
-        // Create a window surface, and attach it to the Surface we received.
+        // Create a window surface with default values, and attach it to the Surface we received.
         int[] surfaceAttribs = {EGL14.EGL_NONE};
         mEGLSurface = EGL14.eglCreateWindowSurface(mEGLDisplay, eglConfig, objSurface, surfaceAttribs, 0);
         checkEglError("eglCreateWindowSurface");
@@ -69,16 +68,14 @@ public class OpenGLContext {
                     EGL14.EGL_BLUE_SIZE, 8, EGL14.EGL_RENDERABLE_TYPE, EGL14.EGL_OPENGL_ES2_BIT,
                     EGL14.EGL_NONE};
         }
-        int[] numconfigs = new int[1];
 
+        int[] numconfigs = new int[1];
         if (!EGL14.eglChooseConfig(eglDisplay, attribList, 0, configs, 0, configs.length,
                 numconfigs, 0)) {
-            throw new IllegalArgumentException("eglChooseConfig failed "
-                    + GLUtils.getEGLErrorString(EGL14.eglGetError()));
+            throw new IllegalArgumentException("eglChooseConfig failed " + GLUtils.getEGLErrorString(EGL14.eglGetError()));
         }
         else if (numconfigs[0] <= 0) {
-            throw new IllegalArgumentException("eglChooseConfig failed "
-                    + GLUtils.getEGLErrorString(EGL14.eglGetError()));
+            throw new IllegalArgumentException("eglChooseConfig failed " + GLUtils.getEGLErrorString(EGL14.eglGetError()));
         }
         return configs[0];
     }
@@ -94,8 +91,8 @@ public class OpenGLContext {
             EGL14.eglMakeCurrent(mEGLDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT);
             EGL14.eglDestroySurface(mEGLDisplay, mEGLSurface);
             EGL14.eglDestroyContext(mEGLDisplay, mEGLContext);
-            EGL14.eglReleaseThread();
             EGL14.eglTerminate(mEGLDisplay);
+            EGL14.eglReleaseThread();
         }
         mEGLDisplay = EGL14.EGL_NO_DISPLAY;
         mEGLContext = EGL14.EGL_NO_CONTEXT;
@@ -118,8 +115,7 @@ public class OpenGLContext {
      */
     public void releaseEGLSurfaceContext() {
         if (mEGLDisplay != EGL14.EGL_NO_DISPLAY) {
-            EGL14.eglMakeCurrent(mEGLDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE,
-                    EGL14.EGL_NO_CONTEXT);
+            EGL14.eglMakeCurrent(mEGLDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT);
         }
     }
 

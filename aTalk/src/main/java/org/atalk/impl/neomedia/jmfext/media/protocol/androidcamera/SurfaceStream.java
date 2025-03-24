@@ -126,13 +126,13 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
 
     // Start the captureThread
     private void startCaptureThread() {
-        run = true;
         captureThread = new Thread() {
             @Override
             public void run() {
                 captureLoop();
             }
         };
+        run = true;
         captureThread.start();
     }
 
@@ -166,7 +166,7 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
         videoFragment.initLocalPreviewContainer(myCtxProvider);
         mDisplayTV = myCtxProvider.obtainObject(); // this will create a new TextureView
 
-        // Init the encoder inputSurface for remote video streaming
+        // Init the encoder inputSurface for remote video streaming only once; do not recreate openGL surface
         mEncoderSurface = new CodecInputSurface(surface, mDisplayTV.getContext());
         mEncoderSurface.makeCurrent();
 
@@ -240,7 +240,7 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
      * Capture thread loop.
      */
     private void captureLoop() {
-        // Wait for input surface to be returned before proceed
+        // Wait for input surface to be returned before proceed;
         // Post an empty frame to init encoder, and get the surface that is provided in read() method
         while (run && (mCameraDevice == null)) {
             transferHandler.transferData(this);
@@ -334,8 +334,7 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
                  * otherwise we will freeze on trying to set the current context. We skip the frame in this case.
                  */
                 if (!myCtxProvider.textureUpdated) {
-                    Timber.w("Skipped preview frame, previewCtx: %s textureUpdated: %s",
-                            mDisplayTV, myCtxProvider.textureUpdated);
+                    Timber.w("Skipped preview frame, previewCtx: %s textureUpdated: %s", mDisplayTV, myCtxProvider.textureUpdated);
                 }
                 else {
                     // myCtxProvider.configureTransform(myCtxProvider.getView().getWidth(), myCtxProvider.getView().getHeight());
@@ -405,10 +404,14 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
             buffer.setFormat(mFormat);
             buffer.setTimeStamp(mSurfaceTexture.getTimestamp());
         }
+        // Init mEncoderSurface only once; else EGL error: 0x3003: connect: already connected to another API?
         else if (mCameraDevice == null && (surface = (Surface) buffer.getData()) != null) {
-            Timber.d("Retrieve android encoder surface: %s", surface);
-            initSurfaceConsumer(surface);
-            startImpl();
+            if (mEncoderSurface == null) {
+                initSurfaceConsumer(surface);
+                startImpl();
+            } else {
+                Timber.w("Skip encoder surface re-creation: %s", mEncoderSurface);
+            }
         }
     }
 

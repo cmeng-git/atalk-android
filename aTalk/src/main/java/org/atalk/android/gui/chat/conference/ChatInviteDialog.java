@@ -170,7 +170,7 @@ public class ChatInviteDialog extends Dialog
     /**
      * Callback method to be invoked when a child in this expandable list has been clicked.
      *
-     * @param parent The ExpandableListView where the click happened
+     * @param listView The ExpandableListView where the click happened
      * @param v The view within the expandable list/ListView that was clicked
      * @param groupPosition The group position that contains the child that was clicked
      * @param childPosition The child position within the group
@@ -245,7 +245,7 @@ public class ChatInviteDialog extends Dialog
         /**
          * The Multi User Chat operation set instance.
          */
-        private OperationSetMultiUserChat opSetMUC;
+        private final OperationSetMultiUserChat opSetMUC;
 
         /**
          * Creates an instance of <code>InviteContactListFilter</code>.
@@ -272,7 +272,7 @@ public class ChatInviteDialog extends Dialog
         Collection<String> selectedContactAddresses = new ArrayList<>();
 
         List<MetaContact> selectedContacts = new LinkedList<>(mucContactInviteList.values());
-        if (selectedContacts.size() == 0)
+        if (selectedContacts.isEmpty())
             return;
 
         // Obtain selected contacts.
@@ -288,7 +288,7 @@ public class ChatInviteDialog extends Dialog
         }
 
         // Invite all selected.
-        if (selectedContactAddresses.size() > 0) {
+        if (!selectedContactAddresses.isEmpty()) {
             chatPanel.inviteContacts(inviteChatTransport, selectedContactAddresses,
                     ViewUtil.toString(this.findViewById(R.id.text_reason)));
         }

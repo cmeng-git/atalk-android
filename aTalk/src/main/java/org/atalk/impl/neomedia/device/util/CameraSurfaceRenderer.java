@@ -44,21 +44,23 @@ public class CameraSurfaceRenderer {
             -1.0f, 1.0f, 0, 0.f, 1.f,
             1.0f, 1.0f, 0, 1.f, 1.f
     };
-    /**
-     * Triangle vertices.
-     */
+
+    // Triangle vertices.
     private final FloatBuffer triangleVertices;
 
-    private static final String VERTEX_SHADER = "uniform mat4 uMVPMatrix;\n"
-            + "uniform mat4 uSTMatrix;\n"
-            + "attribute vec4 aPosition;\n"
-            + "attribute vec4 aTextureCoord;\n"
-            + "varying vec2 vTextureCoord;\n"
-            + "void main() {\n"
-            + "  gl_Position = uMVPMatrix * aPosition;\n"
-            + "  vTextureCoord = (uSTMatrix * aTextureCoord).xy;\n"
-            + "}\n";
+    //Create our vertex shader
+    private static final String VERTEX_SHADER =
+            "uniform mat4 uMVPMatrix;\n"
+                    + "uniform mat4 uSTMatrix;\n"
+                    + "attribute vec4 aPosition;\n"
+                    + "attribute vec4 aTextureCoord;\n"
+                    + "varying vec2 vTextureCoord;\n"
+                    + "void main() {\n"
+                    + "  gl_Position = uMVPMatrix * aPosition;\n"
+                    + "  vTextureCoord = (uSTMatrix * aTextureCoord).xy;\n"
+                    + "}\n";
 
+    //Fragment shader
     private static final String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"
             + "precision mediump float;\n"
             + "varying vec2 vTextureCoord;\n"

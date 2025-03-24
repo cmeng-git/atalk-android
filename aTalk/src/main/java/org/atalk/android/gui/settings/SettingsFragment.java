@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceCategory;
-import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 
 import java.awt.Dimension;
@@ -93,6 +92,8 @@ public class SettingsFragment extends BasePreferenceFragment
     private static final String P_KEY_XFER_THUMBNAIL_PREVIEW = "pref.key.send_thumbnail";
     private static final String P_KEY_AUTO_ACCEPT_FILE = "pref.key.auto_accept_file";
     private static final String P_KEY_PRESENCE_SUBSCRIBE_MODE = "pref.key.presence_subscribe_mode";
+    // User option property names
+    public static final String AUTO_UPDATE_CHECK_ENABLE = "user.AUTO_UPDATE_CHECK_ENABLE";
 
     // Notifications
     private static final String P_KEY_POPUP_HANDLER = "pref.key.notification.popup_handler";
@@ -107,9 +108,6 @@ public class SettingsFragment extends BasePreferenceFragment
     // Video resolutions
     private static final String P_KEY_VIDEO_RES = "pref.key.video.resolution";
 
-    // User option property names
-    public static final String AUTO_UPDATE_CHECK_ENABLE = "user.AUTO_UPDATE_CHECK_ENABLE";
-
     /**
      * The device configuration
      */
@@ -119,6 +117,7 @@ public class SettingsFragment extends BasePreferenceFragment
     private PreferenceScreen mPreferenceScreen;
     private SharedPreferences shPrefs;
 
+    private ListPreference resList;
     private AppCompatActivity mActivity;
 
     /**
@@ -469,7 +468,7 @@ public class SettingsFragment extends BasePreferenceFragment
             resolutionValues[i] = resToStr(CameraUtils.PREFERRED_SIZES[i]);
         }
 
-        ListPreference resList = findPreference(P_KEY_VIDEO_RES);
+        resList = findPreference(P_KEY_VIDEO_RES);
         resList.setEntries(resolutionValues);
         resList.setEntryValues(resolutionValues);
 
@@ -500,14 +499,27 @@ public class SettingsFragment extends BasePreferenceFragment
      * @return resolution <code>Dimension</code> for given string representation created with method
      * {@link #resToStr(Dimension)}
      */
-    private static Dimension resolutionForStr(String resStr) {
-        Dimension[] resolutions = AndroidCameraSystem.SUPPORTED_SIZES;
-        for (Dimension resolution : resolutions) {
+    private static Dimension getResForStr(String resStr) {
+        Dimension[] supportedResolutions = AndroidCameraSystem.SUPPORTED_SIZES;
+        for (Dimension resolution : supportedResolutions) {
             if (resToStr(resolution).equals(resStr))
                 return resolution;
         }
-        // "Auto" string won't match the defined resolution strings so will return default for auto
-        return new Dimension(DeviceConfiguration.DEFAULT_VIDEO_WIDTH, DeviceConfiguration.DEFAULT_VIDEO_HEIGHT);
+
+        // If none matched, then get the closer size.
+        double minDiff = Double.MAX_VALUE;
+        int w = Integer.parseInt(resStr.split("x")[0]);
+        int h = Integer.parseInt(resStr.split("x")[1]);
+
+        Dimension optSize = new Dimension(w, h);
+        for (Dimension size : supportedResolutions) {
+            if (Math.abs(size.getHeight() - h) < minDiff) {
+                optSize = size;
+                minDiff = Math.abs(size.getHeight() - h);
+            }
+        }
+        aTalkApp.showToastMessage(R.string.settings_use_match_camera_resolution, resToStr(optSize));
+        return optSize;
     }
 
     /**
@@ -636,8 +648,9 @@ public class SettingsFragment extends BasePreferenceFragment
             // Video resolution
             case P_KEY_VIDEO_RES:
                 String resStr = shPreferences.getString(P_KEY_VIDEO_RES, null);
-                Dimension videoRes = resolutionForStr(resStr);
+                Dimension videoRes = getResForStr(resStr);
                 mDeviceConfig.setVideoSize(videoRes);
+                resList.setValue(resToStr(mDeviceConfig.getVideoSize()));
                 break;
         }
     }

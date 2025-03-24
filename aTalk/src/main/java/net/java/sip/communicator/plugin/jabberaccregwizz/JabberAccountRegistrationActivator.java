@@ -86,8 +86,7 @@ public class JabberAccountRegistrationActivator implements BundleActivator {
      */
     public static CertificateService getCertificateService() {
         if (certService == null) {
-            ServiceReference<?> serviceReference
-                    = bundleContext.getServiceReference(CertificateService.class.getName());
+            ServiceReference<?> serviceReference = bundleContext.getServiceReference(CertificateService.class.getName());
             certService = (CertificateService) bundleContext.getService(serviceReference);
         }
         return certService;

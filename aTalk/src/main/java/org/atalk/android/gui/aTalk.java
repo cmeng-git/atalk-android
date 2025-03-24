@@ -50,6 +50,7 @@ import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.DepthPageTransformer;
 import org.atalk.android.gui.webview.WebViewFragment;
+import org.atalk.service.osgi.OSGiService;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.BundleContext;
 
@@ -82,6 +83,7 @@ public class aTalk extends MainMenuActivity {
 
     public final static int Theme_Change = 1;
     public final static int Locale_Change = 2;
+    public final static int HW_Codec_Change = 3;
     public static int mPrefChange = 0;
     private static final ArrayList<aTalk> mInstances = new ArrayList<>();
 
@@ -198,13 +200,18 @@ public class aTalk extends MainMenuActivity {
          * Note: Start aTalk Activity does not apply to aTalkApp Application class.
          */
         if (mPrefChange >= Locale_Change) {
+            // Shutdown the OSGi service
+            stopService(new Intent(this, OSGiService.class));
+
             PackageManager pm = getPackageManager();
             Intent intent = pm.getLaunchIntentForPackage(getPackageName());
-            // ProcessPhoenix.triggerRebirth(this, intent);
-            ComponentName componentName = intent.getComponent();
-            Intent mainIntent = Intent.makeRestartActivityTask(componentName);
-            startActivity(mainIntent);
-            Runtime.getRuntime().exit(0);
+            if (intent != null) {
+                ComponentName componentName = intent.getComponent();
+                Intent mainIntent = Intent.makeRestartActivityTask(componentName);
+                mainIntent.setPackage(getPackageName());
+                startActivity(mainIntent);
+                Runtime.getRuntime().exit(0);
+            }
         }
         // Re-init aTalk to refresh the newly user selected language and theme;
         // else the main option menu is not updated
@@ -264,9 +271,8 @@ public class aTalk extends MainMenuActivity {
     }
 
     public static void setPrefChange(int change) {
-        if (Locale_Change == change)
+        if (Locale_Change <= change)
             aTalkApp.showToastMessage(R.string.settings_restart_require);
-
         mPrefChange |= change;
     }
 

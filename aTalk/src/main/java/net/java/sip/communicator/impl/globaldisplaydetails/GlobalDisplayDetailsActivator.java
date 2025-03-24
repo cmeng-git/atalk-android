@@ -92,7 +92,7 @@ public class GlobalDisplayDetailsActivator implements BundleActivator, ServiceLi
             ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
         } catch (InvalidSyntaxException e) {
             // TODO Auto-generated catch block
-            Timber.e("Exception %s", e.getMessage());
+            Timber.e("Exception: %s", e.getMessage());
         }
 
         for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs) {

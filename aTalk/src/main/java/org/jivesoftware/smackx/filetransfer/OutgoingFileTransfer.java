@@ -179,8 +179,8 @@ public class OutgoingFileTransfer extends FileTransfer {
             @Override
             public void run() {
                 try {
-                    OutgoingFileTransfer.this.outputStream = negotiateStream(
-                            fileName, fileSize, description, thumbnail);
+                    OutgoingFileTransfer.this.outputStream
+                            = negotiateStream(fileName, fileSize, description, thumbnail);
                     progress.outputStreamEstablished(OutgoingFileTransfer.this.outputStream);
                 } catch (XMPPErrorException e) {
                     handleXMPPException(e);

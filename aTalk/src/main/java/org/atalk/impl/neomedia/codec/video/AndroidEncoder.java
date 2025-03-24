@@ -154,7 +154,6 @@ public class AndroidEncoder extends AndroidCodec {
      * @return <code>true</code> if hardware encoding is enabled.
      */
     private static boolean isHwEncodingEnabled() {
-        // boolean supported = AppUtils.hasAPI(16);
         return LibJitsi.getConfigurationService().getBoolean(HW_ENCODING_ENABLE_PROPERTY, true);
     }
 

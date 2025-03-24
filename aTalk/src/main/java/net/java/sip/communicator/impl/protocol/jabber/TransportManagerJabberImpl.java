@@ -5,6 +5,12 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.net.InetAddress;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallConference;
 import net.java.sip.communicator.service.protocol.CallPeer;
@@ -24,12 +30,6 @@ import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jxmpp.jid.Jid;
 
-import java.net.InetAddress;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * <code>TransportManager</code>s gather local candidates for incoming and outgoing calls. Their work
  * starts by calling a start method which, using the remote peer's session description, would start
@@ -40,8 +40,7 @@ import java.util.Map;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class TransportManagerJabberImpl extends TransportManager<CallPeerJabberImpl>
-{
+public abstract class TransportManagerJabberImpl extends TransportManager<CallPeerJabberImpl> {
     /**
      * The ID that we will be assigning to our next candidate. We use <code>int</code>s for
      * interoperability reasons (Emil: I believe that GTalk uses <code>int</code>s. If that turns out
@@ -80,8 +79,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      *
      * @param callPeer the {@link CallPeer} whose traffic we will be taking care of.
      */
-    protected TransportManagerJabberImpl(CallPeerJabberImpl callPeer)
-    {
+    protected TransportManagerJabberImpl(CallPeerJabberImpl callPeer) {
         super(callPeer);
     }
 
@@ -92,13 +90,14 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * case of no registrar accounts) From headers.
      *
      * @param peer the CallPeer that we would contact.
+     *
      * @return the <code>InetAddress</code> that is most likely to be to be used as a next hop when
      * contacting the specified <code>destination</code>.
+     *
      * @throws IllegalArgumentException if <code>destination</code> is not a valid host/IP/FQDN
      */
     @Override
-    protected InetAddress getIntendedDestination(CallPeerJabberImpl peer)
-    {
+    protected InetAddress getIntendedDestination(CallPeerJabberImpl peer) {
         return peer.getProtocolProvider().getNextHop();
     }
 
@@ -107,8 +106,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      *
      * @return the next ID to use with a candidate.
      */
-    protected String getNextID()
-    {
+    protected String getNextID() {
         int nextID;
         synchronized (TransportManagerJabberImpl.class) {
             nextID = TransportManagerJabberImpl.nextID++;
@@ -122,6 +120,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      *
      * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> which is to have its
      * <code>target</code> set to the returned <code>MediaStreamTarget</code>
+     *
      * @return the <code>MediaStreamTarget</code> to be used as the <code>target</code> of the
      * <code>MediaStream</code> with the specified <code>MediaType</code>
      */
@@ -139,16 +138,14 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      *
      * @return the generation that we should assign to candidates that we are currently advertising.
      */
-    protected int getCurrentGeneration()
-    {
+    protected int getCurrentGeneration() {
         return currentGeneration;
     }
 
     /**
      * Increments the generation that we are assigning candidates.
      */
-    protected void incrementGeneration()
-    {
+    protected void incrementGeneration() {
         currentGeneration++;
     }
 
@@ -162,8 +159,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * is to be sent to the associated Jitsi Videobridge
      */
     protected void sendTransportInfoToJitsiVideobridge(Map<String, IceUdpTransport> map)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         CallPeerJabberImpl peer = getCallPeer();
         boolean initiator = !peer.isInitiator();
         ColibriConferenceIQ conferenceRequest = null;
@@ -194,7 +190,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
                     else {
                         String id = colibri.getID();
 
-                        if ((id == null) || (id.length() == 0))
+                        if ((id == null) || (id.isEmpty()))
                             break;
                         else {
                             conferenceRequest = new ColibriConferenceIQ();
@@ -227,7 +223,9 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * @param transportInfoSender a <code>TransportInfoSender</code> if the harvested transport candidates are to be sent in
      * a <code>transport-info</code> rather than in <code>ourContent</code>; otherwise, <code>null</code>
      * @param media the media of the <code>RtpDescriptionExtensionElement</code> child of <code>ourContent</code>
+     *
      * @return a <code>ExtensionElement</code> to be added as a child to <code>ourContent</code>; otherwise, <code>null</code>
+     *
      * @throws OperationFailedException if anything goes wrong while starting transport candidate harvest for
      * the specified <code>ourContent</code>
      */
@@ -251,12 +249,12 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * wishes to utilize <code>transport-info</code>. Local candidate addresses sent by this
      * <code>TransportManagerJabberImpl</code> in <code>transport-info</code> are expected to not be
      * included in the result of {@link #wrapupCandidateHarvest()}.
+     *
      * @throws OperationFailedException if we fail to allocate a port number.
      */
     public void startCandidateHarvest(List<JingleContent> theirOffer, List<JingleContent> ourAnswer,
             TransportInfoSender transportInfoSender)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         List<JingleContent> cpes = (theirOffer == null) ? ourAnswer : theirOffer;
 
         /*
@@ -314,7 +312,6 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
                         throw new IllegalStateException("conference.id");
 
                     Jid videobridgeFrom = conferenceResult.getFrom();
-
                     if ((videobridgeFrom != null) && (videobridgeFrom.length() != 0)) {
                         colibri.setFrom(videobridgeFrom);
                     }
@@ -383,11 +380,11 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      *
      * @param cpExtList the list that we will be searching for a specific content.
      * @param name the name of the content element we are looking for.
+     *
      * @return the {@link JingleContent} with the specified name or <code>null</code> if no
      * such content element exists.
      */
-    public static JingleContent findContentByName(Iterable<JingleContent> cpExtList, String name)
-    {
+    public static JingleContent findContentByName(Iterable<JingleContent> cpExtList, String name) {
         for (JingleContent cpExt : cpExtList) {
             if (cpExt.getName().equals(name))
                 return cpExt;
@@ -402,14 +399,14 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      *
      * @param remote the collection of <code>JingleContent</code>s which represents the remote
      * counterpart of the negotiation between the local and the remote peer
+     *
      * @return <code>true</code> if connectivity establishment has been started in response to the call;
      * otherwise, <code>false</code>. <code>TransportManagerJabberImpl</code> implementations which
      * do not perform connectivity checks (e.g. raw UDP) should return <code>true</code>. The
      * default implementation does not perform connectivity checks and always returns <code>true</code>.
      */
     public boolean startConnectivityEstablishment(Iterable<JingleContent> remote)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         return true;
     }
 
@@ -420,13 +417,13 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      *
      * @param remote a <code>Map</code> of media-<code>IceUdpTransport</code> pairs which represents
      * the remote counterpart of the negotiation between the local and the remote peers
+     *
      * @return <code>true</code> if connectivity establishment has been started in response to the call;
      * otherwise, <code>false</code>. <code>TransportManagerJabberImpl</code> implementations which
      * do not perform connectivity checks (e.g. raw UDP) should return <code>true</code>. The
      * default implementation does not perform connectivity checks and always returns <code>true</code>.
      */
-    protected boolean startConnectivityEstablishment(Map<String, IceUdpTransport> remote)
-    {
+    protected boolean startConnectivityEstablishment(Map<String, IceUdpTransport> remote) {
         return true;
     }
 
@@ -436,15 +433,14 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * @throws OperationFailedException if anything goes wrong with connectivity establishment (i.e. ICE failed, ...)
      */
     public void wrapupConnectivityEstablishment()
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
     }
 
     /**
      * Removes a content with a specific name from the transport-related part of the session
      * represented by this <code>TransportManagerJabberImpl</code> which may have been reported through
      * previous calls to the <code>startCandidateHarvest</code> and <code>startConnectivityEstablishment</code> methods.
-     *
+     * <p>
      * <b>Note</b>: Because <code>TransportManager</code> deals with <code>MediaType</code>s, not content
      * names and <code>TransportManagerJabberImpl</code> does not implement translating from content
      * name to <code>MediaType</code>, implementers are expected to call
@@ -461,10 +457,10 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      *
      * @param contents the collection of contents to remove the content with the specified name from
      * @param name the name of the content to remove
+     *
      * @return the removed <code>JingleContent</code> if any; otherwise, <code>null</code>
      */
-    protected JingleContent removeContent(Iterable<JingleContent> contents, String name)
-    {
+    protected JingleContent removeContent(Iterable<JingleContent> contents, String name) {
         for (Iterator<JingleContent> contentIter = contents.iterator(); contentIter.hasNext(); ) {
             JingleContent content = contentIter.next();
 
@@ -486,13 +482,14 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * Clones a specific <code>IceUdpTransport</code> and its candidates.
      *
      * @param src the <code>IceUdpTransport</code> to be cloned
+     *
      * @return a new <code>IceUdpTransport</code> instance which has the same run-time
      * type, attributes, namespace, text and candidates as the specified <code>src</code>
+     *
      * @throws OperationFailedException if an error occurs during the cloing of the specified <code>src</code> and its candidates
      */
     static IceUdpTransport cloneTransportAndCandidates(IceUdpTransport src)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         try {
             return IceUdpTransport.cloneTransportAndCandidates(src, false);
         } catch (Exception e) {
@@ -505,8 +502,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     /**
      * Releases the resources acquired by this <code>TransportManager</code> and prepares it for garbage collection.
      */
-    public void close()
-    {
+    public void close() {
         for (MediaType mediaType : MediaType.values())
             closeStreamConnector(mediaType);
     }
@@ -521,8 +517,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      */
     @Override
     protected void closeStreamConnector(MediaType mediaType, StreamConnector streamConnector)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         try {
             boolean superCloseStreamConnector = true;
             if (streamConnector instanceof ColibriStreamConnector) {
@@ -588,8 +583,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      */
     @Override
     protected StreamConnector createStreamConnector(final MediaType mediaType)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         ColibriConferenceIQ.Channel channel = getColibriChannel(mediaType, true /* local */);
         if (channel != null) {
             CallPeerJabberImpl peer = getCallPeer();
@@ -611,8 +605,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
             throws OperationFailedException;
 
     protected ExtensionElement createTransportForStartCandidateHarvest(String media)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         ExtensionElement pe = null;
         if (getCallPeer().isJitsiVideobridge()) {
             MediaType mediaType = MediaType.parseString(media);
@@ -641,12 +634,13 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * minimum and maximum of the media port boundaries are taken into account.
      *
      * @param mediaType the <code>MediaType</code> of the stream for which a <code>StreamConnector</code> is to be created
+     *
      * @return a <code>StreamConnector</code> for the stream of the specified <code>mediaType</code>
+     *
      * @throws OperationFailedException if the binding of the sockets fails
      */
     protected StreamConnector doCreateStreamConnector(MediaType mediaType)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         return super.createStreamConnector(mediaType);
     }
 
@@ -660,8 +654,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * is participating in which is establishing the connectivity with the Jitsi Videobridge
      * server (as opposed to a <code>CallPeer</code>).
      */
-    TransportManagerJabberImpl findTransportManagerEstablishingConnectivityWithJitsiVideobridge()
-    {
+    TransportManagerJabberImpl findTransportManagerEstablishingConnectivityWithJitsiVideobridge() {
         TransportManagerJabberImpl transportManager = null;
 
         if (getCallPeer().isJitsiVideobridge()) {
@@ -697,12 +690,12 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * <code>ColibriConferenceIQ.Channel</code> to get
      * @param local <code>true</code> if the <code>ColibriConferenceIQ.Channel</code> which is to be used locally
      * is to be returned or <code>false</code> for the one which is to be used remotely
+     *
      * @return the <code>ColibriConferenceIQ.Channel</code> which belongs to a content associated with
      * the specified <code>mediaType</code> and which is to be used in accord with the specified
      * <code>local</code> indicator if such a channel exists; otherwise, <code>null</code>
      */
-    ColibriConferenceIQ.Channel getColibriChannel(MediaType mediaType, boolean local)
-    {
+    ColibriConferenceIQ.Channel getColibriChannel(MediaType mediaType, boolean local) {
         ColibriConferenceIQ.Channel channel = null;
         if (colibri != null) {
             ColibriConferenceIQ.Content content = colibri.getContent(mediaType.toString());
@@ -720,8 +713,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      */
     public abstract void setRtcpmux(boolean rtcpmux);
 
-    public boolean isRtcpmux()
-    {
+    public boolean isRtcpmux() {
         return false;
     }
 }

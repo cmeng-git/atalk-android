@@ -44,7 +44,7 @@ import timber.log.Timber;
  * @author Manuel Stahl
  * @author Eng Chong Meng
  */
-public class OsmActivity extends AppCompatActivity {
+public class OsmActivity extends BaseActivity {
     private static final String MAP_FRAGMENT_TAG = "org.osmdroid.MAP_FRAGMENT_TAG";
     private OsmFragment osmFragment;
     private Location mLocation;

@@ -5,6 +5,14 @@
  */
 package org.atalk.impl.neomedia.transform.zrtp;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.impl.neomedia.RTPConnectorOutputStream;
 import org.atalk.impl.neomedia.transform.PacketTransformer;
@@ -20,14 +28,6 @@ import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.service.neomedia.SrtpControl;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import gnu.java.zrtp.ZRtp;
 import gnu.java.zrtp.ZrtpCallback;
 import gnu.java.zrtp.ZrtpCodes;
@@ -40,7 +40,6 @@ import timber.log.Timber;
 
 /**
  * JMF extension/connector to support GNU ZRTP4J.
- *
  * ZRTP was developed by Phil Zimmermann and provides functions to negotiate keys and other
  * necessary data (crypto data) to set-up the Secure RTP (SRTP) crypto context. Refer to Phil's ZRTP
  * specification at his <a href="http://zfoneproject.com/">Zfone project</a> site to get more
@@ -50,7 +49,7 @@ import timber.log.Timber;
  *
  * ZRTP is a specific protocol to negotiate encryption algorithms and the required key material.
  * ZRTP uses a RTP session to exchange its protocol messages.
- *
+ * <p>
  * A complete GNU ZRTP4J implementation consists of two parts, the GNU ZRTP4J core and specific code
  * that binds the GNU ZRTP core to the underlying RTP/SRTP stack and the operating system:
  * <ul>
@@ -67,9 +66,8 @@ import timber.log.Timber;
  * provide mutex handling, and to report events to the application.
  *
  * <h3>The ZRTPTransformEngine</h3>
- *
  * ZRTPTransformEngine implements code that is specific to the JMF implementation.
- *
+ * <p>
  * To perform its tasks ZRTPTransformEngine
  * <ul>
  * <li>extends specific classes to hook into the JMF RTP methods and the RTP/SRTP send and receive queues</li>
@@ -82,12 +80,12 @@ import timber.log.Timber;
  * After instantiating a GNU ZRTP4J session (see below for a short example) applications may use the
  * ZRTP specific methods of ZRTPTransformEngine to control and setup GNU ZRTP, for example enable or
  * disable ZRTP processing or getting ZRTP status information.
- *
+ * <p>
  * GNU ZRTP4J provides a ZrtpUserCallback class that an application may extend and register with
  * ZRTPTransformEngine. GNU ZRTP4J and ZRTPTransformEngine use the ZrtpUserCallback methods to
  * report ZRTP events to the application. The application may display this information to the user
  * or act otherwise.
- *
+ * <p>
  * The following figure depicts the relationships between ZRTPTransformEngine, JMF implementation,
  * the GNU ZRTP4J core, and an application that provides an ZrtpUserCallback class.
  *
@@ -140,7 +138,6 @@ import timber.log.Timber;
  * </pre>
  *
  * The <em>demo</em> folder contains a small example that shows how to use GNU ZRTP4J.
- *
  * This ZRTPTransformEngine documentation shows the ZRTP specific extensions and describes
  * overloaded methods and a possible different behaviour.
  *
@@ -148,25 +145,21 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  * @author MilanKral
  */
-public class ZRTPTransformEngine extends SinglePacketTransformer implements SrtpControl.TransformEngine, ZrtpCallback
-{
+public class ZRTPTransformEngine extends SinglePacketTransformer implements SrtpControl.TransformEngine, ZrtpCallback {
     /**
      * Very simple Timeout provider class.
-     *
      * This very simple timeout provider can handle one timeout request at one time only. A second
      * request would overwrite the first one and would lead to unexpected results.
      *
      * @author Werner Dittmann <Werner.Dittmann@t-online.de>
      */
-    private class TimeoutProvider extends Thread
-    {
+    private class TimeoutProvider extends Thread {
         /**
          * Constructs Timeout provider.
          *
          * @param name the name of the provider.
          */
-        public TimeoutProvider(String name)
-        {
+        public TimeoutProvider(String name) {
             super(name);
         }
 
@@ -195,8 +188,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
          *
          * @param delay the delay.
          */
-        public synchronized void requestTimeout(long delay)
-        {
+        public synchronized void requestTimeout(long delay) {
             synchronized (sync) {
                 nextDelay = delay;
                 newTask = true;
@@ -207,8 +199,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
         /**
          * Stops the thread.
          */
-        public void stopRun()
-        {
+        public void stopRun() {
             synchronized (sync) {
                 stop = true;
                 sync.notifyAll();
@@ -218,8 +209,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
         /**
          * Cancels the last request.
          */
-        public void cancelRequest()
-        {
+        public void cancelRequest() {
             synchronized (sync) {
                 newTask = false;
                 sync.notifyAll();
@@ -230,8 +220,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
          * The running part of the thread.
          */
         @Override
-        public void run()
-        {
+        public void run() {
             while (!stop) {
                 synchronized (sync) {
                     while (!newTask && !stop) {
@@ -333,7 +322,6 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
 
     /**
      * Enable or disable paranoid mode.
-     *
      * The Paranoid mode controls the behaviour and handling of the SAS verify flag. If Paranoid
      * mode is set to false then ZRtp applies the normal handling. If Paranoid mode is set to
      * true then the handling is:
@@ -354,7 +342,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * computes, compares, uses, and stores the retained secrets. This avoids unnecessary warning
      * messages. The user may enable or disable the Paranoid mode on a call-by-call basis without
      * breaking the key continuity data.
-     *
+     * <p>
      * <b>Implementation note:</b></br> An application shall always display the SAS code if the SAS
      * verify flag is {@code false}. The application shall also use mechanisms to remind the
      * user to compare the SAS code, for example using larger fonts, different colours and other
@@ -392,8 +380,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     /**
      * Construct a ZRTPTransformEngine.
      */
-    public ZRTPTransformEngine()
-    {
+    public ZRTPTransformEngine() {
         SecureRandom secRand = new SecureRandom();
         byte[] random = new byte[2];
         secRand.nextBytes(random);
@@ -408,8 +395,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @see TransformEngine#getRTCPTransformer()
      */
-    public ZRTCPTransformer getRTCPTransformer()
-    {
+    public ZRTCPTransformer getRTCPTransformer() {
         if ((zrtcpTransformer == null) && !disposed)
             zrtcpTransformer = new ZRTCPTransformer();
         return zrtcpTransformer;
@@ -420,8 +406,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @see TransformEngine#getRTPTransformer()
      */
-    public PacketTransformer getRTPTransformer()
-    {
+    public PacketTransformer getRTPTransformer() {
         return this;
     }
 
@@ -472,10 +457,10 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * @param zidFilename The ZID file name
      * @param autoEnable Set this true to start with auto-sensing and false to disable it.
      * @param config the zrtp config to use
+     *
      * @return true if initialization fails, false if succeeds
      */
-    public synchronized boolean initialize(String zidFilename, boolean autoEnable, ZrtpConfigure config, final byte[] myZid)
-    {
+    public synchronized boolean initialize(String zidFilename, boolean autoEnable, ZrtpConfigure config, final byte[] myZid) {
         // Try to get the ZidFile path through the FileAccessService.
         File file = null;
         FileAccessService faService = LibJitsi.getFileAccessService();
@@ -488,11 +473,16 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             }
         }
 
-        // The ZidFile path should be absolute.
+        // The ZidFile path should be absolute; if exist, file length must not be zero
         String zidFilePath = null;
         try {
-            if (file != null)
+            if (file != null) {
                 zidFilePath = file.getAbsolutePath();
+                File zf = new File(zidFilePath);
+                if (zf.exists() && zf.length() == 0) {
+                    zf.delete();
+                }
+            }
         } catch (SecurityException e) {
             Timber.d(e, "Failed to obtain the absolute path of the zid file.");
         }
@@ -505,8 +495,9 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
         }
 
         if (!zf.isOpen()) {
-            if (zf.open(zidFilePath) < 0)
+            if (zf.open(zidFilePath) < 0) {
                 return false;
+            }
         }
 
         if (config == null) {
@@ -517,7 +508,6 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             config.setParanoidMode(enableParanoidMode);
 
         zrtpEngine = new ZRtp(myZid, this, "", config, mitmMode);
-
         if (timeoutProvider == null) {
             timeoutProvider = new TimeoutProvider("ZRTP");
             // XXX Daemon only if timeoutProvider is a global singleton.
@@ -531,16 +521,13 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     /**
      * @param startMuted whether to be started as muted if no secure communication is established
      */
-    public void setStartMuted(boolean startMuted)
-    {
+    public void setStartMuted(boolean startMuted) {
         muted = startMuted;
         if (startMuted) {
             // make sure we don't mute for long time as secure communication may fail.
-            new Timer().schedule(new TimerTask()
-            {
+            new Timer().schedule(new TimerTask() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     ZRTPTransformEngine.this.muted = false;
                 }
             }, 1500);
@@ -552,16 +539,14 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return the default enabled/disabled status value for secure communication
      */
-    public boolean getSecureCommunicationStatus()
-    {
+    public boolean getSecureCommunicationStatus() {
         return (srtpInTransformer != null) || (srtpOutTransformer != null);
     }
 
     /**
      * Start the ZRTP stack immediately, not auto-sensing mode.
      */
-    public void startZrtp()
-    {
+    public void startZrtp() {
         if (zrtpEngine != null) {
             zrtpEngine.startZrtpEngine();
             started = true;
@@ -572,26 +557,21 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
 
     /**
      * Close the transformer and underlying transform engine.
-     *
      * The close functions closes all stored crypto contexts. This deletes key data and forces a
      * cleanup of the crypto contexts.
      */
-    public void close()
-    {
+    public void close() {
         stopZrtp();
     }
 
     /**
      * Stop ZRTP engine.
-     *
      * The ZRTP stack stores RS2 without the valid flag. If we close the ZRTP stream then check if
      * we need to set RS2 to valid. This is the case if we received less than 10 good SRTP packets.
      * In this case we enable RS2 to make sure the ZRTP self-synchronization is active.
-     *
      * This handling is needed to comply to an upcoming newer ZRTP RFC.
      */
-    public void stopZrtp()
-    {
+    public void stopZrtp() {
         if (zrtpEngine != null) {
             if (zrtpUnprotect < 10)
                 zrtpEngine.setRs2Valid();
@@ -619,8 +599,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * Cleanup function for any remaining timers
      */
     @Override
-    public void cleanup()
-    {
+    public void cleanup() {
         disposed = true;
         stopZrtp();
 
@@ -632,13 +611,11 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
 
     /**
      * Set the SSRC of the RTP transmitter stream.
-     *
      * ZRTP fills the SSRC in the ZRTP messages.
      *
      * @param ssrc SSRC to set
      */
-    public void setOwnSSRC(long ssrc)
-    {
+    public void setOwnSSRC(long ssrc) {
         ownSSRC = (int) ssrc;
     }
 
@@ -648,8 +625,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * @see PacketTransformer#transform(RawPacket[])
      */
     @Override
-    public RawPacket transform(RawPacket pkt)
-    {
+    public RawPacket transform(RawPacket pkt) {
         // Never transform outgoing ZRTP (invalid RTP) packets.
         if (!ZrtpRawPacket.isZrtpData(pkt)) {
             // ZRTP needs the SSRC of the sending stream.
@@ -668,8 +644,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * @see PacketTransformer#reverseTransform(RawPacket[])
      */
     @Override
-    public RawPacket reverseTransform(RawPacket pkt)
-    {
+    public RawPacket reverseTransform(RawPacket pkt) {
         // Check if we need to start ZRTP
         if (!started && enableZrtp && ownSSRC != 0)
             startZrtp();
@@ -721,10 +696,10 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * complete ZRTP packet, copy the message part in its place, the initialize the header, counter, SSRC and crc.
      *
      * @param data The ZRTP packet data
+     *
      * @return true if sending succeeded, false if it failed.
      */
-    public boolean sendDataZRTP(byte[] data)
-    {
+    public boolean sendDataZRTP(byte[] data) {
         int totalLength = ZRTP_PACKET_HEADER + data.length;
         byte[] tmp = new byte[totalLength];
         System.arraycopy(data, 0, tmp, ZRTP_PACKET_HEADER, data.length);
@@ -751,10 +726,10 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param secrets The secret keys and salt negotiated by ZRTP.
      * @param part An enum that defines sender, receiver, or both.
+     *
      * @return always return true.
      */
-    public boolean srtpSecretsReady(ZrtpSrtpSecrets secrets, EnableSecurity part)
-    {
+    public boolean srtpSecretsReady(ZrtpSrtpSecrets secrets, EnableSecurity part) {
         SrtpPolicy srtpPolicy;
         int cipher = 0, authn = 0, authKeyLen = 0;
 
@@ -861,16 +836,15 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
 
     /**
      * Switch on the security.
-     *
      * ZRTP calls this method after it has computed the SAS and check if it is verified or not.
      *
      * @param c The name of the used cipher algorithm and mode, or NULL.
      * @param s The SAS string.
      * @param verified if {@code verified} is true then SAS was verified by both parties during a previous call.
+     *
      * @see gnu.java.zrtp.ZrtpCallback#srtpSecretsOn(java.lang.String, java.lang.String, boolean)
      */
-    public void srtpSecretsOn(String c, String s, boolean verified)
-    {
+    public void srtpSecretsOn(String c, String s, boolean verified) {
         if (securityEventManager != null) {
             securityEventManager.secureOn(c);
             if ((s != null) || !verified)
@@ -883,8 +857,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param part Defines for which part (sender or receiver) to switch on security
      */
-    public void srtpSecretsOff(EnableSecurity part)
-    {
+    public void srtpSecretsOff(EnableSecurity part) {
         if (part == EnableSecurity.ForSender) {
             if (srtpOutTransformer != null) {
                 srtpOutTransformer.close();
@@ -906,10 +879,10 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * Activate timer.
      *
      * @param time The time in ms for the timer.
+     *
      * @return always return 1.
      */
-    public int activateTimer(int time)
-    {
+    public int activateTimer(int time) {
         if (timeoutProvider != null)
             timeoutProvider.requestTimeout(time);
         return 1;
@@ -920,8 +893,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return always return 1.
      */
-    public int cancelTimer()
-    {
+    public int cancelTimer() {
         if (timeoutProvider != null)
             timeoutProvider.cancelRequest();
         return 1;
@@ -930,8 +902,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     /**
      * Timeout handling function. Delegates the handling to the ZRTP engine.
      */
-    public void handleTimeout()
-    {
+    public void handleTimeout() {
         // processTimeout will wait for ~10 below events before failing
         // sendInfo(ZrtpCodes.MessageSeverity.Severe, EnumSet.of(ZrtpCodes.SevereCodes.SevereTooMuchRetries));
         if (zrtpEngine != null)
@@ -944,8 +915,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * @param severity This defines the message's severity
      * @param subCode The message code.
      */
-    public void sendInfo(ZrtpCodes.MessageSeverity severity, EnumSet<?> subCode)
-    {
+    public void sendInfo(ZrtpCodes.MessageSeverity severity, EnumSet<?> subCode) {
         final String[] version_and_hash = zrtpEngine.getPeerHelloHashSep();
         if (version_and_hash != null
                 && receivedSignaledZRTPVersion != null
@@ -976,8 +946,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * @param severity This defines the message's severity
      * @param subCode The message code.
      */
-    public void zrtpNegotiationFailed(ZrtpCodes.MessageSeverity severity, EnumSet<?> subCode)
-    {
+    public void zrtpNegotiationFailed(ZrtpCodes.MessageSeverity severity, EnumSet<?> subCode) {
         if (securityEventManager != null)
             securityEventManager.zrtpNegotiationFailed(severity, subCode);
     }
@@ -985,8 +954,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     /**
      * The other part doesn't support zrtp.
      */
-    public void zrtpNotSuppOther()
-    {
+    public void zrtpNotSuppOther() {
         if (securityEventManager != null)
             securityEventManager.zrtpNotSuppOther();
     }
@@ -996,39 +964,39 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param info supplied info.
      */
-    public void zrtpAskEnrollment(ZrtpCodes.InfoEnrollment info)
-    {
+    public void zrtpAskEnrollment(ZrtpCodes.InfoEnrollment info) {
         if (securityEventManager != null)
             securityEventManager.zrtpAskEnrollment(info);
     }
 
     /**
      * @param info information to the user about the result of an enrollment.
+     *
      * @see gnu.java.zrtp.ZrtpCallback#zrtpInformEnrollment(gnu.java.zrtp.ZrtpCodes.InfoEnrollment)
      */
-    public void zrtpInformEnrollment(ZrtpCodes.InfoEnrollment info)
-    {
+    public void zrtpInformEnrollment(ZrtpCodes.InfoEnrollment info) {
         if (securityEventManager != null)
             securityEventManager.zrtpInformEnrollment(info);
     }
 
     /**
      * @param sasHash Hash value of Short Authentication String.
+     *
      * @see gnu.java.zrtp.ZrtpCallback#signSAS(byte[])
      */
-    public void signSAS(byte[] sasHash)
-    {
+    public void signSAS(byte[] sasHash) {
         if (securityEventManager != null)
             securityEventManager.signSAS(sasHash);
     }
 
     /**
      * @param sasHash Hash value of Short Authentication String.
+     *
      * @return false if signature check fails, true otherwise
+     *
      * @see gnu.java.zrtp.ZrtpCallback#checkSASSignature(byte[])
      */
-    public boolean checkSASSignature(byte[] sasHash)
-    {
+    public boolean checkSASSignature(byte[] sasHash) {
         return (securityEventManager != null)
                 && securityEventManager.checkSASSignature(sasHash);
     }
@@ -1038,8 +1006,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param onOff The value for the enableZrtp flag.
      */
-    public void setEnableZrtp(boolean onOff)
-    {
+    public void setEnableZrtp(boolean onOff) {
         enableZrtp = onOff;
     }
 
@@ -1048,16 +1015,14 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return the enableZrtp flag.
      */
-    public boolean isEnableZrtp()
-    {
+    public boolean isEnableZrtp() {
         return enableZrtp;
     }
 
     /**
      * Set the SAS as verified internally if the user confirms it
      */
-    public void SASVerified()
-    {
+    public void SASVerified() {
         if (zrtpEngine != null)
             zrtpEngine.SASVerified();
         if (securityEventManager != null)
@@ -1067,8 +1032,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     /**
      * Resets the internal engine SAS verified flag
      */
-    public void resetSASVerified()
-    {
+    public void resetSASVerified() {
         if (zrtpEngine != null)
             zrtpEngine.resetSASVerified();
         if (securityEventManager != null)
@@ -1079,8 +1043,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * Method called when the user requests through GUI to switch a secured call to unsecured mode.
      * Just forwards the request to the Zrtp class.
      */
-    public void requestGoClear()
-    {
+    public void requestGoClear() {
         // if (zrtpEngine != null)
         // zrtpEngine.requestGoClear();
     }
@@ -1089,8 +1052,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * Method called when the user requests through GUI to switch a previously unsecured call back
      * to secure mode. Just forwards the request to the Zrtp class.
      */
-    public void requestGoSecure()
-    {
+    public void requestGoSecure() {
         // if (zrtpEngine != null)
         // zrtpEngine.requestGoSecure();
     }
@@ -1100,8 +1062,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param data The auxiliary secret data
      */
-    public void setAuxSecret(byte[] data)
-    {
+    public void setAuxSecret(byte[] data) {
         if (zrtpEngine != null)
             zrtpEngine.setAuxSecret(data);
     }
@@ -1111,8 +1072,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param id The client ID
      */
-    public void setClientId(String id)
-    {
+    public void setClientId(String id) {
         clientIdString = id;
     }
 
@@ -1121,10 +1081,10 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param index Hello hash of the Hello packet identified by index.
      * Index must be 0 <= index < SUPPORTED_ZRTP_VERSIONS.
+     *
      * @return the Hello packet hash
      */
-    public String getHelloHash(int index)
-    {
+    public String getHelloHash(int index) {
         return (zrtpEngine != null) ? zrtpEngine.getHelloHash(index) : "";
     }
 
@@ -1133,25 +1093,23 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param index Hello hash of the Hello packet identified by index.
      * Index must be 0 <= index < SUPPORTED_ZRTP_VERSIONS.
+     *
      * @return String array containing the version string at offset 0, the Hello hash value as
      * hex-digits at offset 1. Hello hash is available immediately after class
      * instantiation. Returns {@code null} if ZRTP is not available.
      */
-    public String[] getHelloHashSep(int index)
-    {
+    public String[] getHelloHashSep(int index) {
         return (zrtpEngine != null) ? zrtpEngine.getHelloHashSep(index) : null;
     }
 
     /**
      * Get the peer's Hello Hash data.
-     *
      * Use this method to get the peer's Hello Hash data. The method returns the data as a string.
      *
      * @return a String containing the Hello hash value as hex-digits. Peer Hello hash is available
      * after we received a Hello packet from our peer. If peer's hello hash is not available return null.
      */
-    public String getPeerHelloHash()
-    {
+    public String getPeerHelloHash() {
         return (zrtpEngine != null) ? zrtpEngine.getPeerHelloHash() : "";
     }
 
@@ -1160,8 +1118,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return the multistream params
      */
-    public byte[] getMultiStrParams()
-    {
+    public byte[] getMultiStrParams() {
         return (zrtpEngine != null) ? zrtpEngine.getMultiStrParams() : new byte[0];
     }
 
@@ -1170,8 +1127,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param parameters the multistream params
      */
-    public void setMultiStrParams(byte[] parameters)
-    {
+    public void setMultiStrParams(byte[] parameters) {
         if (zrtpEngine != null)
             zrtpEngine.setMultiStrParams(parameters);
     }
@@ -1181,8 +1137,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return the multistream flag
      */
-    public boolean isMultiStream()
-    {
+    public boolean isMultiStream() {
         return (zrtpEngine != null) && zrtpEngine.isMultiStream();
     }
 
@@ -1191,8 +1146,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param accepted The boolean value indicating if the request is accepted
      */
-    public void acceptEnrollment(boolean accepted)
-    {
+    public void acceptEnrollment(boolean accepted) {
         if (zrtpEngine != null)
             zrtpEngine.acceptEnrollment(accepted);
     }
@@ -1202,8 +1156,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return the committed SAS rendering algorithm
      */
-    public ZrtpConstants.SupportedSASTypes getSasType()
-    {
+    public ZrtpConstants.SupportedSASTypes getSasType() {
         return (zrtpEngine != null) ? zrtpEngine.getSasType() : null;
     }
 
@@ -1212,60 +1165,52 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return a reference to the byte array that contains the full SAS hash.
      */
-    public byte[] getSasHash()
-    {
+    public byte[] getSasHash() {
         return (zrtpEngine != null) ? zrtpEngine.getSasHash() : null;
     }
 
     /**
      * Send the SAS relay packet.
-     *
      * The method creates and sends a SAS relay packet according to the ZRTP specifications.
      * Usually only a MitM capable user agent (PBX) uses this function.
      *
      * @param sh the full SAS hash value
      * @param render the SAS rendering algorithm
+     *
      * @return true if the SASReplay packet has been correctly sent, false otherwise
      */
-    public boolean sendSASRelayPacket(byte[] sh, ZrtpConstants.SupportedSASTypes render)
-    {
+    public boolean sendSASRelayPacket(byte[] sh, ZrtpConstants.SupportedSASTypes render) {
         return (zrtpEngine != null)
                 && zrtpEngine.sendSASRelayPacket(sh, render);
     }
 
     /**
      * Check the state of the MitM mode flag.
-     *
      * If true then this ZRTP session acts as MitM, usually enabled by a PBX based client (useragent)
      *
      * @return state of mitmMode
      */
-    public boolean isMitmMode()
-    {
+    public boolean isMitmMode() {
         return mitmMode;
     }
 
     /**
      * Set the state of the MitM mode flag.
-     *
      * If MitM mode is set to true this ZRTP session acts as MitM, usually enabled by a PBX based client (user agent).
      *
      * @param mitmMode defines the new state of the mitmMode flag
      */
-    public void setMitmMode(boolean mitmMode)
-    {
+    public void setMitmMode(boolean mitmMode) {
         this.mitmMode = mitmMode;
     }
 
     /**
      * Enables or disables paranoid mode.
-     *
      * For further explanation of paranoid mode refer to the documentation of ZRtp class.
      *
      * @param yesNo If set to true then paranoid mode is enabled.
      */
-    public void setParanoidMode(boolean yesNo)
-    {
+    public void setParanoidMode(boolean yesNo) {
         enableParanoidMode = yesNo;
     }
 
@@ -1274,37 +1219,31 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return Returns true if paranoid mode is enabled.
      */
-    public boolean isParanoidMode()
-    {
+    public boolean isParanoidMode() {
         return enableParanoidMode;
     }
 
     /**
      * Check the state of the enrollment mode.
-     *
      * If true then we will set the enrollment flag (E) in the confirm packets and performs the
      * enrollment actions. A MitM (PBX) enrollment service sets this flag.
      *
      * @return status of the enrollmentMode flag.
      */
-    public boolean isEnrollmentMode()
-    {
+    public boolean isEnrollmentMode() {
         return (zrtpEngine != null)
                 && zrtpEngine.isEnrollmentMode();
     }
 
     /**
      * Set the state of the enrollment mode.
-     *
      * If true then we will set the enrollment flag (E) in the confirm packets and perform the
      * enrollment actions. A MitM (PBX) enrollment service must set this mode to true.
-     *
      * Can be set to true only if mitmMode is also true.
      *
      * @param enrollmentMode defines the new state of the enrollmentMode flag
      */
-    public void setEnrollmentMode(boolean enrollmentMode)
-    {
+    public void setEnrollmentMode(boolean enrollmentMode) {
         if (zrtpEngine != null)
             zrtpEngine.setEnrollmentMode(enrollmentMode);
     }
@@ -1313,10 +1252,10 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * Sets signature data for the Confirm packets
      *
      * @param data the signature data
+     *
      * @return true if signature data was successfully set
      */
-    public boolean setSignatureData(byte[] data)
-    {
+    public boolean setSignatureData(byte[] data) {
         return (zrtpEngine != null) && zrtpEngine.setSignatureData(data);
     }
 
@@ -1325,8 +1264,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return the signature data
      */
-    public byte[] getSignatureData()
-    {
+    public byte[] getSignatureData() {
         return (zrtpEngine != null)
                 ? zrtpEngine.getSignatureData() : new byte[0];
     }
@@ -1336,8 +1274,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return the signature length
      */
-    public int getSignatureLength()
-    {
+    public int getSignatureLength() {
         return (zrtpEngine != null) ? zrtpEngine.getSignatureLength() : 0;
     }
 
@@ -1346,8 +1283,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * explicit user confirmation is needed before switching to unsecured mode. This is asked
      * through the user callback.
      */
-    public void handleGoClear()
-    {
+    public void handleGoClear() {
         securityEventManager.confirmGoClear();
     }
 
@@ -1356,8 +1292,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param connector the connector to set
      */
-    public void setConnector(AbstractRTPConnector connector)
-    {
+    public void setConnector(AbstractRTPConnector connector) {
         zrtpConnector = connector;
     }
 
@@ -1366,8 +1301,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param ub The user callback class
      */
-    public void setUserCallback(SecurityEventManager ub)
-    {
+    public void setUserCallback(SecurityEventManager ub) {
         securityEventManager = ub;
     }
 
@@ -1376,8 +1310,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return the current status of the ZRTP engine
      */
-    public boolean isStarted()
-    {
+    public boolean isStarted() {
         return started;
     }
 
@@ -1386,24 +1319,21 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return the user callback
      */
-    public SecurityEventManager getUserCallback()
-    {
+    public SecurityEventManager getUserCallback() {
         return securityEventManager;
     }
 
     /**
      * Get other party's ZID (ZRTP Identifier) data
-     *
      * This functions returns the other party's ZID that was received during ZRTP processing.
-     *
+     * <p>
      * The ZID data can be retrieved after ZRTP receive the first Hello packet from the other
      * party. The application may call this method for example during SAS processing in showSAS
      * (...) user callback method.
      *
      * @return the ZID data as byte array.
      */
-    public byte[] getPeerZid()
-    {
+    public byte[] getPeerZid() {
         return (zrtpEngine != null) ? zrtpEngine.getPeerZid() : null;
     }
 
@@ -1412,8 +1342,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return the number of supported ZRTP protocol versions.
      */
-    public int getNumberSupportedVersions()
-    {
+    public int getNumberSupportedVersions() {
         return (zrtpEngine != null) ? zrtpEngine.getNumberSupportedVersions() : 0;
     }
 
@@ -1422,8 +1351,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @return the integer representation of the negotiated ZRTP protocol version.
      */
-    public int getCurrentProtocolVersion()
-    {
+    public int getCurrentProtocolVersion() {
         return (zrtpEngine != null) ? zrtpEngine.getCurrentProtocolVersion() : 0;
     }
 
@@ -1432,8 +1360,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param version received version
      */
-    public void setReceivedSignaledZRTPVersion(final String version)
-    {
+    public void setReceivedSignaledZRTPVersion(final String version) {
         this.receivedSignaledZRTPVersion = version;
     }
 
@@ -1442,8 +1369,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param value hash value
      */
-    public void setReceivedSignaledZRTPHashValue(final String value)
-    {
+    public void setReceivedSignaledZRTPHashValue(final String value) {
         this.receivedSignaledZRTPHashValue = value;
     }
 }

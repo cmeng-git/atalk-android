@@ -9,6 +9,18 @@ import static org.atalk.impl.neomedia.format.MediaFormatImpl.FORMAT_PARAMETER_AT
 
 import androidx.annotation.NonNull;
 
+import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
@@ -46,18 +58,6 @@ import org.atalk.util.event.VideoListener;
 import org.atalk.util.event.VideoNotifierSupport;
 import org.jxmpp.jid.Jid;
 
-import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import timber.log.Timber;
 
 /**
@@ -66,13 +66,13 @@ import timber.log.Timber;
  * bundles that are simply using the telephony functionality.
  *
  * @param <T> the peer extension class like for example <code>CallPeerSipImpl</code> or <code>CallPeerJabberImpl</code>
+ *
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>> extends PropertyChangeNotifier
-{
+public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>> extends PropertyChangeNotifier {
     /**
      * The name of the <code>CallPeerMediaHandler</code> property which specifies the local SSRC of its
      * audio <code>MediaStream</code>.
@@ -197,8 +197,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * listens to <code>PropertyChangeEvent</code>s fired by the <code>MediaHandler</code> in question and
      * forwards them as its own.
      */
-    private final PropertyChangeListener mediaHandlerPropertyChangeListener = new PropertyChangeListener()
-    {
+    private final PropertyChangeListener mediaHandlerPropertyChangeListener = new PropertyChangeListener() {
         /**
          * Notifies this <code>PropertyChangeListener</code> that the value of a specific property of
          * the notifier it is registered with has changed.
@@ -208,8 +207,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
          *        of the property which has changed its value and the old and new values of the property
          * @see PropertyChangeListener#propertyChange(PropertyChangeEvent)
          */
-        public void propertyChange(PropertyChangeEvent ev)
-        {
+        public void propertyChange(PropertyChangeEvent ev) {
             mediaHandlerPropertyChange(ev);
         }
     };
@@ -268,8 +266,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * for changes in the availability of visual <code>Component</code>s displaying remote video and
      * re-fires them as originating from this instance.
      */
-    private final VideoListener videoStreamVideoListener = new VideoListener()
-    {
+    private final VideoListener videoStreamVideoListener = new VideoListener() {
         /**
          * Notifies this <code>VideoListener</code> about a specific <code>VideoEvent</code>. Fires a new
          * <code>VideoEvent</code> which has this <code>CallPeerMediaHandler</code> as its source and
@@ -278,26 +275,22 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
          *
          * @param event the <code>VideoEvent</code> to notify this <code>VideoListener</code> about
          */
-        private void onVideoEvent(VideoEvent event)
-        {
+        private void onVideoEvent(VideoEvent event) {
             VideoEvent clone = event.clone(CallPeerMediaHandler.this);
             fireVideoEvent(clone);
             if (clone.isConsumed())
                 event.consume();
         }
 
-        public void videoAdded(@NonNull VideoEvent event)
-        {
+        public void videoAdded(@NonNull VideoEvent event) {
             onVideoEvent(event);
         }
 
-        public void videoRemoved(@NonNull VideoEvent event)
-        {
+        public void videoRemoved(@NonNull VideoEvent event) {
             onVideoEvent(event);
         }
 
-        public void videoUpdate(@NonNull VideoEvent event)
-        {
+        public void videoUpdate(@NonNull VideoEvent event) {
             onVideoEvent(event);
         }
     };
@@ -308,8 +301,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @param peer the <code>CallPeer</code> instance that we will be managing media for.
      * @param srtpListener the object that receives SRTP security events.
      */
-    public CallPeerMediaHandler(T peer, SrtpListener srtpListener)
-    {
+    public CallPeerMediaHandler(T peer, SrtpListener srtpListener) {
         mPeer = peer;
         this.srtpListener = srtpListener;
         setMediaHandler(new MediaHandler());
@@ -331,8 +323,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param encryptionMethod the method to add.
      */
-    public void addAdvertisedEncryptionMethod(SrtpControlType encryptionMethod)
-    {
+    public void addAdvertisedEncryptionMethod(SrtpControlType encryptionMethod) {
         if (!advertisedEncryptionMethods.contains(encryptionMethod))
             advertisedEncryptionMethods.add(encryptionMethod);
     }
@@ -344,8 +335,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @param listener the <code>VideoListener</code> to be registered with this instance and to start receiving
      * notifications from it about changes in the availability of visual <code>Component</code>s displaying video
      */
-    public void addVideoListener(VideoListener listener)
-    {
+    public void addVideoListener(VideoListener listener) {
         videoNotifierSupport.addVideoListener(listener);
     }
 
@@ -356,8 +346,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @param ev a <code>PropertyChangeEvent</code> which specified the property which had its value
      * changed and the old and new values of that property
      */
-    private void callPropertyChange(PropertyChangeEvent ev)
-    {
+    private void callPropertyChange(PropertyChangeEvent ev) {
         String propertyName = ev.getPropertyName();
         boolean callConferenceChange = MediaAwareCall.CONFERENCE.equals(propertyName);
 
@@ -398,8 +387,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Closes and nullifies all streams and connectors and readies this media handler for garbage
      * collection (or reuse). Synchronized if any other stream operations are in process we won't interrupt them.
      */
-    public synchronized void close()
-    {
+    public synchronized void close() {
         closeStream(MediaType.AUDIO);
         closeStream(MediaType.VIDEO);
 
@@ -416,8 +404,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param mediaType the <code>MediaType</code> that we'd like to stop a stream for.
      */
-    protected void closeStream(MediaType mediaType)
-    {
+    protected void closeStream(MediaType mediaType) {
         Timber.d("Closing %s stream for %s", mediaType, mPeer);
         /*
          * This CallPeerMediaHandler releases its reference to the MediaStream it has initialized via #initStream().
@@ -451,11 +438,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param extList the <code>List</code> that we will be looking through.
      * @param extensionURN the URN of the <code>RTPExtension</code> that we are looking for.
+     *
      * @return the first <code>RTPExtension</code> in <code>extList</code> that uses the specified
      * <code>extensionURN</code> or <code>null</code> if <code>extList</code> did not contain such an extension.
      */
-    private RTPExtension findExtension(List<RTPExtension> extList, String extensionURN)
-    {
+    private RTPExtension findExtension(List<RTPExtension> extList, String extensionURN) {
         for (RTPExtension rtpExt : extList) {
             if (rtpExt.getURI().toASCIIString().equals(extensionURN))
                 return rtpExt;
@@ -469,11 +456,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param formats the list of <code>MediaFormat</code>s to find the specified matching <code>MediaFormat</code> into
      * @param format encoding of the <code>MediaFormat</code> to find
+     *
      * @return the <code>MediaFormat</code> from <code>formats</code> which matches <code>format</code> if such
      * a match exists in <code>formats</code>; otherwise, <code>null</code>
      */
-    protected MediaFormat findMediaFormat(List<MediaFormat> formats, MediaFormat format)
-    {
+    protected MediaFormat findMediaFormat(List<MediaFormat> formats, MediaFormat format) {
         for (MediaFormat mFormat : formats) {
             if (mFormat.matches(format)) {
                 return mFormat;
@@ -492,12 +479,12 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * <code>CallPeerMediaHandler</code>
      * @param origin {@link VideoEvent#LOCAL} if the origin of the video is local (e.g. it is being locally captured);
      * {@link VideoEvent#REMOTE} if the origin of the video is remote (e.g. a remote peer is streaming it)
+     *
      * @return <code>true</code> if this event and, more specifically, the visual <code>Component</code> it
      * describes have been consumed and should be considered owned, referenced (which is important because
      * <code>Component</code>s belong to a single <code>Container</code> at a time); otherwise, <code>false</code>
      */
-    protected boolean fireVideoEvent(int type, Component visualComponent, int origin)
-    {
+    protected boolean fireVideoEvent(int type, Component visualComponent, int origin) {
         return videoNotifierSupport.fireVideoEvent(type, visualComponent, origin, true);
     }
 
@@ -508,8 +495,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @param event the <code>VideoEvent</code> to fire to the <code>VideoListener</code>s registered with this
      * <code>CallPeerMediaHandler</code>
      */
-    public void fireVideoEvent(VideoEvent event)
-    {
+    public void fireVideoEvent(VideoEvent event) {
         videoNotifierSupport.fireVideoEvent(event, true);
     }
 
@@ -520,8 +506,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return the advertised encryption methods.
      */
-    public SrtpControlType[] getAdvertisedEncryptionMethods()
-    {
+    public SrtpControlType[] getAdvertisedEncryptionMethods() {
         return advertisedEncryptionMethods.toArray(new SrtpControlType[0]);
     }
 
@@ -536,13 +521,13 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param mediaType the <code>MediaType</code> in which the retrieved <code>MediaDevice</code> is to capture
      * and/or play back media
+     *
      * @return a <code>MediaDevice</code> which is capable of capture and/or playback of media of the
      * specified <code>mediaType</code>, is the default choice of the user for a
      * <code>MediaDevice</code> with the specified <code>mediaType</code> and is appropriate for the
      * current states of the associated <code>CallPeer</code> and <code>Call</code>
      */
-    protected MediaDevice getDefaultDevice(MediaType mediaType)
-    {
+    protected MediaDevice getDefaultDevice(MediaType mediaType) {
         // cmeng (20210504): Call with/initiated by Conversation may get terminated abruptly, when h264 video codec is used
         if (mPeer.getCall() == null) {
             Timber.w("Get default device with null call: %s %s", mPeer, mediaType);
@@ -558,11 +543,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * respect to streaming media of the specified <code>MediaType</code>.
      *
      * @param mediaType the <code>MediaType</code> to retrieve the user preference for
+     *
      * @return a <code>MediaDirection</code> value which represents the preference of the user with
      * respect to streaming media of the specified <code>mediaType</code>
      */
-    protected MediaDirection getDirectionUserPreference(MediaType mediaType)
-    {
+    protected MediaDirection getDirectionUserPreference(MediaType mediaType) {
         switch (mediaType) {
             case AUDIO:
                 return audioDirectionUserPreference;
@@ -578,8 +563,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return the {@link DynamicPayloadTypeRegistry} instance we are currently using.
      */
-    protected DynamicPayloadTypeRegistry getDynamicPayloadTypes()
-    {
+    protected DynamicPayloadTypeRegistry getDynamicPayloadTypes() {
         return this.dynamicPayloadTypes;
     }
 
@@ -587,11 +571,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Gets the SRTP control type used for a given media type.
      *
      * @param mediaType the <code>MediaType</code> to get the SRTP control type for
+     *
      * @return the SRTP control type (MIKEY, SDES, ZRTP) used for the given media type or
      * <code>null</code> if SRTP is not enabled for the given media type
      */
-    public SrtpControl getEncryptionMethod(MediaType mediaType)
-    {
+    public SrtpControl getEncryptionMethod(MediaType mediaType) {
         return mediaHandler.getEncryptionMethod(this, mediaType);
     }
 
@@ -600,11 +584,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * that this media handler uses to handle media of the specified <code>type</code>.
      *
      * @param type the <code>MediaType</code> of the device whose <code>RTPExtension</code>s we are interested in.
+     *
      * @return a (possibly empty) <code>List</code> of <code>RTPExtension</code>s supported by the device
      * that this media handler uses to handle media of the specified <code>type</code>.
      */
-    protected List<RTPExtension> getExtensionsForType(MediaType type)
-    {
+    protected List<RTPExtension> getExtensionsForType(MediaType type) {
         MediaDevice device = getDefaultDevice(type);
         return (device != null) ? device.getSupportedExtensions() : new ArrayList<>();
     }
@@ -613,12 +597,12 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Returns the harvesting time (in ms) for the harvester given in parameter.
      *
      * @param harvesterName The class name if the harvester.
+     *
      * @return The harvesting time (in ms) for the harvester given in parameter. 0 if this
      * harvester does not exists, if the ICE agent is null, or if the agent has never
      * harvested with this harvester.
      */
-    public long getHarvestingTime(String harvesterName)
-    {
+    public long getHarvestingTime(String harvesterName) {
         TransportManager<?> transportManager = queryTransportManager();
         return (transportManager == null) ? 0 : transportManager.getHarvestingTime(harvesterName);
     }
@@ -627,10 +611,10 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Returns the extended type of the candidate selected if this transport manager is using ICE.
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return The extended type of the candidate selected if this transport manager is using ICE. Otherwise return null.
      */
-    public String getICECandidateExtendedType(String streamName)
-    {
+    public String getICECandidateExtendedType(String streamName) {
         TransportManager<?> transportManager = queryTransportManager();
         return (transportManager == null) ? null : transportManager.getICECandidateExtendedType(streamName);
     }
@@ -639,10 +623,10 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Returns the ICE local host address.
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE local host address if this transport manager is using ICE. Otherwise, returns null.
      */
-    public InetSocketAddress getICELocalHostAddress(String streamName)
-    {
+    public InetSocketAddress getICELocalHostAddress(String streamName) {
         TransportManager<?> transportManager = queryTransportManager();
         return (transportManager == null) ? null : transportManager.getICELocalHostAddress(streamName);
     }
@@ -651,11 +635,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Returns the ICE local reflexive address (server or peer reflexive).
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE local reflexive address. May be null if this transport manager is not using
      * ICE or if there is no reflexive address for the local candidate used.
      */
-    public InetSocketAddress getICELocalReflexiveAddress(String streamName)
-    {
+    public InetSocketAddress getICELocalReflexiveAddress(String streamName) {
         TransportManager<?> transportManager = queryTransportManager();
         return (transportManager == null) ? null : transportManager.getICELocalReflexiveAddress(streamName);
     }
@@ -664,11 +648,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Returns the ICE local relayed address (server or peer relayed).
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE local relayed address. May be null if this transport manager is not using ICE
      * or if there is no relayed address for the local candidate used.
      */
-    public InetSocketAddress getICELocalRelayedAddress(String streamName)
-    {
+    public InetSocketAddress getICELocalRelayedAddress(String streamName) {
         TransportManager<?> transportManager = queryTransportManager();
         return (transportManager == null) ? null : transportManager.getICELocalRelayedAddress(streamName);
     }
@@ -677,10 +661,10 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Returns the ICE remote host address.
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE remote host address if this transport manager is using ICE. Otherwise, returns null.
      */
-    public InetSocketAddress getICERemoteHostAddress(String streamName)
-    {
+    public InetSocketAddress getICERemoteHostAddress(String streamName) {
         TransportManager<?> transportManager = queryTransportManager();
         return (transportManager == null) ? null : transportManager.getICERemoteHostAddress(streamName);
     }
@@ -689,11 +673,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Returns the ICE remote reflexive address (server or peer reflexive).
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE remote reflexive address. May be null if this transport manager is not using
      * ICE or if there is no reflexive address for the remote candidate used.
      */
-    public InetSocketAddress getICERemoteReflexiveAddress(String streamName)
-    {
+    public InetSocketAddress getICERemoteReflexiveAddress(String streamName) {
         TransportManager<?> transportManager = queryTransportManager();
         return (transportManager == null) ? null : transportManager.getICERemoteReflexiveAddress(streamName);
     }
@@ -702,11 +686,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Returns the ICE remote relayed address (server or peer relayed).
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE remote relayed address. May be null if this transport manager is not using
      * ICE or if there is no relayed address for the remote candidate used.
      */
-    public InetSocketAddress getICERemoteRelayedAddress(String streamName)
-    {
+    public InetSocketAddress getICERemoteRelayedAddress(String streamName) {
         TransportManager<?> transportManager = queryTransportManager();
         return (transportManager == null) ? null : transportManager.getICERemoteRelayedAddress(streamName);
     }
@@ -716,8 +700,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return the current state of ICE processing if this transport manager is using ICE. Otherwise, returns null.
      */
-    public String getICEState()
-    {
+    public String getICEState() {
         TransportManager<?> transportManager = queryTransportManager();
         return (transportManager == null) ? null : transportManager.getICEState();
     }
@@ -730,12 +713,13 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * uses the global configuration.
      *
      * @param mediaDevice the <code>MediaDevice</code>.
+     *
      * @return a non-null list of locally supported <code>MediaFormat</code>s for <code>mediaDevice</code>,
      * in decreasing order of priority.
+     *
      * @see CallPeerMediaHandler#getLocallySupportedFormats(MediaDevice, QualityPreset, QualityPreset)
      */
-    public List<MediaFormat> getLocallySupportedFormats(MediaDevice mediaDevice)
-    {
+    public List<MediaFormat> getLocallySupportedFormats(MediaDevice mediaDevice) {
         return getLocallySupportedFormats(mediaDevice, null, null);
     }
 
@@ -749,12 +733,12 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @param mediaDevice the <code>MediaDevice</code>.
      * @param sendPreset the preset used to set some of the format parameters, used for video and settings.
      * @param receivePreset the preset used to set the receive format parameters, used for video and settings.
+     *
      * @return a non-null list of locally supported <code>MediaFormat</code>s for <code>mediaDevice</code>,
      * in decreasing order of priority.
      */
     public List<MediaFormat> getLocallySupportedFormats(MediaDevice mediaDevice,
-            QualityPreset sendPreset, QualityPreset receivePreset)
-    {
+            QualityPreset sendPreset, QualityPreset receivePreset) {
         List<MediaFormat> supportFormats = Collections.emptyList();
         if (mediaDevice != null) {
             Map<String, String> accountProperties = mPeer.getProtocolProvider().getAccountID().getAccountProperties();
@@ -792,15 +776,13 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @return the visual <code>Component</code> depicting the local video if local video is actually
      * being streamed from the local peer to the remote peer; otherwise, <code>null</code>
      */
-    public Component getLocalVisualComponent()
-    {
+    public Component getLocalVisualComponent() {
         MediaStream videoStream = getStream(MediaType.VIDEO);
         return ((videoStream == null) || !isLocalVideoTransmissionEnabled())
                 ? null : ((VideoMediaStream) videoStream).getLocalVisualComponent();
     }
 
-    public MediaHandler getMediaHandler()
-    {
+    public MediaHandler getMediaHandler() {
         return mediaHandler;
     }
 
@@ -809,8 +791,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return The number of harvesting for this agent.
      */
-    public int getNbHarvesting()
-    {
+    public int getNbHarvesting() {
         TransportManager<?> transportManager = queryTransportManager();
         return (transportManager == null) ? 0 : transportManager.getNbHarvesting();
     }
@@ -819,10 +800,10 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Returns the number of harvesting time for the harvester given in parameter.
      *
      * @param harvesterName The class name if the harvester.
+     *
      * @return The number of harvesting time for the harvester given in parameter.
      */
-    public int getNbHarvesting(String harvesterName)
-    {
+    public int getNbHarvesting(String harvesterName) {
         TransportManager<?> transportManager = queryTransportManager();
         return (transportManager == null) ? 0 : transportManager.getNbHarvesting(harvesterName);
     }
@@ -832,8 +813,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return the {@link MediaAwareCallPeer} that this handler is servicing.
      */
-    public T getPeer()
-    {
+    public T getPeer() {
         return mPeer;
     }
 
@@ -844,8 +824,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @return the last-known SSRC of an RTP stream with a specific <code>MediaType</code> received
      * by a <code>MediaStream</code> of this instance
      */
-    public long getRemoteSSRC(MediaType mediaType)
-    {
+    public long getRemoteSSRC(MediaType mediaType) {
         return mediaHandler.getRemoteSSRC(this, mediaType);
     }
 
@@ -854,8 +833,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return the {@link DynamicRTPExtensionsRegistry} instance we are currently using.
      */
-    protected DynamicRTPExtensionsRegistry getRtpExtensionsRegistry()
-    {
+    protected DynamicRTPExtensionsRegistry getRtpExtensionsRegistry() {
         return this.rtpExtensionsRegistry;
     }
 
@@ -864,8 +842,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return the <code>SrtpControl</code>s of the <code>MediaStream</code>s of this instance
      */
-    public SrtpControls getSrtpControls()
-    {
+    public SrtpControls getSrtpControls() {
         return (mediaHandler != null)  // NPE from field ?
                 ? mediaHandler.getSrtpControls(this) : new SrtpControls();
     }
@@ -875,11 +852,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * <code>MediaType</code>. If this instance doesn't have such a <code>MediaStream</code>, returns <code>null</code>
      *
      * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> to retrieve
+     *
      * @return the <code>MediaStream</code> of this <code>CallPeerMediaHandler</code> which is of the
      * specified <code>mediaType</code> if this instance has such a <code>MediaStream</code>; otherwise, <code>null</code>
      */
-    public MediaStream getStream(MediaType mediaType)
-    {
+    public MediaStream getStream(MediaType mediaType) {
         switch (mediaType) {
             case AUDIO:
                 return audioStream;
@@ -896,8 +873,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @return The total harvesting time (in ms) for all the harvesters. 0 if the ICE agent is
      * null, or if the agent has never harvested.
      */
-    public long getTotalHarvestingTime()
-    {
+    public long getTotalHarvestingTime() {
         TransportManager<?> transportManager = queryTransportManager();
         return (transportManager == null) ? 0 : transportManager.getTotalHarvestingTime();
     }
@@ -926,8 +902,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * rendered or <code>null</code> if there is currently no video streaming from the remote peer
      */
     @Deprecated
-    public Component getVisualComponent()
-    {
+    public Component getVisualComponent() {
         List<Component> visualComponents = getVisualComponents();
         return visualComponents.isEmpty() ? null : visualComponents.get(0);
     }
@@ -938,8 +913,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @return the visual <code>Component</code>s in which videos from the remote peer are currently
      * being rendered
      */
-    public List<Component> getVisualComponents()
-    {
+    public List<Component> getVisualComponents() {
         MediaStream videoStream = getStream(MediaType.VIDEO);
         List<Component> visualComponents;
 
@@ -964,14 +938,15 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * (i.e. sendonly, sendrecv, recvonly, or inactive).
      * @param rtpExtensions the list of <code>RTPExtension</code>s that should be enabled for this stream.
      * @param masterStream whether the stream to be used as master if secured
+     *
      * @return the newly created <code>MediaStream</code>.
+     *
      * @throws OperationFailedException if creating the stream fails for any reason (like, for example,
      * accessing the device or setting the format).
      */
     protected MediaStream initStream(StreamConnector connector, MediaDevice device, MediaFormat format,
             MediaStreamTarget target, MediaDirection direction, List<RTPExtension> rtpExtensions, boolean masterStream)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         MediaType mediaType = device.getMediaType();
         Timber.d("Initializing %s stream: %s; peer: %s", mediaType, format, mPeer);
 
@@ -1006,14 +981,15 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param remoteFormats remote <code>MediaFormat</code>'s found in the SDP message
      * @param localFormats local supported <code>MediaFormat</code> of our device
+     *
      * @return intersection between our local and remote <code>MediaFormat</code>
      *
      * Note that it also treats telephone-event as a special case and puts it to the end of the
      * intersection, if there is any intersection.
+     *
      * @see MediaFormatImpl#FORMAT_PARAMETER_ATTR_IMAGEATTR
      */
-    protected List<MediaFormat> intersectFormats(List<MediaFormat> remoteFormats, List<MediaFormat> localFormats)
-    {
+    protected List<MediaFormat> intersectFormats(List<MediaFormat> remoteFormats, List<MediaFormat> localFormats) {
         List<MediaFormat> ret = new ArrayList<>();
         MediaFormat telephoneEvents = null;
         MediaFormat red = null;
@@ -1087,12 +1063,12 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @param remoteExtensions the <code>List</code> of <code>RTPExtension</code>s as advertised by the remote party.
      * @param supportedExtensions the <code>List</code> of <code>RTPExtension</code>s that a local <code>MediaDevice</code>
      * returned s supported.
+     *
      * @return the (possibly empty) intersection of both of the extensions lists in a form that can
      * be used for generating an SDP media description or for configuring a stream.
      */
     protected List<RTPExtension> intersectRTPExtensions(List<RTPExtension> remoteExtensions,
-            List<RTPExtension> supportedExtensions)
-    {
+            List<RTPExtension> supportedExtensions) {
         if (remoteExtensions == null || supportedExtensions == null)
             return new ArrayList<>();
 
@@ -1118,10 +1094,10 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Check to see if the callPeer allow sending of imgattr parameter
      *
      * @param callPeer the callPeer
+     *
      * @return default to false if null, else the actual state
      */
-    public static boolean isImageattr(CallPeer callPeer)
-    {
+    public static boolean isImageattr(CallPeer callPeer) {
         Boolean imgattr = imageAttrs.get(callPeer.getPeerJid());
         return (imgattr != null) && imgattr;
     }
@@ -1130,10 +1106,10 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Check to see if the callPeer support <rtcp-mux/>
      *
      * @param callPeer the callPeer
+     *
      * @return default to true if null, else the actual state
      */
-    public static boolean isRtpcMux(CallPeer callPeer)
-    {
+    public static boolean isRtpcMux(CallPeer callPeer) {
         Boolean rtcpmux = rtcpMuxes.get(callPeer.getPeerJid());
         return (rtcpmux == null) || rtcpmux;
     }
@@ -1143,8 +1119,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return <code>true</code> if the device is not null, and it has at least one enabled format. Otherwise <code>false</code>
      */
-    public boolean isDeviceActive(MediaDevice dev)
-    {
+    public boolean isDeviceActive(MediaDevice dev) {
         return ((dev != null) && !getLocallySupportedFormats(dev).isEmpty());
     }
 
@@ -1153,8 +1128,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return <code>true</code> if the device is not null, and it has at least one enabled format. Otherwise <code>false</code>
      */
-    public boolean isDeviceActive(MediaDevice dev, QualityPreset sendPreset, QualityPreset receivePreset)
-    {
+    public boolean isDeviceActive(MediaDevice dev, QualityPreset sendPreset, QualityPreset receivePreset) {
         return ((dev != null) && !getLocallySupportedFormats(dev, sendPreset, receivePreset).isEmpty());
     }
 
@@ -1163,8 +1137,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return <code>true</code> if the media handler is set to transmit local audio and <code>false</code> otherwise.
      */
-    public boolean isLocalAudioTransmissionEnabled()
-    {
+    public boolean isLocalAudioTransmissionEnabled() {
         return audioDirectionUserPreference.allowsSending();
     }
 
@@ -1173,8 +1146,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return <code>true</code> if this handler's streams have been placed on hold and <code>false</code> otherwise.
      */
-    public boolean isLocallyOnHold()
-    {
+    public boolean isLocallyOnHold() {
         return locallyOnHold;
         // no need to actually check stream directions because we only update them through the setLocallyOnHold()
         // method so if the value of the locallyOnHold field has changed, so have stream directions.
@@ -1185,8 +1157,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return <code>true</code> if the media handler is set to transmit local video and false otherwise.
      */
-    public boolean isLocalVideoTransmissionEnabled()
-    {
+    public boolean isLocalVideoTransmissionEnabled() {
         return videoDirectionUserPreference.allowsSending();
     }
 
@@ -1195,8 +1166,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return <code>true</code> if local audio transmission is currently on mute and <code>false</code> otherwise.
      */
-    public boolean isMute()
-    {
+    public boolean isMute() {
         MediaStream audioStream = getStream(MediaType.AUDIO);
         return (audioStream != null) && audioStream.isMute();
     }
@@ -1207,8 +1177,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @return <code>true</code> if all our streams have been placed on hold (i.e. if none of them is
      * currently sending and <code>false</code> otherwise.
      */
-    public boolean isRemotelyOnHold()
-    {
+    public boolean isRemotelyOnHold() {
         for (MediaType mediaType : MediaType.values()) {
             MediaStream stream = getStream(mediaType);
             if ((stream != null) && stream.getDirection().allowsSending())
@@ -1223,11 +1192,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param mediaType the <code>MediaType</code> for which it is to be determined whether RTP translation is
      * enabled for the <tT>CallPeeer</code> represented by this <code>CallPeerMediaHandler</code>
+     *
      * @return <code>true</code> if RTP translation is enabled for the <code>CallPeer</code> represented by
      * this <code>CallPeerMediaHandler</code> and for the specified <code>mediaType</code>; otherwise, <code>false</code>
      */
-    public boolean isRTPTranslationEnabled(MediaType mediaType)
-    {
+    public boolean isRTPTranslationEnabled(MediaType mediaType) {
         MediaAwareCall<?, ?, ?> call = mPeer.getCall();
         if ((call != null) && call.isConferenceFocus() && !call.isLocalVideoStreaming()) {
             Iterator<?> callPeerIt = call.getCallPeers();
@@ -1248,8 +1217,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return the call secure state
      */
-    public boolean isSecure()
-    {
+    public boolean isSecure() {
         for (MediaType mediaType : MediaType.values()) {
             MediaStream stream = getStream(mediaType);
 
@@ -1269,8 +1237,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param ev the <code>PropertyChangeEvent</code> fired by the associated <code>MediaHandler</code>
      */
-    protected void mediaHandlerPropertyChange(PropertyChangeEvent ev)
-    {
+    protected void mediaHandlerPropertyChange(PropertyChangeEvent ev) {
         firePropertyChange(ev.getPropertyName(), ev.getOldValue(), ev.getNewValue());
     }
 
@@ -1280,8 +1247,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @return <code>true</code> if the request for a (video) key frame has been honored by the local
      * peer; otherwise, <code>false</code>
      */
-    public boolean processKeyFrameRequest()
-    {
+    public boolean processKeyFrameRequest() {
         return mediaHandler.processKeyFrameRequest(this);
     }
 
@@ -1294,8 +1260,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * instance and cleaned up. If <code>null</code>, all <code>SrtpControl</code>s are removed from
      * this instance and cleaned up
      */
-    protected void removeAndCleanupOtherSrtpControls(MediaType mediaType, SrtpControlType srtpControlType)
-    {
+    protected void removeAndCleanupOtherSrtpControls(MediaType mediaType, SrtpControlType srtpControlType) {
         SrtpControls srtpControls = getSrtpControls();
 
         for (SrtpControlType i : SrtpControlType.values()) {
@@ -1314,8 +1279,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @param listener the <code>VideoListener</code> to be unregistered from this instance and to stop receiving
      * notifications from it about changes in the availability of visual <code>Component</code>s displaying video
      */
-    public void removeVideoListener(VideoListener listener)
-    {
+    public void removeVideoListener(VideoListener listener) {
         videoNotifierSupport.removeVideoListener(listener);
     }
 
@@ -1328,8 +1292,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * from the remote peer of its associated <code>VideoMediaStream</code> in response to the
      * call; otherwise, <code>false</code>
      */
-    protected boolean requestKeyFrame()
-    {
+    protected boolean requestKeyFrame() {
         return false;
     }
 
@@ -1341,8 +1304,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @param stream <code>MediaStream</code> non-null stream
      * @param mediaType <code>MediaType</code>
      */
-    protected void sendHolePunchPacket(MediaStream stream, MediaType mediaType)
-    {
+    protected void sendHolePunchPacket(MediaStream stream, MediaType mediaType) {
         if (disableHolePunching)
             return;
 
@@ -1370,8 +1332,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param listener the <code>CsrcAudioLevelListener</code> to set to our audio stream.
      */
-    public void setCsrcAudioLevelListener(CsrcAudioLevelListener listener)
-    {
+    public void setCsrcAudioLevelListener(CsrcAudioLevelListener listener) {
         synchronized (csrcAudioLevelListenerLock) {
             if (this.csrcAudioLevelListener != listener) {
                 MediaHandler mediaHandler = getMediaHandler();
@@ -1393,8 +1354,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param enabled <code>true</code> if the media handler should transmit local audio and <code>false</code> otherwise.
      */
-    public void setLocalAudioTransmissionEnabled(boolean enabled)
-    {
+    public void setLocalAudioTransmissionEnabled(boolean enabled) {
         audioDirectionUserPreference = enabled ? MediaDirection.SENDRECV : MediaDirection.RECVONLY;
     }
 
@@ -1407,8 +1367,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * are to start transmitting again.
      */
     public void setLocallyOnHold(boolean locallyOnHold)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         Timber.d("Setting locally on hold: %s", locallyOnHold);
 
         this.locallyOnHold = locallyOnHold;
@@ -1459,8 +1418,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @param listener the <code>SimpleAudioLevelListener</code> to add or <code>null</code> if we are trying to
      * remove it.
      */
-    public void setLocalUserAudioLevelListener(SimpleAudioLevelListener listener)
-    {
+    public void setLocalUserAudioLevelListener(SimpleAudioLevelListener listener) {
         synchronized (localUserAudioLevelListenerLock) {
             if (this.localUserAudioLevelListener != listener) {
                 MediaHandler mediaHandler = getMediaHandler();
@@ -1482,8 +1440,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param enabled <code>true</code> if the media handler should transmit local video and <code>false</code> otherwise.
      */
-    public void setLocalVideoTransmissionEnabled(boolean enabled)
-    {
+    public void setLocalVideoTransmissionEnabled(boolean enabled) {
         Timber.d("Setting local video transmission enabled: %s", enabled);
         MediaDirection oldValue = videoDirectionUserPreference;
 
@@ -1499,8 +1456,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         }
     }
 
-    public void setMediaHandler(MediaHandler mediaHandler)
-    {
+    public void setMediaHandler(MediaHandler mediaHandler) {
         if (this.mediaHandler != mediaHandler) {
             if (this.mediaHandler != null) {
                 synchronized (csrcAudioLevelListenerLock) {
@@ -1565,8 +1521,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @param mute <code>true</code> if we are to make our audio stream start transmitting silence and <code>false</code>
      * if we are to end the transmission of silence and use our stream's <code>MediaDevice</code> again.
      */
-    public void setMute(boolean mute)
-    {
+    public void setMute(boolean mute) {
         MediaStream audioStream = getStream(MediaType.AUDIO);
         if (audioStream != null)
             audioStream.setMute(mute);
@@ -1579,8 +1534,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param listener the <code>SimpleAudioLevelListener</code> to add or <code>null</code> if we are trying to remove it.
      */
-    public void setStreamAudioLevelListener(SimpleAudioLevelListener listener)
-    {
+    public void setStreamAudioLevelListener(SimpleAudioLevelListener listener) {
         synchronized (streamAudioLevelListenerLock) {
             if (this.streamAudioLevelListener != listener) {
                 MediaHandler mediaHandler = getMediaHandler();
@@ -1603,12 +1557,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * a media description or having generated an offer.
      */
     public void start()
-            throws IllegalStateException
-    {
+            throws IllegalStateException {
         MediaStream stream;
         stream = getStream(MediaType.AUDIO);
         if ((stream != null) && !stream.isStarted() && isLocalAudioTransmissionEnabled()) {
-            Timber.i("Starting callPeer media handler for: %s, %s", stream.getName(), stream.isStarted());
+            Timber.i("Starting callPeer media handler for: %s, %s", stream.getName(), isLocalAudioTransmissionEnabled());
             getTransportManager().setTrafficClass(stream.getTarget(), MediaType.AUDIO);
             stream.start();
             sendHolePunchPacket(stream, MediaType.AUDIO);
@@ -1645,8 +1598,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param master the data that we are supposed to pass to our video stream.
      */
-    public void startSrtpMultistream(SrtpControl master)
-    {
+    public void startSrtpMultistream(SrtpControl master) {
         MediaStream videoStream = getStream(MediaType.VIDEO);
         if (videoStream != null)
             videoStream.getSrtpControl().setMultistream(master);
@@ -1660,6 +1612,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @param errorCode the error code to be assigned to the new <code>OperationFailedException</code>
      * @param cause the <code>Throwable</code> that has caused the necessity to log an error and have a new
      * <code>OperationFailedException</code> thrown
+     *
      * @throws OperationFailedException the exception that we wanted this method to throw.
      */
     protected abstract void throwOperationFailedException(String message, int errorCode, Throwable cause)
@@ -1674,11 +1627,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * {@see https://tools.ietf.org/html/draft-ietf-mmusic-msid}
      *
      * @param mediaType the media type of the stream for which to return the value for 'msid'
+     *
      * @return the value to use for the 'msid' source-specific SDP media attribute (RFC5576) for
      * the stream of type <code>mediaType</code> towards the <code>CallPeer</code>.
      */
-    public String getMsid(MediaType mediaType)
-    {
+    public String getMsid(MediaType mediaType) {
         return msLabel + " " + getLabel(mediaType);
     }
 
@@ -1687,11 +1640,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * the stream of type <code>mediaType</code> towards the <code>CallPeer</code>.
      *
      * @param mediaType the media type of the stream for which to return the value for 'label'
+     *
      * @return the value to use for the 'label' source-specific SDP media attribute (RFC5576) for
      * the stream of type <code>mediaType</code> towards the <code>CallPeer</code>.
      */
-    public String getLabel(MediaType mediaType)
-    {
+    public String getLabel(MediaType mediaType) {
         return mediaType.toString() + hashCode();
     }
 
@@ -1700,8 +1653,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @return the value to use for the 'mslabel' source-specific SDP media attribute (RFC5576).
      */
-    public String getMsLabel()
-    {
+    public String getMsLabel() {
         return msLabel;
     }
 
@@ -1710,8 +1662,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      *
      * @param disableHolePunching the new value
      */
-    public void setDisableHolePunching(boolean disableHolePunching)
-    {
+    public void setDisableHolePunching(boolean disableHolePunching) {
         this.disableHolePunching = disableHolePunching;
     }
 
@@ -1720,8 +1671,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * properties of the <code>Call</code> of {@link #mPeer}. Remembers the <code>Call</code> it has been added to
      * because <code>peer</code> does not have a <code>call</code> anymore at the time {@link #close()} is called.
      */
-    private class CallPropertyChangeListener implements PropertyChangeListener
-    {
+    private class CallPropertyChangeListener implements PropertyChangeListener {
         /**
          * The <code>Call</code> this <code>PropertyChangeListener</code> will be or is already added to.
          */
@@ -1732,8 +1682,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
          *
          * @param call the <code>Call</code> the new instance is to be added to
          */
-        public CallPropertyChangeListener(MediaAwareCall<?, ?, ?> call)
-        {
+        public CallPropertyChangeListener(MediaAwareCall<?, ?, ?> call) {
             this.call = call;
         }
 
@@ -1744,16 +1693,14 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
          * @param event a <code>PropertyChangeEvent</code> which specifies the name of the property which had
          * its value changed and the old and new values
          */
-        public void propertyChange(PropertyChangeEvent event)
-        {
+        public void propertyChange(PropertyChangeEvent event) {
             callPropertyChange(event);
         }
 
         /**
          * Removes this <code>PropertyChangeListener</code> from its associated <code>Call</code>.
          */
-        public void removePropertyChangeListener()
-        {
+        public void removePropertyChangeListener() {
             call.removePropertyChangeListener(this);
         }
     }

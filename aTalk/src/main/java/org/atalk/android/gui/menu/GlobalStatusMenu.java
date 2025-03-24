@@ -40,7 +40,6 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusServi
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AppGUIActivator;

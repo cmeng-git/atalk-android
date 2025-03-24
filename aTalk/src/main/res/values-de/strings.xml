@@ -1353,9 +1353,10 @@
 
     <!-- Camera used -->
     <string name="settings_camera">Kamera</string>
-    <string name="settings_no_camera">Kein Kameragerät gefunden</string>
+    <string name="settings_no_camera">Kein kompatibles Kameragerät gefunden</string>
     <string name="settings_use_back_camera">Rückkamera verwenden</string>
     <string name="settings_use_front_camera">Frontkamera verwenden</string>
+    <string name="settings_use_match_camera_resolution">Verwenden Sie die Kameraauflösung, die der am nächsten kommt: %1$s</string>
 
     <!-- Video codecs -->
     <string name="settings_direct_surface_decode">Direct Surface Decoding verwenden</string>

@@ -1542,7 +1542,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         }
 
         List<ProtocolProviderService> existingProvList = mGroupEventIgnoreList.get(group);
-        if (existingProvList.size() < 1) {
+        if (existingProvList.isEmpty()) {
             mGroupEventIgnoreList.remove(group);
         }
         else {
@@ -1627,7 +1627,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
         List<ProtocolProviderService> existingProvList = mContactEventIgnoreList.get(contact);
         if (existingProvList != null) {
-            if (existingProvList.size() < 1) {
+            if (existingProvList.isEmpty()) {
                 mGroupEventIgnoreList.remove(contact);
             }
             else {
@@ -1672,7 +1672,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             Timber.d("Handling registration of a new Protocol Provider.");
             // if we have the PROVIDER_MASK property set, make sure that this provider has it and if not ignore it.
             String providerMask = System.getProperty(MetaContactListService.PROVIDER_MASK_PROPERTY);
-            if (providerMask != null && providerMask.trim().length() > 0) {
+            if (providerMask != null && !providerMask.trim().isEmpty()) {
                 String servRefMask = (String) event.getServiceReference().getProperty(
                         MetaContactListService.PROVIDER_MASK_PROPERTY);
 

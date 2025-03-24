@@ -1109,7 +1109,7 @@ public class MclStorageManager implements MetaContactListListener {
     /**
      * Contains details parsed out of the database, necessary for creating unresolved contacts.
      */
-    static class StoredProtoContactDescriptor {
+    public static class StoredProtoContactDescriptor {
         String contactAddress;
         String persistentData;
         ContactGroup parentProtoGroup;

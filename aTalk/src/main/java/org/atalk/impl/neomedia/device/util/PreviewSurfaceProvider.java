@@ -107,7 +107,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      * be in another thread.
      * <p>
      * Must setFixedSize() to the user selected video size, to ensure local preview is in correct aspect ratio
-     <a href="  * https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession(android.hardware.camera2.params.SessionConfigurat">...</a>ion)
+     * <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession(android.hardware.camera2.params.SessionConfigurat">...</a>ion)
      *
      * @param holder The SurfaceHolder whose surface is being created.
      */

@@ -528,7 +528,7 @@ public class ServerStoredContactListJabberImpl {
             }
             throw new OperationFailedException(errTxt, errorCode, ex);
         } catch (NotLoggedInException | NoResponseException | NotConnectedException | InterruptedException ex) {
-            ex.printStackTrace();
+            Timber.w("addContact: %s", ex.getMessage());
         }
     }
 
@@ -688,7 +688,7 @@ public class ServerStoredContactListJabberImpl {
             Timber.e(ex, "Error removing group");
             throw new OperationFailedException(ex.getMessage(), OperationFailedException.GENERAL_ERROR, ex);
         } catch (NotLoggedInException | NoResponseException | NotConnectedException | InterruptedException e) {
-            e.printStackTrace();
+            Timber.w("removeGroup: %s", e.getMessage());
         }
     }
 
@@ -732,7 +732,7 @@ public class ServerStoredContactListJabberImpl {
                 Timber.e(ex, "%s", errTxt);
                 throw new OperationFailedException(errTxt, errorCode, ex);
             } catch (NotLoggedInException | NoResponseException | NotConnectedException | InterruptedException ex) {
-                ex.printStackTrace();
+                Timber.w("removeContact: %s", ex.getMessage());
             }
         }
     }
@@ -793,7 +793,7 @@ public class ServerStoredContactListJabberImpl {
             Timber.e(ex, "Cannot move contact!");
             throw new OperationFailedException(ex.getMessage(), OperationFailedException.GENERAL_ERROR, ex);
         } catch (NotLoggedInException | NoResponseException | NotConnectedException | InterruptedException e) {
-            e.printStackTrace();
+            Timber.w("moveContact: %s", e.getMessage());
         } finally {
             // Reset to default
             xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_DEFAULT_REPLY_TIMEOUT);
@@ -815,7 +815,7 @@ public class ServerStoredContactListJabberImpl {
         try {
             avatarManager.saveAccountRoster(xmppConnection.getUser().asBareJid());
         } catch (XmppStringprepException e) {
-            e.printStackTrace();
+            Timber.w("init: %s", e.getMessage());
         }
 
         // roster has been requested or loaded and dispatched, mark this
@@ -861,7 +861,7 @@ public class ServerStoredContactListJabberImpl {
                         .ofType(Presence.Type.available);
                 connection.sendStanza(presenceBuilder.build());
             } catch (NotConnectedException | InterruptedException e) {
-                e.printStackTrace();
+                Timber.w("sendInitialStatus: %s", e.getMessage());
             }
         }
         // clean
@@ -1142,11 +1142,9 @@ public class ServerStoredContactListJabberImpl {
             return true;
         }
         // cmeng = entry in rootGroup does not have group attribute ???
-        else if ((entry.getType() == none || entry.getType() == from)
-                && (entry.isSubscriptionPending() || entry.getGroups().size() > 0)) {
-            return true;
-        }
-        return false;
+        else
+            return (entry.getType() == none || entry.getType() == from)
+                    && (entry.isSubscriptionPending() || !entry.getGroups().isEmpty());
     }
 
     /**
@@ -1242,7 +1240,7 @@ public class ServerStoredContactListJabberImpl {
 
             // Not in local group, then create and add new local contact
             contact = new ContactJabberImpl(entry, ServerStoredContactListJabberImpl.this, true, true);
-            if (entry.getGroups().size() == 0) {
+            if (entry.getGroups().isEmpty()) {
                 // no parent group so its in the root group
                 rootGroup.addContact(contact);
                 fireContactAdded(rootGroup, contact);

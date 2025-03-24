@@ -87,15 +87,9 @@ public class AndroidCameraSystem extends DeviceSystem {
         if (isCameraInitialized) {
             return;
         }
-
-        // cleanup camera properties messed up by camera1/2 testing during development
-        // cleanMediaDB();
-
         try {
             CameraManager cameraManager = aTalkApp.getCameraManager();
             String[] cameraIdList = cameraManager.getCameraIdList();
-
-            // Timber.d("Number of android cameras: %s", cameraIdList.length);
             if (cameraIdList.length == 0) {
                 return;
             }
@@ -205,17 +199,6 @@ public class AndroidCameraSystem extends DeviceSystem {
                                 Format.NOT_SPECIFIED,
                                 Format.NOT_SPECIFIED));
                     }
-                    // 40x30, 176x144, 320x240, 352x288, 640x480,
-                    // 704x576, 720x480, 720x576, 768x432, 1280x720
-                    /*
-                     * Format newFormat = new YUVFormat( //new Dimension(40,30), //new
-                     * Dimension(176,144), //new Dimension(320,240), new Dimension(352,288), //new
-                     * Dimension(640,480), //new Dimension(704,576), //new Dimension(720,480), //new
-                     * Dimension(720,576), //new Dimension(768,432), //new Dimension(1280,720),
-                     * Format.NOT_SPECIFIED, Format.byteArray, YUVFormat.YUV_420, Format.NOT_SPECIFIED,
-                     * Format.NOT_SPECIFIED, Format.NOT_SPECIFIED, Format.NOT_SPECIFIED,
-                     * Format.NOT_SPECIFIED, Format.NOT_SPECIFIED); formats.add(newFormat);
-                     */
                 }
 
                 // Construct display name
@@ -230,22 +213,11 @@ public class AndroidCameraSystem extends DeviceSystem {
                 AndroidCamera device = new AndroidCamera(name, locator, formats.toArray(new Format[0]));
                 CaptureDeviceManager.addDevice(device);
             }
+            if (SUPPORTED_SIZES.length == 0)
+                aTalkApp.showToastMessage(R.string.settings_no_camera);
             isCameraInitialized = true;
         } catch (CameraAccessException e) {
             Timber.w("Exception in AndroidCameraSystem init: %s", e.getMessage());
-        }
-    }
-
-    // Update camera database, and remove mediaRecorder support (2021/11/05); not longer supported since API-23.
-    public static void cleanMediaDB() {
-        String[] prefixes = new String[]{LOCATOR_PROTOCOL_MEDIARECORDER, LOCATOR_PROTOCOL_ANDROIDCAMERA};
-
-        ConfigurationService cs = UtilActivator.getConfigurationService();
-        for (String prefix : prefixes) {
-            List<String> mediaProperties = cs.getPropertyNamesByPrefix(prefix, false);
-            for (String property : mediaProperties) {
-                cs.setProperty(property, null);
-            }
         }
     }
 }

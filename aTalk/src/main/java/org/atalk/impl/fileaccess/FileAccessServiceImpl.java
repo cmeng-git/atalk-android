@@ -5,15 +5,15 @@
  */
 package org.atalk.impl.fileaccess;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.FailSafeTransaction;
 import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.fileaccess.FileCategory;
 import org.atalk.service.libjitsi.LibJitsi;
-
-import java.io.File;
-import java.io.IOException;
 
 import timber.log.Timber;
 
@@ -24,8 +24,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class FileAccessServiceImpl implements FileAccessService
-{
+public class FileAccessServiceImpl implements FileAccessService {
     /**
      * The file prefix for all temp files.
      */
@@ -47,23 +46,21 @@ public class FileAccessServiceImpl implements FileAccessService
      */
     private boolean initialized = false;
 
-    public FileAccessServiceImpl()
-    {
+    public FileAccessServiceImpl() {
     }
 
     /**
      * This method returns a created temporary file. After you close this file it is not guaranteed that you will be
      * able to open it again nor that it will contain any information.
-     *
      * Note: DO NOT store unencrypted sensitive information in this file
      *
      * @return The created temporary file
+     *
      * @throws IOException If the file cannot be created
      */
     @Override
     public File getTemporaryFile()
-            throws IOException
-    {
+            throws IOException {
         return TempFileManager.createTempFile(TEMP_FILE_PREFIX, TEMP_FILE_SUFFIX);
     }
 
@@ -71,12 +68,12 @@ public class FileAccessServiceImpl implements FileAccessService
      * Returns the temporary directory.
      *
      * @return the created temporary directory
+     *
      * @throws IOException if the temporary directory cannot not be created
      */
     @Override
     public File getTemporaryDirectory()
-            throws IOException
-    {
+            throws IOException {
         File file = getTemporaryFile();
 
         if (!file.delete()) {
@@ -94,29 +91,28 @@ public class FileAccessServiceImpl implements FileAccessService
     @Deprecated
     @Override
     public File getPrivatePersistentFile(String fileName)
-            throws Exception
-    {
+            throws Exception {
         return this.getPrivatePersistentFile(fileName, FileCategory.PROFILE);
     }
 
     /**
      * This method returns a file specific to the current user. It may not exist, but it is guaranteed that you will
      * have the sufficient rights to create it.
-     *
+     * <p>
      * This file should not be considered secure because the implementor may return a file accessible to everyone.
      * Generally it will reside in current user's homedir, but it may as well reside in a shared directory.
-     *
      * Note: DO NOT store unencrypted sensitive information in this file
      *
      * @param fileName The name of the private file you wish to access
      * @param category The classification of the file.
+     *
      * @return The file
+     *
      * @throws Exception if we failed to create the file.
      */
     @Override
     public File getPrivatePersistentFile(String fileName, FileCategory category)
-            throws Exception
-    {
+            throws Exception {
         File file = accessibleFile(getFullPath(category), fileName);
         if (file == null) {
             throw new SecurityException("Insufficient rights to access this file in current user's home directory: "
@@ -131,30 +127,27 @@ public class FileAccessServiceImpl implements FileAccessService
     @Deprecated
     @Override
     public File getPrivatePersistentDirectory(String dirName)
-            throws Exception
-    {
+            throws Exception {
         return getPrivatePersistentDirectory(dirName, FileCategory.PROFILE);
     }
 
     /**
      * This method creates a directory specific to the current user.
-     *
      * This directory should not be considered secure because the implementor may return a directory accessible to
      * everyone. Generally it will reside in current user's homedir, but it may as well reside in a shared directory.
-     *
      * It is guaranteed that you will be able to create files in it.
-     *
      * Note: DO NOT store unencrypted sensitive information in this file
      *
      * @param dirName The name of the private directory you wish to access.
      * @param category The classification of the directory.
+     *
      * @return The created directory.
+     *
      * @throws Exception Thrown if there is no suitable location for the persistent directory.
      */
     @Override
     public File getPrivatePersistentDirectory(String dirName, FileCategory category)
-            throws Exception
-    {
+            throws Exception {
         File dir = new File(getFullPath(category), dirName);
         if (dir.exists()) {
             if (!dir.isDirectory()) {
@@ -172,10 +165,10 @@ public class FileAccessServiceImpl implements FileAccessService
      * specified name.
      *
      * @param category The classification of the file or directory.
+     *
      * @return the config home location of a a file with the specified name.
      */
-    private File getFullPath(FileCategory category)
-    {
+    private File getFullPath(FileCategory category) {
         initialize();
 
         // bypass the configurationService here to remove the dependency
@@ -203,11 +196,11 @@ public class FileAccessServiceImpl implements FileAccessService
      * property is system or not.
      *
      * @param propertyName the name of the property whose value we need.
+     *
      * @return the value of the property with name propertyName or null if the value had length 0 or only contained
      * spaces tabs or new lines.
      */
-    private static String getSystemProperty(String propertyName)
-    {
+    private static String getSystemProperty(String propertyName) {
         String retval = System.getProperty(propertyName);
         return StringUtils.isBlank(retval) ? null : retval;
     }
@@ -215,17 +208,17 @@ public class FileAccessServiceImpl implements FileAccessService
     /**
      * Checks if a file exists and if it is writable or readable. If not - checks if the user has a write privileges to
      * the containing directory.
-     *
      * If those conditions are met it returns a File in the directory with a fileName. If not - returns null.
      *
      * @param homedir the location of the sip-communicator home directory.
      * @param fileName the name of the file to create.
+     *
      * @return Returns null if the file does not exist and cannot be created. Otherwise - an object to this file
+     *
      * @throws IOException Thrown if the home directory cannot be created
      */
     private static File accessibleFile(File homedir, String fileName)
-            throws IOException
-    {
+            throws IOException {
         File file = new File(homedir, fileName);
         if (file.canRead() || file.canWrite()) {
             return file;
@@ -262,8 +255,7 @@ public class FileAccessServiceImpl implements FileAccessService
      * @return the default download directory
      */
     @Override
-    public File getDefaultDownloadDirectory()
-    {
+    public File getDefaultDownloadDirectory() {
         // For all other operating systems we return the Downloads folder.
         return new File(getSystemProperty("user.home"), "Downloads");
     }
@@ -273,12 +265,11 @@ public class FileAccessServiceImpl implements FileAccessService
      *
      * @return the major version of the executing operating system as defined by the <code>os.version</code> system property
      */
-    private static int getMajorOSVersion()
-    {
+    private static int getMajorOSVersion() {
         String osVersion = System.getProperty("os.version");
         int majorOSVersion;
 
-        if ((osVersion != null) && (osVersion.length() > 0)) {
+        if ((osVersion != null) && (!osVersion.isEmpty())) {
             int majorOSVersionEnd = osVersion.indexOf('.');
             String majorOSVersionString = (majorOSVersionEnd > -1) ? osVersion.substring(0, majorOSVersionEnd) : osVersion;
 
@@ -293,11 +284,11 @@ public class FileAccessServiceImpl implements FileAccessService
      * Creates a failsafe transaction which can be used to safely store informations into a file.
      *
      * @param file The file concerned by the transaction, null if file is null.
+     *
      * @return A new failsafe transaction related to the given file.
      */
     @Override
-    public FailSafeTransaction createFailSafeTransaction(File file)
-    {
+    public FailSafeTransaction createFailSafeTransaction(File file) {
         return (file == null) ? null : new FailSafeTransactionImpl(file);
     }
 
@@ -306,8 +297,7 @@ public class FileAccessServiceImpl implements FileAccessService
      * Introduced because this <code>FileAccessServiceImpl</code> queries <code>System</code> properties that may not be set yet
      * at construction time and, consequently, throws an <code>IllegalStateException</code> which could be avoided.
      */
-    private synchronized void initialize()
-    {
+    private synchronized void initialize() {
         if (initialized)
             return;
 

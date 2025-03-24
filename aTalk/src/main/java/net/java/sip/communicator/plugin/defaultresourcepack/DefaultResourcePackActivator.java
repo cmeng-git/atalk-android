@@ -37,8 +37,8 @@ import timber.log.Timber;
 public class DefaultResourcePackActivator implements BundleActivator {
     static BundleContext bundleContext;
 
-    // buffer for ressource files found
-    private static Hashtable<String, Iterator<String>> ressourcesFiles = new Hashtable<>();
+    // buffer for resource files found
+    private static final Hashtable<String, Iterator<String>> ressourcesFiles = new Hashtable<>();
 
     public void start(BundleContext bc)
             throws Exception {
@@ -99,7 +99,6 @@ public class DefaultResourcePackActivator implements BundleActivator {
 
                 // Replace all slashes with dots.
                 propertyFilePath = propertyFilePath.replaceAll("/", ".");
-
                 propertiesList.add(propertyFilePath);
             }
         }

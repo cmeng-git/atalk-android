@@ -15,17 +15,16 @@
  */
 package org.atalk.util;
 
-import org.atalk.service.configuration.ConfigurationService;
-
 import java.io.File;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.atalk.service.configuration.ConfigurationService;
+
 /**
  * @author George Politis
  */
-public class ConfigUtils
-{
+public class ConfigUtils {
     /**
      * Gets an absolute path in the form of <code>File</code> from an absolute or
      * relative <code>path</code> specified in the form of a <code>String</code>. If
@@ -37,10 +36,10 @@ public class ConfigUtils
      * @param path the absolute or relative path in the form of <code>String</code>
      * for/from which an absolute path in the form of <code>File</code> is to be returned
      * @param cfg the <code>ConfigurationService</code> to be employed by the method (invocation) if necessary
+     *
      * @return an absolute path in the form of <code>File</code> for/from the specified <code>path</code>
      */
-    public static File getAbsoluteFile(String path, ConfigurationService cfg)
-    {
+    public static File getAbsoluteFile(String path, ConfigurationService cfg) {
         File file = new File(path);
 
         if (!file.isAbsolute()) {
@@ -74,14 +73,14 @@ public class ConfigUtils
      * @param property the name of the property to get
      * @param defaultValue the value to be returned if {@code property} is not
      * associated with a value
+     *
      * @return the value as a {@code boolean} of {@code property} retrieved from
      * either {@code cfg} or {@code System}
      */
     public static boolean getBoolean(
             ConfigurationService cfg,
             String property,
-            boolean defaultValue)
-    {
+            boolean defaultValue) {
         boolean b;
         if (cfg == null) {
             String s = System.getProperty(property);
@@ -102,14 +101,14 @@ public class ConfigUtils
      * {@code null} if the property is to be retrieved from {@code System}
      * @param property the name of the property to get
      * @param defaultValue the value to be returned if {@code property} is not associated with a value
+     *
      * @return the value as an {@code int} of {@code property} retrieved from
      * either {@code cfg} or {@code System}
      */
     public static int getInt(
             ConfigurationService cfg,
             String property,
-            int defaultValue)
-    {
+            int defaultValue) {
         int i;
 
         if (cfg == null) {
@@ -141,14 +140,14 @@ public class ConfigUtils
      * @param property the name of the property to get
      * @param defaultValue the value to be returned if {@code property} is not
      * associated with a value
+     *
      * @return the value as an {@code long} of {@code property} retrieved from
      * either {@code cfg} or {@code System}
      */
     public static long getLong(
             ConfigurationService cfg,
             String property,
-            long defaultValue)
-    {
+            long defaultValue) {
         long i;
         if (cfg == null) {
             String s = System.getProperty(property);
@@ -179,14 +178,14 @@ public class ConfigUtils
      * @param property the name of the property to get
      * @param defaultValue the value to be returned if {@code property} is not
      * associated with a value
+     *
      * @return the value as a {@code String} of {@code property} retrieved from
      * either {@code cfg} or {@code System}
      */
     public static String getString(
             ConfigurationService cfg,
             String property,
-            String defaultValue)
-    {
+            String defaultValue) {
         String s;
         if (cfg == null)
             s = System.getProperty(property, defaultValue);
@@ -205,12 +204,12 @@ public class ConfigUtils
      * @param propertyAlternative an alternative name of the property
      * @param defaultValue the value to be returned if {@code property} is not
      * associated with a value
+     *
      * @return the value as a {@code String} of {@code property} retrieved from
      * either {@code cfg} or {@code System}
      */
     public static String getString(ConfigurationService cfg, String property,
-            String propertyAlternative, String defaultValue)
-    {
+            String propertyAlternative, String defaultValue) {
         String ret = getString(cfg, property, null);
         if (ret == null) {
             ret = getString(cfg, propertyAlternative, defaultValue);
@@ -238,8 +237,7 @@ public class ConfigUtils
      * Goes over all system properties and builds a string of their names and
      * values for debug purposes.
      */
-    public static String getSystemPropertiesDebugString()
-    {
+    public static String getSystemPropertiesDebugString() {
         StringBuilder str = new StringBuilder();
         try {
             // Password system properties

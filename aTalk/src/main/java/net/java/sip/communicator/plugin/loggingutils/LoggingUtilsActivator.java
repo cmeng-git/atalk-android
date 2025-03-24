@@ -129,7 +129,7 @@ public class LoggingUtilsActivator implements BundleActivator {
         return configurationService;
     }
 
-    /*
+    /**
      * (cmeng: for android)
      * Returns a reference to a FileAccessService implementation currently registered in the bundle context
      * or null if no such implementation was found.

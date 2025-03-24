@@ -7,6 +7,23 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import static net.java.sip.communicator.service.protocol.StunServerDescriptor.PROTOCOL_UDP;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
@@ -50,23 +67,6 @@ import org.jivesoftware.smackx.jingle_rtp.element.RtcpMux;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jinglenodes.SmackServiceNode;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -80,8 +80,7 @@ import timber.log.Timber;
  * @link https://github.com/MilanKral/atalk-android/commit/d61d5165dda4d290280ebb3e93075e8846e255ad
  * Enhance TURN with TCP, TLS, DTLS transport
  */
-public class IceUdpTransportManager extends TransportManagerJabberImpl implements PropertyChangeListener
-{
+public class IceUdpTransportManager extends TransportManagerJabberImpl implements PropertyChangeListener {
     // The default STUN servers that will be used in the peer to peer connections if none is specified;
     // pick the first one that is reachable; multiple stun servers only add time in redundant candidates harvest
     List<String> stunServers = Arrays.asList(
@@ -99,11 +98,9 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     /**
      * A filter which accepts any non-RTCP packets (RTP, DTLS, etc).
      */
-    private static final DatagramPacketFilter RTP_FILTER = new DatagramPacketFilter()
-    {
+    private static final DatagramPacketFilter RTP_FILTER = new DatagramPacketFilter() {
         @Override
-        public boolean accept(DatagramPacket p)
-        {
+        public boolean accept(DatagramPacket p) {
             return !RTCP_FILTER.accept(p);
         }
     };
@@ -164,8 +161,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      *
      * @param callPeer the {@link CallPeer} whose traffic we will be taking care of.
      */
-    public IceUdpTransportManager(CallPeerJabberImpl callPeer)
-    {
+    public IceUdpTransportManager(CallPeerJabberImpl callPeer) {
         super(callPeer);
         iceAgent = createIceAgent();
         iceAgent.addStateChangeListener(this);
@@ -176,8 +172,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      *
      * @return the ICE agent to use for all the ICE negotiation that this transport manager would be going through
      */
-    protected Agent createIceAgent()
-    {
+    protected Agent createIceAgent() {
         long startGatheringHarvesterTime = System.currentTimeMillis();
         CallPeerJabberImpl peer = getCallPeer();
         ProtocolProviderServiceJabberImpl provider = peer.getProtocolProvider();
@@ -349,10 +344,10 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @param hostname the address itself
      * @param port the port number
      * @param transport the transport to use with this address.
+     *
      * @see https://github.com/jitsi/ice4j/issues/255
      */
-    protected List<TransportAddress> getTransportAddress(String hostname, int port, Transport transport)
-    {
+    protected List<TransportAddress> getTransportAddress(String hostname, int port, Transport transport) {
         List<TransportAddress> transportAddress = new ArrayList<>();
         try {
             // return all associated InetAddress in both IPv4 and IPv6 address
@@ -371,8 +366,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      */
     @Override
     protected StreamConnector doCreateStreamConnector(MediaType mediaType)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         /*
          * If this instance is participating in a telephony conference utilizing the Jitsi
          * Videobridge server-side technology that is organized by the local peer, then there is a
@@ -400,15 +394,16 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      *
      * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> which is to have its
      * <code>connector</code> set to the returned <code>StreamConnector</code>
+     *
      * @return the <code>StreamConnector</code> to be used as the <code>connector</code> of the
      * <code>MediaStream</code> with the specified <code>MediaType</code>
+     *
      * @throws OperationFailedException if anything goes wrong while initializing the requested <code>StreamConnector</code>
      * @see net.java.sip.communicator.service.protocol.media.TransportManager#getStreamConnector(MediaType)
      */
     @Override
     public StreamConnector getStreamConnector(MediaType mediaType)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         StreamConnector streamConnector = super.getStreamConnector(mediaType);
 
         /*
@@ -438,12 +433,12 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      *
      * @param mediaType the <code>MediaType</code> of the <code>StreamConnector</code> for which the
      * <code>DatagramSocket</code>s are to be returned
+     *
      * @return an array of <code>DatagramSocket</code>s which represents the sockets to be used by the
      * <code>StreamConnector</code> which the specified <code>MediaType</code> in the order of
      * {@link #COMPONENT_IDS} if {@link #iceAgent} has completed; otherwise, <code>null</code>
      */
-    private DatagramSocket[] getStreamConnectorSockets(MediaType mediaType)
-    {
+    private DatagramSocket[] getStreamConnectorSockets(MediaType mediaType) {
         // cmeng: aTalk remote video cannot receive if enabled even for ice4j-2.0
         // if (streamConnectorSockets != null) {
         //     return streamConnectorSockets;
@@ -502,13 +497,14 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      *
      * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> which is to have its
      * <code>target</code> set to the returned <code>MediaStreamTarget</code>
+     *
      * @return the <code>MediaStreamTarget</code> to be used as the <code>target</code> of the
      * <code>MediaStream</code> with the specified <code>MediaType</code>
+     *
      * @see TransportManagerJabberImpl#getStreamTarget(MediaType)
      */
     @Override
-    public MediaStreamTarget getStreamTarget(MediaType mediaType)
-    {
+    public MediaStreamTarget getStreamTarget(MediaType mediaType) {
         /*
          * If this instance is participating in a telephony conference utilizing the Jitsi
          * Videobridge server-side technology that is organized by the local peer, then there is a
@@ -559,11 +555,11 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * the Jingle transport implemented by this <code>TransportManagerJabberImpl</code>.
      *
      * @return the XML namespace of the Jingle transport implemented by this <code>TransportManagerJabberImpl</code>
+     *
      * @see TransportManagerJabberImpl#getXmlNamespace()
      */
     @Override
-    public String getXmlNamespace()
-    {
+    public String getXmlNamespace() {
         return ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_ICE_UDP_1;
     }
 
@@ -573,8 +569,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Both the transport-info attributes i.e. ufrag and pwd must be set for IceUdpTransport by default;
      * In case there are child elements other than candidates e.g. DTLS fingerPrint
      */
-    protected ExtensionElement createTransportPacketExtension()
-    {
+    protected ExtensionElement createTransportPacketExtension() {
         IceUdpTransport.Builder tpBuilder = IceUdpTransport.getBuilder()
                 .setUfrag(iceAgent.getLocalUfrag())
                 .setPassword(iceAgent.getLocalPassword());
@@ -587,8 +582,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      */
     protected ExtensionElement startCandidateHarvest(JingleContent theirContent, JingleContent ourContent,
             TransportInfoSender transportInfoSender, String media)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         ExtensionElement pe;
 
         // Report the gathered candidate addresses.
@@ -648,14 +642,14 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * wishes to utilize <code>transport-info</code>. Local candidate addresses sent by this
      * <code>TransportManagerJabberImpl</code> in <code>transport-info</code> are expected to not be
      * included in the result of {@link #wrapupCandidateHarvest()}.
+     *
      * @throws OperationFailedException if we fail to allocate a port number.
      * @see TransportManagerJabberImpl#startCandidateHarvest(List, List, TransportInfoSender)
      */
     @Override
     public void startCandidateHarvest(List<JingleContent> theirOffer,
             List<JingleContent> ourAnswer, TransportInfoSender transportInfoSender)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         // Timber.w(new Exception("CPE list updated"));
         this.cpeList = ourAnswer;
         super.startCandidateHarvest(theirOffer, ourAnswer, transportInfoSender);
@@ -666,10 +660,10 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * {@link IceUdpTransport}.
      *
      * @param stream the {@link IceMediaStream} that we'd like to describe in XML.
+     *
      * @return the {@link IceUdpTransport} that we
      */
-    private ExtensionElement createTransport(IceMediaStream stream)
-    {
+    private ExtensionElement createTransport(IceMediaStream stream) {
         Agent iceAgent = stream.getParentAgent();
         IceUdpTransport.Builder tpBuilder = IceUdpTransport.getBuilder()
                 .setUfrag(iceAgent.getLocalUfrag())
@@ -697,8 +691,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * {@inheritDoc}
      */
     protected ExtensionElement createTransport(String media)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         IceMediaStream iceStream = iceAgent.getStream(media);
         if (iceStream == null)
             iceStream = createIceStream(media);
@@ -710,10 +703,10 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * state of <code>candidate</code>
      *
      * @param candidate the ICE4J {@link Candidate} that we'd like to convert into an XMPP packet extension.
+     *
      * @return a new {@link IceUdpTransportCandidate} corresponding to the state of the <code>candidate</code> candidate.
      */
-    private IceUdpTransportCandidate createCandidate(Candidate<?> candidate)
-    {
+    private IceUdpTransportCandidate createCandidate(Candidate<?> candidate) {
         IceUdpTransportCandidate.Builder cBuilder = IceUdpTransportCandidate.getBuilder();
         cBuilder.setFoundation(candidate.getFoundation());
 
@@ -745,12 +738,13 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Creates an {@link IceMediaStream} with the specified <code>media</code> name.
      *
      * @param media the name of the stream we'd like to create.
+     *
      * @return the newly created {@link IceMediaStream}
+     *
      * @throws OperationFailedException if binding on the specified media stream fails for some reason.
      */
     protected IceMediaStream createIceStream(String media)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         IceMediaStream stream;
         PortTracker portTracker;
 
@@ -790,8 +784,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @return the highest local port used by any of the local candidates of
      * {@code iceStream}, which falls in the range [{@code min}, {@code max}].
      */
-    private int getMaxAllocatedPort(IceMediaStream iceStream, int min, int max)
-    {
+    private int getMaxAllocatedPort(IceMediaStream iceStream, int min, int max) {
         return Math.max(
                 getMaxAllocatedPort(iceStream.getComponent(Component.RTP), min, max),
                 getMaxAllocatedPort(iceStream.getComponent(Component.RTCP), min, max));
@@ -801,8 +794,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @return the highest local port used by any of the local candidates of
      * {@code component}, which falls in the range [{@code min}, {@code max}].
      */
-    private int getMaxAllocatedPort(Component component, int min, int max)
-    {
+    private int getMaxAllocatedPort(Component component, int min, int max) {
         int maxAllocatedPort = -1;
 
         if (component != null) {
@@ -821,11 +813,11 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Simply returns the list of local candidates that we gathered during the harvest.
      *
      * @return the list of local candidates that we gathered during the harvest
+     *
      * @see TransportManagerJabberImpl#wrapupCandidateHarvest()
      */
     @Override
-    public List<JingleContent> wrapupCandidateHarvest()
-    {
+    public List<JingleContent> wrapupCandidateHarvest() {
         return cpeList;
     }
 
@@ -836,8 +828,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      *
      * @return a reference to the {@link NetworkAddressManagerService}.
      */
-    private static NetworkAddressManagerService getNetAddrMgr()
-    {
+    private static NetworkAddressManagerService getNetAddrMgr() {
         return JabberActivator.getNetworkAddressManagerService();
     }
 
@@ -846,14 +837,15 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      *
      * @param remote the collection of <code>JingleContent</code>s which represents the remote
      * counterpart of the negotiation between the local and the remote peers
+     *
      * @return <code>true</code> if connectivity establishment has been started in response to the call;
      * otherwise, <code>false</code>
+     *
      * @see TransportManagerJabberImpl#startConnectivityEstablishment(Iterable)
      */
     @Override
     public synchronized boolean startConnectivityEstablishment(Iterable<JingleContent> remote)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         // Timber.w(new Exception("start Connectivity Establishment"));
         Map<String, IceUdpTransport> mediaTransports = new LinkedHashMap<>();
         for (JingleContent content : remote) {
@@ -900,13 +892,14 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      *
      * @param remote a <code>Map</code> of media-<code>IceUdpTransport</code> pairs which represents
      * the remote counterpart of the negotiation between the local and the remote peers
+     *
      * @return <code>true</code> if connectivity establishment has been started in response to the call;
      * otherwise, <code>false</code>
+     *
      * @see TransportManagerJabberImpl#startConnectivityEstablishment(Map)
      */
     @Override
-    protected synchronized boolean startConnectivityEstablishment(Map<String, IceUdpTransport> remote)
-    {
+    protected synchronized boolean startConnectivityEstablishment(Map<String, IceUdpTransport> remote) {
         /*
          * If ICE is running already, we try to update the checklists with the candidates.
          * Note that this is a best effort.
@@ -1040,15 +1033,12 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      */
     @Override
     public void wrapupConnectivityEstablishment()
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         TransportManagerJabberImpl delegate = findTransportManagerEstablishingConnectivityWithJitsiVideobridge();
         if ((delegate == null) || (delegate == this)) {
             final Object iceProcessingStateSyncRoot = new Object();
-            PropertyChangeListener stateChangeListener = new PropertyChangeListener()
-            {
-                public void propertyChange(PropertyChangeEvent evt)
-                {
+            PropertyChangeListener stateChangeListener = new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
                     Agent iceAgent = (Agent) evt.getSource();
                     if (iceAgent.isOver()) {
                         Timber.d("Current IceProcessingState: %s", evt.getNewValue());
@@ -1125,11 +1115,11 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      *
      * @param name the name of the content to be removed from the transport-related part of the session
      * represented by this <code>TransportManagerJabberImpl</code>
+     *
      * @see TransportManagerJabberImpl#removeContent(String)
      */
     @Override
-    public void removeContent(String name)
-    {
+    public void removeContent(String name) {
         JingleContent content = removeContent(cpeList, name);
         if (content != null) {
             RtpDescription rtpDescription = content.getFirstChildElement(RtpDescription.class);
@@ -1147,8 +1137,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * that will cleanup all streams, component and close every candidate's sockets.
      */
     @Override
-    public synchronized void close()
-    {
+    public synchronized void close() {
         if (iceAgent != null) {
             iceAgent.removeStateChangeListener(this);
             iceAgent.free();
@@ -1159,12 +1148,12 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Returns the extended type of the candidate selected if this transport manager is using ICE.
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return The extended type of the candidate selected if this transport manager is using ICE.
      * Otherwise, returns null.
      */
     @Override
-    public String getICECandidateExtendedType(String streamName)
-    {
+    public String getICECandidateExtendedType(String streamName) {
         return TransportManager.getICECandidateExtendedType(iceAgent, streamName);
     }
 
@@ -1174,8 +1163,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @return the current state of ICE processing.
      */
     @Override
-    public String getICEState()
-    {
+    public String getICEState() {
         return iceAgent.getState().toString();
     }
 
@@ -1183,11 +1171,11 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Returns the ICE local host address.
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE local host address if this transport manager is using ICE. Otherwise, returns null.
      */
     @Override
-    public InetSocketAddress getICELocalHostAddress(String streamName)
-    {
+    public InetSocketAddress getICELocalHostAddress(String streamName) {
         if (iceAgent != null) {
             LocalCandidate localCandidate = iceAgent.getSelectedLocalCandidate(streamName);
             if (localCandidate != null)
@@ -1200,12 +1188,12 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Returns the ICE remote host address.
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE remote host address if this transport manager is using ICE. Otherwise,
      * returns null.
      */
     @Override
-    public InetSocketAddress getICERemoteHostAddress(String streamName)
-    {
+    public InetSocketAddress getICERemoteHostAddress(String streamName) {
         if (iceAgent != null) {
             RemoteCandidate remoteCandidate = iceAgent.getSelectedRemoteCandidate(streamName);
             if (remoteCandidate != null)
@@ -1218,12 +1206,12 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Returns the ICE local reflexive address (server or peer reflexive).
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE local reflexive address. May be null if this transport manager is not using
      * ICE or if there is no reflexive address for the local candidate used.
      */
     @Override
-    public InetSocketAddress getICELocalReflexiveAddress(String streamName)
-    {
+    public InetSocketAddress getICELocalReflexiveAddress(String streamName) {
         if (iceAgent != null) {
             LocalCandidate localCandidate = iceAgent.getSelectedLocalCandidate(streamName);
             if (localCandidate != null)
@@ -1236,12 +1224,12 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Returns the ICE remote reflexive address (server or peer reflexive).
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE remote reflexive address. May be null if this transport manager is not using
      * ICE or if there is no reflexive address for the remote candidate used.
      */
     @Override
-    public InetSocketAddress getICERemoteReflexiveAddress(String streamName)
-    {
+    public InetSocketAddress getICERemoteReflexiveAddress(String streamName) {
         if (iceAgent != null) {
             RemoteCandidate remoteCandidate = iceAgent.getSelectedRemoteCandidate(streamName);
             if (remoteCandidate != null)
@@ -1254,12 +1242,12 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Returns the ICE local relayed address (server or peer relayed).
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE local relayed address. May be null if this transport manager is not using ICE
      * or if there is no relayed address for the local candidate used.
      */
     @Override
-    public InetSocketAddress getICELocalRelayedAddress(String streamName)
-    {
+    public InetSocketAddress getICELocalRelayedAddress(String streamName) {
         if (iceAgent != null) {
             LocalCandidate localCandidate = iceAgent.getSelectedLocalCandidate(streamName);
             if (localCandidate != null)
@@ -1272,12 +1260,12 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Returns the ICE remote relayed address (server or peer relayed).
      *
      * @param streamName The stream name (AUDIO, VIDEO);
+     *
      * @return the ICE remote relayed address. May be null if this transport manager is not using
      * ICE or if there is no relayed address for the remote candidate used.
      */
     @Override
-    public InetSocketAddress getICERemoteRelayedAddress(String streamName)
-    {
+    public InetSocketAddress getICERemoteRelayedAddress(String streamName) {
         if (iceAgent != null) {
             RemoteCandidate remoteCandidate = iceAgent.getSelectedRemoteCandidate(streamName);
             if (remoteCandidate != null)
@@ -1293,8 +1281,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * or if the agent has never harvested.
      */
     @Override
-    public long getTotalHarvestingTime()
-    {
+    public long getTotalHarvestingTime() {
         return (iceAgent == null) ? 0 : iceAgent.getTotalHarvestingTime();
     }
 
@@ -1302,12 +1289,12 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Returns the harvesting time (in ms) for the harvester given in parameter.
      *
      * @param harvesterName The class name if the harvester.
+     *
      * @return The harvesting time (in ms) for the harvester given in parameter. 0 if this harvester
      * does not exists, if the ICE agent is null, or if the agent has never harvested with this harvester.
      */
     @Override
-    public long getHarvestingTime(String harvesterName)
-    {
+    public long getHarvestingTime(String harvesterName) {
         return (iceAgent == null) ? 0 : iceAgent.getHarvestingTime(harvesterName);
     }
 
@@ -1317,8 +1304,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @return The number of harvesting for this agent.
      */
     @Override
-    public int getNbHarvesting()
-    {
+    public int getNbHarvesting() {
         return (iceAgent == null) ? 0 : iceAgent.getHarvestCount();
     }
 
@@ -1326,10 +1312,10 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Returns the number of harvesting time for the harvester given in parameter.
      *
      * @param harvesterName The class name if the harvester.
+     *
      * @return The number of harvesting time for the harvester given in parameter.
      */
-    public int getNbHarvesting(String harvesterName)
-    {
+    public int getNbHarvesting(String harvesterName) {
         return (iceAgent == null) ? 0 : iceAgent.getHarvestCount(harvesterName);
     }
 
@@ -1338,8 +1324,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      *
      * @param evt the event for state change.
      */
-    public void propertyChange(PropertyChangeEvent evt)
-    {
+    public void propertyChange(PropertyChangeEvent evt) {
         getCallPeer().getMediaHandler().firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
     }
 
@@ -1347,8 +1332,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * {@inheritDoc}
      */
     @Override
-    public void setRtcpmux(boolean rtcpmux)
-    {
+    public void setRtcpmux(boolean rtcpmux) {
         this.rtcpmux = rtcpmux;
     }
 
@@ -1356,8 +1340,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * {@inheritDoc}
      */
     @Override
-    public boolean isRtcpmux()
-    {
+    public boolean isRtcpmux() {
         return rtcpmux;
     }
 }

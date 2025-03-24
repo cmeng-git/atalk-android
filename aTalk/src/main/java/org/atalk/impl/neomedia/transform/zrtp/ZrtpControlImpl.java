@@ -140,7 +140,6 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
 
     /**
      * Get the peer's Hello Hash data.
-     *
      * Use this method to get the peer's Hello Hash data. The method returns the data as a string.
      *
      * @return a String containing the Hello hash value as hex-digits. Peer Hello hash is available

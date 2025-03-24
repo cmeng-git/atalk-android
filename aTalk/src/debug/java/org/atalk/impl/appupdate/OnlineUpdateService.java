@@ -56,6 +56,7 @@ public class OnlineUpdateService extends IntentService {
                     case ACTION_AUTO_UPDATE_APP:
                         checkAppUpdate();
                         break;
+
                     case ACTION_UPDATE_AVAILABLE:
                         UpdateServiceImpl updateService = (UpdateServiceImpl) ServiceUtils
                                 .getService(AppGUIActivator.bundleContext, UpdateService.class);
@@ -63,9 +64,11 @@ public class OnlineUpdateService extends IntentService {
                             updateService.checkForUpdates();
                         }
                         break;
+
                     case ACTION_AUTO_UPDATE_START:
                         setNextAlarm(CHECK_INTERVAL_ON_LAUNCH);
                         break;
+
                     case ACTION_AUTO_UPDATE_STOP:
                         stopAlarm();
                         break;

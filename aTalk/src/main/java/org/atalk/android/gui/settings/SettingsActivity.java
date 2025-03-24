@@ -32,7 +32,6 @@ public class SettingsActivity extends BaseActivity
         // We do not allow opening settings if there is a call currently active
         if (AppCallUtil.checkCallInProgress(this))
             return;
-
         // Display the fragment as the android main content.
         getSupportFragmentManager()
                 .beginTransaction()

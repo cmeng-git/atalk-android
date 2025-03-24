@@ -170,7 +170,6 @@ public class PreviewStream extends CameraStreamBase {
      * Setup ImageReader to retrieve image data for remote video streaming; maxImages = 3 and acquireLatestImage();
      * Use try wth resource in reader.acquireLatestImage() for any IllegalStateException;
      * Call #close to release buffer before camera can acquiring more.
-     *
      * Note: The acquired image is always in landscape mode e.g. 1280x720.
      */
     private final ImageReader.OnImageAvailableListener mOnImageAvailableListener = reader -> {
@@ -201,7 +200,6 @@ public class PreviewStream extends CameraStreamBase {
     /**
      * Pop the oldest image in the bufferQueue for processing; i.e.
      * transformation and copy into the buffer for remote video data streaming
-     *
      * Note: Sync problem between device rotation with new swap/flip; inTransition get clear with old image data in process.
      * (PreviewStream.java:188)#lambda$new$0$PreviewStream: OnImage available exception: index=345623 out of bounds (limit=345600)
      *

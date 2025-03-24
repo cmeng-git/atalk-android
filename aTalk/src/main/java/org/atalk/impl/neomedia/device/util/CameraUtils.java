@@ -44,7 +44,7 @@ public class CameraUtils {
     private static PreviewSurfaceProvider surfaceProvider;
 
     /**
-     * The list of sizes from which the first supported by the respective {@link #Camera2} is to be
+     * The list of sizes from which the first supported by the respective Camera is to be
      * chosen as the size of the one and only <code>Format</code> supported by the associated
      * <code>MediaRecorder</code> <code>CaptureDevice</code>.
      * <p>
@@ -100,17 +100,6 @@ public class CameraUtils {
      *
      * @return the human-readable <code>String</code> representation of the specified <code>sizes</code>
      */
-    public static String cameraSizesToString(Iterable<Size> sizes) {
-        StringBuilder s = new StringBuilder();
-
-        for (Size size : sizes) {
-            if (s.length() != 0)
-                s.append(", ");
-            s.append(size.toString());
-        }
-        return s.toString();
-    }
-
     public static String cameraSizesToString(Size[] sizes) {
         StringBuilder s = new StringBuilder();
         for (Size size : sizes) {

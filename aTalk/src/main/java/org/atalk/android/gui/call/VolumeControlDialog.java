@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.call;
@@ -14,12 +14,12 @@ import android.widget.SeekBar;
 import androidx.annotation.Nullable;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.dialogs.BaseDialogFragment;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.service.neomedia.VolumeControl;
 import org.atalk.service.neomedia.event.VolumeChangeEvent;
 import org.atalk.service.neomedia.event.VolumeChangeListener;
-import org.atalk.android.gui.dialogs.BaseDialogFragment;
 
 /**
  * The dialog allows user to manipulate input or output volume gain level. To specify which one will be manipulated by

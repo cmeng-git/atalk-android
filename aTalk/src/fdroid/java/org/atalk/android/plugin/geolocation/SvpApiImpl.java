@@ -33,14 +33,12 @@ import java.util.List;
  *
  * @author Eng Chong Meng
  */
-public class SvpApiImpl implements SvpApi
-{
+public class SvpApiImpl implements SvpApi {
     /**
      * Perform osm street map view when user click the show map button
      */
     @Override
-    public void onSVPClick(Activity activity, double[] dblLocation)
-    {
+    public void onSVPClick(Activity activity, double[] dblLocation) {
         Location mLocation = toLocation(dblLocation);
 
         Intent intent = new Intent(activity, OsmActivity.class);
@@ -57,8 +55,7 @@ public class SvpApiImpl implements SvpApi
      */
     @Override
 
-    public void onSVPLongClick(Activity activity, List<double[]> dblLocations)
-    {
+    public void onSVPLongClick(Activity activity, List<double[]> dblLocations) {
         ArrayList<Location> locations = new ArrayList<>();
         for (double[] entry : dblLocations) {
             locations.add(toLocation(entry));
@@ -87,11 +84,11 @@ public class SvpApiImpl implements SvpApi
      *
      * @param mSVP OsmActivity
      * @param dblLocation: double[] value containing Latitude, Longitude and Altitude
-     * @return  OsmActivity, update if any
+     *
+     * @return OsmActivity, update if any
      */
     @Override
-    public Object svpHandler(Object mSVP, double[] dblLocation)
-    {
+    public Object svpHandler(Object mSVP, double[] dblLocation) {
         if (mSVP == null) {
             Activity currentActivity = aTalkApp.getCurrentActivity();
             if (currentActivity != null) {
@@ -110,6 +107,7 @@ public class SvpApiImpl implements SvpApi
      * Covert double[] to Location
      *
      * @param dblLocation double[] value containing Latitude, Longitude and Altitude
+     *
      * @return Location
      */
     private Location toLocation(double[] dblLocation) {
