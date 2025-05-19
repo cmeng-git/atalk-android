@@ -45,7 +45,7 @@ public abstract class ViewDependentProvider<T> {
     /**
      * The view (can either be SurfaceView or TextureView) maintained by this instance.
      */
-    protected View view;
+    protected View mView;
 
     /**
      * Use for surfaceCreation to set surface holder size for correct camera local preview aspect ratio
@@ -83,12 +83,12 @@ public abstract class ViewDependentProvider<T> {
      * <code>container</code>.
      */
     protected void ensureViewCreated() {
-        if (view == null) {
+        if (mView == null) {
             mActivity.runOnUiThread(() -> {
-                view = createViewInstance();
+                mView = createViewInstance();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                mContainer.addView(view, params);
+                mContainer.addView(mView, params);
                 mContainer.setVisibility(View.VISIBLE);
             });
         }
@@ -100,7 +100,7 @@ public abstract class ViewDependentProvider<T> {
      * @return maintained <code>View</code> object.
      */
     public View getView() {
-        return view;
+        return mView;
     }
 
     /**
@@ -120,9 +120,9 @@ public abstract class ViewDependentProvider<T> {
      * Checks if maintained view exists and removes if from the <code>container</code>.
      */
     protected void ensureViewDestroyed() {
-        if (view != null) {
-            final View viewToRemove = view;
-            view = null;
+        if (mView != null) {
+            final View viewToRemove = mView;
+            mView = null;
 
             mActivity.runOnUiThread(() -> {
                 mContainer.removeView(viewToRemove);

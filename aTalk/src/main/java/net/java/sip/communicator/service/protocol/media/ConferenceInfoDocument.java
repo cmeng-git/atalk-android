@@ -7,15 +7,8 @@ package net.java.sip.communicator.service.protocol.media;
 
 import android.text.TextUtils;
 
-import org.atalk.util.xml.XMLException;
-import org.atalk.util.xml.XMLUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +18,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.atalk.util.xml.XMLException;
+import org.atalk.util.xml.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import timber.log.Timber;
 
@@ -38,8 +37,7 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class ConferenceInfoDocument
-{
+public class ConferenceInfoDocument {
     /**
      * The namespace of the conference-info element.
      */
@@ -166,8 +164,7 @@ public class ConferenceInfoDocument
      * @throws XMLException if a document failed to be created.
      */
     public ConferenceInfoDocument()
-            throws XMLException
-    {
+            throws XMLException {
         try {
             document = XMLUtils.createDocument();
         } catch (Exception e) {
@@ -196,11 +193,11 @@ public class ConferenceInfoDocument
      * <code>xml</code>
      *
      * @param xml the XML string to parse
+     *
      * @throws XMLException If parsing failed
      */
     public ConferenceInfoDocument(String xml)
-            throws XMLException
-    {
+            throws XMLException {
         byte[] bytes = xml.getBytes(StandardCharsets.UTF_8);
         try {
             document = XMLUtils.newDocumentBuilderFactory().newDocumentBuilder()
@@ -244,11 +241,11 @@ public class ConferenceInfoDocument
      * <code>confInfo</code>
      *
      * @param confInfo the document to copy
+     *
      * @throws XMLException if a document failed to be created.
      */
     public ConferenceInfoDocument(ConferenceInfoDocument confInfo)
-            throws XMLException
-    {
+            throws XMLException {
         this();
 
         // temporary
@@ -274,8 +271,7 @@ public class ConferenceInfoDocument
      * or -1 if there is no <code>version</code> attribute or if it's value couldn't be parsed
      * as an integer.
      */
-    public int getVersion()
-    {
+    public int getVersion() {
         String versionString = conferenceInfo.getAttribute(VERSION_ATTR_NAME);
         if (versionString == null)
             return -1;
@@ -295,8 +291,7 @@ public class ConferenceInfoDocument
      * @param version the value to set the <code>version</code> attribute of the <code>conference-info</code>
      * element to.
      */
-    public void setVersion(int version)
-    {
+    public void setVersion(int version) {
         conferenceInfo.setAttribute(VERSION_ATTR_NAME, Integer.toString(version));
     }
 
@@ -305,8 +300,7 @@ public class ConferenceInfoDocument
      *
      * @return the value of the <code>state</code> attribute of the <code>conference-info</code> element.
      */
-    public State getState()
-    {
+    public State getState() {
         return getState(conferenceInfo);
     }
 
@@ -317,8 +311,7 @@ public class ConferenceInfoDocument
      * @return the value of the <code>state</code> attribute of the <code>users</code> child of the
      * <code>conference-info</code> element.
      */
-    public State getUsersState()
-    {
+    public State getUsersState() {
         return getState(users);
     }
 
@@ -328,8 +321,7 @@ public class ConferenceInfoDocument
      *
      * @param state the state to set
      */
-    public void setUsersState(State state)
-    {
+    public void setUsersState(State state) {
         setState(users, state);
     }
 
@@ -339,8 +331,7 @@ public class ConferenceInfoDocument
      * @param state the value to set the <code>state</code> attribute of the <code>conference-info</code> element
      * to.
      */
-    public void setState(State state)
-    {
+    public void setState(State state) {
         setState(conferenceInfo, state);
     }
 
@@ -352,8 +343,7 @@ public class ConferenceInfoDocument
      * @param sid the value to set the <code>sid</code> attribute of the <code>conference-info</code> element
      * to.
      */
-    public void setSid(String sid)
-    {
+    public void setSid(String sid) {
         if (sid == null || sid.equals(""))
             conferenceInfo.removeAttribute("sid");
         else
@@ -365,8 +355,7 @@ public class ConferenceInfoDocument
      * not part of RFC4575 and is here because we are temporarily using it in our XMPP
      * implementation. TODO: remote it when we define another way to handle the Jingle SID
      */
-    public String getSid()
-    {
+    public String getSid() {
         return conferenceInfo.getAttribute("sid");
     }
 
@@ -376,8 +365,7 @@ public class ConferenceInfoDocument
      * @param entity the value to set the <code>entity</code> attribute of the <code>conference-info</code>
      * document to.
      */
-    public void setEntity(String entity)
-    {
+    public void setEntity(String entity) {
         if (entity == null || entity.equals(""))
             conferenceInfo.removeAttribute(ENTITY_ATTR_NAME);
         else
@@ -389,8 +377,7 @@ public class ConferenceInfoDocument
      *
      * @return The value of the <code>entity</code> attribute of the <code>conference-info</code> element.
      */
-    public String getEntity()
-    {
+    public String getEntity() {
         return conferenceInfo.getAttribute(ENTITY_ATTR_NAME);
     }
 
@@ -400,8 +387,7 @@ public class ConferenceInfoDocument
      *
      * @param count the value to set the content of <code>user-count</code> to
      */
-    public void setUserCount(int count)
-    {
+    public void setUserCount(int count) {
         // conference-state and its user-count child aren't mandatory
         if (userCount != null) {
             userCount.setTextContent(Integer.toString(count));
@@ -427,8 +413,7 @@ public class ConferenceInfoDocument
      * @return the content of the <code>user-count</code> child of the <code>conference-state</code> child
      * of <code>conference-info</code> element.
      */
-    public int getUserCount()
-    {
+    public int getUserCount() {
         int ret = -1;
         try {
             ret = Integer.parseInt(userCount.getTextContent());
@@ -445,8 +430,7 @@ public class ConferenceInfoDocument
      * @return the XML representation of the <code>conference-info</code> tree, or <code>null</code> if an
      * error occurs while trying to get it.
      */
-    public String toXml(String enclosingNamespace)
-    {
+    public String toXml(String enclosingNamespace) {
         try {
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             StringWriter buffer = new StringWriter();
@@ -465,8 +449,7 @@ public class ConferenceInfoDocument
      * @return the XML representation of the document or an error string.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         String s = toXml(null);
         return s == null ? "Could not get conference-info XML" : s;
     }
@@ -478,8 +461,7 @@ public class ConferenceInfoDocument
      * @return the list of <code>User</code> that represents the <code>user</code> children of the
      * <code>users</code> child element of <code>conference-info</code>
      */
-    public List<User> getUsers()
-    {
+    public List<User> getUsers() {
         return usersList;
     }
 
@@ -488,11 +470,11 @@ public class ConferenceInfoDocument
      * <code>entity</code>, or <code>null</code> if one wasn't found.
      *
      * @param entity The value of the <code>entity</code> attribute to search for.
+     *
      * @return the <code>User</code> of this document with <code>entity</code> attribute <code>entity</code>, or
      * <code>null</code> if one wasn't found.
      */
-    public User getUser(String entity)
-    {
+    public User getUser(String entity) {
         if (entity == null)
             return null;
         for (User u : usersList) {
@@ -506,10 +488,10 @@ public class ConferenceInfoDocument
      * Creates a new <code>User</code> instance, adds it to the document and returns it.
      *
      * @param entity The value to use for the <code>entity</code> attribute of the new <code>User</code>.
+     *
      * @return the newly created <code>User</code> instance.
      */
-    public User addNewUser(String entity)
-    {
+    public User addNewUser(String entity) {
         Element userElement = document.createElement(USER_ELEMENT);
         User user = new User(userElement);
         user.setEntity(entity);
@@ -525,8 +507,7 @@ public class ConferenceInfoDocument
      *
      * @param user the <code>User</code> to add a copy of
      */
-    public void addUser(User user)
-    {
+    public void addUser(User user) {
         User newUser = addNewUser(user.getEntity());
         newUser.setDisplayText(user.getDisplayText());
         newUser.setState(user.getState());
@@ -539,8 +520,7 @@ public class ConferenceInfoDocument
      *
      * @param entity the entity of the <code>User</code> to remove.
      */
-    public void removeUser(String entity)
-    {
+    public void removeUser(String entity) {
         User user = getUser(entity);
         if (user != null) {
             usersList.remove(user);
@@ -553,8 +533,7 @@ public class ConferenceInfoDocument
      *
      * @return the <code>Document</code> that this instance wraps around.
      */
-    public Document getDocument()
-    {
+    public Document getDocument() {
         return document;
     }
 
@@ -563,11 +542,11 @@ public class ConferenceInfoDocument
      * <code>Element</code>. Default to <code>State.FULL</code> which is the RFC4575 default.
      *
      * @param element the <code>Element</code>
+     *
      * @return the <code>State</code> corresponding to the <code>state</code> attribute of an
      * <code>Element</code>.
      */
-    private State getState(Element element)
-    {
+    private State getState(Element element) {
         State state = State.parseString(element.getAttribute(STATE_ATTR_NAME));
         return state == null ? State.FULL : state;
     }
@@ -579,8 +558,7 @@ public class ConferenceInfoDocument
      * @param element The <code>Element</code> for which to set the "state" attribute of.
      * @param state the <code>State</code> which to set.
      */
-    private void setState(Element element, State state)
-    {
+    private void setState(Element element, State state) {
         if (element != null) {
             if (state == State.FULL || state == null)
                 element.removeAttribute(STATE_ATTR_NAME);
@@ -596,8 +574,7 @@ public class ConferenceInfoDocument
      * @param element the <code>Element</code> for which to set the <code>status</code> child element.
      * @param statusString the <code>String</code> to use for the text content of the <code>status</code> element
      */
-    private void setStatus(Element element, String statusString)
-    {
+    private void setStatus(Element element, String statusString) {
         Element statusElement = XMLUtils.findChild(element, STATUS_ELEMENT);
         if (statusString == null || statusString.equals("")) {
             if (statusElement != null)
@@ -615,8 +592,7 @@ public class ConferenceInfoDocument
     /**
      * Represents the possible values for the <code>state</code> attribute (see RFC4575)
      */
-    public enum State
-    {
+    public enum State {
         /**
          * State <code>full</code>
          */
@@ -642,8 +618,7 @@ public class ConferenceInfoDocument
          *
          * @param name
          */
-        State(String name)
-        {
+        State(String name) {
             this.name = name;
         }
 
@@ -653,8 +628,7 @@ public class ConferenceInfoDocument
          * @return the name of this <code>State</code>
          */
         @Override
-        public String toString()
-        {
+        public String toString() {
             return name;
         }
 
@@ -663,8 +637,7 @@ public class ConferenceInfoDocument
          *
          * @return a <code>State</code> value corresponding to the specified <code>name</code>
          */
-        public static State parseString(String name)
-        {
+        public static State parseString(String name) {
             if (FULL.toString().equals(name))
                 return FULL;
             else if (PARTIAL.toString().equals(name))
@@ -680,8 +653,7 @@ public class ConferenceInfoDocument
      * Wraps around an <code>Element</code> and represents a <code>user</code> element (child of the
      * <code>users</code> element). See RFC4575.
      */
-    public class User
-    {
+    public class User {
         /**
          * The underlying <code>Element</code>.
          */
@@ -699,8 +671,7 @@ public class ConferenceInfoDocument
          *
          * @param user the <code>Element</code> to use
          */
-        private User(Element user)
-        {
+        private User(Element user) {
             this.userElement = user;
             NodeList endpointsNodeList = user.getElementsByTagName(ENDPOINT_ELEMENT);
             for (int i = 0; i < endpointsNodeList.getLength(); i++) {
@@ -714,8 +685,7 @@ public class ConferenceInfoDocument
          *
          * @param entity the value to set for the <code>entity</code> attribute.
          */
-        public void setEntity(String entity)
-        {
+        public void setEntity(String entity) {
             if (entity == null || entity.equals(""))
                 userElement.removeAttribute(ENTITY_ATTR_NAME);
             else
@@ -727,8 +697,7 @@ public class ConferenceInfoDocument
          *
          * @return the value of the <code>entity</code> attribute of this <code>User</code>'s element.
          */
-        public String getEntity()
-        {
+        public String getEntity() {
             return userElement.getAttribute(ENTITY_ATTR_NAME);
         }
 
@@ -737,8 +706,7 @@ public class ConferenceInfoDocument
          *
          * @param state the value to use for the <code>state</code> attribute.
          */
-        public void setState(State state)
-        {
+        public void setState(State state) {
             ConferenceInfoDocument.this.setState(userElement, state);
         }
 
@@ -747,8 +715,7 @@ public class ConferenceInfoDocument
          *
          * @return the value of the <code>state</code> attribute of this <code>User</code>'s element
          */
-        public State getState()
-        {
+        public State getState() {
             return ConferenceInfoDocument.this.getState(userElement);
         }
 
@@ -757,8 +724,7 @@ public class ConferenceInfoDocument
          *
          * @param text the text content to use for the <code>display-text</code> element.
          */
-        public void setDisplayText(String text)
-        {
+        public void setDisplayText(String text) {
             Element displayText = XMLUtils.findChild(userElement, DISPLAY_TEXT_ELEMENT);
             if (text == null || text.equals("")) {
                 if (displayText != null)
@@ -780,8 +746,7 @@ public class ConferenceInfoDocument
          * @return the text content of the <code>display-text</code> child element of this <code>User</code>
          * 's element, if it has such a child. Returns <code>null</code> otherwise.
          */
-        public String getDisplayText()
-        {
+        public String getDisplayText() {
             Element displayText = XMLUtils.findChild(userElement, DISPLAY_TEXT_ELEMENT);
             if (displayText != null)
                 return displayText.getTextContent();
@@ -796,8 +761,7 @@ public class ConferenceInfoDocument
          * @return the list of <code>Endpoint</code>s which represent the <code>endpoint</code> children of
          * this <code>User</code>'s element.
          */
-        public List<Endpoint> getEndpoints()
-        {
+        public List<Endpoint> getEndpoints() {
             return endpointsList;
         }
 
@@ -806,11 +770,11 @@ public class ConferenceInfoDocument
          * <code>entity</code> attribute <code>entity</code>, or <code>null</code> if one wasn't found.
          *
          * @param entity The value of the <code>entity</code> attribute to search for.
+         *
          * @return The <code>Endpoint</code> with <code>entity</code> attribute <code>entity</code>, or
          * <code>null</code> if one wasn't found.
          */
-        public Endpoint getEndpoint(String entity)
-        {
+        public Endpoint getEndpoint(String entity) {
             if (entity == null)
                 return null;
             for (Endpoint e : endpointsList) {
@@ -824,10 +788,10 @@ public class ConferenceInfoDocument
          * Creates a new <code>Endpoint</code> instance, adds it to this <code>User</code> and returns it.
          *
          * @param entity The value to use for the <code>entity</code> attribute of the new <code>Endpoint</code>.
+         *
          * @return the newly created <code>Endpoint</code> instance.
          */
-        public Endpoint addNewEndpoint(String entity)
-        {
+        public Endpoint addNewEndpoint(String entity) {
             Element endpointElement = document.createElement(ENDPOINT_ELEMENT);
             Endpoint endpoint = new Endpoint(endpointElement);
             endpoint.setEntity(entity);
@@ -843,8 +807,7 @@ public class ConferenceInfoDocument
          *
          * @param endpoint the <code>Endpoint</code> to add a copy of
          */
-        public void addEndpoint(Endpoint endpoint)
-        {
+        public void addEndpoint(Endpoint endpoint) {
             Endpoint newEndpoint = addNewEndpoint(endpoint.getEntity());
             newEndpoint.setStatus(endpoint.getStatus());
             newEndpoint.setState(endpoint.getState());
@@ -858,8 +821,7 @@ public class ConferenceInfoDocument
          *
          * @param entity the <code>entity</code> of the <code>Endpoint</code> to remove
          */
-        public void removeEndpoint(String entity)
-        {
+        public void removeEndpoint(String entity) {
             Endpoint endpoint = getEndpoint(entity);
             if (endpoint != null) {
                 endpointsList.remove(endpoint);
@@ -871,8 +833,7 @@ public class ConferenceInfoDocument
     /**
      * Wraps around an <code>Element</code> and represents an <code>endpoint</code> element. See RFC4575.
      */
-    public class Endpoint
-    {
+    public class Endpoint {
         /**
          * The underlying <code>Element</code>.
          */
@@ -890,8 +851,7 @@ public class ConferenceInfoDocument
          *
          * @param endpoint the <code>Element</code> to use
          */
-        private Endpoint(Element endpoint)
-        {
+        private Endpoint(Element endpoint) {
             this.endpointElement = endpoint;
             NodeList mediaNodeList = endpoint.getElementsByTagName(MEDIA_ELEMENT);
             for (int i = 0; i < mediaNodeList.getLength(); i++) {
@@ -905,8 +865,7 @@ public class ConferenceInfoDocument
          *
          * @param entity the value to set for the <code>entity</code> attribute.
          */
-        public void setEntity(String entity)
-        {
+        public void setEntity(String entity) {
             if (entity == null || entity.equals(""))
                 endpointElement.removeAttribute(ENTITY_ATTR_NAME);
             else
@@ -918,8 +877,7 @@ public class ConferenceInfoDocument
          *
          * @return the <code>entity</code> attribute of this <code>Endpoint</code>'s element.
          */
-        public String getEntity()
-        {
+        public String getEntity() {
             return endpointElement.getAttribute(ENTITY_ATTR_NAME);
         }
 
@@ -928,8 +886,7 @@ public class ConferenceInfoDocument
          *
          * @param state the value to use for the <code>state</code> attribute.
          */
-        public void setState(State state)
-        {
+        public void setState(State state) {
             ConferenceInfoDocument.this.setState(endpointElement, state);
         }
 
@@ -938,8 +895,7 @@ public class ConferenceInfoDocument
          *
          * @return the value of the <code>state</code> attribute of this <code>Endpoint</code>'s element
          */
-        public State getState()
-        {
+        public State getState() {
             return ConferenceInfoDocument.this.getState(endpointElement);
         }
 
@@ -948,8 +904,7 @@ public class ConferenceInfoDocument
          *
          * @param status the value to be used for the text content of the <code>status</code> element.
          */
-        public void setStatus(EndpointStatusType status)
-        {
+        public void setStatus(EndpointStatusType status) {
             ConferenceInfoDocument.this.setStatus(endpointElement,
                     status == null ? null : status.toString());
         }
@@ -961,8 +916,7 @@ public class ConferenceInfoDocument
          * @return the <code>EndpointStatusType</code> corresponding to the <code>status</code> child of
          * this <code>Endpoint</code> 's element, or <code>null</code>.
          */
-        public EndpointStatusType getStatus()
-        {
+        public EndpointStatusType getStatus() {
             Element statusElement = XMLUtils.findChild(endpointElement, STATUS_ELEMENT);
             return statusElement == null ? null : EndpointStatusType.parseString(statusElement
                     .getTextContent());
@@ -975,8 +929,7 @@ public class ConferenceInfoDocument
          * @return the list of <code>Media</code>s which represent the <code>media</code> children of this
          * <code>Endpoint</code>'s element.
          */
-        public List<Media> getMedias()
-        {
+        public List<Media> getMedias() {
             return mediasList;
         }
 
@@ -985,11 +938,11 @@ public class ConferenceInfoDocument
          * <code>id</code> attribute <code>id</code>, or <code>null</code> if one wasn't found.
          *
          * @param id The value of the <code>id</code> attribute to search for.
+         *
          * @return The <code>Media</code>s with <code>id</code> attribute <code>id</code>, or <code>null</code> if
          * one wasn't found.
          */
-        public Media getMedia(String id)
-        {
+        public Media getMedia(String id) {
             if (id == null)
                 return null;
             for (Media m : mediasList) {
@@ -1004,10 +957,10 @@ public class ConferenceInfoDocument
          *
          * @param id The value to use for the <code>id</code> attribute of the new <code>Media</code>'s
          * element.
+         *
          * @return the newly created <code>Media</code> instance.
          */
-        public Media addNewMedia(String id)
-        {
+        public Media addNewMedia(String id) {
             Element mediaElement = document.createElement(MEDIA_ELEMENT);
             Media media = new Media(mediaElement);
             media.setId(id);
@@ -1023,8 +976,7 @@ public class ConferenceInfoDocument
          *
          * @param media the <code>Media</code> to add a copy of
          */
-        public void addMedia(Media media)
-        {
+        public void addMedia(Media media) {
             Media newMedia = addNewMedia(media.getId());
             newMedia.setSrcId(media.getSrcId());
             newMedia.setType(media.getType());
@@ -1037,8 +989,7 @@ public class ConferenceInfoDocument
          *
          * @param id the <code>id</code> of the <code>Media</code> to remove.
          */
-        public void removeMedia(String id)
-        {
+        public void removeMedia(String id) {
             Media media = getMedia(id);
             if (media != null) {
                 mediasList.remove(media);
@@ -1050,8 +1001,7 @@ public class ConferenceInfoDocument
     /**
      * Wraps around an <code>Element</code> and represents a <code>media</code> element. See RFC4575.
      */
-    public class Media
-    {
+    public class Media {
         /**
          * The underlying <code>Element</code>.
          */
@@ -1063,8 +1013,7 @@ public class ConferenceInfoDocument
          *
          * @param media the <code>Element</code> to use
          */
-        private Media(Element media)
-        {
+        private Media(Element media) {
             this.mediaElement = media;
         }
 
@@ -1073,8 +1022,7 @@ public class ConferenceInfoDocument
          *
          * @param id the value to set for the <code>id</code> attribute.
          */
-        public void setId(String id)
-        {
+        public void setId(String id) {
             if (id == null || id.equals(""))
                 mediaElement.removeAttribute(ID_ATTR_NAME);
             else
@@ -1086,8 +1034,7 @@ public class ConferenceInfoDocument
          *
          * @return the <code>id</code> attribute of this <code>Media</code>'s element.
          */
-        public String getId()
-        {
+        public String getId() {
             return mediaElement.getAttribute(ID_ATTR_NAME);
         }
 
@@ -1096,8 +1043,7 @@ public class ConferenceInfoDocument
          *
          * @param srcId the value to be used for the text content of the <code>src-id</code> element.
          */
-        public void setSrcId(String srcId)
-        {
+        public void setSrcId(String srcId) {
             Element srcIdElement = XMLUtils.findChild(mediaElement, SRC_ID_ELEMENT);
             if (srcId == null || srcId.equals("")) {
                 if (srcIdElement != null)
@@ -1119,8 +1065,7 @@ public class ConferenceInfoDocument
          * @return the text content of the <code>src-id</code> child element of this <code>Media</code>'s
          * element, if it has such a child. Returns <code>null</code> otherwise.
          */
-        public String getSrcId()
-        {
+        public String getSrcId() {
             Element srcIdElement = XMLUtils.findChild(mediaElement, SRC_ID_ELEMENT);
             return srcIdElement == null ? null : srcIdElement.getTextContent();
         }
@@ -1130,8 +1075,7 @@ public class ConferenceInfoDocument
          *
          * @param type the value to be used for the text content of the <code>type</code> element.
          */
-        public void setType(String type)
-        {
+        public void setType(String type) {
             Element typeElement = XMLUtils.findChild(mediaElement, TYPE_ELEMENT);
             if (type == null || type.equals("")) {
                 if (typeElement != null)
@@ -1153,8 +1097,7 @@ public class ConferenceInfoDocument
          * @return the text content of the <code>type</code> child element of this <code>Media</code>'s
          * element, if it has such a child. Returns <code>null</code> otherwise.
          */
-        public String getType()
-        {
+        public String getType() {
             Element typeElement = XMLUtils.findChild(mediaElement, TYPE_ELEMENT);
             return typeElement == null ? null : typeElement.getTextContent();
         }
@@ -1164,8 +1107,7 @@ public class ConferenceInfoDocument
          *
          * @param status the value to be used for the text content of the <code>status</code> element.
          */
-        public void setStatus(String status)
-        {
+        public void setStatus(String status) {
             ConferenceInfoDocument.this.setStatus(mediaElement, status);
         }
 
@@ -1176,8 +1118,7 @@ public class ConferenceInfoDocument
          * @return the text content of the <code>status</code> child element of this <code>Media</code>'s
          * element, if it has such a child. Returns <code>null</code> otherwise.
          */
-        public String getStatus()
-        {
+        public String getStatus() {
             Element statusElement = XMLUtils.findChild(mediaElement, STATUS_ELEMENT);
             return statusElement == null ? null : statusElement.getTextContent();
         }
@@ -1188,8 +1129,7 @@ public class ConferenceInfoDocument
      *
      * @author Sebastien Vincent
      */
-    public enum EndpointStatusType
-    {
+    public enum EndpointStatusType {
         /**
          * Pending.
          */
@@ -1245,8 +1185,7 @@ public class ConferenceInfoDocument
          *
          * @param type type name.
          */
-        private EndpointStatusType(String type)
-        {
+        private EndpointStatusType(String type) {
             this.type = type;
         }
 
@@ -1256,8 +1195,7 @@ public class ConferenceInfoDocument
          * @return type name
          */
         @Override
-        public String toString()
-        {
+        public String toString() {
             return type;
         }
 
@@ -1265,12 +1203,13 @@ public class ConferenceInfoDocument
          * Returns a <code>EndPointType</code>.
          *
          * @param typeStr the <code>String</code> that we'd like to parse.
+         *
          * @return an EndPointType.
+         *
          * @throws IllegalArgumentException in case <code>typeStr</code> is not a valid <code>EndPointType</code>.
          */
         public static EndpointStatusType parseString(String typeStr)
-                throws IllegalArgumentException
-        {
+                throws IllegalArgumentException {
             for (EndpointStatusType value : values())
                 if (value.toString().equals(typeStr))
                     return value;

@@ -418,24 +418,36 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      */
     public void sendInstantMessage(String message, int encType) {
+        sendInstantFTMessage(message, encType, null);
+    }
+
+    /**
+     * Sends the given instant message through this chat transport, by specifying the mime type (html or plain text).
+     * Use by Http file upload to send message to recipient with specified msgId.
+     *
+     * @param message The message to send.
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly etc
+     * @param msgId The message Id used in sending the message.
+     */
+    public void sendInstantFTMessage(String message, int encType, String msgId) {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
             aTalkApp.showToastMessage(R.string.send_message_not_supported, getName());
             return;
         }
 
-        // Strip HTML flag if ENCODE_HTML not supported by the operation
+        // Strip HTML flag if ENCODE_HTML not supported by the send message operation.
         if (!imOpSet.isContentTypeSupported(IMessage.ENCODE_HTML))
-            encType = encType & IMessage.FLAG_MODE_MASK;
+            encType = encType & ~IMessage.ENCODE_HTML;
+        IMessage imsg = imOpSet.createMessageWithUID(message, encType, msgId);
 
-        IMessage msg = imOpSet.createMessage(message, encType, "");
         ContactResource toResource = (mContactResource != null) ? mContactResource : ContactResource.BASE_RESOURCE;
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
-            imOpSet.sendInstantMessage(mContact, toResource, msg, null, omemoManager);
+            imOpSet.sendInstantMessage(mContact, toResource, imsg, null, omemoManager);
         }
         else {
-            imOpSet.sendInstantMessage(mContact, toResource, msg);
+            imOpSet.sendInstantMessage(mContact, toResource, imsg);
         }
     }
 
@@ -444,9 +456,10 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * type (html or plain text) and the id of the message to replace.
      *
      * @param message The message to send.
-     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly etc
      * @param correctedMessageUID The ID of the message being corrected by this message.
      */
+    @Override
     public void sendInstantMessage(String message, int encType, String correctedMessageUID) {
         if (!allowsMessageCorrections()) {
             return;
@@ -454,7 +467,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
 
         OperationSetMessageCorrection mcOpSet = mPPS.getOperationSet(OperationSetMessageCorrection.class);
         if (!mcOpSet.isContentTypeSupported(IMessage.ENCODE_HTML))
-            encType = encType & IMessage.FLAG_MODE_MASK;
+            encType = encType & ~IMessage.ENCODE_HTML;
         IMessage msg = mcOpSet.createMessage(message, encType, "");
 
         ContactResource toResource = (mContactResource != null) ? mContactResource : ContactResource.BASE_RESOURCE;
@@ -658,24 +671,25 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             throws Exception {
         if (getStatus().isOnline()) {
             try {
-                // Use http file upload if available.
+                // Use http file upload if available - first choice.
                 return httpFileUpload(file, chatType, xferCon);
 
-                /* ==== For testing of JingleFileSend or ByteStream transfer only ==== */
+                /* ==== Uncomment for testing of JingleFileSend or ByteStream transfer only ==== */
                 // return jingleFileSend(file, chatType, xferCon);
                 // return ftOpSet.sendFile(mContact, file, chatType, xferCon.getMessageUuid());
             } catch (OperationNotSupportedException ex) {
                 try {
-                    // Use jingle file transfer protocol for normal and JET as second attempt if supported by buddy
+                    // First fallback - Use jingle file transfer protocol for normal and JET if supported by buddy
                     return jingleFileSend(file, chatType, xferCon);
+                    // return httpFileUpload(file, chatType, xferCon);
                 } catch (OperationNotSupportedException ex2) {
-                    // Use legacy FileTransfer starting with SOCKS5, fallback to IBB ByteStream transfer.
+                    // Final fallback - Use legacy FileTransfer starting with SOCKS5, fallback to IBB ByteStream transfer.
                     return ftOpSet.sendFile(mContact, file, chatType, xferCon.getMessageUuid());
                 }
             }
         }
         else {
-            // Use http file upload for all media file sharing for offline user
+            // Always use http file upload for all media file sharing for offline user.
             return httpFileUpload(file, chatType, xferCon);
         }
     }
@@ -708,6 +722,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         if ((recipient != null)
                 && (!OutgoingFileOfferJingleImpl.hasSecurityError(mContact) || (ChatFragment.MSGTYPE_OMEMO != chatType))) {
             OutgoingFileOfferController ofoController;
+            OutgoingFileOfferJingleImpl outgoingTransfer = null;
             String msgUuid = xferCon.getMessageUuid();
             Context ctx = aTalkApp.getInstance();
             JingleFile jingleFile = createJingleFile(ctx, file);
@@ -722,10 +737,10 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                     // throw new OperationNotSupportedException("Use next available File Transfer");
                     ofoController = jingleFTManager.sendFile(file, jingleFile, recipient);
                 }
-                OutgoingFileOfferJingleImpl outgoingTransfer
+                outgoingTransfer
                         = new OutgoingFileOfferJingleImpl(mContact, file, msgUuid, ofoController, mPPS.getConnection());
                 // Let OutgoingFileOfferJingleImpl handle status changes
-                // xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, mContact, encType, "JingleFile Sending");
+                // xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, mContact, mEncryption, "JingleFile Sending");
                 return outgoingTransfer;
             } catch (SSLHandshakeException ex) {
                 throw new OperationNotSupportedException(ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
@@ -739,7 +754,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             }
         }
         else {
-            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_supported));
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_supported, getStatus().getStatusName()));
         }
     }
 
@@ -797,17 +812,17 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             throws Exception {
         // check to see if server supports httpFileUpload service if contact is off line or legacy file transfer failed
         if (hasUploadService()) {
-            int encType = IMessage.ENCRYPTION_NONE;
+            int encryption = IMessage.ENCRYPTION_NONE;
             Object url;
             try {
                 if (ChatFragment.MSGTYPE_OMEMO == chatType) {
-                    encType = IMessage.ENCRYPTION_OMEMO;
+                    encryption = IMessage.ENCRYPTION_OMEMO;
                     url = httpFileUploadManager.uploadFileEncrypted(file, xferCon);
                 }
                 else {
                     url = httpFileUploadManager.uploadFile(file, xferCon);
                 }
-                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, mContact, encType, "HTTP File Upload");
+                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, mContact, encryption, "HTTP File Upload");
                 return url;
             } catch (SSLHandshakeException ex) {
                 throw new OperationNotSupportedException(ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
@@ -818,7 +833,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             }
         }
         else
-            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_supported));
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_supported, getStatus().getStatusName()));
     }
 
     /**

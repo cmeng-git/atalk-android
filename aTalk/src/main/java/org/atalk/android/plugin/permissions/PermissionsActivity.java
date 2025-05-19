@@ -200,7 +200,7 @@ public class PermissionsActivity extends BaseActivity {
             mBinding.videoView.setVisibility(View.GONE);
         }
         mBinding.allPermissionsButton.setOnClickListener(v -> onAllPermissionsButtonClicked());
-        mBinding.appInfoPermissionsButton.setOnClickListener(v -> onInfoButtonClicked(this));
+        mBinding.appInfoPermissionsButton.setOnClickListener(v -> onAppInfoButtonClicked(this));
         mBinding.buttonDone.setOnClickListener(v -> onDoneButtonClicked());
     }
 
@@ -327,7 +327,7 @@ public class PermissionsActivity extends BaseActivity {
                 .check();
     }
 
-    public static void onInfoButtonClicked(Context context) {
+    public static void onAppInfoButtonClicked(Context context) {
         Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.parse("package:" + context.getPackageName()));
         myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);

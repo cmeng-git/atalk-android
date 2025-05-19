@@ -23,12 +23,12 @@ import java.util.List;
  * extenders to focus on the specifics of their implementation.
  *
  * @param <T> the very type of <code>ContactSourceService</code> which performs the <code>ContactQuery</code>
+ *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
 public abstract class AbstractContactQuery<T extends ContactSourceService>
-        implements ContactQuery
-{
+        implements ContactQuery {
     /**
      * The <code>ContactSourceService</code> which is performing this <code>ContactQuery</code>.
      */
@@ -54,8 +54,7 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
      *
      * @param contactSource the <code>ContactSourceService</code> which is to perform the new <code>AbstractContactQuery</code>
      */
-    protected AbstractContactQuery(T contactSource)
-    {
+    protected AbstractContactQuery(T contactSource) {
         this.contactSource = contactSource;
     }
 
@@ -66,10 +65,10 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
      *
      * @param l the <code>ContactQueryListener</code> to be added to the list of
      * listeners interested in the notifications raised by this <code>ContactQuery</code>
+     *
      * @see ContactQuery#addContactQueryListener(ContactQueryListener)
      */
-    public void addContactQueryListener(ContactQueryListener l)
-    {
+    public void addContactQueryListener(ContactQueryListener l) {
         if (l == null)
             throw new NullPointerException("l");
         else {
@@ -85,8 +84,7 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
      *
      * @see ContactQuery#cancel()
      */
-    public void cancel()
-    {
+    public void cancel() {
         if (getStatus() == QUERY_IN_PROGRESS)
             setStatus(QUERY_CANCELED);
     }
@@ -99,8 +97,7 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
      * which the registered <code>ContactQueryListener</code>s are to be notified about
      * @param showMoreEnabled indicates whether show more label should be shown or not.
      */
-    protected void fireContactReceived(SourceContact contact, boolean showMoreEnabled)
-    {
+    protected void fireContactReceived(SourceContact contact, boolean showMoreEnabled) {
         ContactQueryListener[] ls;
         synchronized (listeners) {
             ls = listeners.toArray(new ContactQueryListener[0]);
@@ -118,8 +115,7 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
      * @param contact the <code>SourceContact</code> which has been received and
      * which the registered <code>ContactQueryListener</code>s are to be notified about
      */
-    protected void fireContactReceived(SourceContact contact)
-    {
+    protected void fireContactReceived(SourceContact contact) {
         fireContactReceived(contact, true);
     }
 
@@ -130,8 +126,7 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
      * @param contact the <code>SourceContact</code> which has been removed and
      * which the registered <code>ContactQueryListener</code>s are to be notified about
      */
-    protected void fireContactRemoved(SourceContact contact)
-    {
+    protected void fireContactRemoved(SourceContact contact) {
         ContactQueryListener[] ls;
         synchronized (listeners) {
             ls = listeners.toArray(new ContactQueryListener[0]);
@@ -149,8 +144,7 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
      * @param contact the <code>SourceContact</code> which has been changed and
      * which the registered <code>ContactQueryListener</code>s are to be notified about
      */
-    protected void fireContactChanged(SourceContact contact)
-    {
+    protected void fireContactChanged(SourceContact contact) {
         ContactQueryListener[] ls;
         synchronized (listeners) {
             ls = listeners.toArray(new ContactQueryListener[0]);
@@ -167,8 +161,7 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
      * @param eventType the type of the <code>ContactQueryStatusEvent</code> to be
      * fired which can be one of the <code>QUERY_XXX</code> constants defined by <code>ContactQueryStatusEvent</code>
      */
-    protected void fireQueryStatusChanged(int eventType)
-    {
+    protected void fireQueryStatusChanged(int eventType) {
         ContactQueryListener[] ls;
         synchronized (listeners) {
             ls = listeners.toArray(new ContactQueryListener[0]);
@@ -183,10 +176,10 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
      * Gets the <code>ContactSourceService</code> which is performing this <code>ContactQuery</code>.
      *
      * @return the <code>ContactSourceService</code> which is performing this <code>ContactQuery</code>
+     *
      * @see ContactQuery#getContactSource()
      */
-    public T getContactSource()
-    {
+    public T getContactSource() {
         return contactSource;
     }
 
@@ -196,11 +189,11 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
      *
      * @return the status of this <code>ContactQuery</code> which can be one of the
      * <code>QUERY_XXX</code> constants defined by <code>ContactQuery</code>
+     *
      * @see ContactQuery#getStatus()
      */
     @Override
-    public int getStatus()
-    {
+    public int getStatus() {
         return status;
     }
 
@@ -211,10 +204,10 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
      *
      * @param l the <code>ContactQueryListener</code> to be removed from the list of
      * listeners interested in notifications raised by this <code>ContactQuery</code>
+     *
      * @see ContactQuery#removeContactQueryListener(ContactQueryListener)
      */
-    public void removeContactQueryListener(ContactQueryListener l)
-    {
+    public void removeContactQueryListener(ContactQueryListener l) {
         if (l != null) {
             synchronized (listeners) {
                 listeners.remove(l);
@@ -229,8 +222,7 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
      * {@link ContactQuery#QUERY_COMPLETED}, or
      * {@link ContactQuery#QUERY_ERROR}
      */
-    public void setStatus(int status)
-    {
+    public void setStatus(int status) {
         if (this.status != status) {
             int eventType;
 

@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class ShareActivity extends BaseActivity {
 
             tv = findViewById(R.id.actionBarStatus);
             tv.setText(R.string.share);
-            actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.color_bg_share)));
+            actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.color_bg_share, null)));
         }
 
         ContactListFragment contactList = new ContactListFragment();
@@ -106,7 +107,7 @@ public class ShareActivity extends BaseActivity {
      * @param intent new <code>Intent</code> data.
      */
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(@NonNull Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
     }

@@ -25,20 +25,20 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.ViewGroup;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -64,16 +64,22 @@ import timber.log.Timber;
  */
 public class aTalk extends MainMenuActivity {
     /**
-     * A map reference to find the FragmentPagerAdapter's fragmentTag (String) by a given position (Integer)
+     * A map reference to find the FragmentPagerAdapter's fragment by a given position (Integer).
      */
-    private static final Map<Integer, String> mFragmentTags = new HashMap<>();
+    private static final Map<Integer, Fragment> mFragments = new HashMap<>();
 
-    private static FragmentManager mFragmentManager;
+    private static MainPagerAdapter mPagerAdapter;
 
     public final static int CL_FRAGMENT = 0;
     public final static int CRL_FRAGMENT = 1;
     public final static int CHAT_SESSION_FRAGMENT = 2;
     public final static int CALL_HISTORY_FRAGMENT = 3;
+    public final static int WP_FRAGMENT = 4;
+
+    /**
+     * The number of pages (wizard steps) to show.
+     */
+    private static final int NUM_PAGES = 5;
 
     // android Permission Request Code
     public static final int PRC_CAMERA = 2000;
@@ -95,15 +101,10 @@ public class aTalk extends MainMenuActivity {
     private Bundle mInstanceState;
 
     /**
-     * The number of pages (wizard steps) to show.
-     */
-    private static final int NUM_PAGES = 5;
-
-    /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
      */
-    private ViewPager mPager;
+    private ViewPager2 mPager;
 
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
@@ -130,10 +131,10 @@ public class aTalk extends MainMenuActivity {
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = findViewById(R.id.mainViewPager);
         // The pager adapter, which provides the pages to the view pager widget.
-        mFragmentManager = getSupportFragmentManager();
-        PagerAdapter mPagerAdapter = new MainPagerAdapter(mFragmentManager);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        mPagerAdapter = new MainPagerAdapter(fragmentManager, getLifecycle());
         mPager.setAdapter(mPagerAdapter);
-        mPager.setPageTransformer(true, new DepthPageTransformer());
+        mPager.setPageTransformer(new DepthPageTransformer());
 
         handleIntent(getIntent(), savedInstanceState);
         getOnBackPressedDispatcher().addCallback(backPressedCallback);
@@ -155,7 +156,7 @@ public class aTalk extends MainMenuActivity {
      * @param intent new <code>Intent</code> data.
      */
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(@NonNull Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent, mInstanceState);
     }
@@ -181,7 +182,7 @@ public class aTalk extends MainMenuActivity {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mInstanceState = savedInstanceState;
     }
@@ -277,61 +278,47 @@ public class aTalk extends MainMenuActivity {
     }
 
     /**
-     * A simple pager adapter that represents 3 Screen Slide PageFragment objects, in sequence.
+     * A simple pager adapter that represents Screen Slide PageFragment objects, in sequence.
      */
-    private static class MainPagerAdapter extends FragmentPagerAdapter {
-        private MainPagerAdapter(FragmentManager fm) {
-            // Must use BEHAVIOR_SET_USER_VISIBLE_HINT to see conference list on first slide to conference view
-            // super(fm, BEHAVIOR_SET_USER_VISIBLE_HINT); not valid anymore after change to BaseChatRoomListAdapter
-            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+    private static class MainPagerAdapter extends FragmentStateAdapter {
+
+        public MainPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
+            super(fragmentManager, lifecycle);
         }
 
         @NotNull
         @Override
-        public Fragment getItem(int position) {
+        public Fragment createFragment(int position) {
+            if (mFragments.get(position) != null)
+                return Objects.requireNonNull(mFragments.get(position));
+
             switch (position) {
                 case CL_FRAGMENT:
-                    /*
-                     * The main pager view fragment containing the contact List
-                     */
-                    return new ContactListFragment();
+                    // The main pager view fragment containing the contact List
+                    mFragments.put(CL_FRAGMENT, new ContactListFragment());
+                    break;
 
                 case CRL_FRAGMENT:
-                    return new ChatRoomListFragment();
+                    mFragments.put(CRL_FRAGMENT, new ChatRoomListFragment());
+                    break;
 
                 case CHAT_SESSION_FRAGMENT:
-                    return new ChatSessionFragment();
+                    mFragments.put(CHAT_SESSION_FRAGMENT, new ChatSessionFragment());
+                    break;
 
                 case CALL_HISTORY_FRAGMENT:
-                    return new CallHistoryFragment();
+                    mFragments.put(CALL_HISTORY_FRAGMENT, new CallHistoryFragment());
+                    break;
 
                 default: // if (position == WP_FRAGMENT){
-                    return new WebViewFragment();
+                    mFragments.put(WP_FRAGMENT, new WebViewFragment());
+                    break;
             }
-        }
-
-        /**
-         * Save the reference of position to FragmentPagerAdapter fragmentTag in mFragmentTags
-         *
-         * @param container The viewGroup
-         * @param position The pager position
-         *
-         * @return Fragment object at the specific location
-         */
-        @NotNull
-        @Override
-        public Object instantiateItem(@NotNull ViewGroup container, int position) {
-            Object obj = super.instantiateItem(container, position);
-            if (obj instanceof Fragment) {
-                Fragment f = (Fragment) obj;
-                assert f.getTag() != null;
-                mFragmentTags.put(position, f.getTag());
-            }
-            return obj;
+            return Objects.requireNonNull(mFragments.get(position));
         }
 
         @Override
-        public int getCount() {
+        public int getItemCount() {
             return NUM_PAGES;
         }
     }
@@ -344,8 +331,7 @@ public class aTalk extends MainMenuActivity {
      * @return the requested fragment for the specified position or null
      */
     public static Fragment getFragment(int position) {
-        String tag = mFragmentTags.get(position);
-        return (mFragmentManager != null) ? mFragmentManager.findFragmentByTag(tag) : null;
+        return mPagerAdapter.createFragment(position);
     }
 
     public static aTalk getInstance() {

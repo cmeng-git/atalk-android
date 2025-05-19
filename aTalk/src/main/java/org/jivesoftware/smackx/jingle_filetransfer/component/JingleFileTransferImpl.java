@@ -1,12 +1,11 @@
 /**
- *
  * Copyright 2017-2022 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,6 +24,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.JingleUtil;
 import org.jivesoftware.smackx.jingle.component.JingleDescription;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
@@ -50,14 +50,21 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
 
     private static final Logger LOGGER = Logger.getLogger(JingleSessionImpl.class.getName());
 
+    protected final JingleSessionImpl mJingleSession;
+
     protected State mState;
     protected JingleFile metadata;
 
     private final List<ProgressListener> progressListeners = Collections.synchronizedList(new ArrayList<>());
 
-    JingleFileTransferImpl(JingleFile metadata) {
+    /**
+     * @param jingleSession JingleSessionImpl
+     * @param metadata JingleFile metaData
+     */
+    JingleFileTransferImpl(JingleSession jingleSession, JingleFile metadata) {
         this.metadata = metadata;
-        JingleSessionImpl.addJingleSessionListener(jingleSessionListener);
+        mJingleSession = (JingleSessionImpl) jingleSession;
+        mJingleSession.addJingleSessionListener(jingleSessionListener);
     }
 
     public abstract boolean isOffer();
@@ -66,7 +73,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
 
     @Override
     public JingleSessionImpl getJingleSession() {
-        return getParent().getParent();
+        return mJingleSession;
     }
 
     @Override
@@ -82,16 +89,15 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
     @Override
     public void cancel(XMPPConnection connection)
             throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
-        JingleSessionImpl session = getParent().getParent();
         JingleUtil jutil = new JingleUtil(connection);
         LOGGER.log(Level.INFO, "Local user cancels file transfer session @ state: " + mState);
         switch (mState) {
             case pending:
-                if (session.isResponder()) {
-                    jutil.sendSessionTerminateDecline(session.getRemote(), session.getSessionId());
+                if (mJingleSession.isResponder()) {
+                    jutil.sendSessionTerminateDecline(mJingleSession.getRemote(), mJingleSession.getSessionId());
                 }
                 else {
-                    jutil.sendSessionTerminateCancel(session.getRemote(), session.getSessionId());
+                    jutil.sendSessionTerminateCancel(mJingleSession.getRemote(), mJingleSession.getSessionId());
                 }
                 break;
 
@@ -103,7 +109,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
             // case negotiating:
             case active:
                 mState = State.cancelled;
-                jutil.sendSessionTerminateCancel(session.getRemote(), session.getSessionId());
+                jutil.sendSessionTerminateCancel(mJingleSession.getRemote(), mJingleSession.getSessionId());
                 break;
 
             case ended:
@@ -124,7 +130,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
     }
 
     public void notifyProgressListenersFinished() {
-        JingleSessionImpl.removeJingleSessionListener(jingleSessionListener);
+        mJingleSession.removeJingleSessionListener(jingleSessionListener);
         for (ProgressListener p : progressListeners) {
             p.onFinished();
         }
@@ -189,7 +195,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
                 default:
                     break;
             }
-            JingleSessionImpl.removeJingleSessionListener(this);
+            mJingleSession.removeJingleSessionListener(this);
         }
     };
 }

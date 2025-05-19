@@ -22,7 +22,9 @@
 # string with {0}, {1} means the string is still not being used/implemented in aTalk. They are kept for reference and may use later;
 # you can proceed to translate these string replacing {0}, {1} with %1$s, %2$s etc
 #
---><resources>
+-->
+
+<resources>
     <string name="accept_call_video">Atender ligação de vídeo</string>
     <string name="account_delete_on_server">Excluir conta no servidor</string>
     <string name="account_delete_on_server_unregistered">Falha ao excluir conta no servidor, usuário não registrado!</string>
@@ -32,6 +34,7 @@
     <string name="account_server_override">Substituir a configuração do servidor</string>
     <string name="account_ibr_on_server">Registrar nova conta no servidor</string>
     <string name="account_server_ip">Conectar ao servidor com IP</string>
+
     <string name="ibr_registration">Registração via IB</string>
     <string name="captcha_ibr_request">Registração via captcha</string>
     <string name="captcha_ibr_failed">Falha ao registrar via captcha!\n%1$s</string>
@@ -40,12 +43,14 @@
     <string name="captcha_ibr_pwd_empty">Erro: o campo da senha está em branco!</string>
     <string name="captcha_ibr_hint">Digite o texto que você está vendo</string>
     <string name="captcha_ibr_retry">Clique no \'OK\' para tentar novamente ou no \'Cancelar\' para terminar</string>
+
     <string name="captcha_challenge">O desafio do captcha</string>
     <string name="captcha_protected">A sala é protegida com o desafio captcha</string>
     <string name="captcha_text_empty">A entrada de texto captcha não pode estar vazia</string>
     <string name="captcha_verification_valid">A verificação captcha é válida</string>
     <string name="captcha_verification_failed">A verificação do captcha falhou</string>
     <string name="captcha_wait_timeout">O tempo %1$s do desafio captcha da sala expirou;\npor favor, volte para a sala e tente novamente.</string>
+
     <string name="choose_network">Escolha uma rede</string>
     <string name="encrypt_tooltip">Criptografar conversa</string>
     <string name="encrypt_choices">Escolha criptografia</string>
@@ -65,6 +70,7 @@
     <string name="system_settings">Configurações…</string>
     <string name="username_hint">usuário@exemplo.com</string>
     <string name="username_">Usuário:</string>
+
     <!-- Call Transfer -->
     <string name="call_hang_up">Terminar a ligação</string>
     <string name="call_on_hold">Colocar em espera</string>
@@ -74,6 +80,7 @@
     <string name="call_transfer_failed">Falha ao prosseguir com a transferência de chamada: %1$s ⇢ %2$s\n%3$s</string>
     <string name="call_transfer_hint">Selecione o nome do contato que você deseja transferir e depois clique em Transferir.</string>
     <string name="call_transfer_msg">%1$s transferência de chamada para… %2$s</string>
+
     <string name="attach_picture">Fotos</string>
     <string name="attach_take_picture">Fazer uma foto</string>
     <string name="attach_video">Vídeos</string>
@@ -89,6 +96,7 @@
     <string name="select_all">Selecionar tudo</string>
     <string name="subject">Asunto</string>
     <string name="settings">Configurações</string>
+
     <!-- Block Command -->
     <string name="contact_block_text">Deseja bloquear o recebimento de mensagens de %1$s?</string>
     <string name="contact_unblock_text">Deseja desbloquear o recebimento de mensagens de %1$s?</string>
@@ -100,6 +108,7 @@
     <string name="unblock">Desbloquear</string>
     <string name="block_list_title">Lista de bloqueios</string>
     <string name="block_list_show">Exibir a lista de bloqueios</string>
+
     <!-- General -->
     <string name="accept">Aceitar</string>
     <string name="account">Conta</string>
@@ -141,6 +150,7 @@
     <string name="away">Indisponível</string>
     <string name="avatar_set_error">Falha ao definir o avatar para %1$s</string>
     <string name="avatar_retrieving">Recuperando avatar para %1$s</string>
+
     <string name="busy">Ocupado</string>
     <string name="call_audio">Ligação de voz</string>
     <string name="call_answered">%1$s respondeu à ligação.</string>
@@ -169,6 +179,7 @@
     <string name="call_via_">Ligação via: %1$s</string>
     <string name="call_video">Ligação de vídeo</string>
     <string name="call_with">Ligação com:</string>
+
     <string name="cancel">Cancelar</string>
     <string name="contact_invalid">O contato selecionado não é válido: %1$s</string>
     <string name="dismiss">Recusar</string>
@@ -180,11 +191,13 @@
     <string name="share_text">Compartilhar texto…</string>
     <string name="share_file">Compartilhar arquivo…</string>
     <string name="snooze">Adiar</string>
+
     <!-- ExoPlayer -->
     <string name="playback_error">Não foi possível encontrar nenhum conteúdo de mídia para reproduzir</string>
     <string name="playback_buffering">Carregando no buffer…</string>
     <string name="playback_completed">Reprodução de mídia terminou</string>
     <string name="playback_rate">Taxa de reprodução: %1$s</string>
+
     <!-- Conference Chat -->
     <string name="auto_join">Participação automática</string>
     <string name="change_nickname">Alterar o apelido</string>
@@ -251,6 +264,7 @@
     <string name="contact_offline_hide">Ocultar contatos indisponíveis</string>
     <string name="contact_offline_show">Mostrar contatos indisponíveis</string>
     <string name="copy_message_text">Copiar texto da mensagem</string>
+
     <string name="create">Criar</string>
     <string name="create_call_failed">Falha ao fazer a ligação.</string>
     <string name="create_conference_call">Criar uma ligação de conferência…</string>
@@ -259,6 +273,7 @@
     <string name="create_group_name_invalid">Nome do grupo inválido: %1$s</string>
     <string name="create_group_name">No campo abaixo, digite o nome de grupo que você gostaria de criar.</string>
     <string name="create_group_first_wizard">Sua lista de contatos não contém nenhum grupo. Por favor, primeiro crie um grupo (Arquivo/Criar grupo).</string>
+
     <!-- About Dialog -->
     <string name="aboutDialog_help"><a href="https://cmeng-git.github.io/atalk">Ajuda online</a></string>
     <string name="About">Sobre</string>
@@ -267,18 +282,22 @@
     <string name="check_new_version">Verificar por atualizações</string>
     <string name="show_history_log">Histórico de mudanças</string>
     <string name="online_help">Ajuda online</string>
+
     <!-- HTTP Authorization Request Dialog -->
     <string name="http_authorization_request">Pedido de autorização HTTP</string>
     <string name="http_authorization_request_instruction">HTTP (%1$s) Autorização para %2$s\nCódigo de validação: %3$s\nVocê quer aceitar este pedido para conta:\n%4$s?\n\nVerifique se a ID corresponde ao site, se disponível</string>
+
     <string name="app_authors_fmt">Autores: %1$s</string>
     <string name="app_libraries">aTalk usa as seguintes bibliotecas de terceiros: %1$s</string>
     <string name="app_revision_fmt">Informações de revisão: %1$s</string>
     <string name="app_xep">aTalk suporta os seguintes XEPs: %1$s</string>
     <string name="powered_by">Desenvolvido por atalk.org</string>
+
     <!-- PTT Chat -->
     <string name="chat_audio_buddy_offline">Não é permitida a conversa de áudio com um destinatário que está offline.</string>
     <string name="chat_audio_cancel">&lt; deslize à esquerda\npara cancelar</string>
     <string name="chat_audio_start_record">Iniciar gravação</string>
+
     <!-- GPS Location -->
     <string name="latitude">Latitude:</string>
     <string name="location">Localização:</string>
@@ -292,6 +311,7 @@
     <string name="single_location_fix">Atualização de local único</string>
     <string name="follow_me_start">Me siga (%1$dm) @%2$dS</string>
     <string name="follow_me_stop">Pare de me seguir (%1$dm) @%2$dS</string>
+
     <!-- Google Map -->
     <string name="google_map">Mapas do Google</string>
     <string name="legal_info">Informações legais</string>
@@ -299,10 +319,12 @@
     <string name="split_street_view_panorama_and_map_description">Demonstra como exibir vista panorâmica da rua e mapa.</string>
     <string name="split_street_view_panorama_and_map_label">Vista panorâmica da rua e Mapa</string>
     <string name="map">Mapa</string>
+
     <!-- Location Permissions -->
     <string name="permission_location_rationale">O acesso ao serviço de localização é necessário para exibir a \'minha localização\', que mostra suas coordenadas atuais no mapa.</string>
     <string name="permission_location_denied">Esta demonstração requer permissão de localização para ativar a camada com \'minha localização\'. Por favor, tente novamente e conceda a permissão para poder usar a localização.\nSe a permissão tiver sido negada, ela pode ser reativada em Configurações do sistema &gt; Apps &gt; \'Google Maps API Demos\'.</string>
     <string name="permission_location_required">É necessária permissão de localização para esta demonstração.</string>
+
     <!-- Persistent Store -->
     <string name="export_sql_db">Exportar base de dados SQL do aTalk </string>
     <string name="purge_debug_log">Remover o arquivo de registro do aTalk</string>
@@ -315,6 +337,7 @@
     <string name="refresh_store_hint">Marcar o item para que sua memória persistente seja excluída e atualizada; Realizar somente quando for necessário!\n</string>
     <string name="refresh_store_roster">XEP-0237: Lista</string>
     <string name="refresh_store_omemo">XEP-0384: Criptografia OMEMO</string>
+
     <string name="unregistered_message">Falha ao fazer login na conta:\nNome de usuário: %1$s\nNome do servidor: %2$s\nA conta está offline.</string>
     <string name="create_videoBridge">Criar conexão de vídeo de ponte…</string>
     <string name="create_videoBridge_menu">Criar uma conexão de vídeo de ponte</string>
@@ -328,6 +351,7 @@
     <string name="contact_display_name">Nome de contato mostrado</string>
     <string name="do_not_disturb">Não perturbar</string>
     <string name="duration">duração</string>
+
     <string name="edit_status_message_tip">Definir mensagem de status</string>
     <string name="edited">editado</string>
     <string name="enter_name_or_number">Digite um nome ou número</string>
@@ -336,6 +360,7 @@
     <string name="exit">Sair</string>
     <string name="extended_away">Indisponível por um tempo</string>
     <string name="free_for_chat">Disponível para conversar</string>
+
     <!-- File Transfer (xFile prefix with date) -->
     <string name="file_byte_sent">%1$s enviado</string>
     <string name="file_receive_completed">O arquivo foi recebido de %1$s</string>
@@ -344,12 +369,14 @@
     <string name="file_send_completed">O arquivo foi enviado com sucesso para %1$s</string>
     <string name="file_send_declined">%1$s recusou este arquivo</string>
     <string name="file_sending_to">Enviando arquivo para %1$s</string>
+    <string name="file_transfer_accepted">A transferência de ficheiros foi aceite</string>
     <string name="file_transfer_canceled">A transferência de arquivos foi cancelada</string>
     <string name="file_transfer_preparing">Preparando a transferência de arquivos com %1$s. Aguarde…</string>
     <string name="file_transfer_declined">A transferência de arquivos foi recusada</string>
     <string name="file_transfer_request_received">%1$s esta compartilhando o arquivo com você</string>
     <string name="file_transfer_send_error">Ocorreu um erro ao enviar o arquivo para %1$s</string>
     <string name="file_transfer_waiting_acceptance">Aguardando %1$s para aceitar seu arquivo</string>
+
     <string name="purge">Eliminar</string>
     <string name="estimated_time_">Tempo estimado: %1$s</string>
     <string name="file">Arquivo</string>
@@ -366,7 +393,8 @@
     <string name="file_size_too_big">O tamanho do arquivo excede o máximo permitido para este protocolo: %1$s</string>
     <string name="file_transfer_active">A transferência de arquivos foi interrompida. Status de progresso @ %1$s foi perdido!</string>
     <string name="file_transfer_not_secure">XEP-0096: O protocolo SI File Transfer não suporta o envio de arquivos criptografados!</string>
-    <string name="file_transfer_not_supported">Cliente ou servidor do contato não tem suporte para transferências de arquivos ou protocolos necessários</string>
+    <string name="file_transfer_not_supported">Cliente ou servidor do contato (%1$s) não tem suporte para transferências de arquivos ou protocolos necessários</string>
+
     <string name="finish">Concluir</string>
     <string name="folder_not_exist">A pasta que contém este arquivo não foi encontrada. Podia ser excluída ou movida</string>
     <string name="folder_open_failed">Falha ao abrir a pasta</string>
@@ -386,12 +414,14 @@
     <string name="history_purge_error">Falha ao excluir mensagens armazenadas localmente para %1$s.</string>
     <string name="history_purge_media">Excluir mídia do meu aparelho</string>
     <string name="history_offline_warning">Feche e abra esta sessão de bate-papo para visualizar MAM e mensagens off-line quando estiver on-line</string>
+
     <string name="chatroom_alternate_venue">Lugar alternativo:</string>
     <string name="chatroom_alternate_address">Você pode continuar a conversa na seguinte sala: %1$s</string>
     <string name="chatroom_bookmark_title">Favoritos da sala</string>
     <string name="chatroom_bookmark">Favoritos</string>
     <string name="chatroom_auto_join">Participação automática</string>
     <string name="chatroom_bookmark_update_failed">Falha na atualização de favoritos para %1$s: %2$s</string>
+
     <string name="chatroom_occupant">Participantes da sala</string>
     <string name="chatroom_history_erase_per">Excluir este histórico da sala</string>
     <string name="chatroom_history_erase_all">Remover todo o histórico de salas</string>
@@ -411,10 +441,12 @@
     <string name="chatroom_info_subject_modifiable">Assunto modificável</string>
     <string name="chatroom_info_language">Idioma</string>
     <string name="chatroom_info_ldap_group">Grupo LDAP</string>
+
     <string name="chatroom_create">Criar uma sala…</string>
     <string name="chatroom_create_error">Falha ao criar a sala para:\n%1$s</string>
     <string name="chatroom_create_join">Criar / Participar na sala</string>
     <string name="chatroom_create_wizard">Criar assistente para sala</string>
+
     <string name="chatroom_destroy">Destrua esta sala</string>
     <string name="chatroom_destroy_exception">Ocorreu um erro durante a destruição da sala:\n%1$s</string>
     <string name="chatroom_destroy_error">Falha ao remover a sala do servidor:\n\'%1$s\'\n%2$s\n\nProceder com a remoção da sala local.</string>
@@ -424,6 +456,7 @@
     <string name="chatroom_destroy_reason">conversa de grupo inativa</string>
     <string name="chatroom_destroy_successful">\'%1$s\' foi excluído com sucesso!</string>
     <string name="chatroom_destroy_title">Destruir a sala</string>
+
     <string name="chatroom_join_failed">Falha ao entrar na sala com este apelido: %1$s\n%2$s.</string>
     <string name="chatroom_join_failed_reason">Falha ao entrar na sala %1$s:\n%2$s</string>
     <string name="chatroom_join_password">A sala solicita uma senha.</string>
@@ -432,10 +465,12 @@
     <string name="chatroom_join_name">Por favor, digite o nome da sala em qual você gostaria de participar.</string>
     <string name="chatroom_join_subject_null">Por favor, digite o nome da sala que você gostaria de participar.</string>
     <string name="chatroom_join_wizard">Participe e acompanhe assistente da sala</string>
+
     <string name="cr_member_start_conversation">Iniciar conversa</string>
     <string name="cr_member_grant_owner_privilege">Conceder privilégios de proprietário</string>
     <string name="cr_member_revoke_owner_privilege">Revogar privilégios de proprietário</string>
     <string name="cr_member_kick">Remover do bate-papo em grupo</string>
+
     <string name="invitation_message">Mensagem de convite:</string>
     <string name="invitation_received">Convite recebido</string>
     <string name="invitation_received_message">%1$s convidou você a participar na sala %2$s. Você pode aceitar, recusar ou ignorar este convite.</string>
@@ -451,6 +486,7 @@
     <string name="invite_reject_busy">Ocupado</string>
     <string name="ignore">Ignorar</string>
     <string name="info">Informação</string>
+
     <string name="address">Endereço</string>
     <string name="city">Cidade</string>
     <string name="country">País</string>
@@ -465,6 +501,7 @@
     <string name="join_existing_video_conference">Participe na videoconferência existente</string>
     <string name="join_video">Participe em videoconferência</string>
     <string name="job_title">Função</string>
+
     <string name="join_automatically">Participar automaticamente</string>
     <string name="do_not_join_automatically">Não participe automaticamente</string>
     <string name="kick">Expulsar</string>
@@ -493,6 +530,7 @@
     <string name="nickname">Apelido</string>
     <string name="chatroom_open_automatically">Abrir esta sala automaticamente quando</string>
     <string name="personal">Pessoal</string>
+
     <string name="message_delivery_error">Falha ao entregar a mensagem.</string>
     <string name="message_delivery_failed">A mensagem acima não pôde ser entregue</string>
     <string name="message_delivery_internal_error">Ocorreu um erro interno. Isto é muito provavelmente uma falha. Por favor, informe através do registro de depuração.</string>
@@ -502,6 +540,7 @@
     <string name="message_delivery_network_error">Ocorreu um problema da rede. Por favor, verifique sua configuração de internet e tente novamente.</string>
     <string name="message_received">%1$s escreveu</string>
     <string name="message_delivery_not_registered">Você deve fazer o login primeiro para enviar a mensagem.</string>
+
     <string name="multiple_login">Não são permitidos múltiplos instantes de login. A seguinte conta: Nome do usuário: %1$s, Nome do servidor: %2$s foi desconectada.</string>
     <string name="mutually_on_hole">Mutualmente em espera</string>
     <string name="name">Nome</string>
@@ -534,6 +573,7 @@
     <string name="user_login">Faça o login</string>
     <string name="work">Trabalho</string>
     <string name="xmpp_connection_error">Problema durante a conexão ao XMPP:\n%s"</string>
+
     <!-- Call -->
     <string name="btn_video_tooltip">Alternar o vídeo</string>
     <string name="mic_control_title">Nível do microfone</string>
@@ -544,6 +584,7 @@
     <string name="received_">%1$s recebeu</string>
     <string name="referred">Indicou</string>
     <string name="restoring_">Restaurando…</string>
+
     <string name="decline">Recusar</string>
     <string name="remove">Excluir</string>
     <string name="remove_account">Excluir conta</string>
@@ -555,6 +596,7 @@
     <string name="remove_group_prompt">Tem certeza de que quer excluir o grupo: \'%1$s\' e todos os contatos associados da sua lista de contatos?</string>
     <string name="remotely_on_hold">Em espera</string>
     <string name="rename_contact">Alterar nome do contato</string>
+
     <string name="ringing">Ligando</string>
     <string name="request">Pedido</string>
     <string name="request_authorization">Solicitação de autorização</string>
@@ -567,6 +609,7 @@
     <string name="select_account_owner">Selecione admin da conta</string>
     <string name="assign_group">Contato atribuído ao grupo:</string>
     <string name="no_group">Nenhum grupo</string>
+
     <!-- Logs -->
     <string name="send_log">Relatar falhas</string>
     <string name="send_log_prompt">aTalk acabou de se recuperar de um falha grave. Você quer relatar isto aos desenvolvedores?</string>
@@ -576,6 +619,7 @@
         1. Qual foi a última coisa que você fez antes de que o problema aconteceu?\n\n\n
         2. Qual é o problema que você vê, inclua um captura de tela, se possível?\n\n\n
         3. Você pode dizer como podemos reproduzir o problema?</string>
+
     <string name="send_message">Enviar mensagem</string>
     <string name="send_message_failed">Falha ao enviar a mensagem: %1$s</string>
     <string name="send_message_not_supported">A entrada que você selecionou não suporta mensagens instantâneas: %1$s</string>
@@ -598,6 +642,7 @@
     <string name="warning">Aviso</string>
     <string name="call_in_progress_warning">Não posso fazer isso durante a ligação</string>
     <string name="yes">Sim</string>
+
     <!-- Sign in -->
     <string name="account_create_failed">Falha ao criar uma nova conta devido ao erro: %1$s</string>
     <string name="create_account">Criar conta</string>
@@ -618,6 +663,7 @@
     <string name="username_password_null">Por favor, digite o nome de usuário ou/e a senha correta.</string>
     <string name="username_change_warning">Aviso: Ao alterar o nome de usuário da conta para \'%1$s\' você também excluirá %2$s mensagens da conta existente \'%3$s\'. Continuar?</string>
     <string name="user_exist_error">Este usuário já existe na rede selecionada. Por favor, escolha outro usuário ou rede.</string>
+
     <string name="jan">Jan</string>
     <string name="feb">Fev</string>
     <string name="mar">Mar</string>
@@ -630,6 +676,7 @@
     <string name="oct">Out</string>
     <string name="nov">Nov</string>
     <string name="dec">Dez</string>
+
     <!-- Call info -->
     <string name="protocol_ice_failed">Não foi possível estabelecer a conexão (falha do ICE e nenhum relay encontrado)</string>
     <string name="callinfo_audio_info">Detalhes de áudio</string>
@@ -659,10 +706,12 @@
     <string name="callinfo_view_certificate">Ver certificado</string>
     <string name="callinfo_video_size">Tamanho do vídeo</string>
     <string name="callinfo_video_info">Detalhes do vídeo</string>
+
     <string name="callinfo_adaptive_jitter_buffer">Buffer adaptativo do Jitter:</string>
     <string name="callinfo_decoded_with_fec">Pacotes decodificados com FEC:</string>
     <string name="callinfo_discarded_percent">Pacotes atualmente sendo descartados:</string>
     <string name="callinfo_discarded_total">Número de pacotes descartados:</string>
+
     <!-- ICE info -->
     <string name="callinfo_harvesting_data">%1$d ms (para captação de %2$d)</string>
     <string name="callinfo_harvesting_time">Tempo de captação:</string>
@@ -680,6 +729,7 @@
     <string name="callinfo_ice_state_waiting">Obter candidatos</string>
     <string name="callinfo_ice_state_jitter_buffer_delay">Buffer do Jitter:</string>
     <string name="callinfo_total_harvesting_time">Tempo total de captação:</string>
+
     <!-- Security certificates -->
     <string name="trust_always">Confie sempre neste certificado</string>
     <string name="cert_dialog_title">Verificação do Certificado</string>
@@ -735,6 +785,7 @@
     <string name="unsaved_changes_title">Alterações não salvas</string>
     <string name="please_wait">Aguarde…</string>
     <string name="server_info_fetching">Buscando recursos/informações anunciadas no servidor…</string>
+
     <!-- Security info -->
     <string name="security_audio_not_secure">Áudio inseguro</string>
     <string name="security_call_not_secured_tooltip">Ligação insegura.</string>
@@ -754,6 +805,7 @@
     <string name="security_video_not_secured">Vídeo inseguro</string>
     <string name="avatar_chose_icon">Selecione uma imagem</string>
     <string name="avatar_remove_icon">Exclua a imagem atual</string>
+
     <!-- Update checker -->
     <string name="update_download">Download</string>
     <string name="update_install">Instalar</string>
@@ -770,6 +822,7 @@
     <string name="update_check_update">Verificar por atualizações</string>
     <string name="update_version_invalid">O apk baixado não corresponde; atual: %1$s (%2$s)</string>
     <string name="update_new_version_available">Uma nova versão (%1$s) de software está disponível.</string>
+
     <!-- account info -->
     <string name="accountinfo_about_me">Sobre mim:</string>
     <string name="accountinfo_about_me_hint">Digite uma breve descrição sobre você aqui</string>
@@ -804,6 +857,7 @@
     <string name="accountinfo_user_picture">Foto do usuário</string>
     <string name="accountinfo_work_email">E-mail do trabalho:</string>
     <string name="accountinfo_work_phone">Telefone do trabalho:</string>
+
     <!-- Certificate configuration plugin -->
     <string name="certconfig_title">Configuração de TLS</string>
     <string name="certconfig_trusted_store">Fonte de certificados root confiáveis</string>
@@ -823,8 +877,10 @@
     <string name="certconfig_revocation_title">Opções de revogação de certificados</string>
     <string name="certconfig_revocation_check_enabled">CRL (Lista de revogação de certificados) verificação ativada</string>
     <string name="certconfig_revocation_ocsp_enabled">OCSP (Protocolo Online de Status do Certificado) verificação ativada</string>
+
     <!-- connection info -->
     <string name="connectioninfo_title">Detalhes sobre conexão</string>
+
     <!-- contact info -->
     <string name="contactinfo_title">Detalhes do contato</string>
     <string name="contactinfo_contact_summary_description">Resumo das informações de contato para</string>
@@ -832,6 +888,7 @@
     <string name="contactinfo_not_specified">[Não especificado]</string>
     <string name="contactinfo_user_pictures">Foto do usuário</string>
     <string name="contactinfo_status_message">Mensagem no status</string>
+
     <!-- Notification strings (do not change; getI18NString(NotificationSettings.NOTICE_PREFIX + eventType))-->
     <string name="notificationconfig_event_BusyCall">ligação ocupada</string>
     <string name="notificationconfig_event_BusyCall_description">Descrição sobre ligação ocupada</string>
@@ -865,9 +922,11 @@
     <string name="notificationconfig_popup_notification">Notificação popup</string>
     <string name="notificationconfig_vibration">Vibração</string>
     <string name="notificationconfig_sound_file">Arquivo de som:</string>
+
     <!-- call recording config -->
     <string name="callrecordingconfig_call_saved">Ligação salva com sucesso</string>
     <string name="callrecordingconfig_call_saved_to">Salvar para: %1$s</string>
+
     <!-- ZRTP Securing -->
     <string name="media_configform_audio_device_config_changed">A configuração do áudio foi alterada</string>
     <string name="media_configform_audio_device_config_management_click">Clique aqui para gerenciar o aparelho</string>
@@ -883,8 +942,10 @@
     <string name="media_security_warning_no_expected_rs_match">&lt;html&gt;Falta um segredo compartilhado retido previsto.&lt;br/&gt;&lt;b&gt;Requerida verificação SAS&lt;/b&gt;&lt;br/&gt;Se os códigos SAS não corresponderem, desligue e tente novamente&lt;/html&gt;</string>
     <string name="media_security_zrtp_generic_message">&lt;html&gt;Foi detectado um grave problema com o ZRTP.&lt;br/&gt;&lt;b&gt;Sua ligação não está segura&lt;/b&gt;&lt;br/&gt;Código de erro: %1$s&lt;/html&gt;</string>
     <string name="media_security_zrtp_handshake_timeout">A chamada não é segura; Tempo limite de handshake RTP: %s</string>
+
     <!-- DTLS-SRTP Securing -->
     <string name="media_security_encryption_ended">A ligação cryptografada terminou: %1$s</string>
+
     <!-- OTR plugin -->
     <string name="otr_menu_authenticate_buddy">Autenticação do amigo</string>
     <string name="plugin_otr_menu_CB_AUTO">Iniciar automaticamente o envio de mensagens privadas</string>
@@ -906,6 +967,7 @@
     <string name="plugin_otr_menu_START_OTR">Comecar a conversa privada</string>
     <string name="plugin_otr_menu_TITLE">Conversa segura</string>
     <string name="plugin_otr_menu_WHATS_THIS">O que é isto</string>
+
     <string name="plugin_otr_authbuddydialog_AUTHENTICATION_INFO">A autenticação de um amigo ajuda a certificar-se de que a pessoa com quem você está falando é realmente quem afirma ser. Para verificar a impressão digital, contacte o seu amigo de forma segura, via o telefone ou e-mail com GPG. Cada um de vocês deve confirmar a sua impressão digital com o
     outro. Se tudo corresponder, você deve marcar no diálogo a seguir que *verificou* a impressão digital.</string>
     <string name="plugin_otr_authbuddydialog_CANCEL">Cancelar</string>
@@ -928,6 +990,7 @@
     <string name="plugin_otr_configform_MY_PRIVATE_KEYS">Minhas chaves privadas</string>
     <string name="plugin_otr_configform_REGENERATE">Re-criar</string>
     <string name="plugin_otr_configform_VERIFY_STATUS">Verificado: %1$s</string>
+
     <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;"&gt;%1$s está tentando iniciar uma conversa criptografada
         &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging"&gt;
         Off-The-Record&lt;/a&gt;com você. Entretanto, seu software não suporta mensagens
@@ -949,6 +1012,7 @@
     <string name="plugin_otr_activator_unreadablemsgreply">Você enviou a %1$s uma mensagem criptografada ilegível. Por favor, finalize ou atualize sua conversa particular com %2$s.</string>
     <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b&gt;Não verificada&lt;/b&gt;começou a conversa privada com %1$s.</string>
     <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s ainda não foi autenticada. Você deve &lt;a href=\"atalk://%2$s/%3$s?%4$s\"&gt;&lt;b&gt;autenticar&lt;/b&gt;&lt;/a&gt;este amigo.</string>
+
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">Texto puro</string>
     <string name="omemo_authbuddy_authenticate_buddy">Autenticar amigo</string>
@@ -969,16 +1033,19 @@
     <string name="omemo_menu_untrusted">OMEMO não-confiável</string>
     <string name="omemo_rebuild_session">Reconstruir nova sessão para obter: %1$s</string>
     <string name="omemo_purge_inactive_device_error">Falha ao remover o aparelho inativo do OMEMO para: %1$s.</string>
+
     <!-- Account proxy settings -->
     <string name="settings_bosh_proxy">Configuração BOSH-Proxy</string>
     <string name="settings_bosh_proxy_summary">Criar conexão via BOSH/Proxy para a conta</string>
     <string name="bosh_proxy_url_null">O conteúdo do campo da URL BOSH não pode estar em branco</string>
     <string name="bosh_proxy_host_port_null">O conteúdo em campos de host de proxy e porta não podem estar em branco</string>
+
     <string name="bosh_proxy_type">Tipo:</string>
     <string name="bosh_proxy_url">BOSH URL:</string>
     <string name="bosh_proxy_use_http">Usar proxy de HTTP</string>
     <string name="bosh_proxy_host">Host de proxy:</string>
     <string name="bosh_proxy_port">Porta de proxy:</string>
+
     <!-- Provisioning Plugin-->
     <string name="provisioning_auto">Descobrir automaticamente URI de provisionamento</string>
     <string name="provisioning_bonjour">Bonjour</string>
@@ -996,6 +1063,7 @@
     <string name="provisioning_summary">Definir as configurações de provisionamento</string>
     <string name="provisioning_remove_credentials_message">Você tem certeza de que deseja remover a senha de provisionamento?</string>
     <string name="provisioning_restart_alert">Aviso, suas mudanças só entrarão em vigor na próxima vez que você iniciar o aTalk!</string>
+
     <!-- DNS config -->
     <string name="settings_dnssec_dane">Segurança de SSL/DNSSEC/DANE</string>
     <string name="settings_dns">DNS</string>
@@ -1012,6 +1080,7 @@
     <string name="dnsconfig_dnssec_label_default">Comportamento padrão</string>
     <string name="dnsconfig_dnssec_label_name_servers">Servidores com nomes personalizados</string>
     <string name="dnsconfig_dnssec_label_name_servers_hint">&lt;html&gt;Vários servidores podem ser delimitados com uma vírgula, p.ex. 149.20.64.20, 149.20.64.21 (Open DNSSEC resolvedor de validação de OARC)&lt;/html&gt;</string>
+
     <string name="dns_insecure_answer_title">Falha de DNSSEC</string>
     <string name="dns_insecure_answer_message_insecure">Resposta de DNS para %1$s é insegura.</string>
     <string name="dns_insecure_answer_message_reason">Resposta de DNS para %1$s é insegura.\nMotivo: %2$s</string>
@@ -1027,27 +1096,33 @@
         seu provedor regular de internet, fortemente aconselhamos que você pare de usá-lo imediatamente e procure um ponto alternativo de acesso à internet.
         Quando você estiver conectado de forma segura a outra rede, o problema deve ser resolvido automaticamente. Se este não for o caso, entre em contato com seu
         prestador de serviços para informá-lo sobre o assunto. &lt;/div&gt;&lt;/html&gt;</string>
+
     <!-- SSL Certificates -->
     <string name="settings_ssl_certificate">Certificado de SSL</string>
     <string name="settings_ssl_certificate_purge">Remover certificados aprovados pelo usuário para: %1$s</string>
     <string name="settings_ssl_certificate_remove">Retirar certificado</string>
     <string name="settings_ssl_certificate_summary">Gerenciar certificados de SSL</string>
+
     <!-- Client TLS Certificates -->
     <string name="tls_cert">Certificado do cliente de TLS</string>
     <string name="tls_cert_prompt">Por favor, selecione o certificado de TLS</string>
     <string name="tls_cert_summary">Uso de certificado na autenticação do usuário com servidor</string>
+
     <!-- Reset ZID -->
     <string name="zid_reset_summary">Resetar identificador ZRTP de longa duração</string>
     <string name="zid_reset_title">Resetar ZID</string>
     <string name="zid_reset_done">ZID foi resetado</string>
+
     <!-- Settings -->
     <string name="commit_progress_message">Salvando alterações da conta, por favor aguarde…</string>
     <string name="commit_progress_title">"Alocando…"</string>
     <string name="settings_not_set">(Não definido)</string>
+
     <!-- Encoding settings -->
     <string name="enc_audio_title">Codificação de áudio</string>
     <string name="enc_override_global">Aplicação global</string>
     <string name="enc_video_title">Codificação de vídeo</string>
+
     <!-- Security protocols dialog -->
     <string name="none">Nenhum</string>
     <string name="sec_encryption">Criptografia</string>
@@ -1056,18 +1131,22 @@
     <string name="discard">Descartar</string>
     <string name="sec_zrtp_signalling_on">ZRTP será anunciado sobre o protocolo sinalizador</string>
     <string name="sec_zrtp_signalling_off">Não será anunciado o ZRTP</string>
+
     <!-- STUN/Jingle Nodes list -->
     <string name="service_gui_SERVERS_LIST_ADD_SERVER">Adicionar servidor</string>
     <string name="service_gui_SERVERS_LIST_EMPTY">A lista está vazia. Clique para adicionar uma nova entrada…</string>
+
     <!-- Jingle Nodes edit -->
     <string name="service_gui_JINGLE_EDIT_JID">Endereço JID</string>
     <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Suporte para relay</string>
+
     <!-- STUN edit -->
     <string name="stun_turn_server">Servidor STUN/TURN</string>
     <string name="ip_address">Endereço IP</string>
     <string name="server_port">Porta do servidor</string>
     <string name="turn_supported">Suportar TURN</string>
     <string name="username">Nome de usuário</string>
+
     <!-- Security preferences -->
     <string name="security_dtls_srtp">Sinalizador DTLS_SRTP</string>
     <string name="security_dtls_title">Algoritmo de assinatura de certificado TLS</string>
@@ -1080,12 +1159,14 @@
     <string name="security_sdes_title">Conjunto de codificação de SDES</string>
     <string name="security_zrtp_options">Opções ZRTP</string>
     <string name="security_zrtp_signalling">Sinalizador ZRTP</string>
+
     <!-- Common preferences -->
     <string name="audio_encoding">Codificação de áudio</string>
     <string name="audio_enc_global_override_summary">Substituir formatos de áudio definidos globalmente para esta conta</string>
     <string name="call_encryption">Configurações de criptografia de ligações</string>
     <string name="video_encoding">Codificação de vídeo</string>
     <string name="video_enc_global_override_summary">Substituir formatos de vídeo definidos globalmente para esta conta</string>
+
     <!-- Jabber preferences -->
     <string name="jbr_auto_sign_in">Conectar ao iniciar</string>
     <string name="jbr_auto_stun_discovery">Auto descobrir servidores STUN/TURN</string>
@@ -1137,6 +1218,7 @@
     <string name="jbr_use_upnp">Usar UPnP</string>
     <string name="jbr_user_id">ID do USUÁRIO</string>
     <string name="jbr_user_name_password">Nome de usuário e senha</string>
+
     <!-- Telephony -->
     <string name="contact_phone">Nome/Telefone/Jid de Contato:</string>
     <string name="call_via">Ligar via:</string>
@@ -1147,45 +1229,58 @@
     <string name="jingle_not_supported">%1$s\nnão suporta o protocolo Jingle</string>
     <string name="recipient_error_parse_failed">Erro ao analisar o endereço!</string>
     <string name="unknown_recipient"><![CDATA[<Recipiente desconhecido>]]></string>
+
     <!-- General settings -->
     <string name="disabled">Desativado</string>
     <string name="enabled">Ativado</string>
     <string name="general">Geral</string>
+
     <!-- WebView default Page -->
     <string name="settings_webview_dlg_title">Entrar na página de acesso padrão do WebView:</string>
     <string name="settings_webview_page">Página de acesso web</string>
+
     <!-- Messaging settings -->
     <string name="settings_messaging">Envio de mensagens</string>
+
     <!-- Group messages in one window -->
     <string name="settings_multichat_off">Janela separada para cada conversa</string>
     <string name="settings_multichat_on">Mensagens de conversa em grupo em uma janela</string>
     <string name="settings_multichat_window">Janela de conversa múltipla</string>
+
     <!-- Log chat history -->
     <string name="settings_history_log_off">Histórico da conversa desativado</string>
     <string name="settings_history_log_on">Registrar o histórico de conversa</string>
     <string name="settings_history_logging">Registro de histórico de conversa</string>
     <string name="settings_history_mam_warning">Erro ao configurar a opção MAM para usuário offline: %1$s</string>
+
     <!-- Show x recent messages in new chats -->
     <string name="settings_history_dlg_title">Quantas mensagens recentes deveriam ser exibidas?</string>
     <string name="settings_history_size">Mostrar mensagens recentes</string>
     <string name="settings_history_summary">%d novas mensagens recentes em conversa</string>
     <string name="settings_history_show">Mostrar histórico</string>
+
     <!-- Tell others when we have received and read the messages -->
     <string name="settings_message_delivery_receipt">Recibo de entrega de mensagem</string>
     <string name="settings_message_delivery_receipt_summary">Informe seus contatos quando você tiver recebido e lido suas mensagens</string>
+
     <!-- Tell others when we are writing to them -->
     <string name="settings_typing_notifications">Enviar notificações de estado de conversa</string>
+
     <!-- Enable option to send thumbnail preview for image file sending -->
     <string name="settings_thumbnail_option">Enviar/Receber visualização em miniaturas</string>
+
     <!-- Auto accept downloadable max file size -->
     <string name="settings_file_max_auto_accept">Aceita automaticamente o tamanho máximo do arquivo</string>
+
     <!-- Setup subscription Mode: auto or manual approval -->
     <string name="settings_presence_subscribe_approval_mode">Aprovar notificações de presença</string>
     <string name="settings_presence_subscribe_approval_auto">Assine a aprovação - auto aceitar todos</string>
     <string name="settings_presence_subscribe_approval_manual">Assine a aprovação - manualmente</string>
+
     <!-- Bring chat window to front(not sure if this makes sense on Android, so omitted) -->
     <!-- Use task bar/dock alerts on incoming calls and chats -->
     <string name="settings_chat_notifications">Mostrar notificações na barra de status</string>
+
     <!-- Leave chat rooms when closing window(omitted on Android for now) -->
 
     <!-- Auto away -->
@@ -1193,38 +1288,48 @@
 
     <!-- Notifications -->
     <string name="settings_notifications">Notificações</string>
+
     <!-- Popup notifications type -->
     <string name="settings_auto_update_check_enable">Ativar verificação automática de atualização SW</string>
     <string name="settings_popup_handler">Tipo de notificações popup</string>
+
     <string name="pref_heads_up_notifications">Notificações heads-up</string>
     <string name="pref_heads_up_notifications_summary">Mostrar Notificações heads-up</string>
+
     <!-- Status bar notifications handler -->
     <string name="popup_auto">Auto</string>
     <string name="popup_status_bar">Notificações de barra de status</string>
+
     <!-- Events -->
     <string name="settings_event_summary">Configurar notificações individuais</string>
     <string name="settings_event_title">Eventos</string>
+
     <!-- Quite hour settings -->
     <string name="quiet_hours">Horário de silêncio</string>
     <string name="quiet_hours_start_time">Hora inicial</string>
     <string name="quiet_hours_end_time">Hora final</string>
     <string name="quiet_hours_enable">Ativar horário de silêncio</string>
     <string name="quiet_hours_summary">Notificações serão silenciadas durante as horas de silêncio</string>
+
     <!-- aTalk icon -->
     <string name="settings_show_icon">Mostrar ícone do aTalk</string>
     <string name="settings_show_icon_summary_off">Ocultar indicador ativo na notificação do aTalk</string>
     <string name="settings_show_icon_summary_on">Mostrar indicador ativo na notificação do aTalk</string>
+
     <!-- aTalk auto start -->
     <string name="settings_auto_start">Iniciar aTalk automaticamente ao reiniciar o aparelho</string>
     <string name="settings_auto_start_summary_disable">Desativar iniciação automatica do aTalk ao reiniciar o aparelho</string>
     <string name="settings_auto_start_summary_enable">Ativar iniciação automática do aTalk no próximo reinício do aparelho</string>
+
     <!-- Locale -->
     <string name="settings_locale">Idioma</string>
     <string name="settings_locale_system">Padrão do sistema</string>
+
     <!-- Theme -->
     <string name="settings_theme_dark">Escuro</string>
     <string name="settings_theme_light">Claro</string>
     <string name="settings_theme">Tema</string>
+
     <!-- TTS Language -->
     <string name="tts_delay">Adiar mensagem de texto-em-fala (ms)</string>
     <string name="tts_settings">Configurações gerais do TTS…</string>
@@ -1232,7 +1337,9 @@
     <string name="tts_enable">Ativar texto ➡ fala</string>
     <string name="tts_synthesis">Digite texto para falar ou sintetizar e salve em arquivo:</string>
     <string name="tts_voice">Voz padrão no TTS:</string>
+
     <string name="loading_wait">Carregando, aguarde…</string>
+
     <!-- Remove special characters from phone number -->
     <string name="settings_normalize_number">Símbolos especiais em números de telefone</string>
     <string name="settings_normalize_off">Nenhuma modificação do número de telefone</string>
@@ -1240,9 +1347,11 @@
     <!-- Convert letters in phone numbers -->
     <string name="settings_phone_alpha_no_allow">Nenhuma modificação do número de telefone</string>
     <string name="settings_phone_alpha_allow">Letras em números de telefone</string>
+
     <!-- Call settings -->
     <string name="call">Ligar</string>
     <string name="media_call">Ligação de média</string>
+
     <!-- Audio settings -->
     <string name="audio">Áudio</string>
     <!-- Echo cancellation -->
@@ -1260,17 +1369,21 @@
     <!-- Audio encodings -->
     <string name="settings_audio_codecs_summary">Selecionar e definir prioridade para os codecs de áudio</string>
     <string name="settings_audio_codecs">Codecs de áudio</string>
+
     <!-- Video settings -->
     <string name="video">Vídeo</string>
+
     <!-- Video system -->
     <string name="settings_system_android_camera">Câmara do Android</string>
     <string name="settings_system_media_recorder">Gravador de média</string>
+
     <!-- Camera used -->
     <string name="settings_camera">Câmara</string>
     <string name="settings_no_camera">Nenhum dispositivo de câmera compatível encontrado</string>
     <string name="settings_use_back_camera">Usar a câmera traseira</string>
     <string name="settings_use_front_camera">Usar a câmera frontal</string>
     <string name="settings_use_match_camera_resolution">Use a resolução de câmera mais próxima: %1$s</string>
+
     <!-- Video codecs -->
     <string name="settings_direct_surface_decode">Usar decodificação Direct Surface</string>
     <string name="settings_direct_surface_encode">Usar codificação Direct Surface</string>
@@ -1291,9 +1404,11 @@
     <string name="settings_video_fps_description">Valores aceitos entre 5 e 30 fps</string>
     <string name="settings_video_max_bw">Taxa limite de RTP (kBytes/s)</string>
     <string name="settings_video_fps_target">Taxa de quadro alvo (per sec.)</string>
+
     <!-- Chat Security settings -->
     <string name="settings_messaging_security_summary">Configurações de segurança de criptografia de mensagens</string>
     <string name="settings_messaging_security">Segurança de mensagens</string>
+
     <!-- Messaging security options -->
     <string name="otr_messaging_security">Segurança de mensagens OTR</string>
     <!-- Crypto Messaging Enable -->
@@ -1308,6 +1423,7 @@
     <string name="settings_CRYPTO_REQUIRE_OFF">Mensagens seguras serão usadas se suportadas</string>
     <string name="settings_CRYPTO_REQUIRE_ON">Somente sessões seguras serão aceitas</string>
     <string name="settings_CRYPTO_REQUIRE_TITLE">Exigir mensagens privadas</string>
+
     <!-- OMEMO security category-->
     <string name="omemo_messaging_security">Segurança de mensagens OMEMO</string>
     <!-- OMEMO device screen -->
@@ -1321,6 +1437,7 @@
     <string name="omemo_purge_devices_summary">Remova todos os aparelhos inativos; divulgar apenas o aparelho ativo atual que você está usando.</string>
     <string name="omemo_purge_device_unused">Exclua as identidades não usadas</string>
     <string name="omemo_purge_device">Excluir aparelhos OMEMO</string>
+
     <!-- Key & FingerPrint security category -->
     <string name="key_fingerprint_security">Chave &amp; Segurança de impressão digital</string>
     <!-- Crypto private Keys screen -->
@@ -1330,17 +1447,22 @@
     <!-- Crypto fingerprints screen -->
     <string name="settings_fingerprint_summary">Gerenciar todas as impressões digitais conhecidas de todos os aparelhos\ncor: ciano=aparelhoPróprio; cinza=inativo</string>
     <string name="settings_fingerprint_title">Impressões digitais de aparelhos criptografadas</string>
+
     <!-- Crypto contextMenu, dialog, message and toast -->
     <string name="crypto_key_generate_prompt">Você quer gerar uma nova chave para %1$s%2$s</string>
     <string name="crypto_key_generate_title">Geração de chaves privadas</string>
     <string name="crypto_key_regenerate_prompt">Você quer gerar uma nova chave para %1$s\n\n%2$s</string>
+
     <string name="delete_selected">Excluir selecionado</string>
     <string name="regenerate_selected">Regenerar selecionados</string>
+
     <string name="crypto_menu_key_generate">Gerar nova chave</string>
     <string name="crypto_menu_key_regenerate">Regenerar a chave</string>
+
     <string name="crypto_menu_fingerprint_copy">Copiar impressão digital</string>
     <string name="crypto_menu_fingerprint_distrust">Desconfie de impressão digital</string>
     <string name="crypto_menu_fingerprint_trust">Confie em Impressão digital</string>
+
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">O pedido da sessão OTR de seu amigo foi negado enquanto estava na sessão OMEMO. Você pode ativar a sessão OTR manualmente!</string>
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">Seu pedido de sessão OTR foi negado enquanto a sessão OMEMO estiver em andamento!</string>
     <string name="crypto_msg_omemo_session_setup_failed">A configuração da sessão OMEMO não foi bem sucedida! %1$s</string>
@@ -1348,18 +1470,23 @@
     <string name="crypto_msg_omemo_session_unverified">Enviando mensagens do OMEMO para alguns amigos desconhecidos com impressões digitais não verificadas!</string>
     <string name="crypto_msg_omemo_session_unverified_untrusted">Conversa para múltiplos usuários com alguns amigos sem confiança confirmada ou com impressões digitais não verificadas!</string>
     <string name="crypto_msg_omemo_session_verified">*** Todos os amigos foram autenticados! ***</string>
+
     <string name="crypto_fingerprint_status">Verificado: %1$s</string>
     <string name="crypto_no_key_present">Nenhuma chave presente</string>
+
     <string name="crypto_fingerprint_copy">Impressão digital copiada ao clipboard!</string>
     <string name="crypto_omemo_distrust_messaging_stop">Pare de enviar mais mensagens do OMEMO ao amigo: %1$s</string>
     <string name="crypto_omemo_trust_messaging_resume">Retomar o envio de mensagens OMEMO ao amigo: %1$s</string>
+
     <!-- Advanced settings category -->
     <string name="advanced">Avançado</string>
     <string name="settings_expert">Configurações avançadas</string>
     <string name="settings_expert_summary">Por favor, tenha cuidado com isto</string>
+
     <!-- Protocol category -->
     <string name="port">Porta</string>
     <string name="protocol">Protocolo</string>
+
     <!-- Opus -->
     <string name="opus">Opus</string>
     <string name="opus_sampling_rate">Taxa de amostragem</string>
@@ -1369,6 +1496,7 @@
     <string name="opus_encoder_settings">Definir as configurações do codificador Opus</string>
     <string name="opus_use_dtx">Usar DTX</string>
     <string name="opus_use_fec">Usar inband FEC</string>
+
     <!-- Silk -->
     <string name="silk">Silk</string>
     <string name="silk_encoder_settings">Definir as configurações do codificador SILK</string>
@@ -1376,12 +1504,14 @@
     <string name="silk_assume_pl">Sempre assumir a perda de pacotes</string>
     <string name="silk_fec_sat">Limite de atividade de fala (0–1)</string>
     <string name="silk_fec_advertise">Anunciar o suporte de FEC no SDP</string>
+
     <!-- SIP config -->
     <string name="plugin_generalconfig_SIP_CLIENT_PORT">Porta do cliente SIP</string>
     <string name="plugin_generalconfig_SIP_CLIENT_SECURE_PORT">Porta segura do cliente SIP</string>
     <string name="plugin_generalconfig_SIP_SSL_PROTOCOLS">Protocolos SSL/TLS ativados</string>
     <string name="service_gui_settings_SIP">SIP</string>
     <string name="service_gui_settings_SIP_SUMMARY">Definir as configurações do protocolo SIP</string>
+
     <!-- Android Battery Usage Optimization -->
     <string name="battery_optimizations">Otimização da bateria</string>
     <string name="battery_optimizations_dialog">Seu aparelho tem otimização da bateria implementada para o aTalk; isto pode provocar atrasos de notificações ou perda de mensagens.\n\nRecomenda-se que você desative esta otimização para o aTalk.</string>
@@ -1389,6 +1519,7 @@
     <string name="device_does_not_support_battery_op">Seu aparelho não suporta a opção de não otimização da bateria</string>
     <string name="disable">Desativar</string>
     <string name="next">Próximo</string>
+
     <!-- Android Permissions -->
     <string name="app_info">Detalhes do app…</string>
     <string name="permission_app_info">Detalhes do app</string>
@@ -1403,34 +1534,47 @@
     <string name="permission_video">Foto e Vídeo</string>
     <string name="permission_storage">Armazenamento</string>
     <string name="permission_hint">Para o máximo desempenho do app e suporte total de todas as características, aTalk exige que você conceda permissões para os seguintes serviços. SEM elas, aTalk pode não funcionar ou pode ter um comportamento inesperado!</string>
+
     <string name="permission_denied">NEGADO</string>
     <string name="permission_granted">CONCEDIDO</string>
     <string name="permission_denied_permanently">PERMANENTEMENTE NEGADO</string>
     <string name="permission_unknown">DESCONOCIDO</string>
+
     <string name="mic_permission_denied_dialog_title">Pedido de permissão de gravação de áudio</string>
     <string name="mic_permission_denied_feedback">Ligação de áudio não será disponível até que você conceda a permissão necessária</string>
+
     <string name="camera_permission_denied_dialog_title">Pedido de permissão da câmara</string>
     <string name="camera_permission_denied_feedback">Todas as atividades associadas à câmera não serão disponíveis até que você conceda a permissão necessária</string>
+
     <string name="contacts_permission_denied_dialog_title">Pedido de permissão de contatos</string>
     <string name="contacts_permission_denied_feedback">É necessária permissão de contatos para acesso ao estado de telefone e configuração de ligações</string>
+
     <string name="music_permission_denied_dialog_title">Pedido de permissão de música e áudio</string>
     <string name="music_permission_denied_feedback">O arquivo de áudio de mídia não estará acessível até que você conceda a solicitação de permissão</string>
+
     <string name="location_permission_denied_dialog_title">Pedido de permissão de localização</string>
     <string name="location_permission_denied_feedback">Os recursos da localização do GPS não serão disponíveis até que você conceda a permissão necessária</string>
+
     <string name="notifications_permission_denied_dialog_title">Pedido de permissão de notificações</string>
     <string name="notifications_permission_denied_feedback">As notificações do aTalk serão desativadas até que você conceda a solicitação de permissão</string>
+
     <string name="phone_permission_denied_dialog_title">Leia a Pedido de permissão do estado do telefone</string>
     <string name="phone_permission_denied_feedback">Os recursos do telefone não estarão disponíveis até que você conceda a solicitação de permissão</string>
+
     <string name="video_permission_denied_dialog_title">Pedido de permissão de fotos e vídeos</string>
     <string name="video_permission_denied_feedback">O arquivo de foto e vídeo de mídia não estará acessível até que você conceda a solicitação de permissão</string>
+
     <string name="storage_permission_denied_dialog_title">Pedido de permissão de acesso ao armazenamento</string>
     <string name="storage_permission_denied_feedback">Não será possível salvar o conteúdo de mensagens enviadas e recebidas em armazenamento até que você conceda a permissão requerida</string>
+
     <string name="all_permission_denied_dialog_title">Pedido para todas as permissões</string>
     <string name="all_permissions_denied_feedback">aTalk pode não funcionar corretamente ou pode ter um comportamento inesperado, já que alguns serviços foram negados!\nSe você tiver selecionado opção \"Não perguntar novamente\", você precisa voltar para as Configurações do Android -&gt; Detalhes do aTalk app para permitir as permissões de acesso aos recursos</string>
     <string name="permission_denied_all_alert">aTalk não funcionaria corretamente. Você negou a aTalk todas as permissões!\nvocê precisa ir às Configurações do Android -&gt; Detalhes do aTalk app para permitir as permissões de acesso aos recursos.</string>
+
     <string name="permission_rationale_message">Será exibido cada serviço necessário para aTalk; por favor, permita ao aTalk ter acesso a estes serviços para poder usar todos os recursos suportados</string>
     <string name="permission_rationale_settings_button_text">CONFIGURAÇÕES</string>
     <string name="permission_rationale_title">aTalk precisa de permissões</string>
+
     <!--Location string constant -->
     <string name="location_permission_dialog_title">Permissão de localização necessária</string>
     <string name="location_permission_dialog_message">Ativar permissão de localização agora?</string>

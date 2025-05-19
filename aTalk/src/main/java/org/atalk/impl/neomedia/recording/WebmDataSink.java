@@ -5,13 +5,6 @@
  */
 package org.atalk.impl.neomedia.recording;
 
-import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.control.KeyFrameControl;
-import org.atalk.service.neomedia.recording.RecorderEvent;
-import org.atalk.service.neomedia.recording.RecorderEventHandler;
-import org.atalk.util.MediaType;
-
 import java.io.IOException;
 
 import javax.media.Buffer;
@@ -25,6 +18,13 @@ import javax.media.protocol.DataSource;
 import javax.media.protocol.PushBufferDataSource;
 import javax.media.protocol.PushBufferStream;
 
+import org.atalk.service.configuration.ConfigurationService;
+import org.atalk.service.libjitsi.LibJitsi;
+import org.atalk.service.neomedia.control.KeyFrameControl;
+import org.atalk.service.neomedia.recording.RecorderEvent;
+import org.atalk.service.neomedia.recording.RecorderEventHandler;
+import org.atalk.util.MediaType;
+
 import timber.log.Timber;
 
 /**
@@ -33,8 +33,7 @@ import timber.log.Timber;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class WebmDataSink implements DataSink, BufferTransferHandler
-{
+public class WebmDataSink implements DataSink, BufferTransferHandler {
     /**
      * Whether to generate a RECORDING_ENDED event when closing.
      */
@@ -72,9 +71,9 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     /**
      * A <code>Buffer</code> used to transfer frames.
      */
-    private Buffer buffer = new Buffer();
+    private final Buffer buffer = new Buffer();
 
-    private WebmWriter.FrameDescriptor fd = new WebmWriter.FrameDescriptor();
+    private final WebmWriter.FrameDescriptor fd = new WebmWriter.FrameDescriptor();
 
     /**
      * Our <code>DataSource</code>.
@@ -84,7 +83,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     /**
      * The name of the file into which we will write.
      */
-    private String filename;
+    private final String filename;
 
     /**
      * The RTP time stamp of the first frame written to the output webm file.
@@ -113,13 +112,13 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     private boolean keyframeRequested = false;
 
     private int framesSinceLastKeyframeRequest = 0;
-    private static int REREQUEST_KEYFRAME_INTERVAL = 100;
+    private static final int REREQUEST_KEYFRAME_INTERVAL = 100;
 
     /**
      * Property name to control auto requesting keyframes periodically
      * to improve seeking speed without re-encoding the file
      */
-    private static String AUTO_REQUEST_KEYFRAME_PNAME =
+    private static final String AUTO_REQUEST_KEYFRAME_PNAME =
             WebmDataSink.class.getCanonicalName() + ".AUTOKEYFRAME";
     private int autoKeyframeRequestInterval = 0;
 
@@ -129,8 +128,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      * @param filename the name of the file into which to write.
      * @param dataSource the <code>DataSource</code> to use.
      */
-    public WebmDataSink(String filename, DataSource dataSource)
-    {
+    public WebmDataSink(String filename, DataSource dataSource) {
         ConfigurationService cfg = LibJitsi.getConfigurationService();
         this.autoKeyframeRequestInterval = cfg.getInt(AUTO_REQUEST_KEYFRAME_PNAME, this.autoKeyframeRequestInterval);
         if (this.autoKeyframeRequestInterval > 0) {
@@ -144,16 +142,14 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      * {@inheritDoc}
      */
     @Override
-    public void addDataSinkListener(DataSinkListener dataSinkListener)
-    {
+    public void addDataSinkListener(DataSinkListener dataSinkListener) {
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void close()
-    {
+    public void close() {
         synchronized (openCloseSyncRoot) {
             if (!open) {
                 Timber.d("Not closing WebmDataSink: already closed.");
@@ -183,8 +179,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      * {@inheritDoc}
      */
     @Override
-    public String getContentType()
-    {
+    public String getContentType() {
         return null;
     }
 
@@ -192,8 +187,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      * {@inheritDoc}
      */
     @Override
-    public MediaLocator getOutputLocator()
-    {
+    public MediaLocator getOutputLocator() {
         return null;
     }
 
@@ -202,8 +196,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      */
     @Override
     public void open()
-            throws IOException, SecurityException
-    {
+            throws IOException, SecurityException {
         synchronized (openCloseSyncRoot) {
             if (dataSource instanceof PushBufferDataSource) {
                 PushBufferDataSource pbds = (PushBufferDataSource) dataSource;
@@ -227,16 +220,14 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      * {@inheritDoc}
      */
     @Override
-    public void removeDataSinkListener(DataSinkListener dataSinkListener)
-    {
+    public void removeDataSinkListener(DataSinkListener dataSinkListener) {
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setOutputLocator(MediaLocator mediaLocator)
-    {
+    public void setOutputLocator(MediaLocator mediaLocator) {
     }
 
     /**
@@ -244,8 +235,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      */
     @Override
     public void start()
-            throws IOException
-    {
+            throws IOException {
         writer = new WebmWriter(filename);
         dataSource.start();
         Timber.i("Created WebmWriter on %s", filename);
@@ -256,8 +246,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      */
     @Override
     public void stop()
-            throws IOException
-    {
+            throws IOException {
         // XXX: should we do something here? reset waitingForKeyframe?
     }
 
@@ -265,8 +254,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      * {@inheritDoc}
      */
     @Override
-    public Object getControl(String s)
-    {
+    public Object getControl(String s) {
         return null;
     }
 
@@ -274,8 +262,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      * {@inheritDoc}
      */
     @Override
-    public Object[] getControls()
-    {
+    public Object[] getControls() {
         return new Object[0];
     }
 
@@ -284,8 +271,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      */
     @Override
     public void setSource(DataSource dataSource)
-            throws IOException, IncompatibleSourceException
-    {
+            throws IOException, IncompatibleSourceException {
         // maybe we should throw an exception here, since we don't support
         // changing the data source?
     }
@@ -294,8 +280,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      * {@inheritDoc}
      */
     @Override
-    public void transferData(PushBufferStream stream)
-    {
+    public void transferData(PushBufferStream stream) {
         synchronized (openCloseSyncRoot) {
             if (!open)
                 return;
@@ -418,11 +403,11 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      *
      * @param buf the buffer containing a compressed VP8 frame.
      * @param offset the offset in <code>buf</code> where the VP8 compressed frame starts.
+     *
      * @return <code>true</code>if the VP8 compressed frame contained in <code>buf</code> at offset
      * <code>offset</code> is a keyframe.
      */
-    private boolean isKeyFrame(byte[] buf, int offset)
-    {
+    private boolean isKeyFrame(byte[] buf, int offset) {
         return (buf[offset] & 0x01) == 0;
     }
 
@@ -432,11 +417,11 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      *
      * @param buf the buffer containing a compressed VP8 frame.
      * @param offset the offset in <code>buf</code> where the VP8 compressed frame starts.
+     *
      * @return <code>true</code>if the VP8 compressed keyframe contained in <code>buf</code> at offset
      * <code>offset</code> is valid.
      */
-    private boolean isKeyFrameValid(byte[] buf, int offset)
-    {
+    private boolean isKeyFrameValid(byte[] buf, int offset) {
         return (buf[offset + 3] == (byte) 0x9d)
                 && (buf[offset + 4] == (byte) 0x01)
                 && (buf[offset + 5] == (byte) 0x2a);
@@ -448,11 +433,11 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      *
      * @param buf the buffer containing a compressed VP8 frame.
      * @param offset the offset in <code>buf</code> where the VP8 compressed frame starts.
+     *
      * @return the width of the VP8 compressed frame contained in <code>buf</code> at offset
      * <code>offset</code>.
      */
-    private int getWidth(byte[] buf, int offset)
-    {
+    private int getWidth(byte[] buf, int offset) {
         return (((buf[offset + 7] & 0xff) << 8) | (buf[offset + 6] & 0xff)) & 0x3fff;
     }
 
@@ -462,10 +447,10 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      *
      * @param buf the buffer containing a compressed VP8 frame.
      * @param offset the offset in <code>buf</code> where the VP8 compressed frame starts.
+     *
      * @return the height of the VP8 compressed frame contained in <code>buf</code> at offset <code>offset</code>.
      */
-    private int getHeight(byte[] buf, int offset)
-    {
+    private int getHeight(byte[] buf, int offset) {
         return (((buf[offset + 9] & 0xff) << 8) | (buf[offset + 8] & 0xff)) & 0x3fff;
     }
 
@@ -476,32 +461,29 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      *
      * @param buf the buffer containing a compressed VP8 frame.
      * @param offset the offset in <code>buf</code> where the VP8 compressed frame starts.
+     *
      * @return the value of the <code>show_frame</code> field from the "uncompressed data chunk" in the
      * VP8 compressed frame contained in <code>buf</code> at offset <code>offset</code>.
+     *
      * @{link https://tools.ietf.org/html/draft-ietf-payload-vp8-11} is used.
      */
-    private boolean isShowFrame(byte[] buf, int offset)
-    {
+    private boolean isShowFrame(byte[] buf, int offset) {
         return (buf[offset] & 0x10) == 0;
     }
 
-    public void setKeyFrameControl(KeyFrameControl keyFrameControl)
-    {
+    public void setKeyFrameControl(KeyFrameControl keyFrameControl) {
         this.keyFrameControl = keyFrameControl;
     }
 
-    public RecorderEventHandler getEventHandler()
-    {
+    public RecorderEventHandler getEventHandler() {
         return eventHandler;
     }
 
-    public void setEventHandler(RecorderEventHandler eventHandler)
-    {
+    public void setEventHandler(RecorderEventHandler eventHandler) {
         this.eventHandler = eventHandler;
     }
 
-    public void setSsrc(long ssrc)
-    {
+    public void setSsrc(long ssrc) {
         this.ssrc = ssrc;
     }
 

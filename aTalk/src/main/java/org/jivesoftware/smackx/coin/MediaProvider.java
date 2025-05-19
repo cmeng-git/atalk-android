@@ -5,20 +5,19 @@
  */
 package org.jivesoftware.smackx.coin;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-
-import java.io.IOException;
 
 /**
  * Parser for MediaExtensionElement.
  *
  * @author Sebastien Vincent
  */
-public class MediaProvider extends ExtensionElementProvider<MediaExtension>
-{
+public class MediaProvider extends ExtensionElementProvider<MediaExtension> {
     /**
      * Parses a media extension sub-packet and creates a {@link MediaExtension} instance. At
      * the beginning of the method call, the xml parser will be positioned on the opening element of
@@ -26,13 +25,14 @@ public class MediaProvider extends ExtensionElementProvider<MediaExtension>
      * will be positioned on the closing element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <code>Media</code> element.
+     *
      * @return a new {@link MediaExtension} instance.
+     *
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
     @Override
     public MediaExtension parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException
-    {
+            throws IOException, XmlPullParserException {
         boolean done = false;
         XmlPullParser.Event eventType;
         String elementName = null;

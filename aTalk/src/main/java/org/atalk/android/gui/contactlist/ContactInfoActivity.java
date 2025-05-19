@@ -260,7 +260,7 @@ public class ContactInfoActivity extends BaseActivity
 
     @Override
     public void detailsRetrieved(final Iterator<GenericDetail> allDetails) {
-        new Handler(Looper.getMainLooper()).post(() -> {
+        runOnUiThread(() -> {
             if (allDetails != null) {
                 while (allDetails.hasNext()) {
                     GenericDetail detail = allDetails.next();

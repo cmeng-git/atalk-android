@@ -1,5 +1,66 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.3.0 (403000)
+Release Date:   05/19/2025
+Author:         cmeng
+- Show Badge indicator on incoming file request; to ease user identification of the sender in contact list main UI.
+- Enable HeadsUp notification for incoming file transfer request to alert user when device is in standby;
+  Launch 'App Info...' settings, user must update the File Transfer Notification settings.
+  See https://developer.android.com/develop/ui/views/notifications/channels#UpdateChannel.
+- Ensure multiple files send/receive for HTTPFileUpload, JingleFileSend and Legacy Bytestream transfer protocols are handled properly; improve UI and process reliability.
+- Must re-init all UI button actions whenever the xFileConversationForm is called on UI refresh; as inflateViewForFileTransfer() will change their references.
+- Fix ConcurrentModificationException in JingleS5BTransportCandidateImpl#connectToCandidates() checking.
+- Change to use TOTAL_CONNECTION_TIMEOUT (10s) for each candidate in establishBytestreamSession checking.
+- Do not set file sending/receiving state as History Record while it is still active;
+  else any UI refresh will interrupt file transfer, although file transfer may still running in background.
+  This happen when send/receive new text or during multiple files receiving.
+- Must create file record in DB for proper HTTP file download process update; else the cached info is destroyed when user closes the chat session.
+- Use Math.max(COLUMN_TOTAL_SIZE_BYTES, COLUMN_BYTES_DOWNLOADED_SO_FAR) for HttpFileDownloadJabberImpl#queryFileSize();
+  later is found to contain file size, and COLUMN_TOTAL_SIZE_BYTES always return 0. Download Manager implementation error?
+- Improve and clean up HttpFileDownloadJabberImpl implementation e.g. progress query by Id instead of status.
+- Must implement HttpFileDownloadJabberImpl#getTransferredBytes for proper HttpFileDownload progressBar update.
+- Implement and support XEP-0066: Out of Band Data sending in Http file transfer in contact or muc chat session.
+- Ensure the file transfer UI is shown (post delay 0.5S) before proceed to auto accept file transfer if enabled.
+- Fix progressBar indicator not properly updated when the received file size in unknown in HttpFileDownload process.
+- Do not constraint the IncomingFileTransferJingleImpl#progress() update with 10mS UPDATE_INTERVAL;
+  else final rwBytes may not be reflected in the UI progressBar.
+- Ensure all message event ID's in outgoing file transfer are in sync with the file record saved in database for proper status update.
+- When file transfer form is first created, it must check that (getXferStatus() == FileTransferStatusChangeEvent.UNKNOWN)
+  before start any file send/received process. else file transfer may get repeated in UI.
+- Ensure all status definitions in both FileTransferStatusChangeEvent and FileRecord are in sync for correct status tracking.
+- Ensure the transport candidates use in file transfer are properly refreshed when the device active network connection is changed.
+- Avoid using static mBuilder for both JingleContentDescription and JingleContentTransport; else multiple JingleFileTransfer will interference with each other.
+- JingleSessionImpl#jingleSessionListeners cannot be static; otherwise updateSessionState will interfere with each other in multiple files transfer.
+- During multiple Jingle files receive, sometimes has the following exception ('session-accept' sent twice):
+    JingleIncomingFileOffer.onBytestreamReady() Cannot get InputStream from BytestreamSession:
+    java.net.SocketException: Socket is closed java.net.SocketException: Socket is closed
+    The problem is due to Recipient send accept twice - problem fixed.
+- Legacy file transfer uses the same instance of OperationSetFileTransferJabberImpl to send file with the same NegotiationProgress status callback;
+  hence unable to support multiple files transfer. Use difference NegotiationProgress for each OutgoingFileTransferJabberImpl to fix the problem.
+- Need to block the unexpected delayed info messages on HttpFileDownload send from server multiple times; else repeated UI requests user to accept file.
+- Add serverMsgId and remoteMsgId value to the file history record in the database; to check for unexpected delay info messages send from server.
+- Ignore any empty body forward message received during MamQuery process update.
+- Fix ChatState notifications not handle properly in MUC chat session.
+- Save last send/received message timestamp into mamDate in session record, avoid deleted messages reappear in UI when user relaunch aTalk.
+  When last send/received message are purged, then user exit/terminate aTalk. All the purged messages will get retrieved via mamQuery.
+  This is because the last message timeStamp is not saved into the session mamDate, and last cached info is destroyed on exit.
+- Use OriginIdElement as msgUid if the received message does not contain the msgId.
+- Move subclass common CameraCaptureSession.StateCallback into base class CameraStreamBase.
+- Replace deprecated option menu setHasOptionsMenu() implementation with MenuProvider.
+- Replace deprecated FragmentPagerAdapter with FragmentStateAdapter for the main aTalk MainPagerAdapter.
+- Add Arabic language support.
+
+*** Observation with no solution implemented:
+- Share from other app works only if aTalk is active (aTalk must be launched and registered on the network);
+  Requires aTalk to be registered with network, also onCreateView() is not being called when aTalk is inactive.
+- Sometimes JingleFileTransfer request is not received by recipient; and sender abort after 10s timeout; Then the sender fallback to other methods.
+  Sometimes aTalk does not receive JingleIncomingFileOffer messages (missing in logcat) after a new build debug. Other Jingle request is ok.
+- During multiple files send process, all FileSendConversation UI must be brought/scrolled into view before the file sending is triggered.
+- During multiple file send, the 'session-initiate' may not be sent if the sender UI is not in view.
+  User has to scroll the UI into view to start. Waiting for UI status to complete the update.
+- On file send error, a 'retry' option is offered. However this option is cleared if the user scrolls, and the UI get refresh as History record.
+
+=========================================================================
 Version:        4.2.2 (402020)
 Release Date:   03/24/2025
 Author:         cmeng

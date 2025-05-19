@@ -368,6 +368,7 @@
     <string name="file_send_completed">Súbor bol úspešne odoslaný na %1$s</string>
     <string name="file_send_declined">%1$s odmietol tento súbor</string>
     <string name="file_sending_to">Odosiela sa súbor do %1$s</string>
+    <string name="file_transfer_accepted">Prenos súboru bol prijatý</string>
     <string name="file_transfer_canceled">Prenos súboru bol zrušený</string>
     <string name="file_transfer_preparing">Príprava prenosu súboru s %1$s. Prosím čakajte&#8230;</string>
     <string name="file_transfer_declined">Prenos súboru bol zavrnil</string>
@@ -391,7 +392,7 @@
     <string name="file_size_too_big">Veľkosť súboru presahuje maximum povolené pre tento protokol: %1$s</string>
     <string name="file_transfer_active">Prebieha prenos súborov. Sledovanie stavu @%1$s sa stratilo!</string>
     <string name="file_transfer_not_secure">XEP-0096: Protokol SI File Transfer nepodporuje odosielanie šifrovaných súborov!</string>
-    <string name="file_transfer_not_supported">Obráťte sa na klienta alebo server nepodporuje prenos súborov ani požadované protokoly</string>
+    <string name="file_transfer_not_supported">Obráťte sa na klienta (%1$s) alebo server nepodporuje prenos súborov ani požadované protokoly</string>
 
     <string name="finish">Skončiť</string>
     <string name="folder_not_exist">Priečinok obsahujúci tento súbor sa nepodarilo nájsť. Bol odstránený alebo presunutý</string>

@@ -369,6 +369,7 @@
     <string name="file_send_completed">Fail telah berhasil dikirim ke %1$s</string>
     <string name="file_send_declined">%1$s telah menampik fail ini</string>
     <string name="file_sending_to">Mengirim fail ke %1$s</string>
+    <string name="file_transfer_accepted">Fail transfer telah diterima</string>
     <string name="file_transfer_canceled">Fail transfer telah dibatalkan</string>
     <string name="file_transfer_preparing">Mempersiapkan transfer fail dengan %1$s. Harap tunggu&#8230;</string>
     <string name="file_transfer_declined">Fail transfer telah ditampik</string>
@@ -392,7 +393,7 @@
     <string name="file_size_too_big">Ukuran fail melebihi batas maksimum yang diizinkan untuk protokol ini: %1$s</string>
     <string name="file_transfer_active">Transfer fail sedang diproses sedang terganggu. Pelacakan status @ %1$s hilang!</string>
     <string name="file_transfer_not_secure">XEP-0096: Protokol Transfer File SI tidak dapat mendukung pengiriman file terenkripsi!</string>
-    <string name="file_transfer_not_supported">Hubungi klien atau server tidak mendukung transfer file atau protokol yang diperlukan</string>
+    <string name="file_transfer_not_supported">Hubungi klien (%1$s) atau server tidak mendukung transfer file atau protokol yang diperlukan</string>
 
     <string name="finish">Selesai</string>
     <string name="folder_not_exist">Folder yang berisi fail ini tidak dapat ditemukan. Itu dihapus atau dipindahkan</string>

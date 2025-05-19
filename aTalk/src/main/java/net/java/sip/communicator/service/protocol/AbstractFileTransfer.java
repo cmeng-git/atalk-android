@@ -49,7 +49,7 @@ public abstract class AbstractFileTransfer implements FileTransfer {
     /*
      * current progress of byte transferred for keeping track if there is changes
      */
-    private long mProgress;
+    protected long mByteTransfer = 0;
 
     /**
      * Cancels this file transfer. When this method is called transfer should be interrupted.
@@ -64,7 +64,7 @@ public abstract class AbstractFileTransfer implements FileTransfer {
      */
     @Override
     public long getTransferredBytes() {
-        return -1;
+        return mByteTransfer;
     }
 
     /**
@@ -137,19 +137,19 @@ public abstract class AbstractFileTransfer implements FileTransfer {
         String reasonText = (reason.getText() != null) ? reason.getText() : reason.asEnum().toString();
         // Timber.d("SetStatus# jingle reason: %s", reason.asEnum());
         switch (reason.asEnum()) {
-            case decline:
-                fireStatusChangeEvent(FileTransferStatusChangeEvent.DECLINED, reasonText);
+            case success:
+                fireStatusChangeEvent(FileTransferStatusChangeEvent.COMPLETED, reasonText);
                 break;
             case cancel:
                 fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, reasonText);
                 break;
-            case success:
-                fireStatusChangeEvent(FileTransferStatusChangeEvent.COMPLETED, reasonText);
+            case decline:
+                fireStatusChangeEvent(FileTransferStatusChangeEvent.DECLINED, reasonText);
                 break;
-            default: {
+            default:
                 reasonText = aTalkApp.getResString(R.string.file_send_client_error, reasonText);
-                fireStatusChangeEvent(FileTransferStatusChangeEvent.FAILED, reasonText);
-            }
+                Timber.e(new Exception("JingleReason: " + reasonText));
+                fireStatusChangeEvent(FileTransferStatusChangeEvent.UNKNOWN, reasonText);
         }
     }
 
@@ -168,8 +168,8 @@ public abstract class AbstractFileTransfer implements FileTransfer {
         synchronized (statusListeners) {
             listeners = new ArrayList<>(statusListeners);
         }
-        Timber.d("Dispatching FileTransfer status change: %s => %s to %d listeners.",
-                mStatus, newStatus, listeners.size());
+        Timber.d("Dispatching FileTransfer status change: %s => %s to %d listeners; %s",
+                mStatus, newStatus, listeners.size(), getLocalFile().getName());
 
         // Updates the mStatus only after statusEvent is created.
         FileTransferStatusChangeEvent statusEvent
@@ -185,20 +185,21 @@ public abstract class AbstractFileTransfer implements FileTransfer {
      * Notifies all status listeners that a new <code>FileTransferProgressEvent</code> occurred.
      *
      * @param timestamp the date on which the event occurred
-     * @param progress the bytes representing the progress of the transfer
+     * @param byteReceive the bytes representing the progress of the transfer
      */
-    public void fireProgressChangeEvent(long timestamp, long progress) {
+    public void fireProgressChangeEvent(long timestamp, long byteReceive) {
         // ignore if there is no change since the last progress check
-        if (mProgress == progress)
+        // Timber.w("fireProgressChangeEvent: %s (%s)", byteReceive, mByteTransfer);
+        if (mByteTransfer == byteReceive)
             return;
 
-        mProgress = progress;
+        mByteTransfer = byteReceive;
         Collection<FileTransferProgressListener> listeners;
         synchronized (progressListeners) {
             listeners = new ArrayList<>(progressListeners);
         }
 
-        FileTransferProgressEvent progressEvent = new FileTransferProgressEvent(this, timestamp, progress);
+        FileTransferProgressEvent progressEvent = new FileTransferProgressEvent(this, timestamp, byteReceive);
         for (FileTransferProgressListener statusListener : listeners) {
             statusListener.progressChanged(progressEvent);
         }

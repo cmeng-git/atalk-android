@@ -15,14 +15,14 @@
  */
 package org.jivesoftware.smackx.jibri;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.StanzaError;
-import org.jxmpp.jid.Jid;
-import org.jivesoftware.smackx.AbstractExtensionElement;
-
 import java.util.List;
 
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smackx.AbstractExtensionElement;
+import org.jxmpp.jid.Jid;
 
 /**
  * The packet extension added to Jicofo MUC presence to broadcast current
@@ -34,8 +34,7 @@ import javax.xml.namespace.QName;
  * <code>{@link JibriIq.Status#PENDING}</code> - starting recording
  * <code>{@link JibriIq.Status#ON}</code> - recording in progress
  */
-public class RecordingStatus extends AbstractExtensionElement
-{
+public class RecordingStatus extends AbstractExtensionElement {
     /**
      * The namespace of this packet extension.
      */
@@ -63,8 +62,7 @@ public class RecordingStatus extends AbstractExtensionElement
      */
     private Jid initiator;
 
-    public RecordingStatus()
-    {
+    public RecordingStatus() {
         super(ELEMENT, NAMESPACE);
     }
 
@@ -73,8 +71,7 @@ public class RecordingStatus extends AbstractExtensionElement
      *
      * @return one of {@link JibriIq.Status}
      */
-    public JibriIq.Status getStatus()
-    {
+    public JibriIq.Status getStatus() {
         String statusAttr = getAttributeAsString(STATUS_ATTRIBUTE);
         return JibriIq.Status.parse(statusAttr);
     }
@@ -84,8 +81,7 @@ public class RecordingStatus extends AbstractExtensionElement
      *
      * @param status one of {@link JibriIq.Status}
      */
-    public void setStatus(JibriIq.Status status)
-    {
+    public void setStatus(JibriIq.Status status) {
         setAttribute(STATUS_ATTRIBUTE, status);
     }
 
@@ -94,8 +90,7 @@ public class RecordingStatus extends AbstractExtensionElement
      *
      * @return the session ID
      */
-    public String getSessionId()
-    {
+    public String getSessionId() {
         return getAttributeAsString(JibriIq.SESSION_ID_ATTR_NAME);
     }
 
@@ -104,19 +99,16 @@ public class RecordingStatus extends AbstractExtensionElement
      *
      * @param sessionId the session ID
      */
-    public void setSessionId(String sessionId)
-    {
+    public void setSessionId(String sessionId) {
         setAttribute(JibriIq.SESSION_ID_ATTR_NAME, sessionId);
     }
 
-    public JibriIq.RecordingMode getRecordingMode()
-    {
+    public JibriIq.RecordingMode getRecordingMode() {
         String recordingMode = getAttributeAsString(JibriIq.RECORDING_MODE_ATTR_NAME);
         return JibriIq.RecordingMode.parse(recordingMode);
     }
 
-    public void setRecordingMode(JibriIq.RecordingMode recordingMode)
-    {
+    public void setRecordingMode(JibriIq.RecordingMode recordingMode) {
         setAttribute(JibriIq.RECORDING_MODE_ATTR_NAME, recordingMode.toString());
     }
 
@@ -125,8 +117,7 @@ public class RecordingStatus extends AbstractExtensionElement
      *
      * @return the failure reason
      */
-    public JibriIq.FailureReason getFailureReason()
-    {
+    public JibriIq.FailureReason getFailureReason() {
         String failureReasonStr = getAttributeAsString(JibriIq.FAILURE_REASON_ATTR_NAME);
         return JibriIq.FailureReason.parse(failureReasonStr);
     }
@@ -136,8 +127,7 @@ public class RecordingStatus extends AbstractExtensionElement
      *
      * @param failureReason the failure reason
      */
-    public void setFailureReason(JibriIq.FailureReason failureReason)
-    {
+    public void setFailureReason(JibriIq.FailureReason failureReason) {
         if (failureReason != null) {
             setAttribute(JibriIq.FAILURE_REASON_ATTR_NAME, failureReason.toString());
         }
@@ -147,8 +137,7 @@ public class RecordingStatus extends AbstractExtensionElement
      * Returns <code>XMPPError</code> associated with current
      * {@link RecordingStatus}.
      */
-    public StanzaError getError()
-    {
+    public StanzaError getError() {
         XMPPErrorPE errorPe = getErrorPE();
         return errorPe != null ? errorPe.getError() : null;
     }
@@ -159,8 +148,7 @@ public class RecordingStatus extends AbstractExtensionElement
      *
      * @return {@link XMPPErrorPE} or <code>null</code> if not found.
      */
-    private XMPPErrorPE getErrorPE()
-    {
+    private XMPPErrorPE getErrorPE() {
         List<? extends ExtensionElement> errorPe = getChildExtensionsOfType(XMPPErrorPE.class);
         return (XMPPErrorPE) (!errorPe.isEmpty() ? errorPe.get(0) : null);
     }
@@ -171,8 +159,7 @@ public class RecordingStatus extends AbstractExtensionElement
      * @param error <code>XMPPError</code> to add error details to this
      * <code>RecordingStatus</code> instance or <code>null</code> to have it removed.
      */
-    public void setError(StanzaError error)
-    {
+    public void setError(StanzaError error) {
         if (error != null) {
             // Wrap and add XMPPError as packet extension
             XMPPErrorPE errorPe = getErrorPE();
@@ -193,8 +180,7 @@ public class RecordingStatus extends AbstractExtensionElement
      *
      * @param initiator the full JID of the initiator.
      */
-    public void setInitiator(Jid initiator)
-    {
+    public void setInitiator(Jid initiator) {
         setAttribute(INITIATOR_ATTR_NAME, initiator);
         this.initiator = initiator;
     }
@@ -204,8 +190,7 @@ public class RecordingStatus extends AbstractExtensionElement
      *
      * @return the full JID of the initiator.
      */
-    public Jid getInitiator()
-    {
+    public Jid getInitiator() {
         return initiator;
     }
 }

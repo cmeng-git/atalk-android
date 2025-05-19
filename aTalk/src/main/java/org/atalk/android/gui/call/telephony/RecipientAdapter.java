@@ -158,7 +158,7 @@ public class RecipientAdapter extends BaseAdapter implements Filterable
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
             highlightedSpannable.setSpan(
-                    new ForegroundColorSpan(context.getResources().getColor(android.R.color.holo_blue_light)),
+                    new ForegroundColorSpan(context.getResources().getColor(android.R.color.holo_blue_light, null)),
                     matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return highlightedSpannable;

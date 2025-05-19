@@ -5,12 +5,25 @@
  */
 package net.java.sip.communicator.plugin.notificationwiring;
 
+import static android.text.Html.FROM_HTML_MODE_LEGACY;
+
 import android.text.Html;
 
 import androidx.fragment.app.Fragment;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.Callable;
+
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
+import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.UIService;
@@ -97,23 +110,12 @@ import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.service.neomedia.recording.Recorder;
-import org.atalk.service.resources.ResourceManagementService;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.Callable;
 
 import timber.log.Timber;
 
@@ -217,10 +219,10 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * @param eventType the event type for which we fire a notification
      * @param messageTitle the title of the message
      * @param message the content of the message
-     * @param messageUID the message UID
+     * @param messageUid the message UID
      */
     public static void fireChatNotification(Object chatDescriptor, String eventType, String messageTitle,
-            String message, String messageUID) {
+            String message, String messageUid) {
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         if (notificationService == null)
             return;
@@ -240,19 +242,21 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             if (contactIcon == null) {
                 contactIcon = AppImageUtil.getImageBytes(aTalkApp.getInstance(), R.drawable.person_photo);
             }
-        } else if (chatDescriptor instanceof ChatRoom) {
-            ChatRoom chatRoom = (ChatRoom) chatDescriptor;
+        }
+        else if (chatDescriptor instanceof ChatRoom) {
+            ChatRoomJabberImpl chatRoom = (ChatRoomJabberImpl) chatDescriptor;
 
             // For system rooms we don't want to send notification events.
             if (chatRoom.isSystem())
                 return;
 
+            chatDescriptor = ((ChatRoom) chatDescriptor).getIdentifier();
             if (uiService != null) {
                 chatPanel = uiService.getChat(chatRoom);
             }
         }
 
-        // Do not popup notification if the chatPanel is focused and for INCOMING_MESSAGE or INCOMING_FILE
+        // Do not popup notification if the chatPanel is focused for INCOMING_MESSAGE or INCOMING_FILE
         if ((chatPanel != null) && chatPanel.isChatFocused()
                 && (eventType.equals(INCOMING_MESSAGE) || eventType.equals(INCOMING_FILE))) {
             popupActionHandler
@@ -360,7 +364,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * @return all <code>ProtocolProviderFactory</code>s obtained from the bundle context
      */
     public static Map<Object, ProtocolProviderFactory> getProtocolProviderFactories() {
-        ServiceReference[] serRefs = null;
+        ServiceReference<?>[] serRefs = null;
         try {
             // get all registered provider factories
             serRefs = NotificationWiringActivator.bundleContext
@@ -371,7 +375,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
         Map<Object, ProtocolProviderFactory> providerFactoriesMap = new Hashtable<>();
         if (serRefs != null) {
-            for (ServiceReference serRef : serRefs) {
+            for (ServiceReference<?> serRef : serRefs) {
                 ProtocolProviderFactory providerFactory
                         = (ProtocolProviderFactory) NotificationWiringActivator.bundleContext.getService(serRef);
                 providerFactoriesMap.put(serRef.getProperty(ProtocolProviderFactory.PROTOCOL), providerFactory);
@@ -386,7 +390,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * @return all protocol providers currently registered.
      */
     public static List<ProtocolProviderService> getProtocolProviders() {
-        ServiceReference[] serRefs = null;
+        ServiceReference<?>[] serRefs = null;
         try {
             // get all registered provider factories
             serRefs = NotificationWiringActivator.bundleContext
@@ -397,7 +401,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
         List<ProtocolProviderService> providersList = new ArrayList<>();
         if (serRefs != null) {
-            for (ServiceReference serRef : serRefs) {
+            for (ServiceReference<?> serRef : serRefs) {
                 ProtocolProviderService pp
                         = (ProtocolProviderService) NotificationWiringActivator.bundleContext.getService(serRef);
                 providersList.add(pp);
@@ -469,7 +473,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                     // The DIALING sound should be played for the first CallPeer only.
                     if (peer != aPeer)
                         return false;
-                } else {
+                }
+                else {
                     /*
                      * The DIALING sound should not be played if there is a CallPeer which does
                      * not require the DIALING sound to be played.
@@ -620,7 +625,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             // Fire notification
             String title = aTalkApp.getResString(R.string.file_receive_from,
                     sourceContact.getDisplayName());
-            fireChatNotification(sourceContact, INCOMING_FILE, title, message, request.getID());
+            fireChatNotification(sourceContact, INCOMING_FILE, title, message, request.getId());
         } catch (Throwable t) {
             Timber.e(t, "Error notifying for file transfer request received");
         }
@@ -648,19 +653,19 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         // Obtain the basic instant messaging operation set.
         String imOpSetClassName = OperationSetBasicInstantMessaging.class.getName();
         if (supportedOperationSets.containsKey(imOpSetClassName)) {
+            // Add to all instant messaging operation sets the Message listener which handles all received messages.
             OperationSetBasicInstantMessaging im
                     = (OperationSetBasicInstantMessaging) supportedOperationSets.get(imOpSetClassName);
-
-            // Add to all instant messaging operation sets the Message listener which handles all
-            // received messages.
-            im.addMessageListener(this);
+            if (im != null)
+                im.addMessageListener(this);
         }
 
         // Obtain the sms messaging operation set.
         String smsOpSetClassName = OperationSetSmsMessaging.class.getName();
         if (supportedOperationSets.containsKey(smsOpSetClassName)) {
             OperationSetSmsMessaging sms = (OperationSetSmsMessaging) supportedOperationSets.get(smsOpSetClassName);
-            sms.addMessageListener(this);
+            if (sms != null)
+                sms.addMessageListener(this);
         }
 
         // Obtain the chat state notifications operation set.
@@ -671,7 +676,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             // Add to all chat state notification operation sets the Message listener implemented in
             // the ContactListPanel, which handles all received messages.
-            tn.addChatStateNotificationsListener(this);
+            if (tn != null)
+                tn.addChatStateNotificationsListener(this);
         }
 
         // Obtain file transfer operation set.
@@ -723,9 +729,9 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             OperationSetBasicInstantMessaging im
                     = (OperationSetBasicInstantMessaging) supportedOperationSets.get(imOpSetClassName);
 
-            // Add to all instant messaging operation sets the Message listener which handles all
-            // received messages.
-            im.removeMessageListener(this);
+            // Add to all instant messaging operation sets the Message listener which handles all received messages.
+            if (im != null)
+                im.removeMessageListener(this);
         }
 
         // Obtain the chat state notifications operation set.
@@ -736,7 +742,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             // Add to all chat state notification operation sets the Message listener implemented in
             // the ContactListPanel, which handles all received messages.
-            tn.removeChatStateNotificationsListener(this);
+            if (tn != null)
+                tn.removeChatStateNotificationsListener(this);
         }
 
         // Obtain file transfer operation set.
@@ -854,7 +861,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         MediaService mediaServiceImpl = NotificationWiringActivator.getMediaService();
         if (mediaServiceImpl == null) {
             Timber.w("Media Service record listener init failed - jnlibffmpeg failed to load?");
-        } else
+        }
+        else
             mediaServiceImpl.addRecorderListener(this);
     }
 
@@ -896,7 +904,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         String eventType = evt.getEventType();
         if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_JOINED.equals(eventType)) {
             evt.getAdHocChatRoom().addMessageListener(this);
-        } else if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
+        }
+        else if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
                 || LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_DROPPED.equals(eventType)) {
             evt.getAdHocChatRoom().removeMessageListener(this);
         }
@@ -914,7 +923,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
         if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED.equals(eventType)) {
             sourceChatRoom.addMessageListener(this);
-        } else if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
+        }
+        else if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
                 || LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_KICKED.equals(eventType)
                 || LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_DROPPED.equals(eventType)) {
             sourceChatRoom.removeMessageListener(this);
@@ -988,7 +998,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             String title = aTalkApp.getResString(R.string.file_receive_from, sourceParticipant);
             fireChatNotification(chatRoom, INCOMING_FILE, title, fileName, msgUid);
-        } else {
+        }
+        else {
             boolean fireChatNotification;
             String nickname = chatRoom.getName();
 
@@ -1023,7 +1034,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             String title = aTalkApp.getResString(R.string.file_receive_from, nickName);
             fireChatNotification(chatRoom, INCOMING_FILE, title, fileName, msgUid);
-        } else {
+        }
+        else {
             boolean fireChatNotification;
 
             /*
@@ -1082,7 +1094,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             String title = aTalkApp.getResString(R.string.file_receive_from, contact.getAddress());
             fireChatNotification(contact, INCOMING_FILE, title, fileName, msgUid);
-        } else {
+        }
+        else {
             // Fire as message notification
             String title = aTalkApp.getResString(R.string.message_received, contact.getAddress());
 
@@ -1091,10 +1104,10 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                 msgBody = StringEscapeUtils.escapeHtml4(message.getContent());
             }
             fireChatNotification(contact, INCOMING_MESSAGE, title, msgBody, msgUid);
-
-            // update unread count for fired notification.
-            updateMessageCount(contact);
         }
+
+        // update unread count for fired notification.
+        updateMessageCount(contact);
     }
 
     /**
@@ -1190,7 +1203,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                     if (notification != null)
                         callNotifications.put(call, notification);
                 }
-            } else {
+            }
+            else {
                 NotificationData notification = callNotifications.get(call);
                 if (notification != null)
                     stopSound(notification);
@@ -1208,7 +1222,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
                 if (notification != null)
                     callNotifications.put(call, notification);
-            } else if (newState == CallPeerState.BUSY) {
+            }
+            else if (newState == CallPeerState.BUSY) {
                 // We start the busy sound only if we're in a simple call.
                 if (!isConference(call)) {
                     final WeakReference<CallPeer> weakPeer = new WeakReference<>(peer);
@@ -1219,7 +1234,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                     if (notification != null)
                         callNotifications.put(call, notification);
                 }
-            } else if ((newState == CallPeerState.DISCONNECTED) || (newState == CallPeerState.FAILED)) {
+            }
+            else if ((newState == CallPeerState.DISCONNECTED) || (newState == CallPeerState.FAILED)) {
                 fireNotification(HANG_UP);
             }
         } catch (Throwable t) {
@@ -1247,7 +1263,6 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      */
     public void recorderStopped(Recorder recorder) {
         try {
-            ResourceManagementService resources = NotificationWiringActivator.getResources();
             fireNotification(CALL_SAVED, SystrayService.NONE_MESSAGE_TYPE,
                     aTalkApp.getResString(R.string.callrecordingconfig_call_saved),
                     aTalkApp.getResString(R.string.callrecordingconfig_call_saved_to, recorder.getFilename()));
@@ -1274,6 +1289,13 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                 NotificationAction.ACTION_POPUP_MESSAGE, null, null);
         notificationService.registerDefaultNotificationForEvent(INCOMING_MESSAGE,
                 new SoundNotificationAction(SoundProperties.INCOMING_MESSAGE, -1,
+                        true, false, false));
+
+        // Register sound notification for incoming files.
+        notificationService.registerDefaultNotificationForEvent(INCOMING_FILE,
+                NotificationAction.ACTION_POPUP_MESSAGE, null, null);
+        notificationService.registerDefaultNotificationForEvent(INCOMING_FILE,
+                new SoundNotificationAction(SoundProperties.INCOMING_FILE, -1,
                         true, false, false));
 
         // Register incoming call notifications.
@@ -1319,13 +1341,6 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                 new SoundNotificationAction(SoundProperties.CALL_SECURITY_ON, -1,
                         false, true, false));
 
-        // Register sound notification for incoming files.
-        notificationService.registerDefaultNotificationForEvent(INCOMING_FILE,
-                NotificationAction.ACTION_POPUP_MESSAGE, null, null);
-        notificationService.registerDefaultNotificationForEvent(INCOMING_FILE,
-                new SoundNotificationAction(SoundProperties.INCOMING_FILE, -1,
-                        true, false, false));
-
         // Register notification for saved calls.
         notificationService.registerDefaultNotificationForEvent(CALL_SAVED,
                 NotificationAction.ACTION_POPUP_MESSAGE, null, null);
@@ -1340,7 +1355,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         try {
             int messageTitleKey;
             // Android notification cannot support html tags
-            String message = Html.fromHtml(evt.getI18nMessage()).toString();
+            String message = Html.fromHtml(evt.getI18nMessage(), FROM_HTML_MODE_LEGACY).toString();
 
             switch (evt.getEventSeverity()) {
                 // Don't play alert sound for Info or warning.
@@ -1434,7 +1449,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * @param event The <code>ServiceEvent</code> object.
      */
     public void serviceChanged(ServiceEvent event) {
-        ServiceReference serviceRef = event.getServiceReference();
+        ServiceReference<?> serviceRef = event.getServiceReference();
 
         // if the event is caused by a bundle being stopped, we don't want to know
         if (serviceRef.getBundle().getState() == Bundle.STOPPING)
@@ -1474,12 +1489,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
              * purposes of the stopSound method so the stopSound method should dissociate them
              * upon stopping a specific NotificationData.
              */
-            Iterator<Map.Entry<Call, NotificationData>> i = callNotifications.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry<Call, NotificationData> e = i.next();
-                if (data.equals(e.getValue()))
-                    i.remove();
-            }
+            callNotifications.entrySet().removeIf(e -> data.equals(e.getValue()));
         }
     }
 
@@ -1513,20 +1523,9 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                 Chat chat = uiService.getCurrentChat();
                 if ((chat != null) && chat.isChatFocused()) {
                     ChatTransport chatTransport = ((ChatPanel) chat).getChatSession().getCurrentChatTransport();
-                    if (chatDescriptor.equals(chatTransport.getDescriptor()))
+                    Object descriptor = chatTransport.getDescriptor();
+                    if (!chatDescriptor.equals(descriptor))
                         return;
-
-//                    ChatSession chatSession = ((ChatPanel) chat).getChatSession();
-//                    if (chatSession instanceof MetaContactChatSession) {
-//                        MetaContact metaContact = uiService.getChatContact(chat);
-//                        if ((metaContact != null) && metaContact.containsContact((Contact) chatDescriptor)) {
-//                            return;
-//                        }
-//                    }
-//                    if (chatSession instanceof ConferenceChatSession) {
-//                      if (((ChatRoomWrapper) chatSession.getDescriptor()).getChatRoom().equals(chatDescriptor))
-//                            return;
-//                    }
                 }
             }
 

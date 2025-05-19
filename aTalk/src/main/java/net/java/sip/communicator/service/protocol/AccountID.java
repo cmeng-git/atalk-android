@@ -11,6 +11,14 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.util.ServiceUtils;
@@ -27,14 +35,6 @@ import org.json.JSONObject;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.osgi.framework.BundleContext;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -58,8 +58,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AccountID
-{
+public class AccountID {
     /**
      * Table accountID columns
      */
@@ -168,10 +167,10 @@ public class AccountID
      * (e.g. iptel.org, jabber.org, icq.com) the service of the account registered with.
      * <p>
      * Note: parameters userID is null and new empty accountProperties when called from
+     *
      * @see net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration
      */
-    protected AccountID(String userID, Map<String, String> accountProperties, String protocolName, String serviceName)
-    {
+    protected AccountID(String userID, Map<String, String> accountProperties, String protocolName, String serviceName) {
         /*
          * Allow account registration wizards to override the default protocol name through
          * accountProperties for the purposes of presenting a well-known protocol name associated
@@ -214,10 +213,10 @@ public class AccountID
      * account initialization properties
      * @param defaultProtocolName the protocol name to be used in case <code>accountProperties</code>
      * doesn't provide an overriding value
+     *
      * @return the protocol name
      */
-    private static String getOverriddenProtocolName(Map<String, String> accountProperties, String defaultProtocolName)
-    {
+    private static String getOverriddenProtocolName(Map<String, String> accountProperties, String defaultProtocolName) {
         String key = ProtocolProviderFactory.PROTOCOL;
         String protocolName = accountProperties.get(key);
         if (StringUtils.isEmpty(protocolName) && StringUtils.isNotEmpty(defaultProtocolName)) {
@@ -230,8 +229,7 @@ public class AccountID
     /**
      * @return e.g. acc1567990097080
      */
-    public String getAccountUuid()
-    {
+    public String getAccountUuid() {
         return this.accountUuid;
     }
 
@@ -240,14 +238,12 @@ public class AccountID
      *
      * @return A String identifying the user inside this particular service.
      */
-    public String getUserID()
-    {
+    public String getUserID() {
         return mUserID;
     }
 
     // Override for Jabber implementation for the BareJid e.g. abc123@example.org.
-    public EntityBareJid getEntityBareJid()
-    {
+    public EntityBareJid getEntityBareJid() {
         return userBareJid;
     }
 
@@ -256,8 +252,7 @@ public class AccountID
      *
      * @return XMPP service domain.
      */
-    public DomainBareJid getXmppDomain()
-    {
+    public DomainBareJid getXmppDomain() {
         return userBareJid.asDomainBareJid();
     }
 
@@ -267,8 +262,7 @@ public class AccountID
      *
      * @return A String identifying the user inside this particular service.
      */
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         // If the ACCOUNT_DISPLAY_NAME property has been set for this account, we'll be using it
         // as a display name.
         String key = ProtocolProviderFactory.ACCOUNT_DISPLAY_NAME;
@@ -293,8 +287,7 @@ public class AccountID
      *
      * @param displayName the display name value to set.
      */
-    public void setDisplayName(String displayName)
-    {
+    public void setDisplayName(String displayName) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.DISPLAY_NAME, displayName);
     }
 
@@ -303,8 +296,7 @@ public class AccountID
      *
      * @return the display name of the protocol
      */
-    public String getProtocolDisplayName()
-    {
+    public String getProtocolDisplayName() {
         return protocolDisplayName;
     }
 
@@ -313,8 +305,7 @@ public class AccountID
      *
      * @return the name of the protocol.
      */
-    public String getProtocolName()
-    {
+    public String getProtocolName() {
         return protocolName;
     }
 
@@ -323,8 +314,7 @@ public class AccountID
      *
      * @return the ProtocolProviderService if currently registered for the AccountID or <code>null</code> otherwise
      */
-    public ProtocolProviderService getProtocolProvider()
-    {
+    public ProtocolProviderService getProtocolProvider() {
         return AccountUtils.getRegisteredProviderForAccount(this);
     }
 
@@ -334,8 +324,7 @@ public class AccountID
      *
      * @return String
      */
-    public String getAccountUid()
-    {
+    public String getAccountUid() {
         return accountUid;
     }
 
@@ -344,8 +333,7 @@ public class AccountID
      *
      * @return a Map containing protocol and implementation account initialization properties.
      */
-    public Map<String, String> getAccountProperties()
-    {
+    public Map<String, String> getAccountProperties() {
         return new HashMap<>(mAccountProperties);
     }
 
@@ -355,10 +343,10 @@ public class AccountID
      * @param key property key
      * @param defaultValue default value if the property does not exist
      * will be over driven by setting in atalk-defaults.properties if property does not exist in DB
+     *
      * @return property value corresponding to property key
      */
-    public boolean getAccountPropertyBoolean(Object key, boolean defaultValue)
-    {
+    public boolean getAccountPropertyBoolean(Object key, boolean defaultValue) {
         String value = getAccountPropertyString(key);
         return (value == null) ? defaultValue : Boolean.parseBoolean(value);
     }
@@ -374,13 +362,13 @@ public class AccountID
      * @param defaultValue the value to be returned if parsing the value of the specified property key as a
      * signed decimal integer fails or there is no value associated with the specified
      * property key in this <code>AccountID</code>
+     *
      * @return the value of the property with the specified key in this <code>AccountID</code> as a
      * signed decimal integer; <code>defaultValue</code> if parsing the value of the specified
      * property key fails or no value is associated in this <code>AccountID</code> with the
      * specified property name
      */
-    public int getAccountPropertyInt(Object key, int defaultValue)
-    {
+    public int getAccountPropertyInt(Object key, int defaultValue) {
         int intValue = defaultValue;
         String stringValue = getAccountPropertyString(key);
 
@@ -399,10 +387,10 @@ public class AccountID
      * Returns the account property string corresponding to the given key.
      *
      * @param key the key, corresponding to the property string we're looking for
+     *
      * @return the account property string corresponding to the given key
      */
-    public String getAccountPropertyString(Object key)
-    {
+    public String getAccountPropertyString(Object key) {
         return getAccountPropertyString(key, null);
     }
 
@@ -411,10 +399,10 @@ public class AccountID
      *
      * @param key the key, corresponding to the property string we're looking for
      * @param defValue the default value returned when given <code>key</code> is not present
+     *
      * @return the account property string corresponding to the given key
      */
-    public String getAccountPropertyString(Object key, String defValue)
-    {
+    public String getAccountPropertyString(Object key, String defValue) {
         String property = key.toString();
         String value = mAccountProperties.get(property);
         if (value == null) {
@@ -443,8 +431,7 @@ public class AccountID
      * @param key the name of the property to change.
      * @param property the new value of the specified property. Null will remove the propertyName item
      */
-    public void storeAccountProperty(String key, Object property)
-    {
+    public void storeAccountProperty(String key, Object property) {
         String accPropertyName = accountUuid + "." + key;
         ConfigurationService configService = ProtocolProviderActivator.getConfigurationService();
         if (configService != null) {
@@ -462,8 +449,7 @@ public class AccountID
      * @param key the key of the property
      * @param value the property value.
      */
-    public void putAccountProperty(String key, String value)
-    {
+    public void putAccountProperty(String key, String value) {
         mAccountProperties.put(key, value);
     }
 
@@ -473,8 +459,7 @@ public class AccountID
      * @param key the key of the property
      * @param value the property value
      */
-    public void putAccountProperty(String key, Object value)
-    {
+    public void putAccountProperty(String key, Object value) {
         mAccountProperties.put(key, String.valueOf(value));
     }
 
@@ -483,8 +468,7 @@ public class AccountID
      *
      * @param key the key to remove.
      */
-    public void removeAccountProperty(String key)
-    {
+    public void removeAccountProperty(String key) {
         mAccountProperties.remove(key);
     }
 
@@ -493,12 +477,12 @@ public class AccountID
      * HashTables such as those provided by <code>java.util.Hashtable</code>.
      *
      * @return a hash code value for this object.
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      * @see java.util.Hashtable
      */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return (accountUid == null) ? 0 : accountUid.hashCode();
     }
 
@@ -506,14 +490,15 @@ public class AccountID
      * Indicates whether some other object is "equal to" this account id.
      *
      * @param obj the reference object with which to compare.
+     *
      * @return <code>true</code> if this object is the same as the obj argument; <code>false</code>
      * otherwise.
+     *
      * @see #hashCode()
      * @see java.util.Hashtable
      */
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         return (this == obj) || (obj != null) && getClass().isInstance(obj)
                 && accountUid.equals(((AccountID) obj).accountUid);
     }
@@ -525,8 +510,7 @@ public class AccountID
      */
     @NonNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getAccountUid();
     }
 
@@ -537,8 +521,7 @@ public class AccountID
      *
      * @return the name of the service that defines the context for this account.
      */
-    public String getService()
-    {
+    public String getService() {
         return this.serviceName;
     }
 
@@ -551,8 +534,7 @@ public class AccountID
      * @return a String in the form of userID@service that other protocol users should be able to
      * parse into a meaningful address and use it to communicate with us.
      */
-    public String getAccountJid()
-    {
+    public String getAccountJid() {
         return (mUserID.indexOf('@') > 0) ? mUserID : (mUserID + "@" + getService());
     }
 
@@ -561,8 +543,7 @@ public class AccountID
      *
      * @return <code>true</code> if this account is enabled, <code>false</code> - otherwise.
      */
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         return !getAccountPropertyBoolean(ProtocolProviderFactory.IS_ACCOUNT_DISABLED, false);
     }
 
@@ -571,8 +552,7 @@ public class AccountID
      *
      * @return the {@link ProtocolProviderFactory#ACCOUNT_DISPLAY_NAME} property value.
      */
-    public String getAccountDisplayName()
-    {
+    public String getAccountDisplayName() {
         return getAccountPropertyString(ProtocolProviderFactory.ACCOUNT_DISPLAY_NAME);
     }
 
@@ -581,8 +561,7 @@ public class AccountID
      *
      * @param displayName the account display name value to set.
      */
-    public void setAccountDisplayName(String displayName)
-    {
+    public void setAccountDisplayName(String displayName) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.ACCOUNT_DISPLAY_NAME, displayName);
     }
 
@@ -591,8 +570,7 @@ public class AccountID
      *
      * @return the password of the account.
      */
-    public String getPassword()
-    {
+    public String getPassword() {
         return getAccountPropertyString(ProtocolProviderFactory.PASSWORD);
     }
 
@@ -601,8 +579,7 @@ public class AccountID
      *
      * @param password the password of the account.
      */
-    public void setPassword(String password)
-    {
+    public void setPassword(String password) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.PASSWORD, password);
     }
 
@@ -611,8 +588,7 @@ public class AccountID
      *
      * @param storePassword indicates whether password is to be stored persistently.
      */
-    public void setPasswordPersistent(boolean storePassword)
-    {
+    public void setPasswordPersistent(boolean storePassword) {
         putAccountProperty(ProtocolProviderFactory.PASSWORD_PERSISTENT, storePassword);
     }
 
@@ -622,10 +598,10 @@ public class AccountID
      * @return true if the underlying protocol provider is to persistently (and possibly
      * insecurely) store the passWord and false otherwise.
      * Note: Default must set to be the same default as in, until user changes it
+     *
      * @link JabberPreferenceFragment.rememberPassword
      */
-    public boolean isPasswordPersistent()
-    {
+    public boolean isPasswordPersistent() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.PASSWORD_PERSISTENT, true);
     }
 
@@ -634,8 +610,7 @@ public class AccountID
      *
      * @return the password of the account.
      */
-    public String getDnssMode()
-    {
+    public String getDnssMode() {
         return getAccountPropertyString(ProtocolProviderFactory.DNSSEC_MODE,
                 aTalkApp.getAppResources().getStringArray(R.array.dnssec_Mode_value)[0]);
     }
@@ -645,8 +620,7 @@ public class AccountID
      *
      * @param dnssMode the dnssMode of the account.
      */
-    public void setDnssMode(String dnssMode)
-    {
+    public void setDnssMode(String dnssMode) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.DNSSEC_MODE, dnssMode);
     }
 
@@ -655,8 +629,7 @@ public class AccountID
      *
      * @return String auth name
      */
-    public String getAuthorizationName()
-    {
+    public String getAuthorizationName() {
         return getAccountPropertyString(ProtocolProviderFactory.AUTHORIZATION_NAME);
     }
 
@@ -665,8 +638,7 @@ public class AccountID
      *
      * @param authName String
      */
-    public void setAuthorizationName(String authName)
-    {
+    public void setAuthorizationName(String authName) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.AUTHORIZATION_NAME, authName);
     }
 
@@ -676,8 +648,7 @@ public class AccountID
      * @return <code>true</code> if keep alive packets are to be sent for this account and
      * <code>false</code> otherwise.
      */
-    public boolean isKeepAliveEnable()
-    {
+    public boolean isKeepAliveEnable() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.IS_KEEP_ALIVE_ENABLE, false);
     }
 
@@ -687,8 +658,7 @@ public class AccountID
      *
      * @param isKeepAliveEnable <code>true</code> if we are to send keep alive packets and <code>false</code> otherwise.
      */
-    public void setKeepAliveOption(boolean isKeepAliveEnable)
-    {
+    public void setKeepAliveOption(boolean isKeepAliveEnable) {
         putAccountProperty(ProtocolProviderFactory.IS_KEEP_ALIVE_ENABLE, isKeepAliveEnable);
     }
 
@@ -697,8 +667,7 @@ public class AccountID
      *
      * @return <code>true</code> if ping interval optimization for this account is enabled and <code>false</code> otherwise.
      */
-    public boolean isPingAutoTuneEnable()
-    {
+    public boolean isPingAutoTuneEnable() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.IS_PING_AUTO_TUNE_ENABLE, true);
     }
 
@@ -707,8 +676,7 @@ public class AccountID
      *
      * @param isPingAutoEnable <code>true</code> if allow to perform ping auto optimization, <code>false</code> otherwise.
      */
-    public void setPingAutoTuneOption(boolean isPingAutoEnable)
-    {
+    public void setPingAutoTuneOption(boolean isPingAutoEnable) {
         putAccountProperty(ProtocolProviderFactory.IS_PING_AUTO_TUNE_ENABLE, isPingAutoEnable);
     }
 
@@ -717,8 +685,7 @@ public class AccountID
      *
      * @return int
      */
-    public String getPingInterval()
-    {
+    public String getPingInterval() {
         return getAccountPropertyString(ProtocolProviderFactory.PING_INTERVAL,
                 Integer.toString(ProtocolProviderServiceJabberImpl.defaultPingInterval));
     }
@@ -728,8 +695,7 @@ public class AccountID
      *
      * @param interval Keep alive ping interval
      */
-    public void setPingInterval(String interval)
-    {
+    public void setPingInterval(String interval) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.PING_INTERVAL, interval);
     }
 
@@ -738,8 +704,7 @@ public class AccountID
      *
      * @return <code>true</code> if server was overridden.
      */
-    public boolean isServerOverridden()
-    {
+    public boolean isServerOverridden() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.IS_SERVER_OVERRIDDEN, false);
     }
 
@@ -748,8 +713,7 @@ public class AccountID
      *
      * @param isServerOverridden indicates if the server is overridden
      */
-    public void setServerOverridden(boolean isServerOverridden)
-    {
+    public void setServerOverridden(boolean isServerOverridden) {
         putAccountProperty(ProtocolProviderFactory.IS_SERVER_OVERRIDDEN, isServerOverridden);
     }
 
@@ -758,8 +722,7 @@ public class AccountID
      *
      * @return String
      */
-    public String getServerAddress()
-    {
+    public String getServerAddress() {
         return getAccountPropertyString(ProtocolProviderFactory.SERVER_ADDRESS, serviceName);
     }
 
@@ -768,8 +731,7 @@ public class AccountID
      *
      * @param serverAddress String
      */
-    public void setServerAddress(String serverAddress)
-    {
+    public void setServerAddress(String serverAddress) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.SERVER_ADDRESS, serverAddress);
     }
 
@@ -778,8 +740,7 @@ public class AccountID
      *
      * @return int
      */
-    public String getServerPort()
-    {
+    public String getServerPort() {
         return getAccountPropertyString(ProtocolProviderFactory.SERVER_PORT, DEFAULT_PORT);
     }
 
@@ -788,8 +749,7 @@ public class AccountID
      *
      * @param port proxy server port
      */
-    public void setServerPort(String port)
-    {
+    public void setServerPort(String port) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.SERVER_PORT, port);
     }
 
@@ -798,8 +758,7 @@ public class AccountID
      *
      * @return <code>true</code> if (Type != NONE) for this account, otherwise returns <code>false</code>
      */
-    public boolean isUseProxy()
-    {
+    public boolean isUseProxy() {
         // The isUseProxy state is to take care of old DB?
         boolean isUseProxy = "true".equals(getAccountPropertyString(ProtocolProviderFactory.IS_USE_PROXY));
         return isUseProxy && !BoshProxyDialog.NONE.equals(getAccountPropertyString(ProtocolProviderFactory.PROXY_TYPE));
@@ -810,8 +769,7 @@ public class AccountID
      *
      * @param isUseProxy <code>true</code> to indicate that Proxy should be used for this account, <code>false</code> - otherwise.
      */
-    public void setUseProxy(boolean isUseProxy)
-    {
+    public void setUseProxy(boolean isUseProxy) {
         putAccountProperty(ProtocolProviderFactory.IS_USE_PROXY, isUseProxy);
     }
 
@@ -820,8 +778,7 @@ public class AccountID
      *
      * @return String
      */
-    public String getProxyType()
-    {
+    public String getProxyType() {
         return getAccountPropertyString(ProtocolProviderFactory.PROXY_TYPE);
     }
 
@@ -830,8 +787,7 @@ public class AccountID
      *
      * @param proxyType String
      */
-    public void setProxyType(String proxyType)
-    {
+    public void setProxyType(String proxyType) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.PROXY_TYPE, proxyType);
     }
 
@@ -840,8 +796,7 @@ public class AccountID
      *
      * @return String
      */
-    public String getProxyAddress()
-    {
+    public String getProxyAddress() {
         return getAccountPropertyString(ProtocolProviderFactory.PROXY_ADDRESS);
     }
 
@@ -850,8 +805,7 @@ public class AccountID
      *
      * @param proxyAddress String
      */
-    public void setProxyAddress(String proxyAddress)
-    {
+    public void setProxyAddress(String proxyAddress) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.PROXY_ADDRESS, proxyAddress);
     }
 
@@ -860,8 +814,7 @@ public class AccountID
      *
      * @return int
      */
-    public String getProxyPort()
-    {
+    public String getProxyPort() {
         return getAccountPropertyString(ProtocolProviderFactory.PROXY_PORT);
     }
 
@@ -870,8 +823,7 @@ public class AccountID
      *
      * @param proxyPort int
      */
-    public void setProxyPort(String proxyPort)
-    {
+    public void setProxyPort(String proxyPort) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.PROXY_PORT, proxyPort);
     }
 
@@ -880,8 +832,7 @@ public class AccountID
      *
      * @return int
      */
-    public String getProxyUserName()
-    {
+    public String getProxyUserName() {
         return getAccountPropertyString(ProtocolProviderFactory.PROXY_USERNAME);
     }
 
@@ -890,8 +841,7 @@ public class AccountID
      *
      * @param port int
      */
-    public void setProxyUserName(String port)
-    {
+    public void setProxyUserName(String port) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.PROXY_USERNAME, port);
     }
 
@@ -900,8 +850,7 @@ public class AccountID
      *
      * @return int
      */
-    public String getProxyPassword()
-    {
+    public String getProxyPassword() {
         return getAccountPropertyString(ProtocolProviderFactory.PROXY_PASSWORD);
     }
 
@@ -910,8 +859,7 @@ public class AccountID
      *
      * @param port int
      */
-    public void setProxyPassword(String port)
-    {
+    public void setProxyPassword(String port) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.PROXY_PASSWORD, port);
     }
 
@@ -920,8 +868,7 @@ public class AccountID
      *
      * @return <code>true</code> if account requires IB Registration with the server
      */
-    public boolean isIbRegistration()
-    {
+    public boolean isIbRegistration() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.IBR_REGISTRATION, false);
     }
 
@@ -930,8 +877,7 @@ public class AccountID
      *
      * @param ibRegistration indicates if the account wants to perform an IBR registration with the server
      */
-    public void setIbRegistration(boolean ibRegistration)
-    {
+    public void setIbRegistration(boolean ibRegistration) {
         putAccountProperty(ProtocolProviderFactory.IBR_REGISTRATION, ibRegistration);
     }
 
@@ -941,8 +887,7 @@ public class AccountID
      *
      * @return the protocol icon path.
      */
-    public String getProtocolIconPath()
-    {
+    public String getProtocolIconPath() {
         return getAccountPropertyString(ProtocolProviderFactory.PROTOCOL_ICON_PATH);
     }
 
@@ -952,8 +897,7 @@ public class AccountID
      *
      * @param iconPath a path to the protocol icon to set.
      */
-    public void setProtocolIconPath(String iconPath)
-    {
+    public void setProtocolIconPath(String iconPath) {
         putAccountProperty(ProtocolProviderFactory.PROTOCOL_ICON_PATH, iconPath);
     }
 
@@ -963,8 +907,7 @@ public class AccountID
      *
      * @return the protocol icon path.
      */
-    public String getAccountIconPath()
-    {
+    public String getAccountIconPath() {
         return getAccountPropertyString(ProtocolProviderFactory.ACCOUNT_ICON_PATH);
     }
 
@@ -974,8 +917,7 @@ public class AccountID
      *
      * @param iconPath a path to the account icon to set.
      */
-    public void setAccountIconPath(String iconPath)
-    {
+    public void setAccountIconPath(String iconPath) {
         putAccountProperty(ProtocolProviderFactory.ACCOUNT_ICON_PATH, iconPath);
     }
 
@@ -984,8 +926,7 @@ public class AccountID
      *
      * @return the DTMF method.
      */
-    public String getDTMFMethod()
-    {
+    public String getDTMFMethod() {
         return getAccountPropertyString(ProtocolProviderFactory.DTMF_METHOD);
     }
 
@@ -994,8 +935,7 @@ public class AccountID
      *
      * @param dtmfMethod the DTMF method to set
      */
-    public void setDTMFMethod(String dtmfMethod)
-    {
+    public void setDTMFMethod(String dtmfMethod) {
         putAccountProperty(ProtocolProviderFactory.DTMF_METHOD, dtmfMethod);
     }
 
@@ -1004,8 +944,7 @@ public class AccountID
      *
      * @return The minimal DTMF tone duration.
      */
-    public String getDtmfMinimalToneDuration()
-    {
+    public String getDtmfMinimalToneDuration() {
         return getAccountPropertyString(ProtocolProviderFactory.DTMF_MINIMAL_TONE_DURATION);
     }
 
@@ -1014,8 +953,7 @@ public class AccountID
      *
      * @param dtmfMinimalToneDuration The minimal DTMF tone duration to set.
      */
-    public void setDtmfMinimalToneDuration(String dtmfMinimalToneDuration)
-    {
+    public void setDtmfMinimalToneDuration(String dtmfMinimalToneDuration) {
         putAccountProperty(ProtocolProviderFactory.DTMF_MINIMAL_TONE_DURATION, dtmfMinimalToneDuration);
     }
 
@@ -1024,8 +962,7 @@ public class AccountID
      *
      * @return the ID of the client certificate configuration.
      */
-    public String getTlsClientCertificate()
-    {
+    public String getTlsClientCertificate() {
         return getAccountPropertyString(ProtocolProviderFactory.CLIENT_TLS_CERTIFICATE);
     }
 
@@ -1034,8 +971,7 @@ public class AccountID
      *
      * @param id the client certificate configuration template ID.
      */
-    public void setTlsClientCertificate(String id)
-    {
+    public void setTlsClientCertificate(String id) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.CLIENT_TLS_CERTIFICATE, id);
     }
 
@@ -1044,8 +980,7 @@ public class AccountID
      *
      * @return <code>true</code> if this account is hidden or <code>false</code> otherwise.
      */
-    public boolean isHidden()
-    {
+    public boolean isHidden() {
         return getAccountPropertyString(ProtocolProviderFactory.IS_PROTOCOL_HIDDEN) != null;
     }
 
@@ -1054,8 +989,7 @@ public class AccountID
      *
      * @return <code>true</code> if the account config is hidden or <code>false</code> otherwise.
      */
-    public boolean isConfigHidden()
-    {
+    public boolean isConfigHidden() {
         return getAccountPropertyString(ProtocolProviderFactory.IS_ACCOUNT_CONFIG_HIDDEN) != null;
     }
 
@@ -1064,8 +998,7 @@ public class AccountID
      *
      * @return <code>true</code> if the account status menu is hidden or <code>false</code> otherwise.
      */
-    public boolean isStatusMenuHidden()
-    {
+    public boolean isStatusMenuHidden() {
         return getAccountPropertyString(ProtocolProviderFactory.IS_ACCOUNT_STATUS_MENU_HIDDEN) != null;
     }
 
@@ -1074,8 +1007,7 @@ public class AccountID
      *
      * @return <code>true</code> if the account is marked as readonly or <code>false</code> otherwise.
      */
-    public boolean isReadOnly()
-    {
+    public boolean isReadOnly() {
         return getAccountPropertyString(ProtocolProviderFactory.IS_ACCOUNT_READ_ONLY) != null;
     }
 
@@ -1085,8 +1017,7 @@ public class AccountID
      *
      * @return the <code>ProtocolProviderService</code> corresponding to the preferred protocol
      */
-    public boolean isPreferredProvider()
-    {
+    public boolean isPreferredProvider() {
         String preferredProtocolProp = getAccountPropertyString(ProtocolProviderFactory.IS_PREFERRED_PROTOCOL);
 
         return StringUtils.isNotEmpty(preferredProtocolProp) && Boolean.parseBoolean(preferredProtocolProp);
@@ -1097,8 +1028,7 @@ public class AccountID
      *
      * @param accountProperties the properties of the account
      */
-    public void setAccountProperties(Map<String, String> accountProperties)
-    {
+    public void setAccountProperties(Map<String, String> accountProperties) {
         mAccountProperties = accountProperties;
     }
 
@@ -1107,8 +1037,7 @@ public class AccountID
      *
      * @param srtpType The name of the encryption protocol ("ZRTP", "SDES" or "MIKEY").
      */
-    public boolean isEncryptionProtocolEnabled(SrtpControlType srtpType)
-    {
+    public boolean isEncryptionProtocolEnabled(SrtpControlType srtpType) {
         // The default value is false, except for ZRTP.
         boolean defaultValue = (srtpType == SrtpControlType.ZRTP);
         return getAccountPropertyBoolean(ProtocolProviderFactory.ENCRYPTION_PROTOCOL_STATUS
@@ -1120,8 +1049,7 @@ public class AccountID
      *
      * @return the list of STUN servers that this account is currently configured to use.
      */
-    public List<StunServerDescriptor> getStunServers(BundleContext bundleContext)
-    {
+    public List<StunServerDescriptor> getStunServers(BundleContext bundleContext) {
         Map<String, String> accountProperties = getAccountProperties();
         List<StunServerDescriptor> stunServerList = new ArrayList<>();
 
@@ -1148,11 +1076,11 @@ public class AccountID
      * @param bundleContext the OSGi bundle context that we are currently running in.
      * @param accountID account ID
      * @param namePrefix name prefix
+     *
      * @return password or null if empty
      */
     protected static String loadStunPassword(BundleContext bundleContext, AccountID accountID,
-            String namePrefix)
-    {
+            String namePrefix) {
         ProtocolProviderFactory providerFactory
                 = ProtocolProviderFactory.getProtocolProviderFactory(bundleContext, accountID.getSystemProtocolName());
 
@@ -1178,8 +1106,7 @@ public class AccountID
      * @return <code>true</code> if this provider would need to discover STUN/TURN servers
      * otherwise false if serverOverride is enabled; serviceDomain is likely not reachable.
      */
-    public boolean isStunServerDiscoveryEnabled()
-    {
+    public boolean isStunServerDiscoveryEnabled() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.AUTO_DISCOVER_STUN, !isServerOverridden());
     }
 
@@ -1189,8 +1116,7 @@ public class AccountID
      * @return <code>true</code> if this provider would use UPnP (if available), <code>false</code>
      * otherwise
      */
-    public boolean isUPNPEnabled()
-    {
+    public boolean isUPNPEnabled() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.IS_USE_UPNP, true);
     }
 
@@ -1201,8 +1127,7 @@ public class AccountID
      * @return <code>true</code> if this provider would use the default STUN server, <code>false</code>
      * otherwise
      */
-    public boolean isUseDefaultStunServer()
-    {
+    public boolean isUseDefaultStunServer() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.USE_DEFAULT_STUN_SERVER, true);
     }
 
@@ -1214,8 +1139,7 @@ public class AccountID
      *
      * @return the real non-branded name of the protocol.
      */
-    public String getSystemProtocolName()
-    {
+    public String getSystemProtocolName() {
         return getProtocolName();
     }
 
@@ -1226,8 +1150,7 @@ public class AccountID
      * @return Sorts the enabled encryption protocol list given in parameter to match the
      * preferences set for this account.
      */
-    public List<SrtpControlType> getSortedEnabledEncryptionProtocolList()
-    {
+    public List<SrtpControlType> getSortedEnabledEncryptionProtocolList() {
         Map<String, Integer> encryptionProtocol
                 = getIntegerPropertiesByPrefix(ProtocolProviderFactory.ENCRYPTION_PROTOCOL, true);
         Map<String, Boolean> encryptionProtocolStatus
@@ -1294,12 +1217,12 @@ public class AccountID
      * is an exact match of the the <code>prefix</code> param or whether properties with prefixes
      * that contain it but are longer than it are also accepted.
      * @param defaultValue the default value if the key is not set.
+     *
      * @return a <code>java.util.Map</code> containing all property name String-s matching the specified
      * conditions and the corresponding values as Boolean.
      */
     public Map<String, Boolean> getBooleanPropertiesByPrefix(String prefix,
-            boolean exactPrefixMatch, boolean defaultValue)
-    {
+            boolean exactPrefixMatch, boolean defaultValue) {
         List<String> propertyNames = getPropertyNamesByPrefix(prefix, exactPrefixMatch);
         Map<String, Boolean> properties = new HashMap<>(propertyNames.size());
 
@@ -1333,11 +1256,11 @@ public class AccountID
      * @param exactPrefixMatch a boolean indicating whether the returned property names should all have a prefix that
      * is an exact match of the the <code>prefix</code> param or whether properties with prefixes
      * that contain it but are longer than it are also accepted.
+     *
      * @return a <code>java.util.Map</code> containing all property name String-s matching the specified
      * conditions and the corresponding values as Integer.
      */
-    public Map<String, Integer> getIntegerPropertiesByPrefix(String prefix, boolean exactPrefixMatch)
-    {
+    public Map<String, Integer> getIntegerPropertiesByPrefix(String prefix, boolean exactPrefixMatch) {
         List<String> propertyNames = getPropertyNamesByPrefix(prefix, exactPrefixMatch);
         Map<String, Integer> properties = new HashMap<>(propertyNames.size());
 
@@ -1370,11 +1293,11 @@ public class AccountID
      * @param exactPrefixMatch a boolean indicating whether the returned property names should all have a prefix that
      * is an exact match of the the <code>prefix</code> param or whether properties with prefixes
      * that contain it but are longer than it are also accepted.
+     *
      * @return a <code>java.util.List</code>containing all property name String-s matching the
      * specified conditions.
      */
-    public List<String> getPropertyNamesByPrefix(String prefix, boolean exactPrefixMatch)
-    {
+    public List<String> getPropertyNamesByPrefix(String prefix, boolean exactPrefixMatch) {
         List<String> resultKeySet = new LinkedList<>();
 
         for (String key : mAccountProperties.keySet()) {
@@ -1400,8 +1323,7 @@ public class AccountID
      * @param key the property key
      * @param value the property value
      */
-    public void setOrRemoveIfNull(String key, String value)
-    {
+    public void setOrRemoveIfNull(String key, String value) {
         if (value != null) {
             putAccountProperty(key, value);
         }
@@ -1416,8 +1338,7 @@ public class AccountID
      * @param key the property key
      * @param value the property value
      */
-    public void setOrRemoveIfEmpty(String key, String value)
-    {
+    public void setOrRemoveIfEmpty(String key, String value) {
         setOrRemoveIfEmpty(key, value, false);
     }
 
@@ -1429,8 +1350,7 @@ public class AccountID
      * @param value the property value
      * @param trim <code>true</code> if the value will be trimmed, before <code>isEmpty()</code> is called.
      */
-    public void setOrRemoveIfEmpty(String key, String value, boolean trim)
-    {
+    public void setOrRemoveIfEmpty(String key, String value, boolean trim) {
         if ((value != null) && (trim ? !value.trim().isEmpty() : !value.isEmpty())) {
             putAccountProperty(key, value);
         }
@@ -1447,8 +1367,7 @@ public class AccountID
      * @param accountIconPath the path to the account icon if used
      * @param accountProperties output properties map
      */
-    public void storeProperties(String protocolIconPath, String accountIconPath, Map<String, String> accountProperties)
-    {
+    public void storeProperties(String protocolIconPath, String accountIconPath, Map<String, String> accountProperties) {
         if (protocolIconPath != null)
             setProtocolIconPath(protocolIconPath);
 
@@ -1466,10 +1385,10 @@ public class AccountID
      * Gets default property value for given <code>key</code>.
      *
      * @param key the property key
+     *
      * @return default property value for given<code>key</code>
      */
-    protected String getDefaultString(String key)
-    {
+    protected String getDefaultString(String key) {
         return getDefaultStr(key);
     }
 
@@ -1477,10 +1396,10 @@ public class AccountID
      * Gets default property value for given <code>key</code>.
      *
      * @param key the property key
+     *
      * @return default property value for given<code>key</code>
      */
-    public static String getDefaultStr(String key)
-    {
+    public static String getDefaultStr(String key) {
         return ProtocolProviderActivator.getConfigurationService().getString(DEFAULT_PREFIX + key);
     }
 
@@ -1490,8 +1409,7 @@ public class AccountID
      * @param input source properties map
      * @param output destination properties map
      */
-    public static void mergeProperties(Map<String, String> input, Map<String, String> output)
-    {
+    public static void mergeProperties(Map<String, String> input, Map<String, String> output) {
         for (String key : input.keySet()) {
             output.put(key, input.get(key));
         }
@@ -1506,10 +1424,10 @@ public class AccountID
      * @param db aTalk SQLite Database
      * @param cursor AccountID table cursor for properties extraction
      * @param factory Account protocolProvider Factory
+     *
      * @return the new AccountID constructed
      */
-    public static AccountID fromCursor(SQLiteDatabase db, Cursor cursor, ProtocolProviderFactory factory)
-    {
+    public static AccountID fromCursor(SQLiteDatabase db, Cursor cursor, ProtocolProviderFactory factory) {
         String accountUuid = cursor.getString(cursor.getColumnIndexOrThrow(ACCOUNT_UUID));
 
         Map<String, String> accountProperties = new Hashtable<>();
@@ -1532,8 +1450,7 @@ public class AccountID
         return factory.createAccount(accountProperties);
     }
 
-    public ContentValues getContentValues()
-    {
+    public ContentValues getContentValues() {
         final ContentValues values = new ContentValues();
         values.put(ACCOUNT_UUID, getAccountUuid());
         values.put(PROTOCOL, protocolName);
@@ -1545,25 +1462,21 @@ public class AccountID
         return values;
     }
 
-    public void setRosterVersion(final String version)
-    {
+    public void setRosterVersion(final String version) {
         this.rosterVersion = version;
     }
 
-    public String getKey(final String name)
-    {
+    public String getKey(final String name) {
         synchronized (mKeys) {
             return mKeys.optString(name, null);
         }
     }
 
-    public JSONObject getKeys()
-    {
+    public JSONObject getKeys() {
         return mKeys;
     }
 
-    public int getKeyAsInt(final String name, int defaultValue)
-    {
+    public int getKeyAsInt(final String name, int defaultValue) {
         String key = getKey(name);
         try {
             return key == null ? defaultValue : Integer.parseInt(key);
@@ -1572,8 +1485,7 @@ public class AccountID
         }
     }
 
-    public boolean setKey(final String keyName, final String keyValue)
-    {
+    public boolean setKey(final String keyName, final String keyValue) {
         synchronized (mKeys) {
             try {
                 mKeys.put(keyName, keyValue);
@@ -1584,8 +1496,7 @@ public class AccountID
         }
     }
 
-    public String getOtrFingerprint()
-    {
+    public String getOtrFingerprint() {
         if (this.otrFingerprint == null) {
             //			try {
             //				if (this.mOtrService == null) {
@@ -1607,8 +1518,7 @@ public class AccountID
         }
     }
 
-    public boolean unsetKey(String key)
-    {
+    public boolean unsetKey(String key) {
         synchronized (mKeys) {
             return mKeys.remove(key) != null;
         }

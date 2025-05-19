@@ -5,15 +5,14 @@
  */
 package org.jivesoftware.smackx.coin;
 
-import org.jivesoftware.smackx.AbstractExtensionElement;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-
-import java.util.Map;
-
-import javax.xml.namespace.QName;
+import org.jivesoftware.smackx.AbstractExtensionElement;
 
 /**
  * Endpoint packet extension.
@@ -21,8 +20,7 @@ import javax.xml.namespace.QName;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class EndpointExtension extends AbstractExtensionElement
-{
+public class EndpointExtension extends AbstractExtensionElement {
     /**
      * The name of the element that contains the endpoint data.
      */
@@ -90,8 +88,7 @@ public class EndpointExtension extends AbstractExtensionElement
      *
      * @param entity entity
      */
-    public EndpointExtension(String entity)
-    {
+    public EndpointExtension(String entity) {
         super(ELEMENT, NAMESPACE);
         setAttribute("entity", entity);
     }
@@ -101,8 +98,7 @@ public class EndpointExtension extends AbstractExtensionElement
      *
      * @param displayText display text
      */
-    public void setDisplayText(String displayText)
-    {
+    public void setDisplayText(String displayText) {
         this.displayText = displayText;
     }
 
@@ -111,8 +107,7 @@ public class EndpointExtension extends AbstractExtensionElement
      *
      * @param status status
      */
-    public void setStatus(EndpointStatusType status)
-    {
+    public void setStatus(EndpointStatusType status) {
         this.status = status;
     }
 
@@ -121,8 +116,7 @@ public class EndpointExtension extends AbstractExtensionElement
      *
      * @param disconnectionType disconnection type.
      */
-    public void setDisconnectionType(DisconnectionType disconnectionType)
-    {
+    public void setDisconnectionType(DisconnectionType disconnectionType) {
         this.disconnectionType = disconnectionType;
     }
 
@@ -131,8 +125,7 @@ public class EndpointExtension extends AbstractExtensionElement
      *
      * @param joiningType joining type.
      */
-    public void setJoiningType(JoiningType joiningType)
-    {
+    public void setJoiningType(JoiningType joiningType) {
         this.joiningType = joiningType;
     }
 
@@ -141,8 +134,7 @@ public class EndpointExtension extends AbstractExtensionElement
      *
      * @return display text
      */
-    public String getDisplayText()
-    {
+    public String getDisplayText() {
         return displayText;
     }
 
@@ -151,8 +143,7 @@ public class EndpointExtension extends AbstractExtensionElement
      *
      * @return status.
      */
-    public EndpointStatusType getStatus()
-    {
+    public EndpointStatusType getStatus() {
         return status;
     }
 
@@ -161,8 +152,7 @@ public class EndpointExtension extends AbstractExtensionElement
      *
      * @return disconnection type.
      */
-    public DisconnectionType getDisconnectionType()
-    {
+    public DisconnectionType getDisconnectionType() {
         return disconnectionType;
     }
 
@@ -171,8 +161,7 @@ public class EndpointExtension extends AbstractExtensionElement
      *
      * @return joining type.
      */
-    public JoiningType getJoiningType()
-    {
+    public JoiningType getJoiningType() {
         return joiningType;
     }
 
@@ -182,8 +171,7 @@ public class EndpointExtension extends AbstractExtensionElement
      * @return an XML representation of this extension.
      */
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
-    {
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
 
         // add the rest of the attributes if any

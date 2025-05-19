@@ -163,7 +163,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
         if (id == 0) {
             return 0xFFFFFFFF;
         }
-        return resources.getColor(id);
+        return resources.getColor(id, null);
     }
 
     /**

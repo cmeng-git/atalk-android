@@ -17,12 +17,12 @@
  */
 package org.jivesoftware.smackx.jibri;
 
+import javax.xml.namespace.QName;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.AbstractExtensionElement;
 import org.jivesoftware.smackx.DefaultExtensionElementProvider;
-
-import javax.xml.namespace.QName;
 
 /**
  * Status extension included in MUC presence by Jibri to indicate it's status.
@@ -31,8 +31,7 @@ import javax.xml.namespace.QName;
  * <li>busy</li> - the instance is currently recording or doing something very
  * important and should not be disturbed
  */
-public class JibriBusyStatusExtension extends AbstractExtensionElement
-{
+public class JibriBusyStatusExtension extends AbstractExtensionElement {
     /**
      * The namespace of this packet extension.
      */
@@ -50,43 +49,36 @@ public class JibriBusyStatusExtension extends AbstractExtensionElement
     /**
      * Creates new instance of <code>VideoMutedExtensionElement</code>.
      */
-    public JibriBusyStatusExtension()
-    {
+    public JibriBusyStatusExtension() {
         super(ELEMENT, NAMESPACE);
     }
 
-    static public void registerExtensionProvider()
-    {
+    static public void registerExtensionProvider() {
         ProviderManager.addExtensionProvider(ELEMENT, NAMESPACE,
                 new DefaultExtensionElementProvider<>(JibriBusyStatusExtension.class));
     }
 
-    public BusyStatus getStatus()
-    {
+    public BusyStatus getStatus() {
         return BusyStatus.parse(getAttributeAsString(STATUS_ATTRIBUTE));
     }
 
-    public void setStatus(BusyStatus status)
-    {
+    public void setStatus(BusyStatus status) {
         setAttribute(STATUS_ATTRIBUTE, String.valueOf(status));
     }
 
-    public enum BusyStatus
-    {
+    public enum BusyStatus {
         IDLE("idle"),
         BUSY("busy"),
         UNDEFINED("undefined");
 
         private String name;
 
-        BusyStatus(String name)
-        {
+        BusyStatus(String name) {
             this.name = name;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return name;
         }
 
@@ -94,11 +86,11 @@ public class JibriBusyStatusExtension extends AbstractExtensionElement
          * Parses <code>Status</code> from given string.
          *
          * @param status the string representation of <code>Status</code>.
+         *
          * @return <code>Status</code> value for given string or
          * {@link #UNDEFINED} if given string does not reflect any of valid values.
          */
-        public static BusyStatus parse(String status)
-        {
+        public static BusyStatus parse(String status) {
             if (StringUtils.isEmpty(status))
                 return UNDEFINED;
 

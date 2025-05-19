@@ -369,6 +369,7 @@
     <string name="file_send_completed">File has been successfully sent to %1$s</string>
     <string name="file_send_declined">%1$s has declined this file</string>
     <string name="file_sending_to">Sending file to %1$s</string>
+    <string name="file_transfer_accepted">File transfer has been accepted</string>
     <string name="file_transfer_canceled">File transfer has been canceled</string>
     <string name="file_transfer_preparing">Preparing file transfer with %1$s. Please wait&#8230;</string>
     <string name="file_transfer_declined">File transfer has been declined</string>
@@ -392,7 +393,7 @@
     <string name="file_size_too_big">File size exceeds the maximum allowed for this protocol: %1$s</string>
     <string name="file_transfer_active">File transfer in progress was being interrupted. Status tracking @ %1$s lost!</string>
     <string name="file_transfer_not_secure">XEP-0096: SI File Transfer protocol cannot support encrypted file sending!</string>
-    <string name="file_transfer_not_supported">Contact client or server does not support file transfer or required protocols</string>
+    <string name="file_transfer_not_supported">Contact client (%1$s) or server does not support file transfer or required protocols</string>
 
     <string name="finish">Finish</string>
     <string name="folder_not_exist">The folder containing this file could not be found. It was either deleted or moved</string>

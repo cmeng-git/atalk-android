@@ -27,8 +27,7 @@ import org.jxmpp.jid.parts.Resourcepart;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class ChatRoomMemberJabberImpl implements ChatRoomMember
-{
+public class ChatRoomMemberJabberImpl implements ChatRoomMember {
     /**
      * The chat room that we are a member of.
      */
@@ -95,8 +94,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      * @param nickName the nick name that the member is using to participate in the chat room
      * @param jabberJid the jabber id, if available, of the member or null otherwise.
      */
-    public ChatRoomMemberJabberImpl(ChatRoomJabberImpl chatRoom, Resourcepart nickName, Jid jabberJid)
-    {
+    public ChatRoomMemberJabberImpl(ChatRoomJabberImpl chatRoom, Resourcepart nickName, Jid jabberJid) {
         this.jabberJid = jabberJid;
         this.nickName = nickName;
         this.chatRoom = chatRoom;
@@ -121,8 +119,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @return the <code>ChatRoom</code> instance that this member belongs to.
      */
-    public ChatRoom getChatRoom()
-    {
+    public ChatRoom getChatRoom() {
         return chatRoom;
     }
 
@@ -131,8 +128,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @return the jabber id.
      */
-    public Jid getJabberId()
-    {
+    public Jid getJabberId() {
         return jabberJid;
     }
 
@@ -142,8 +138,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      * @return a String (mContact address), uniquely representing the mContact over the service the
      * service being used by the associated protocol provider instance
      */
-    public String getContactAddress()
-    {
+    public String getContactAddress() {
         return (jabberJid != null) ? jabberJid.toString() : getNickName();
     }
 
@@ -152,13 +147,11 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @return the name of this member as it is known in the containing chat room (aka a nickname).
      */
-    public String getNickName()
-    {
+    public String getNickName() {
         return (nickName == null) ? null : nickName.toString();
     }
 
-    public Resourcepart getNickAsResourcepart()
-    {
+    public Resourcepart getNickAsResourcepart() {
         return nickName;
     }
 
@@ -167,8 +160,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @param newNick the newNick of the participant
      */
-    protected void setNick(Resourcepart newNick)
-    {
+    protected void setNick(Resourcepart newNick) {
         if ((newNick == null) || (newNick.length() == 0))
             throw new IllegalArgumentException("a room member nickname could not be null");
         nickName = newNick;
@@ -180,8 +172,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      * @return the <code>ProtocolProviderService</code> instance that created this member and its
      * containing cht room
      */
-    public ProtocolProviderService getProtocolProvider()
-    {
+    public ProtocolProviderService getProtocolProvider() {
         return chatRoom.getParentProvider();
     }
 
@@ -191,8 +182,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      * @return a <code>ChatRoomMemberRole</code> instance indicating the role the this member in its
      * containing chat room.
      */
-    public ChatRoomMemberRole getRole()
-    {
+    public ChatRoomMemberRole getRole() {
         if ((mRole == null) && (nickName != null)) {
             EntityFullJid memberJid = JidCreate.entityFullFrom(chatRoom.getIdentifier(), nickName);
             Occupant o = chatRoom.getMultiUserChat().getOccupant(memberJid);
@@ -212,8 +202,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @return the current role of this member.
      */
-    ChatRoomMemberRole getCurrentRole()
-    {
+    ChatRoomMemberRole getCurrentRole() {
         return mRole;
     }
 
@@ -222,8 +211,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @param role the role to set
      */
-    public void setRole(ChatRoomMemberRole role)
-    {
+    public void setRole(ChatRoomMemberRole role) {
         mRole = role;
     }
 
@@ -232,8 +220,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @return an avatar (e.g. user photo) of this member.
      */
-    public byte[] getAvatar()
-    {
+    public byte[] getAvatar() {
         return avatar;
     }
 
@@ -242,8 +229,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @param avatar the avatar to set.
      */
-    public void setAvatar(byte[] avatar)
-    {
+    public void setAvatar(byte[] avatar) {
         this.avatar = avatar;
     }
 
@@ -257,8 +243,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @return the protocol mContact corresponding to this member in our mContact list.
      */
-    public Contact getContact()
-    {
+    public Contact getContact() {
         // old history muc message has mContact field = null (not stored);
         if ((mContact == null) && (presenceOpSet != null) && (jabberJid != null)) {
             mContact = presenceOpSet.findContactByJid(jabberJid);
@@ -271,14 +256,12 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @param contact the mContact to set.
      */
-    public void setContact(Contact contact)
-    {
+    public void setContact(Contact contact) {
         mContact = contact;
     }
 
     @Override
-    public PresenceStatus getPresenceStatus()
-    {
+    public PresenceStatus getPresenceStatus() {
         return mContact.getPresenceStatus();
     }
 
@@ -286,8 +269,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      * {@inheritDoc}
      */
     @Override
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return displayName;
     }
 
@@ -296,8 +278,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @param displayName the display name to set.
      */
-    void setDisplayName(String displayName)
-    {
+    void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
@@ -306,8 +287,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @return the email of this {@link ChatRoomMember}.
      */
-    public String getEmail()
-    {
+    public String getEmail() {
         return email;
     }
 
@@ -316,16 +296,14 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @param email the display name to set.
      */
-    void setEmail(String email)
-    {
+    void setEmail(String email) {
         this.email = email;
     }
 
     /**
      * @return the URL of the avatar of this {@link ChatRoomMember}.
      */
-    public String getAvatarUrl()
-    {
+    public String getAvatarUrl() {
         return avatarUrl;
     }
 
@@ -334,16 +312,14 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @param avatarUrl the value to set.
      */
-    void setAvatarUrl(String avatarUrl)
-    {
+    void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
 
     /**
      * @return the statistics ID of this {@link ChatRoomMember}.
      */
-    public String getStatisticsID()
-    {
+    public String getStatisticsID() {
         return statisticsID;
     }
 
@@ -352,8 +328,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @param id the value to set.
      */
-    void setStatisticsID(String id)
-    {
+    void setStatisticsID(String id) {
         this.statisticsID = id;
     }
 
@@ -363,8 +338,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @param presence the presence
      */
-    public void setLastPresence(Presence presence)
-    {
+    public void setLastPresence(Presence presence) {
         lastPresence = presence;
     }
 
@@ -374,8 +348,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @return the presence
      */
-    public Presence getLastPresence()
-    {
+    public Presence getLastPresence() {
         return lastPresence;
     }
 }

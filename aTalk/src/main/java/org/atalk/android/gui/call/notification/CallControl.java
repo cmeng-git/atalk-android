@@ -32,8 +32,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class CallControl extends BroadcastReceiver
-{
+public class CallControl extends BroadcastReceiver {
     /**
      * Call control action name
      */
@@ -73,8 +72,7 @@ public class CallControl extends BroadcastReceiver
      * {@inheritDoc}
      */
     @Override
-    public void onReceive(Context context, Intent intent)
-    {
+    public void onReceive(Context context, Intent intent) {
         String callId = intent.getStringExtra(EXTRA_CALL_ID);
         if (callId == null) {
             Timber.e("Extra call ID is null");
@@ -127,10 +125,10 @@ public class CallControl extends BroadcastReceiver
      * Creates the <code>Intent</code> for {@link #ACTION_HANGUP}.
      *
      * @param callId the ID of target call.
+     *
      * @return the <code>Intent</code> for {@link #ACTION_HANGUP}.
      */
-    public static Intent getHangupIntent(String callId)
-    {
+    public static Intent getHangupIntent(String callId) {
         return createIntent(callId, ACTION_HANGUP);
     }
 
@@ -138,10 +136,10 @@ public class CallControl extends BroadcastReceiver
      * Creates the <code>Intent</code> for {@link #ACTION_TOGGLE_MUTE}.
      *
      * @param callId the ID of target call.
+     *
      * @return the <code>Intent</code> for {@link #ACTION_TOGGLE_MUTE}.
      */
-    public static Intent getToggleMuteIntent(String callId)
-    {
+    public static Intent getToggleMuteIntent(String callId) {
         return createIntent(callId, ACTION_TOGGLE_MUTE);
     }
 
@@ -149,10 +147,10 @@ public class CallControl extends BroadcastReceiver
      * Creates the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      *
      * @param callId the ID of target call.
+     *
      * @return the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      */
-    public static Intent getToggleOnHoldIntent(String callId)
-    {
+    public static Intent getToggleOnHoldIntent(String callId) {
         return createIntent(callId, ACTION_TOGGLE_ON_HOLD);
     }
 
@@ -160,10 +158,10 @@ public class CallControl extends BroadcastReceiver
      * Creates the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      *
      * @param callId the ID of target call.
+     *
      * @return the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      */
-    public static Intent getToggleSpeakerIntent(String callId)
-    {
+    public static Intent getToggleSpeakerIntent(String callId) {
         return createIntent(callId, ACTION_TOGGLE_SPEAKER);
     }
 
@@ -173,11 +171,11 @@ public class CallControl extends BroadcastReceiver
      *
      * @param callId target call ID managed by {@link CallManager}.
      * @param action the action value that will be used.
+     *
      * @return new <code>Intent</code> for given call <code>action</code> value that will be performed on the
      * call identified by <code>callId</code>.
      */
-    private static Intent createIntent(String callId, int action)
-    {
+    private static Intent createIntent(String callId, int action) {
         Intent intent = new Intent();
         intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(CallControl.CALL_CTRL_ACTION);

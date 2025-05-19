@@ -8,6 +8,7 @@ package org.atalk.impl.neomedia.codec.video;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.view.Surface;
+import android.view.SurfaceHolder;
 
 import java.awt.Dimension;
 
@@ -138,7 +139,8 @@ public class AndroidDecoder extends AndroidCodec {
      */
     @Override
     protected Surface getSurface() {
-        return renderSurfaceProvider.obtainObject().getSurface();
+        SurfaceHolder sHolder = renderSurfaceProvider.obtainObject();
+        return sHolder.getSurface();
     }
 
     /**

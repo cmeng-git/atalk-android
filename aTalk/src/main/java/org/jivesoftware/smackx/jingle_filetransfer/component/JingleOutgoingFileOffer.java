@@ -1,12 +1,11 @@
 /**
- *
  * Copyright 2017-2022 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,6 +25,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
@@ -39,16 +40,17 @@ import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferC
  */
 public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements OutgoingFileOfferController {
     private static final Logger LOGGER = Logger.getLogger(JingleOutgoingFileOffer.class.getName());
+
     private final InputStream mSource;
 
-    public JingleOutgoingFileOffer(File file, JingleFile metadata) throws FileNotFoundException {
-        super(metadata);
+    public JingleOutgoingFileOffer(JingleSession jingleSession, File file, JingleFile metadata) throws FileNotFoundException {
+        super(jingleSession, metadata);
         mSource = new FileInputStream(file);
         mState = State.pending;
     }
 
-    public JingleOutgoingFileOffer(InputStream inputStream, JingleFile metadata) {
-        super(metadata);
+    public JingleOutgoingFileOffer(JingleSession jingleSession, InputStream inputStream, JingleFile metadata) {
+        super(jingleSession, metadata);
         mSource = inputStream;
     }
 

@@ -18,15 +18,11 @@ package org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera;
 
 import android.graphics.ImageFormat;
 import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CaptureRequest;
 import android.media.Image;
 import android.media.ImageReader;
 import android.view.Surface;
 import android.view.SurfaceHolder;
-
-import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -122,46 +118,12 @@ public class PreviewStream extends CameraStreamBase {
             mCaptureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mCaptureBuilder.addTarget(previewSurface);
             mCaptureBuilder.addTarget(mImageReader.getSurface());
+
             // For picture taking only
             // mPreviewRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, mSensorOrientation);
-
-            mCameraDevice.createCaptureSession(Arrays.asList(previewSurface, mImageReader.getSurface()),
-                    new CameraCaptureSession.StateCallback() {
-                        @Override
-                        public void onConfigured(@NonNull CameraCaptureSession session) {
-                            mCaptureSession = session;
-                            updateCaptureRequest();
-                        }
-
-                        @Override
-                        public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-                            Timber.e("Camera capture session config failed: %s", session);
-                        }
-                    }, null);
+            mCameraDevice.createCaptureSession(Arrays.asList(previewSurface, mImageReader.getSurface()), mSessionStateCallBack, null);
         } catch (CameraAccessException e) {
             Timber.e("Camera capture session create exception: %s", e.getMessage());
-        }
-    }
-
-    /**
-     * Update the camera capture request.
-     * Start the camera capture session with repeating request for smoother video streaming.
-     */
-    protected void updateCaptureRequest() {
-        // The camera is already closed, so abort
-        if (null == mCameraDevice) {
-            Timber.e("Camera capture session config - camera closed, return");
-            return;
-        }
-        try {
-            // Auto focus should be continuous for camera preview.
-            mCaptureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-            mCaptureSession.setRepeatingRequest(mCaptureBuilder.build(), null, mBackgroundHandler);
-            // Has sluggish video streaming performance, do not use
-            // mCaptureSession.capture(mPreviewBuilder.build(), null, mBackgroundHandler);
-            inTransition = false;
-        } catch (CameraAccessException e) {
-            Timber.e("Update capture request exception: %s", e.getMessage());
         }
     }
 
@@ -169,7 +131,7 @@ public class PreviewStream extends CameraStreamBase {
      * To fix problem with android camera2 API implementation in throwing waitForFreeSlotThenRelock on fast android devices;
      * Setup ImageReader to retrieve image data for remote video streaming; maxImages = 3 and acquireLatestImage();
      * Use try wth resource in reader.acquireLatestImage() for any IllegalStateException;
-     * Call #close to release buffer before camera can acquiring more.
+     * Call image#close in read() to release image buffer before camera can acquiring more.
      * Note: The acquired image is always in landscape mode e.g. 1280x720.
      */
     private final ImageReader.OnImageAvailableListener mOnImageAvailableListener = reader -> {
@@ -185,8 +147,10 @@ public class PreviewStream extends CameraStreamBase {
                 //     return;
                 // }
 
+                // Calculate statistics for average frame rate if enable
                 if (TimberLog.isTraceEnable)
-                    calcStats(); // Calculate statistics for average frame rate if enable
+                    calcStats();
+
                 synchronized (bufferQueue) {
                     bufferQueue.addFirst(image);
                 }

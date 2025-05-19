@@ -13,6 +13,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import timber.log.Timber;
@@ -112,7 +113,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      * @param holder The SurfaceHolder whose surface is being created.
      */
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
+    public void surfaceCreated(@NonNull SurfaceHolder holder) {
         // Timber.d("SurfaceHolder created setFixedSize: %s", mVideoSize);
         if (mVideoSize != null) {
             holder.setFixedSize(mVideoSize.width, mVideoSize.height);
@@ -131,7 +132,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      * @param height The new height of the surface.
      */
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
         /*
          * surfaceChange event is mainly triggered by local video preview change by user;
          * currently not implemented in android aTalk. Hence no action is required.
@@ -170,7 +171,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      * @param holder The SurfaceHolder whose surface is being destroyed.
      */
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
         onObjectDestroyed();
     }
 }

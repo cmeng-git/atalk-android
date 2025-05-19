@@ -17,6 +17,7 @@
 package org.atalk.android.gui.chat.filetransfer;
 
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +56,7 @@ public class FileHistoryConversation extends FileTransferConversation {
     public View FileHistoryConversationForm(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,
             ViewGroup container, boolean init) {
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
-        // Assume history file transfer is completed with all button hidden
+        // Assume history file transfer is completed, so all buttons are hidden.
         updateXferFileViewState(FileTransferStatusChangeEvent.COMPLETED, null);
 
         if (fileRecord == null) {
@@ -80,7 +81,7 @@ public class FileHistoryConversation extends FileTransferConversation {
 
         updateFileViewInfo(filePath, true);
         mEncryption = fileRecord.getEncType();
-        setEncState(mEncryption);
+        setEncryptionState(mEncryption);
 
         String date = GuiUtils.formatDateTime(fileRecord.getDate());
         messageViewHolder.timeView.setText(date);
@@ -105,9 +106,17 @@ public class FileHistoryConversation extends FileTransferConversation {
     private String getStatusMessage(String entityJid, String dir, int status) {
         String statusMsg = "";
         String statusText = FileRecord.statusMap.get(status);
+        if (TextUtils.isEmpty(statusText)) {
+            statusText = aTalkApp.getResString(R.string.unknown);
+        }
 
         if (FileRecord.IN.equals(dir)) {
             switch (status) {
+                case FileRecord.STATUS_PREPARING:
+                case FileRecord.STATUS_WAITING:
+                case FileRecord.STATUS_IN_PROGRESS:
+                    statusMsg = aTalkApp.getResString(R.string.file_transfer_active, statusText);
+                    break;
                 case FileRecord.STATUS_COMPLETED:
                     statusMsg = aTalkApp.getResString(R.string.file_receive_completed, entityJid);
                     break;
@@ -119,11 +128,6 @@ public class FileHistoryConversation extends FileTransferConversation {
                     break;
                 case FileRecord.STATUS_DECLINED:
                     statusMsg = aTalkApp.getResString(R.string.file_transfer_declined);
-                    break;
-                case FileRecord.STATUS_WAITING:
-                case FileRecord.STATUS_PREPARING:
-                case FileRecord.STATUS_IN_PROGRESS:
-                    statusMsg = aTalkApp.getResString(R.string.file_transfer_active, statusText);
                     break;
                 case FileRecord.FILE_NOT_FOUND:
                     statusMsg = aTalkApp.getResString(R.string.file_does_not_exist);
@@ -170,7 +174,7 @@ public class FileHistoryConversation extends FileTransferConversation {
     }
 
     @Override
-    protected void updateView(int status, String reason) {
+    protected void updateStatus(int status, String reason) {
         // No view update process is called for file history
     }
 }

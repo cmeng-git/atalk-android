@@ -20,14 +20,14 @@ import javax.swing.ImageIcon;
  * @author Damian Minkov
  * @author Adam Netocny
  */
-public interface ResourceManagementService
-{
+public interface ResourceManagementService {
     // Color pack methods
 
     /**
      * Returns the int representation of the color corresponding to the given key.
      *
      * @param key The key of the color in the colors properties file.
+     *
      * @return the int representation of the color corresponding to the given key.
      */
     int getColor(String key);
@@ -36,6 +36,7 @@ public interface ResourceManagementService
      * Returns the string representation of the color corresponding to the given key.
      *
      * @param key The key of the color in the colors properties file.
+     *
      * @return the string representation of the color corresponding to the given key.
      */
     String getColorString(String key);
@@ -44,6 +45,7 @@ public interface ResourceManagementService
      * Returns the <code>InputStream</code> of the image corresponding to the given path.
      *
      * @param path The path to the image file.
+     *
      * @return the <code>InputStream</code> of the image corresponding to the given path.
      */
     InputStream getImageInputStreamForPath(String path);
@@ -52,6 +54,7 @@ public interface ResourceManagementService
      * Returns the <code>InputStream</code> of the image corresponding to the given key.
      *
      * @param streamKey The identifier of the image in the resource properties file.
+     *
      * @return the <code>InputStream</code> of the image corresponding to the given key.
      */
     InputStream getImageInputStream(String streamKey);
@@ -60,6 +63,7 @@ public interface ResourceManagementService
      * Returns the <code>URL</code> of the image corresponding to the given key.
      *
      * @param urlKey The identifier of the image in the resource properties file.
+     *
      * @return the <code>URL</code> of the image corresponding to the given key
      */
     URL getImageURL(String urlKey);
@@ -68,6 +72,7 @@ public interface ResourceManagementService
      * Returns the <code>URL</code> of the image corresponding to the given path.
      *
      * @param path The path to the given image file.
+     *
      * @return the <code>URL</code> of the image corresponding to the given path.
      */
     URL getImageURLForPath(String path);
@@ -76,6 +81,7 @@ public interface ResourceManagementService
      * Returns the image path corresponding to the given key.
      *
      * @param key The identifier of the image in the resource properties file.
+     *
      * @return the image path corresponding to the given key.
      */
     String getImagePath(String key);
@@ -97,6 +103,7 @@ public interface ResourceManagementService
      * Returns an internationalized string corresponding to the given key.
      *
      * @param key The identifier of the string in the resources properties file.
+     *
      * @return An internationalized string corresponding to the given key.
      */
     String getI18NString(String key);
@@ -106,6 +113,7 @@ public interface ResourceManagementService
      *
      * @param key The identifier of the string in the resources properties file.
      * @param locale The locale.
+     *
      * @return An internationalized string corresponding to the given key and given locale.
      */
     String getI18NString(String key, Locale locale);
@@ -115,6 +123,7 @@ public interface ResourceManagementService
      *
      * @param key The identifier of the string in the resources properties file.
      * @param params An array of parameters to be replaced in the returned string.
+     *
      * @return An internationalized string corresponding to the given key and given locale.
      */
     String getI18NString(String key, String[] params);
@@ -125,6 +134,7 @@ public interface ResourceManagementService
      * @param key The identifier of the string in the resources properties file.
      * @param params An array of parameters to be replaced in the returned string.
      * @param locale The locale.
+     *
      * @return An internationalized string corresponding to the given key.
      */
     String getI18NString(String key, String[] params, Locale locale);
@@ -133,6 +143,7 @@ public interface ResourceManagementService
      * Returns an internationalized string corresponding to the given key.
      *
      * @param key The identifier of the string in the resources properties file.
+     *
      * @return An internationalized string corresponding to the given key.
      */
     char getI18nMnemonic(String key);
@@ -142,6 +153,7 @@ public interface ResourceManagementService
      *
      * @param key The key of the string.
      * @param l The locale.
+     *
      * @return An internationalized string corresponding to the given key.
      */
     char getI18nMnemonic(String key, Locale l);
@@ -153,6 +165,7 @@ public interface ResourceManagementService
      * actual file.
      *
      * @param urlKey The key of the setting.
+     *
      * @return Url to the corresponding resource.
      */
     URL getSettingsURL(String urlKey);
@@ -162,6 +175,7 @@ public interface ResourceManagementService
      * setting is an actual file.
      *
      * @param streamKey The key of the setting.
+     *
      * @return InputStream to the corresponding resource.
      */
     InputStream getSettingsInputStream(String streamKey);
@@ -172,6 +186,7 @@ public interface ResourceManagementService
      *
      * @param streamKey The identifier of the stream.
      * @param resourceClass the resource class through which the resource would be obtained
+     *
      * @return The stream for the given identifier.
      */
     InputStream getSettingsInputStream(String streamKey, Class<?> resourceClass);
@@ -180,6 +195,7 @@ public interface ResourceManagementService
      * Returns the int value of the corresponding configuration key.
      *
      * @param key The identifier of the string in the resources properties file.
+     *
      * @return the int value of the corresponding configuration key.
      */
     String getSettingsString(String key);
@@ -188,6 +204,7 @@ public interface ResourceManagementService
      * Returns the int value of the corresponding configuration key.
      *
      * @param key The identifier of the string in the resources properties file.
+     *
      * @return the int value of the corresponding configuration key.
      */
     int getSettingsInt(String key);
@@ -198,6 +215,7 @@ public interface ResourceManagementService
      * Returns an url for the sound resource corresponding to the given key.
      *
      * @param urlKey The key of the setting.
+     *
      * @return Url to the corresponding resource.
      */
     URL getSoundURL(String urlKey);
@@ -206,6 +224,7 @@ public interface ResourceManagementService
      * Returns an url for the sound resource corresponding to the given path.
      *
      * @param path The path to the sound resource.
+     *
      * @return Url to the corresponding resource.
      */
     URL getSoundURLForPath(String path);
@@ -214,6 +233,7 @@ public interface ResourceManagementService
      * Returns the path of the sound corresponding to the given property key.
      *
      * @param soundKey The key of the sound.
+     *
      * @return the path of the sound corresponding to the given property key.
      */
     String getSoundPath(String soundKey);
@@ -222,6 +242,7 @@ public interface ResourceManagementService
      * Constructs an <code>ImageIcon</code> from the specified image ID and returns it.
      *
      * @param imageID The identifier of the image.
+     *
      * @return An <code>ImageIcon</code> containing the image with the given identifier.
      */
     ImageIcon getImage(String imageID);
@@ -230,6 +251,7 @@ public interface ResourceManagementService
      * Loads the image with the specified ID and returns a byte array containing it.
      *
      * @param imageID The identifier of the image.
+     *
      * @return A byte array containing the image with the given identifier.
      */
     byte[] getImageInBytes(String imageID);
@@ -238,7 +260,9 @@ public interface ResourceManagementService
      * Builds a new skin bundle from the zip file content.
      *
      * @param zipFile Zip file with skin information.
+     *
      * @return <code>File</code> for the bundle.
+     *
      * @throws Exception When something goes wrong.
      */
     File prepareSkinBundleFromZip(File zipFile)

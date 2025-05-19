@@ -5,12 +5,12 @@
  */
 package org.jivesoftware.smackx.jibri;
 
+import java.util.Locale;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.EntityBareJid;
-
-import java.util.Locale;
 
 /**
  * The IQ used to control conference recording with Jibri component.
@@ -31,8 +31,7 @@ import java.util.Locale;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class JibriIq extends IQ
-{
+public class JibriIq extends IQ {
     /**
      * Attribute name of "action".
      */
@@ -186,16 +185,14 @@ public class JibriIq extends IQ
      */
     private EntityBareJid room = null;
 
-    public JibriIq()
-    {
+    public JibriIq() {
         super(ELEMENT, NAMESPACE);
     }
 
     /**
      * @return the value for {@link #DISPLAY_NAME_ATTR_NAME}
      */
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return displayName;
     }
 
@@ -204,16 +201,14 @@ public class JibriIq extends IQ
      *
      * @param displayName the new display name to be set
      */
-    public void setDisplayName(String displayName)
-    {
+    public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
     /**
      * @return the value for {@link #SIP_ADDRESS_ATTR_NAME}
      */
-    public String getSipAddress()
-    {
+    public String getSipAddress() {
         return this.sipAddress;
     }
 
@@ -222,8 +217,7 @@ public class JibriIq extends IQ
      *
      * @param sipAddress the new SIP address to be set
      */
-    public void setSipAddress(String sipAddress)
-    {
+    public void setSipAddress(String sipAddress) {
         this.sipAddress = sipAddress;
     }
 
@@ -232,8 +226,7 @@ public class JibriIq extends IQ
      *
      * @return a <code>String</code> which contains the value of "stream id" attribute or <code>null</code> if empty.
      */
-    public String getStreamId()
-    {
+    public String getStreamId() {
         return streamId;
     }
 
@@ -243,8 +236,7 @@ public class JibriIq extends IQ
      * @return a <code>String</code> which contains the value of the
      * {@link #YOUTUBE_BROADCAST_ID_ATTR_NAME} attribute, or null if empty.
      */
-    public String getYoutubeBroadcastId()
-    {
+    public String getYoutubeBroadcastId() {
         return youTubeBroadcastId;
     }
 
@@ -253,8 +245,7 @@ public class JibriIq extends IQ
      *
      * @param streamId a <code>String</code> for the stream id attribute or <code>null</code> to remove it from XML element.
      */
-    public void setStreamId(String streamId)
-    {
+    public void setStreamId(String streamId) {
         this.streamId = streamId;
     }
 
@@ -264,8 +255,7 @@ public class JibriIq extends IQ
      * @param youTubeBroadcastId a <code>String</code> for the stream id attribute or
      * <code>null</code> to remove it from XML element.
      */
-    public void setYouTubeBroadcastId(String youTubeBroadcastId)
-    {
+    public void setYouTubeBroadcastId(String youTubeBroadcastId) {
         this.youTubeBroadcastId = youTubeBroadcastId;
     }
 
@@ -274,8 +264,7 @@ public class JibriIq extends IQ
      *
      * @return the session ID
      */
-    public String getSessionId()
-    {
+    public String getSessionId() {
         return sessionId;
     }
 
@@ -284,8 +273,7 @@ public class JibriIq extends IQ
      *
      * @return the JSON-encoded application data
      */
-    public String getAppData()
-    {
+    public String getAppData() {
         return appData;
     }
 
@@ -294,8 +282,7 @@ public class JibriIq extends IQ
      *
      * @param sessionId the session ID
      */
-    public void setSessionId(String sessionId)
-    {
+    public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
 
@@ -304,8 +291,7 @@ public class JibriIq extends IQ
      *
      * @param appData a JSON-encoded string containing arbitrary application data
      */
-    public void setAppData(String appData)
-    {
+    public void setAppData(String appData) {
         this.appData = appData;
     }
 
@@ -313,10 +299,10 @@ public class JibriIq extends IQ
      * Returns the value of {@link #ROOM_ATTR_NAME} attribute.
      *
      * @return a <code>String</code> which contains the value of the room attribute or <code>null</code> if empty.
+     *
      * @see #room
      */
-    public EntityBareJid getRoom()
-    {
+    public EntityBareJid getRoom() {
         return room;
     }
 
@@ -324,10 +310,10 @@ public class JibriIq extends IQ
      * Sets the value for {@link #ROOM_ATTR_NAME} attribute.
      *
      * @param room a <code>String</code> for the room attribute or <code>null</code> to remove it from XML element.
+     *
      * @see #room
      */
-    public void setRoom(EntityBareJid room)
-    {
+    public void setRoom(EntityBareJid room) {
         this.room = room;
     }
 
@@ -336,8 +322,7 @@ public class JibriIq extends IQ
      *
      * @return true if it represents failure, false otherwise
      */
-    public boolean isFailure()
-    {
+    public boolean isFailure() {
         return this.failureReason != null;
     }
 
@@ -345,8 +330,7 @@ public class JibriIq extends IQ
      * {@inheritDoc}
      */
     @Override
-    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
-    {
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         if (action != Action.UNDEFINED) {
             xml.attribute(ACTION_ATTR_NAME, action.toString());
         }
@@ -380,16 +364,14 @@ public class JibriIq extends IQ
      *
      * @param action the value to be set as 'action' attribute of this IQ.
      */
-    public void setAction(Action action)
-    {
+    public void setAction(Action action) {
         this.action = action;
     }
 
     /**
      * Returns the value of 'action' attribute.
      */
-    public Action getAction()
-    {
+    public Action getAction() {
         return action;
     }
 
@@ -398,8 +380,7 @@ public class JibriIq extends IQ
      *
      * @see JibriIq#RECORDING_MODE_ATTR_NAME
      */
-    public RecordingMode getRecordingMode()
-    {
+    public RecordingMode getRecordingMode() {
         return recordingMode;
     }
 
@@ -407,51 +388,44 @@ public class JibriIq extends IQ
      * Sets the value of 'recording_mode' attribute.
      *
      * @param mode the new value to set as the recording mode attribute of this IQ instance.
+     *
      * @see JibriIq#RECORDING_MODE_ATTR_NAME
      */
-    public void setRecordingMode(RecordingMode mode)
-    {
+    public void setRecordingMode(RecordingMode mode) {
         this.recordingMode = mode;
     }
 
     /**
      * Sets the value of 'status' attribute.
      */
-    public void setStatus(Status status)
-    {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
     /**
      * Returns the value of 'status' attribute.
      */
-    public Status getStatus()
-    {
+    public Status getStatus() {
         return status;
     }
 
-    public void setFailureReason(FailureReason failureReason)
-    {
+    public void setFailureReason(FailureReason failureReason) {
         this.failureReason = failureReason;
     }
 
-    public FailureReason getFailureReason()
-    {
+    public FailureReason getFailureReason() {
         return this.failureReason;
     }
 
-    public void setShouldRetry(Boolean shouldRetry)
-    {
+    public void setShouldRetry(Boolean shouldRetry) {
         this.shouldRetry = shouldRetry;
     }
 
-    public Boolean getShouldRetry()
-    {
+    public Boolean getShouldRetry() {
         return this.shouldRetry;
     }
 
-    public static JibriIq createResult(JibriIq request, String sessionId)
-    {
+    public static JibriIq createResult(JibriIq request, String sessionId) {
         JibriIq result = new JibriIq();
         result.setType(IQ.Type.result);
         result.setStanzaId(request.getStanzaId());
@@ -467,8 +441,7 @@ public class JibriIq extends IQ
      * @author lishunyang
      * @author Pawel Domas
      */
-    public enum Action
-    {
+    public enum Action {
         /**
          * Start the recording.
          */
@@ -484,14 +457,12 @@ public class JibriIq extends IQ
 
         private String name;
 
-        Action(String name)
-        {
+        Action(String name) {
             this.name = name;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return name;
         }
 
@@ -499,11 +470,11 @@ public class JibriIq extends IQ
          * Parses <code>Action</code> from given string.
          *
          * @param action the string representation of <code>Action</code>.
+         *
          * @return <code>Action</code> value for given string or {@link #UNDEFINED} if given string
          * does not reflect any of valid values.
          */
-        public static Action parse(String action)
-        {
+        public static Action parse(String action) {
             if (StringUtils.isEmpty(action))
                 return UNDEFINED;
 
@@ -518,8 +489,7 @@ public class JibriIq extends IQ
     /**
      * Enumerates available recording modes stored under {@link #RECORDING_MODE_ATTR_NAME}.
      */
-    public enum RecordingMode
-    {
+    public enum RecordingMode {
         /**
          * Jibri records to file.
          */
@@ -545,8 +515,7 @@ public class JibriIq extends IQ
          *
          * @param mode a string corresponding to one of {@link RecordingMode} values.
          */
-        RecordingMode(String mode)
-        {
+        RecordingMode(String mode) {
             this.mode = mode;
         }
 
@@ -554,8 +523,7 @@ public class JibriIq extends IQ
          * {@inheritDoc}
          */
         @Override
-        public String toString()
-        {
+        public String toString() {
             return mode;
         }
 
@@ -563,11 +531,11 @@ public class JibriIq extends IQ
          * Parses <code>RecordingMode</code> from given string.
          *
          * @param status the string representation of <code>RecordingMode</code>.
+         *
          * @return <code>RecordingMode</code> value for given string or
          * {@link #UNDEFINED} if given string does not reflect any of valid values.
          */
-        public static RecordingMode parse(String status)
-        {
+        public static RecordingMode parse(String status) {
             if (StringUtils.isEmpty(status))
                 return UNDEFINED;
 
@@ -579,15 +547,13 @@ public class JibriIq extends IQ
         }
     }
 
-    public enum FailureReason
-    {
+    public enum FailureReason {
         BUSY("busy"),
         ERROR("error"),
         UNDEFINED("undefined");
         private String name;
 
-        FailureReason(String name)
-        {
+        FailureReason(String name) {
             this.name = name;
         }
 
@@ -596,8 +562,7 @@ public class JibriIq extends IQ
          */
         @NotNull
         @Override
-        public String toString()
-        {
+        public String toString() {
             return name;
         }
 
@@ -605,11 +570,11 @@ public class JibriIq extends IQ
          * Parses <code>Status</code> from given string.
          *
          * @param status the string representation of <code>Status</code>.
+         *
          * @return <code>Status</code> value for given string or
          * {@link #UNDEFINED} if given string does not reflect any of valid values.
          */
-        public static FailureReason parse(String status)
-        {
+        public static FailureReason parse(String status) {
             if (StringUtils.isEmpty(status))
                 return UNDEFINED;
 
@@ -624,8 +589,7 @@ public class JibriIq extends IQ
     /**
      * The enumeration of recording status values.
      */
-    public enum Status
-    {
+    public enum Status {
         /**
          * Recording is in progress.
          */
@@ -656,8 +620,7 @@ public class JibriIq extends IQ
          *
          * @param name a string corresponding to one of {@link Status} values.
          */
-        Status(String name)
-        {
+        Status(String name) {
             this.name = name;
         }
 
@@ -666,8 +629,7 @@ public class JibriIq extends IQ
          */
         @NotNull
         @Override
-        public String toString()
-        {
+        public String toString() {
             return name;
         }
 
@@ -675,11 +637,11 @@ public class JibriIq extends IQ
          * Parses <code>Status</code> from given string.
          *
          * @param status the string representation of <code>Status</code>.
+         *
          * @return <code>Status</code> value for given string or {@link #UNDEFINED} if given string
          * does not reflect any of valid values.
          */
-        public static Status parse(String status)
-        {
+        public static Status parse(String status) {
             if (StringUtils.isEmpty(status))
                 return UNDEFINED;
 

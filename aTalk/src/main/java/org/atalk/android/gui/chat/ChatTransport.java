@@ -122,7 +122,7 @@ public interface ChatTransport {
     ProtocolProviderService getProtocolProvider();
 
     /**
-     * Sends the given instant message trough this chat transport, by specifying
+     * Sends the given instant message through this chat transport, by specifying
      * the mime type (html or plain text).
      *
      * @param message The message to send.
@@ -131,6 +131,19 @@ public interface ChatTransport {
      * @throws Exception if the send doesn't succeed
      */
     void sendInstantMessage(String message, int encType)
+            throws Exception;
+
+    /**
+     * Sends the given instant FT message through this chat transport, by specifying
+     * the mime type (html or plain text) and a msgUuid.
+     *
+     * @param message The message to send.
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param msgId The message Id when provided is used in sending the message.
+     *
+     * @throws Exception if the send doesn't succeed
+     */
+    void sendInstantFTMessage(String message, int encType, String msgId)
             throws Exception;
 
     /**

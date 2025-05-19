@@ -339,9 +339,10 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      * Sends the chat message or corrects the last message if the chatPanel has correction UID set.
      *
      * @param message the text string to be sent
-     * @param encType The encType of the message to be sent: RemoteOnly | 1=text/html or 0=text/plain.
+     * @param encType The encType of the message: RemoteOnly | FLAG_MSG_OOB | 1=text/html or 0=text/plain.
+     * @param msgUuId The message Id when provided is used in sending the message.
      */
-    public void sendMessage(String message, int encType) {
+    public void sendMessage(String message, int encType, String msgUuId) {
         // Sometimes it seems the chatPanel is not inSync with the chatSession or initialized,
         // i.e Conference instead of MetaContact; and may also be null, so check to ensure
         if (chatPanel == null)
@@ -357,7 +358,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
         if (correctionUID == null) {
             try {
-                mChatTransport.sendInstantMessage(message, encryption | encType);
+                mChatTransport.sendInstantFTMessage(message, encryption | encType, msgUuId);
             } catch (Exception ex) {
                 Timber.e("Send instant message exception: %s", ex.getMessage());
                 aTalkApp.showToastMessage(ex.getMessage());
@@ -483,6 +484,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             case R.id.sendMessageButton:
                 if (chatPanel.getProtocolProvider().isRegistered()) {
                     if (mediaPreview.getVisibility() == View.VISIBLE) {
+                        // Disable to prevent user multiple clicks.
+                        sendBtn.setVisibility(View.INVISIBLE);
                         MediaPreviewAdapter mpAdapter = (MediaPreviewAdapter) mediaPreview.getAdapter();
                         if (mpAdapter != null) {
                             List<Attachment> mediaPreviews = mpAdapter.getAttachments();
@@ -525,10 +528,10 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                         if (textEdit.matches(ChatMessage.HTML_MARKUP)) {
                             Timber.d("HTML text entry detected: %s", textEdit);
                             msgEdit.setText(textEdit);
-                            sendMessage(textEdit, IMessage.ENCODE_HTML);
+                            sendMessage(textEdit, IMessage.ENCODE_HTML, null);
                         }
                         else
-                            sendMessage(textEdit, IMessage.ENCODE_PLAIN);
+                            sendMessage(textEdit, IMessage.ENCODE_PLAIN, null);
                     }
                     updateSendModeState();
                 }
@@ -865,7 +868,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         boolean correctionMode = (chatPanel.getCorrectionUID() != null);
         int bgColorId = correctionMode ? R.color.msg_input_correction_bg : R.color.msg_input_bar_bg;
 
-        msgEditBg.setBackgroundColor(parent.getResources().getColor(bgColorId));
+        msgEditBg.setBackgroundColor(parent.getResources().getColor(bgColorId, null));
         cancelCorrectionBtn.setVisibility(correctionMode ? View.VISIBLE : View.GONE);
         mChatFragment.getChatListView().invalidateViews();
     }

@@ -5,15 +5,14 @@
  */
 package org.jivesoftware.smackx.coin;
 
-import org.jivesoftware.smackx.AbstractExtensionElement;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-
-import java.util.Map;
-
-import javax.xml.namespace.QName;
+import org.jivesoftware.smackx.AbstractExtensionElement;
 
 /**
  * Media packet extension.
@@ -21,8 +20,7 @@ import javax.xml.namespace.QName;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class MediaExtension extends AbstractExtensionElement
-{
+public class MediaExtension extends AbstractExtensionElement {
     /**
      * The name of the element that contains the media data.
      */
@@ -95,8 +93,7 @@ public class MediaExtension extends AbstractExtensionElement
      *
      * @param id media ID
      */
-    public MediaExtension(String id)
-    {
+    public MediaExtension(String id) {
         super(ELEMENT, NAMESPACE);
 
         setAttribute(ID_ATTR_NAME, id);
@@ -107,8 +104,7 @@ public class MediaExtension extends AbstractExtensionElement
      *
      * @param label label
      */
-    public void setLabel(String label)
-    {
+    public void setLabel(String label) {
         this.label = label;
     }
 
@@ -117,8 +113,7 @@ public class MediaExtension extends AbstractExtensionElement
      *
      * @param status status.
      */
-    public void setStatus(String status)
-    {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -127,8 +122,7 @@ public class MediaExtension extends AbstractExtensionElement
      *
      * @param srcId src-id
      */
-    public void setSrcID(String srcId)
-    {
+    public void setSrcID(String srcId) {
         this.srcId = srcId;
     }
 
@@ -137,8 +131,7 @@ public class MediaExtension extends AbstractExtensionElement
      *
      * @param type type
      */
-    public void setType(String type)
-    {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -147,8 +140,7 @@ public class MediaExtension extends AbstractExtensionElement
      *
      * @param displayText display text
      */
-    public void setDisplayText(String displayText)
-    {
+    public void setDisplayText(String displayText) {
         this.displayText = displayText;
     }
 
@@ -157,8 +149,7 @@ public class MediaExtension extends AbstractExtensionElement
      *
      * @return display text
      */
-    public String getDisplayText()
-    {
+    public String getDisplayText() {
         return displayText;
     }
 
@@ -167,8 +158,7 @@ public class MediaExtension extends AbstractExtensionElement
      *
      * @return type
      */
-    public String getType()
-    {
+    public String getType() {
         return type;
     }
 
@@ -177,8 +167,7 @@ public class MediaExtension extends AbstractExtensionElement
      *
      * @return label
      */
-    public String getLabel()
-    {
+    public String getLabel() {
         return label;
     }
 
@@ -187,8 +176,7 @@ public class MediaExtension extends AbstractExtensionElement
      *
      * @return status.
      */
-    public String getStatus()
-    {
+    public String getStatus() {
         return status;
     }
 
@@ -197,8 +185,7 @@ public class MediaExtension extends AbstractExtensionElement
      *
      * @return src-id
      */
-    public String getSrcID()
-    {
+    public String getSrcID() {
         return srcId;
     }
 
@@ -208,8 +195,7 @@ public class MediaExtension extends AbstractExtensionElement
      * @return XML string representation
      */
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
-    {
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
 
         // add the rest of the attributes if any

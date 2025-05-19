@@ -59,7 +59,7 @@ public class FileReceiveConversation extends FileTransferConversation
     private IncomingFileTransferRequest fileTransferRequest;
     private OperationSetFileTransfer fileTransferOpSet;
     private FileHistoryServiceImpl mFHS;
-    private String mSendTo;
+    private String mSender;
 
     private FileReceiveConversation(ChatFragment cPanel, String dir) {
         super(cPanel, dir);
@@ -69,18 +69,19 @@ public class FileReceiveConversation extends FileTransferConversation
      * Creates a <code>ReceiveFileConversationComponent</code>.
      *
      * @param cPanel the chat panel
+     * @param sender the file transfer sender
      * @param opSet the <code>OperationSetFileTransfer</code>
      * @param request the <code>IncomingFileTransferRequest</code> associated with this component
      * @param date the received file date
      */
     // Constructor used by ChatFragment to start handle ReceiveFileTransferRequest
-    public static FileReceiveConversation newInstance(ChatFragment cPanel, String sendTo,
+    public static FileReceiveConversation newInstance(ChatFragment cPanel, String sender,
             OperationSetFileTransfer opSet, IncomingFileTransferRequest request, final Date date) {
         FileReceiveConversation fragmentRFC = new FileReceiveConversation(cPanel, FileRecord.IN);
-        fragmentRFC.mSendTo = sendTo;
+        fragmentRFC.mSender = sender;
         fragmentRFC.fileTransferOpSet = opSet;
         fragmentRFC.fileTransferRequest = request;
-        fragmentRFC.msgUuid = request.getID();
+        fragmentRFC.msgUuid = request.getId();
         fragmentRFC.mDate = GuiUtils.formatDateTime(date);
         fragmentRFC.mFHS = (FileHistoryServiceImpl) AppGUIActivator.getFileHistoryService();
 
@@ -89,67 +90,70 @@ public class FileReceiveConversation extends FileTransferConversation
         return fragmentRFC;
     }
 
-    public View ReceiveFileConversionForm(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,
+    public View ReceiveFileConversationForm(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,
             ViewGroup container, int id, boolean init) {
         msgViewId = id;
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
         messageViewHolder.stickerView.setImageDrawable(null);
 
-        mXferFile = createOutFile(fileTransferRequest);
+        // ReceiveFileConversationForm get call again on UI refresh; create new file only if null.
+        if (mXferFile == null)
+            mXferFile = createOutFile(fileTransferRequest);
         mFileTransfer = fileTransferRequest.onPrepare(mXferFile);
         mFileTransfer.addStatusListener(this);
         mEncryption = fileTransferRequest.getEncryptionType();
-        setEncState(mEncryption);
+        setEncryptionState(mEncryption);
 
         long downloadFileSize = fileTransferRequest.getFileSize();
         String fileLabel = getFileLabel(mXferFile.getName(), downloadFileSize);
         messageViewHolder.fileLabel.setText(fileLabel);
 
-		/* Must keep track of file transfer status as Android always request view redraw on
-		listView scrolling, new message send or received */
+        // Must reset button image to fileIcon on new(); else reused view may contain an old thumbnail image
+        messageViewHolder.fileIcon.setImageResource(R.drawable.file_icon);
+        if (ConfigurationUtils.isSendThumbnail()) {
+            byte[] thumbnail = fileTransferRequest.getThumbnail(this);
+            showThumbnail(thumbnail);
+        }
+
+        // must init all buttons action as inflateViewForFileTransfer will change its references.
+        messageViewHolder.acceptButton.setOnClickListener(v -> {
+            updateXferFileViewState(FileTransferStatusChangeEvent.ACCEPT,
+                    aTalkApp.getResString(R.string.file_transfer_accepted, mSender));
+
+            // set the download for global display parameter
+            mChatFragment.getChatListAdapter().setFileName(msgViewId, mXferFile);
+            new AcceptFile().execute();
+            updateStatus(FileTransferStatusChangeEvent.ACCEPT, null);
+        });
+
+        messageViewHolder.declineButton.setOnClickListener(v -> {
+            updateXferFileViewState(FileTransferStatusChangeEvent.DECLINED,
+                    aTalkApp.getResString(R.string.file_transfer_declined));
+            hideProgressRelatedComponents();
+
+            try {
+                fileTransferRequest.declineFile();
+            } catch (OperationFailedException e) {
+                Timber.e("Decline file exception: %s", e.getMessage());
+            }
+            // need to update status here as chatFragment statusListener is enabled for
+            // fileTransfer and only after accept
+            updateStatus(FileTransferStatusChangeEvent.DECLINED, null);
+        });
+
+        /*
+         * Must keep track of file transfer status from the cache as Android always request view
+         * redraw on listView scrolling, new message send or received
+         */
         int status = getXferStatus();
-        if (status != FileTransferStatusChangeEvent.DECLINED
-                && status != FileTransferStatusChangeEvent.COMPLETED) {
-            // Must reset button image to fileIcon on new(); else reused view may contain an old thumbnail image
-            messageViewHolder.fileIcon.setImageResource(R.drawable.file_icon);
-            if (ConfigurationUtils.isSendThumbnail()) {
-                byte[] thumbnail = fileTransferRequest.getThumbnail(this);
-                showThumbnail(thumbnail);
-            }
-
-            messageViewHolder.acceptButton.setOnClickListener(v -> {
-                updateXferFileViewState(FileTransferStatusChangeEvent.PREPARING,
-                        aTalkApp.getResString(R.string.file_transfer_preparing, mSendTo));
-
-                // set the download for global display parameter
-                mChatFragment.getChatListAdapter().setFileName(msgViewId, mXferFile);
-                new AcceptFile().execute();
-            });
-
-            messageViewHolder.declineButton.setOnClickListener(v -> {
-                updateXferFileViewState(FileTransferStatusChangeEvent.DECLINED,
-                        aTalkApp.getResString(R.string.file_transfer_declined));
-                hideProgressRelatedComponents();
-
-                try {
-                    fileTransferRequest.declineFile();
-                } catch (OperationFailedException e) {
-                    Timber.e("Decline file exception: %s", e.getMessage());
-                }
-                // need to update status here as chatFragment statusListener is enabled for
-                // fileTransfer and only after accept
-                updateFTStatus(msgUuid, FileTransferStatusChangeEvent.CANCELED);
-            });
-
-            updateXferFileViewState(FileTransferStatusChangeEvent.WAITING,
-                    aTalkApp.getResString(R.string.file_transfer_request_received, mSendTo));
-
-            if (ConfigurationUtils.isAutoAcceptFile(downloadFileSize)) {
-                messageViewHolder.acceptButton.performClick();
-            }
+        // check for status UNKNOWN has problem. UI messed up and cannot receive file probably in multiple files transfer.
+        if (status == FileTransferStatusChangeEvent.UNKNOWN) {
+            status = FileTransferStatusChangeEvent.WAITING;
+            updateStatus(status, null);
+            checkAutoAccept(downloadFileSize);
         }
         else {
-            updateView(status, null);
+            updateStatus(status, null);
         }
         return convertView;
     }
@@ -160,24 +164,31 @@ public class FileReceiveConversation extends FileTransferConversation
      * i.e. mEncryption = IMessage.ENCRYPTION_NONE
      */
     @Override
-    protected void updateView(final int status, final String reason) {
+    protected void updateStatus(final int status, final String reason) {
         String statusText = null;
-        updateFTStatus(msgUuid, status);
 
         switch (status) {
             case FileTransferStatusChangeEvent.PREPARING:
                 // hideProgressRelatedComponents();
-                statusText = aTalkApp.getResString(R.string.file_transfer_preparing, mSendTo);
+                statusText = aTalkApp.getResString(R.string.file_transfer_preparing, mSender);
+                break;
+
+            case FileTransferStatusChangeEvent.WAITING:
+                statusText = aTalkApp.getResString(R.string.file_transfer_request_received, mSender);
+                break;
+
+            case FileTransferStatusChangeEvent.ACCEPT:
+                statusText = aTalkApp.getResString(R.string.file_transfer_accepted);
                 break;
 
             // Briefly visible for legacy Si file transfer; as transfer takes ~200ms to send 1.1 MB.
             // JFT encrypted takes ~7s to send/receive 1.1 MB.
             case FileTransferStatusChangeEvent.IN_PROGRESS:
-                statusText = aTalkApp.getResString(R.string.file_receive_from, mSendTo);
+                statusText = aTalkApp.getResString(R.string.file_receive_from, mSender);
                 break;
 
             case FileTransferStatusChangeEvent.COMPLETED:
-                statusText = aTalkApp.getResString(R.string.file_receive_completed, mSendTo);
+                statusText = aTalkApp.getResString(R.string.file_receive_completed, mSender);
                 if (mXferFile == null) { // Android view redraw happen
                     mXferFile = mChatFragment.getChatListAdapter().getFileName(msgViewId);
                 }
@@ -185,7 +196,7 @@ public class FileReceiveConversation extends FileTransferConversation
 
             case FileTransferStatusChangeEvent.FAILED:
                 // hideProgressRelatedComponents(); keep the status info for user view
-                statusText = aTalkApp.getResString(R.string.file_receive_failed, mSendTo);
+                statusText = aTalkApp.getResString(R.string.file_receive_failed, mSender);
                 if (!TextUtils.isEmpty(reason)) {
                     statusText += "\n" + reason;
                 }
@@ -200,6 +211,7 @@ public class FileReceiveConversation extends FileTransferConversation
                 statusText = aTalkApp.getResString(R.string.file_transfer_declined);
                 break;
         }
+        updateFTStatus(msgUuid, status);
         updateXferFileViewState(status, statusText);
         mChatFragment.scrollToBottom();
     }
@@ -259,13 +271,17 @@ public class FileReceiveConversation extends FileTransferConversation
      */
     private void updateFTStatus(String msgUuid, int status) {
         String fileName = (mXferFile == null) ? "" : mXferFile.getPath();
-        if (status == FileTransferStatusChangeEvent.CANCELED || status == FileTransferStatusChangeEvent.DECLINED) {
+        if (isFileTransferEnd(status)) {
             if (mXferFile != null && mXferFile.exists() && mXferFile.length() == 0 && mXferFile.delete()) {
                 Timber.d("Deleted file with zero length: %s", mXferFile);
             }
         }
-        mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
-        mChatFragment.updateFTStatus(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
+        Timber.d("File status change (Receive): %s: %s", status, mXferFile);
+
+        int ftState = isFileTransferEnd(status) ?
+                ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY : ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
+        mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ftState);
+        mChatFragment.updateFTStatus(msgUuid, status, fileName, mEncryption, ftState);
     }
 
     /**
@@ -275,20 +291,16 @@ public class FileReceiveConversation extends FileTransferConversation
      *
      * @param event the event containing information about the change
      */
+    @Override
     public void statusChanged(FileTransferStatusChangeEvent event) {
         final FileTransfer fileTransfer = event.getFileTransfer();
         final int status = event.getNewStatus();
         final String reason = event.getReason();
 
-        Timber.d("File receive status change: %s: %s", status, mXferFile);
-
         // Event thread - Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
-            updateView(status, reason);
-            if (status == FileTransferStatusChangeEvent.COMPLETED
-                    || status == FileTransferStatusChangeEvent.CANCELED
-                    || status == FileTransferStatusChangeEvent.FAILED
-                    || status == FileTransferStatusChangeEvent.DECLINED) {
+            updateStatus(status, reason);
+            if (isFileTransferEnd(status)) {
                 // must update this in UI, otherwise the status is not being updated to FileRecord
                 fileTransfer.removeStatusListener(this);
             }
@@ -330,7 +342,7 @@ public class FileReceiveConversation extends FileTransferConversation
      */
     public void fileTransferRequestRejected(FileTransferRequestEvent event) {
         final IncomingFileTransferRequest request = event.getRequest();
-        updateFTStatus(request.getID(), FileTransferStatusChangeEvent.DECLINED);
+        updateFTStatus(request.getId(), FileTransferStatusChangeEvent.DECLINED);
 
         // Event triggered - Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
@@ -351,7 +363,7 @@ public class FileReceiveConversation extends FileTransferConversation
      */
     public void fileTransferRequestCanceled(FileTransferRequestEvent event) {
         final IncomingFileTransferRequest request = event.getRequest();
-        updateFTStatus(request.getID(), FileTransferStatusChangeEvent.CANCELED);
+        updateFTStatus(request.getId(), FileTransferStatusChangeEvent.CANCELED);
 
         // Event triggered - Must execute in UiThread to Update UI information
         runOnUiThread(() -> {

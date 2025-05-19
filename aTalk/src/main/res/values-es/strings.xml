@@ -372,6 +372,7 @@
     <string name="file_send_completed">El fichero se ha enviado correctamente a %1$s</string>
     <string name="file_send_declined">%1$s ha declinado la recepción de este archivo</string>
     <string name="file_sending_to">Enviando el archivo a %1$s</string>
+    <string name="file_transfer_accepted">Se ha aceptado la transferencia de archivos</string>
     <string name="file_transfer_canceled">Se ha cancelado la transferencia de archivos</string>
     <string name="file_transfer_preparing">Preparando la transferencia de archivos con %1$s. Por favor, espere&#8230;</string>
     <string name="file_transfer_declined">Se ha declinado la transferencia de archivo</string>
@@ -395,7 +396,7 @@
     <string name="file_size_too_big">El tamaño del archivo excede el máximo permitido para este protocolo: %1$s</string>
     <string name="file_transfer_active">La transferencia de archivos en curso se ha interrumpido. ¡Seguimiento de estado @ %1$s perdido!</string>
     <string name="file_transfer_not_secure">XEP-0096: ¡El protocolo SI File Transfer no admite el envío de archivos cifrados!</string>
-    <string name="file_transfer_not_supported">El cliente o servidor de contacto no admite la transferencia de archivos ni los protocolos necesarios</string>
+    <string name="file_transfer_not_supported">El cliente o servidor de contacto (%1$s) no admite la transferencia de archivos ni los protocolos necesarios</string>
 
     <string name="finish">Finalizar</string>
     <string name="folder_not_exist">No se ha podido encontrar la carpeta que contiene este archivo. Se ha borrado o movido</string>

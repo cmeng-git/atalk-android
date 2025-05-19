@@ -302,6 +302,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * @throws OperationFailedException if an error occurs while trying to discover the room on the server.
      * @throws OperationNotSupportedException if the server does not support multi user chat
      */
+    @Override
     public synchronized ChatRoom findRoom(String roomName)
             throws OperationFailedException, OperationNotSupportedException {
         // make sure we are connected and multiChat is supported.
@@ -320,6 +321,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      *
      * @return the <code>ChatRoomJabberImpl</code> named <code>room</code>
      */
+    @Override
     public synchronized ChatRoomJabberImpl findRoom(EntityBareJid entityBareJid) {
         ChatRoomJabberImpl room = chatRoomCache.get(entityBareJid);
         if (room != null)
@@ -338,15 +340,11 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      *
      * @return a <code>List</code> of the rooms where the user has joined using a given connection.
      */
+    @Override
     public List<ChatRoom> getCurrentlyJoinedChatRooms() {
         synchronized (chatRoomCache) {
             List<ChatRoom> joinedRooms = new LinkedList<>(this.chatRoomCache.values());
-            Iterator<ChatRoom> joinedRoomsIter = joinedRooms.iterator();
-
-            while (joinedRoomsIter.hasNext()) {
-                if (!joinedRoomsIter.next().isJoined())
-                    joinedRoomsIter.remove();
-            }
+            joinedRooms.removeIf(chatRoom -> !chatRoom.isJoined());
             return joinedRooms;
         }
     }

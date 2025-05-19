@@ -5,12 +5,6 @@
  */
 package org.atalk.impl.neomedia.rtp;
 
-import org.atalk.impl.neomedia.jmfext.media.rtp.RTPSessionMgr;
-import org.atalk.impl.neomedia.rtp.translator.RTPTranslatorImpl;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.RTPTranslator;
-import org.atalk.service.neomedia.SSRCFactory;
-
 import java.io.IOException;
 import java.util.Vector;
 
@@ -27,6 +21,12 @@ import javax.media.rtp.SendStream;
 import javax.media.rtp.SendStreamListener;
 import javax.media.rtp.SessionListener;
 
+import org.atalk.impl.neomedia.jmfext.media.rtp.RTPSessionMgr;
+import org.atalk.impl.neomedia.rtp.translator.RTPTranslatorImpl;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.RTPTranslator;
+import org.atalk.service.neomedia.SSRCFactory;
+
 import timber.log.Timber;
 
 /**
@@ -36,8 +36,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class StreamRTPManager
-{
+public class StreamRTPManager {
     /**
      * The <code>MediaStream</code> that uses this <code>StreamRTPManager</code>
      */
@@ -63,47 +62,41 @@ public class StreamRTPManager
      * @param translator the <code>RTPTranslator</code> to attach the new instance to or <code>null</code>
      * if the new instance is to not be attached to any <code>RTPTranslator</code>
      */
-    public StreamRTPManager(MediaStream stream, RTPTranslator translator)
-    {
+    public StreamRTPManager(MediaStream stream, RTPTranslator translator) {
         this.stream = stream;
         this.rtpTranslator = (RTPTranslatorImpl) translator;
         rtpManager = (this.rtpTranslator == null) ? RTPManager.newInstance() : null;
     }
 
-    public void addFormat(Format format, int payloadType)
-    {
+    public void addFormat(Format format, int payloadType) {
         if (rtpTranslator == null)
             rtpManager.addFormat(format, payloadType);
         else
             rtpTranslator.addFormat(this, format, payloadType);
     }
 
-    public void addReceiveStreamListener(ReceiveStreamListener listener)
-    {
+    public void addReceiveStreamListener(ReceiveStreamListener listener) {
         if (rtpTranslator == null)
             rtpManager.addReceiveStreamListener(listener);
         else
             rtpTranslator.addReceiveStreamListener(this, listener);
     }
 
-    public void addRemoteListener(RemoteListener listener)
-    {
+    public void addRemoteListener(RemoteListener listener) {
         if (rtpTranslator == null)
             rtpManager.addRemoteListener(listener);
         else
             rtpTranslator.addRemoteListener(this, listener);
     }
 
-    public void addSendStreamListener(SendStreamListener listener)
-    {
+    public void addSendStreamListener(SendStreamListener listener) {
         if (rtpTranslator == null)
             rtpManager.addSendStreamListener(listener);
         else
             rtpTranslator.addSendStreamListener(this, listener);
     }
 
-    public void addSessionListener(SessionListener listener)
-    {
+    public void addSessionListener(SessionListener listener) {
         if (rtpTranslator == null)
             rtpManager.addSessionListener(listener);
         else
@@ -111,8 +104,7 @@ public class StreamRTPManager
     }
 
     public SendStream createSendStream(DataSource dataSource, int streamIndex)
-            throws IOException, UnsupportedFormatException, NullPointerException
-    {
+            throws IOException, UnsupportedFormatException, NullPointerException {
         // NullPointerException: Attempt to invoke virtual method 'SessionAddress.getDataPort()' on a null object reference.
         // Happen when call is terminated in middle of setting up.
         if (rtpTranslator == null)
@@ -121,26 +113,25 @@ public class StreamRTPManager
             return rtpTranslator.createSendStream(this, dataSource, streamIndex);
     }
 
-    public void dispose()
-    {
+    public void dispose() {
         Timber.d("Stream RTP Manager disposing: x = %s; m = %s", rtpTranslator, rtpManager);
 
-		if (rtpTranslator == null)
-			rtpManager.dispose();
-		else
-			rtpTranslator.dispose(this);
+        if (rtpTranslator == null)
+            rtpManager.dispose();
+        else
+            rtpTranslator.dispose(this);
     }
 
     /**
      * Gets a control of a specific type over this instance. Invokes {@link #getControl(String)}.
      *
      * @param controlType a <code>Class</code> which specifies the type of the control over this instance to get
+     *
      * @return a control of the specified <code>controlType</code> over this instance
      * if this instance supports such a control; otherwise, <code>null</code>
      */
     @SuppressWarnings("unchecked")
-    public <T> T getControl(Class<T> controlType)
-    {
+    public <T> T getControl(Class<T> controlType) {
         return (T) getControl(controlType.getName());
     }
 
@@ -149,35 +140,32 @@ public class StreamRTPManager
      *
      * @param controlType a <code>String</code> which specifies the type (i.e. the name of the class)
      * of the control over this instance to get
+     *
      * @return a control of the specified <code>controlType</code> over this instance if this instance
      * supports such a control; otherwise, <code>null</code>
      */
-    public Object getControl(String controlType)
-    {
+    public Object getControl(String controlType) {
         if (rtpTranslator == null)
             return rtpManager.getControl(controlType);
         else
             return rtpTranslator.getControl(this, controlType);
     }
 
-    public GlobalReceptionStats getGlobalReceptionStats()
-    {
+    public GlobalReceptionStats getGlobalReceptionStats() {
         if (rtpTranslator == null)
             return rtpManager.getGlobalReceptionStats();
         else
             return rtpTranslator.getGlobalReceptionStats(this);
     }
 
-    public GlobalTransmissionStats getGlobalTransmissionStats()
-    {
+    public GlobalTransmissionStats getGlobalTransmissionStats() {
         if (rtpTranslator == null)
             return rtpManager.getGlobalTransmissionStats();
         else
             return rtpTranslator.getGlobalTransmissionStats(this);
     }
 
-    public long getLocalSSRC()
-    {
+    public long getLocalSSRC() {
         if (rtpTranslator == null) {
             return ((net.sf.fmj.media.rtp.RTPSessionMgr) rtpManager).getLocalSSRC();
         }
@@ -190,14 +178,12 @@ public class StreamRTPManager
      *
      * @return the <code>MediaStream</code> that uses this <code>StreamRTPManager</code>
      */
-    public MediaStream getMediaStream()
-    {
+    public MediaStream getMediaStream() {
         return stream;
     }
 
     @SuppressWarnings("rawtypes")
-    public Vector getReceiveStreams()
-    {
+    public Vector getReceiveStreams() {
         if (rtpTranslator == null)
             return rtpManager.getReceiveStreams();
         else
@@ -205,48 +191,42 @@ public class StreamRTPManager
     }
 
     @SuppressWarnings("rawtypes")
-    public Vector getSendStreams()
-    {
+    public Vector getSendStreams() {
         if (rtpTranslator == null)
             return rtpManager.getSendStreams();
         else
             return rtpTranslator.getSendStreams(this);
     }
 
-    public void initialize(RTPConnector connector)
-    {
+    public void initialize(RTPConnector connector) {
         if (rtpTranslator == null)
             rtpManager.initialize(connector);
         else
             rtpTranslator.initialize(this, connector);
     }
 
-    public void removeReceiveStreamListener(ReceiveStreamListener listener)
-    {
+    public void removeReceiveStreamListener(ReceiveStreamListener listener) {
         if (rtpTranslator == null)
             rtpManager.removeReceiveStreamListener(listener);
         else
             rtpTranslator.removeReceiveStreamListener(this, listener);
     }
 
-    public void removeRemoteListener(RemoteListener listener)
-    {
+    public void removeRemoteListener(RemoteListener listener) {
         if (rtpTranslator == null)
             rtpManager.removeRemoteListener(listener);
         else
             rtpTranslator.removeRemoteListener(this, listener);
     }
 
-    public void removeSendStreamListener(SendStreamListener listener)
-    {
+    public void removeSendStreamListener(SendStreamListener listener) {
         if (rtpTranslator == null)
             rtpManager.removeSendStreamListener(listener);
         else
             rtpTranslator.removeSendStreamListener(this, listener);
     }
 
-    public void removeSessionListener(SessionListener listener)
-    {
+    public void removeSessionListener(SessionListener listener) {
         if (rtpTranslator == null)
             rtpManager.removeSessionListener(listener);
         else
@@ -261,8 +241,7 @@ public class StreamRTPManager
      * synchronization source (SSRC) identifiers or <code>null</code> if this instance is to
      * employ internal logic to generate new synchronization source (SSRC) identifiers
      */
-    public void setSSRCFactory(SSRCFactory ssrcFactory)
-    {
+    public void setSSRCFactory(SSRCFactory ssrcFactory) {
         if (rtpTranslator == null) {
             RTPManager m = this.rtpManager;
 

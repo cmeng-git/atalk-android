@@ -5,6 +5,8 @@
  */
 package org.jivesoftware.smackx.jibri;
 
+import java.io.IOException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -13,20 +15,16 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 
-import java.io.IOException;
-
 /**
  * Parses {@link JibriIq}.
  */
-public class JibriIqProvider extends IQProvider<JibriIq>
-{
+public class JibriIqProvider extends IQProvider<JibriIq> {
     /**
      * {@inheritDoc}
      */
     @Override
     public JibriIq parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException
-    {
+            throws XmlPullParserException, IOException {
         String namespace = parser.getNamespace();
 
         // Check the namespace

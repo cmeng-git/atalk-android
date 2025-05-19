@@ -79,6 +79,9 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
     private final Uri mUri;
     private long mFileSize;
 
+    // Downloading tmp file.
+    private File tmpFile = null;
+
     /**
      * The transfer file full path for saving the received file.
      */
@@ -131,7 +134,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
      */
     @Override
     public void cancel() {
-        doCleanup();
+        doCleanup(-1);
     }
 
     /**
@@ -210,7 +213,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
     // Routines supporting HTTP File Download
 
     /**
-     * Method fired when the chat message is clicked. {@inheritDoc} Trigger from @see ChatFragment#
+     * Method fired when the HttpFileDownload message is received.
      */
     public void initHttpFileDownload() {
         if (previousDownloads.contains(dnLink))
@@ -249,7 +252,11 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
             }
             Cursor cursor = downloadManager.query(query);
             if (cursor.moveToFirst()) {
+                // Value checking COLUMN_BYTES_DOWNLOADED_SO_FAR contains file size value, but COLUMN_TOTAL_SIZE_BYTES (0);
+                // DownloadManager implementation error?
                 mFileSize = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                long fileSize = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                mFileSize = Math.max(mFileSize, fileSize);
             }
             cursor.close();
         }
@@ -260,26 +267,22 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
 
     /**
      * Schedules media file download.
+     *
+     * @param xferFile The saved filename on download completed.
      */
     public void download(File xferFile) {
         mXferFile = xferFile;
-
         DownloadManager.Request request = new DownloadManager.Request(mUri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
         try {
-            File tmpFile = new File(FileBackend.getaTalkStore(FileBackend.TMP, true), mFileName);
+            // Create a tmp file to receive download
+            tmpFile = new File(FileBackend.getaTalkStore(FileBackend.TMP, true), mFileName);
             request.setDestinationUri(Uri.fromFile(tmpFile));
-
             long jobId = downloadManager.enqueue(request);
             if (jobId > 0) {
                 previousDownloads.put(jobId, dnLink);
                 startProgressChecker();
-                // Timber.d("Download Manager HttpFileDownload Size: %s %s", mFileSize, previousDownloads.toString());
                 fireStatusChangeEvent(FileTransferStatusChangeEvent.IN_PROGRESS, null);
-
-                // Send a fake progressChangeEvent to show progressBar
-                fireProgressChangeEvent(System.currentTimeMillis(), 100);
             }
         } catch (SecurityException e) {
             aTalkApp.showToastMessage(e.getMessage());
@@ -316,25 +319,23 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
     private class DownloadReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Fetching the download id received with the broadcast and
+            // Fetching the download id received with the broadcast and proceed only
             // if the received broadcast is for our enqueued download by matching download id
             long lastDownloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             int lastJobStatus = checkDownloadStatus(lastDownloadId);
             // Timber.d("Download receiver %s (%s): %s", lastDownloadId, previousDownloads, lastJobStatus);
 
-            // Just ignore all unrelated download JobId.
+            // Just ignore all unrelated download JobId, else proceed.
             if (previousDownloads.containsKey(lastDownloadId)) {
                 if (lastJobStatus == DownloadManager.STATUS_SUCCESSFUL) {
                     String dnLink = previousDownloads.get(lastDownloadId);
-
                     Uri fileUri = downloadManager.getUriForDownloadedFile(lastDownloadId);
                     File inFile = new File(FilePathHelper.getFilePath(context, fileUri));
 
                     // update fileSize for progress bar update, in case it is still not updated by download Manager
                     mFileSize = inFile.length();
-
                     if (inFile.exists()) {
-                        // OMEMO media file sharing - need to decrypt file content
+                        // OMEMO media file sharing - need to decrypt file content.
                         if ((dnLink != null) && dnLink.matches("^aesgcm:.*")) {
                             try {
                                 AesgcmUrl aesgcmUrl = new AesgcmUrl(dnLink);
@@ -365,19 +366,16 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
                             // Plain media file sharing; rename will move the infile to outfile dir.
                             if (inFile.renameTo(mXferFile)) {
                                 fireStatusChangeEvent(FileTransferStatusChangeEvent.COMPLETED, null);
+                                // Timber.d("Downloaded completed: %s (%s)", mFileName, mFileSize);
                             }
                         }
-
-                        // Timber.d("Downloaded fileSize: %s (%s)", outFile.length(), fileSize);
-                        previousDownloads.remove(lastDownloadId);
-                        // Remove lastDownloadId from downloadManager record and delete the tmp file
-                        downloadManager.remove(lastDownloadId);
                     }
                 }
                 else if (lastJobStatus == DownloadManager.STATUS_FAILED) {
+                    Timber.d("Downloaded failed: %s (%s)", mFileName, mFileSize);
                     fireStatusChangeEvent(FileTransferStatusChangeEvent.FAILED, dnLink);
                 }
-                doCleanup();
+                doCleanup(lastDownloadId);
             }
         }
     }
@@ -398,12 +396,73 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
         return -1;
     }
 
+    //=========================================================
+    /*
+     * Monitoring file download progress at UPDATE_INTERVAL ms interval
+     */
+    private static final int UPDATE_INTERVAL = 50;
+
+    // Maximum download idle time (60mS) i.e, MAX_IDLE_TIME * UPDATE_INTERVAL before giving up and force to stop
+    private static final int MAX_IDLE_TIME = 60000 / UPDATE_INTERVAL;
+
+    private boolean isProgressCheckerRunning = false;
+    private final Handler handler = new Handler();
+    private int waitTime;
+
+    /**
+     * Checks http download progress.
+     */
+    private void checkDnProgress() {
+        long lastDownloadId = getJobId(dnLink);
+        if (lastDownloadId == -1)
+            return;
+
+        int lastJobStatus = checkDownloadStatus(lastDownloadId);
+        // Timber.d("Downloading file last jobId: %s; lastJobStatus: %s; dnProgress: %s (%s)",
+        //       lastDownloadId, lastJobStatus, previousProgress, waitTime);
+
+        // Terminate stopProgressChecker if completed.
+        if (lastJobStatus == DownloadManager.STATUS_SUCCESSFUL) {
+            stopProgressChecker();
+            return;
+        }
+        // Terminate the file download process if failed or idleTime timeout.
+        else if (lastJobStatus == DownloadManager.STATUS_FAILED || waitTime < 0) {
+            Timber.d("Downloaded failed fileSize: %s (%s); %s", tmpFile.length(), mFileSize, waitTime);
+            fireStatusChangeEvent(FileTransferStatusChangeEvent.FAILED, null);
+            doCleanup(lastDownloadId);
+            return;
+        }
+
+        DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterById(lastDownloadId);
+        Cursor cursor = downloadManager.query(query);
+        if (!cursor.moveToFirst()) {
+            waitTime--;
+        }
+        else {
+            do {
+                long byteReceive = cursor.getLong(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                if (byteReceive <= mByteTransfer)
+                    waitTime--;
+                else {
+                    waitTime = MAX_IDLE_TIME;
+                    fireProgressChangeEvent(System.currentTimeMillis(), byteReceive);
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+    }
+
     /**
      * Perform cleanup at end of http file transfer process: passed, failed or cancel.
+     * Stops watching download progress.
      */
-    private void doCleanup() {
+    private void doCleanup(long jobId) {
         stopProgressChecker();
-        long jobId = getJobId(dnLink);
+        if (jobId == -1) {
+            jobId = getJobId(dnLink);
+        }
         if (jobId != -1) {
             previousDownloads.remove(jobId);
             downloadManager.remove(jobId);
@@ -420,73 +479,21 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
             downloadReceiver = null;
         }
         // Timber.d("Download Manager for JobId: %s; File: %s (status: %s)", jobId, dnLink, status);
-    }
-
-    //=========================================================
-    /*
-     * Monitoring file download progress at PROGRESS_DELAY ms interval
-     */
-    private static final int PROGRESS_DELAY = 500;
-
-    // Maximum download idle time, 60s = MAX_IDLE_TIME * PROGRESS_DELAY mS before giving up and force to stop
-    private static final int MAX_IDLE_TIME = 120;
-
-    private boolean isProgressCheckerRunning = false;
-    private final Handler handler = new Handler();
-
-    private long previousProgress;
-    private int waitTime;
-
-    /**
-     * Checks http download progress.
-     */
-    private void checkProgress() {
-        long lastDownloadId = getJobId(dnLink);
-        int lastJobStatus = checkDownloadStatus(lastDownloadId);
-        // Timber.d("Downloading file last jobId: %s; lastJobStatus: %s; dnProgress: %s (%s)",
-        //       lastDownloadId, lastJobStatus, previousProgress, waitTime);
-
-        // Terminate downloading task if failed or idleTime timeout
-        if (lastJobStatus == DownloadManager.STATUS_FAILED || waitTime < 0) {
-            File tmpFile = new File(FileBackend.getaTalkStore(FileBackend.TMP, true), mFileName);
-            Timber.d("Downloaded fileSize (failed): %s (%s)", tmpFile.length(), mFileSize);
-            fireStatusChangeEvent(FileTransferStatusChangeEvent.FAILED, null);
-            doCleanup();
-            return;
+        // Purge any tmp file that was created only after cleanup.
+        if (tmpFile != null && tmpFile.exists() && tmpFile.delete()) {
+            Timber.w("HttpFileDownload tmp file deleted: %s", tmpFile.getPath());
         }
-
-        DownloadManager.Query query = new DownloadManager.Query();
-        query.setFilterByStatus(~(DownloadManager.STATUS_FAILED | DownloadManager.STATUS_SUCCESSFUL));
-        Cursor cursor = downloadManager.query(query);
-
-        if (!cursor.moveToFirst()) {
-            waitTime--;
-        }
-        else {
-            do {
-                long progress = cursor.getLong(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
-                if (progress <= previousProgress)
-                    waitTime--;
-                else {
-                    waitTime = MAX_IDLE_TIME;
-                    previousProgress = progress;
-                    fireProgressChangeEvent(System.currentTimeMillis(), progress);
-                }
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
     }
 
     /**
      * Starts watching download progress.
-     *
      * This method is safe to call multiple times. Starting an already running progress checker is a no-op.
      */
     private void startProgressChecker() {
         if (!isProgressCheckerRunning) {
             isProgressCheckerRunning = true;
             waitTime = MAX_IDLE_TIME;
-            previousProgress = -1;
+            mByteTransfer = 0;
             progressChecker.run();
         }
     }
@@ -506,8 +513,8 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
         @Override
         public void run() {
             if (isProgressCheckerRunning) {
-                checkProgress();
-                handler.postDelayed(this, PROGRESS_DELAY);
+                checkDnProgress();
+                handler.postDelayed(this, UPDATE_INTERVAL);
             }
         }
     };

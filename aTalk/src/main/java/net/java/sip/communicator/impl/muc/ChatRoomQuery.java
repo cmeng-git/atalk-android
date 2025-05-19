@@ -15,6 +15,13 @@
  */
 package net.java.sip.communicator.impl.muc;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+
 import net.java.sip.communicator.service.contactsource.AsyncContactQuery;
 import net.java.sip.communicator.service.contactsource.ContactQuery;
 import net.java.sip.communicator.service.contactsource.ContactQueryListener;
@@ -36,13 +43,6 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-
 /**
  * The <code>ChatRoomQuery</code> is a query over the <code>ChatRoomContactSourceService</code>.
  *
@@ -50,8 +50,7 @@ import java.util.regex.Pattern;
  * @author Eng Chong Meng
  */
 public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
-        implements LocalUserChatRoomPresenceListener, ChatRoomListChangeListener, ChatRoomProviderWrapperListener
-{
+        implements LocalUserChatRoomPresenceListener, ChatRoomListChangeListener, ChatRoomProviderWrapperListener {
     /**
      * The query string.
      */
@@ -84,8 +83,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      * @param queryString the query string to match
      * @param contactSource the parent contact source
      */
-    public ChatRoomQuery(String queryString, ChatRoomContactSourceService contactSource)
-    {
+    public ChatRoomQuery(String queryString, ChatRoomContactSourceService contactSource) {
         super(contactSource, Pattern.compile(queryString, Pattern.CASE_INSENSITIVE | Pattern.LITERAL), true);
         this.queryString = queryString;
         mucService = MUCActivator.getMUCService();
@@ -94,8 +92,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     /**
      * Adds listeners for the query
      */
-    private void initListeners()
-    {
+    private void initListeners() {
         for (ProtocolProviderService pps : MUCActivator.getChatRoomProviders()) {
             addQueryToProviderPresenceListeners(pps);
         }
@@ -111,8 +108,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      *
      * @param pps the protocol provider service.
      */
-    public void addQueryToProviderPresenceListeners(ProtocolProviderService pps)
-    {
+    public void addQueryToProviderPresenceListeners(ProtocolProviderService pps) {
         OperationSetMultiUserChat opSetMUC = pps.getOperationSet(OperationSetMultiUserChat.class);
         if (opSetMUC != null) {
             opSetMUC.addPresenceListener(this);
@@ -124,8 +120,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      *
      * @param pps the protocol provider service.
      */
-    public void removeQueryFromProviderPresenceListeners(ProtocolProviderService pps)
-    {
+    public void removeQueryFromProviderPresenceListeners(ProtocolProviderService pps) {
         OperationSetMultiUserChat opSetMUC = pps.getOperationSet(OperationSetMultiUserChat.class);
         if (opSetMUC != null) {
             opSetMUC.removePresenceListener(this);
@@ -133,8 +128,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     }
 
     @Override
-    protected void run()
-    {
+    protected void run() {
         List<ChatRoomProviderWrapper> chatRoomProviders = mucService.getChatRoomProviders();
         for (ChatRoomProviderWrapper provider : chatRoomProviders) {
             providerAdded(provider, true);
@@ -151,8 +145,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      * @param addQueryResult indicates whether we should add the chat room to the query results or fire an event
      * without adding it to the results.
      */
-    private void providerAdded(ChatRoomProviderWrapper provider, boolean addQueryResult)
-    {
+    private void providerAdded(ChatRoomProviderWrapper provider, boolean addQueryResult) {
         for (int i = 0; i < provider.countChatRooms(); i++) {
             ChatRoomWrapper chatRoom = provider.getChatRoom(i);
             addChatRoom(provider.getProtocolProvider(), chatRoom.getChatRoomName(),
@@ -167,8 +160,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      * and the type, and reason of the change
      */
     @Override
-    public void localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent evt)
-    {
+    public void localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent evt) {
         ChatRoom sourceChatRoom = evt.getChatRoom();
 
         String eventType = evt.getEventType();
@@ -222,8 +214,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      * without adding it to the results.
      * @param isAutoJoin the auto join state of the contact.
      */
-    private void addChatRoom(ChatRoom room, boolean addQueryResult, boolean isAutoJoin)
-    {
+    private void addChatRoom(ChatRoom room, boolean addQueryResult, boolean isAutoJoin) {
         if (queryString == null || ((room.getName().contains(queryString)
                 || room.getName().contains(queryString)))) {
             ChatRoomSourceContact contact = new ChatRoomSourceContact(room, this, isAutoJoin);
@@ -251,8 +242,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      * @param isAutoJoin the auto join state of the contact.
      */
     private void addChatRoom(ProtocolProviderService pps, String chatRoomName, String chatRoomID,
-            boolean addQueryResult, boolean isAutoJoin)
-    {
+            boolean addQueryResult, boolean isAutoJoin) {
         if ((queryString == null) || ((chatRoomName.contains(queryString) || chatRoomID.contains(queryString)))) {
             ChatRoomSourceContact contact = new ChatRoomSourceContact(chatRoomName, chatRoomID, this, pps, isAutoJoin);
             synchronized (contactResults) {
@@ -274,8 +264,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      * @param evt the event that describes the change.
      */
     @Override
-    public void contentChanged(final ChatRoomListChangeEvent evt)
-    {
+    public void contentChanged(final ChatRoomListChangeEvent evt) {
         ChatRoomWrapper chatRoom = evt.getSourceChatRoom();
         switch (evt.getEventID()) {
             case ChatRoomListChangeEvent.CHAT_ROOM_ADDED:
@@ -314,14 +303,12 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     }
 
     @Override
-    public void chatRoomProviderWrapperAdded(ChatRoomProviderWrapper provider)
-    {
+    public void chatRoomProviderWrapperAdded(ChatRoomProviderWrapper provider) {
         providerAdded(provider, false);
     }
 
     @Override
-    public void chatRoomProviderWrapperRemoved(ChatRoomProviderWrapper provider)
-    {
+    public void chatRoomProviderWrapperRemoved(ChatRoomProviderWrapper provider) {
         LinkedList<ChatRoomSourceContact> tmpContactResults;
         synchronized (contactResults) {
             tmpContactResults = new LinkedList<>(contactResults);
@@ -341,10 +328,10 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      *
      * @param contact the contact
      * @param chatRoom the chat room
+     *
      * @return returns <code>true</code> if they are equal, or <code>false</code> if they are different
      */
-    private boolean contactEqualsChatRoom(final ChatRoomSourceContact contact, final ChatRoom chatRoom)
-    {
+    private boolean contactEqualsChatRoom(final ChatRoomSourceContact contact, final ChatRoom chatRoom) {
         return (contact.getProvider() == chatRoom.getParentProvider())
                 && chatRoom.getIdentifier().equals(contact.getContactAddress());
     }
@@ -355,10 +342,10 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      *
      * @param contact the contact
      * @param chatRoomWrapper the chat room wrapper
+     *
      * @return returns <code>true</code> if they are equal, or <code>false</code> if they are different.
      */
-    private boolean contactEqualsChatRoom(final ChatRoomSourceContact contact, final ChatRoomWrapper chatRoomWrapper)
-    {
+    private boolean contactEqualsChatRoom(final ChatRoomSourceContact contact, final ChatRoomWrapper chatRoomWrapper) {
         return contact.getProvider() == chatRoomWrapper.getProtocolProvider()
                 && contact.getContactAddress().equals(chatRoomWrapper.getChatRoomID());
     }
@@ -367,10 +354,10 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      * Returns the index of the contact in the contact results list.
      *
      * @param contact the contact.
+     *
      * @return the index of the contact in the contact results list.
      */
-    public synchronized int indexOf(ChatRoomSourceContact contact)
-    {
+    public synchronized int indexOf(ChatRoomSourceContact contact) {
         Iterator<ChatRoomSourceContact> it = contactResults.iterator();
         int i = 0;
         while (it.hasNext()) {
@@ -385,8 +372,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     /**
      * Clears any listener we used.
      */
-    private void clearListeners()
-    {
+    private void clearListeners() {
         mucService.removeChatRoomListChangeListener(this);
         mucService.removeChatRoomProviderWrapperListener(this);
         if (protolProviderRegistrationListener != null)
@@ -402,8 +388,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      *
      * @see ContactQuery#cancel()
      */
-    public void cancel()
-    {
+    public void cancel() {
         clearListeners();
 
         super.cancel();
@@ -414,16 +399,14 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      *
      * @param status {@link ContactQuery#QUERY_CANCELED}, {@link ContactQuery#QUERY_COMPLETED}
      */
-    public void setStatus(int status)
-    {
+    public void setStatus(int status) {
         if (status == QUERY_CANCELED)
             clearListeners();
         super.setStatus(status);
     }
 
     @Override
-    public void addContactQueryListener(ContactQueryListener l)
-    {
+    public void addContactQueryListener(ContactQueryListener l) {
         super.addContactQueryListener(l);
         contactQueryListenersCount++;
         if (contactQueryListenersCount == 1) {
@@ -432,8 +415,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     }
 
     @Override
-    public void removeContactQueryListener(ContactQueryListener l)
-    {
+    public void removeContactQueryListener(ContactQueryListener l) {
         super.removeContactQueryListener(l);
         contactQueryListenersCount--;
         if (contactQueryListenersCount == 0) {
@@ -444,13 +426,11 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     /**
      * Listens for <code>ProtocolProviderService</code> registrations.
      */
-    private class ProtocolProviderRegListener implements ServiceListener
-    {
+    private class ProtocolProviderRegListener implements ServiceListener {
         /**
          * Handles service change events.
          */
-        public void serviceChanged(ServiceEvent event)
-        {
+        public void serviceChanged(ServiceEvent event) {
             ServiceReference serviceRef = event.getServiceReference();
 
             // if the event is caused by a bundle being stopped, we don't want to know

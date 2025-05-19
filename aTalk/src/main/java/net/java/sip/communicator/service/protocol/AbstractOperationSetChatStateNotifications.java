@@ -5,11 +5,11 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.ChatStateNotificationEvent;
-import net.java.sip.communicator.service.protocol.event.ChatStateNotificationsListener;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import net.java.sip.communicator.service.protocol.event.ChatStateNotificationEvent;
+import net.java.sip.communicator.service.protocol.event.ChatStateNotificationsListener;
 
 import timber.log.Timber;
 
@@ -24,8 +24,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public abstract class AbstractOperationSetChatStateNotifications<T extends ProtocolProviderService>
-        implements OperationSetChatStateNotifications
-{
+        implements OperationSetChatStateNotifications {
     /**
      * The provider that created us.
      */
@@ -42,8 +41,7 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
      *
      * @param parentProvider the <code>ProtocolProviderService</code> which creates the new instance
      */
-    protected AbstractOperationSetChatStateNotifications(T parentProvider)
-    {
+    protected AbstractOperationSetChatStateNotifications(T parentProvider) {
         this.parentProvider = parentProvider;
     }
 
@@ -51,10 +49,10 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
      * Adds <code>listener</code> to the list of listeners registered for receiving <code>ChatStateNotificationEvent</code>s.
      *
      * @param listener the <code>TypingNotificationsListener</code> listener that we'd like to add
+     *
      * @see OperationSetChatStateNotifications#addChatStateNotificationsListener(ChatStateNotificationsListener)
      */
-    public void addChatStateNotificationsListener(ChatStateNotificationsListener listener)
-    {
+    public void addChatStateNotificationsListener(ChatStateNotificationsListener listener) {
         synchronized (chatStateNotificationsListeners) {
             if (!chatStateNotificationsListeners.contains(listener))
                 chatStateNotificationsListeners.add(listener);
@@ -67,8 +65,7 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
      * @throws IllegalStateException if the underlying stack is not registered and initialized
      */
     protected void assertConnected()
-            throws IllegalStateException
-    {
+            throws IllegalStateException {
         if (parentProvider == null)
             throw new IllegalStateException("The provider must be non-null before being able to  communicate.");
         if (!parentProvider.isRegistered())
@@ -78,11 +75,9 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
     /**
      * Delivers a <code>ChatStateNotificationEvent</code> to all registered listeners.
      *
-     * @param sourceContact the contact who has sent the notification
-     * @param chatState the chat state from event delivery
+     * @param evt contain contact who has sent the notification and the chat state.
      */
-    public void fireChatStateNotificationsEvent(ChatStateNotificationEvent evt)
-    {
+    public void fireChatStateNotificationsEvent(ChatStateNotificationEvent evt) {
         ChatStateNotificationsListener[] listeners;
         synchronized (chatStateNotificationsListeners) {
             listeners = chatStateNotificationsListeners.toArray(new ChatStateNotificationsListener[0]);
@@ -96,11 +91,9 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
     /**
      * Delivers a <code>ChatStateNotificationEvent</code> to all registered listeners for delivery failed event.
      *
-     * @param sourceContact the contact who has sent the notification
-     * @param evtCode the code of the event to deliver
+     * @param evt contain contact who has sent the notification and the chat state.
      */
-    public void fireChatStateNotificationsDeliveryFailedEvent(ChatStateNotificationEvent evt)
-    {
+    public void fireChatStateNotificationsDeliveryFailedEvent(ChatStateNotificationEvent evt) {
         ChatStateNotificationsListener[] listeners;
         synchronized (chatStateNotificationsListeners) {
             listeners = chatStateNotificationsListeners.toArray(new ChatStateNotificationsListener[0]);
@@ -118,10 +111,10 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
      * <code>ChatStateNotificationEvent</code>s.
      *
      * @param listener the <code>TypingNotificationsListener</code> listener that we'd like to remove
+     *
      * @see OperationSetChatStateNotifications#removeChatStateNotificationsListener(ChatStateNotificationsListener)
      */
-    public void removeChatStateNotificationsListener(ChatStateNotificationsListener listener)
-    {
+    public void removeChatStateNotificationsListener(ChatStateNotificationsListener listener) {
         synchronized (chatStateNotificationsListeners) {
             chatStateNotificationsListeners.remove(listener);
         }

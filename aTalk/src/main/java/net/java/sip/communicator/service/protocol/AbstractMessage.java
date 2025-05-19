@@ -5,11 +5,11 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.util.Objects;
+
 import net.java.sip.communicator.service.filehistory.FileRecord;
 
 import org.atalk.android.gui.chat.ChatMessage;
-
-import java.util.Objects;
 
 /**
  * Represents a default implementation of {@link IMessage} in order to make it easier for
@@ -18,14 +18,14 @@ import java.util.Objects;
  * @author Lubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class AbstractMessage implements IMessage
-{
+public abstract class AbstractMessage implements IMessage {
     private String mContent;
     private final int mEncType;
     private final int mEncryption;
     private final int mMimeType;
     private final boolean mRemoteOnly;
     private final boolean isCarbon;
+    private final boolean isMessageOob;
 
     private final int mXferStatus;
     private int mReceiptStatus;
@@ -45,26 +45,25 @@ public abstract class AbstractMessage implements IMessage
      * @param encType contains both mime and encryption types @see ChatMessage.ENC_TYPE definition
      * @param subject the subject of the message or null for empty.
      */
-    protected AbstractMessage(String content, int encType, String subject, String messageUID)
-    {
+    protected AbstractMessage(String content, int encType, String subject, String messageUID) {
         this(content, encType, subject, messageUID, FileRecord.STATUS_UNKNOWN,
                 ChatMessage.MESSAGE_DELIVERY_NONE, null, null);
     }
 
     /**
      * @param content the text content of the message.
-     * @param encType contains both mime and encryption types @see ChatMessage.ENC_TYPE definition and other flags
+     * @param encType contains both flags, mime and encryption types @see ChatMessage.ENC_TYPE definition and other flags
      * @param subject the subject of the message or null for empty.
      * @param messageUID @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
      */
     protected AbstractMessage(String content, int encType, String subject, String messageUID, int xferStatus,
-            int receiptStatus, String serverMessageId, String remoteMessageId)
-    {
+            int receiptStatus, String serverMessageId, String remoteMessageId) {
         mEncType = encType;
-        mMimeType = encType & ENCODE_MIME_MASK;
         mEncryption = encType & ENCRYPTION_MASK;
-        mRemoteOnly = IMessage.FLAG_REMOTE_ONLY == (encType & FLAG_MODE_MASK);
+        mMimeType = encType & ENCODE_MIME_MASK;
+        mRemoteOnly = IMessage.FLAG_REMOTE_ONLY == (encType & FLAG_REMOTE_ONLY);
         isCarbon = IMessage.FLAG_IS_CARBON == (encType & FLAG_IS_CARBON);
+        isMessageOob = IMessage.FLAG_MSG_OOB == (encType & FLAG_MSG_OOB);
         mSubject = subject;
 
         setContent(content);
@@ -76,69 +75,65 @@ public abstract class AbstractMessage implements IMessage
         mRemoteMessageId = remoteMessageId;
     }
 
-    private String createMessageUID()
-    {
+    private String createMessageUID() {
         return System.currentTimeMillis() + String.valueOf(hashCode());
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see net.java.sip.communicator.service.protocol.IMessage#getMimeType()
-     */
-    public int getMimeType()
-    {
-        return mMimeType;
     }
 
     /**
      * Returns the content of this message if representable in text form or null if this message
      * does not contain text data.
-     *
      * The implementation is final because it caches the raw data of the content.
      *
      * @return a String containing the content of this message or null if the message does not
      * contain data representable in text form.
      */
-    public final String getContent()
-    {
+    @Override
+    public final String getContent() {
         return mContent;
     }
 
-    /*
-     * @return the Encryption Type for the message
+    /**
+     * @see net.java.sip.communicator.service.protocol.IMessage#getMimeType()
      */
-    public int getEncryptionType()
-    {
+    @Override
+    public int getMimeType() {
+        return mMimeType;
+    }
+
+    /*
+     * return the Encryption Type for the message
+     */
+    @Override
+    public int getEncryptionType() {
         return mEncryption;
     }
 
     /**
-     * @return the encType info
+     * @return the encType info describing the message type
      */
-    public int getEncType()
-    {
+    @Override
+    public int getEncType() {
         return mEncType;
     }
 
-    /*
+    /**
      * @return the file transfer status for HTTP File Download message
      */
-    public int getXferStatus()
-    {
+    @Override
+    public int getXferStatus() {
         return mXferStatus;
     }
 
-    /*
+    /**
      * @return the Encryption Type for the message
      */
-    public int getReceiptStatus()
-    {
+    @Override
+    public int getReceiptStatus() {
         return mReceiptStatus;
     }
 
-    public void setReceiptStatus(int status)
-    {
+    @Override
+    public void setReceiptStatus(int status) {
         mReceiptStatus = status;
     }
 
@@ -147,11 +142,13 @@ public abstract class AbstractMessage implements IMessage
      *
      * @return the server message Id of the message sent.
      */
-    public String getServerMsgId(){
+    @Override
+    public String getServerMsgId() {
         return mServerMessageId;
     }
 
-    public void setServerMsgId(String serverMsgId){
+    @Override
+    public void setServerMsgId(String serverMsgId) {
         mServerMessageId = serverMsgId;
     }
 
@@ -160,20 +157,29 @@ public abstract class AbstractMessage implements IMessage
      *
      * @return the remote message Id of the message received.
      */
-    public String getRemoteMsgId(){
+    @Override
+    public String getRemoteMsgId() {
         return mRemoteMessageId;
     }
 
-    public void setRemoteMsgId(String remoteMsgId){
+    @Override
+    public void setRemoteMsgId(String remoteMsgId) {
         mRemoteMessageId = remoteMsgId;
     }
 
+    @Override
     public boolean isRemoteOnly() {
         return mRemoteOnly;
     }
 
+    @Override
     public boolean isCarbon() {
         return isCarbon;
+    }
+
+    @Override
+    public boolean isMessageOob() {
+        return isMessageOob;
     }
 
     /*
@@ -181,13 +187,11 @@ public abstract class AbstractMessage implements IMessage
      *
      * @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
      */
-    public String getMessageUID()
-    {
+    public String getMessageUID() {
         return mMessageUID;
     }
 
-    public void setMessageUID(String msgUid)
-    {
+    public void setMessageUID(String msgUid) {
         mMessageUID = msgUid;
     }
 
@@ -196,8 +200,7 @@ public abstract class AbstractMessage implements IMessage
      *
      * @see net.java.sip.communicator.service.protocol.IMessage#getRawData()
      */
-    public byte[] getRawData()
-    {
+    public byte[] getRawData() {
         if (rawData == null) {
             String content = getContent();
             rawData = content.getBytes();
@@ -210,8 +213,7 @@ public abstract class AbstractMessage implements IMessage
      *
      * @see net.java.sip.communicator.service.protocol.IMessage#getSize()
      */
-    public int getSize()
-    {
+    public int getSize() {
         return rawData.length;
     }
 
@@ -220,21 +222,18 @@ public abstract class AbstractMessage implements IMessage
      *
      * @see net.java.sip.communicator.service.protocol.IMessage#getSubject()
      */
-    public String getSubject()
-    {
+    public String getSubject() {
         return mSubject;
     }
 
-    protected void setContent(String content)
-    {
+    protected void setContent(String content) {
         if (!equals(mContent, content)) {
             mContent = content;
             rawData = null;
         }
     }
 
-    private static boolean equals(String a, String b)
-    {
+    private static boolean equals(String a, String b) {
         return Objects.equals(a, b);
     }
 }

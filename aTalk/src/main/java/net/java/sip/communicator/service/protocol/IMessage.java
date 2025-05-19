@@ -20,33 +20,30 @@ package net.java.sip.communicator.service.protocol;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public interface IMessage
-{
+public interface IMessage {
     /*
      * ENC_TYPE type defined in DB; use by IMessage Local to define the required actions
-     * Upper nibble (b7...b4) for body encryption Type i.e. OMEMO, OTR, NONE
-     * Lower nibble (b3...b2) for special mode flag - may not be included in DB e.g FLAG_REMOTE_ONLY etc
-     * Lower nibble (b1...b0) for body mimeType i.e. HTML or PLAIN
+     * Upper nibble (b6...b4) for message encryption Type i.e. OpenPGP, OMEMO, OTR, NONE
+     * Lower nibble (b0) for message body mimeType i.e. HTML or PLAIN
      */
-    int ENCRYPTION_MASK = 0xF0;
-    int FLAG_MODE_MASK = 0x0C;
-    int ENCODE_MIME_MASK = 0x03;
+    int ENCRYPTION_MASK = 0x70;  // b6...b4
+    int ENCODE_MIME_MASK = 0x01; // b0
 
-    // Only the following three defined value are store in DB encType column
+    // Only the following defined value are stored in DB encType column
+    // int ENCRYPTION_OPENPGP = 0x40; // currently not use
     int ENCRYPTION_OTR = 0x20;
     int ENCRYPTION_OMEMO = 0x10;
     int ENCRYPTION_NONE = 0x00;
 
     /*
      * The flag signifies that message is for remote sending - DO NOT store in DB or display in sender chat window
-     * e.g. http file upload link for remote action
+     * e.g. http file upload link send for remote action
      */
     int FLAG_REMOTE_ONLY = 0x08;
-
-    /*
-     * The flag signifies that message is a carbon copy.
-     */
+    // The flag signifies that message is a carbon copy.
     int FLAG_IS_CARBON = 0x04;
+    // Indicate the IMessage is for HTTP File Transfer, and add OBB extension to the send message
+    int FLAG_MSG_OOB = 0x02;  // oob extension
 
     int ENCODE_HTML = 0x01;  // text/html
     int ENCODE_PLAIN = 0x00; // text/plain (UTF-8)
@@ -75,7 +72,7 @@ public interface IMessage
     int getEncryptionType();
 
     /**
-     * The Flag with EncryptionType | EncodeType | isRemoteFlag
+     * The byte/flags contains Encryption | EncType | isRemoteFlag etc
      *
      * @return the message encType
      */
@@ -130,6 +127,13 @@ public interface IMessage
      * @return the carbon status.
      */
     boolean isCarbon();
+
+    /**
+     * Returns true if the message is Out of Bound Data message.
+     *
+     * @return true if it is oob message
+     */
+    boolean isMessageOob();
 
     /**
      * Get the raw/binary content of an instant message.

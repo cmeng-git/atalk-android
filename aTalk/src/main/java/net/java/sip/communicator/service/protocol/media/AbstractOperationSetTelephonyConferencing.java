@@ -891,8 +891,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<
 
         ConferenceInfoDocument.Endpoint endpoint = user.addNewEndpoint(entity);
 
-        endpoint.setStatus(remote ? getEndpointStatus(callPeer)
-                : ConferenceInfoDocument.EndpointStatusType.connected);
+        endpoint.setStatus(remote ? getEndpointStatus(callPeer) : ConferenceInfoDocument.EndpointStatusType.connected);
 
         CallPeerMediaHandler<?> mediaHandler = callPeer.getMediaHandler();
 

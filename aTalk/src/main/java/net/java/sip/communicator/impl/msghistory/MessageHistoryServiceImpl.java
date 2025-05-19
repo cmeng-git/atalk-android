@@ -105,9 +105,9 @@ import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoMessage;
@@ -117,7 +117,7 @@ import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
 import org.jivesoftware.smackx.omemo.exceptions.NoRawSessionException;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
-import org.jivesoftware.smackx.sid.element.StanzaIdElement;
+import org.jivesoftware.smackx.sid.element.OriginIdElement;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
@@ -781,7 +781,9 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     }
 
     /**
-     * Update the last mam retrieval message timeStamp for the specified sessionUuid.
+     * Update the last mam retrieval message timeStamp for the specified sessionUuid;
+     * The mamDate is also used to store last Message sent/received, in case the last message is deleted.
+     * only if the specified date is after the current mamDate.
      * Always advance timeStamp by 10ms to avoid last message being included in future mam fetching.
      *
      * @param sessionUuid the chat sessions record id to which to save the timestamp
@@ -790,10 +792,14 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @return a value of 0 means there is no chatSession record associated with this sessionUuid
      */
     public int setMamDate(String sessionUuid, Date date) {
-        contentValues.clear();
+        Date mamDate = getMamDate(sessionUuid);
+        if ((mamDate != null) && mamDate.after(date)) {
+            return 0;
+        }
+
+        ContentValues contentValues = new ContentValues();
         contentValues.put(ChatSession.MAM_DATE, Long.toString(date.getTime() + 10));
         String[] args = {sessionUuid};
-
         return mDB.update(ChatSession.TABLE_NAME, contentValues, ChatSession.SESSION_UUID + "=?", args);
     }
 
@@ -819,12 +825,19 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 continue;
             }
 
+            // Ignore any OOB or empty body message
+            // if (msg.hasExtension(OutOfBandData.QNAME) || TextUtils.isEmpty(msg.getBody())) {
+            if (TextUtils.isEmpty(msg.getBody())) {
+                Timber.w("Skip empty or OOB forward MAM message: %s", msg.getStanzaId());
+                continue;
+            }
+
             // Some received/DomainBareJid message does not have msgId. So use stanzaId from StanzaIdElement if found.
             String msgId = msg.getStanzaId();
             if (TextUtils.isEmpty(msgId)) {
-                ExtensionElement stanzaIdElement = msg.getExtension(StanzaIdElement.QNAME);
-                if (stanzaIdElement instanceof StanzaIdElement) {
-                    msgId = ((StanzaIdElement) stanzaIdElement).getId();
+                OriginIdElement orgStanzaElement = OriginIdElement.getOriginId(msg);
+                if (orgStanzaElement != null) {
+                    msgId = orgStanzaElement.getId();
                 }
             }
             if (TextUtils.isEmpty(msgId)) {
@@ -878,6 +891,41 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     }
 
     // ============== End mam Message utilities ======================
+
+    /**
+     * Check for any unexpected delay messages send from server; encountered HttpFileDownload messages
+     * get delay sent multiple times causing multiple UI request user to accept file.
+     *
+     * @param message incoming message plain or Omemo
+     *
+     * @return true if this is a delayed repeated message
+     */
+    public boolean isUnexpectedDelayMessage(Message message) {
+        if (!message.hasExtension(DelayInformation.QNAME)) {
+            return false;
+        }
+
+        // Some received/DomainBareJid message does not have msgId. So use stanzaId from StanzaIdElement if found.
+        boolean isUnexpected = false;
+        String msgId = message.getStanzaId();
+        if (TextUtils.isEmpty(msgId)) {
+            OriginIdElement orgStanzaElement = OriginIdElement.getOriginId(message);
+            if (orgStanzaElement != null)
+                msgId = orgStanzaElement.getId();
+        }
+
+        if (!TextUtils.isEmpty(msgId)) {
+            String[] args = {msgId, ChatMessage.DIR_IN};
+            Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, null, ChatMessage.UUID
+                    + "=? AND " + ChatMessage.DIRECTION + "=?", args, null, null, null);
+            int msgCount = cursor.getCount();
+            isUnexpected = msgCount != 0;
+            if (isUnexpected)
+                Timber.w("Unexpected Delay Message: (%s) %s", msgCount, msgId);
+            cursor.close();
+        }
+        return isUnexpected;
+    }
 
     /**
      * Return the messages for the recently contacted <code>count</code> contacts.
@@ -1290,6 +1338,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         // Return FileRecord if it is of file transfer message type, but excluding MESSAGE_HTTP_FILE_LINK
         int msgType = Integer.parseInt(Objects.requireNonNull(mProperties.get(ChatMessage.MSG_TYPE)));
         if ((msgType == ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY)
+                || (msgType == ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD)
                 || (msgType == ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE)
                 || (msgType == ChatMessage.MESSAGE_FILE_TRANSFER_SEND)
                 || (msgType == ChatMessage.MESSAGE_STICKER_SEND)) {
@@ -1685,6 +1734,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         contentValues.put(ChatMessage.JID, jid);
 
         writeMessageToDB(message, direction, msgType);
+        setMamDate(chatId, msgTimestamp);
     }
 
     /**
@@ -1714,6 +1764,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         contentValues.put(ChatMessage.JID, jid);
 
         writeMessageToDB(message, direction, msgType);
+        setMamDate(chatId, msgTimestamp);
     }
 
     /**
@@ -1737,6 +1788,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         contentValues.put(ChatMessage.JID, sender);
 
         writeMessageToDB(message, direction, msgType);
+        setMamDate(chatId, msgTimestamp);
     }
 
     /**
@@ -1768,6 +1820,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         contentValues.put(ChatMessage.JID, destination.getAddress());
 
         writeMessageToDB(message, direction, msgType);
+        setMamDate(sessionUuid, msgTimestamp);
     }
 
     /**
@@ -2410,7 +2463,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             msgCount = purgeLocallyStoredHistory(Collections.singletonList(getSessionUuidByJid(room)), true);
         }
         else {
-            msgCount =  purgeLocallyStoredHistory(msgUUIDs);
+            msgCount = purgeLocallyStoredHistory(msgUUIDs);
         }
         return msgCount;
     }
@@ -2471,11 +2524,12 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             if (contact != null)
                 sessionUuid = getSessionUuidByJid(contact);
         }
-        else if (descriptor instanceof ChatRoomWrapper){
+        else if (descriptor instanceof ChatRoomWrapper) {
             ChatRoom chatRoom = ((ChatRoomWrapper) descriptor).getChatRoom();
             if (chatRoom != null)
                 sessionUuid = getSessionUuidByJid(chatRoom);
-        } else {
+        }
+        else {
             sessionUuid = (String) descriptor;
         }
         return getLocallyStoredFilePath(sessionUuid);

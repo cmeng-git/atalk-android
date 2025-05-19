@@ -13,14 +13,14 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
+import java.util.EventObject;
+
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.Contact;
 
 import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.chatstates.ChatState;
-
-import java.util.EventObject;
 
 /**
  * <code>ChatStateNotificationEvent</code>s are delivered upon reception of a corresponding message
@@ -31,26 +31,24 @@ import java.util.EventObject;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class ChatStateNotificationEvent extends EventObject
-{
+public class ChatStateNotificationEvent extends EventObject {
     /**
      * Serial version UID.
      */
     private static final long serialVersionUID = 0L;
 
     // private int mChatState = OperationSetChatStateNotifications.STATE_UNKNOWN;
-    private ChatState mChatState;
-    private Message message;
+    private final ChatState mChatState;
+    private final Message message;
 
     /**
      * Creates a ChatStateNotificationEvent with the specified parameters.
      *
-     * @param chatDescriptor the Chat Descriptor that has sent the notification.
+     * @param chatDescriptor the Chat Descriptor that has sent the notification (Contact or ChatRoom).
      * @param state the <code>Contact</code>'s current chat state
      * @param msg the message received
      */
-    public ChatStateNotificationEvent(Object chatDescriptor, ChatState state, Message msg)
-    {
+    public ChatStateNotificationEvent(Object chatDescriptor, ChatState state, Message msg) {
         super(chatDescriptor);
         this.mChatState = state;
         this.message = msg;
@@ -61,8 +59,7 @@ public class ChatStateNotificationEvent extends EventObject
      *
      * @return one of the <code>ChatState</code>s indicating the chat state that this notification is about.
      */
-    public ChatState getChatState()
-    {
+    public ChatState getChatState() {
         return mChatState;
     }
 
@@ -71,13 +68,11 @@ public class ChatStateNotificationEvent extends EventObject
      *
      * @return a reference to the <code>Contact</code> whose chat state we're being notified about.
      */
-    public Object getChatDescriptor()
-    {
+    public Object getChatDescriptor() {
         return getSource();
     }
 
-    public Message getMessage()
-    {
+    public Message getMessage() {
         return this.message;
     }
 
@@ -88,8 +83,7 @@ public class ChatStateNotificationEvent extends EventObject
      */
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         Object chatDescriptor = getChatDescriptor();
         String from = (chatDescriptor instanceof Contact)
                 ? ((Contact) chatDescriptor).getAddress()

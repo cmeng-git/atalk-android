@@ -5,6 +5,10 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.event.ChatRoomConferencePublishedListener;
 import net.java.sip.communicator.service.protocol.event.ChatRoomLocalUserRoleListener;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceListener;
@@ -21,10 +25,6 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Represents a chat channel/room/rendezvous point/ where multiple chat users could rally and
  * communicate in a many-to-many fashion.
@@ -34,8 +34,7 @@ import java.util.Map;
  * @author Valentin Martinet
  * @author Eng Chong Meng
  */
-public interface ChatRoom
-{
+public interface ChatRoom {
     /**
      * The constant defined for chatRoom configuration attributes property.
      */
@@ -91,6 +90,7 @@ public interface ChatRoom
      * method uses the nickname of the local user and the specified password in order to enter the chatRoom.
      *
      * @param password the password to use when authenticating on the chatRoom.
+     *
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
     boolean join(byte[] password)
@@ -102,6 +102,7 @@ public interface ChatRoom
      * method would throw an OperationFailedException with code IDENTIFICATION_CONFLICT.
      *
      * @param nickname the nickname to use.
+     *
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
     boolean joinAs(String nickname)
@@ -114,6 +115,7 @@ public interface ChatRoom
      *
      * @param nickname the nickname to use.
      * @param password a password necessary to authenticate when joining the room.
+     *
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
     boolean joinAs(String nickname, byte[] password)
@@ -156,6 +158,7 @@ public interface ChatRoom
      * the method throws an <code>OperationFailedException</code> with the corresponding code.
      *
      * @param subject the new subject that we'd like this room to have
+     *
      * @throws OperationFailedException if the user doesn't have the right to change this property.
      */
     void setSubject(String subject)
@@ -181,6 +184,7 @@ public interface ChatRoom
      * Changes the the local user's nickname in the context of this chatRoom.
      *
      * @param role the new role to set for the local user.
+     *
      * @throws OperationFailedException if an error occurs.
      */
     void setLocalUserRole(ChatRoomMemberRole role)
@@ -190,6 +194,7 @@ public interface ChatRoom
      * Changes the the local user's nickname in the context of this chatRoom.
      *
      * @param nickname the new nickname within the room.
+     *
      * @throws OperationFailedException if the new nickname already exist in this room
      */
     void setUserNickname(String nickname)
@@ -324,6 +329,7 @@ public interface ChatRoom
      * content type and encoding.
      *
      * @param messageText the string content of the message.
+     *
      * @return IMessage the newly created message
      */
     IMessage createMessage(String messageText);
@@ -334,14 +340,17 @@ public interface ChatRoom
      * @param content content value
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param subject a <code>String</code> subject or <code>null</code> for now subject.
+     * @param msgId The message Id when provided is used in sending the message.
+     *
      * @return the newly created message.
      */
-    IMessage createMessage(String content, int encType, String subject);
+    IMessage createMessage(String content, int encType, String subject, String msgId);
 
     /**
      * Sends the <code>message</code> to this chat room.
      *
      * @param message the <code>IMessage</code> to send.
+     *
      * @throws OperationFailedException if sending the message fails for some reason.
      */
     void sendMessage(IMessage message)
@@ -361,6 +370,7 @@ public interface ChatRoom
      * of users that will be banned. The ban list is a list of all such ban masks defined for this chat room.
      *
      * @return an Iterator over a set of ban masks for this chat room
+     *
      * @throws OperationFailedException if an error occurred while performing the request to the server or
      * you don't have enough privileges to get this information
      */
@@ -375,6 +385,7 @@ public interface ChatRoom
      *
      * @param chatRoomMember the <code>ChatRoomMember</code> to be banned.
      * @param reason the reason why the user was banned.
+     *
      * @throws OperationFailedException if an error occurs while banning a user. In particular, an error can occur
      * if a moderator or a user with an affiliation of "owner" or "admin" was tried to be banned
      * or if the user that is banning have not enough permissions to ban.
@@ -387,6 +398,7 @@ public interface ChatRoom
      *
      * @param chatRoomMember the <code>ChatRoomMember</code> to kick from the room
      * @param reason the reason why the participant is being kicked from the room
+     *
      * @throws OperationFailedException if an error occurs while kicking the participant. In particular, an error can occur
      * if a moderator or a user with an affiliation of "owner" or "administrator" was
      * intended to be kicked; or if the participant that intended to kick another
@@ -402,6 +414,7 @@ public interface ChatRoom
      *
      * @return the <code>ChatRoomConfigurationForm</code> containing all configuration properties for
      * this chat room
+     *
      * @throws OperationFailedException if the user doesn't have permissions to see and change chat room configuration
      */
     ChatRoomConfigurationForm getConfigurationForm()
@@ -428,6 +441,7 @@ public interface ChatRoom
      * contact is created.
      *
      * @param name the nickname of the contact.
+     *
      * @return the contact instance.
      */
     Contact getPrivateContactByNickname(String name);
@@ -529,6 +543,7 @@ public interface ChatRoom
      *
      * @param cd the description to publish
      * @param name the name of the conference
+     *
      * @return the published conference
      */
     ConferenceDescription publishConference(ConferenceDescription cd, String name);
@@ -582,6 +597,7 @@ public interface ChatRoom
      *
      * @param reason the reason for destroying.
      * @param alternateAddress the alternate address
+     *
      * @return <code>true</code> if the room is destroyed.
      */
     boolean destroy(String reason, EntityBareJid alternateAddress)

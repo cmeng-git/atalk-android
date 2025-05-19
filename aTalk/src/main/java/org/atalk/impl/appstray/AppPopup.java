@@ -14,6 +14,10 @@ import android.graphics.Bitmap;
 
 import androidx.core.app.NotificationCompat;
 
+import java.util.Hashtable;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
@@ -34,10 +38,6 @@ import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.util.AppImageUtil;
 import org.atalk.impl.appnotification.AppNotifications;
 
-import java.util.Hashtable;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import timber.log.Timber;
 
 /**
@@ -46,8 +46,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AppPopup
-{
+public class AppPopup {
     /**
      * Parent notifications handler
      */
@@ -97,8 +96,7 @@ public class AppPopup
      * @param handler parent notifications handler that manages displayed notifications.
      * @param popupMessage the popup message that will be displayed by this instance.
      */
-    protected AppPopup(NotificationPopupHandler handler, PopupMessage popupMessage)
-    {
+    protected AppPopup(NotificationPopupHandler handler, PopupMessage popupMessage) {
         this.handler = handler;
         this.popupMessage = popupMessage;
         mContext = aTalkApp.getInstance();
@@ -155,21 +153,18 @@ public class AppPopup
      *
      * @return displayed <code>PopupMessage</code>.
      */
-    public PopupMessage getPopupMessage()
-    {
+    public PopupMessage getPopupMessage() {
         return popupMessage;
     }
 
-    public int getPopupIcon()
-    {
+    public int getPopupIcon() {
         return mSmallIcon;
     }
 
     /**
      * Removes this notification.
      */
-    public void removeNotification(int id)
-    {
+    public void removeNotification(int id) {
         cancelTimeout();
         snoozeEndTimes.remove(id);
         NotificationManager notifyManager = aTalkApp.getNotificationManager();
@@ -180,10 +175,10 @@ public class AppPopup
      * Returns <code>true</code> if this popup is related to given <code>ChatPanel</code>.
      *
      * @param chatPanel the <code>ChatPanel</code> to check.
+     *
      * @return <code>true</code> if this popup is related to given <code>ChatPanel</code>.
      */
-    public boolean isChatRelated(ChatPanel chatPanel)
-    {
+    public boolean isChatRelated(ChatPanel chatPanel) {
         if (chatPanel != null) {
             Object descriptor = chatPanel.getChatSession().getCurrentChatTransport().getDescriptor();
             return (descriptor != null) && descriptor.equals(mDescriptor)
@@ -200,8 +195,7 @@ public class AppPopup
      *
      * @return notification id.
      */
-    public int getId()
-    {
+    public int getId() {
         return nId;
     }
 
@@ -210,10 +204,10 @@ public class AppPopup
      *
      * @param handler notifications manager.
      * @param popupMessage the popup message that will be displayed by returned <code>AppPopup</code>
+     *
      * @return new <code>AppPopup</code> for given parameters.
      */
-    static public AppPopup createNew(NotificationPopupHandler handler, PopupMessage popupMessage)
-    {
+    static public AppPopup createNew(NotificationPopupHandler handler, PopupMessage popupMessage) {
         return new AppPopup(handler, popupMessage);
     }
 
@@ -222,10 +216,10 @@ public class AppPopup
      * <code>AppPopup</code> or <code>null</code> otherwise.
      *
      * @param popupMessage the <code>PopupMessage</code> to merge.
+     *
      * @return merged <code>AppPopup</code> with given <code>PopupMessage</code> or <code>null</code> otherwise.
      */
-    public AppPopup tryMerge(PopupMessage popupMessage)
-    {
+    public AppPopup tryMerge(PopupMessage popupMessage) {
         if (this.isGroupTheSame(popupMessage) && isSenderTheSame(popupMessage)) {
             return mergePopup(popupMessage);
         }
@@ -238,10 +232,10 @@ public class AppPopup
      * Merges this instance with given <code>PopupMessage</code>.
      *
      * @param popupMessage the <code>PopupMessage</code> to merge.
+     *
      * @return merge result for this <code>AppPopup</code> and given <code>PopupMessage</code>.
      */
-    protected AppPopup mergePopup(PopupMessage popupMessage)
-    {
+    protected AppPopup mergePopup(PopupMessage popupMessage) {
         // Timeout notifications are replaced
         /*
          * if(this.timeoutHandler != null) { cancelTimeout(); this.popupMessage = popupMessage;
@@ -257,10 +251,10 @@ public class AppPopup
      * Checks whether <code>Contact</code> of this instance matches with given <code>PopupMessage</code>.
      *
      * @param popupMessage the <code>PopupMessage</code> to check.
+     *
      * @return <code>true</code> if <code>Contact</code>s for this instance and given <code>PopupMessage</code> are the same.
      */
-    private boolean isSenderTheSame(PopupMessage popupMessage)
-    {
+    private boolean isSenderTheSame(PopupMessage popupMessage) {
         return (mDescriptor != null) && mDescriptor.equals(popupMessage.getTag());
     }
 
@@ -268,10 +262,10 @@ public class AppPopup
      * Checks whether group of this instance matches with given <code>PopupMessage</code>.
      *
      * @param popupMessage the <code>PopupMessage</code> to check.
+     *
      * @return <code>true</code> if group of this instance and given <code>PopupMessage</code> are the same.
      */
-    private boolean isGroupTheSame(PopupMessage popupMessage)
-    {
+    private boolean isGroupTheSame(PopupMessage popupMessage) {
         if (this.popupMessage.getGroup() == null) {
             return popupMessage.getGroup() == null;
         }
@@ -285,8 +279,7 @@ public class AppPopup
      *
      * @return message string that will displayed in single line notification.
      */
-    protected String getMessage()
-    {
+    protected String getMessage() {
         return popupMessage.getMessage();
     }
 
@@ -295,8 +288,7 @@ public class AppPopup
      *
      * @return builder object describing current notification.
      */
-    NotificationCompat.Builder buildNotification(int nId)
-    {
+    NotificationCompat.Builder buildNotification(int nId) {
         NotificationCompat.Builder builder;
         // Do not show heads-up notification when user has put the id notification in snooze
         if (isSnooze(nId) || !ConfigurationUtils.isHeadsUpEnable()) {
@@ -352,8 +344,7 @@ public class AppPopup
      *
      * @return the <code>PendingIntent</code> that should be trigger by notification
      */
-    public PendingIntent createContentIntent()
-    {
+    public PendingIntent createContentIntent() {
         Intent targetIntent = null;
         PopupMessage message = getPopupMessage();
 
@@ -399,8 +390,7 @@ public class AppPopup
      *
      * @param inboxStyle the inbox style instance used for building large notification view.
      */
-    protected void onBuildInboxStyle(NotificationCompat.InboxStyle inboxStyle)
-    {
+    protected void onBuildInboxStyle(NotificationCompat.InboxStyle inboxStyle) {
         inboxStyle.addLine(getMessage());
         // Summary
         if (mDescriptor instanceof Contact) {
@@ -414,8 +404,7 @@ public class AppPopup
     /**
      * Cancels the timeout if it exists.
      */
-    protected void cancelTimeout()
-    {
+    protected void cancelTimeout() {
         // Remove timeout handler
         if (timeoutHandler != null) {
             Timber.d("Removing timeout from notification: %s", nId);
@@ -428,8 +417,7 @@ public class AppPopup
     /**
      * Enable snooze for the next 30 minutes
      */
-    protected void setSnooze(int nId)
-    {
+    protected void setSnooze(int nId) {
         muteEndTime = (System.currentTimeMillis() + 30 * 60 * 1000);  // 30 minutes
         snoozeEndTimes.put(nId, muteEndTime);
     }
@@ -438,42 +426,40 @@ public class AppPopup
      * Check if the given notification ID is still in snooze period
      *
      * @param nId Notification id
+     *
      * @return true if it is still in snooze
      */
-    protected boolean isSnooze(int nId)
-    {
+    protected boolean isSnooze(int nId) {
         muteEndTime = snoozeEndTimes.get(nId);
         return (muteEndTime != null) && (System.currentTimeMillis() < muteEndTime);
 
     }
 
     /**
-     * Check if the android heads-up notification allowed
+     * Check if the android heads-up notification allowed.
      *
-     * @return true if the group is MESSAGE_GROUP
+     * @return true if enabled and the group is MESSAGE_GROUP, CALL_GROUP or FILE_GROUP
      */
-    public boolean isHeadUpNotificationAllow()
-    {
-        return ConfigurationUtils.isHeadsUpEnable() &&
-                (AppNotifications.MESSAGE_GROUP.equals(group) || AppNotifications.CALL_GROUP.equals(group));
+    public boolean isHeadUpNotificationAllow() {
+        return ConfigurationUtils.isHeadsUpEnable()
+                && (AppNotifications.MESSAGE_GROUP.equals(group)
+                || AppNotifications.CALL_GROUP.equals(group)
+                || AppNotifications.FILE_GROUP.equals(group));
     }
 
     /**
      * Method called by notification manger when the notification is posted to the tray.
      */
-    public void onPost()
-    {
+    public void onPost() {
         cancelTimeout();
         long timeout = popupMessage.getTimeout();
         if (timeout > 0) {
             Timber.d("Setting timeout %d; on notification: %d", timeout, nId);
 
             timeoutHandler = new Timer();
-            timeoutHandler.schedule(new TimerTask()
-            {
+            timeoutHandler.schedule(new TimerTask() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     handler.onTimeout(AppPopup.this);
                 }
             }, timeout);

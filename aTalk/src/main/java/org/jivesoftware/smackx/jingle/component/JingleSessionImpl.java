@@ -1,12 +1,11 @@
 /**
- *
  * Copyright 2017-2022 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -40,7 +39,6 @@ import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle.provider.JingleContentProviderManager;
-
 import org.jxmpp.jid.FullJid;
 
 /**
@@ -55,7 +53,7 @@ public class JingleSessionImpl extends JingleSession {
     private final ConcurrentHashMap<String, JingleContentImpl> contentImpls = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, JingleContentImpl> proposedContentImpls = new ConcurrentHashMap<>();
 
-    private static final List<JingleSessionListener> jingleSessionListeners = Collections.synchronizedList(new ArrayList<>());
+    private final List<JingleSessionListener> jingleSessionListeners = Collections.synchronizedList(new ArrayList<>());
 
     private final JingleManager mManager;
     private final XMPPConnection mConnection;
@@ -233,7 +231,7 @@ public class JingleSessionImpl extends JingleSession {
             try {
                 jutil.sendSessionTerminateContentCancel(remote, sid, jingleContent.getCreator(), jingleContent.getName());
             } catch (SmackException.NotConnectedException | InterruptedException
-                    | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
+                     | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
                 LOGGER.log(Level.SEVERE, "Could not send content-cancel: " + e, e);
             }
         }
@@ -249,7 +247,8 @@ public class JingleSessionImpl extends JingleSession {
         notifySessionTerminated(jingleReason);
         try {
             mConnection.sendIqRequestAndWaitForResponse(jutil.createSessionTerminate(remote, sid, jingleReason));
-        } catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException | XMPPException.XMPPErrorException e) {
+        } catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException |
+                 XMPPException.XMPPErrorException e) {
             LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
         }
         mManager.unregisterJingleSessionHandler(remote, sid, this);
@@ -258,7 +257,6 @@ public class JingleSessionImpl extends JingleSession {
     @Override
     public IQ handleJingleSessionRequest(Jingle request) {
         switch (request.getAction()) {
-
             case content_modify:
             case description_info:
             case security_info:
@@ -295,6 +293,7 @@ public class JingleSessionImpl extends JingleSession {
      * Proceed only if JingleSecurity requirement matched between session-accept and session-initiate
      *
      * @param sessionAccept session-accept stanza.
+     *
      * @return IQResult.
      */
     @Override
@@ -329,7 +328,7 @@ public class JingleSessionImpl extends JingleSession {
                 try {
                     jutil.sendSessionTerminateUnsupportedApplications(remote, sid);
                 } catch (SmackException.NotConnectedException | InterruptedException
-                        | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
+                         | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
                     LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
                 }
             }
@@ -462,7 +461,7 @@ public class JingleSessionImpl extends JingleSession {
             throw new AssertionError("More/less than 1 content in request!");
         }
 
-        return JingleContentImpl.fromElement(mConnection, request.getContents().get(0));
+        return JingleContentImpl.fromElement(mConnection, this, request.getContents().get(0));
     }
 
     public void addContentImpl(JingleContentImpl content) {
@@ -474,7 +473,7 @@ public class JingleSessionImpl extends JingleSession {
     }
 
     public void addContent(JingleContent content) {
-        addContentImpl(JingleContentImpl.fromElement(mConnection, content));
+        addContentImpl(JingleContentImpl.fromElement(mConnection, this, content));
     }
 
     public ConcurrentHashMap<String, JingleContentImpl> getContentImpls() {
@@ -490,6 +489,7 @@ public class JingleSessionImpl extends JingleSession {
      * {@link IllegalStateException} if there is more than one jingle content.
      *
      * @return a JingleContent instance or <code>null</code>.
+     *
      * @throws IllegalStateException if there is more than one jingle content.
      */
     public JingleContentImpl getSoleContentOrThrow() {
@@ -531,7 +531,7 @@ public class JingleSessionImpl extends JingleSession {
      *
      * @param sl JingleSessionListener
      */
-    public static void addJingleSessionListener(JingleSessionListener sl) {
+    public void addJingleSessionListener(JingleSessionListener sl) {
         jingleSessionListeners.add(sl);
     }
 
@@ -540,7 +540,7 @@ public class JingleSessionImpl extends JingleSession {
      *
      * @param sl JingleSessionListener
      */
-    public static void removeJingleSessionListener(JingleSessionListener sl) {
+    public void removeJingleSessionListener(JingleSessionListener sl) {
         jingleSessionListeners.remove(sl);
     }
 

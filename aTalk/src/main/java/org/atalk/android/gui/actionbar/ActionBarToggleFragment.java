@@ -9,10 +9,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.MenuProvider;
 
 import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
@@ -25,7 +27,7 @@ import org.atalk.android.R;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ActionBarToggleFragment extends BaseFragment {
+public class ActionBarToggleFragment extends BaseFragment implements MenuProvider {
     /**
      * Text description's argument key
      */
@@ -42,13 +44,6 @@ public class ActionBarToggleFragment extends BaseFragment {
     private CompoundButton mToggleCB;
 
     /**
-     * Creates new instance of <code>ActionBarToggleFragment</code>
-     */
-    public ActionBarToggleFragment() {
-        setHasOptionsMenu(true);
-    }
-
-    /**
      * Creates new instance of <code>ActionBarToggleFragment</code> with given description(can be
      * empty but not <code>null</code>).
      *
@@ -61,7 +56,6 @@ public class ActionBarToggleFragment extends BaseFragment {
         Bundle args = new Bundle();
         args.putString(ARG_LABEL_TEXT, labelText);
         fragment.setArguments(args);
-
         return fragment;
     }
 
@@ -71,6 +65,7 @@ public class ActionBarToggleFragment extends BaseFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        requireActivity().addMenuProvider(this);
         this.model = (ActionBarToggleModel) context;
     }
 
@@ -78,9 +73,8 @@ public class ActionBarToggleFragment extends BaseFragment {
      * {@inheritDoc}
      */
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.actionbar_toggle_menu, menu);
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.actionbar_toggle_menu, menu);
 
         // Binds the button
         mToggleCB = menu.findItem(R.id.toggleView).getActionView().findViewById(android.R.id.toggle);
@@ -90,6 +84,11 @@ public class ActionBarToggleFragment extends BaseFragment {
                 .setText(getArguments().getString(ARG_LABEL_TEXT));
 
         updateChecked();
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        return false;
     }
 
     /**

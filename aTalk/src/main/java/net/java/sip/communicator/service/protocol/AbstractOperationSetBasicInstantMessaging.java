@@ -119,7 +119,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
         synchronized (this.messageListeners) {
             listeners = new ArrayList<>(this.messageListeners);
         }
-        Timber.d("Dispatching Message Listeners = %d evt = %s", listeners.size(), evt);
+        // Timber.d("Dispatching Message Listeners = %d evt = %s", listeners.size(), evt);
 
         /*
          * TODO Create a super class like this MessageEventObject that would contain the

@@ -213,7 +213,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
             mFormat = (VideoFormat) streamFormats[0].clone();
             Timber.d("Camera data stream format #2: %s=>%s", videoSize, mFormat);
             initPreviewOrientation(true);
-            cameraManager.openCamera(mCameraId, mStateCallback, mBackgroundHandler);
+            cameraManager.openCamera(mCameraId, mConfigStateCallback, mBackgroundHandler);
         } catch (SecurityException e) {
             Timber.e("openCamera: %s", e.getMessage());
         } catch (CameraAccessException e) {
@@ -246,7 +246,6 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
 
         // Streaming video always send in the user selected dimension and image view in upright orientation
         mSwap = (mPreviewOrientation == 90) || (mPreviewOrientation == 270);
-
         if (mSwap) {
             mPreviewSize = new Dimension(optimizedSize.height, optimizedSize.width);
         }
@@ -270,7 +269,7 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
     /**
      * {@link CameraDevice.StateCallback} is called when {@link CameraDevice} changes its status.
      */
-    private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
+    private final CameraDevice.StateCallback mConfigStateCallback = new CameraDevice.StateCallback() {
         @Override
         public void onOpened(@NonNull CameraDevice cameraDevice) {
             mCameraDevice = cameraDevice;
@@ -321,10 +320,40 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
      */
     protected abstract void onInitPreview();
 
+    protected CameraCaptureSession.StateCallback mSessionStateCallBack = new CameraCaptureSession.StateCallback() {
+        @Override
+        public void onConfigured(@NonNull CameraCaptureSession session) {
+            mCaptureSession = session;
+            updateCaptureRequest();
+        }
+
+        @Override
+        public void onConfigureFailed(@NonNull CameraCaptureSession session) {
+            Timber.e("Camera capture session configure failed: %s", session);
+        }
+    };
+
     /**
-     * Method called to start camera image capture.
+     * Update the camera preview. {@link # startPreview()} needs to be called in advance.
      */
-    protected abstract void updateCaptureRequest();
+    protected void updateCaptureRequest() {
+        // The camera is already closed, so abort
+        if (null == mCameraDevice) {
+            Timber.e("Camera capture session config - camera closed, return");
+            return;
+        }
+
+        try {
+            // Auto focus should be continuous for camera preview.
+            mCaptureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+            mCaptureSession.setRepeatingRequest(mCaptureBuilder.build(), null, mBackgroundHandler);
+            // Has sluggish video streaming performance, do not use
+            // mCaptureSession.capture(mPreviewBuilder.build(), null, mBackgroundHandler);
+            inTransition = false;
+        } catch (CameraAccessException e) {
+            Timber.e("Update capture request exception: %s", e.getMessage());
+        }
+    }
 
     /**
      * Selects stream formats.
@@ -463,9 +492,8 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
         AndroidCamera.setSelectedCamera(cameraLocator);
         mCameraId = AndroidCamera.getCameraId(cameraLocator);
 
-        // Stop preview and release the current camera if any before switching, otherwise app will crash
+        // Stop preview and release the current camera if any before switching, otherwise app will crash.
         Timber.d("Switching camera: %s", cameraLocator.toString());
-
         closeCamera();
 
         if (isLocalVideoEnable) {

@@ -21,7 +21,9 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -53,7 +55,6 @@ import org.atalk.service.neomedia.ViewAccessor;
 import org.atalk.util.event.SizeChangeVideoEvent;
 import org.atalk.util.event.VideoEvent;
 import org.atalk.util.event.VideoListener;
-import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
 
@@ -63,7 +64,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class VideoHandlerFragment extends BaseFragment implements View.OnLongClickListener {
+public class VideoHandlerFragment extends BaseFragment implements MenuProvider, View.OnLongClickListener {
     /**
      * Default remote video view dimension (aTalk default) - must also be valid for OpenGL else crash
      * Note: Other dimension ratio e.g. (1x1) will cause Invalid Operation in OpenGL
@@ -165,13 +166,6 @@ public class VideoHandlerFragment extends BaseFragment implements View.OnLongCli
     private VideoCallActivity mCallActivity;
 
     /**
-     * Create a new instance of <code>VideoHandlerFragment</code>.
-     */
-    public VideoHandlerFragment() {
-        setHasOptionsMenu(true);
-    }
-
-    /**
      * Must be called by parent activity on fragment attached
      *
      * @param activity VideoCall Activity
@@ -187,6 +181,7 @@ public class VideoHandlerFragment extends BaseFragment implements View.OnLongCli
         localPreviewContainer = mCallActivity.findViewById(R.id.localPreviewContainer);
         callInfoGroup = mCallActivity.findViewById(R.id.callInfoGroup);
         ctrlButtonsGroup = mCallActivity.findViewById(R.id.button_Container);
+        requireActivity().addMenuProvider(this);
 
         // (must be done after layout or 0 sizes will be returned)
         ctrlButtonsGroup.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -338,9 +333,7 @@ public class VideoHandlerFragment extends BaseFragment implements View.OnLongCli
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         AndroidCamera selectedCamera = AndroidCamera.getSelectedCameraDevInfo();
         if (!isCameraEnable || selectedCamera == null) {
             return;
@@ -351,7 +344,7 @@ public class VideoHandlerFragment extends BaseFragment implements View.OnLongCli
         int otherFacing = isFrontCamera ? AndroidCamera.FACING_BACK : AndroidCamera.FACING_FRONT;
 
         if (AndroidCamera.getCameraFromCurrentDeviceSystem(otherFacing) != null) {
-            inflater.inflate(R.menu.camera_menu, menu);
+            menuInflater.inflate(R.menu.camera_menu, menu);
             String displayName = isFrontCamera
                     ? getString(R.string.settings_use_back_camera)
                     : getString(R.string.settings_use_front_camera);
@@ -362,17 +355,17 @@ public class VideoHandlerFragment extends BaseFragment implements View.OnLongCli
     /**
      * Switch to alternate camera on the device when user toggles the camera
      *
-     * @param item the user clicked menu item
+     * @param menuItem the user clicked menu item
      *
      * @return return true is activation is from menu item R.id.switch_camera
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.switch_camera) {
-            startCameraSwitchThread(item);
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        if (menuItem.getItemId() == R.id.switch_camera) {
+            startCameraSwitchThread(menuItem);
             return true;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     /**

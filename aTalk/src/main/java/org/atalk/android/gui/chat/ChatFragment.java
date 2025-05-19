@@ -1295,7 +1295,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
         public void updateMessageFTStatus(String msgUuid, int status, String fileName, int encType, int msgType) {
             // Remove deleted message from display messages; merged messages may return null
             Integer row = msgUuid2Idx.get(msgUuid);
-            if (row != null) {
+            // Fix IndexOutOfBoundsException: Index: 55, Size: 31
+            if (row != null && row < messages.size()) {
                 ChatMessageImpl chatMessage = (ChatMessageImpl) messages.get(row).getChatMessage();
                 chatMessage.updateFTStatus(chatPanel.getDescriptor(), msgUuid, status, fileName,
                         encType, msgType, chatMessage.getMessageDir());
@@ -1498,7 +1499,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                                     opSet, request, date);
                             setFileXfer(position, fileXferR);
                         }
-                        viewTemp = fileXferR.ReceiveFileConversionForm(inflater, messageViewHolder, parent, position, init);
+                        viewTemp = fileXferR.ReceiveFileConversationForm(inflater, messageViewHolder, parent, position, init);
                         break;
 
                     case ChatMessage.MESSAGE_FILE_TRANSFER_SEND:
@@ -1517,8 +1518,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
 
                     case ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY:
                         fileRecord = msgDisplay.getFileRecord();
-                        FileHistoryConversation fileXferH = FileHistoryConversation.newInstance(currentChatFragment,
-                                fileRecord, chatMessage);
+                        FileHistoryConversation fileXferH
+                                = FileHistoryConversation.newInstance(currentChatFragment, fileRecord, chatMessage);
                         viewTemp = fileXferH.FileHistoryConversationForm(inflater, messageViewHolder, parent, init);
                         break;
 
@@ -2513,7 +2514,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
     }
 
     /**
-     * Adds the given file transfer <code>id</code> to the list of active file transfers.
+     * Adds the given incoming file transfer <code>id</code> to the list of active file transfers.
      *
      * @param id the identifier of the file transfer to add
      * @param fileTransfer the descriptor of the file transfer
@@ -2563,6 +2564,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
      *
      * @param event the file transfer status change event the notified us for the change
      */
+    @Override
     public void statusChanged(FileTransferStatusChangeEvent event) {
         FileTransfer fileTransfer = event.getFileTransfer();
         final int newStatus = event.getNewStatus();
@@ -2617,8 +2619,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             mFile = sFilexferCon.getXferFile();
             mStickerMode = sFilexferCon.isStickerMode();
             entityJid = currentChatTransport.getDescriptor();
-            mEncryption = (ChatFragment.MSGTYPE_OMEMO == mChatType)
-                    ? IMessage.ENCRYPTION_OMEMO : IMessage.ENCRYPTION_NONE;
+            mEncryption = (ChatFragment.MSGTYPE_OMEMO == mChatType) ? IMessage.ENCRYPTION_OMEMO : IMessage.ENCRYPTION_NONE;
             onPreExecute();
         }
 
@@ -2697,8 +2698,11 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                                 aTalkApp.getResString(R.string.file_send_failed, "HttpFileUpload"));
                     }
                     else {
+                        // send HttpFileDownload text message with OOB extension to recipient without a local encho.
+                        int encType = IMessage.FLAG_REMOTE_ONLY | IMessage.FLAG_MSG_OOB | IMessage.ENCODE_PLAIN;
                         sendFTConversion.setStatus(FileTransferStatusChangeEvent.COMPLETED, entityJid, mEncryption, "");
-                        mChatController.sendMessage(urlLink, IMessage.FLAG_REMOTE_ONLY | IMessage.ENCODE_PLAIN);
+                        String msgUuid = sendFTConversion.getMessageUuid();
+                        mChatController.sendMessage(urlLink, encType, msgUuid);
                     }
                 }
             } catch (Exception e) {

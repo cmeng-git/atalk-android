@@ -6,8 +6,44 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="4.2.2 (03/24/2025)" versioncode="402020">
+    <release version="4.3.0 (05/19/2025)" versioncode="403000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Show Badge indicator on incoming file request; to ease user identification of the sender in contact list main UI</change>
+        <change>Enable HeadsUp notification for incoming file transfer request to alert user when device is in standby</change>
+        <change>Ensure multiple files send/receive for HTTPFileUpload, JingleFileSend and Legacy Bytestream transfer protocols are handled properly; improve UI and process reliability</change>
+        <change>Must re-init all UI button actions whenever the xFileConversationForm is called on UI refresh; as inflateViewForFileTransfer() will change their references</change>
+        <change>Fix ConcurrentModificationException in JingleS5BTransportCandidateImpl#connectToCandidates() checking</change>
+        <change>Change to use TOTAL_CONNECTION_TIMEOUT (10s) for each candidate in establishBytestreamSession checking</change>
+        <change>Do not set file sending/receiving state as History Record while it is still active; else any UI refresh will interrupt file transfer, although file transfer may still running in background</change>
+        <change>Must create file record in DB for proper HTTP file download process update; else the cached info is destroyed when user closes the chat session</change>
+        <change>Use Math.max(COLUMN_TOTAL_SIZE_BYTES, COLUMN_BYTES_DOWNLOADED_SO_FAR) for HttpFileDownloadJabberImpl#queryFileSize(); later is found to contain file size, and COLUMN_TOTAL_SIZE_BYTES always return 0. Download Manager implementation error?</change>
+        <change> Improve and clean up HttpFileDownloadJabberImpl implementation</change>
+        <change>Must implement HttpFileDownloadJabberImpl#getTransferredBytes for proper HttpFileDownload progressBar update</change>
+        <change>Implement and support XEP-0066: Out of Band Data sending in Http file transfer in contact or muc chat session</change>
+        <change>Ensure the file transfer UI is shown (post delay 0.5S) before proceed to auto accept file transfer if enabled</change>
+        <change>Fix progressBar indicator not properly updated when the received file size in unknown in HttpFileDownload process</change>
+        <change>Do not constraint the IncomingFileTransferJingleImpl#progress() update with 10mS UPDATE_INTERVAL; else final rwBytes may not be reflected in the UI progressBar</change>
+        <change>Ensure all message event ID's in outgoing file transfer are in sync with the file record saved in database for proper status update</change>
+        <change>When file transfer form is first created, it must check that (getXferStatus() == FileTransferStatusChangeEvent.UNKNOWN) before start any file send/received process. else file transfer may get repeated in UI</change>
+        <change>Ensure all status definitions in both FileTransferStatusChangeEvent and FileRecord are in sync for correct status tracking</change>
+        <change>Ensure the transport candidates use in file transfer are properly refreshed when the device active network connection is changed</change>
+        <change>Avoid using static mBuilder for both JingleContentDescription and JingleContentTransport; else multiple JingleFileTransfer will interference with each other</change>
+        <change>JingleSessionImpl#jingleSessionListeners cannot be static; otherwise updateSessionState will interfere with each other in multiple files transfer</change>
+        <change>During multiple Jingle files receive, ensure recipient send session-accept only once</change>
+        <change>Fix Legacy file transfer uses the same instance of OperationSetFileTransferJabberImpl to send file with the same NegotiationProgress status callback</change>
+        <change>Need to block the unexpected delayed info messages on HttpFileDownload send from server multiple times; else repeated UI requests user to accept file</change>
+        <change>Add serverMsgId and remoteMsgId value to the file history record in the database; to check for unexpected delay info messages send from server</change>
+        <change>Ignore any empty body forward message received during MamQuery process update</change>
+        <change>Fix ChatState notifications not handle properly in MUC chat session</change>
+        <change>Save last send/received message timestamp into mamDate in session record, avoid deleted messages reappear in UI when user relaunch aTalk</change>
+        <change>Move subclass common CameraCaptureSession.StateCallback into base class CameraStreamBase</change>
+        <change>Replace deprecated option menu setHasOptionsMenu() implementation with MenuProvider</change>
+        <change>Replace deprecated FragmentPagerAdapter with FragmentStateAdapter for the main aTalk MainPagerAdapter</change>
+        <change>Add Arabic language support</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="4.2.2 (03/24/2025)" versioncode="402020">
         <change>Force aTalk to restart if user made changes to android HW Codec Expert settings; for them to be active</change>
         <change>ZidFile length must not be zero if exist, else ZidFile.open will failed</change>
         <change>Ensure android encoder inputSurface for remote video streaming is init only once, else video streaming will fail</change>

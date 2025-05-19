@@ -5,13 +5,13 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.util.List;
+
 import net.java.sip.communicator.service.protocol.event.AdHocChatRoomMessageListener;
 import net.java.sip.communicator.service.protocol.event.AdHocChatRoomParticipantPresenceListener;
 
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jxmpp.jid.EntityBareJid;
-
-import java.util.List;
 
 /**
  * Represents an ad-hoc rendezvous point where multiple chat users could communicate together. This
@@ -23,8 +23,7 @@ import java.util.List;
  * @author Valentin Martinet
  * @author Eng Chong Meng
  */
-public interface AdHocChatRoom
-{
+public interface AdHocChatRoom {
     /**
      * Returns the name of this <code>AdHocChatRoom</code>. The name can't be changed until the
      * <code>AdHocChatRoom</code> is ended.
@@ -101,6 +100,7 @@ public interface AdHocChatRoom
      * (text/plain) content type and encoding.
      *
      * @param messageText the string content of the message.
+     *
      * @return IMessage the newly created message
      */
     IMessage createMessage(String messageText);
@@ -111,9 +111,11 @@ public interface AdHocChatRoom
      * @param content content value
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param subject a <code>String</code> subject or <code>null</code> for now subject.
+     * @param msgId The message Id when provided is used in sending the message.
+     *
      * @return the newly created message.
      */
-    IMessage createMessage(String content, int encType, String subject);
+    IMessage createMessage(String content, int encType, String subject, String msgId);
 
     /**
      * Sends the <code>IMessage</code> to this ad-hoc chat room.

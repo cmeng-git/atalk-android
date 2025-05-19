@@ -17,6 +17,9 @@
 
 package org.atalk.android.gui.chat;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.event.ChatStateNotificationEvent;
 
@@ -26,17 +29,13 @@ import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 /**
  * The <code>ChatStateNotificationHandler</code> is the class that handles chat state notification
  * events and launches the corresponding user interface.
  *
  * @author Eng Chong Meng
  */
-public class ChatStateNotificationHandler
-{
+public class ChatStateNotificationHandler {
     private static Timer chatStateTimer = new Timer();
 
     /**
@@ -45,8 +44,7 @@ public class ChatStateNotificationHandler
      * @param evt the event containing details on the chat state notification
      * @param chatFragment the chat parent fragment
      */
-    public static void handleChatStateNotificationReceived(ChatStateNotificationEvent evt, ChatFragment chatFragment)
-    {
+    public static void handleChatStateNotificationReceived(ChatStateNotificationEvent evt, ChatFragment chatFragment) {
         chatStateTimer.cancel();
         chatStateTimer = new Timer();
 
@@ -58,9 +56,11 @@ public class ChatStateNotificationHandler
             ChatSession chatSession = chatFragment.getChatPanel().getChatSession();
             ChatTransport chatTransport = chatSession.getCurrentChatTransport();
             // return if event is not for the chatDescriptor session
-            if ((chatTransport == null) || !chatDescriptor.equals(chatTransport.getDescriptor()))
+            Object descriptor = chatTransport.getDescriptor();
+            if (!chatDescriptor.equals(descriptor))
                 return;
 
+            // ((ChatRoomJabberImpl) chatTransport.getDescriptor()).getIdentifier()
             // return if receive own chat state notification
             if (chatDescriptor instanceof ChatRoom) {
                 Jid entityJid = evt.getMessage().getFrom();
@@ -95,18 +95,15 @@ public class ChatStateNotificationHandler
     /**
      * Clear the chat state display message after display timer expired.
      */
-    private static class ChatTimerTask extends TimerTask
-    {
+    private static class ChatTimerTask extends TimerTask {
         private final ChatFragment chatFragment;
 
-        public ChatTimerTask(ChatFragment chatFragment)
-        {
+        public ChatTimerTask(ChatFragment chatFragment) {
             this.chatFragment = chatFragment;
         }
 
         @Override
-        public void run()
-        {
+        public void run() {
             chatFragment.setChatState(null, null);
         }
     }

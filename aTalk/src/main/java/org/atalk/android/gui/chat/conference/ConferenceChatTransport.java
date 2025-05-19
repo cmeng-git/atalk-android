@@ -186,9 +186,21 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @param messageText The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
-     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      */
     public void sendInstantMessage(String messageText, int encType)
+            throws Exception {
+        sendInstantFTMessage(messageText, encType, null);
+    }
+
+    /**
+     * Sends the given instant message trough this chat transport, by specifying the mime type
+     * (html or plain text).
+     *
+     * @param messageText The message to send.
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param msgId The message Id when provided is used in sending the message.
+     */
+    public void sendInstantFTMessage(String messageText, int encType, String msgId)
             throws Exception {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
@@ -196,8 +208,8 @@ public class ConferenceChatTransport implements ChatTransport {
             return;
         }
 
-        IMessage message = chatRoom.createMessage(messageText, encType, null);
-        if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_OMEMO)) {
+        IMessage message = chatRoom.createMessage(messageText, encType, null, msgId);
+        if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
             chatRoom.sendMessage(message, omemoManager);
         }
@@ -331,24 +343,24 @@ public class ConferenceChatTransport implements ChatTransport {
             throws Exception {
         // check to see if server supports httpFileUpload service if contact is off line or legacy file transfer failed
         if (allowsFileTransfer()) {
-            int encType = IMessage.ENCRYPTION_NONE;
+            int encryption = IMessage.ENCRYPTION_NONE;
             Object url;
             try {
                 if (ChatFragment.MSGTYPE_OMEMO == chatType) {
-                    encType = IMessage.ENCRYPTION_OMEMO;
+                    encryption = IMessage.ENCRYPTION_OMEMO;
                     url = httpFileUploadManager.uploadFileEncrypted(file, xferCon);
                 }
                 else {
                     url = httpFileUploadManager.uploadFile(file, xferCon);
                 }
-                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, chatRoom, encType, "HTTP File Upload");
+                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, chatRoom, encryption, "HTTP File Upload");
                 return url;
             } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
                 throw new OperationNotSupportedException(e.getMessage());
             }
         }
         else
-            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_supported));
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_supported, "chatRoom"));
     }
 
     /**

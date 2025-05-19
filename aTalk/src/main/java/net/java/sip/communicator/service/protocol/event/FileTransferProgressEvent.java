@@ -5,17 +5,17 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.FileTransfer;
-
 import java.util.EventObject;
+
+import net.java.sip.communicator.service.protocol.FileTransfer;
 
 /**
  * The <code>FileTransferProgressEvent</code> indicates the progress of a file transfer.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
-public class FileTransferProgressEvent extends EventObject
-{
+public class FileTransferProgressEvent extends EventObject {
     /**
      * Serial version UID.
      */
@@ -24,12 +24,12 @@ public class FileTransferProgressEvent extends EventObject
     /**
      * Indicates the progress of a file transfer in bytes.
      */
-    private long progress;
+    private final long mProgress;
 
     /**
-     * Indicates when this event occured.
+     * Indicates when this event occurred.
      */
-    private long timestamp;
+    private final long mTimestamp;
 
     /**
      * Creates a <code>FileTransferProgressEvent</code> by specifying the source file transfer object,
@@ -39,11 +39,10 @@ public class FileTransferProgressEvent extends EventObject
      * @param timestamp when this event occurred
      * @param progress the new progress value
      */
-    public FileTransferProgressEvent(FileTransfer fileTransfer, long timestamp, long progress)
-    {
+    public FileTransferProgressEvent(FileTransfer fileTransfer, long timestamp, long progress) {
         super(fileTransfer);
-        this.timestamp = timestamp;
-        this.progress = progress;
+        mTimestamp = timestamp;
+        mProgress = progress;
     }
 
     /**
@@ -51,8 +50,7 @@ public class FileTransferProgressEvent extends EventObject
      *
      * @return the source <code>FileTransfer</code> that triggered this event
      */
-    public FileTransfer getFileTransfer()
-    {
+    public FileTransfer getFileTransfer() {
         return (FileTransfer) source;
     }
 
@@ -61,18 +59,16 @@ public class FileTransferProgressEvent extends EventObject
      *
      * @return the progress of the file transfer
      */
-    public long getProgress()
-    {
-        return progress;
+    public long getProgress() {
+        return mProgress;
     }
 
     /**
-     * Returns the timestamp when this event initially occured.
+     * Returns the timestamp when this event initially occurred.
      *
-     * @return the timestamp when this event initially occured
+     * @return the timestamp when this event initially occurred
      */
-    public long getTimestamp()
-    {
-        return timestamp;
+    public long getTimestamp() {
+        return mTimestamp;
     }
 }

@@ -29,9 +29,9 @@ import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
 import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.FileTransfer;
+import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusListener;
-import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
@@ -40,6 +40,8 @@ import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.persistance.FileBackend;
+
+import timber.log.Timber;
 
 /**
  * The <code>ReceiveFileConversationComponent</code> is the component shown in the conversation area
@@ -54,12 +56,6 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     private long fileSize;
     private String fileName;
     private String mSender;
-
-    /* previousDownloads <DownloadJobId, DownloadFileMimeType Link> */
-    // private final Hashtable<Long, String> mimeTypes = new Hashtable<>();
-
-    /* DownloadManager Broadcast Receiver Handler */
-    // private DownloadReceiver downloadReceiver = null;
     private FileHistoryServiceImpl mFHS;
 
     private FileHttpDownloadConversation(ChatFragment cPanel, String dir) {
@@ -71,6 +67,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
      *
      * @param cPanel the chat panel
      * @param sender the message <code>sender</code>
+     * @param httpFileTransferJabber Http file transfer implementation
      * @param date the date
      */
     // Constructor used by ChatFragment to start handle ReceiveFileTransferRequest
@@ -94,61 +91,78 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         msgViewId = id;
         mFileTransfer = httpFileTransferJabber;
         mFileTransfer.addStatusListener(this);
-
         String dnLink = httpFileTransferJabber.getDnLink();
-        mXferFile = createOutFile(httpFileTransferJabber.getLocalFile());
+
+        // HttpFileDownloadConversionForm get call again on UI refresh; create new file only if null.
+        // Else actual completed download filename will be different from DB.
+        if (mXferFile == null)
+            mXferFile = createOutFile(httpFileTransferJabber.getLocalFile());
         fileName = httpFileTransferJabber.getFileName();
         fileSize = httpFileTransferJabber.getFileSize();
         mEncryption = httpFileTransferJabber.getEncryptionType();
-        setEncState(mEncryption);
+        setEncryptionState(mEncryption);
 
         messageViewHolder.stickerView.setImageDrawable(null);
         messageViewHolder.fileLabel.setText(getFileLabel(fileName, fileSize));
 
-		/* Must keep track of file transfer status as Android always request view redraw on
-		listView scrolling, new message send or received */
+        // Create a new file record in database for proper tracking.
+        FileTransferCreatedEvent event = new FileTransferCreatedEvent(httpFileTransferJabber, new Date());
+        mFHS.insertRecordToDB(event, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD, fileName);
+
+        // Must reset button image to fileIcon on new(); else reused view may contain an old thumbnail image
+        messageViewHolder.fileIcon.setImageResource(R.drawable.file_icon);
+
+        // must init all buttons action as inflateViewForFileTransfer will change its references.
+        messageViewHolder.acceptButton.setOnClickListener(v ->
+        {
+            updateStatus(FileTransferStatusChangeEvent.ACCEPT, null);
+            startDownload();
+        });
+
+        messageViewHolder.declineButton.setOnClickListener(
+                v -> updateStatus(FileTransferStatusChangeEvent.DECLINED, null)
+        );
+
+        /*
+         * Must keep track of file transfer status from the cache as Android always request view
+         * redraw on listView scrolling, new message send or received
+         */
         int status = getXferStatus();
-        if (status != FileTransferStatusChangeEvent.DECLINED
-                && status != FileTransferStatusChangeEvent.COMPLETED) {
-            // Must reset button image to fileIcon on new(); else reused view may contain an old thumbnail image
-            messageViewHolder.fileIcon.setImageResource(R.drawable.file_icon);
-
-            messageViewHolder.acceptButton.setOnClickListener(v -> startDownload());
-            messageViewHolder.declineButton.setOnClickListener(
-                    v -> updateView(FileTransferStatusChangeEvent.DECLINED, null)
-            );
-
-            updateXferFileViewState(FileTransferStatusChangeEvent.WAITING,
-                    aTalkApp.getResString(R.string.file_transfer_request_received, mSender));
-
+        if (status == FileTransferStatusChangeEvent.UNKNOWN) {
             // Do not auto retry if it had failed previously; otherwise ANR if multiple such items exist
             if (FileRecord.STATUS_FAILED == xferStatus) {
-                updateView(FileTransferStatusChangeEvent.FAILED, dnLink);
+                updateStatus(FileTransferStatusChangeEvent.FAILED, dnLink);
             }
             else {
+                updateStatus(FileTransferStatusChangeEvent.WAITING, null);
                 doInit();
+                checkAutoAccept(fileSize);
             }
         }
         else {
-            updateView(status, null);
+            updateStatus(status, null);
         }
         return convertView;
     }
 
     /**
-     * Handles file transfer status changes. Updates the interface to reflect the changes.
+     * Handles file transfer status changes. Updates the UI and DB to reflect the changes.
      */
     @Override
-    protected void updateView(final int status, final String reason) {
-        // setXferStatus(status);
+    protected void updateStatus(final int status, final String reason) {
         String statusText = null;
-        if (FileTransferStatusChangeEvent.COMPLETED != status) {
-            updateFTStatus(status, null, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
-        }
 
         switch (status) {
             case FileTransferStatusChangeEvent.PREPARING:
                 statusText = aTalkApp.getResString(R.string.file_transfer_preparing, mSender);
+                break;
+
+            case FileTransferStatusChangeEvent.WAITING:
+                statusText = aTalkApp.getResString(R.string.file_transfer_request_received, mSender);
+                break;
+
+            case FileTransferStatusChangeEvent.ACCEPT:
+                statusText = aTalkApp.getResString(R.string.file_transfer_accepted);
                 break;
 
             case FileTransferStatusChangeEvent.IN_PROGRESS:
@@ -161,8 +175,6 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 if (mXferFile == null) { // Android view redraw happen?
                     mXferFile = mChatFragment.getChatListAdapter().getFileName(msgViewId);
                 }
-                // Update the DB record status
-                updateFTStatus(status, mXferFile.toString(), ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
                 break;
 
             case FileTransferStatusChangeEvent.FAILED:
@@ -183,10 +195,9 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             // user reject the incoming http download
             case FileTransferStatusChangeEvent.DECLINED:
                 statusText = aTalkApp.getResString(R.string.file_transfer_declined);
-                // need to update status here as chatFragment statusListener is enabled for
-                // fileTransfer and only after accept
                 break;
         }
+        updateFTStatus(status);
         updateXferFileViewState(status, statusText);
         mChatFragment.scrollToBottom();
     }
@@ -196,17 +207,26 @@ public class FileHttpDownloadConversation extends FileTransferConversation
      * get trigger again. The msgCache record will be used for DisplayMessage on chat session resume.
      *
      * @param status File transfer status
-     * @param fileName the downloaded fileName
-     * @param msgType File transfer type see ChatMessage MESSAGE_FILE_
      */
-    private void updateFTStatus(int status, String fileName, int msgType) {
-        mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, msgType);
-        mChatFragment.updateFTStatus(msgUuid, status, fileName, mEncryption, msgType);
+    private void updateFTStatus(int status) {
+        String fileName = (mXferFile == null) ? "" : mXferFile.getPath();
+        if (isFileTransferEnd(status)) {
+            if (mXferFile != null && mXferFile.exists() && mXferFile.length() == 0 && mXferFile.delete()) {
+                Timber.d("Deleted file with zero length: %s", mXferFile);
+            }
+        }
+        Timber.d("File status change (HTTPFileDownload): %s: %s", status, mXferFile);
+
+        int ftState = isFileTransferEnd(status) ?
+                ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY : ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD;
+        mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ftState);
+        mChatFragment.updateFTStatus(msgUuid, status, fileName, mEncryption, ftState);
     }
 
     /**
      * Handles status changes in file transfer.
      */
+    @Override
     public void statusChanged(FileTransferStatusChangeEvent event) {
         final FileTransfer fileTransfer = event.getFileTransfer();
         final int status = event.getNewStatus();
@@ -214,11 +234,8 @@ public class FileHttpDownloadConversation extends FileTransferConversation
 
         // Event thread - Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
-            updateView(status, reason);
-            if (status == FileTransferStatusChangeEvent.COMPLETED
-                    || status == FileTransferStatusChangeEvent.CANCELED
-                    || status == FileTransferStatusChangeEvent.FAILED
-                    || status == FileTransferStatusChangeEvent.DECLINED) {
+            updateStatus(status, reason);
+            if (isFileTransferEnd(status)) {
                 // must update this in UI, otherwise the status is not being updated to FileRecord
                 fileTransfer.removeStatusListener(this);
             }
@@ -257,18 +274,13 @@ public class FileHttpDownloadConversation extends FileTransferConversation
 
     /**
      * Init the HttpFileTransferJabberImpl, and retrieve server fileSize info.
-     * Proceed to startDownload() if isAutoAcceptFile() is met.
+     * Proceed to startDownload() if transfer file size is known and isAutoAcceptFile() is met.
      */
     private void doInit() {
         httpFileTransferJabber.initHttpFileDownload();
         fileSize = httpFileTransferJabber.getFileSize();
         setFileTransfer(httpFileTransferJabber, fileSize);
         messageViewHolder.fileLabel.setText(getFileLabel(fileName, fileSize));
-
-        // Check for auto-download only if the file size is not zero
-        if (fileSize > 0 && ConfigurationUtils.isAutoAcceptFile(fileSize)) {
-            startDownload();
-        }
     }
 
     /**

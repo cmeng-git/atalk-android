@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.PopupMenu.OnMenuItemClickListener;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -74,7 +75,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class ContactListFragment extends BaseFragment
-        implements OnGroupClickListener, EntityListHelper.TaskCompleteListener {
+        implements MenuProvider, OnGroupClickListener, EntityListHelper.TaskCompleteListener {
     /**
      * Search options menu items.
      */
@@ -132,7 +133,6 @@ public class ContactListFragment extends BaseFragment
      */
     public ContactListFragment() {
         super();
-        setHasOptionsMenu(true);
     }
 
     /**
@@ -150,6 +150,7 @@ public class ContactListFragment extends BaseFragment
         contactListView.setOnGroupClickListener(this);
         initContactListAdapter();
 
+        requireActivity().addMenuProvider(this);
         return content;
     }
 
@@ -166,9 +167,11 @@ public class ContactListFragment extends BaseFragment
         // Restore search state based on entered text
         if (mSearchItem != null) {
             SearchView searchView = (SearchView) mSearchItem.getActionView();
-            String filter = ViewUtil.toString(searchView.findViewById(R.id.search_src_text));
-            filterContactList(filter);
-            bindSearchListener();
+            if (searchView != null) {
+                String filter = ViewUtil.toString(searchView.findViewById(R.id.search_src_text));
+                filterContactList(filter);
+                bindSearchListener();
+            }
         }
         else {
             contactListAdapter.filterData("");
@@ -200,8 +203,10 @@ public class ContactListFragment extends BaseFragment
         // Unbind search listener
         if (mSearchItem != null) {
             SearchView searchView = (SearchView) mSearchItem.getActionView();
-            searchView.setOnQueryTextListener(null);
-            searchView.setOnCloseListener(null);
+            if (searchView != null) {
+                searchView.setOnQueryTextListener(null);
+                searchView.setOnCloseListener(null);
+            }
         }
 
         if (contactListView != null) {
@@ -226,15 +231,12 @@ public class ContactListFragment extends BaseFragment
         super.onDestroy();
     }
 
+
     /**
-     * Invoked when the options menu is created. Creates our own options menu from the corresponding xml.
-     *
-     * @param menu the options menu
+     * Creates our own options menu from the corresponding xml.
      */
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater menuInflater) {
-        super.onCreateOptionsMenu(menu, menuInflater);
-
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         // Get the SearchView MenuItem
         mSearchItem = menu.findItem(R.id.search);
         if (mSearchItem == null)
@@ -242,24 +244,31 @@ public class ContactListFragment extends BaseFragment
 
         mSearchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
+            public boolean onMenuItemActionCollapse(@NonNull MenuItem item) {
                 filterContactList("");
                 return true; // Return true to collapse action view
             }
 
-            public boolean onMenuItemActionExpand(MenuItem item) {
+            public boolean onMenuItemActionExpand(@NonNull MenuItem item) {
                 return true; // Return true to expand action view
             }
         });
         bindSearchListener();
     }
 
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        return false;
+    }
+
     private void bindSearchListener() {
         if (mSearchItem != null) {
             SearchView searchView = (SearchView) mSearchItem.getActionView();
-            SearchViewListener listener = new SearchViewListener();
-            searchView.setOnQueryTextListener(listener);
-            searchView.setOnCloseListener(listener);
+            if (searchView != null) {
+                SearchViewListener listener = new SearchViewListener();
+                searchView.setOnQueryTextListener(listener);
+                searchView.setOnCloseListener(listener);
+            }
         }
     }
 

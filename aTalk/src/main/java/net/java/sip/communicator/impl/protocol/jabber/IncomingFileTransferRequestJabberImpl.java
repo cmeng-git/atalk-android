@@ -171,7 +171,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
      * @return the id.
      */
     @Override
-    public String getID() {
+    public String getId() {
         return mId;
     }
 

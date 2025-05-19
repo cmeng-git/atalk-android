@@ -70,6 +70,8 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
+import timber.log.Timber;
+
 /**
  * The main options menu. Every <code>Activity</code> that desires to have the general options menu
  * shown have to extend this class.
@@ -151,12 +153,13 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         MenuItem searchItem = menu.findItem(R.id.search);
 
         SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        TextView textView = searchView.findViewById(R.id.search_src_text);
-        textView.setTextColor(getResources().getColor(R.color.white, null));
-        textView.setHintTextColor(getResources().getColor(R.color.white, null));
-        textView.setHint(R.string.enter_name_or_number);
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+            TextView textView = searchView.findViewById(R.id.search_src_text);
+            textView.setTextColor(getResources().getColor(R.color.white, null));
+            textView.setHintTextColor(getResources().getColor(R.color.white, null));
+            textView.setHint(R.string.enter_name_or_number);
+        }
 
         // cmeng: 20191220 <= disable videoBridge until implementation
         // this.videoBridgeMenuItem = menu.findItem(R.id.create_videobridge);
@@ -192,9 +195,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
             this.menuVbItem = new VideoBridgeProviderMenuItem();
 
         List<ProtocolProviderService> videoBridgeProviders = getVideoBridgeProviders();
-        int videoBridgeProviderCount = (videoBridgeProviders == null)
-                ? 0 : videoBridgeProviders.size();
-
+        int videoBridgeProviderCount = videoBridgeProviders.size();
         if (videoBridgeProviderCount >= 1) {
             enableMenu = true;
             if (videoBridgeProviderCount == 1) {
@@ -208,18 +209,20 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         else
             enableMenu = false;
 
-        runOnUiThread(() -> {
-            // videoBridgeMenuItem is always enabled - allow user to re-trigger if earlier init failed
-            videoBridgeMenuItem.setEnabled(true);
+        if (videoBridgeMenuItem != null) {
+            runOnUiThread(() -> {
+                // videoBridgeMenuItem is always enabled - allow user to re-trigger if earlier init failed
+                videoBridgeMenuItem.setEnabled(true);
 
-            if (enableMenu) {
-                videoBridgeMenuItem.getIcon().setAlpha(255);
-            }
-            else {
-                videoBridgeMenuItem.getIcon().setAlpha(80);
-                menuVbItem = null;
-            }
-        });
+                if (enableMenu) {
+                    videoBridgeMenuItem.getIcon().setAlpha(255);
+                }
+                else {
+                    videoBridgeMenuItem.getIcon().setAlpha(80);
+                    menuVbItem = null;
+                }
+            });
+        }
     }
 
     /**
@@ -246,7 +249,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
                 initVideoBridge_task();
                 Thread.sleep(100);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                Timber.e("Init VideoBridge: %s ", ex.getMessage());
             }
             if (progressDialog != null && progressDialog.isShowing()) {
                 done = true;
@@ -308,7 +311,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
                 startActivity(AccountsListActivity.class);
                 break;
             case R.id.app_info:
-                PermissionsActivity.onInfoButtonClicked(this);
+                PermissionsActivity.onAppInfoButtonClicked(this);
                 break;
             case R.id.tts_settings:
                 Intent ttsIntent = new Intent(this, TTSActivity.class);

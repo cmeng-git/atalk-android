@@ -7,14 +7,9 @@ package org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraMetadata;
-import android.hardware.camera2.CaptureRequest;
 import android.media.MediaCodec;
 import android.view.Surface;
-
-import androidx.annotation.NonNull;
 
 import java.awt.Dimension;
 import java.io.IOException;
@@ -33,6 +28,7 @@ import org.atalk.impl.neomedia.device.util.CameraSurfaceRenderer;
 import org.atalk.impl.neomedia.device.util.CodecInputSurface;
 import org.atalk.impl.neomedia.device.util.OpenGLContext;
 import org.atalk.impl.neomedia.device.util.OpenGlCtxProvider;
+import org.atalk.impl.timberlog.TimberLog;
 
 import timber.log.Timber;
 
@@ -49,7 +45,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.OnFrameAvailableListener {
+public class SurfaceStream extends CameraStreamBase {
     /**
      * <code>OpenGlCtxProvider</code> used by this instance.
      */
@@ -71,9 +67,6 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
      * SurfaceTexture that receives the output from the camera preview
      */
     private SurfaceTexture mSurfaceTexture;
-
-    private Surface mPreviewSurface;
-
     /**
      * Capture thread.
      */
@@ -166,16 +159,13 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
         videoFragment.initLocalPreviewContainer(myCtxProvider);
         mDisplayTV = myCtxProvider.obtainObject(); // this will create a new TextureView
 
-        // Init the encoder inputSurface for remote video streaming only once; do not recreate openGL surface
+        // Init the encoder inputSurface for remote video streaming only once; do not recreate openGL surface.
         mEncoderSurface = new CodecInputSurface(surface, mDisplayTV.getContext());
         mEncoderSurface.makeCurrent();
 
         // Init the surface for capturing the camera image for remote video streaming, and local preview display
         mSurfaceRender = new CameraSurfaceRenderer();
         mSurfaceRender.surfaceCreated();
-        mSurfaceTexture = new SurfaceTexture(mSurfaceRender.getTextureId());
-        mSurfaceTexture.setOnFrameAvailableListener(this);
-        mPreviewSurface = new Surface(mSurfaceTexture);
     }
 
     /**
@@ -190,7 +180,12 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
             // https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession(android.hardware.camera2.params.SessionConfiguration)
             myCtxProvider.setVideoSize(optimizedSize);
             VideoCallActivity.getVideoFragment().initLocalPreviewContainer(myCtxProvider);
+
+            // Init the surface for capturing the camera image for remote video streaming, and local preview display
+            mSurfaceTexture = new SurfaceTexture(mSurfaceRender.getTextureId());
             mSurfaceTexture.setDefaultBufferSize(optimizedSize.width, optimizedSize.height);
+            mSurfaceTexture.setOnFrameAvailableListener(mOnFrameAvailableListener, null);
+            Surface mPreviewSurface = new Surface(mSurfaceTexture);
 
             mCaptureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mCaptureBuilder.addTarget(mPreviewSurface);
@@ -199,40 +194,9 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
             // Has problem with this
             // mCaptureBuilder.addTarget(mEncoderSurface.getSurface());
             // mCameraDevice.createCaptureSession(Arrays.asList(mEncoderSurface.getSurface(), mPreviewSurface), //Collections.singletonList(mPreviewSurface),
-
-            mCameraDevice.createCaptureSession(Collections.singletonList(mPreviewSurface),
-                    new CameraCaptureSession.StateCallback() {
-                        @Override
-                        public void onConfigured(@NonNull CameraCaptureSession session) {
-                            mCaptureSession = session;
-                            updateCaptureRequest();
-                        }
-
-                        @Override
-                        public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-                            Timber.e("Camera capture session configure failed: %s", session);
-                        }
-                    }, mBackgroundHandler);
+            mCameraDevice.createCaptureSession(Collections.singletonList(mPreviewSurface), mSessionStateCallBack, mBackgroundHandler);
         } catch (CameraAccessException e) {
             Timber.w("Surface stream onInitPreview exception: %s", e.getMessage());
-        }
-    }
-
-    /**
-     * Update the camera preview. {@link # startPreview()} needs to be called in advance.
-     */
-    protected void updateCaptureRequest() {
-        if (null == mCameraDevice) {
-            Timber.e("Camera capture session config - camera closed, return");
-            return;
-        }
-        try {
-            mCaptureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
-            mCaptureSession.setRepeatingRequest(mCaptureBuilder.build(), null, mBackgroundHandler);
-            inTransition = false;
-            // Timber.d("Camera stream update CaptureRequest: %s", mCaptureSession);
-        } catch (CameraAccessException e) {
-            Timber.e("Update capture request exception: %s", e.getMessage());
         }
     }
 
@@ -241,7 +205,7 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
      */
     private void captureLoop() {
         // Wait for input surface to be returned before proceed;
-        // Post an empty frame to init encoder, and get the surface that is provided in read() method
+        // Post an empty frame to init encoder surface, and get the surface that is provided in read() method
         while (run && (mCameraDevice == null)) {
             transferHandler.transferData(this);
         }
@@ -259,16 +223,9 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
              */
             paintLocalPreview();
 
-            long delay = calcStats();
-            if (delay < 80) {
-                try {
-                    long wait = 80 - delay;
-                    // Timber.d("Delaying frame: %s", wait);
-                    Thread.sleep(wait);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            // Calculate statistics for average frame rate if enable
+            if (TimberLog.isTraceEnable)
+                calcStats();
 
             /*
              * Push the received image frame to the android encoder; must be executed within onFrameAvailable
@@ -279,9 +236,25 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
         }
     }
 
+    /*
+     * The SurfaceTexture uses this to signal the availability of a new frame.  The
+     * thread that "owns" the external texture associated with the SurfaceTexture (which,
+     * by virtue of the context being shared, *should* be either one) needs to call
+     * updateTexImage() to latch the buffer i.e. the acquireNewImage in captureThread.
+     *
+     * @param surfaceTexture the SurfaceTexture that set for this callback
+     */
+    private final SurfaceTexture.OnFrameAvailableListener mOnFrameAvailableListener = surfaceTexture -> {
+        synchronized (frameSyncObject) {
+            frameAvailable = true;
+            frameSyncObject.notifyAll();
+        }
+    };
+
     /**
-     * Latches the next buffer into the texture. Must be called from the thread that created the OutputSurface object.
-     * Wait for a max of 2.5s Timer
+     * Latches the next buffer frame data into the texture, notifies by mOnFrameAvailableListener.
+     * Must be called from the thread that created the OutputSurface object.
+     * Wait for a max of 2.5s Timer before abort.
      */
     private void acquireNewImage() {
         final int TIMEOUT_MS = 2500;
@@ -289,8 +262,8 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
         // Timber.d("Waiting for onFrameAvailable!");
         synchronized (frameSyncObject) {
             while (!frameAvailable) {
+                // Wait for TIMEOUT_MS for timeout to avoid stalling the test if it doesn't arrive.
                 try {
-                    // Wait for onFrameAvailable() to signal us. Use a timeout to avoid stalling the test if it doesn't arrive.
                     frameSyncObject.wait(TIMEOUT_MS);
                     if (!frameAvailable) {
                         throw new RuntimeException("Camera frame wait timed out");
@@ -305,21 +278,6 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
         mSurfaceTexture.updateTexImage();
     }
 
-    /**
-     * The SurfaceTexture uses this to signal the availability of a new frame.  The
-     * thread that "owns" the external texture associated with the SurfaceTexture (which,
-     * by virtue of the context being shared, *should* be either one) needs to call
-     * updateTexImage() to latch the buffer i.e. the acquireNewImage in captureThread.
-     *
-     * @param st the SurfaceTexture that set for this callback
-     */
-    @Override
-    public void onFrameAvailable(SurfaceTexture st) {
-        synchronized (frameSyncObject) {
-            frameAvailable = true;
-            frameSyncObject.notifyAll();
-        }
-    }
 
     /**
      * Paints the local preview on UI thread by posting paint job and waiting for the UI handler to complete its job.
@@ -334,7 +292,7 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
                  * otherwise we will freeze on trying to set the current context. We skip the frame in this case.
                  */
                 if (!myCtxProvider.textureUpdated) {
-                    Timber.w("Skipped preview frame, previewCtx: %s textureUpdated: %s", mDisplayTV, myCtxProvider.textureUpdated);
+                    Timber.w("Skipped preview frame, previewCtx: %s", mDisplayTV);
                 }
                 else {
                     // myCtxProvider.configureTransform(myCtxProvider.getView().getWidth(), myCtxProvider.getView().getHeight());
@@ -409,7 +367,8 @@ public class SurfaceStream extends CameraStreamBase implements SurfaceTexture.On
             if (mEncoderSurface == null) {
                 initSurfaceConsumer(surface);
                 startImpl();
-            } else {
+            }
+            else {
                 Timber.w("Skip encoder surface re-creation: %s", mEncoderSurface);
             }
         }

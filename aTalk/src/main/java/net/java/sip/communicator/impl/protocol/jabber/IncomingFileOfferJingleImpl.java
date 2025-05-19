@@ -139,9 +139,6 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest 
         }
     }
 
-    /**
-     * JingleSessionImpl.addJingleSessionListener(this);
-     */
     @Override
     public FileTransfer onPrepare(File file) {
         mFile = file;
@@ -203,7 +200,7 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest 
      * @return the id.
      */
     @Override
-    public String getID() {
+    public String getId() {
         return mId;
     }
 

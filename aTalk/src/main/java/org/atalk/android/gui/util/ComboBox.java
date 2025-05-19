@@ -52,7 +52,7 @@ public class ComboBox extends LinearLayout
 
     private final int unit = TypedValue.COMPLEX_UNIT_SP;
     private final float fontSize = 15;
-    private final int fontBlack = getResources().getColor(R.color.textColorBlack);
+    private final int fontBlack = getResources().getColor(R.color.textColorBlack, null);
 
     private Context mContext;
     private LayoutInflater inflater;

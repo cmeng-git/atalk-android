@@ -35,7 +35,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  */
 public class VCardTempXUpdate implements ExtensionElement {
     /**
-     * The <code>Logger</code> used by the <code>VCardTempXUpdatePresenceExtension</code> class and its
+     * The <code>Logger</code> used by the <code>VCardTempXUpdate</code> class and its
      * instances for logging output.
      */
     private static final Logger LOGGER = Logger.getLogger(VCardTempXUpdate.class.getName());

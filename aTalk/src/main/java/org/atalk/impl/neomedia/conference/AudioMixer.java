@@ -5,20 +5,6 @@
  */
 package org.atalk.impl.neomedia.conference;
 
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.impl.neomedia.MediaStreamImpl;
-import org.atalk.impl.neomedia.control.ReadOnlyBufferControlDelegate;
-import org.atalk.impl.neomedia.control.ReadOnlyFormatControlDelegate;
-import org.atalk.impl.neomedia.device.MediaDeviceImpl;
-import org.atalk.impl.neomedia.device.ReceiveStreamPushBufferDataSource;
-import org.atalk.impl.neomedia.protocol.BufferStreamAdapter;
-import org.atalk.impl.neomedia.protocol.CachingPushBufferStream;
-import org.atalk.impl.neomedia.protocol.PullBufferStreamAdapter;
-import org.atalk.impl.neomedia.protocol.PushBufferDataSourceAdapter;
-import org.atalk.impl.neomedia.protocol.PushBufferStreamAdapter;
-import org.atalk.impl.neomedia.protocol.TranscodingDataSource;
-import org.atalk.util.OSUtils;
-
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
@@ -46,6 +32,20 @@ import javax.media.protocol.PushDataSource;
 import javax.media.protocol.PushSourceStream;
 import javax.media.protocol.SourceStream;
 
+import org.atalk.impl.neomedia.MediaStreamImpl;
+import org.atalk.impl.neomedia.control.ReadOnlyBufferControlDelegate;
+import org.atalk.impl.neomedia.control.ReadOnlyFormatControlDelegate;
+import org.atalk.impl.neomedia.device.MediaDeviceImpl;
+import org.atalk.impl.neomedia.device.ReceiveStreamPushBufferDataSource;
+import org.atalk.impl.neomedia.protocol.BufferStreamAdapter;
+import org.atalk.impl.neomedia.protocol.CachingPushBufferStream;
+import org.atalk.impl.neomedia.protocol.PullBufferStreamAdapter;
+import org.atalk.impl.neomedia.protocol.PushBufferDataSourceAdapter;
+import org.atalk.impl.neomedia.protocol.PushBufferStreamAdapter;
+import org.atalk.impl.neomedia.protocol.TranscodingDataSource;
+import org.atalk.impl.timberlog.TimberLog;
+import org.atalk.util.OSUtils;
+
 import timber.log.Timber;
 
 /**
@@ -68,8 +68,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class AudioMixer
-{
+public class AudioMixer {
     /**
      * The default output <code>AudioFormat</code> in which <code>AudioMixer</code>,
      * <code>AudioMixingPushBufferDataSource</code> and <code>AudioMixingPushBufferStream</code> output
@@ -97,11 +96,11 @@ public class AudioMixer
      *
      * @param dataSource the <code>DataSource</code> for which the <code>Format</code> in which it provides stream data
      * is to be determined
+     *
      * @return the <code>Format</code> in which the specified <code>dataSource</code> provides stream data
      * if it was determined; otherwise, <code>null</code>
      */
-    private static Format getFormat(DataSource dataSource)
-    {
+    private static Format getFormat(DataSource dataSource) {
         FormatControl formatControl
                 = (FormatControl) dataSource.getControl(FormatControl.class.getName());
 
@@ -113,11 +112,11 @@ public class AudioMixer
      *
      * @param stream the <code>SourceStream</code> for which the <code>Format</code> in which it provides data is
      * to be determined
+     *
      * @return the <code>Format</code> in which the specified <code>SourceStream</code> provides data if it
      * was determined; otherwise, <code>null</code>
      */
-    private static Format getFormat(SourceStream stream)
-    {
+    private static Format getFormat(SourceStream stream) {
         if (stream instanceof PushBufferStream)
             return ((PushBufferStream) stream).getFormat();
         if (stream instanceof PullBufferStream)
@@ -191,8 +190,7 @@ public class AudioMixer
      * <code>AudioMixingPushBufferDataSource</code>s created by the new instance and its first
      * input <code>DataSource</code>
      */
-    public AudioMixer(CaptureDevice captureDevice)
-    {
+    public AudioMixer(CaptureDevice captureDevice) {
         /*
          * AudioMixer provides PushBufferDataSources so it needs a way to push them. It does the
          * pushing by using the pushes of its CaptureDevice i.e. it has to be a
@@ -219,8 +217,7 @@ public class AudioMixer
      *
      * @param inDataSource a new <code>DataSource</code> to input audio to this instance
      */
-    public void addInDataSource(DataSource inDataSource)
-    {
+    public void addInDataSource(DataSource inDataSource) {
         addInDataSource(inDataSource, null);
     }
 
@@ -234,8 +231,7 @@ public class AudioMixer
      * @param outDataSource the <code>AudioMixingPushBufferDataSource</code> to not include the audio contributions of
      * <code>inDataSource</code> in the mix it outputs
      */
-    void addInDataSource(DataSource inDataSource, AudioMixingPushBufferDataSource outDataSource)
-    {
+    void addInDataSource(DataSource inDataSource, AudioMixingPushBufferDataSource outDataSource) {
         if (inDataSource == null)
             throw new NullPointerException("inDataSource");
 
@@ -289,8 +285,7 @@ public class AudioMixer
      * @throws IOException if input/output error occurred
      */
     void connect()
-            throws IOException
-    {
+            throws IOException {
         synchronized (inDataSources) {
             if (connected == 0) {
                 for (InDataSourceDesc inDataSourceDesc : inDataSources)
@@ -325,11 +320,11 @@ public class AudioMixer
      * @param dataSource the <code>DataSource</code> to connect to
      * @param inDataSource the <code>DataSource</code> which is the cause for <code>dataSource</code> to exist in this
      * <code>AudioMixer</code>
+     *
      * @throws IOException if anything wrong happens while connecting to <code>dataSource</code>
      */
     protected void connect(DataSource dataSource, DataSource inDataSource)
-            throws IOException
-    {
+            throws IOException {
         dataSource.connect();
     }
 
@@ -341,11 +336,11 @@ public class AudioMixer
      *
      * @param inDataSource the <code>InDataSourceDesc</code> of the input <code>DataSource</code> which has finished its
      * connecting procedure
+     *
      * @throws IOException if anything wrong happens while including <code>inDataSource</code> into the mix
      */
     void connected(InDataSourceDesc inDataSource)
-            throws IOException
-    {
+            throws IOException {
         synchronized (inDataSources) {
             if (inDataSources.contains(inDataSource) && (connected > 0)) {
                 if (started > 0)
@@ -364,11 +359,11 @@ public class AudioMixer
      * @param inStream the input <code>SourceStream</code> to be described by the new instance
      * @param inDataSourceDesc the input <code>DataSource</code> given by its <code>InDataSourceDesc</code> to be described
      * by the new instance
+     *
      * @return a new <code>InStreamDesc</code> instance which describes the specified input
      * <code>SourceStream</code> and <code>DataSource</code>
      */
-    private InStreamDesc createInStreamDesc(SourceStream inStream, InDataSourceDesc inDataSourceDesc)
-    {
+    private InStreamDesc createInStreamDesc(SourceStream inStream, InDataSourceDesc inDataSourceDesc) {
         return new InStreamDesc(inStream, inDataSourceDesc);
     }
 
@@ -384,8 +379,7 @@ public class AudioMixer
      * stream representing the mix of the audio streams input into this <code>AudioMixer</code>
      * through its input <code>DataSource</code>s
      */
-    public AudioMixingPushBufferDataSource createOutDataSource()
-    {
+    public AudioMixingPushBufferDataSource createOutDataSource() {
         return new AudioMixingPushBufferDataSource(this);
     }
 
@@ -398,14 +392,15 @@ public class AudioMixer
      * <code>DataSource</code>
      * @param outFormat the <code>Format</code> in which the tracks of the input <code>DataSource</code> are to be
      * transcoded
+     *
      * @return <code>true</code> if a new transcoding <code>DataSource</code> has been created for the
      * input <code>DataSource</code> described by <code>inDataSourceDesc</code>; otherwise, <code>false</code>
+     *
      * @throws IOException if an error occurs while creating the transcoding <code>DataSource</code>, connecting to
      * it or staring it
      */
     private boolean createTranscodingDataSource(InDataSourceDesc inDataSourceDesc, Format outFormat)
-            throws IOException
-    {
+            throws IOException {
         if (inDataSourceDesc.createTranscodingDataSource(outFormat)) {
             if (connected > 0)
                 inDataSourceDesc.connect(this);
@@ -423,8 +418,7 @@ public class AudioMixer
      * <code>AudioMixingPushBufferDataSource</code>s reading from this <code>AudioMixer</code> which gets
      * disconnected causes it to disconnect from the input <code>DataSource</code>s it manages.
      */
-    void disconnect()
-    {
+    void disconnect() {
         synchronized (inDataSources) {
             if (connected <= 0)
                 return;
@@ -456,8 +450,7 @@ public class AudioMixer
      * <code>AudioMixingPushBufferDataSource</code>s if such a control is available for the
      * <code>CaptureDevice</code> of this instance; otherwise, <code>null</code>
      */
-    BufferControl getBufferControl()
-    {
+    BufferControl getBufferControl() {
         if ((bufferControl == null) && (captureDevice instanceof Controls)) {
             BufferControl captureDeviceBufferControl = (BufferControl) ((Controls) captureDevice)
                     .getControl(BufferControl.class.getName());
@@ -475,8 +468,7 @@ public class AudioMixer
      * @return the <code>CaptureDeviceInfo</code> of the <code>CaptureDevice</code> this
      * <code>AudioMixer</code> provides through its output <code>AudioMixingPushBufferDataSource</code>s
      */
-    CaptureDeviceInfo getCaptureDeviceInfo()
-    {
+    CaptureDeviceInfo getCaptureDeviceInfo() {
         return captureDevice.getCaptureDeviceInfo();
     }
 
@@ -485,8 +477,7 @@ public class AudioMixer
      *
      * @return the content type of the data output by this <code>AudioMixer</code>
      */
-    String getContentType()
-    {
+    String getContentType() {
         return ContentDescriptor.RAW;
     }
 
@@ -495,8 +486,7 @@ public class AudioMixer
      *
      * @return the duration of each one of the output streams produced by this <code>AudioMixer</code>
      */
-    Time getDuration()
-    {
+    Time getDuration() {
         return ((DataSource) captureDevice).getDuration();
     }
 
@@ -509,12 +499,12 @@ public class AudioMixer
      * <code>existingInStreamDescs</code>
      * @param existingInStreamDescs the list of existing <code>InStreamDesc</code>s in which an <code>InStreamDesc</code> for
      * <code>inStream</code> is to be located
+     *
      * @return an <code>InStreamDesc</code> from <code>existingInStreamDescs</code> which describes
      * <code>inStream</code> if such an <code>InStreamDesc</code> exists; otherwise, <code>null</code>
      */
     private InStreamDesc getExistingInStreamDesc(SourceStream inStream,
-            InStreamDesc[] existingInStreamDescs)
-    {
+            InStreamDesc[] existingInStreamDescs) {
         if (existingInStreamDescs == null)
             return null;
 
@@ -541,8 +531,7 @@ public class AudioMixer
      * <code>AudioMixer</code> provides through its output
      * <code>AudioMixingPushBufferDataSource</code>s
      */
-    FormatControl[] getFormatControls()
-    {
+    FormatControl[] getFormatControls() {
         /*
          * Setting the format of the captureDevice once we've started using it is likely to wreak
          * havoc so disable it.
@@ -572,13 +561,13 @@ public class AudioMixer
      * already have ones
      * @param inStreams the <code>List</code> of <code>InStreamDesc</code> in which the discovered
      * <code>SourceStream</code>s are to be returned
+     *
      * @return <code>true</code> if <code>SourceStream</code>s produced by the specified input
      * <code>DataSource</code> and outputting data in the specified <code>AudioFormat</code> were
      * discovered and reported in <code>inStreams</code>; otherwise, <code>false</code>
      */
     private boolean getInStreamsFromInDataSource(InDataSourceDesc inDataSourceDesc,
-            AudioFormat outFormat, InStreamDesc[] existingInStreams, List<InStreamDesc> inStreams)
-    {
+            AudioFormat outFormat, InStreamDesc[] existingInStreams, List<InStreamDesc> inStreams) {
         SourceStream[] inDataSourceStreams = inDataSourceDesc.getStreams();
 
         if (inDataSourceStreams != null) {
@@ -642,16 +631,17 @@ public class AudioMixer
      * @param outFormat the <code>AudioFormat</code> in which the retrieved <code>SourceStream</code>s are to produce
      * data
      * @param existingInStreams the <code>SourceStream</code>s which are already known to this <code>AudioMixer</code>
+     *
      * @return a new collection of <code>SourceStream</code>s (in the form of <code>InStreamDesc</code>)
      * retrieved from the input <code>DataSource</code>s of this <code>AudioMixer</code> and
      * producing data in the specified <code>AudioFormat</code>
+     *
      * @throws IOException if anything wrong goes while retrieving the input <code>SourceStream</code>s from the
      * input <code>DataSource</code>s
      */
     private Collection<InStreamDesc> getInStreamsFromInDataSources(AudioFormat outFormat,
             InStreamDesc[] existingInStreams)
-            throws IOException
-    {
+            throws IOException {
         List<InStreamDesc> inStreams = new ArrayList<>();
 
         synchronized (inDataSources) {
@@ -676,8 +666,7 @@ public class AudioMixer
      * <code>DataSource</code>s excluding the <code>CaptureDevice</code> of this <code>AudioMixer</code>
      * and is thus meant for playback on the local peer in a call
      */
-    public AudioMixingPushBufferDataSource getLocalOutDataSource()
-    {
+    public AudioMixingPushBufferDataSource getLocalOutDataSource() {
         return localOutDataSource;
     }
 
@@ -690,8 +679,7 @@ public class AudioMixer
      * <code>AudioMixer</code> can produce data and which is to be the output <code>Format</code> of
      * this <code>AudioMixer</code>
      */
-    private AudioFormat getOutFormatFromInDataSources()
-    {
+    private AudioFormat getOutFormatFromInDataSources() {
         String formatControlType = FormatControl.class.getName();
         AudioFormat outFormat = null;
 
@@ -743,8 +731,7 @@ public class AudioMixer
      * <code>DataSource</code>s of this <code>AudioMixer</code> and pushes it to output
      * <code>AudioMixingPushBufferStream</code>s for audio mixing
      */
-    AudioMixerPushBufferStream getOutStream()
-    {
+    AudioMixerPushBufferStream getOutStream() {
         synchronized (inDataSources) {
             AudioFormat outFormat = (outStream == null) ? getOutFormatFromInDataSources()
                     : outStream.getFormat();
@@ -778,11 +765,11 @@ public class AudioMixer
      * <code>ReceiveStream</code>s.
      *
      * @param inDataSource the <code>DataSource</code> to search for.
+     *
      * @return The <code>TranscodingDataSource</code> associated with <code>inDataSource</code>, if we can
      * find one, <code>null</code> otherwise.
      */
-    public TranscodingDataSource getTranscodingDataSource(DataSource inDataSource)
-    {
+    public TranscodingDataSource getTranscodingDataSource(DataSource inDataSource) {
         for (InDataSourceDesc inDataSourceDesc : inDataSources) {
             DataSource ourDataSource = inDataSourceDesc.getInDataSource();
 
@@ -808,11 +795,11 @@ public class AudioMixer
      * @param input the <code>Format</code> for which it is required to determine whether it matches a
      * specific <code>Format</code>
      * @param pattern the <code>Format</code> against which the specified <code>input</code> is to be matched
+     *
      * @return <code>true</code> if the specified <code>input<code> matches the specified
      * <code>pattern</code> in the sense of JMF <code>Format</code> matching; otherwise, <code>false</code>
      */
-    private boolean matches(Format input, AudioFormat pattern)
-    {
+    private boolean matches(Format input, AudioFormat pattern) {
         return ((input instanceof AudioFormat) && input.isSameEncoding(pattern));
     }
 
@@ -826,11 +813,11 @@ public class AudioMixer
      * @param buffer the output <code>Buffer</code> in which the media read from the specified <code>stream</code>
      * is to be written so that it gets returned to the caller
      * @param dataSource the <code>DataSource</code> from which <code>stream</code> originated
+     *
      * @throws IOException if anything wrong happens while reading from the specified <code>stream</code>
      */
     protected void read(PushBufferStream stream, Buffer buffer, DataSource dataSource)
-            throws IOException
-    {
+            throws IOException {
         stream.read(buffer);
     }
 
@@ -843,8 +830,7 @@ public class AudioMixer
      * from the list of input <code>DataSource</code>s of this <code>AudioMixer</code> from which it
      * reads audio to be mixed
      */
-    public void removeInDataSources(DataSourceFilter dataSourceFilter)
-    {
+    public void removeInDataSources(DataSourceFilter dataSourceFilter) {
         synchronized (inDataSources) {
             Iterator<InDataSourceDesc> inDataSourceIter = inDataSources.iterator();
             boolean removed = false;
@@ -876,8 +862,7 @@ public class AudioMixer
      * @param outFormat the <code>AudioFormat</code> in which the input <code>DataSource</code>s of this
      * <code>AudioMixer</code> are to be instructed to output
      */
-    private void setOutFormatToInDataSources(AudioFormat outFormat)
-    {
+    private void setOutFormatToInDataSources(AudioFormat outFormat) {
         String formatControlType = FormatControl.class.getName();
 
         synchronized (inDataSources) {
@@ -914,12 +899,12 @@ public class AudioMixer
      * <code>start</code> and <code>stop</code> methods performed by <code>outStream</code> allowing it
      * to execute the said methods outside synchronized blocks for the purposes of reducing
      * deadlock risks
+     *
      * @throws IOException if any of the input <code>DataSource</code>s of this <code>AudioMixer</code> throws such an
      * exception while attempting to start it
      */
     void start(AudioMixerPushBufferStream outStream, long generation)
-            throws IOException
-    {
+            throws IOException {
         synchronized (inDataSources) {
             /*
              * AudioMixer has only one outStream at a time and only its current outStream knows
@@ -957,12 +942,12 @@ public class AudioMixer
      * <code>start</code> and <code>stop</code> methods performed by <code>outStream</code> allowing it
      * to execute the said methods outside synchronized blocks for the purposes of reducing
      * deadlock risks
+     *
      * @throws IOException if any of the input <code>DataSource</code>s of this <code>AudioMixer</code> throws such an
      * exception while attempting to stop it
      */
     void stop(AudioMixerPushBufferStream outStream, long generation)
-            throws IOException
-    {
+            throws IOException {
         synchronized (inDataSources) {
             /*
              * AudioMixer has only one outStream at a time and only its current outStream knows

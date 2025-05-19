@@ -1,86 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="chatroom_conference_item">مؤتمر %1$s</string>
-    <string name="chatroom_conference">المؤتمرات</string>
-    <string name="notificationconfig_sound_file">ملف الصوت:</string>
-    <string name="dnsconfig_dnssec_mode">السلوك</string>
-    <string name="enc_audio_title">ترميز الصوت</string>
-    <string name="enc_override_global">تجاوز العالمي</string>
-    <string name="enc_video_title">ترميز الفيديو</string>
-    <string name="none">لا شيء</string>
-    <string name="sec_encryption">التشفير</string>
-    <string name="crypto_no_key_present">لا يوجد مفتاح موجود</string>
-    <string name="permission_notifications">الإشعارات</string>
-    <string name="permission_phone">الهاتف</string>
-    <string name="permission_video">الصور والفيديو</string>
-    <string name="permission_storage">التخزين</string>
-    <string name="chatroom_info_member_only">للأعضاء فقط</string>
-    <string name="chatroom_info_moderated">مُدار</string>
-    <string name="chatroom_info_non_anonymous">غير مجهول</string>
-    <string name="chatroom_info_password_protected">محمي بكلمة مرور</string>
-    <string name="chatroom_info_persistent">دائم</string>
-    <string name="chatroom_info_max_history_fetch">الحد الأقصى للتاريخ</string>
-    <string name="chatroom_info_contact_jid">معرف JID لجهة الاتصال</string>
-    <string name="chatroom_info_subject_modifiable">الموضوع قابل للتعديل</string>
-    <string name="chatroom_info_language">اللغة</string>
-    <string name="chatroom_info_ldap_group">مجموعة LDAP</string>
-    <string name="chatroom_create">إنشاء غرفة دردشة…</string>
-    <string name="dismiss">رفض</string>
+    <string name="accept_call_video">الرد على المكالمة بفيديو</string>
     <string name="account_delete_on_server_unregistered">فشل حذف الحساب على الخادم، المستخدم غير مسجل!</string>
+    <string name="account_delete_on_server">حذف الحساب على الخادم</string>
     <string name="account_delete_on_server_failed">فشل حذف الحساب على الخادم:\n%1$s</string>
-    <string name="cr_member_grant_owner_privilege">منح امتيازات المالك</string>
-    <string name="login_failed">فشل تسجيل الدخول</string>
-    <string name="logoff_failed">حدث خطأ أثناء تسجيل الخروج من الحساب التالي: اسم المستخدم: %1$s، اسم الخادم: %2$s.</string>
-    <string name="mobile">الهاتف المحمول</string>
     <string name="account_delete_on_server_successful">تم حذف الحساب على الخادم بنجاح:\n%1$s</string>
     <string name="account_show_password">إظهار كلمة المرور</string>
-    <string name="remove_contact">إزالة جهة الاتصال</string>
-    <string name="callinfo_discarded_total">عدد الحزم المتجاهلة:</string>
     <string name="account_server_override">تجاوز إعدادات الخادم</string>
     <string name="account_ibr_on_server">تسجيل حساب جديد على الخادم</string>
     <string name="account_server_ip">IP خادم الاتصال</string>
+
     <string name="ibr_registration">تسجيل داخلي</string>
     <string name="captcha_ibr_request">تسجيل-كابتشا</string>
-    <string name="accept_call_video">الرد على المكالمة بفيديو</string>
-    <string name="account_delete_on_server">حذف الحساب على الخادم</string>
     <string name="captcha_ibr_failed">فشل تسجيل-كابتشا!\n%1$s</string>
-    <string name="attach_file">مشاركة ملف</string>
-    <string name="copy">نسخ</string>
-    <string name="delete">حذف</string>
-    <string name="edit">تعديل</string>
-    <string name="forward">إعادة توجيه…</string>
-    <string name="chat_message_long_press_hint">تجنب النقر داخل منطقة الرسالة لعملية اختيار متعدد العناصر</string>
-    <string name="quote">اقتباس</string>
-    <string name="reply">رد</string>
-    <string name="select_all">تحديد الكل</string>
-    <string name="subject">الموضوع</string>
-    <string name="settings">الإعدادات</string>
-    <string name="contact_block_text">هل ترغب في حظر \'%1$s\' من إرسال الرسائل إليك؟</string>
-    <string name="contact_unblock_text">هل ترغب في إلغاء حظر \'%1$s\' والسماح لهم بإرسال الرسائل إليك؟</string>
-    <string name="domain_blocking">تطبيق على جميع جهات الاتصال من: %1$s</string>
-    <string name="contact_block">حظر جهة الاتصال</string>
-    <string name="contact_unblock">إلغاء حظر جهة الاتصال</string>
-    <string name="contact_blocked">تم حظر جهة الاتصال</string>
-    <string name="block">حظر</string>
-    <string name="unblock">إلغاء الحظر</string>
-    <string name="add_group_failed">فشل في إضافة المجموعة باسم: %1$s.</string>
-    <string name="add_group_error_empty_name">يجب ألا يكون اسم المجموعة فارغًا.</string>
     <string name="captcha_ibr_success">تسجيل-كابتشا ناجح.\nيمكنك الآن المتابعة لتسجيل الدخول!</string>
     <string name="captcha_ibr_reason">تسجيل داخلي طُلب من المستخدم</string>
     <string name="captcha_ibr_pwd_empty">خطأ: حقل كلمة المرور فارغ!</string>
-    <string name="authorize">تفويض</string>
-    <string name="call_ended">أنهى الطرف البعيد المكالمة: %1$s</string>
-    <string name="call_error">أعاد الطرف البعيد خطأ: %1$s</string>
-    <string name="call_failed">فشلت المكالمة</string>
-    <string name="call_initiating">جارٍ بدء المكالمة</string>
     <string name="captcha_ibr_hint">أدخل النص الذي تراه</string>
     <string name="captcha_ibr_retry">انقر على \'موافق\' لإعادة المحاولة أو \'إلغاء\' للإنهاء</string>
+
     <string name="captcha_challenge">تحدي الكابتشا</string>
     <string name="captcha_protected">غرفة الدردشة محمية بتحدي الكابتشا</string>
     <string name="captcha_text_empty">لا يمكن أن يكون إدخال نص الكابتشا فارغًا</string>
     <string name="captcha_verification_valid">التحقق من الكابتشا صالح</string>
     <string name="captcha_verification_failed">فشل التحقق من الكابتشا</string>
     <string name="captcha_wait_timeout">انتهت مهلة تحدي الكابتشا لغرفة الدردشة %1$s؛\nيرجى إعادة الانضمام إلى غرفة الدردشة والمحاولة مرة أخرى.</string>
+
     <string name="choose_network">اختر شبكة</string>
     <string name="encrypt_tooltip">تشفير الدردشة</string>
     <string name="encrypt_choices">خيارات التشفير</string>
@@ -100,73 +45,46 @@
     <string name="system_settings">الإعدادات…</string>
     <string name="username_hint">username@example.com</string>
     <string name="username_">اسم المستخدم:</string>
-    <string name="playback_error">لا يمكن العثور على أي محتوى وسائط للتشغيل</string>
-    <string name="playback_buffering">جارٍ التخزين المؤقت…</string>
-    <string name="playback_completed">انتهى تشغيل الوسائط</string>
-    <string name="playback_rate">معدل التشغيل: %1$s</string>
-    <string name="auto_join">الانضمام تلقائيًا</string>
-    <string name="change_nickname">تغيير الاسم المستعار</string>
-    <string name="change_nickname_">تغيير الاسم المستعار…</string>
-    <string name="change_nickname_error_conflict">الاسم المستعار موجود بالفعل</string>
-    <string name="change_nickname_error">خطأ في تغيير الاسم المستعار لـ %1$s: %2$s</string>
-    <string name="change_nickname_label">في الحقل أدناه، يمكنك إدخال اسمك المستعار الجديد.</string>
-    <string name="change_nickname_null">لا يمكن أن يكون محتوى حقل الاسم المستعار فارغًا</string>
-    <string name="chatroom_change_info">تغيير معلومات غرفة الدردشة</string>
-    <string name="chatroom">غرفة الدردشة</string>
-    <string name="contact_gone">** %1$s غادر جلسة الدردشة</string>
-    <string name="contact_owner">مالك جهة الاتصال: %1$s</string>
-    <string name="contact_pause_typing">** %1$s توقف عن الكتابة</string>
-    <string name="contact_rename">اسم جهة الاتصال الجديد:</string>
+
+    <!-- Call Transfer -->
     <string name="call_hang_up">إنهاء المكالمة</string>
     <string name="call_on_hold">وضع المكالمة في الانتظار</string>
-    <string name="cr_member_revoke_owner_privilege">سحب امتيازات المالك</string>
-    <string name="contact_rename_tooltip">أدخل اسم جهة الاتصال الجديد</string>
-    <string name="contact_rename_title">تغيير اسم جهة الاتصال</string>
-    <string name="contacts">جهات الاتصال</string>
-    <string name="contact_offline_hide">إخفاء جهات الاتصال غير المتصلة</string>
-    <string name="contact_offline_show">إظهار جهات الاتصال غير المتصلة</string>
-    <string name="copy_message_text">نسخ نص الرسالة</string>
-    <string name="create">إنشاء</string>
-    <string name="create_group">إنشاء مجموعة…</string>
-    <string name="create_group_name_invalid">اسم مجموعة غير صالح: %1$s</string>
-    <string name="create_group_name">في الحقل أدناه، أدخل اسم المجموعة التي ترغب في إنشائها.</string>
-    <string name="create_group_first_wizard">قائمة جهات الاتصال الخاصة بك لا تحتوي على أي مجموعات. يرجى إنشاء مجموعة أولاً (ملف/إنشاء مجموعة).</string>
-    <string name="aboutDialog_help"><a href="https://cmeng-git.github.io/atalk">المساعدة عبر الإنترنت</a></string>
-    <string name="About">حول</string>
-    <string name="version_">الإصدار %1$s</string>
-    <string name="cert_info_pubkey">المفتاح العام:</string>
-    <string name="cert_info_key_bytes">%1$s بايت: %2$s</string>
-    <string name="cert_info_key_bits">%1$s بت</string>
-    <string name="cert_info_exponent">الأس:</string>
-    <string name="file_receive_from">جارٍ استلام ملف من %1$s</string>
-    <string name="file_send_completed">تم إرسال الملف بنجاح إلى %1$s</string>
-    <string name="file_send_declined">رفض %1$s هذا الملف</string>
-    <string name="file_sending_to">جارٍ إرسال ملف إلى %1$s</string>
-    <string name="file_transfer_canceled">تم إلغاء نقل الملف</string>
-    <string name="accountinfo_middle_name">الاسم الأوسط:</string>
-    <string name="accountinfo_nickname">اللقب:</string>
-    <string name="chatroom_already_joined">لقد انضممت بالفعل إلى غرفة الدردشة %1$s.</string>
-    <string name="chatroom_configuration">تكوين غرفة الدردشة</string>
-    <string name="chatroom_configuration_failed">فشل في الحصول على نموذج تكوين غرفة الدردشة %1$s.</string>
-    <string name="cr_member_kick">إزالة من الدردشة الجماعية</string>
-    <string name="certconfig_alias">اسم الاسم المستعار في KeyStore</string>
-    <string name="certconfig_keystore_type">النوع</string>
-    <string name="certconfig_cert_entry_title">شهادة عميل TLS</string>
-    <string name="certconfig_keystore_file">ملف</string>
-    <string name="certconfig_keystore_password">كلمة المرور</string>
     <string name="call_max_transfer">الحد الأقصى للمكالمات المسموح بها لنقل المكالمة المراقب هو 2!</string>
     <string name="call_transfer_call">نقل المكالمة</string>
     <string name="call_transfer">نقل</string>
     <string name="call_transfer_failed">فشل في متابعة نقل المكالمة: %1$s ⇢ %2$s\n%3$s</string>
-    <string name="google_map">خريطة جوجل</string>
     <string name="call_transfer_hint">حدد اسم جهة الاتصال التي ترغب في النقل إليها ثم انقر على نقل.</string>
     <string name="call_transfer_msg">نقل مكالمة %1$s إلى… %2$s</string>
+
     <string name="attach_picture">صورة</string>
     <string name="attach_take_picture">التقاط صورة</string>
     <string name="attach_video">فيديو</string>
     <string name="attach_record_video">تسجيل فيديو</string>
+    <string name="attach_file">مشاركة ملف</string>
+    <string name="copy">نسخ</string>
+    <string name="delete">حذف</string>
+    <string name="edit">تعديل</string>
+    <string name="forward">إعادة توجيه…</string>
+    <string name="chat_message_long_press_hint">تجنب النقر داخل منطقة الرسالة لعملية اختيار متعدد العناصر</string>
+    <string name="quote">اقتباس</string>
+    <string name="reply">رد</string>
+    <string name="select_all">تحديد الكل</string>
+    <string name="subject">الموضوع</string>
+    <string name="settings">الإعدادات</string>
+
+    <!-- Block Command -->
+    <string name="contact_block_text">هل ترغب في حظر \'%1$s\' من إرسال الرسائل إليك؟</string>
+    <string name="contact_unblock_text">هل ترغب في إلغاء حظر \'%1$s\' والسماح لهم بإرسال الرسائل إليك؟</string>
+    <string name="domain_blocking">تطبيق على جميع جهات الاتصال من: %1$s</string>
+    <string name="contact_block">حظر جهة الاتصال</string>
+    <string name="contact_unblock">إلغاء حظر جهة الاتصال</string>
+    <string name="contact_blocked">تم حظر جهة الاتصال</string>
+    <string name="block">حظر</string>
+    <string name="unblock">إلغاء الحظر</string>
     <string name="block_list_title">قائمة الحظر</string>
     <string name="block_list_show">إظهار قائمة الحظر</string>
+
+    <!-- General -->
     <string name="accept">قبول</string>
     <string name="account">الحساب</string>
     <string name="account_me">أنا</string>
@@ -174,11 +92,6 @@
     <string name="account_unregistered">%1$s غير مسجل</string>
     <string name="add">إضافة</string>
     <string name="add_contact">إضافة جهة اتصال</string>
-    <string name="legal_info">معلومات قانونية</string>
-    <string name="play_service_not_installed">خدمات جوجل بلاي غير مثبتة على هذا الجهاز.</string>
-    <string name="split_street_view_panorama_and_map_description">يوضح كيفية إظهار بانوراما عرض الشارع والخريطة.</string>
-    <string name="invitation_message">رسالة الدعوة:</string>
-    <string name="invitation_received">تم استلام الدعوة</string>
     <string name="add_contact_to_list">إضافة %1$s إلى قائمة جهات الاتصال الخاصة بك</string>
     <string name="add_contact_to">إضافة جهة اتصال إلى</string>
     <string name="add_contact_failed">فشل في إضافة جهة الاتصال بمعرف: %1$s</string>
@@ -187,22 +100,11 @@
     <string name="add_contact_error_network">لم يستجب الخادم لطلبنا لإضافة جهة الاتصال بمعرف: %1$s.</string>
     <string name="add_contact_error_not_supported">فشل في إضافة جهة الاتصال بمعرف: %1$s. العملية غير مدعومة.</string>
     <string name="add_contact_error_not_connected">يجب أن تكون متصلاً لإضافة جهة اتصال. يرجى تسجيل الدخول إلى المزود المحدد وإعادة المحاولة.</string>
-    <string name="split_street_view_panorama_and_map_label">بانوراما عرض الشارع والخريطة</string>
-    <string name="map">الخريطة</string>
-    <string name="permission_location_rationale">الوصول إلى خدمة الموقع مطلوب لتوضيح ميزة \'موقعي\'، التي تظهر موقعك الحالي على الخريطة.</string>
-    <string name="move">نقل</string>
-    <string name="move_contact">نقل جهة الاتصال</string>
-    <string name="move_contact_error">لا يمكن نقل جهة الاتصال</string>
-    <string name="phones">الهواتف</string>
-    <string name="play">تشغيل</string>
-    <string name="postal_code">الرمز البريدي</string>
-    <string name="rename">إعادة تسمية</string>
-    <string name="save">حفظ</string>
-    <string name="show_stack_trace">إظهار تتبع المكدس</string>
-    <string name="street">الشارع</string>
     <string name="add_group_error_local">فشل في إضافة المجموعة باسم: %1$s. حدثت المشكلة أثناء عملية إدخال/إخراج محلية.</string>
     <string name="add_group_error_exist">المجموعة %1$s موجودة بالفعل في قائمة جهات الاتصال الخاصة بك. يرجى اختيار اسم آخر.</string>
     <string name="add_group_error_network">فشل في إضافة المجموعة باسم: %1$s. حدثت المشكلة بسبب فشل الشبكة. يرجى التحقق من اتصال الشبكة وإعادة المحاولة.</string>
+    <string name="add_group_failed">فشل في إضافة المجموعة باسم: %1$s.</string>
+    <string name="add_group_error_empty_name">يجب ألا يكون اسم المجموعة فارغًا.</string>
     <string name="add_group_create">إنشاء مجموعة</string>
     <string name="add_group_name">أدخل اسم المجموعة</string>
     <string name="answer">الرد…</string>
@@ -213,6 +115,7 @@
     <string name="authentication_requested">تم طلب المصادقة</string>
     <string name="authentication_requested_by_server">طلب خادم %1$s مصادقتك.</string>
     <string name="authentication_title">مصادقة %1$s</string>
+    <string name="authorize">تفويض</string>
     <string name="authorization_accepted">قبلت جهة الاتصال طلب التفويض الخاص بك.</string>
     <string name="authorization_rejected">رفضت جهة الاتصال طلب التفويض الخاص بك.</string>
     <string name="authorization_requested">تم طلب التفويض</string>
@@ -222,138 +125,24 @@
     <string name="away">غائب</string>
     <string name="avatar_set_error">فشل في تعيين الصورة الرمزية لـ %1$s</string>
     <string name="avatar_retrieving">جارٍ استرجاع الصورة الرمزية لـ %1$s</string>
+
     <string name="busy">مشغول</string>
     <string name="call_audio">مكالمة صوتية</string>
     <string name="call_answered">أجاب %1$s على المكالمة.</string>
     <string name="call_disable_on_fault">فشل aTalk في تهيئة %1$s\nسيتم تعطيل جميع مكالمات/خدمات الوسائط.\n%2$s</string>
+    <string name="call_ended">أنهى الطرف البعيد المكالمة: %1$s</string>
+    <string name="call_error">أعاد الطرف البعيد خطأ: %1$s</string>
+    <string name="call_failed">فشلت المكالمة</string>
     <string name="call_history_name">سجل المكالمات</string>
     <string name="call_history_remove_before_date_warning">هل أنت متأكد من أنك تريد حذف جميع سجلات المكالمات قبل التاريخ: %1$s؟</string>
     <string name="call_history_remove_none">لم يتم تحديد أي سجل للحذف</string>
     <string name="call_history_remove_warning">هل أنت متأكد من أنك تريد حذف جميع سجلات المكالمات المحددة؟</string>
     <string name="call_incoming">مكالمة واردة: %1$s</string>
     <string name="call_incoming_status">مكالمة واردة</string>
+    <string name="call_initiating">جارٍ بدء المكالمة</string>
     <string name="call_rejected">رفض %1$s المكالمة.</string>
     <string name="call_retracted">سحب %1$s المكالمة.</string>
-    <string name="submit">إرسال</string>
     <string name="call_missed">مكالمات فائتة من:</string>
-    <string name="user_login">يرجى تسجيل الدخول</string>
-    <string name="work">العمل</string>
-    <string name="btn_video_tooltip">تبديل الفيديو</string>
-    <string name="mic_control_title">مستوى كسب الميكروفون</string>
-    <string name="btn_mute_tooltip">ضبط صوت الميكروفون</string>
-    <string name="presence_not_supported">التواجد غير مدعوم من %1$s</string>
-    <string name="proactive_notification">يكتب رسالة (%1$s)</string>
-    <string name="recent_messages">المحادثات الأخيرة</string>
-    <string name="received_">تم استلام %1$s</string>
-    <string name="referred">تمت الإحالة</string>
-    <string name="restoring_">جارٍ الاستعادة…</string>
-    <string name="decline">رفض</string>
-    <string name="remove">إزالة</string>
-    <string name="remove_account">إزالة الحساب</string>
-    <string name="remove_account_prompt">هل أنت متأكد من أنك تريد إزالة الحساب:\n%1$s؟</string>
-    <string name="unknown_user">مستخدم غير معروف</string>
-    <string name="unknown_state">حالة غير معروفة</string>
-    <string name="url_example">https://www.example.com</string>
-    <string name="volume_control_title">مستوى كسب الصوت الناتج</string>
-    <string name="volume_control_tooltip">ضبط مستوى الصوت</string>
-    <string name="volume_gain_level">مستوى كسب الصوت: %1$d%%</string>
-    <string name="sec_protocols_title">بروتوكولات الأمان</string>
-    <string name="sec_protocols_message">يرجى اختيار ترتيب البروتوكولات المطلوب</string>
-    <string name="discard">تجاهل</string>
-    <string name="file_receive_failed">حدث خطأ أثناء نقل الملف من %1$s</string>
-    <string name="file_transfer_preparing">جارٍ تحضير نقل الملف مع %1$s. يرجى الانتظار…</string>
-    <string name="file_transfer_declined">تم رفض نقل الملف</string>
-    <string name="file_transfer_request_received">يشارك %1$s ملفًا معك</string>
-    <string name="file_transfer_send_error">حدث خطأ أثناء إرسال الملف إلى %1$s</string>
-    <string name="file_transfer_waiting_acceptance">في انتظار قبول %1$s لملفك</string>
-    <string name="purge">حذف</string>
-    <string name="estimated_time_">الوقت المقدر: %1$s</string>
-    <string name="invite">دعوة</string>
-    <string name="not_authorized_hint">ليس لديك إذن للوصول إلى الخادم. تحقق من إعدادات الحساب، كلمة المرور، أو قم بتمكين تسجيل IB وحاول مرة أخرى:\n %s</string>
-    <string name="registration_required">خطأ في تسجيل الحساب على الخادم\n: %s</string>
-    <string name="xmpp_connection_error">حدثت مشكلة أثناء الاتصال بـ XMPP:\n %s</string>
-    <string name="jan">يناير</string>
-    <string name="callinfo_audio_info">معلومات الصوت</string>
-    <string name="callinfo_bandwidth">عرض النطاق:</string>
-    <string name="callinfo_call_duration">مدة المكالمة:</string>
-    <string name="callinfo_call_identity">الهوية:</string>
-    <string name="callinfo_call_information">معلومات المكالمة</string>
-    <string name="callinfo_call_transport">نقل إشارة المكالمة:</string>
-    <string name="callinfo_codec">الترميز/التردد:</string>
-    <string name="callinfo_conference_focus">مركز المؤتمر:</string>
-    <string name="callinfo_default_encrypted">التشفير مفعل:</string>
-    <string name="callinfo_jitter">التقطع:</string>
-    <string name="callinfo_key_exchange_protocol">بروتوكول تبادل المفاتيح</string>
-    <string name="callinfo_local_ip">IP/منفذ محلي:</string>
-    <string name="callinfo_loss_rate">معدل الفقدان:</string>
-    <string name="callinfo_media_stream_rip">RTP:</string>
-    <string name="callinfo_media_srtp">SRTP:</string>
-    <string name="callinfo_media_stream_transport_protocol">بروتوكول نقل تيار الوسائط:</string>
-    <string name="callinfo_na">غير متاح</string>
-    <string name="imedia_security_retry_rate_exceeded"><html>عدد المحاولات أثناء التفاوض على الأمان مرتفع جدًا. قد يعني ذلك أن الطرف الآخر يعاني من مشاكل في الاتصال بالإنترنت.<br/><b>مكالمتك غير آمنة</b><br/>رمز الخطأ: %1$s</html></string>
-    <string name="settings_video_max_bw">عتبة توجيه RTP (كيلوبايت/ثانية)</string>
-    <string name="settings_video_fps_target">معدل الإطارات المستهدف (لكل ثانية)</string>
-    <string name="settings_messaging_security_summary">إعدادات أمان تشفير الرسائل</string>
-    <string name="settings_messaging_security">أمان الرسائل</string>
-    <string name="otr_messaging_security">أمان الرسائل OTR</string>
-    <string name="settings_CRYPTO_ENABLE_OFF">بدون تشفير الرسائل</string>
-    <string name="settings_CRYPTO_ENABLE_ON">تشفير الرسائل مفعل</string>
-    <string name="settings_CRYPTO_ENABLE_TITLE">الرسائل الخاصة</string>
-    <string name="settings_CRYPTO_AUTO_OFF">بدء جلسة تشفير الرسائل يدويًا</string>
-    <string name="settings_CRTOTI_AUTO_ON">بدء جلسة تشفير الرسائل تلقائيًا</string>
-    <string name="settings_CRYPTO_AUTO_TITLE">بدء الرسائل الخاصة تلقائيًا</string>
-    <string name="settings_CRYPTO_REQUIRE_OFF">سيتم استخدام الرسائل الآمنة إذا كانت مدعومة</string>
-    <string name="settings_CRYPTO_REQUIRE_ON">سيتم قبول الجلسات الآمنة فقط</string>
-    <string name="settings_CRYPTO_REQUIRE_TITLE">طلب الرسائل الخاصة</string>
-    <string name="omemo_messaging_security">أمان الرسائل OMEMO</string>
-    <string name="omemo_blind_trust_before_verification">الثقة العمياء قبل التحقق</string>
-    <string name="omemo_blind_trust_before_verification_summary">الثقة التلقائية في جميع الأجهزة الجديدة لجهات الاتصال التي لم يتم التحقق منها مسبقًا؛ طلب تأكيد يدوي عند إضافة جهات اتصال موثقة أجهزة جديدة.</string>
-    <string name="opus_complexity">تعقيد المشفر</string>
-    <string name="opus">Opus</string>
-    <string name="file">ملف</string>
-    <string name="file_delivery_error">فشل في إرسال الملف المحدد. %1$s</string>
-    <string name="waiting_for_authorization">في انتظار التفويض</string>
-    <string name="warning">تحذير</string>
-    <string name="callinfo_peer_count">عدد المشاركين:</string>
-    <string name="callinfo_remote_ip">IP/منفذ بعيد:</string>
-    <string name="callinfo_rtt">RTT:</string>
-    <string name="callinfo_details">تفاصيل معلومات المكالمة</string>
-    <string name="callinfo_tls_cipher_suite">مجموعة تشفير TLS:</string>
-    <string name="callinfo_tls_certificate_content">يتم عرض محتوى شهادة خادم TLS أدناه.</string>
-    <string name="callinfo_tls_protocol">بروتوكول TLS:</string>
-    <string name="callinfo_view_certificate">عرض الشهادة</string>
-    <string name="callinfo_video_size">حجم الفيديو</string>
-    <string name="callinfo_video_info">معلومات الفيديو</string>
-    <string name="callinfo_adaptive_jitter_buffer">مخزن التقطع التكيفي:</string>
-    <string name="callinfo_decoded_with_fec">الحزم المفككة باستخدام FEC:</string>
-    <string name="callinfo_discarded_percent">الحزم التي يتم تجاهلها حاليًا:</string>
-    <string name="callinfo_harvesting_data">%1$d مللي ثانية (لـ %2$d حصاد)</string>
-    <string name="callinfo_harvesting_time">وقت الحصاد:</string>
-    <string name="callinfo_candidate_extended_type">نوع مرشح ICE الموسع:</string>
-    <string name="callinfo_localhost_address">عنوان/منفذ المضيف المحلي:</string>
-    <string name="callinfo_ice_local_reflexive_address">IP/منفذ محلي انعكاسي:</string>
-    <string name="callinfo_ice_local_relayed_address">IP/منفذ محلي مرحل:</string>
-    <string name="callinfo_ice_remote_host_address">IP/منفذ مضيف بعيد:</string>
-    <string name="callinfo_ice_remote_reflexive_address">IP/منفذ بعيد انعكاسي:</string>
-    <string name="callinfo_ice_remote_relayed_address">IP/منفذ بعيد مرحل:</string>
-    <string name="callinfo_ice_state">حالة معالجة ICE:</string>
-    <string name="callinfo_ice_state_completed">مكتمل</string>
-    <string name="callinfo_ice_state_failed">فشل</string>
-    <string name="callinfo_ice_state_running">فحوصات الاتصال</string>
-    <string name="callinfo_ice_state_waiting">جمع المرشحين</string>
-    <string name="callinfo_ice_state_jitter_buffer_delay">مخزن التقطع:</string>
-    <string name="callinfo_total_harvesting_time">إجمالي وقت الحصاد:</string>
-    <string name="trust_always">الثقة دائمًا بهذه الشهادة</string>
-    <string name="cert_dialog_title">التحقق من الشهادة</string>
-    <string name="unsaved_changes">لديك تغييرات غير محفوظة. احفظ أو ألغِ واخرج.</string>
-    <string name="unsaved_changes_title">تغييرات غير محفوظة</string>
-    <string name="please_wait">يرجى الانتظار…</string>
-    <string name="server_info_fetching">جارٍ جلب الميزات/المعلومات المعلن عنها من الخادم…</string>
-    <string name="certificate_hide">إخفاء الشهادة</string>
-    <string name="accountinfo_city">المدينة:</string>
-    <string name="accountinfo_country">الدولة:</string>
-    <string name="notificationconfig_popup_notification">إشعار منبثق</string>
-    <string name="notificationconfig_vibration">الاهتزاز</string>
     <string name="call_no_active_device">لم يتمكن aTalk من العثور على أي أجهزة صوت/فيديو نشطة، وبالتالي لا يمكن إنشاء المكالمة.</string>
     <string name="call_no_audio_device">لم يتم تهيئة جهاز صوتي.</string>
     <string name="call_no_audio_codec">لم يتم تمكين أي ترميز صوتي.</string>
@@ -365,8 +154,10 @@
     <string name="call_via_">الاتصال عبر: %1$s</string>
     <string name="call_video">مكالمة فيديو</string>
     <string name="call_with">الاتصال مع:</string>
+
     <string name="cancel">إلغاء</string>
     <string name="contact_invalid">جهة الاتصال المحددة غير صالحة: %1$s</string>
+    <string name="dismiss">رفض</string>
     <string name="done">تم</string>
     <string name="mark_as_read">وضع علامة كمقروء</string>
     <string name="reason">السبب:</string>
@@ -375,8 +166,30 @@
     <string name="share_text">مشاركة نص…</string>
     <string name="share_file">مشاركة ملف…</string>
     <string name="snooze">تأجيل</string>
+
+    <!-- ExoPlayer -->
+    <string name="playback_error">لا يمكن العثور على أي محتوى وسائط للتشغيل</string>
+    <string name="playback_buffering">جارٍ التخزين المؤقت…</string>
+    <string name="playback_completed">انتهى تشغيل الوسائط</string>
+    <string name="playback_rate">معدل التشغيل: %1$s</string>
+
+    <!-- Conference Chat -->
+    <string name="auto_join">الانضمام تلقائيًا</string>
+    <string name="change_nickname">تغيير الاسم المستعار</string>
+    <string name="change_nickname_">تغيير الاسم المستعار…</string>
+    <string name="change_nickname_error_conflict">الاسم المستعار موجود بالفعل</string>
+    <string name="change_nickname_error">خطأ في تغيير الاسم المستعار لـ %1$s: %2$s</string>
+    <string name="change_nickname_label">في الحقل أدناه، يمكنك إدخال اسمك المستعار الجديد.</string>
+    <string name="change_nickname_null">لا يمكن أن يكون محتوى حقل الاسم المستعار فارغًا</string>
+    <string name="chatroom_change_info">تغيير معلومات غرفة الدردشة</string>
     <string name="chatroom_change_subject">في الحقل أدناه، يمكنك إدخال الموضوع الجديد لهذه الغرفة.</string>
     <string name="change_video_remote_quality">تغيير جودة الفيديو البعيد</string>
+    <string name="chatroom_conference_item">مؤتمر %1$s</string>
+    <string name="chatroom_conference">المؤتمرات</string>
+    <string name="chatroom">غرفة الدردشة</string>
+    <string name="chatroom_already_joined">لقد انضممت بالفعل إلى غرفة الدردشة %1$s.</string>
+    <string name="chatroom_configuration">تكوين غرفة الدردشة</string>
+    <string name="chatroom_configuration_failed">فشل في الحصول على نموذج تكوين غرفة الدردشة %1$s.</string>
     <string name="chatroom_configuration_forbidden">تعذر الحصول على نموذج تكوين غرفة الدردشة %1$s. يمكن فقط لمالكي غرفة الدردشة رؤية وتغيير نموذج التكوين.</string>
     <string name="chatroom_configuration_members_edit_description">تحتوي القائمة على اليمين على المستخدمين الذين لديهم دور العضو في غرفة الدردشة هذه. عندما تكون غرفة الدردشة \'للأعضاء فقط\'، سيكون هؤلاء المستخدمون هم المسموح لهم بالانضمام.</string>
     <string name="chatroom_configuration_members_edit_title">تعديل قائمة الأعضاء</string>
@@ -407,23 +220,44 @@
     <string name="connected">متصل</string>
     <string name="connecting_">جارٍ الاتصال بـ %1$s</string>
     <string name="connecting_status">جارٍ الاتصال…</string>
-    <string name="file_does_not_exist">تعذر العثور على الملف المحدد. إما أنه تم حذفه أو نقله</string>
-    <string name="file_open_failed">فشل في فتح الملف. قد يكون تم حذفه أو نقله</string>
     <string name="connection_failed_message">فشل تسجيل الدخول للاتصال بالحساب: اسم المستخدم: %1$s\nاسم الخادم: %2$s\nيرجى التحقق من اتصال الشبكة أو التواصل مع مدير الشبكة لمزيد من المعلومات.</string>
     <string name="connecting">الاتصال</string>
     <string name="contact_active">** %1$s نشط في جلسة الدردشة</string>
     <string name="contact_composing">** %1$s يكتب رسالة</string>
     <string name="contact_inactive">** %1$s غائب مؤقتًا</string>
+    <string name="contact_gone">** %1$s غادر جلسة الدردشة</string>
     <string name="contact_info">معلومات جهة الاتصال</string>
     <string name="contact_name">معرف JID أو رقم جهة الاتصال</string>
     <string name="contact_name_empty">يجب ألا يكون اسم العرض لجهة الاتصال فارغًا.</string>
+    <string name="contact_owner">مالك جهة الاتصال: %1$s</string>
+    <string name="contact_pause_typing">** %1$s توقف عن الكتابة</string>
+    <string name="contact_rename">اسم جهة الاتصال الجديد:</string>
+    <string name="contact_rename_tooltip">أدخل اسم جهة الاتصال الجديد</string>
+    <string name="contact_rename_title">تغيير اسم جهة الاتصال</string>
+    <string name="contacts">جهات الاتصال</string>
+    <string name="contact_offline_hide">إخفاء جهات الاتصال غير المتصلة</string>
+    <string name="contact_offline_show">إظهار جهات الاتصال غير المتصلة</string>
+    <string name="copy_message_text">نسخ نص الرسالة</string>
+
+    <string name="create">إنشاء</string>
     <string name="create_call_failed">فشل في إنشاء المكالمة.</string>
     <string name="create_conference_call">إنشاء مكالمة جماعية…</string>
     <string name="create_conference_chat">إنشاء دردشة جماعية…</string>
+    <string name="create_group">إنشاء مجموعة…</string>
+    <string name="create_group_name_invalid">اسم مجموعة غير صالح: %1$s</string>
+    <string name="create_group_name">في الحقل أدناه، أدخل اسم المجموعة التي ترغب في إنشائها.</string>
+    <string name="create_group_first_wizard">قائمة جهات الاتصال الخاصة بك لا تحتوي على أي مجموعات. يرجى إنشاء مجموعة أولاً (ملف/إنشاء مجموعة).</string>
+
+    <!-- About Dialog -->
+    <string name="aboutDialog_help"><a href="https://cmeng-git.github.io/atalk">المساعدة عبر الإنترنت</a></string>
+    <string name="About">حول</string>
+    <string name="version_">الإصدار %1$s</string>
     <string name="help">المساعدة</string>
     <string name="check_new_version">التحقق من التحديث</string>
     <string name="show_history_log">سجلات التاريخ</string>
     <string name="online_help">المساعدة عبر الإنترنت</string>
+
+    <!-- HTTP Authorization Request Dialog -->
     <string name="http_authorization_request">طلب تفويض HTTP</string>
     <string name="http_authorization_request_instruction">تفويض HTTP (%1$s) لـ %2$s\nرمز التحقق: %3$s\nهل تقبل هذا الطلب للحساب:\n%4$s؟\n\nتحقق من تطابق المعرف المعطى مع الموقع إذا كان متاحًا</string>
     <string name="app_authors_fmt">المؤلفون: %1$s</string>
@@ -431,9 +265,13 @@
     <string name="app_revision_fmt">معلومات المراجعة: %1$s</string>
     <string name="app_xep">يدعم aTalk XEPs التالية: %1$s</string>
     <string name="powered_by">مدعوم من atalk.org</string>
+
+    <!-- PTT Chat -->
     <string name="chat_audio_buddy_offline">الدردشة الصوتية مع مستلم غير متصل غير مسموح بها.</string>
     <string name="chat_audio_cancel">&lt; اسحب لليسار\nللإلغاء</string>
     <string name="chat_audio_start_record">بدء التسجيل</string>
+
+    <!-- GPS Location -->
     <string name="latitude">خط العرض:</string>
     <string name="location">الموقع:</string>
     <string name="longitude">خط الطول:</string>
@@ -447,8 +285,21 @@
     <string name="single_location_fix">تحديث موقع واحد</string>
     <string name="follow_me_start">اتبعني (%1$dm) @%2$dS</string>
     <string name="follow_me_stop">إيقاف اتبعني (%1$dm) @%2$dS</string>
+
+    <!-- Google Map -->
+    <string name="google_map">خريطة جوجل</string>
+    <string name="legal_info">معلومات قانونية</string>
+    <string name="play_service_not_installed">خدمات جوجل بلاي غير مثبتة على هذا الجهاز.</string>
+    <string name="split_street_view_panorama_and_map_description">يوضح كيفية إظهار بانوراما عرض الشارع والخريطة.</string>
+    <string name="split_street_view_panorama_and_map_label">بانوراما عرض الشارع والخريطة</string>
+    <string name="map">الخريطة</string>
+
+    <!-- Location Permissions -->
+    <string name="permission_location_rationale">الوصول إلى خدمة الموقع مطلوب لتوضيح ميزة \'موقعي\'، التي تظهر موقعك الحالي على الخريطة.</string>
     <string name="permission_location_denied">يتطلب هذا العينة إذن الموقع لتمكين طبقة \'موقعي\'. يرجى المحاولة مرة أخرى ومنح الوصول لاستخدام الموقع.\nإذا تم رفض الإذن بشكل دائم، يمكن تمكينه من إعدادات النظام &gt; التطبيقات &gt; \'عروض واجهة برمجة تطبيقات خرائط جوجل\'.</string>
     <string name="permission_location_required">إذن الموقع مطلوب لهذا العرض.</string>
+
+    <!-- Persistent Store -->
     <string name="export_sql_db">تصدير قاعدة بيانات SQL لـ aTalk</string>
     <string name="purge_debug_log">حذف ملف سجل التصحيح لـ aTalk</string>
     <string name="purge_sql_db">حذف قاعدة بيانات SQL لـ aTalk - خطر!</string>
@@ -460,6 +311,7 @@
     <string name="refresh_store_hint">حدد العنصر لتنظيف وتحديث مخزنه الدائم؛ قم بذلك فقط عند الضرورة!\n</string>
     <string name="refresh_store_roster">XEP-0237: قائمة الاتصال</string>
     <string name="refresh_store_omemo">XEP-0384: تشفير OMEMO</string>
+
     <string name="unregistered_message">فشل تسجيل الدخول للاتصال بالحساب:\nاسم المستخدم: %1$s\nاسم الخادم: %2$s\nالحساب غير متصل.</string>
     <string name="create_videoBridge">إنشاء جسر فيديو…</string>
     <string name="create_videoBridge_menu">إنشاء جسر فيديو</string>
@@ -473,6 +325,7 @@
     <string name="contact_display_name">اسم عرض جهة الاتصال</string>
     <string name="do_not_disturb">عدم الإزعاج</string>
     <string name="duration">المدة</string>
+
     <string name="edit_status_message_tip">تعيين رسالة الحالة</string>
     <string name="edited">تم التعديل</string>
     <string name="enter_name_or_number">أدخل الاسم أو الرقم</string>
@@ -481,9 +334,29 @@
     <string name="exit">خروج</string>
     <string name="extended_away">غائب لفترة طويلة</string>
     <string name="free_for_chat">متاح للدردشة</string>
+
+    <!-- File Transfer (xFile prefix with date) -->
     <string name="file_byte_sent">تم إرسال %1$s</string>
     <string name="file_receive_completed">تم استلام الملف من %1$s</string>
-    <string name="cr_member_start_conversation">بدء المحادثة</string>
+    <string name="file_receive_failed">حدث خطأ أثناء نقل الملف من %1$s</string>
+    <string name="file_receive_from">جارٍ استلام ملف من %1$s</string>
+    <string name="file_send_completed">تم إرسال الملف بنجاح إلى %1$s</string>
+    <string name="file_send_declined">رفض %1$s هذا الملف</string>
+    <string name="file_sending_to">جارٍ إرسال ملف إلى %1$s</string>
+    <string name="file_transfer_accepted">تم قبول نقل الملف</string>
+    <string name="file_transfer_canceled">تم إلغاء نقل الملف</string>
+    <string name="file_transfer_preparing">جارٍ تحضير نقل الملف مع %1$s. يرجى الانتظار…</string>
+    <string name="file_transfer_declined">تم رفض نقل الملف</string>
+    <string name="file_transfer_request_received">يشارك %1$s ملفًا معك</string>
+    <string name="file_transfer_send_error">حدث خطأ أثناء إرسال الملف إلى %1$s</string>
+    <string name="file_transfer_waiting_acceptance">في انتظار قبول %1$s لملفك</string>
+
+    <string name="purge">حذف</string>
+    <string name="estimated_time_">الوقت المقدر: %1$s</string>
+    <string name="file">ملف</string>
+    <string name="file_delivery_error">فشل في إرسال الملف المحدد. %1$s</string>
+    <string name="file_does_not_exist">تعذر العثور على الملف المحدد. إما أنه تم حذفه أو نقله</string>
+    <string name="file_open_failed">فشل في فتح الملف. قد يكون تم حذفه أو نقله</string>
     <string name="file_open_no_application">لم نتمكن من العثور على التطبيق المرتبط بهذا النوع من الملفات</string>
     <string name="file_open_no_permission">ليس لديك أذونات كافية لفتح هذا الملف. يرجى التحقق من أذونات القراءة وإعادة المحاولة</string>
     <string name="file_open_not_supported">عملية فتح الملف غير مدعومة على منصة جهازك الحالية</string>
@@ -494,7 +367,8 @@
     <string name="file_size_too_big">حجم الملف يتجاوز الحد الأقصى المسموح لهذا البروتوكول: %1$s</string>
     <string name="file_transfer_active">تمت مقاطعة نقل الملف الجاري. فقدان تتبع الحالة @ %1$s!</string>
     <string name="file_transfer_not_secure">بروتوكول نقل الملفات SI (XEP-0096) لا يدعم إرسال الملفات المشفرة!</string>
-    <string name="file_transfer_not_supported">عميل جهة الاتصال أو الخادم لا يدعم نقل الملفات أو البروتوكولات المطلوبة</string>
+    <string name="file_transfer_not_supported">عميل جهة الاتصال أو (%1$s) الخادم لا يدعم نقل الملفات أو البروتوكولات المطلوبة</string>
+
     <string name="finish">إنهاء</string>
     <string name="folder_not_exist">تعذر العثور على المجلد الذي يحتوي على هذا الملف. إما أنه تم حذفه أو نقله</string>
     <string name="folder_open_failed">فشل في فتح المجلد</string>
@@ -514,12 +388,14 @@
     <string name="history_purge_error">خطأ في إزالة الرسائل المخزنة محليًا لـ %1$s.</string>
     <string name="history_purge_media">حذف الوسائط من هاتفي</string>
     <string name="history_offline_warning">أغلق وافتح جلسة الدردشة هذه لعرض رسائل MAM والرسائل غير المتصلة عندما تكون متصلاً</string>
+
     <string name="chatroom_alternate_venue">مكان بديل:</string>
     <string name="chatroom_alternate_address">يمكنك متابعة المحادثة في غرفة الدردشة التالية: %1$s</string>
     <string name="chatroom_bookmark_title">إشارة مرجعية لغرفة الدردشة</string>
     <string name="chatroom_bookmark">إشارة مرجعية</string>
     <string name="chatroom_auto_join">الانضمام تلقائيًا</string>
     <string name="chatroom_bookmark_update_failed">فشل في تحديث الإشارات المرجعية لـ %1$s: %2$s</string>
+
     <string name="chatroom_occupant">أعضاء غرفة الدردشة</string>
     <string name="chatroom_history_erase_per">محو تاريخ غرفة الدردشة هذه</string>
     <string name="chatroom_history_erase_all">محو تاريخ جميع غرف الدردشة</string>
@@ -529,9 +405,22 @@
     <string name="chatroom_info_subject">الموضوع</string>
     <string name="chatroom_info_description">الوصف</string>
     <string name="chatroom_info_occupants">الأعضاء</string>
+    <string name="chatroom_info_member_only">للأعضاء فقط</string>
+    <string name="chatroom_info_moderated">مُدار</string>
+    <string name="chatroom_info_non_anonymous">غير مجهول</string>
+    <string name="chatroom_info_password_protected">محمي بكلمة مرور</string>
+    <string name="chatroom_info_persistent">دائم</string>
+    <string name="chatroom_info_max_history_fetch">الحد الأقصى للتاريخ</string>
+    <string name="chatroom_info_contact_jid">معرف JID لجهة الاتصال</string>
+    <string name="chatroom_info_subject_modifiable">الموضوع قابل للتعديل</string>
+    <string name="chatroom_info_language">اللغة</string>
+    <string name="chatroom_info_ldap_group">مجموعة LDAP</string>
+
+    <string name="chatroom_create">إنشاء غرفة دردشة…</string>
     <string name="chatroom_create_error">فشل في إنشاء غرفة الدردشة لـ:\n%1$s</string>
     <string name="chatroom_create_join">إنشاء/الانضمام إلى غرفة دردشة</string>
     <string name="chatroom_create_wizard">معالج إنشاء غرفة الدردشة</string>
+
     <string name="chatroom_destroy">تدمير غرفة الدردشة هذه</string>
     <string name="chatroom_destroy_exception">حدث خطأ أثناء تدمير غرفة الدردشة:\n%1$s</string>
     <string name="chatroom_destroy_error">فشل في إزالة غرفة الدردشة على الخادم:\n\'%1$s\'\n%2$s\n\nالمتابعة لحذف غرفة الدردشة المحلية.</string>
@@ -541,6 +430,7 @@
     <string name="chatroom_destroy_reason">دردشة جماعية غير نشطة</string>
     <string name="chatroom_destroy_successful">تم إزالة \'%1$s\' بنجاح!</string>
     <string name="chatroom_destroy_title">تدمير غرفة الدردشة</string>
+
     <string name="chatroom_join_failed">فشل في الانضمام إلى الغرفة بالاسم المستعار: %1$s\n%2$s.</string>
     <string name="chatroom_join_failed_reason">فشل في الانضمام إلى غرفة الدردشة %1$s:\n%2$s</string>
     <string name="chatroom_join_password">غرفة الدردشة تطلب كلمة مرور.</string>
@@ -549,8 +439,17 @@
     <string name="chatroom_join_name">يرجى إدخال اسم غرفة الدردشة التي ترغب في الانضمام إليها.</string>
     <string name="chatroom_join_subject_null">يرجى إدخال موضوع لغرفة الدردشة</string>
     <string name="chatroom_join_wizard">معالج الانضمام إلى غرفة الدردشة</string>
+
+    <string name="cr_member_start_conversation">بدء المحادثة</string>
+    <string name="cr_member_grant_owner_privilege">منح امتيازات المالك</string>
+    <string name="cr_member_revoke_owner_privilege">سحب امتيازات المالك</string>
+    <string name="cr_member_kick">إزالة من الدردشة الجماعية</string>
+
+    <string name="invitation_message">رسالة الدعوة:</string>
+    <string name="invitation_received">تم استلام الدعوة</string>
     <string name="invitation_received_message">دعاك %1$s للانضمام إلى غرفة الدردشة %2$s. يمكنك قبول الدعوة أو رفضها أو تجاهلها.</string>
     <string name="invitation_rejected">رفض %1$s دعوتك للانضمام إلى غرفة الدردشة. السبب: %2$s.</string>
+    <string name="invite">دعوة</string>
     <string name="invite_contact_message">حدد أسماء جهات الاتصال التي ترغب في إضافتها إلى هذه المحادثة ثم انقر على دعوة.</string>
     <string name="invite_contact_to_call">دعوة جهات الاتصال للمكالمة</string>
     <string name="invite_contact_to_chat">دعوة جهات الاتصال للدردشة</string>
@@ -561,6 +460,7 @@
     <string name="invite_reject_busy">مشغول</string>
     <string name="ignore">تجاهل</string>
     <string name="info">معلومات</string>
+
     <string name="address">العنوان</string>
     <string name="city">المدينة</string>
     <string name="country">الدولة</string>
@@ -575,6 +475,7 @@
     <string name="join_existing_video_conference">الانضمام إلى مؤتمر فيديو موجود</string>
     <string name="join_video">الانضمام إلى الفيديو</string>
     <string name="job_title">المسمى الوظيفي</string>
+
     <string name="join_automatically">الانضمام تلقائيًا</string>
     <string name="do_not_join_automatically">عدم الانضمام تلقائيًا</string>
     <string name="kick">طرد</string>
@@ -590,6 +491,12 @@
     <string name="leave_chat_room">مغادرة غرفة الدردشة</string>
     <string name="locally_on_hold">في الانتظار محليًا</string>
     <string name="login_credential">بيانات تسجيل دخول المستخدم</string>
+    <string name="login_failed">فشل تسجيل الدخول</string>
+    <string name="logoff_failed">حدث خطأ أثناء تسجيل الخروج من الحساب التالي: اسم المستخدم: %1$s، اسم الخادم: %2$s.</string>
+    <string name="mobile">الهاتف المحمول</string>
+    <string name="move">نقل</string>
+    <string name="move_contact">نقل جهة الاتصال</string>
+    <string name="move_contact_error">لا يمكن نقل جهة الاتصال</string>
     <string name="move_contact_message">حدد جهة الاتصال أو المجموعة التي ترغب في نقل جهة الاتصال المحددة إليها.</string>
     <string name="move_contact_failed">جهة الاتصال التي اخترتها هي نفسها\nجهة الاتصال المصدر. يرجى اختيار جهة اتصال أخرى!</string>
     <string name="move_contact_prompt">هل أنت متأكد من أنك تريد نقل %1$s إلى %2$s؟</string>
@@ -597,6 +504,7 @@
     <string name="nickname">الاسم المستعار</string>
     <string name="chatroom_open_automatically">فتح هذه الغرفة تلقائيًا عند</string>
     <string name="personal">شخصي</string>
+
     <string name="message_delivery_error">فشل في تسليم الرسالة.</string>
     <string name="message_delivery_failed">تعذر تسليم الرسالة أعلاه</string>
     <string name="message_delivery_internal_error">حدث خطأ داخلي. هذا على الأرجح خطأ برمجي. يرجى الإبلاغ عنه عبر سجل التصحيح.</string>
@@ -606,6 +514,7 @@
     <string name="message_delivery_network_error">حدثت مشكلة في الشبكة. يرجى التحقق من تكوين الشبكة وإعادة المحاولة.</string>
     <string name="message_received">كتب %1$s</string>
     <string name="message_delivery_not_registered">يجب تسجيل الدخول أولاً لإرسال رسالة.</string>
+
     <string name="multiple_login">لا يُسمح بتسجيل دخول متعدد في نفس الوقت. تم قطع الاتصال بالحساب التالي: اسم المستخدم: %1$s، اسم الخادم: %2$s.</string>
     <string name="mutually_on_hole">في الانتظار بشكل متبادل</string>
     <string name="name">الاسم</string>
@@ -614,6 +523,7 @@
     <string name="no">لا</string>
     <string name="no_online_telephony_account">يلزم وجود حساب هاتفي متصل واحد على الأقل لإجراء مكالمة. يرجى تسجيل الدخول إلى أحد حساباتك الهاتفية وإعادة المحاولة.</string>
     <string name="not_authorized">غير مخول</string>
+    <string name="not_authorized_hint">ليس لديك إذن للوصول إلى الخادم. تحقق من إعدادات الحساب، كلمة المرور، أو قم بتمكين تسجيل IB وحاول مرة أخرى:\n %s</string>
     <string name="off">إيقاف</string>
     <string name="offline">غير متصل</string>
     <string name="ok">موافق</string>
@@ -625,12 +535,42 @@
     <string name="other">أخرى</string>
     <string name="organization">المنظمة</string>
     <string name="phone">الهاتف</string>
+    <string name="phones">الهواتف</string>
+    <string name="play">تشغيل</string>
+    <string name="postal_code">الرمز البريدي</string>
+    <string name="rename">إعادة تسمية</string>
+    <string name="registration_required">خطأ في تسجيل الحساب على الخادم\n: %s</string>
+    <string name="save">حفظ</string>
+    <string name="show_stack_trace">إظهار تتبع المكدس</string>
+    <string name="street">الشارع</string>
+    <string name="submit">إرسال</string>
+    <string name="user_login">يرجى تسجيل الدخول</string>
+    <string name="work">العمل</string>
+    <string name="xmpp_connection_error">حدثت مشكلة أثناء الاتصال بـ XMPP:\n %s</string>
+
+    <!-- Call -->
+    <string name="btn_video_tooltip">تبديل الفيديو</string>
+    <string name="mic_control_title">مستوى كسب الميكروفون</string>
+    <string name="btn_mute_tooltip">ضبط صوت الميكروفون</string>
+    <string name="presence_not_supported">التواجد غير مدعوم من %1$s</string>
+    <string name="proactive_notification">يكتب رسالة (%1$s)</string>
+    <string name="recent_messages">المحادثات الأخيرة</string>
+    <string name="received_">تم استلام %1$s</string>
+    <string name="referred">تمت الإحالة</string>
+    <string name="restoring_">جارٍ الاستعادة…</string>
+
+    <string name="decline">رفض</string>
+    <string name="remove">إزالة</string>
+    <string name="remove_account">إزالة الحساب</string>
+    <string name="remove_account_prompt">هل أنت متأكد من أنك تريد إزالة الحساب:\n%1$s؟</string>
+    <string name="remove_contact">إزالة جهة الاتصال</string>
     <string name="remove_contact_prompt">مالك جهة الاتصال: %1$s.\n\nهل أنت متأكد من أنك تريد إزالة جهة الاتصال: \'%2$s\' من قائمة جهات الاتصال الخاصة بك؟</string>
     <string name="remove_contact_not_connected">يجب أن تكون متصلاً لإزالة هذه جهة الاتصال. يرجى تسجيل الدخول وإعادة المحاولة.</string>
     <string name="remove_group">إزالة المجموعة</string>
     <string name="remove_group_prompt">هل أنت متأكد من أنك تريد إزالة المجموعة: \'%1$s\' وجميع جهات الاتصال المرتبطة بها من قائمة جهات الاتصال الخاصة بك؟</string>
     <string name="remotely_on_hold">في الانتظار عن بُعد</string>
     <string name="rename_contact">تغيير اسم جهة الاتصال</string>
+
     <string name="ringing">الرنين</string>
     <string name="request">طلب</string>
     <string name="request_authorization">طلب التفويض</string>
@@ -643,11 +583,14 @@
     <string name="select_account_owner">تحديد مالك الحساب</string>
     <string name="assign_group">المجموعة المخصصة لجهة الاتصال:</string>
     <string name="no_group">لا توجد مجموعة</string>
+
+    <!-- Logs -->
     <string name="send_log">الإبلاغ عن الأخطاء</string>
     <string name="send_log_prompt">لقد تعافى aTalk للتو من تعطل خطير. هل ترغب في الإبلاغ عن الأخطاء للمطورين؟</string>
     <string name="send_log_subject">تقرير أخطاء aTalk</string>
     <string name="send_log_title">تقرير أخطاء aTalk عبر البريد الإلكتروني</string>
     <string name="send_log_info">المعلومات أدناه يمكن أن تساعد المطور في إصلاح المشكلة:\n\n 1. ما هو آخر شيء قمت به قبل حدوث المشكلة؟\n\n\n 2. ما هي المشكلة التي رأيتها، قم بإدراج لقطة شاشة للعرض إذا كانت متاحة؟\n\n\n 3. هل يمكنك تكرار المشكلة أو كيف يمكن تكرارها؟</string>
+
     <string name="send_message">إرسال رسالة</string>
     <string name="send_message_failed">فشل في إرسال الرسالة: %1$s</string>
     <string name="send_message_not_supported">الكيان الذي اخترته لا يدعم المراسلة الفورية: %1$s</string>
@@ -660,8 +603,18 @@
     <string name="status">الحالة</string>
     <string name="type_your_request_reason">اكتب سبب طلبك</string>
     <string name="unknown">غير معروف</string>
+    <string name="unknown_user">مستخدم غير معروف</string>
+    <string name="unknown_state">حالة غير معروفة</string>
+    <string name="url_example">https://www.example.com</string>
+    <string name="volume_control_title">مستوى كسب الصوت الناتج</string>
+    <string name="volume_control_tooltip">ضبط مستوى الصوت</string>
+    <string name="volume_gain_level">مستوى كسب الصوت: %1$d%%</string>
+    <string name="waiting_for_authorization">في انتظار التفويض</string>
+    <string name="warning">تحذير</string>
     <string name="call_in_progress_warning">لا يمكن القيام بذلك أثناء مكالمة</string>
     <string name="yes">نعم</string>
+
+    <!-- Sign in -->
     <string name="account_create_failed">فشل في إنشاء حساب جديد بسبب خطأ: %1$s</string>
     <string name="create_account">إنشاء حساب</string>
     <string name="general_error">خطأ عام</string>
@@ -681,6 +634,8 @@
     <string name="username_password_null">يرجى إدخال اسم مستخدم و/أو كلمة مرور صحيحة.</string>
     <string name="username_change_warning">تحذير: تغيير اسم مستخدم الحساب إلى \'%1$s\' سيؤدي أيضًا إلى حذف رسائل %2$s للحساب الحالي \'%3$s\'. هل تريد المتابعة؟</string>
     <string name="user_exist_error">هذا المستخدم موجود بالفعل على الشبكة المحددة. يرجى اختيار مستخدم أو شبكة أخرى.</string>
+
+    <string name="jan">يناير</string>
     <string name="feb">فبراير</string>
     <string name="mar">مارس</string>
     <string name="apr">أبريل</string>
@@ -692,7 +647,62 @@
     <string name="oct">أكتوبر</string>
     <string name="nov">نوفمبر</string>
     <string name="dec">ديسمبر</string>
+
+    <!-- Call info -->
     <string name="protocol_ice_failed">تعذر إنشاء الاتصال (فشل ICE ولم يتم العثور على مرحل)</string>
+    <string name="callinfo_audio_info">معلومات الصوت</string>
+    <string name="callinfo_bandwidth">عرض النطاق:</string>
+    <string name="callinfo_call_duration">مدة المكالمة:</string>
+    <string name="callinfo_call_identity">الهوية:</string>
+    <string name="callinfo_call_information">معلومات المكالمة</string>
+    <string name="callinfo_call_transport">نقل إشارة المكالمة:</string>
+    <string name="callinfo_codec">الترميز/التردد:</string>
+    <string name="callinfo_conference_focus">مركز المؤتمر:</string>
+    <string name="callinfo_default_encrypted">التشفير مفعل:</string>
+    <string name="callinfo_jitter">التقطع:</string>
+    <string name="callinfo_key_exchange_protocol">بروتوكول تبادل المفاتيح</string>
+    <string name="callinfo_local_ip">IP/منفذ محلي:</string>
+    <string name="callinfo_loss_rate">معدل الفقدان:</string>
+    <string name="callinfo_media_stream_rip">RTP:</string>
+    <string name="callinfo_media_srtp">SRTP:</string>
+    <string name="callinfo_media_stream_transport_protocol">بروتوكول نقل تيار الوسائط:</string>
+    <string name="callinfo_na">غير متاح</string>
+    <string name="callinfo_peer_count">عدد المشاركين:</string>
+    <string name="callinfo_remote_ip">IP/منفذ بعيد:</string>
+    <string name="callinfo_rtt">RTT:</string>
+    <string name="callinfo_details">تفاصيل معلومات المكالمة</string>
+    <string name="callinfo_tls_cipher_suite">مجموعة تشفير TLS:</string>
+    <string name="callinfo_tls_certificate_content">يتم عرض محتوى شهادة خادم TLS أدناه.</string>
+    <string name="callinfo_tls_protocol">بروتوكول TLS:</string>
+    <string name="callinfo_view_certificate">عرض الشهادة</string>
+    <string name="callinfo_video_size">حجم الفيديو</string>
+    <string name="callinfo_video_info">معلومات الفيديو</string>
+    <string name="callinfo_adaptive_jitter_buffer">مخزن التقطع التكيفي:</string>
+    <string name="callinfo_decoded_with_fec">الحزم المفككة باستخدام FEC:</string>
+    <string name="callinfo_discarded_percent">الحزم التي يتم تجاهلها حاليًا:</string>
+    <string name="callinfo_discarded_total">عدد الحزم المتجاهلة:</string>
+
+    <!-- ICE info -->
+    <string name="callinfo_harvesting_data">%1$d مللي ثانية (لـ %2$d حصاد)</string>
+    <string name="callinfo_harvesting_time">وقت الحصاد:</string>
+    <string name="callinfo_candidate_extended_type">نوع مرشح ICE الموسع:</string>
+    <string name="callinfo_localhost_address">عنوان/منفذ المضيف المحلي:</string>
+    <string name="callinfo_ice_local_reflexive_address">IP/منفذ محلي انعكاسي:</string>
+    <string name="callinfo_ice_local_relayed_address">IP/منفذ محلي مرحل:</string>
+    <string name="callinfo_ice_remote_host_address">IP/منفذ مضيف بعيد:</string>
+    <string name="callinfo_ice_remote_reflexive_address">IP/منفذ بعيد انعكاسي:</string>
+    <string name="callinfo_ice_remote_relayed_address">IP/منفذ بعيد مرحل:</string>
+    <string name="callinfo_ice_state">حالة معالجة ICE:</string>
+    <string name="callinfo_ice_state_completed">مكتمل</string>
+    <string name="callinfo_ice_state_failed">فشل</string>
+    <string name="callinfo_ice_state_running">فحوصات الاتصال</string>
+    <string name="callinfo_ice_state_waiting">جمع المرشحين</string>
+    <string name="callinfo_ice_state_jitter_buffer_delay">مخزن التقطع:</string>
+    <string name="callinfo_total_harvesting_time">إجمالي وقت الحصاد:</string>
+
+    <!-- Security certificates -->
+    <string name="trust_always">الثقة دائمًا بهذه الشهادة</string>
+    <string name="cert_dialog_title">التحقق من الشهادة</string>
     <string name="cert_dialog_description"><html>لا يمكن لـ %1$s التحقق من هوية الخادم عند الاتصال بـ<br/><b>%2$s</b><br/><br/>الشهادة غير موثوقة (شهادة موقعة ذاتيًا)، مما يعني أن هوية الخادم لا يمكن التحقق منها تلقائيًا.<br/><br/>هل تريد المتابعة مع الاتصال لهذه الحالة فقط؟<br/>لمزيد من الخيارات والمعلومات، انقر على عرض الشهادة.</html></string>
     <string name="cert_dialog_description_no_host"><html>لا يمكن لـ %1$s التحقق من هوية شهادة الخادم.<br/><br/>الشهادة غير موثوقة (شهادة موقعة ذاتيًا)، مما يعني أن هوية الخادم لا يمكن التحقق منها تلقائيًا.<br/><br/>هل تريد المتابعة مع الاتصال لهذه الحالة فقط؟<br/>لمزيد من الخيارات والمعلومات، انقر على عرض الشهادة.</html></string>
     <string name="cert_dialog_client_description"><html>لا يمكن لـ %1$s التحقق من هوية العميل المتصل.<br/><br/>الشهادة غير موثوقة (شهادة موقعة ذاتيًا)، مما يعني أن هوية العميل لا يمكن التحقق منها تلقائيًا.<br/><br/>هل تريد المتابعة مع الاتصال لهذه الحالة فقط؟<br/>لمزيد من الخيارات والمعلومات، انقر على عرض الشهادة.</html></string>
@@ -717,10 +727,21 @@
     <string name="cert_info_sign_algo">خوارزمية التوقيع:</string>
     <string name="cert_info_pubkey_info"><b>معلومات المفتاح العام</b></string>
     <string name="cert_info_algo">الخوارزمية:</string>
+    <string name="cert_info_pubkey">المفتاح العام:</string>
+    <string name="cert_info_key_bytes">%1$s بايت: %2$s</string>
+    <string name="cert_info_key_bits">%1$s بت</string>
+    <string name="cert_info_exponent">الأس:</string>
     <string name="cert_info_key_size">حجم المفتاح:</string>
     <string name="cert_info_signature">التوقيع:</string>
     <string name="service_gui_CONTINUE">متابعة</string>
     <string name="certificate_show">إظهار الشهادة</string>
+    <string name="certificate_hide">إخفاء الشهادة</string>
+    <string name="unsaved_changes">لديك تغييرات غير محفوظة. احفظ أو ألغِ واخرج.</string>
+    <string name="unsaved_changes_title">تغييرات غير محفوظة</string>
+    <string name="please_wait">يرجى الانتظار…</string>
+    <string name="server_info_fetching">جارٍ جلب الميزات/المعلومات المعلن عنها من الخادم…</string>
+
+    <!-- Security info -->
     <string name="security_audio_not_secure">الصوت غير آمن</string>
     <string name="security_call_not_secured_tooltip">المكالمة غير آمنة.</string>
     <string name="security_call_secured_compare_tooltip">اضغط هنا لمقارنة السر الأمني مع شريكك.</string>
@@ -739,6 +760,8 @@
     <string name="security_video_not_secured">الفيديو غير آمن</string>
     <string name="avatar_chose_icon">اختر صورة</string>
     <string name="avatar_remove_icon">إزالة الصورة الحالية</string>
+
+    <!-- Update checker -->
     <string name="update_download">تنزيل</string>
     <string name="update_install">تثبيت</string>
     <string name="update_reInstall">إعادة التثبيت</string>
@@ -754,11 +777,15 @@
     <string name="update_check_update">التحقق من التحديثات</string>
     <string name="update_version_invalid">التطبيق المُنزّل لا يتطابق؛ الفعلي: %1$s (%2$s)</string>
     <string name="update_new_version_available">يتوفر إصدار برمجي جديد (%1$s).</string>
+
+    <!-- account info -->
     <string name="accountinfo_about_me">عني:</string>
     <string name="accountinfo_about_me_hint">أدخل وصفًا مختصرًا عن نفسك في هذا المربع</string>
     <string name="accountinfo_age">العمر:</string>
     <string name="accountinfo_birth_date">تاريخ الميلاد:</string>
     <string name="accountinfo_change">تغيير</string>
+    <string name="accountinfo_city">المدينة:</string>
+    <string name="accountinfo_country">الدولة:</string>
     <string name="accountinfo_discard_change">المستخدم غير متصل - تم تجاهل جميع تغييرات معلومات الحساب.</string>
     <string name="accountinfo_display_name">اسم العرض:</string>
     <string name="accountinfo_email">البريد الإلكتروني:</string>
@@ -769,7 +796,9 @@
     <string name="accountinfo_job_title">المسمى الوظيفي:</string>
     <string name="accountinfo_last_name">اسم العائلة:</string>
     <string name="accountinfo_local_icon">استخدام هذه الأيقونة:</string>
+    <string name="accountinfo_middle_name">الاسم الأوسط:</string>
     <string name="accountinfo_mobile_phone">الهاتف المحمول:</string>
+    <string name="accountinfo_nickname">اللقب:</string>
     <string name="accountinfo_not_registered_message">الحساب غير متصل - يجب أن يكون متصلًا لتغيير معلومات الحساب.</string>
     <string name="accountinfo_not_supported">معلومات الحساب غير متاحة.</string>
     <string name="accountinfo_only_message">الرسائل فقط</string>
@@ -783,10 +812,17 @@
     <string name="accountinfo_user_picture">صور المستخدم</string>
     <string name="accountinfo_work_email">البريد الإلكتروني للعمل:</string>
     <string name="accountinfo_work_phone">هاتف العمل:</string>
+
+    <!-- Certificate configuration plugin -->
     <string name="certconfig_title">تكوين TLS</string>
     <string name="certconfig_trusted_store">مصدر شهادات الجذر الموثوقة</string>
     <string name="certconfig_cert_list_title">تكوينات مصادقة عميل TLS</string>
     <string name="certconfig_cert_list_description">يمكن اختيار التكوينات المُدارة هنا كشهادات TLS للعميل في تكوينات الحساب (على سبيل المثال، للمصادقة بشهادة مع مزود SIP بدلاً من اسم المستخدم وكلمة المرور).</string>
+    <string name="certconfig_alias">اسم الاسم المستعار في KeyStore</string>
+    <string name="certconfig_keystore_type">النوع</string>
+    <string name="certconfig_cert_entry_title">شهادة عميل TLS</string>
+    <string name="certconfig_keystore_file">ملف</string>
+    <string name="certconfig_keystore_password">كلمة المرور</string>
     <string name="certconfig_incomplete">يرجى إدخال قيمة لجميع الحقول</string>
     <string name="certconfig_show_cert_exception">تعذر إظهار الشهادة (%1$s).</string>
     <string name="certconfig_keystore_exception">تعذر تحميل KeyStore (%1$s).</string>
@@ -796,13 +832,19 @@
     <string name="certconfig_revocation_title">خيارات إبطال الشهادة</string>
     <string name="certconfig_revocation_check_enabled">تم تفعيل فحص CRL (قائمة إبطال الشهادات)</string>
     <string name="certconfig_revocation_ocsp_enabled">تم تفعيل فحص OCSP (بروتوكول حالة الشهادة عبر الإنترنت)</string>
+
+    <!-- connection info -->
     <string name="connectioninfo_title">معلومات الاتصال</string>
+
+    <!-- contact info -->
     <string name="contactinfo_title">تفاصيل الاتصال</string>
     <string name="contactinfo_contact_summary_description">ملخص معلومات الاتصال لـ</string>
     <string name="contactinfo_contact_extended_description">معلومات الاتصال الموسعة لـ</string>
     <string name="contactinfo_not_specified">[غير محدد]</string>
     <string name="contactinfo_user_pictures">صور المستخدم</string>
     <string name="contactinfo_status_message">رسالة الحالة</string>
+
+    <!-- Notification strings (do not change; getI18NString(NotificationSettings.NOTICE_PREFIX + eventType))-->
     <string name="notificationconfig_event_BusyCall">مكالمة مشغولة</string>
     <string name="notificationconfig_event_BusyCall_description">وصف مكالمة مشغولة</string>
     <string name="notificationconfig_event_CallSaved">تم حفظ المكالمة</string>
@@ -832,13 +874,21 @@
     <string name="notificationconfig_event_SecurityMessage_description">وصف رسالة الأمان</string>
     <string name="notificationconfig_notification_sound">الصوت على جهاز الإشعارات</string>
     <string name="notificationconfig_playback_sound">الصوت على جهاز التشغيل</string>
+    <string name="notificationconfig_popup_notification">إشعار منبثق</string>
+    <string name="notificationconfig_vibration">الاهتزاز</string>
+    <string name="notificationconfig_sound_file">ملف الصوت:</string>
+
+    <!-- call recording config -->
     <string name="callrecordingconfig_call_saved">تم حفظ المكالمة بنجاح</string>
     <string name="callrecordingconfig_call_saved_to">حفظ إلى: %1$s</string>
+
+    <!-- ZRTP Securing -->
     <string name="media_configform_audio_device_config_changed">تم تغيير تكوين جهاز الصوت</string>
     <string name="media_configform_audio_device_config_management_click">انقر هنا لإدارة الأجهزة</string>
     <string name="media_configform_preview">معاينة</string>
     <string name="media_security_checksum_mismatch"><html>عدم تطابق مجموع التحقق لحزمة ZRTP الداخلية.<br/>إذا رأيت هذه الرسالة كثيرًا، فقد يعني ذلك هجومًا لرفض الخدمة!</html></string>
     <string name="media_security_data_send_failed"><html>فشل إرسال بيانات التشفير. اتصال بيانات الإنترنت أو النظير معطل.<br/><b>مكالمتك غير آمنة</b><br/>رمز الخطأ: %1$s</html></string>
+    <string name="imedia_security_retry_rate_exceeded"><html>عدد المحاولات أثناء التفاوض على الأمان مرتفع جدًا. قد يعني ذلك أن الطرف الآخر يعاني من مشاكل في الاتصال بالإنترنت.<br/><b>مكالمتك غير آمنة</b><br/>رمز الخطأ: %1$s</html></string>
     <string name="media_security_internal_protocol_error"><html>حدث خطأ بروتوكول داخلي.<br/><b>مكالمتك غير آمنة</b><br/>رمز الخطأ: %1$s</html></string>
     <string name="media_security_off">دعم تشفير المكالمة مغلق</string>
     <string name="media_security_on">دعم تشفير المكالمة مفعل</string>
@@ -847,7 +897,11 @@
     <string name="media_security_warning_no_expected_rs_match"><html>السر المشترك المتوقع مفقود.<br/><b>التحقق من SAS مطلوب</b><br/>إذا لم تتطابق رموز SAS، قم بإنهاء المكالمة وحاول مرة أخرى</html></string>
     <string name="media_security_zrtp_generic_message"><html>تم اكتشاف مشكلة ZRTP خط她. <br/><b>مكالمتك غير آمنة</b><br/>رمز الخطأ: %1$s</html></string>
     <string name="media_security_zrtp_handshake_timeout">المكالمة غير آمنة؛ انتهت مهلة مصافحة RTP: %s</string>
+
+    <!-- DTLS-SRTP Securing -->
     <string name="media_security_encryption_ended">انتهى تشفير المكالمة: %1$s</string>
+
+    <!-- OTR plugin -->
     <string name="otr_menu_authenticate_buddy">مصادقة الصديق</string>
     <string name="plugin_otr_menu_CB_AUTO">بدء الرسائل الخاصة تلقائيًا</string>
     <string name="plugin_otr_menu_CB_ENABLE">تفعيل الرسائل الخاصة</string>
@@ -889,14 +943,15 @@
     <string name="plugin_otr_configform_MY_PRIVATE_KEYS">مفاتيحي الخاصة</string>
     <string name="plugin_otr_configform_REGENERATE">إعادة إنشاء</string>
     <string name="plugin_otr_configform_VERIFY_STATUS">تم التحقق: %1$s</string>
+
     <string name="plugin_otr_activator_fallbackmessage">&lt;span style=font-weight: bold;&gt;%1$s يحاول بدء محادثة مشفرة &lt;a href=https://en.wikipedia.org/wiki/Off-the-Record_Messaging&gt; Off-The-Record&lt;/a&gt; معك. لكن برنامجك لا يدعم الرسائل Off-The-Record. لمزيد من المعلومات، راجع &lt;a href=https://en.wikipedia.org/wiki/Off-the-Record_Messaging&gt; https://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a&gt;&lt;/span&gt;</string>
+    <string name="plugin_otr_activator_requireencryption">لم يتم إرسال رسالتك. الرسائل الخاصة مطلوبة.</string>
+    <string name="plugin_otr_activator_sessionfinished">%1$s أنهى/أنهت محادثته/محادثتها الخاصة OTR معك؛ يجب عليك فعل الشيء نفسه.</string>
+    <string name="plugin_otr_activator_sessionfinishederror">لم يتم إرسال رسالتك. يرجى إنهاء محادثتك الخاصة OTR مع %1$s.</string>
     <string name="plugin_otr_activator_historyoff">%1$s لا يسجل هذه المحادثة. يمكنك <a href="atalk://%2$s/%3$s">تفعيل سجل الدردشة هنا</a>.</string>
     <string name="plugin_otr_activator_historyon">%1$s يسجل هذه المحادثة على جهازك. يمكنك <a href="atalk://%2$s/%3$s">إيقاف سجل الدردشة هنا</a>.</string>
     <string name="plugin_otr_activator_msgfromanotherinstance">تم استلام رسالة من حالة محادثة OTR أخرى مع %1$s تم اكتشافها.</string>
     <string name="plugin_otr_activator_multipleinstancesdetected">تم اكتشاف حالات محادثة OTR خاصة متعددة مع %1$s.</string>
-    <string name="plugin_otr_activator_requireencryption">لم يتم إرسال رسالتك. الرسائل الخاصة مطلوبة.</string>
-    <string name="plugin_otr_activator_sessionfinished">%1$s أنهى/أنهت محادثته/محادثتها الخاصة OTR معك؛ يجب عليك فعل الشيء نفسه.</string>
-    <string name="plugin_otr_activator_sessionfinishederror">لم يتم إرسال رسالتك. يرجى إنهاء محادثتك الخاصة OTR مع %1$s.</string>
     <string name="plugin_otr_activator_sessionlost">انتهت محادثة OTR الخاصة مع %1$s.</string>
     <string name="plugin_otr_activator_sessionstared">بدأت محادثة OTR الخاصة مع %1$s.</string>
     <string name="plugin_otr_activator_smpaborted">%1$s أجهض عملية مصادقة OTR.</string>
@@ -906,6 +961,8 @@
     <string name="plugin_otr_activator_unreadablemsgreply">أرسلت إلى %1$s رسالة مشفرة غير قابلة للقراءة. يرجى إنهاء محادثتك الخاصة مع %2$s أو تحديثها.</string>
     <string name="plugin_otr_activator_unverifiedsessionstared"><b>غير موثق</b> بدأت محادثة خاصة مع %1$s.</string>
     <string name="plugin_otr_activator_unverifiedsessionwarning">لم يتم مصادقة %1$s بعد. يجب عليك <a href="atalk://%2$s/%3$s?%4$s"><b>مصادقة</b></a> هذا الصديق.</string>
+
+    <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">نص عادي</string>
     <string name="omemo_authbuddy_authenticate_buddy">مصادقة الصديق</string>
     <string name="omemo_authbuddy_authenticate_info">لديك أصدقاء غير موثقين. الأصدقاء غير الموثقين لا يمكنهم استقبال رسائل OMEMO. تحقق للمصادقة.</string>
@@ -924,6 +981,8 @@
     <string name="omemo_menu_untrusted">OMEMO غير موثوق</string>
     <string name="omemo_rebuild_session">إعادة بناء جلسة جديدة للمفقود: %1$s</string>
     <string name="omemo_purge_inactive_device_error">فشل إزالة جهاز omemo غير نشط لـ: %1$s.</string>
+
+    <!-- Account proxy settings -->
     <string name="settings_bosh_proxy">تكوين BOSH-Proxy</string>
     <string name="settings_bosh_proxy_summary">إعداد الاتصال عبر BOSH/Proxy للحساب</string>
     <string name="bosh_proxy_url_null">لا يمكن أن يكون حقل عنوان URL لـ BOSH فارغًا</string>
@@ -933,7 +992,8 @@
     <string name="bosh_proxy_use_http">استخدام Proxy HTTP</string>
     <string name="bosh_proxy_host">مضيف Proxy:</string>
     <string name="bosh_proxy_port">منفذ Proxy:</string>
-    <string name="provisioning_auto">اكتشاف عنوان URI للتزويد تلقائيًا</string>
+
+    <!-- Provisioning Plugin-->
     <string name="provisioning_bonjour">Bonjour</string>
     <string name="provisioning_clipboard_failed">فشل نسخ UUID إلى الحافظة</string>
     <string name="provisioning_copy_to_clipboard">نسخ UUID إلى الحافظة</string>
@@ -949,6 +1009,8 @@
     <string name="provisioning_summary">تكوين إعدادات التزويد</string>
     <string name="provisioning_remove_credentials_message">هل أنت متأكد من أنك تريد إزالة كلمة مرور التزويد؟</string>
     <string name="provisioning_restart_alert">لاحظ أن التغييرات ستُطبق فقط في المرة القادمة التي تبدأ فيها aTalk!</string>
+
+    <!-- DNS config -->
     <string name="settings_dnssec_dane">أمان SSL/DNSSEC/DANE</string>
     <string name="settings_dns">DNS</string>
     <string name="settings_dns_summary">تكوين إعدادات DNS</string>
@@ -956,6 +1018,7 @@
     <string name="dnsconfig_dnssec_domain_name">النطاق</string>
     <string name="dnsconfig_dnssec_enable_failed">فشل تغيير الحالة</string>
     <string name="dnsconfig_dnssec_enable_failed_message">فشل تغيير حالة تفعيل DNSSEC.</string>
+    <string name="dnsconfig_dnssec_mode">السلوك</string>
     <string name="dnsconfig_dnssec_restart_alert"><html>لاحظ أن تفعيل أو تعطيل DNSSEC يعطل المحلل الموازي وسيُطبق فقط في المرة القادمة التي تبدأ فيها aTalk.</html></string>
     <string name="dnsconfig_dnssec_title">المحلل الاحتياطي</string>
     <string name="dnsconfig_dnssec_check_absolute">معاملة جميع أسماء النطاقات على أنها مطلقة</string>
@@ -963,6 +1026,7 @@
     <string name="dnsconfig_dnssec_label_default">السلوك الافتراضي</string>
     <string name="dnsconfig_dnssec_label_name_servers">خوادم أسماء مخصصة</string>
     <string name="dnsconfig_dnssec_label_name_servers_hint"><html>يمكن تحديد خوادم متعددة بفاصلة، على سبيل المثال، 149.20.64.20، 149.20.64.21 (محلل DNSSEC المفتوح لـ OARC)</html></string>
+
     <string name="dns_insecure_answer_title">فشل DNSSEC</string>
     <string name="dns_insecure_answer_message_insecure">إجابة DNS لـ %1$s غير آمنة.</string>
     <string name="dns_insecure_answer_message_reason">إجابة DNS لـ %1$s غير آمنة.\nالسبب: %2$s</string>
@@ -970,30 +1034,55 @@
     <string name="dns_dnssec_advanced_reason_invalid"><html>منطقة DNSSEC الموقعة %1$s أعادت بيانات غير صالحة.<br/>%2$s</html></string>
     <string name="dns_dnssec_advanced_reason_unsigned">استعلام %1$s لـ %2$s غير موقع.</string>
     <string name="dns_dnssec_warning">&lt;html&gt;&lt;div width=600&gt;حاول %1$s الاتصال بالخادم على &lt;b&gt;%2$s&lt;&lt;/b&gt;، وهو نطاق يحمل حماية قوية تُسمى DNSSEC. المعلومات التي حصل عليها %1$s من خادم DNS لا تتوافق مع المعلومات التي يوفرها DNSSEC حول هذا النطاق.&lt;br/&gt;&lt;br/&gt;&lt;b&gt; لا ينبغي أن يحدث هذا ما لم يتم ارتكاب أخطاء خطيرة للغاية في %2$s. لذلك، فهو دليل قوي جدًا على أن هناك شيئًا خطيرًا للغاية في موثوقية اتصالك بالشبكة.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt; إذا كنت على اتصال إنترنت تابع لشخص آخر (مثل نقطة واي فاي ساخنة) أو إذا كانت هناك ظروف خاصة تجعلك لا تثق في مزود الإنترنت العادي الخاص بك، ننصحك بشدة بالتوقف عن استخدامه فورًا والبحث عن نقطة وصول إنترنت بديلة. عندما تكون متصلاً بشكل آمن بشبكة أخرى، يجب أن تُحل المشكلة تلقائيًا. إذا لم يكن الأمر كذلك، تواصل مع مزود الخدمة الخاص بك لإبلاغهم بالمشكلة. &lt;/div&gt;&lt;/html&gt;</string>
+
+    <!-- SSL Certificates -->
     <string name="settings_ssl_certificate">شهادة SSL</string>
     <string name="settings_ssl_certificate_purge">مسح الشهادات المعتمدة من المستخدم لـ: %1$s</string>
     <string name="settings_ssl_certificate_remove">إزالة الشهادة</string>
     <string name="settings_ssl_certificate_summary">إدارة شهادات SSL</string>
+
+    <!-- Client TLS Certificates -->
     <string name="tls_cert">شهادة TLS للعميل</string>
     <string name="tls_cert_prompt">يرجى اختيار شهادة TLS</string>
     <string name="tls_cert_summary">الشهادة المستخدمة في مصادقة المستخدم مع الخادم</string>
-    <string name="zid_reset_summary">إعادة تعيين معرف ZRTP طويل الأمد</string>
+
+    <!-- Reset ZID -->
     <string name="zid_reset_title">إعادة تعيين ZID</string>
     <string name="zid_reset_done">تم إعادة تعيين ZID</string>
-    <string name="commit_progress_message">جارٍ تخزين تغييرات الحساب، يرجى الانتظار…</string>
+
+    <!-- Settings -->
     <string name="commit_progress_title">جارٍ التثبيت…</string>
     <string name="settings_not_set">(غير محدد)</string>
-    <string name="sec_zrtp_signalling_on">سيتم الإعلان عن ZRTP عبر بروتوكول الإشارة</string>
+
+    <!-- Encoding settings -->
+    <string name="enc_audio_title">ترميز الصوت</string>
+    <string name="enc_override_global">تجاوز العالمي</string>
+    <string name="enc_video_title">ترميز الفيديو</string>
+
+    <!-- Security protocols dialog -->
+    <string name="none">لا شيء</string>
+    <string name="sec_encryption">التشفير</string>
+    <string name="sec_protocols_title">بروتوكولات الأمان</string>
+    <string name="sec_protocols_message">يرجى اختيار ترتيب البروتوكولات المطلوب</string>
+    <string name="discard">تجاهل</string>
     <string name="sec_zrtp_signalling_off">لن يكون هناك إعلان عن ZRTP</string>
+
+    <!-- STUN/Jingle Nodes list -->
     <string name="service_gui_SERVERS_LIST_ADD_SERVER">إضافة خادم</string>
     <string name="service_gui_SERVERS_LIST_EMPTY">القائمة فارغة. انقر لإضافة إدخال جديد…</string>
+
+    <!-- Jingle Nodes edit -->
     <string name="service_gui_JINGLE_EDIT_JID">عنوان JID</string>
     <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">دعم المرحل</string>
+
+    <!-- STUN edit -->
     <string name="stun_turn_server">خادم STUN/TURN</string>
     <string name="ip_address">عنوان IP</string>
     <string name="server_port">منفذ الخادم</string>
     <string name="turn_supported">دعم TURN</string>
     <string name="username">اسم المستخدم</string>
+
+    <!-- Security preferences -->
     <string name="security_dtls_srtp">خيارات DTLS-SRTP</string>
     <string name="security_dtls_title">خوارزمية توقيع شهادة TLS</string>
     <string name="security_encryption_enable">تفعيل تشفير المكالمة</string>
@@ -1005,11 +1094,15 @@
     <string name="security_sdes_title">مجموعات تشفير SDES</string>
     <string name="security_zrtp_options">خيارات ZRTP</string>
     <string name="security_zrtp_signalling">إشارة ZRTP</string>
+
+    <!-- Common preferences -->
     <string name="audio_encoding">ترميز الصوت</string>
     <string name="audio_enc_global_override_summary">تجاوز تنسيقات الصوت العالمية المحددة لهذا الحساب</string>
     <string name="call_encryption">إعدادات تشفير المكالمة</string>
     <string name="video_encoding">ترميز الفيديو</string>
     <string name="video_enc_global_override_summary">تجاوز تنسيقات الفيديو العالمية المحددة لهذا الحساب</string>
+
+    <!-- Jabber preferences -->
     <string name="jbr_auto_sign_in">الاتصال عند بدء التشغيل</string>
     <string name="jbr_auto_stun_discovery">اكتشاف خوادم STUN/TURN تلقائيًا</string>
     <string name="jbr_connection_summary">تعيين تفاصيل الاتصال…</string>
@@ -1060,6 +1153,8 @@
     <string name="jbr_use_upnp">استخدام UPnP</string>
     <string name="jbr_user_id">معرف المستخدم</string>
     <string name="jbr_user_name_password">اسم المستخدم وكلمة المرور</string>
+
+    <!-- Telephony -->
     <string name="contact_phone">اسم الاتصال/الهاتف/Jid:</string>
     <string name="call_via">الاتصال عبر:</string>
     <string name="contact_phone_empty">لا يمكن أن يكون رقم هاتف الاتصال فارغًا!</string>
@@ -1069,57 +1164,105 @@
     <string name="jingle_not_supported">%1$s\nلا يدعم بروتوكول Jingle</string>
     <string name="recipient_error_parse_failed">خطأ في تحليل العنوان!</string>
     <string name="unknown_recipient"><![CDATA[<مستلم غير معروف>]]></string>
+
+    <!-- General settings -->
     <string name="disabled">معطل</string>
     <string name="enabled">مفعل</string>
     <string name="general">عام</string>
-    <string name="settings_webview_dlg_title">أدخل صفحة الوصول الافتراضية لـ webView:</string>
+
+    <!-- WebView default Page -->
     <string name="settings_webview_page">صفحة الوصول إلى الويب</string>
+
+    <!-- Messaging settings -->
     <string name="settings_messaging">الرسائل</string>
-    <string name="settings_multichat_off">نافذة منفصلة لكل محادثة</string>
-    <string name="settings_multichat_on">تجميع رسائل الدردشة في نافذة واحدة</string>
+
+    <!-- Group messages in one window -->
     <string name="settings_multichat_window">نافذة الدردشة المتعددة</string>
+
+    <!-- Log chat history -->
     <string name="settings_history_log_off">سجل الدردشة معطل</string>
     <string name="settings_history_log_on">تسجيل سجل الدردشة</string>
     <string name="settings_history_logging">تسجيل سجل الدردشة</string>
     <string name="settings_history_mam_warning">خطأ في إعداد خيار MAM للمستخدم غير المتصل: %1$s</string>
+
+    <!-- Show x recent messages in new chats -->
     <string name="settings_history_dlg_title">كم عدد الرسائل الأخيرة التي يجب عرضها؟</string>
     <string name="settings_history_size">إظهار الرسائل الأخيرة</string>
     <string name="settings_history_summary">%d رسائل أخيرة في الدردشات الجديدة</string>
     <string name="settings_history_show">إظهار السجل</string>
+
+    <!-- Tell others when we have received and read the messages -->
     <string name="settings_message_delivery_receipt">إيصال تسليم الرسالة</string>
     <string name="settings_message_delivery_receipt_summary">دع جهات الاتصال الخاصة بك تعرف متى استلمت وقرأت رسائلهم</string>
+
+    <!-- Tell others when we are writing to them -->
     <string name="settings_typing_notifications">إرسال إشعارات حالة الدردشة</string>
+
+    <!-- Enable option to send thumbnail preview for image file sending -->
     <string name="settings_thumbnail_option">إرسال/استقبال معاينة الصورة المصغرة</string>
+
+    <!-- Auto accept downloadable max file size -->
     <string name="settings_file_max_auto_accept">الحد الأقصى لحجم الملف المقبول تلقائيًا</string>
+
+    <!-- Setup subscription Mode: auto or manual approval -->
     <string name="settings_presence_subscribe_approval_mode">الموافقة على اشتراك الحضور</string>
     <string name="settings_presence_subscribe_approval_auto">الموافقة على الاشتراك - القبول التلقائي للجميع</string>
     <string name="settings_presence_subscribe_approval_manual">الموافقة على الاشتراك - يدوي</string>
+
+    <!-- Bring chat window to front(not sure if this makes sense on Android, so omitted) -->
+    <!-- Use task bar/dock alerts on incoming calls and chats -->
     <string name="settings_chat_notifications">إظهار إشعارات شريط الحالة</string>
+
+    <!-- Leave chat rooms when closing window(omitted on Android for now) -->
+
+    <!-- Auto away -->
+    <!-- Not sure how to implement it on android - leave for now -->
+
+    <!-- Notifications -->
     <string name="settings_notifications">الإشعارات</string>
+
+    <!-- Popup notifications type -->
     <string name="settings_auto_update_check_enable">تفعيل التحقق التلقائي من تحديثات البرمجيات</string>
     <string name="settings_popup_handler">نوع الإشعارات المنبثقة</string>
+
     <string name="pref_heads_up_notifications">إشعارات Heads-up</string>
     <string name="pref_heads_up_notifications_summary">إظهار إشعارات Heads-up</string>
+
+    <!-- Status bar notifications handler -->
     <string name="popup_auto">تلقائي</string>
     <string name="popup_status_bar">إشعارات شريط الحالة</string>
+
+    <!-- Events -->
     <string name="settings_event_summary">تكوين الإشعارات الفردية</string>
     <string name="settings_event_title">الأحداث</string>
+
+    <!-- Quite hour settings -->
     <string name="quiet_hours">ساعات الهدوء</string>
     <string name="quiet_hours_start_time">وقت البدء</string>
     <string name="quiet_hours_end_time">وقت الانتهاء</string>
     <string name="quiet_hours_enable">تفعيل ساعات الهدوء</string>
     <string name="quiet_hours_summary">سيتم كتم الإشعارات خلال ساعات الهدوء</string>
+
+    <!-- aTalk icon -->
     <string name="settings_show_icon">عرض أيقونة aTalk</string>
     <string name="settings_show_icon_summary_off">إخفاء مؤشر نشاط aTalk في الإشعارات</string>
     <string name="settings_show_icon_summary_on">إظهار مؤشر نشاط aTalk في الإشعارات</string>
+
+    <!-- aTalk auto start -->
     <string name="settings_auto_start">بدء aTalk تلقائيًا عند إعادة التشغيل</string>
     <string name="settings_auto_start_summary_disable">تعطيل بدء aTalk التلقائي عند إعادة التشغيل التالية</string>
     <string name="settings_auto_start_summary_enable">تفعيل بدء aTalk التلقائي عند إعادة التشغيل التالية</string>
+
+    <!-- Locale -->
     <string name="settings_locale">اللغة</string>
     <string name="settings_locale_system">النظام الافتراضي</string>
+
+    <!-- Theme -->
     <string name="settings_theme_dark">داكن</string>
     <string name="settings_theme_light">فاتح</string>
     <string name="settings_theme">الثيم</string>
+
+    <!-- TTS Language -->
     <string name="tts_delay">تأخير تحويل النص إلى كلام (مللي ثانية)</string>
     <string name="tts_settings">إعدادات TTS العامة…</string>
     <string name="tts_disable">تعطيل النص ➡ الكلام</string>
@@ -1127,33 +1270,52 @@
     <string name="tts_synthesis">أدخل النص للتحدث به أو تصنيعه وحفظه في ملف:</string>
     <string name="tts_voice">صوت TTS الافتراضي:</string>
     <string name="loading_wait">جارٍ التحميل، يرجى الانتظار…</string>
+
+    <!-- Remove special characters from phone number -->
     <string name="settings_normalize_number">الرموز الخاصة في أرقام الهاتف</string>
     <string name="settings_normalize_off">لا توجد تعديلات على رقم الهاتف</string>
     <string name="settings_normalize_on">سيتم إزالة الرموز الخاصة من الرقم</string>
+    <!-- Convert letters in phone numbers -->
     <string name="settings_phone_alpha_no_allow">لا توجد تعديلات على رقم الهاتف</string>
     <string name="settings_phone_alpha_allow">الأحرف في أرقام الهاتف</string>
+
+    <!-- Call settings -->
     <string name="call">مكالمة</string>
     <string name="media_call">مكالمة وسائط</string>
+
+    <!-- Audio settings -->
     <string name="audio">الصوت</string>
+    <!-- Echo cancellation -->
     <string name="settings_echo_cancel">إلغاء الصدى</string>
     <string name="settings_echo_cancel_off">معطل</string>
     <string name="settings_echo_cancel_on">مفعل</string>
+    <!-- Auto gain control -->
     <string name="settings_agc">التحكم التلقائي في الكسب</string>
     <string name="settings_agc_off">معطل</string>
     <string name="settings_agc_on">مفعل</string>
+    <!-- Denoise -->
     <string name="settings_denoise">قمع الضوضاء</string>
     <string name="settings_denoise_off">معطل</string>
     <string name="settings_denoise_on">مفعل</string>
+    <!-- Audio encodings -->
     <string name="settings_audio_codecs_summary">اختر وحدد الأولوية لترميزات الصوت</string>
     <string name="settings_audio_codecs">ترميزات الصوت</string>
+
+    <!-- Video settings -->
     <string name="video">الفيديو</string>
+
+    <!-- Video system -->
     <string name="settings_system_android_camera">كاميرا Android</string>
     <string name="settings_system_media_recorder">MediaRecorder</string>
+
+    <!-- Camera used -->
     <string name="settings_camera">الكاميرا</string>
     <string name="settings_no_camera">لم يتم العثور على جهاز كاميرا متوافق</string>
     <string name="settings_use_back_camera">استخدام الكاميرا الخلفية</string>
     <string name="settings_use_front_camera">استخدام الكاميرا الأمامية</string>
     <string name="settings_use_match_camera_resolution">استخدام أقرب دقة كاميرا مطابقة: %1$s</string>
+
+    <!-- Video codecs -->
     <string name="settings_direct_surface_decode">استخدام فك التشفير المباشر للسطح</string>
     <string name="settings_direct_surface_encode">استخدام التشفير المباشر للسطح</string>
     <string name="settings_hw_decode">استخدام فك التشفير بالأجهزة</string>
@@ -1163,73 +1325,131 @@
     <string name="settings_restart_require">يتطلب إعادة تشغيل aTalk</string>
     <string name="settings_video_codec_summary">اختر وحدد الأولوية لترميزات الفيديو</string>
     <string name="settings_video_codec">ترميزات الفيديو</string>
+    <!-- Video resolution -->
     <string name="settings_video_resolution">دقة الفيديو</string>
+    <!-- Frame rate -->
     <string name="settings_fps_limit_off">غير محدود</string>
     <string name="settings_fps_limit_on">معدل الإطارات المعدل</string>
     <string name="settings_video_bitrate">معدل بت الفيديو (كيلوبت/ثانية)</string>
     <string name="settings_video_frame_rate">معدل إطار الفيديو</string>
     <string name="settings_video_fps_description">القيم المقبولة بين 5 و30 إطارًا في الثانية</string>
-    <string name="crypto_fingerprint_copy">تم نسخ البصمة إلى الحافظة!</string>
+    <string name="settings_video_max_bw">عتبة توجيه RTP (كيلوبايت/ثانية)</string>
+    <string name="settings_video_fps_target">معدل الإطارات المستهدف (لكل ثانية)</string>
+
+    <!-- Chat Security settings -->
+    <string name="settings_messaging_security_summary">إعدادات أمان تشفير الرسائل</string>
+    <string name="settings_messaging_security">أمان الرسائل</string>
+
+    <!-- Messaging security options -->
+    <string name="otr_messaging_security">أمان الرسائل OTR</string>
+    <!-- Crypto Messaging Enable -->
+    <string name="settings_CRYPTO_ENABLE_OFF">بدون تشفير الرسائل</string>
+    <string name="settings_CRYPTO_ENABLE_ON">تشفير الرسائل مفعل</string>
+    <string name="settings_CRYPTO_ENABLE_TITLE">الرسائل الخاصة</string>
+    <!-- Crypto Messaging Auto -->
+    <string name="settings_CRYPTO_AUTO_OFF">بدء جلسة تشفير الرسائل يدويًا</string>
+    <string name="settings_CRTOTI_AUTO_ON">بدء جلسة تشفير الرسائل تلقائيًا</string>
+    <string name="settings_CRYPTO_AUTO_TITLE">بدء الرسائل الخاصة تلقائيًا</string>
+    <!-- Crypto Messaging Required -->
+    <string name="settings_CRYPTO_REQUIRE_OFF">سيتم استخدام الرسائل الآمنة إذا كانت مدعومة</string>
+    <string name="settings_CRYPTO_REQUIRE_ON">سيتم قبول الجلسات الآمنة فقط</string>
+    <string name="settings_CRYPTO_REQUIRE_TITLE">طلب الرسائل الخاصة</string>
+
+    <!-- OMEMO security category-->
+    <string name="omemo_messaging_security">أمان الرسائل OMEMO</string>
+    <!-- OMEMO device screen -->
+    <string name="omemo_blind_trust_before_verification">الثقة العمياء قبل التحقق</string>
+    <string name="omemo_blind_trust_before_verification_summary">الثقة التلقائية في جميع الأجهزة الجديدة لجهات الاتصال التي لم يتم التحقق منها مسبقًا؛ طلب تأكيد يدوي عند إضافة جهات اتصال موثقة أجهزة جديدة.</string>
+    <!-- OMEMO regenerate screen -->
     <string name="omemo_regenerate_identities_summary">عند إعادة إنشاء هوية OMEMO الخاصة بك، سيتلقى جميع جهات الاتصال الخاصة بك البصمة الجديدة وسيتعين عليهم إعادة التحقق منك. قم بذلك فقط عند مواجهة مشكلة في إعداد جلسة OMEMO.</string>
     <string name="omemo_regenerate_identities">إعادة إنشاء هويات OMEMO</string>
     <string name="omemo_regenerate_title">تحديث هويات OMEMO</string>
+    <!-- OMEMO purge device screen -->
     <string name="omemo_purge_devices_summary">إزالة جميع الأجهزة غير النشطة؛ نشر الجهاز النشط الحالي الذي تستخدمه فقط.</string>
     <string name="omemo_purge_device_unused">إزالة الهويات غير المستخدمة</string>
     <string name="omemo_purge_device">حذف أجهزة OMEMO</string>
+
+    <!-- Key & FingerPrint security category -->
     <string name="key_fingerprint_security">أمان المفتاح وبصمة الإصبع</string>
+    <!-- Crypto private Keys screen -->
     <string name="settings_crypto_priv_key_empty">لم يتم العثور على مستخدم مسجل</string>
     <string name="settings_crypto_priv_key_summary">إدارة بصمات المفاتيح الخاصة المشفرة</string>
     <string name="settings_crypto_priv_key">المفاتيح الخاصة المشفرة</string>
+    <!-- Crypto fingerprints screen -->
     <string name="settings_fingerprint_summary">إدارة بصمات جميع الأجهزة المعروفة\nاللون: سماوي=الجهاز الخاص؛ رمادي=غير نشط</string>
     <string name="settings_fingerprint_title">بصمات أجهزة التشفير</string>
+
+    <!-- Crypto contextMenu, dialog, message and toast -->
     <string name="crypto_key_generate_prompt">هل تريد إنشاء مفتاح جديد لـ %1$s%2$s</string>
     <string name="crypto_key_generate_title">إنشاء مفتاح خاص</string>
     <string name="crypto_key_regenerate_prompt">هل تريد إعادة إنشاء مفتاح لـ %1$s\n\n%2$s</string>
+
     <string name="delete_selected">حذف المحدد</string>
     <string name="regenerate_selected">إعادة إنشاء المحدد</string>
+
     <string name="crypto_menu_key_generate">إنشاء مفتاح جديد</string>
     <string name="crypto_menu_key_regenerate">إعادة إنشاء المفتاح</string>
+
     <string name="crypto_menu_fingerprint_copy">نسخ البصمة</string>
     <string name="crypto_menu_fingerprint_distrust">عدم الثقة بالبصمة</string>
     <string name="crypto_menu_fingerprint_trust">الثقة بالبصمة</string>
-    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">تم رفض طلب جلسة OTR من صديقك أثناء جلسة OMEMO. يمكنك تفعيل جلسة OTR يدويًا!</string>
+
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">تم رفض طلب جلسة OTR الخاص بك أثناء تقدم جلسة OMEMO!</string>
+    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">تم رفض طلب جلسة OTR من صديقك أثناء جلسة OMEMO. يمكنك تفعيل جلسة OTR يدويًا!</string>
     <string name="crypto_msg_omemo_session_setup_failed">فشل إعداد جلسة OMEMO! %1$s</string>
     <string name="crypto_msg_omemo_session_untrusted">لم يتم العثور على أي صديق موثوق لاستقبال رسائل OMEMO!</string>
     <string name="crypto_msg_omemo_session_unverified">إرسال رسائل OMEMO إلى بعض الأصدقاء المجهولين ذوي البصمات غير الموثقة!</string>
     <string name="crypto_msg_omemo_session_unverified_untrusted">الدردشة الجماعية مع بعض الأصدقاء غير الموثوقين أو ذوي البصمات غير الموثقة!</string>
     <string name="crypto_msg_omemo_session_verified">*** تمت مصادقة جميع الأصدقاء! ***</string>
     <string name="crypto_fingerprint_status">تم التحقق: %1$s</string>
+    <string name="crypto_no_key_present">لا يوجد مفتاح موجود</string>
+    <string name="crypto_fingerprint_copy">تم نسخ البصمة إلى الحافظة!</string>
     <string name="crypto_omemo_distrust_messaging_stop">إيقاف إرسال رسائل OMEMO إلى الصديق: %1$s</string>
     <string name="crypto_omemo_trust_messaging_resume">استئناف إرسال رسائل OMEMO إلى الصديق: %1$s</string>
+
+    <!-- Advanced settings category -->
     <string name="advanced">متقدم</string>
     <string name="settings_expert">إعدادات الخبراء</string>
     <string name="settings_expert_summary">يرجى توخي الحذر مع هذه الإعدادات</string>
+
+    <!-- Protocol category -->
     <string name="port">المنفذ</string>
     <string name="protocol">البروتوكول</string>
+
+    <!-- Opus -->
+    <string name="opus">Opus</string>
     <string name="opus_sampling_rate">معدل العينة</string>
     <string name="opus_bitrate">متوسط معدل بت المشفر (كيلوبت/ثانية)</string>
+    <string name="opus_complexity">تعقيد المشفر</string>
     <string name="opus_min_expected_packet_loss">الحد الأدنى لفقدان الحزم المتوقع (%)</string>
     <string name="opus_encoder_settings">تكوين إعدادات مشفر Opus</string>
     <string name="opus_use_dtx">استخدام DTX</string>
     <string name="opus_use_fec">استخدام FEC داخلي</string>
+
+    <!-- Silk -->
     <string name="silk">Silk</string>
     <string name="silk_encoder_settings">تكوين إعدادات مشفر Silk</string>
     <string name="silk_use_fec">استخدام FEC داخلي</string>
     <string name="silk_assume_pl">افتراض فقدان الحزم دائمًا</string>
     <string name="silk_fec_sat">عتبة نشاط الكلام (0–1)</string>
     <string name="silk_fec_advertise">الإعلان عن دعم FEC في SDP</string>
+
+    <!-- SIP config -->
     <string name="plugin_generalconfig_SIP_CLIENT_PORT">منفذ عميل SIP</string>
     <string name="plugin_generalconfig_SIP_CLIENT_SECURE_PORT">منفذ عميل SIP الآمن</string>
     <string name="plugin_generalconfig_SIP_SSL_PROTOCOLS">بروتوكولات SSL/TLS المفعلة</string>
     <string name="service_gui_settings_SIP">SIP</string>
     <string name="service_gui_settings_SIP_SUMMARY">تكوين إعدادات بروتوكول SIP</string>
+
+    <!-- Android Battery Usage Optimization -->
+    <string name="battery_optimization_on">سيتم وضع aTalk في وضع السكون عندما يدخل الجهاز في وضع الاستعداد. أعد تشغيل aTalk يدويًا لاستقبال الرسائل الجديدة.</string>
     <string name="battery_optimizations">تحسين استهلاك البطارية</string>
     <string name="battery_optimizations_dialog">جهازك يحتوي على تحسين استهلاك البطارية لـ aTalk؛ قد يؤدي ذلك إلى تأخير الإشعارات أو فقدان الرسائل.\n\nيُوصى بتعطيل هذا التحسين لـ aTalk.</string>
-    <string name="battery_optimization_on">سيتم وضع aTalk في وضع السكون عندما يدخل الجهاز في وضع الاستعداد. أعد تشغيل aTalk يدويًا لاستقبال الرسائل الجديدة.</string>
     <string name="device_does_not_support_battery_op">جهازك لا يدعم إلغاء تحسين استهلاك البطارية</string>
     <string name="disable">تعطيل</string>
     <string name="next">التالي</string>
+
+    <!-- Android Permissions -->
     <string name="app_info">معلومات التطبيق…</string>
     <string name="permission_app_info">معلومات التطبيق</string>
     <string name="permission_request_all">طلب الكل</string>
@@ -1238,35 +1458,52 @@
     <string name="permission_location">الموقع</string>
     <string name="permission_microphone">الميكروفون</string>
     <string name="permission_music">الموسيقى والصوت</string>
+    <string name="permission_notifications">الإشعارات</string>
+    <string name="permission_phone">الهاتف</string>
+    <string name="permission_video">الصور والفيديو</string>
+    <string name="permission_storage">التخزين</string>
     <string name="permission_hint">للحصول على أداء مثالي ودعم كامل للميزات، يتطلب aTalk منح الأذونات للخدمات التالية. بدونها، قد لا يعمل aTalk أو قد يكون له سلوك غير متوقع!</string>
     <string name="permission_denied">مرفوض</string>
     <string name="permission_granted">ممنوح</string>
     <string name="permission_denied_permanently">مرفوض بشكل دائم</string>
     <string name="permission_unknown">غير معروف</string>
+
     <string name="mic_permission_denied_dialog_title">طلب إذن تسجيل الصوت</string>
     <string name="mic_permission_denied_feedback">المكالمات الصوتية لن تكون متاحة حتى تمنح إذن التسجيل</string>
+
     <string name="camera_permission_denied_dialog_title">طلب إذن الكاميرا</string>
     <string name="camera_permission_denied_feedback">جميع الأنشطة المرتبطة بالكاميرا لن تكون متاحة حتى تمنح إذن الكاميرا</string>
+
     <string name="contacts_permission_denied_dialog_title">طلب إذن جهات الاتصال</string>
     <string name="contacts_permission_denied_feedback">إذن جهات الاتصال مطلوب للوصول إلى حالة الهاتف وإعداد المكالمات</string>
+
     <string name="music_permission_denied_dialog_title">طلب إذن الموسيقى والصوت</string>
     <string name="music_permission_denied_feedback">ملفات الصوت الوسائط لن تكون متاحة حتى تمنح إذن الوصول</string>
+
     <string name="location_permission_denied_dialog_title">طلب إذن الموقع</string>
     <string name="location_permission_denied_feedback">ميزات تحديد الموقع عبر GPS لن تكون متاحة حتى تمنح إذن الموقع</string>
+
     <string name="notifications_permission_denied_dialog_title">طلب إذن الإشعارات</string>
     <string name="notifications_permission_denied_feedback">الإشعارات من aTalk ستكون معطلة حتى تمنح إذن الإشعارات</string>
+
     <string name="phone_permission_denied_dialog_title">طلب إذن قراءة حالة الهاتف</string>
     <string name="phone_permission_denied_feedback">ميزات الهاتف لن تكون متاحة حتى تمنح إذن قراءة حالة الهاتف</string>
+
     <string name="video_permission_denied_dialog_title">طلب إذن الصور والفيديو</string>
     <string name="video_permission_denied_feedback">ملفات الصور والفيديو الوسائط لن تكون متاحة حتى تمنح إذن الوصول</string>
+
     <string name="storage_permission_denied_dialog_title">طلب إذن التخزين</string>
     <string name="storage_permission_denied_feedback">حفظ المحتويات المرسلة والمستلمة في التخزين لن يُسمح به حتى تمنح إذن التخزين</string>
+
     <string name="all_permission_denied_dialog_title">طلب جميع الأذونات</string>
     <string name="all_permissions_denied_feedback">قد لا يعمل aTalk بشكل صحيح أو قد يكون له سلوك غير متوقع بسبب رفض بعض الخدمات!\nإذا اخترت خيار عدم السؤال مرة أخرى، يجب عليك الانتقال إلى إعدادات Android -&gt; معلومات التطبيق لـ aTalk لتفعيل إذن الوصول إلى الموارد</string>
     <string name="permission_denied_all_alert">لن يعمل aTalk بشكل صحيح. لقد رفضت جميع الأذونات لـ aTalk!\nيجب عليك الانتقال إلى إعدادات Android -&gt; معلومات التطبيق لـ aTalk لتفعيل إذن الوصول إلى الموارد.</string>
+
     <string name="permission_rationale_message">يتم تقديم كل خدمة مطلوبة من قبل aTalk؛ يرجى السماح لـ aTalk بالوصول إلى هذه الخدمات لدعم الميزات الكاملة</string>
     <string name="permission_rationale_settings_button_text">الإعدادات</string>
     <string name="permission_rationale_title">يحتاج aTalk إلى أذونات</string>
+
+    <!--Location string constant -->
     <string name="location_permission_dialog_title">إذن الموقع مطلوب</string>
     <string name="location_permission_dialog_message">هل تريد تفعيل إذن الموقع الآن؟</string>
     <string name="location_services_off">خدمات الموقع مغلقة</string>

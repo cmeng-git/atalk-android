@@ -94,7 +94,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
         try {
             ppsRefs = bc.getServiceReferences(ProtocolProviderService.class.getName(), null);
         } catch (InvalidSyntaxException e) {
-            e.printStackTrace();
+            Timber.w("PPS service reference (add): %s", e.getMessage());
         }
 
         // in case we found any
@@ -119,7 +119,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
         try {
             ppsRefs = bc.getServiceReferences(ProtocolProviderService.class.getName(), null);
         } catch (InvalidSyntaxException e) {
-            e.printStackTrace();
+            Timber.w("PPS service reference (remove): %s", e.getMessage());
         }
 
         // in case we found any
@@ -202,7 +202,6 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     }
 
     /* ============= File Transfer Handlers - ScFileTransferListener callbacks implementations ============= */
-
     /**
      * Receive fileTransfer requests.
      *
@@ -211,7 +210,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     public void fileTransferRequestReceived(FileTransferRequestEvent event) {
         IncomingFileTransferRequest req = event.getRequest();
         String fileName = req.getFileName();
-        insertRecordToDB(event, fileName);
+        insertRecordToDB(event, ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE, fileName);
     }
 
     /**
@@ -219,7 +218,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      *
      * @param event FileTransferCreatedEvent for all FileTransfers
      *
-     * @see FileSendConversation#createHttpFileUploadRecord()
+     * @see FileSendConversation#createFileSendRecord()
      */
     public void fileTransferCreated(FileTransferCreatedEvent event) {
         FileTransfer fileTransfer = event.getFileTransfer();
@@ -234,7 +233,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
                 mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.UUID + "=?", args);
             }
             else if (fileTransfer.getDirection() == FileTransfer.OUT) {
-                insertRecordToDB(event, fileName);
+                insertRecordToDB(event, ChatMessage.MESSAGE_FILE_TRANSFER_SEND, fileName);
             }
         } catch (IOException e) {
             Timber.e(e, "Could not add file transfer log to history");
@@ -264,36 +263,45 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     }
 
     /**
-     * Create new fileTransfer record in dataBase when file transfer has started
+     * Create new fileTransfer record in DB when file transfer has started
      * Also use as conversion for http file upload link message to file transfer message
      *
      * @param evt FileTransferRequestEvent or FileTransferCreatedEvent
+     * @param msgType file record message type i.e MESSAGE_FILE_TRANSFER_SEND, MESSAGE_FILE_TRANSFER_RECEIVE, MESSAGE_HTTP_FILE_DOWNLOAD
      * @param fileName Name of the file to received or send
      */
-    private void insertRecordToDB(EventObject evt, String fileName) {
-        long timeStamp = 0L;
+    public void insertRecordToDB(EventObject evt, int msgType, String fileName) {
+        Date timeStamp = new Date();
         String uuid = null;
         String mJid, mEntityJid;
         String direction = FileRecord.OUT;
         Object entityJid = null;
-        int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_SEND;
+        String serverMsgId = null;
+        String remoteMsgId = null;
         ContentValues contentValues = new ContentValues();
 
         if (evt instanceof FileTransferRequestEvent) {
             FileTransferRequestEvent event = (FileTransferRequestEvent) evt;
             IncomingFileTransferRequest req = event.getRequest();
-            uuid = req.getID();
+            uuid = req.getId();
             entityJid = req.getSender();
-            timeStamp = event.getTimestamp().getTime();
+            timeStamp = event.getTimestamp();
             direction = FileRecord.IN;
-            msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
             contentValues.put(ChatMessage.MSG_BODY, fileName);
         }
         else if (evt instanceof FileTransferCreatedEvent) {
             FileTransferCreatedEvent event = (FileTransferCreatedEvent) evt;
-            timeStamp = event.getTimestamp().getTime();
+            timeStamp = event.getTimestamp();
             FileTransfer fileTransfer = event.getFileTransfer();
             uuid = fileTransfer.getID();
+
+            if (fileTransfer.getDirection() == FileTransfer.IN) {
+                direction = FileRecord.IN;
+                remoteMsgId = uuid;
+            } else {
+                direction = FileRecord.OUT;
+                serverMsgId = uuid;
+            }
 
             if (fileTransfer instanceof OutgoingFileSendEntityImpl) {
                 entityJid = ((OutgoingFileSendEntityImpl) fileTransfer).getEntityJid();
@@ -305,20 +313,21 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
 
         String sessionUuid;
         if (entityJid instanceof Contact) {
-            sessionUuid = getMHS().getSessionUuidByJid((Contact) entityJid);
-            mEntityJid = ((Contact) entityJid).getAddress();
-            mJid = null;
+            Contact contact = (Contact) entityJid;
+            sessionUuid = getMHS().getSessionUuidByJid(contact);
+            mEntityJid = contact.getAddress();
+            mJid = contact.getProtocolProvider().getOurJid().toString();
         }
         else {
             ChatRoom chatroom = (ChatRoom) entityJid;
             sessionUuid = getMHS().getSessionUuidByJid(chatroom);
-            mJid = chatroom.getParentProvider().getAccountID().getAccountJid();
+            mJid = chatroom.getParentProvider().getOurJid().asEntityBareJidString();
             mEntityJid = XmppStringUtils.parseLocalpart(mJid);
         }
 
         contentValues.put(ChatMessage.UUID, uuid);
         contentValues.put(ChatMessage.SESSION_UUID, sessionUuid);
-        contentValues.put(ChatMessage.TIME_STAMP, timeStamp);
+        contentValues.put(ChatMessage.TIME_STAMP, timeStamp.getTime());
         contentValues.put(ChatMessage.ENTITY_JID, mEntityJid);
         contentValues.put(ChatMessage.JID, mJid);
         contentValues.put(ChatMessage.ENC_TYPE, IMessage.ENCODE_PLAIN);
@@ -326,13 +335,17 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
         contentValues.put(ChatMessage.DIRECTION, direction);
         contentValues.put(ChatMessage.STATUS, FileRecord.STATUS_WAITING);
         contentValues.put(ChatMessage.FILE_PATH, fileName);
+        contentValues.put(ChatMessage.SERVER_MSG_ID, serverMsgId);
+        contentValues.put(ChatMessage.REMOTE_MSG_ID, remoteMsgId);
+
         mDB.insert(ChatMessage.TABLE_NAME, null, contentValues);
+        getMHS().setMamDate(sessionUuid, timeStamp);
     }
 
-    /* ============= File Transfer Handlers - Update file transfer status =============
+    /* ============= File Transfer Handlers - Update file transfer status ============= */
     /**
-     * Update new status and fileName to the fileTransfer record in dataBase
-     * Keep file uri; for retry if not converted to MESSAGE_FILE_TRANSFER_HISTORY
+     * Update new status and fileName to the fileTransfer record in dataBase.
+     * Keep file uri; for retry if not converted to MESSAGE_FILE_TRANSFER_HISTORY.
      *
      * @param msgUuid message UUID
      * @param status New status for update
@@ -353,7 +366,9 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
         }
         contentValues.put(ChatMessage.ENC_TYPE, encType);
         contentValues.put(ChatMessage.MSG_TYPE, msgType);
-        return mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.UUID + "=?", args);
+        int count = mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.UUID + "=?", args);
+        // Timber.d("updateFTStatusToDB MsgId = %s @status: %s; row count: %s", msgUuid, status, count);
+        return count;
     }
 
     /**

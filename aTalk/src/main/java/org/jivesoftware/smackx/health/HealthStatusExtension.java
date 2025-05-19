@@ -16,10 +16,9 @@
 package org.jivesoftware.smackx.health;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.AbstractExtensionElement;
 import org.jivesoftware.smackx.DefaultExtensionElementProvider;
-
-import org.jivesoftware.smack.provider.ProviderManager;
 
 /**
  * A generic extension for a component to represent its current health.
@@ -34,8 +33,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
  * @author bbaldino
  * @author Eng Chong Meng
  */
-public class HealthStatusExtension extends AbstractExtensionElement
-{
+public class HealthStatusExtension extends AbstractExtensionElement {
     /**
      * XML namespace name for health check IQs.
      */
@@ -45,13 +43,11 @@ public class HealthStatusExtension extends AbstractExtensionElement
 
     private static final String HEALTH_ATTRIBUTE = "status";
 
-    public HealthStatusExtension()
-    {
+    public HealthStatusExtension() {
         super(ELEMENT, NAMESPACE);
     }
 
-    static public void registerExtensionProvider()
-    {
+    static public void registerExtensionProvider() {
         ProviderManager.addExtensionProvider(
                 ELEMENT,
                 NAMESPACE,
@@ -59,32 +55,27 @@ public class HealthStatusExtension extends AbstractExtensionElement
         );
     }
 
-    public Health getStatus()
-    {
+    public Health getStatus() {
         return Health.parse(getAttributeAsString(HEALTH_ATTRIBUTE));
     }
 
-    public void setStatus(Health health)
-    {
+    public void setStatus(Health health) {
         setAttribute(HEALTH_ATTRIBUTE, String.valueOf(health));
     }
 
-    public enum Health
-    {
+    public enum Health {
         HEALTHY("healthy"),
         UNHEALTHY("unhealthy"),
         UNDEFINED("undefined");
 
         private String health;
 
-        Health(String health)
-        {
+        Health(String health) {
             this.health = health;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return health;
         }
 
@@ -92,11 +83,11 @@ public class HealthStatusExtension extends AbstractExtensionElement
          * Parses <code>Health</code> from given string.
          *
          * @param health the string representation of <code>Health</code>.
+         *
          * @return <code>Health</code> value for given string or
          * {@link #UNDEFINED} if given string does not reflect any of valid values.
          */
-        public static Health parse(String health)
-        {
+        public static Health parse(String health) {
             if (StringUtils.isEmpty(health)) {
                 return UNDEFINED;
             }

@@ -33,7 +33,7 @@ public interface IncomingFileTransferRequest
      *
      * @return the id.
      */
-    String getID();
+    String getId();
 
     /**
      * Returns a String that represents the name of the file that is being received. If there is no

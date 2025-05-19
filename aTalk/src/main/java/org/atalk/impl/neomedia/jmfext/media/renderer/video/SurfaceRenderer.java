@@ -10,11 +10,6 @@ import android.media.MediaCodec;
 import android.view.Surface;
 import android.view.View;
 
-import org.atalk.impl.neomedia.codec.video.AndroidDecoder;
-import org.atalk.impl.neomedia.jmfext.media.renderer.AbstractRenderer;
-import org.atalk.service.neomedia.ViewAccessor;
-import org.atalk.service.neomedia.codec.Constants;
-
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
@@ -24,6 +19,11 @@ import javax.media.Format;
 import javax.media.ResourceUnavailableException;
 import javax.media.format.VideoFormat;
 import javax.media.renderer.VideoRenderer;
+
+import org.atalk.impl.neomedia.codec.video.AndroidDecoder;
+import org.atalk.impl.neomedia.jmfext.media.renderer.AbstractRenderer;
+import org.atalk.service.neomedia.ViewAccessor;
+import org.atalk.service.neomedia.codec.Constants;
 
 import timber.log.Timber;
 
@@ -36,8 +36,7 @@ import timber.log.Timber;
  * @see AndroidDecoder#configureMediaCodec(MediaCodec, String)
  */
 @SuppressWarnings("unused")
-public class SurfaceRenderer extends AbstractRenderer<VideoFormat> implements VideoRenderer
-{
+public class SurfaceRenderer extends AbstractRenderer<VideoFormat> implements VideoRenderer {
     private final static Format[] INPUT_FORMATS = new Format[]{
             new VideoFormat(
                     Constants.ANDROID_SURFACE,
@@ -49,52 +48,43 @@ public class SurfaceRenderer extends AbstractRenderer<VideoFormat> implements Vi
 
     private Component component;
 
-    public SurfaceRenderer()
-    {
+    public SurfaceRenderer() {
     }
 
     @Override
-    public Format[] getSupportedInputFormats()
-    {
+    public Format[] getSupportedInputFormats() {
         return INPUT_FORMATS;
     }
 
     @Override
-    public int process(Buffer buffer)
-    {
+    public int process(Buffer buffer) {
         return 0;
     }
 
     @Override
-    public void start()
-    {
+    public void start() {
     }
 
     @Override
-    public void stop()
-    {
+    public void stop() {
     }
 
     @Override
-    public void close()
-    {
+    public void close() {
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return "SurfaceRenderer";
     }
 
     @Override
     public void open()
-            throws ResourceUnavailableException
-    {
+            throws ResourceUnavailableException {
     }
 
     @Override
-    public Format setInputFormat(Format format)
-    {
+    public Format setInputFormat(Format format) {
         VideoFormat newFormat = (VideoFormat) super.setInputFormat(format);
         Timber.d("Set input format: %s = > %s", format, newFormat);
         if (newFormat.getSize() != null) {
@@ -104,19 +94,16 @@ public class SurfaceRenderer extends AbstractRenderer<VideoFormat> implements Vi
     }
 
     @Override
-    public Rectangle getBounds()
-    {
+    public Rectangle getBounds() {
         return null;
     }
 
     @Override
-    public void setBounds(Rectangle rectangle)
-    {
+    public void setBounds(Rectangle rectangle) {
     }
 
     @Override
-    public Component getComponent()
-    {
+    public Component getComponent() {
         if (component == null) {
             component = new SurfaceComponent();
         }
@@ -124,16 +111,13 @@ public class SurfaceRenderer extends AbstractRenderer<VideoFormat> implements Vi
     }
 
     @Override
-    public boolean setComponent(Component component)
-    {
+    public boolean setComponent(Component component) {
         return false;
     }
 
-    private static class SurfaceComponent extends Component implements ViewAccessor
-    {
+    private static class SurfaceComponent extends Component implements ViewAccessor {
         @Override
-        public View getView(Context context)
-        {
+        public View getView(Context context) {
             return AndroidDecoder.renderSurfaceProvider.getView();
         }
     }

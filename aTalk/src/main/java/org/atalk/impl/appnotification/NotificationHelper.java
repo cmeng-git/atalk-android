@@ -55,7 +55,7 @@ public class NotificationHelper extends ContextWrapper {
             // Init the system service NotificationManager
             notificationManager = ctx.getSystemService(NotificationManager.class);
 
-            // Delete any unused channel IDs or force to re-init all notification channels
+            // Delete any unused channel IDs or all if force is true.
             deleteObsoletedChannelIds(false);
 
             final NotificationChannel nCall = new NotificationChannel(AppNotifications.CALL_GROUP,
@@ -78,10 +78,11 @@ public class NotificationHelper extends ContextWrapper {
             notificationManager.createNotificationChannel(nMessage);
 
             final NotificationChannel nFile = new NotificationChannel(AppNotifications.FILE_GROUP,
-                    getString(R.string.noti_channel_file_group), NotificationManager.IMPORTANCE_LOW);
+                    getString(R.string.noti_channel_file_group), NotificationManager.IMPORTANCE_HIGH);
             nFile.setSound(null, null);
-            nFile.setShowBadge(false);
-            // nFile.setLightColor(Color.GREEN);
+            nFile.setShowBadge(true);
+            nFile.setLightColor(LED_COLOR);
+            nFile.enableLights(true);
             nFile.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             notificationManager.createNotificationChannel(nFile);
 
@@ -103,7 +104,7 @@ public class NotificationHelper extends ContextWrapper {
         }
     }
 
-    /*
+    /**
      * Send a notification.
      *
      * @param id The ID of the notification
@@ -136,6 +137,13 @@ public class NotificationHelper extends ContextWrapper {
         startActivity(intent);
     }
 
+    /**
+     * Delete any unused (or all if force is true) channel IDs.
+     * Must force to re-init all notification channels if higher priority changes are made to any existing channel.
+     * See https://developer.android.com/develop/ui/views/notifications/channels#UpdateChannel
+     *
+     * @param force force delete the notification channel
+     */
     @TargetApi(Build.VERSION_CODES.O)
     private void deleteObsoletedChannelIds(boolean force) {
         List<NotificationChannel> channelGroups = notificationManager.getNotificationChannels();

@@ -49,8 +49,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class LocationBgService extends Service implements LocationListenerCompat
-{
+public class LocationBgService extends Service implements LocationListenerCompat {
     private static final long NO_FALLBACK = 0;
     private LocationManager mLocationManager;
     private String mProvider;
@@ -64,14 +63,12 @@ public class LocationBgService extends Service implements LocationListenerCompat
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent)
-    {
+    public IBinder onBind(Intent intent) {
         return null;
     }
 
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         super.onCreate();
         mServiceHandler = new Handler(Looper.getMainLooper());
 
@@ -87,8 +84,7 @@ public class LocationBgService extends Service implements LocationListenerCompat
 
     @SuppressWarnings("MissingPermission")
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         String actionIntent = intent.getAction();
         // action not defined on gps service first startup
@@ -115,8 +111,7 @@ public class LocationBgService extends Service implements LocationListenerCompat
     }
 
     @SuppressWarnings("MissingPermission")
-    private void requestLocationUpdates()
-    {
+    private void requestLocationUpdates() {
         Timber.i("Requesting location updates");
         startFallbackToLastLocationTimer();
 
@@ -127,7 +122,7 @@ public class LocationBgService extends Service implements LocationListenerCompat
             LocationRequestCompat locationRequest = new LocationRequestCompat.Builder(mLocationUpdateMinTime)
                     .setMinUpdateIntervalMillis(mLocationUpdateMinTime)
                     .setMinUpdateDistanceMeters(mLocationUpdateMinDistance)
-                    .setQuality( LocationRequestCompat.QUALITY_BALANCED_POWER_ACCURACY)
+                    .setQuality(LocationRequestCompat.QUALITY_BALANCED_POWER_ACCURACY)
                     .build();
             LocationManagerCompat.requestLocationUpdates(mLocationManager, mProvider, locationRequest, this, Looper.myLooper());
         } catch (SecurityException unlikely) {
@@ -138,16 +133,14 @@ public class LocationBgService extends Service implements LocationListenerCompat
     }
 
     @SuppressWarnings("MissingPermission")
-    private void startFallbackToLastLocationTimer()
-    {
+    private void startFallbackToLastLocationTimer() {
         if (fallBackToLastLocationTime != NO_FALLBACK) {
             mServiceHandler.removeCallbacksAndMessages(null);
             mServiceHandler.postDelayed(this::getLastLocation, fallBackToLastLocationTime);
         }
     }
 
-    private void getLastLocation()
-    {
+    private void getLastLocation() {
         try {
             LocationManagerCompat.getCurrentLocation(mLocationManager, mProvider, (CancellationSignal) null,
                     Runnable::run, location -> {
@@ -165,8 +158,7 @@ public class LocationBgService extends Service implements LocationListenerCompat
      * Removes location updates. Note that in this sample we merely log the
      * {@link SecurityException}.
      */
-    private void stopLocationService()
-    {
+    private void stopLocationService() {
         if (mServiceHandler != null)
             mServiceHandler.removeCallbacksAndMessages(null);
 
@@ -183,8 +175,7 @@ public class LocationBgService extends Service implements LocationListenerCompat
     }
 
     @Override
-    public void onLocationChanged(Location location)
-    {
+    public void onLocationChanged(Location location) {
         // Timber.d("New location received: %s", location);
         if (location != null) {
             // force to a certain location for testing
@@ -221,10 +212,10 @@ public class LocationBgService extends Service implements LocationListenerCompat
      * To get address location from coordinates
      *
      * @param loc location from which the address is being retrieved
+     *
      * @return the Address
      */
-    private String getLocationAddress(Location loc)
-    {
+    private String getLocationAddress(Location loc) {
         String locAddress = "No service available or no address found";
         Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
         List<Address> addresses;

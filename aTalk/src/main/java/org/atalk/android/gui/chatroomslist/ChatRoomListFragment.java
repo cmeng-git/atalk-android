@@ -16,7 +16,6 @@
  */
 package org.atalk.android.gui.chatroomslist;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -33,6 +32,7 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -72,7 +72,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class ChatRoomListFragment extends BaseFragment
-        implements OnGroupClickListener, EntityListHelper.TaskCompleteListener {
+        implements MenuProvider, OnGroupClickListener, EntityListHelper.TaskCompleteListener {
     /**
      * Search options menu items.
      */
@@ -124,14 +124,6 @@ public class ChatRoomListFragment extends BaseFragment
     private static int scrollTopPosition;
 
     private int eraseMode = -1;
-    /**
-     * Creates a new instance of <code>ContactListFragment</code>.
-     */
-    public ChatRoomListFragment() {
-        super();
-        // This fragment will create options menu.
-        setHasOptionsMenu(true);
-    }
 
     /**
      * {@inheritDoc}
@@ -146,6 +138,7 @@ public class ChatRoomListFragment extends BaseFragment
         chatRoomListView = content.findViewById(R.id.chatRoomListView);
         chatRoomListView.setOnGroupClickListener(this);
         initChatRoomListAdapter();
+        requireActivity().addMenuProvider(this);
 
         return content;
     }
@@ -232,9 +225,7 @@ public class ChatRoomListFragment extends BaseFragment
      * @param menu the options menu
      */
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater menuInflater) {
-        super.onCreateOptionsMenu(menu, menuInflater);
-
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         // Get the SearchView MenuItem
         mSearchItem = menu.findItem(R.id.search);
         if (mSearchItem == null)
@@ -242,24 +233,31 @@ public class ChatRoomListFragment extends BaseFragment
 
         mSearchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
+            public boolean onMenuItemActionCollapse(@NonNull MenuItem item) {
                 filterChatRoomWrapperList("");
                 return true; // Return true to collapse action view
             }
 
-            public boolean onMenuItemActionExpand(MenuItem item) {
+            public boolean onMenuItemActionExpand(@NonNull MenuItem item) {
                 return true; // Return true to expand action view
             }
         });
         bindSearchListener();
     }
 
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        return false;
+    }
+
     private void bindSearchListener() {
         if (mSearchItem != null) {
             SearchView searchView = (SearchView) mSearchItem.getActionView();
-            SearchViewListener listener = new SearchViewListener();
-            searchView.setOnQueryTextListener(listener);
-            searchView.setOnCloseListener(listener);
+            if (searchView != null) {
+                SearchViewListener listener = new SearchViewListener();
+                searchView.setOnQueryTextListener(listener);
+                searchView.setOnCloseListener(listener);
+            }
         }
     }
 

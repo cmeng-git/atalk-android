@@ -37,16 +37,16 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.chatstates.ChatStateListener;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
+import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
+import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.xevent.MessageEventManager;
 import org.jivesoftware.smackx.xevent.MessageEventNotificationListener;
 import org.jivesoftware.smackx.xevent.MessageEventRequestListener;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
-
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -226,8 +226,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
             }
         }
 
-        public void displayedNotificationRequested(Jid from, String packetID,
-                MessageEventManager messageEventManager) {
+        public void displayedNotificationRequested(Jid from, String packetID, MessageEventManager messageEventManager) {
             try {
                 messageEventManager.sendDisplayedNotification(from, packetID);
             } catch (NotConnectedException | InterruptedException e) {
@@ -235,8 +234,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
             }
         }
 
-        public void composingNotificationRequested(Jid from, String packetID,
-                MessageEventManager messageEventManager) {
+        public void composingNotificationRequested(Jid from, String packetID, MessageEventManager messageEventManager) {
             try {
                 messageEventManager.sendComposingNotification(from, packetID);
             } catch (NotConnectedException | InterruptedException e) {
@@ -244,8 +242,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
             }
         }
 
-        public void offlineNotificationRequested(Jid from, String packetID,
-                MessageEventManager messageEventManager) {
+        public void offlineNotificationRequested(Jid from, String packetID, MessageEventManager messageEventManager) {
             try {
                 messageEventManager.sendCancelledNotification(from, packetID);
             } catch (NotConnectedException | InterruptedException e) {
@@ -256,7 +253,6 @@ public class OperationSetChatStateNotificationsJabberImpl extends
 
     /**
      * Receives incoming chat state info, Jid from is always a buddy (currently not implemented in aTalk)
-     * #TODO - to use for message delivery
      *
      * @see <a href="http://xmpp.org/extensions/xep-0022.html">XEP-22: Message Events</a>
      * Note: This specification has been obsoleted in favor of XEP-0085 and XEP-0184.
@@ -358,23 +354,26 @@ public class OperationSetChatStateNotificationsJabberImpl extends
     @Override
     public void stateChanged(Chat chat, ChatState state, Message message) {
         Jid fromJid = message.getFrom();
-        BareJid bareJid = fromJid.asBareJid();
+        EntityBareJid bareJid = fromJid.asEntityBareJidIfPossible();
         Timber.d("ChatState Event: %s is in '%s'", fromJid, state.name());
 
-        boolean isPrivateMessagingAddress = false;
-        OperationSetMultiUserChat mucOpSet = parentProvider.getOperationSet(OperationSetMultiUserChat.class);
-        if (mucOpSet != null) {
-            List<ChatRoom> chatRooms = mucOpSet.getCurrentlyJoinedChatRooms();
-            for (ChatRoom chatRoom : chatRooms) {
-                if (chatRoom.getName().equals(bareJid.toString())) {
-                    isPrivateMessagingAddress = true;
-                    break;
-                }
+        OperationSetMultiUserChatJabberImpl mucOpSet
+                = (OperationSetMultiUserChatJabberImpl) parentProvider.getOperationSet(OperationSetMultiUserChat.class);
+
+        // Skip ChatState that is relay from chatroom of the current user.
+        if (Message.Type.groupchat == message.getType()) {
+            if (message.hasExtension(DelayInformation.QNAME))
+                return;
+
+            if (mucOpSet != null) {
+                ChatRoomJabberImpl chatRoom = mucOpSet.findRoom(bareJid);
+                if (chatRoom.isOwnSendChatMessage(message))
+                    return;
             }
         }
 
-        // Object chatDescriptor = getChatDescriptor(bareJid);
-        Object chatDescriptor = opSetPeersPresence.findContactByJid(isPrivateMessagingAddress ? message.getFrom() : bareJid);
+        boolean isPrivateMessaging = message.hasExtension(MUCUser.QNAME);
+        Object chatDescriptor = opSetPeersPresence.findContactByJid(isPrivateMessaging ? fromJid : bareJid);
         if (chatDescriptor == null) {
             // in private messaging we can receive some errors when we left room (isPrivateMessagingAddress == false)
             // and we try to send some message
@@ -383,9 +382,12 @@ public class OperationSetChatStateNotificationsJabberImpl extends
             }
 
             if (chatDescriptor == null) {
-                // create the volatile contact from new source contact
+                // create the volatile contact from new source contact for chat; else use the resourcePart from muc
                 if (message.getType() != Message.Type.groupchat) {
-                    chatDescriptor = opSetPeersPresence.createVolatileContact(bareJid, isPrivateMessagingAddress);
+                    chatDescriptor = opSetPeersPresence.createVolatileContact(bareJid, isPrivateMessaging);
+                }
+                else if (mucOpSet != null) {
+                    chatDescriptor = mucOpSet.findRoom(bareJid);
                 }
             }
 
@@ -393,7 +395,6 @@ public class OperationSetChatStateNotificationsJabberImpl extends
             if (chatDescriptor == null) {
                 chatDescriptor = bareJid;
             }
-
         }
 
         ChatStateNotificationEvent event = new ChatStateNotificationEvent(chatDescriptor, state, message);

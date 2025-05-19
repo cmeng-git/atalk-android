@@ -6,6 +6,16 @@
 
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.io.File;
+import java.io.OutputStream;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.FileTransfer;
@@ -49,15 +59,6 @@ import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 
-import java.io.File;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
 import timber.log.Timber;
 
 /**
@@ -81,8 +82,6 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
      * An active instance of the opSetPersPresence operation set.
      */
     private OperationSetPersistentPresenceJabberImpl opSetPersPresence = null;
-
-    private OutgoingFileTransferJabberImpl mOGFileTransfer;
 
     /**
      * The Smack file transfer request Listener for legacy IBB and Sock5.
@@ -148,7 +147,8 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         EntityFullJid mContactJid = getFullJid(contact,
                 StreamInitiation.NAMESPACE, StreamInitiation.NAMESPACE + "/profile/file-transfer");
         if (mContactJid == null) {
-            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_supported));
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.file_transfer_not_supported,
+                    opSetPersPresence.getPresenceStatus().getStatusName()));
         }
 
         /* Must init to the correct ftManager at time of sending file with current mPPS; Otherwise
@@ -157,33 +157,40 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         FileTransferManager ftManager = FileTransferManager.getInstanceFor(mPPS.getConnection());
         // OutgoingFileTransfer.setResponseTimeout(2*60*1000); // use default 60s instead for user accept timeout.
         OutgoingFileTransfer transfer = ftManager.createOutgoingFileTransfer(mContactJid);
-        mOGFileTransfer = new OutgoingFileTransferJabberImpl(contact, file, transfer, mPPS, msgUuid);
+        OutgoingFileTransferJabberImpl oFileTransfer = new OutgoingFileTransferJabberImpl(contact, file, transfer, mPPS, msgUuid);
 
         // Notify all interested listeners that a file transfer has been created.
-        FileTransferCreatedEvent event = new FileTransferCreatedEvent(mOGFileTransfer, new Date());
+        FileTransferCreatedEvent event = new FileTransferCreatedEvent(oFileTransfer, new Date());
         fireFileTransferCreated(event);
 
         // cmeng: start file transferring with callback on status changes;
         // Start FileTransferNegotiator to support both sock5 and IBB; fallback to IBB if sock5 failed on retry
-        FileTransferNegotiator.IBB_ONLY = byteStreamError;
+        FileTransferNegotiator.IBB_ONLY =  byteStreamError;
         try {
             // Start smack handle everything and start status and progress thread.
-            transfer.setCallback(negotiationProgress);
+            transfer.setCallback(new OFTNegotiationProgress(oFileTransfer));
             transfer.sendFile(file, "Sending file with thumbnail element if enabled");
-            new FileTransferProgressThread(transfer, mOGFileTransfer).start();
+            new FileTransferProgressThread(transfer, oFileTransfer).start();
         } catch (SmackException e) {
             Timber.e("Failed to send file: %s", e.getMessage());
             throw new OperationNotSupportedException(
                     aTalkApp.getResString(R.string.file_transfer_send_error, mContactJid));
         }
-        return mOGFileTransfer;
+        return oFileTransfer;
     }
 
     /**
      * A callback class to retrieve the status of an outgoing transfer negotiation process
      * for legacy IBB/SOCK5 Bytestream file transfer.
+     * This callback is for each mOGFileTransfer for multiple files transfer;
      */
-    private final NegotiationProgress negotiationProgress = new NegotiationProgress() {
+    private class OFTNegotiationProgress implements NegotiationProgress {
+        private final OutgoingFileTransferJabberImpl mOGFileTransfer;
+
+        public OFTNegotiationProgress(OutgoingFileTransferJabberImpl oFileTransfer) {
+            mOGFileTransfer = oFileTransfer;
+        }
+
         /**
          * Called when the status changes.
          *
@@ -192,7 +199,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
          */
         @Override
         public void statusUpdated(Status oldStatus, Status newStatus) {
-            // Timber.d("NegotiationProgress status change: %s => %s", oldStatus, newStatus);
+            Timber.d("NegotiationProgress status change: %s => %s", oldStatus, newStatus);
 
             switch (newStatus) {
                 case complete:
@@ -200,23 +207,22 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                 case refused:
                     byteStreamError = false;
                     mOGFileTransfer.removeThumbnailHandler();
+                    mOGFileTransfer.fireStatusChangeEvent(parseJabberStatus(newStatus), newStatus.toString());
                     break;
 
+                // Leave fireStatusChangeEvent to errorEstablishingStream to have proper error message to user.
                 case error:
                     mOGFileTransfer.removeThumbnailHandler();
                     if (Status.negotiating_stream == oldStatus) {
                         byteStreamError = !FileTransferNegotiator.IBB_ONLY;
                     }
+                    break;
             }
-
-            String reason = newStatus.toString();
-            // Timber.d("Error message: %s", reason);
-            mOGFileTransfer.fireStatusChangeEvent(parseJabberStatus(newStatus), reason);
         }
 
         /**
          * Once the negotiation process is completed the output stream can be retrieved.
-         * Valid for SOCK5ByteStream protocol only.
+         * Valid for SOCK5ByteStream protocol only. Reset byteStreamError flag to false.
          *
          * @param stream the established stream which can be used to transfer the file to the remote entity
          */
@@ -228,7 +234,6 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
 
         /**
          * Called when an exception occurs during the negotiation progress.
-         * Set byteStreamError flag to true only if IBB_ONLY is not set.
          *
          * @param ex the exception that occurred.
          */
@@ -238,9 +243,9 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
             if (errMsg != null && ex instanceof SmackException.NoResponseException) {
                 errMsg = errMsg.substring(0, errMsg.indexOf(". StanzaCollector"));
             }
-            mOGFileTransfer.fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, errMsg);
+            mOGFileTransfer.fireStatusChangeEvent(FileTransferStatusChangeEvent.FAILED, errMsg);
         }
-    };
+    }
 
     /**
      * Find the EntityFullJid of an ONLINE contact with the highest priority if more than one found,
@@ -451,9 +456,11 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
      * registered file transfer listeners.
      */
     void fireFileTransferRequest(IncomingFileTransferRequest request) {
+        Contact contact = request.getSender();
+        NotificationManager.updateMessageCount(contact);
+
         // Create an event associated to this global request.
         FileTransferRequestEvent event = new FileTransferRequestEvent(this, request, new Date());
-
         Iterator<ScFileTransferListener> listeners;
         synchronized (fileTransferListeners) {
             listeners = new ArrayList<>(fileTransferListeners).iterator();
@@ -613,6 +620,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
      * @param smackFTStatus the smack file transfer status to parse
      *
      * @return the parsed status
+     *
      * @see org.jivesoftware.smackx.filetransfer.FileTransfer
      */
     private static int parseJabberStatus(Status smackFTStatus) {
@@ -633,6 +641,8 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                 return FileTransferStatusChangeEvent.WAITING;
 
             case negotiating_stream:
+                return FileTransferStatusChangeEvent.ACCEPT;
+
             case negotiated:
             case in_progress:
                 return FileTransferStatusChangeEvent.IN_PROGRESS;

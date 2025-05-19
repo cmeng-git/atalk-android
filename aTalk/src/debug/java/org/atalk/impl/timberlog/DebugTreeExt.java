@@ -12,11 +12,9 @@ import timber.log.Timber;
  * Log everything i.e priority == (Log.VERBOSE || Log.DEBUG || Log.INFO || Log.WARN || Log.ERROR)
  * Log priority == TimberLevel.FINE only if enabled
  */
-public class DebugTreeExt extends Timber.DebugTree
-{
-    @Override
-    protected boolean isLoggable(@Nullable String tag, int priority)
-    {
+public class DebugTreeExt extends Timber.DebugTree {
+    // @Override
+    protected boolean isLoggable(@Nullable String tag, int priority) {
         return ((priority != TimberLog.FINER) || TimberLog.isTraceEnable);
 
         // For testing release version logcat messages in debug mode
@@ -29,8 +27,7 @@ public class DebugTreeExt extends Timber.DebugTree
      * Log.println(priority, tag, message) would not print priority == TimberLog.FINE
      */
     @Override
-    protected void log(int priority, String tag, @NonNull String message, Throwable t)
-    {
+    protected void log(int priority, String tag, @NonNull String message, Throwable t) {
         if ((priority == TimberLog.FINER) || (priority == TimberLog.FINEST)) {
             println_native(0, priority, tag, message);
         }
@@ -39,8 +36,7 @@ public class DebugTreeExt extends Timber.DebugTree
         }
     }
 
-    static int println_native(int bufID, int priority, String tag, String msgs)
-    {
+    static int println_native(int bufID, int priority, String tag, String msgs) {
         String prefix = priorityChar(priority) + "/" + tag + ": ";
         for (String msg : msgs.split("\n")) {
             System.out.println(prefix + msg);
@@ -49,8 +45,7 @@ public class DebugTreeExt extends Timber.DebugTree
     }
 
     // to replicate prefix visible when using 'adb logcat'
-    private static char priorityChar(int priority)
-    {
+    private static char priorityChar(int priority) {
         switch (priority) {
             case Log.VERBOSE:
                 return 'V';

@@ -15,8 +15,7 @@ import net.java.sip.communicator.service.protocol.AbstractMessage;
  * @author Lubomir Marinov
  * @author Eng Chong Meng
  */
-public class MessageJabberImpl extends AbstractMessage
-{
+public class MessageJabberImpl extends AbstractMessage {
     /**
      * Creates an instance of this Message with the specified parameters.
      *
@@ -25,8 +24,7 @@ public class MessageJabberImpl extends AbstractMessage
      * @param subject the subject of the message or null for empty.
      * @param messageUID @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
      */
-    public MessageJabberImpl(String content, int encType, String subject, String messageUID)
-    {
+    public MessageJabberImpl(String content, int encType, String subject, String messageUID) {
         super(content, encType, subject, messageUID);
     }
 }

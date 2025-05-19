@@ -32,6 +32,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +67,7 @@ import net.java.sip.communicator.service.protocol.event.FileTransferProgressEven
 import net.java.sip.communicator.service.protocol.event.FileTransferProgressListener;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.util.ByteFormat;
+import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.GuiUtils;
 import net.java.sip.communicator.util.UtilActivator;
 
@@ -284,6 +286,13 @@ public abstract class FileTransferConversation extends BaseFragment
         messageViewHolder.fileStatus.setTextColor(Color.BLACK);
 
         switch (status) {
+            // Only allow user to cancel while in active data stream transferring; both legacy si and JFT cannot
+            // support transfer cancel during protocol negotiation.
+            case FileTransferStatusChangeEvent.PREPARING:
+                // Preserve the cancel button view height, avoid being partially hidden by android when it is enabled
+                messageViewHolder.cancelButton.setVisibility(View.GONE);
+                break;
+
             case FileTransferStatusChangeEvent.WAITING:
                 if (this instanceof FileSendConversation) {
                     messageViewHolder.cancelButton.setVisibility(View.VISIBLE);
@@ -292,13 +301,6 @@ public abstract class FileTransferConversation extends BaseFragment
                     messageViewHolder.acceptButton.setVisibility(View.VISIBLE);
                     messageViewHolder.declineButton.setVisibility(View.VISIBLE);
                 }
-                break;
-
-            // Only allow user to cancel while in active data stream transferring; both legacy si and JFT cannot
-            // support transfer cancel during protocol negotiation.
-            case FileTransferStatusChangeEvent.PREPARING:
-                // Preserve the cancel button view height, avoid being partially hidden by android when it is enabled
-                messageViewHolder.cancelButton.setVisibility(View.GONE);
                 break;
 
             case FileTransferStatusChangeEvent.IN_PROGRESS:
@@ -313,12 +315,10 @@ public abstract class FileTransferConversation extends BaseFragment
                 if (FileRecord.IN.equals(mDir)) {
                     updateFileViewInfo(mXferFile, false);
                 }
-                // set to full for progressBar on file transfer completed
+
+                // Fix unknown HttpFileDownload file size or final last transferredBytes update not receive in case.
+                // Show full for progressBar on local received mXferFile completed.
                 long fileSize = mXferFile.length();
-                // found http file download fileSize == 0; so fake to 100.
-                if (fileSize == 0) {
-                    fileSize = 100;
-                }
                 onUploadProgress(fileSize, fileSize);
                 break;
 
@@ -327,6 +327,7 @@ public abstract class FileTransferConversation extends BaseFragment
                 // Allow user retries only if sender cancels the file transfer
                 if (FileRecord.OUT.equals(mDir)) {
                     messageViewHolder.retryButton.setVisibility(View.VISIBLE);
+                    messageViewHolder.cancelButton.setVisibility(View.VISIBLE);
                 } // fall through
 
             case FileTransferStatusChangeEvent.DECLINED: // user reject the incoming file xfer
@@ -338,6 +339,21 @@ public abstract class FileTransferConversation extends BaseFragment
             messageViewHolder.fileStatus.setText(statusText);
         }
         messageViewHolder.timeView.setText(mDate);
+    }
+
+    /**
+     * Check for auto-download only if the file size is not zero
+     *
+     * @param fileSize transfer file size
+     */
+    protected boolean checkAutoAccept(long fileSize) {
+        if (fileSize > 0 && ConfigurationUtils.isAutoAcceptFile(fileSize)) {
+            runOnUiThread(() -> new Handler().postDelayed(() -> {
+                messageViewHolder.acceptButton.performClick();
+            }, 500));
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -390,6 +406,9 @@ public abstract class FileTransferConversation extends BaseFragment
      * @param isHistory true if the view file is history, so show small image size
      */
     protected void updateFileViewInfo(File file, boolean isHistory) {
+        if (file != null)
+            messageViewHolder.fileLabel.setText(getFileLabel(file));
+
         // File length = 0 will cause Glade to throw errors
         if ((file == null) || !file.exists() || file.length() == 0)
             return;
@@ -399,7 +418,6 @@ public abstract class FileTransferConversation extends BaseFragment
         mimeType = checkMimeType(file);
         isMediaAudio = ((mimeType != null) && (mimeType.contains("audio") || mimeType.contains("3gp")));
 
-        messageViewHolder.fileLabel.setText(getFileLabel(file));
         if (isMediaAudio && playerInit()) {
             messageViewHolder.playerView.setVisibility(View.VISIBLE);
             messageViewHolder.stickerView.setVisibility(View.GONE);
@@ -496,6 +514,7 @@ public abstract class FileTransferConversation extends BaseFragment
      *
      * @param event the <code>FileTransferProgressEvent</code> that notifies us
      */
+    @Override
     public void progressChanged(final FileTransferProgressEvent event) {
         long transferredBytes = event.getFileTransfer().getTransferredBytes();
         long progressTimestamp = event.getTimestamp();
@@ -514,7 +533,7 @@ public abstract class FileTransferConversation extends BaseFragment
         updateProgress(uploadedBytes, System.currentTimeMillis());
     }
 
-    private void updateProgress(long transferredBytes, long progressTimestamp) {
+    protected void updateProgress(long transferredBytes, long progressTimestamp) {
         long SMOOTHING_FACTOR = 100;
 
         // before file transfer start is -1
@@ -550,9 +569,12 @@ public abstract class FileTransferConversation extends BaseFragment
             // Need to do it here as it was found that Http File Upload completed before the progress Bar is even visible
             if (!messageViewHolder.progressBar.isShown()) {
                 messageViewHolder.progressBar.setVisibility(View.VISIBLE);
-                messageViewHolder.progressBar.setMax((int) mTransferFileSize);
                 mChatFragment.scrollToBottom();
             }
+            // In case transfer file size is unknown in HttpFileDownload
+            if (mTransferFileSize <= 0)
+                messageViewHolder.progressBar.setMax((int) transferredBytes);
+
             // Note: progress bar can only handle int size (4-bytes: 2,147,483, 647);
             messageViewHolder.progressBar.setProgress((int) transferredBytes);
 
@@ -611,24 +633,29 @@ public abstract class FileTransferConversation extends BaseFragment
      */
     protected abstract String getProgressLabel(long bytesString);
 
-    // abstract updateView for class extension implementation
-    protected abstract void updateView(final int status, final String reason);
+    /**
+     * updateStatus includes UI view and DB status update for class extension implementation.
+     *
+     * @param status current file transfer status.
+     * @param reason may be null or internal generated based on status.
+     */
+    protected abstract void updateStatus(final int status, final String reason);
 
     /**
      * Init some of the file transfer parameters. Mainly call by sendFile and File History.
      *
      * @param status File transfer send status
      * @param jid Contact or ChatRoom for Http file upload service
-     * @param encType File encryption type
+     * @param encryption File encryption type
      * @param reason Contact or ChatRoom for Http file upload service
      */
-    public void setStatus(final int status, Object jid, int encType, String reason) {
+    public void setStatus(final int status, Object jid, int encryption, String reason) {
         mEntityJid = jid;
-        mEncryption = encType;
+        mEncryption = encryption;
         // Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
-            setEncState(mEncryption);
-            updateView(status, reason);
+            setEncryptionState(mEncryption);
+            updateStatus(status, reason);
         });
     }
 
@@ -636,10 +663,10 @@ public abstract class FileTransferConversation extends BaseFragment
      * Set the file encryption status icon.
      * Access directly by file receive constructor; sendFile via setStatus().
      *
-     * @param encType the encryption
+     * @param encryption the encryption
      */
-    protected void setEncState(int encType) {
-        if (IMessage.ENCRYPTION_OMEMO == encType)
+    protected void setEncryptionState(int encryption) {
+        if (IMessage.ENCRYPTION_OMEMO == encryption)
             messageViewHolder.encStateView.setImageResource(R.drawable.encryption_omemo);
         else
             messageViewHolder.encStateView.setImageResource(R.drawable.encryption_none);
@@ -671,6 +698,20 @@ public abstract class FileTransferConversation extends BaseFragment
     }
 
     /**
+     * Check if File Transferred has endded.
+     *
+     * @param status current file transfer status
+     *
+     * @return true is file transfer process has already completed.
+     */
+    protected boolean isFileTransferEnd(int status) {
+        return (status == FileTransferStatusChangeEvent.COMPLETED
+                || status == FileTransferStatusChangeEvent.CANCELED
+                || status == FileTransferStatusChangeEvent.FAILED
+                || status == FileTransferStatusChangeEvent.DECLINED);
+    }
+
+    /**
      * Handles buttons click action events.
      */
     @Override
@@ -689,10 +730,13 @@ public abstract class FileTransferConversation extends BaseFragment
             case R.id.buttonCancel:
                 messageViewHolder.retryButton.setVisibility(View.GONE);
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
-                // Let file transport event call back to handle
-                // updateView(FileTransferStatusChangeEvent.CANCELED, null);
-                if (mFileTransfer != null)
+                // Let file transport event call back to handle updateStatus() if mFileTransfer not null.
+                if (mFileTransfer != null) {
                     mFileTransfer.cancel();
+                }
+                else {
+                    updateStatus(FileTransferStatusChangeEvent.CANCELED, null);
+                }
                 break;
         }
     }

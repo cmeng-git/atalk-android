@@ -113,7 +113,6 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
         mBtnFollowMe.setOnClickListener(this);
 
         mAnimation = ObjectAnimator.ofInt(mBtnFollowMe, "textColor", Color.GREEN, Color.BLACK);
-
         mAnimation.setDuration(1000);
         mAnimation.setEvaluator(new ArgbEvaluator());
         mAnimation.setRepeatCount(ValueAnimator.INFINITE);

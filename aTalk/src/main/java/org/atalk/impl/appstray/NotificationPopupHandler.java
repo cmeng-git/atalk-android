@@ -224,6 +224,13 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                     }
                 }
                 break;
+
+            case AppNotifications.FILE_GROUP:
+                if (!aTalkApp.isForeground && newPopup.isHeadUpNotificationAllow()) {
+                    mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
+                    Timber.w("Incoming File!!!");
+                }
+                break;
         }
 
         // caches the notification until clicked or cleared

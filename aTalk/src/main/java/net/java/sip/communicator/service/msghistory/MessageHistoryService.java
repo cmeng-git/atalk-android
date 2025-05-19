@@ -411,5 +411,15 @@ public interface MessageHistoryService
      * @return number of columns affected
      */
     int setSessionChatType(ChatSession chatSession, int chatType);
+
+    /**
+     * Set the last sent, received or mam retrieval message timeStamp for the specified sessionUuid;
+     *
+     * @param sessionUuid the chat sessions record id to which to save the timestamp
+     * @param date last mam message timestamp
+     *
+     * @return a value of 0 means there is no chatSession record associated with this sessionUuid
+     */
+    int setMamDate(String sessionUuid, Date date);
 }
 

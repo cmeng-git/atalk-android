@@ -6,6 +6,16 @@
  */
 package net.java.sip.communicator.impl.metahistory;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TreeSet;
+
 import net.java.sip.communicator.service.callhistory.CallHistoryService;
 import net.java.sip.communicator.service.callhistory.CallPeerRecord;
 import net.java.sip.communicator.service.callhistory.CallRecord;
@@ -28,16 +38,6 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeSet;
-
 import timber.log.Timber;
 
 /**
@@ -47,8 +47,7 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListener
-{
+public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListener {
     /**
      * The BundleContext that we got from the OSGI bus.
      */
@@ -67,10 +66,10 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param services the services classNames we will query
      * @param descriptor CallPeer address(String), MetaContact or ChatRoom.
      * @param startDate Date the date of the first record to return
+     *
      * @return Collection sorted result that consists of records returned from the services we wrap
      */
-    public Collection<Object> findByStartDate(String[] services, Object descriptor, Date startDate)
-    {
+    public Collection<Object> findByStartDate(String[] services, Object descriptor, Date startDate) {
         MessageProgressWrapper listenWrapper = new MessageProgressWrapper(services.length);
 
         TreeSet<Object> result = new TreeSet<>(new RecordsComparator());
@@ -108,10 +107,10 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param services the services classNames we will query
      * @param descriptor CallPeer address(String), MetaContact or ChatRoom.
      * @param endDate Date the date of the last record to return
+     *
      * @return Collection sorted result that consists of records returned from the services we wrap
      */
-    public Collection<Object> findByEndDate(String[] services, Object descriptor, Date endDate)
-    {
+    public Collection<Object> findByEndDate(String[] services, Object descriptor, Date endDate) {
         MessageProgressWrapper listenWrapper = new MessageProgressWrapper(services.length);
 
         TreeSet<Object> result = new TreeSet<>(new RecordsComparator());
@@ -150,10 +149,10 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param descriptor CallPeer address(String), MetaContact or ChatRoom.
      * @param startDate Date the date of the first record to return
      * @param endDate Date the date of the last record to return
+     *
      * @return Collection sorted result that consists of records returned from the services we wrap
      */
-    public Collection<Object> findByPeriod(String[] services, Object descriptor, Date startDate, Date endDate)
-    {
+    public Collection<Object> findByPeriod(String[] services, Object descriptor, Date startDate, Date endDate) {
         MessageProgressWrapper listenWrapper = new MessageProgressWrapper(services.length);
 
         LinkedList<Object> result = new LinkedList<>();
@@ -195,11 +194,11 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param startDate Date the date of the first record to return
      * @param endDate Date the date of the last record to return
      * @param keywords array of keywords
+     *
      * @return Collection sorted result that consists of records returned from the services we wrap
      */
     public Collection<Object> findByPeriod(String[] services, Object descriptor, Date startDate,
-            Date endDate, String[] keywords)
-    {
+            Date endDate, String[] keywords) {
         return findByPeriod(services, descriptor, startDate, endDate, keywords, false);
     }
 
@@ -212,11 +211,11 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param endDate Date the date of the last record to return
      * @param keywords array of keywords
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection sorted result that consists of records returned from the services we wrap
      */
     public Collection<Object> findByPeriod(String[] services, Object descriptor, Date startDate,
-            Date endDate, String[] keywords, boolean caseSensitive)
-    {
+            Date endDate, String[] keywords, boolean caseSensitive) {
         MessageProgressWrapper listenWrapper = new MessageProgressWrapper(services.length);
 
         TreeSet<Object> result = new TreeSet<>(new RecordsComparator());
@@ -260,10 +259,10 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param services the services classNames we will query
      * @param descriptor CallPeer address(String), MetaContact or ChatRoom.
      * @param keyword keyword
+     *
      * @return Collection sorted result that consists of records returned from the services we wrap
      */
-    public Collection<Object> findByKeyword(String[] services, Object descriptor, String keyword)
-    {
+    public Collection<Object> findByKeyword(String[] services, Object descriptor, String keyword) {
         return findByKeyword(services, descriptor, keyword, false);
     }
 
@@ -274,10 +273,10 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param descriptor CallPeer address(String), MetaContact or ChatRoom.
      * @param keyword keyword
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection sorted result that consists of records returned from the services we wrap
      */
-    public Collection<Object> findByKeyword(String[] services, Object descriptor, String keyword, boolean caseSensitive)
-    {
+    public Collection<Object> findByKeyword(String[] services, Object descriptor, String keyword, boolean caseSensitive) {
         return findByKeywords(services, descriptor, new String[]{keyword}, caseSensitive);
     }
 
@@ -287,10 +286,10 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param services the services classNames we will query
      * @param descriptor CallPeer address(String), MetaContact or ChatRoom.
      * @param keywords keyword
+     *
      * @return Collection sorted result that consists of records returned from the services we wrap
      */
-    public Collection<Object> findByKeywords(String[] services, Object descriptor, String[] keywords)
-    {
+    public Collection<Object> findByKeywords(String[] services, Object descriptor, String[] keywords) {
         return findByKeywords(services, descriptor, keywords, false);
     }
 
@@ -301,10 +300,10 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param descriptor CallPeer address(String), MetaContact or ChatRoom.
      * @param keywords keyword
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection sorted result that consists of records returned from the services we wrap
      */
-    public Collection<Object> findByKeywords(String[] services, Object descriptor, String[] keywords, boolean caseSensitive)
-    {
+    public Collection<Object> findByKeywords(String[] services, Object descriptor, String[] keywords, boolean caseSensitive) {
         MessageProgressWrapper listenWrapper = new MessageProgressWrapper(services.length);
 
         TreeSet<Object> result = new TreeSet<>(new RecordsComparator());
@@ -349,10 +348,10 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param services the services classNames we will query
      * @param descriptor CallPeer address(String), MetaContact or ChatRoom.
      * @param count messages count
+     *
      * @return Collection sorted result that consists of records returned from the services we wrap
      */
-    public Collection<Object> findLast(String[] services, Object descriptor, int count)
-    {
+    public Collection<Object> findLast(String[] services, Object descriptor, int count) {
         MessageProgressWrapper listenWrapper = new MessageProgressWrapper(services.length);
         TreeSet<Object> result = new TreeSet<>(new RecordsComparator());
 
@@ -398,10 +397,10 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param descriptor CallPeer address(String), MetaContact or ChatRoom.
      * @param date messages after date
      * @param count messages count
+     *
      * @return Collection sorted result that consists of records returned from the services we wrap
      */
-    public Collection<Object> findFirstMessagesAfter(String[] services, Object descriptor, Date date, int count)
-    {
+    public Collection<Object> findFirstMessagesAfter(String[] services, Object descriptor, Date date, int count) {
         MessageProgressWrapper listenWrapper = new MessageProgressWrapper(services.length);
 
         TreeSet<Object> result = new TreeSet<>(new RecordsComparator());
@@ -455,12 +454,11 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param descriptor CallPeer address(String), MetaContact or ChatRoom.
      * @param date messages before date
      * @param count messages count
+     *
      * @return Collection sorted result that consists of records returned from the services we wrap
      */
-    public Collection<Object> findLastMessagesBefore(String[] services, Object descriptor, Date date, int count)
-    {
+    public Collection<Object> findLastMessagesBefore(String[] services, Object descriptor, Date date, int count) {
         MessageProgressWrapper listenWrapper = new MessageProgressWrapper(services.length);
-
         TreeSet<Object> result = new TreeSet<>(new RecordsComparator());
         for (int i = 0; i < services.length; i++) {
             String name = services[i];
@@ -508,8 +506,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      *
      * @param listener HistorySearchProgressListener
      */
-    public void addSearchProgressListener(HistorySearchProgressListener listener)
-    {
+    public void addSearchProgressListener(HistorySearchProgressListener listener) {
         synchronized (progressListeners) {
             if (!progressListeners.contains(listener))
                 progressListeners.add(listener);
@@ -521,15 +518,13 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      *
      * @param listener HistorySearchProgressListener
      */
-    public void removeSearchProgressListener(HistorySearchProgressListener listener)
-    {
+    public void removeSearchProgressListener(HistorySearchProgressListener listener) {
         synchronized (progressListeners) {
             progressListeners.remove(listener);
         }
     }
 
-    private Object getService(String name)
-    {
+    private Object getService(String name) {
         Object serv = services.get(name);
 
         if (serv == null) {
@@ -540,8 +535,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
     }
 
     private boolean matchAnyCallPeer(List<CallPeerRecord> cps, String[] keywords,
-            boolean caseSensitive)
-    {
+            boolean caseSensitive) {
         for (CallPeerRecord callPeer : cps) {
             for (String k : keywords) {
                 if (caseSensitive && callPeer.getPeerAddress().contains(k))
@@ -554,8 +548,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
     }
 
     private boolean matchCallPeer(List<CallPeerRecord> cps, String[] keywords,
-            boolean caseSensitive)
-    {
+            boolean caseSensitive) {
         for (CallPeerRecord callPeer : cps) {
             boolean match = false;
             for (String k : keywords) {
@@ -582,8 +575,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
         return false;
     }
 
-    public void serviceChanged(ServiceEvent serviceEvent)
-    {
+    public void serviceChanged(ServiceEvent serviceEvent) {
         if (serviceEvent.getType() == ServiceEvent.UNREGISTERING) {
             Object sService = bundleContext.getService(serviceEvent.getServiceReference());
             services.remove(sService.getClass().getName());
@@ -595,8 +587,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      *
      * @param bc BundleContext
      */
-    public void start(BundleContext bc)
-    {
+    public void start(BundleContext bc) {
         Timber.d("Starting the call history implementation.");
         this.bundleContext = bc;
         services.clear();
@@ -610,8 +601,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      *
      * @param bc BundleContext
      */
-    public void stop(BundleContext bc)
-    {
+    public void stop(BundleContext bc) {
         bc.removeServiceListener(this);
         services.clear();
     }
@@ -619,10 +609,8 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
     /**
      * Used to compare various records to be ordered in TreeSet according their timestamp.
      */
-    private static class RecordsComparator implements Comparator<Object>
-    {
-        private Date getDate(Object o)
-        {
+    private static class RecordsComparator implements Comparator<Object> {
+        private Date getDate(Object o) {
             Date date = new Date(0);
             if (o instanceof MessageDeliveredEvent)
                 date = ((MessageDeliveredEvent) o).getTimestamp();
@@ -639,32 +627,27 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
             return date;
         }
 
-        public int compare(Object o1, Object o2)
-        {
+        public int compare(Object o1, Object o2) {
             Date date1 = getDate(o1);
             Date date2 = getDate(o2);
             return date1.compareTo(date2);
         }
     }
 
-    private class MessageProgressWrapper implements MessageHistorySearchProgressListener, CallHistorySearchProgressListener
-    {
+    private class MessageProgressWrapper implements MessageHistorySearchProgressListener, CallHistorySearchProgressListener {
         private final int count;
 
         private int ix;
 
-        public MessageProgressWrapper(int count)
-        {
+        public MessageProgressWrapper(int count) {
             this.count = count;
         }
 
-        public void setIx(int ix)
-        {
+        public void setIx(int ix) {
             this.ix = ix;
         }
 
-        private void fireProgress(int origProgress, int maxVal, Date startDate, Date endDate, String[] keywords)
-        {
+        private void fireProgress(int origProgress, int maxVal, Date startDate, Date endDate, String[] keywords) {
             ProgressEvent ev = new ProgressEvent(MetaHistoryServiceImpl.this, startDate, endDate, keywords);
 
             double part1 = origProgress / ((double) maxVal * count);
@@ -675,8 +658,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
             fireEvent(ev);
         }
 
-        private void fireEvent(ProgressEvent ev)
-        {
+        private void fireEvent(ProgressEvent ev) {
             Iterable<HistorySearchProgressListener> listeners;
             synchronized (progressListeners) {
                 listeners = new ArrayList<>(progressListeners);
@@ -685,8 +667,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
                 listener.progressChanged(ev);
         }
 
-        public void fireLastProgress(Date startDate, Date endDate, String[] keywords)
-        {
+        public void fireLastProgress(Date startDate, Date endDate, String[] keywords) {
             ProgressEvent ev = new ProgressEvent(MetaHistoryServiceImpl.this, startDate, endDate, keywords);
             ev.setProgress(HistorySearchProgressListener.PROGRESS_MAXIMUM_VALUE);
 
@@ -694,15 +675,13 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
         }
 
         public void progressChanged(
-                net.java.sip.communicator.service.msghistory.event.ProgressEvent evt)
-        {
+                net.java.sip.communicator.service.msghistory.event.ProgressEvent evt) {
             fireProgress(evt.getProgress(), MessageHistorySearchProgressListener.PROGRESS_MAXIMUM_VALUE,
                     evt.getStartDate(), evt.getEndDate(), evt.getKeywords());
         }
 
         public void progressChanged(
-                net.java.sip.communicator.service.callhistory.event.ProgressEvent evt)
-        {
+                net.java.sip.communicator.service.callhistory.event.ProgressEvent evt) {
             fireProgress(evt.getProgress(), CallHistorySearchProgressListener.PROGRESS_MAXIMUM_VALUE,
                     evt.getStartDate(), evt.getEndDate(), null);
         }

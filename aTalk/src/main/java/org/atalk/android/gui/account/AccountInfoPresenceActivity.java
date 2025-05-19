@@ -1369,12 +1369,12 @@ public class AccountInfoPresenceActivity extends BaseActivity
     // Events to show or hide buttons for bigger view space for text entry
     @Override
     public void onSoftKeyboardHide() {
-        new Handler(Looper.getMainLooper()).post(() -> mButtonContainer.setVisibility(View.VISIBLE));
+        runOnUiThread(() -> mButtonContainer.setVisibility(View.VISIBLE));
     }
 
     @Override
     public void onSoftKeyboardShow() {
-        new Handler(Looper.getMainLooper()).post(() -> mButtonContainer.setVisibility(View.GONE));
+        runOnUiThread(() -> mButtonContainer.setVisibility(View.GONE));
     }
 
     private class EditTextWatcher implements TextWatcher {

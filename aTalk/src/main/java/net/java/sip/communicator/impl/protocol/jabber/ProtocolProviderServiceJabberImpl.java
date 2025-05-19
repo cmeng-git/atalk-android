@@ -233,6 +233,8 @@ import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.nick.packet.Nick;
 import org.jivesoftware.smackx.nick.provider.NickProvider;
+import org.jivesoftware.smackx.oob.packet.OutOfBandData;
+import org.jivesoftware.smackx.oob.provider.OutOfBandDataProvider;
 import org.jivesoftware.smackx.ping.PingFailedListener;
 import org.jivesoftware.smackx.ping.PingManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceipt;
@@ -2317,6 +2319,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             // XEP-0153: vCard-Based Avatars
             ProviderManager.addExtensionProvider(VCardTempXUpdate.ELEMENT, VCardTempXUpdate.NAMESPACE,
                     new VCardTempXUpdateProvider());
+
+            // XEP-0066: Out of Band Data
+            ProviderManager.addExtensionProvider(OutOfBandData.ELEMENT, OutOfBandData.NAMESPACE,
+                    new OutOfBandDataProvider());
 
             // XEP-0158: CAPTCHA Forms
             ProviderManager.addExtensionProvider(CaptchaExtension.ELEMENT, CaptchaExtension.NAMESPACE, new CaptchaProvider());

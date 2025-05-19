@@ -6,6 +6,16 @@
  */
 package net.java.sip.communicator.impl.msghistory;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.EventObject;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactsource.ContactDetail;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
@@ -32,16 +42,6 @@ import net.java.sip.communicator.util.DataObject;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.EventObject;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 /**
  * Represents a contact source displaying a recent message for contact.
  *
@@ -49,8 +49,7 @@ import java.util.Map;
  * @author Eng Chong Meng
  */
 public class MessageSourceContact extends DataObject
-        implements SourceContact, Comparable<MessageSourceContact>
-{
+        implements SourceContact, Comparable<MessageSourceContact> {
     /**
      * Date format used to mark today messages.
      */
@@ -110,8 +109,7 @@ public class MessageSourceContact extends DataObject
      * @param source the source event.
      * @param service the message source service.
      */
-    MessageSourceContact(EventObject source, MessageSourceService service)
-    {
+    MessageSourceContact(EventObject source, MessageSourceService service) {
         this.service = service;
         update(source);
     }
@@ -121,16 +119,14 @@ public class MessageSourceContact extends DataObject
      *
      * @return the protocol provider.
      */
-    public ProtocolProviderService getProtocolProviderService()
-    {
+    public ProtocolProviderService getProtocolProviderService() {
         return ppService;
     }
 
     /**
      * Make sure the content of the message is not too long, as it will fill up tooltips and ui components.
      */
-    private void updateMessageContent()
-    {
+    private void updateMessageContent() {
         if (isToday(timestamp)) {
             // just hour
             this.messageContent = new SimpleDateFormat(TODAY_DATE_FORMAT, Locale.US).format(timestamp)
@@ -154,10 +150,10 @@ public class MessageSourceContact extends DataObject
      * Checks whether <code>timestamp</code> is today.
      *
      * @param timestamp the date to check
+     *
      * @return whether <code>timestamp</code> is today.
      */
-    private boolean isToday(Date timestamp)
-    {
+    private boolean isToday(Date timestamp) {
         Calendar today = Calendar.getInstance();
         Calendar tsCalendar = Calendar.getInstance();
         tsCalendar.setTime(timestamp);
@@ -171,8 +167,7 @@ public class MessageSourceContact extends DataObject
      *
      * @param source the event object
      */
-    void update(EventObject source)
-    {
+    void update(EventObject source) {
         if (source instanceof MessageDeliveredEvent) {
             MessageDeliveredEvent e = (MessageDeliveredEvent) source;
 
@@ -231,8 +226,7 @@ public class MessageSourceContact extends DataObject
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "MessageSourceContact{" + "address='" + address
                 + '\'' + ", ppService=" + ppService + '}';
     }
@@ -242,8 +236,7 @@ public class MessageSourceContact extends DataObject
      *
      * @param source the source event.
      */
-    void initDetails(EventObject source)
-    {
+    void initDetails(EventObject source) {
         if (source instanceof MessageDeliveredEvent) {
             initDetails(false, ((MessageDeliveredEvent) source).getContact());
         }
@@ -261,8 +254,7 @@ public class MessageSourceContact extends DataObject
      *
      * @param isChatRoom is current source contact a chat room.
      */
-    void initDetails(boolean isChatRoom, Contact contact)
-    {
+    void initDetails(boolean isChatRoom, Contact contact) {
         if (!isChatRoom && contact != null)
             this.updateDisplayName();
 
@@ -304,8 +296,7 @@ public class MessageSourceContact extends DataObject
     }
 
     @Override
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         if (this.displayName != null)
             return this.displayName;
         else
@@ -317,14 +308,12 @@ public class MessageSourceContact extends DataObject
      *
      * @param displayName
      */
-    public void setDisplayName(String displayName)
-    {
+    public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
     @Override
-    public String getContactAddress()
-    {
+    public String getContactAddress() {
         if (this.address != null)
             return this.address;
 
@@ -332,19 +321,16 @@ public class MessageSourceContact extends DataObject
     }
 
     @Override
-    public void setContactAddress(String contactAddress)
-    {
+    public void setContactAddress(String contactAddress) {
     }
 
     @Override
-    public ContactSourceService getContactSource()
-    {
+    public ContactSourceService getContactSource() {
         return service;
     }
 
     @Override
-    public String getDisplayDetails()
-    {
+    public String getDisplayDetails() {
         return messageContent;
     }
 
@@ -354,8 +340,7 @@ public class MessageSourceContact extends DataObject
      * @return a list of available contact details
      */
     @Override
-    public List<ContactDetail> getContactDetails()
-    {
+    public List<ContactDetail> getContactDetails() {
         return new LinkedList<>(contactDetails);
     }
 
@@ -364,12 +349,12 @@ public class MessageSourceContact extends DataObject
      * class.
      *
      * @param operationSet the <code>OperationSet</code> class we're looking for
+     *
      * @return a list of all <code>ContactDetail</code>s supporting the given <code>OperationSet</code>
      * class
      */
     @Override
-    public List<ContactDetail> getContactDetails(Class<? extends OperationSet> operationSet)
-    {
+    public List<ContactDetail> getContactDetails(Class<? extends OperationSet> operationSet) {
         List<ContactDetail> res = new LinkedList<>();
 
         for (ContactDetail det : contactDetails) {
@@ -384,12 +369,12 @@ public class MessageSourceContact extends DataObject
      * Returns a list of all <code>ContactDetail</code>s corresponding to the given category.
      *
      * @param category the <code>OperationSet</code> class we're looking for
+     *
      * @return a list of all <code>ContactDetail</code>s corresponding to the given category
      */
     @Override
     public List<ContactDetail> getContactDetails(ContactDetail.Category category)
-            throws OperationNotSupportedException
-    {
+            throws OperationNotSupportedException {
         // We don't support category for message source history details,
         // so we return null.
         throw new OperationNotSupportedException(
@@ -401,29 +386,26 @@ public class MessageSourceContact extends DataObject
      *
      * @param operationSet the <code>OperationSet</code> class, for which we would like to obtain a
      * <code>ContactDetail</code>
+     *
      * @return the preferred <code>ContactDetail</code> for a given <code>OperationSet</code> class
      */
     @Override
-    public ContactDetail getPreferredContactDetail(Class<? extends OperationSet> operationSet)
-    {
+    public ContactDetail getPreferredContactDetail(Class<? extends OperationSet> operationSet) {
         return contactDetails.get(0);
     }
 
     @Override
-    public byte[] getImage()
-    {
+    public byte[] getImage() {
         return image;
     }
 
     @Override
-    public boolean isDefaultImage()
-    {
+    public boolean isDefaultImage() {
         return image == null;
     }
 
     @Override
-    public PresenceStatus getPresenceStatus()
-    {
+    public PresenceStatus getPresenceStatus() {
         return status;
     }
 
@@ -432,14 +414,12 @@ public class MessageSourceContact extends DataObject
      *
      * @param status
      */
-    public void setStatus(PresenceStatus status)
-    {
+    public void setStatus(PresenceStatus status) {
         this.status = status;
     }
 
     @Override
-    public int getIndex()
-    {
+    public int getIndex() {
         return service.getIndex(this);
     }
 
@@ -448,8 +428,7 @@ public class MessageSourceContact extends DataObject
      *
      * @return the contact.
      */
-    public Contact getContact()
-    {
+    public Contact getContact() {
         return contact;
     }
 
@@ -458,8 +437,7 @@ public class MessageSourceContact extends DataObject
      *
      * @return the room.
      */
-    public ChatRoom getRoom()
-    {
+    public ChatRoom getRoom() {
         return room;
     }
 
@@ -468,16 +446,14 @@ public class MessageSourceContact extends DataObject
      *
      * @return the timestamp of the message.
      */
-    public Date getTimestamp()
-    {
+    public Date getTimestamp() {
         return timestamp;
     }
 
     /**
      * Updates display name if contact is not null.
      */
-    private void updateDisplayName()
-    {
+    private void updateDisplayName() {
         if (this.contact == null)
             return;
 
@@ -492,11 +468,11 @@ public class MessageSourceContact extends DataObject
      * Compares two MessageSourceContacts.
      *
      * @param o the object to compare with
+     *
      * @return 0, less than zero, greater than zero, if equals, less or greater.
      */
     @Override
-    public int compareTo(MessageSourceContact o)
-    {
+    public int compareTo(MessageSourceContact o) {
         if (o == null || o.getTimestamp() == null)
             return 1;
 
@@ -504,8 +480,7 @@ public class MessageSourceContact extends DataObject
     }
 
     @Override
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
@@ -522,8 +497,7 @@ public class MessageSourceContact extends DataObject
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int result = address.hashCode();
         result = 31 * result + ppService.hashCode();
         return result;

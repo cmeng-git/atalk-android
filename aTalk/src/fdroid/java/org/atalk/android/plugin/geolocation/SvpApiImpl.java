@@ -21,11 +21,11 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 
-import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.chat.SvpApi;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.chat.SvpApi;
 
 /**
  * The <code>SvpApiImpl</code> working in conjunction with ChatFragment to provide street map view support.

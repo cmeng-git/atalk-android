@@ -17,20 +17,18 @@
  */
 package org.jivesoftware.smackx.jitsimeet;
 
-import org.jivesoftware.smackx.AbstractExtensionElement;
-
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smackx.AbstractExtensionElement;
 
 /**
  * The packet extension added to the MUC presence to broadcast current
  * transcription status to all conference participants.
- *
  * Status meaning:
  * <code>{@link Status#OFF}</code> - transcription stopped(available to start)
  * <code>{@link Status#ON}</code> - transcription in progress
  */
-public class TranscriptionStatusExtension extends AbstractExtensionElement
-{
+public class TranscriptionStatusExtension extends AbstractExtensionElement {
     /**
      * XML element name of this packet extension.
      */
@@ -51,17 +49,16 @@ public class TranscriptionStatusExtension extends AbstractExtensionElement
     /**
      * Constructs new TranscriptionStatusExtensionElement.
      */
-    public TranscriptionStatusExtension()
-    {
+    public TranscriptionStatusExtension() {
         super(ELEMENT, NAMESPACE);
     }
 
     /**
      * Sets new value for the transcription status.
+     *
      * @param status one of {@link Status}
      */
-    public void setStatus(Status status)
-    {
+    public void setStatus(Status status) {
         setAttribute(STATUS_ATTRIBUTE, String.valueOf(status));
     }
 
@@ -70,16 +67,14 @@ public class TranscriptionStatusExtension extends AbstractExtensionElement
      *
      * @return one of the {@link Status}
      */
-    public Status getStatus()
-    {
+    public Status getStatus() {
         return Status.valueOf(((String) getAttribute(STATUS_ATTRIBUTE)).toUpperCase());
     }
 
     /**
      * The enumeration of recording status values.
      */
-    public enum Status
-    {
+    public enum Status {
         /**
          * Transcription is in progress.
          */
@@ -97,10 +92,10 @@ public class TranscriptionStatusExtension extends AbstractExtensionElement
 
         /**
          * Creates new {@link Status} instance.
+         *
          * @param name a string corresponding to one of {@link Status} values.
          */
-        Status(String name)
-        {
+        Status(String name) {
             this.name = name;
         }
 
@@ -108,8 +103,7 @@ public class TranscriptionStatusExtension extends AbstractExtensionElement
          * {@inheritDoc}
          */
         @Override
-        public String toString()
-        {
+        public String toString() {
             return name;
         }
 

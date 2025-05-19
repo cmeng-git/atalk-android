@@ -5,15 +5,14 @@
  */
 package org.jivesoftware.smackx.coin;
 
-import org.jivesoftware.smackx.AbstractExtensionElement;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-
-import java.util.Map;
-
-import javax.xml.namespace.QName;
+import org.jivesoftware.smackx.AbstractExtensionElement;
 
 /**
  * Conference medium packet extension.
@@ -21,8 +20,7 @@ import javax.xml.namespace.QName;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class ConferenceMediumExtension extends AbstractExtensionElement
-{
+public class ConferenceMediumExtension extends AbstractExtensionElement {
     /**
      * The name of the element that contains the conference medium.
      */
@@ -76,8 +74,7 @@ public class ConferenceMediumExtension extends AbstractExtensionElement
      * @param elementName element name
      * @param label label
      */
-    public ConferenceMediumExtension(String elementName, String label)
-    {
+    public ConferenceMediumExtension(String elementName, String label) {
         super(elementName, NAMESPACE);
         setAttribute(LABEL_ATTR_NAME, label);
     }
@@ -87,8 +84,7 @@ public class ConferenceMediumExtension extends AbstractExtensionElement
      *
      * @param status status.
      */
-    public void setStatus(String status)
-    {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -97,8 +93,7 @@ public class ConferenceMediumExtension extends AbstractExtensionElement
      *
      * @param type type
      */
-    public void setType(String type)
-    {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -107,8 +102,7 @@ public class ConferenceMediumExtension extends AbstractExtensionElement
      *
      * @param displayText display text
      */
-    public void setDisplayText(String displayText)
-    {
+    public void setDisplayText(String displayText) {
         this.displayText = displayText;
     }
 
@@ -117,8 +111,7 @@ public class ConferenceMediumExtension extends AbstractExtensionElement
      *
      * @return display text
      */
-    public String getDisplayText()
-    {
+    public String getDisplayText() {
         return displayText;
     }
 
@@ -127,8 +120,7 @@ public class ConferenceMediumExtension extends AbstractExtensionElement
      *
      * @return type
      */
-    public String getType()
-    {
+    public String getType() {
         return type;
     }
 
@@ -137,8 +129,7 @@ public class ConferenceMediumExtension extends AbstractExtensionElement
      *
      * @return status.
      */
-    public String getStatus()
-    {
+    public String getStatus() {
         return status;
     }
 
@@ -148,8 +139,7 @@ public class ConferenceMediumExtension extends AbstractExtensionElement
      * @return XML string representation
      */
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
-    {
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
 
         // add the rest of the attributes if any

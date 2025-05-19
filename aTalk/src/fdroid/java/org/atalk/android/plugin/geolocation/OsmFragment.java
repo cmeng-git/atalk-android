@@ -41,6 +41,7 @@ import androidx.annotation.NonNull;
 import androidx.core.location.LocationListenerCompat;
 import androidx.core.location.LocationManagerCompat;
 import androidx.core.location.LocationRequestCompat;
+import androidx.core.view.MenuProvider;
 
 import java.util.ArrayList;
 
@@ -68,7 +69,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  * @author Alex O'Ree
  */
-public class OsmFragment extends BaseFragment implements LocationListenerCompat, IOrientationConsumer {
+public class OsmFragment extends BaseFragment implements MenuProvider, LocationListenerCompat, IOrientationConsumer {
     private static final int MENU_LAST_ID = Menu.FIRST;
 
     private MyLocationNewOverlay mLocationOverlay;
@@ -109,6 +110,8 @@ public class OsmFragment extends BaseFragment implements LocationListenerCompat,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = (OsmActivity) getActivity();
+        requireActivity().addMenuProvider(this);
+
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
@@ -116,9 +119,6 @@ public class OsmFragment extends BaseFragment implements LocationListenerCompat,
 
         mLocationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
         mProvider = mLocationManager.getBestProvider(criteria, true);
-
-        // Disable all OSMap overlays menu items
-        setHasOptionsMenu(false);
     }
 
     @Override
@@ -278,25 +278,22 @@ public class OsmFragment extends BaseFragment implements LocationListenerCompat,
         btFollowMe = null;
     }
 
+    public void onPrepareMenu(@NonNull Menu menu) {
+        mMapView.getOverlayManager().onPrepareOptionsMenu(menu, MENU_LAST_ID, mMapView);
+    }
+
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         try {
             mMapView.getOverlayManager().onCreateOptionsMenu(menu, MENU_LAST_ID, mMapView);
         } catch (NullPointerException npe) {
             // can happen during CI tests and very rapid fragment switching
         }
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        mMapView.getOverlayManager().onPrepareOptionsMenu(menu, MENU_LAST_ID, mMapView);
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        return mMapView.getOverlayManager().onOptionsItemSelected(item, MENU_LAST_ID, mMapView);
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        return mMapView.getOverlayManager().onOptionsItemSelected(menuItem, MENU_LAST_ID, mMapView);
     }
 
     public void invalidateMapView() {

@@ -59,7 +59,7 @@ import java.io.IOException;
  * 3. <x xmlns='vcard-temp:x:update'/>; not ready to advertise
  * Smack 4.4.0-alpha3 (20200404) cannot accept null return. must return even with data == null.
  */
-public class VCardTempXUpdateProvider extends ExtensionElementProvider
+public class VCardTempXUpdateProvider extends ExtensionElementProvider<VCardTempXUpdate>
 {
     @Override
     public VCardTempXUpdate parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)

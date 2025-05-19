@@ -61,6 +61,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
      */
     private static final Map<Contact, Integer> mSecurityErrorTimer = new HashMap<>();
 
+    private final JingleSessionImpl mJingleSession;
     private final String msgUuid;
     private final Contact mContact;
     private final File mFile;
@@ -93,8 +94,9 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
         mConnection = connection;
 
         bobInfoInit(file);
-        offer.addProgressListener(inFileProgressListener);
-        JingleSessionImpl.addJingleSessionListener(jingleSessionListener);
+        offer.addProgressListener(outFileProgressListener);
+        mJingleSession = offer.getJingleSession();
+        mJingleSession.addJingleSessionListener(jingleSessionListener);
     }
 
     private void bobInfoInit(File file) {
@@ -127,8 +129,8 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
             bobInfo = null;
         }
 
-        mOfoJingle.removeProgressListener(inFileProgressListener);
-        JingleSessionImpl.removeJingleSessionListener(jingleSessionListener);
+        mOfoJingle.removeProgressListener(outFileProgressListener);
+        mJingleSession.removeJingleSessionListener(jingleSessionListener);
     }
 
     /**
@@ -196,7 +198,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
     }
 
     // User interface for jingle file transfer progress status.
-    ProgressListener inFileProgressListener = new ProgressListener() {
+    ProgressListener outFileProgressListener = new ProgressListener() {
         @Override
         public void onStarted() {
             fireStatusChangeEvent(FileTransferStatusChangeEvent.IN_PROGRESS, "Byte sending started");

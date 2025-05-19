@@ -16,6 +16,10 @@ import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
@@ -29,10 +33,6 @@ import org.atalk.android.gui.call.VideoCallActivity;
 import org.atalk.android.util.AppImageUtil;
 import org.atalk.impl.appnotification.AppNotifications;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
-
 import timber.log.Timber;
 
 /**
@@ -43,8 +43,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class CallNotificationManager
-{
+public class CallNotificationManager {
     /**
      * Map content contains callId to CallNotificationManager instance.
      */
@@ -82,8 +81,7 @@ public class CallNotificationManager
      *
      * @return the <code>CallNotificationManager</code>.
      */
-    public static synchronized CallNotificationManager getInstanceFor(String callId)
-    {
+    public static synchronized CallNotificationManager getInstanceFor(String callId) {
         CallNotificationManager callNotificationManager = INSTANCES.get(callId);
         if (callNotificationManager == null) {
             callNotificationManager = new CallNotificationManager(callId);
@@ -95,8 +93,7 @@ public class CallNotificationManager
     /**
      * Private constructor
      */
-    private CallNotificationManager(String callId)
-    {
+    private CallNotificationManager(String callId) {
         mCallId = callId;
     }
 
@@ -105,8 +102,7 @@ public class CallNotificationManager
      *
      * @param context the Android context.
      */
-    public synchronized void showCallNotification(Context context)
-    {
+    public synchronized void showCallNotification(Context context) {
         final Call call = CallManager.getActiveCall(mCallId);
         if (call == null) {
             throw new IllegalArgumentException("There's no call with id: " + mCallId);
@@ -139,20 +135,16 @@ public class CallNotificationManager
         mNotificationManager.notify(id, notification);
         mNotificationHandler = new CtrlNotificationThread(context, call, id, notification);
 
-        call.addCallChangeListener(new CallChangeListener()
-        {
-            public void callPeerAdded(CallPeerEvent evt)
-            {
+        call.addCallChangeListener(new CallChangeListener() {
+            public void callPeerAdded(CallPeerEvent evt) {
             }
 
-            public void callPeerRemoved(CallPeerEvent evt)
-            {
+            public void callPeerRemoved(CallPeerEvent evt) {
                 stopNotification();
                 call.removeCallChangeListener(this);
             }
 
-            public void callStateChanged(CallChangeEvent evt)
-            {
+            public void callStateChanged(CallChangeEvent evt) {
             }
         });
 
@@ -167,8 +159,7 @@ public class CallNotificationManager
      * @param contentView notification root <code>View</code>.
      * @param requestCodeBase the starting Request Code ID that will be used in the <code>Intents</code>
      */
-    private void setIntents(Context ctx, RemoteViews contentView, int requestCodeBase)
-    {
+    private void setIntents(Context ctx, RemoteViews contentView, int requestCodeBase) {
         // Speakerphone button
         PendingIntent pSpeaker = PendingIntent.getBroadcast(ctx, requestCodeBase++, CallControl.getToggleSpeakerIntent(mCallId),
                 getPendingIntentFlag(false, false));
@@ -211,8 +202,7 @@ public class CallNotificationManager
     /**
      * Stops the notification running for the call with Id stored in mNotificationHandler.
      */
-    public synchronized void stopNotification()
-    {
+    public synchronized void stopNotification() {
         if (mNotificationHandler != null) {
             Timber.d("Call Notification Panel removed: %s; id: %s", mCallId, mNotificationHandler.getCtrlId());
             // Stop NotificationHandler and remove the notification from system notification bar
@@ -230,13 +220,11 @@ public class CallNotificationManager
      *
      * @return <code>true</code> if there is notification running in this instance.
      */
-    public synchronized boolean isNotificationRunning()
-    {
+    public synchronized boolean isNotificationRunning() {
         return mNotificationHandler != null;
     }
 
-    public void backToCall()
-    {
+    public void backToCall() {
         if (pVideo != null) {
             try {
                 pVideo.send();

@@ -5,13 +5,14 @@
  */
 package net.java.sip.communicator.service.filehistory;
 
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.Contact;
-
 import java.io.File;
 import java.util.Date;
 import java.util.EventObject;
 import java.util.HashMap;
+
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 
 /**
  * Structure used for encapsulating data when writing or reading File History Data.
@@ -19,8 +20,7 @@ import java.util.HashMap;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class FileRecord extends EventObject
-{
+public class FileRecord extends EventObject {
     /**
      * Direction of the transfer: out
      */
@@ -32,39 +32,44 @@ public class FileRecord extends EventObject
 
     /* ===============================================================
      File transfer status - save in message status for file transfer
+     Definitions should be in sync with FileTransferStatusChangeEvent
       ===============================================================*/
     /**
      * Status indicating that the file transfer has been completed.
      */
-    public static final int STATUS_COMPLETED = 10;
+    public static final int STATUS_COMPLETED = FileTransferStatusChangeEvent.COMPLETED;
     /**
      * Status indicating that the file transfer has failed.
      */
-    public static final int STATUS_FAILED = 11;
+    public static final int STATUS_FAILED = FileTransferStatusChangeEvent.FAILED;
     /**
      * Status indicating that the file transfer has been canceled.
      */
-    public static final int STATUS_CANCELED = 12;
+    public static final int STATUS_CANCELED = FileTransferStatusChangeEvent.CANCELED;
     /**
      * Status indicating that the file transfer has been refused.
      */
-    public static final int STATUS_DECLINED = 13;
-    /**
-     * Status indicating that the file transfer was in active state.
-     */
-    public static final int STATUS_WAITING = 14;
+    public static final int STATUS_DECLINED = FileTransferStatusChangeEvent.DECLINED;
     /**
      * Status indicating that the file transfer is preparing state.
      */
-    public static final int STATUS_PREPARING = 15;
+    public static final int STATUS_PREPARING = FileTransferStatusChangeEvent.PREPARING;
+    /**
+     * Status indicating that the file transfer was in active state.
+     */
+    public static final int STATUS_WAITING = FileTransferStatusChangeEvent.WAITING;
+    /**
+     * Indicates that the recipient has accepted the file transfer.
+     */
+    public static final int STATUS_ACCEPT = FileTransferStatusChangeEvent.ACCEPT;
     /**
      * Status indicating that the file transfer is in-progress state.
      */
-    public static final int STATUS_IN_PROGRESS = 16;
+    public static final int STATUS_IN_PROGRESS = FileTransferStatusChangeEvent.IN_PROGRESS;
     /**
      * Status indicating that the file transfer state is unknown.
      */
-    public static final int STATUS_UNKNOWN = -1;
+    public static final int STATUS_UNKNOWN = FileTransferStatusChangeEvent.UNKNOWN;
 
     // Special case where downloaded file cannot be found
     public static final int FILE_NOT_FOUND = -1;
@@ -80,14 +85,14 @@ public class FileRecord extends EventObject
     /**
      * A map between File transfer status to status descriptive text
      */
-    public static final HashMap<Integer, String> statusMap = new HashMap<Integer, String>()
-    {{
+    public static final HashMap<Integer, String> statusMap = new HashMap<Integer, String>() {{
         put(STATUS_COMPLETED, "completed");
         put(STATUS_FAILED, "failed");
         put(STATUS_CANCELED, "canceled");
         put(STATUS_DECLINED, "declined");
         put(STATUS_PREPARING, "preparing");
         put(STATUS_WAITING, "waiting");
+        put(STATUS_ACCEPT, "accepted");
         put(STATUS_IN_PROGRESS, "in_progress");
     }};
 
@@ -102,8 +107,7 @@ public class FileRecord extends EventObject
      * @param encType the file encryption (plain or OMEMO)
      * @param status Status of the fileTransfer
      */
-    public FileRecord(String id, Object entityJid, String direction, Date date, File file, int encType, int status)
-    {
+    public FileRecord(String id, Object entityJid, String direction, Date date, File file, int encType, int status) {
         super(file);
         this.id = id;
         this.mEntityJid = entityJid;
@@ -119,8 +123,7 @@ public class FileRecord extends EventObject
      *
      * @return the direction
      */
-    public String getDirection()
-    {
+    public String getDirection() {
         return direction;
     }
 
@@ -129,8 +132,7 @@ public class FileRecord extends EventObject
      *
      * @return the date
      */
-    public Date getDate()
-    {
+    public Date getDate() {
         return date;
     }
 
@@ -139,8 +141,7 @@ public class FileRecord extends EventObject
      *
      * @return the file
      */
-    public File getFile()
-    {
+    public File getFile() {
         return file;
     }
 
@@ -149,8 +150,7 @@ public class FileRecord extends EventObject
      *
      * @return the encType
      */
-    public int getEncType()
-    {
+    public int getEncType() {
         return mEncType;
     }
 
@@ -159,8 +159,7 @@ public class FileRecord extends EventObject
      *
      * @return the status
      */
-    public int getStatus()
-    {
+    public int getStatus() {
         return mXferStatus;
     }
 
@@ -169,16 +168,14 @@ public class FileRecord extends EventObject
      *
      * @return the contact
      */
-    public String getJidAddress()
-    {
+    public String getJidAddress() {
         if (mEntityJid instanceof Contact)
             return ((Contact) mEntityJid).getAddress();
         else
             return ((ChatRoom) mEntityJid).getName();
     }
 
-    public Object getEntityJid()
-    {
+    public Object getEntityJid() {
         return mEntityJid;
     }
 
@@ -187,8 +184,7 @@ public class FileRecord extends EventObject
      *
      * @return id.
      */
-    public String getID()
-    {
+    public String getID() {
         return id;
     }
 }

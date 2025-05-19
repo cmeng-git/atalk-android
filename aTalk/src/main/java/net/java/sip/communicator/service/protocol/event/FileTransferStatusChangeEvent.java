@@ -5,9 +5,9 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.FileTransfer;
-
 import java.util.EventObject;
+
+import net.java.sip.communicator.service.protocol.FileTransfer;
 
 /**
  * The <code>FileTransferStatusChangeEvent</code> is the event indicating of a change in the state of a file transfer.
@@ -15,8 +15,11 @@ import java.util.EventObject;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class FileTransferStatusChangeEvent extends EventObject
-{
+public class FileTransferStatusChangeEvent extends EventObject {
+    /* ===============================================================
+     File transfer status - track during actual file transfer process, and save in DB.
+     Definitions should be in sync with FileRecord
+      ===============================================================*/
     /**
      * Serial version UID.
      */
@@ -43,14 +46,14 @@ public class FileTransferStatusChangeEvent extends EventObject
     public static final int DECLINED = 13;
 
     /**
-     * Indicates that the file transfer waits for the user/recipient decision e.g. accept/decline.
-     */
-    public static final int WAITING = 14;
-
-    /**
      * Indicates that the file transfer is at the start of protocol initial state.
      */
-    public static final int PREPARING = 15;
+    public static final int PREPARING = 14;
+
+    /**
+     * Indicates that the file transfer waits for the user/recipient decision e.g. accept/decline.
+     */
+    public static final int WAITING = 15;
 
     /**
      * Indicates that the recipient has accepted the file transfer.
@@ -88,8 +91,7 @@ public class FileTransferStatusChangeEvent extends EventObject
      * @param newStatus the new status
      * @param reason the reason of this status change
      */
-    public FileTransferStatusChangeEvent(FileTransfer fileTransfer, int oldStatus, int newStatus, String reason)
-    {
+    public FileTransferStatusChangeEvent(FileTransfer fileTransfer, int oldStatus, int newStatus, String reason) {
         super(fileTransfer);
 
         this.oldStatus = oldStatus;
@@ -102,8 +104,7 @@ public class FileTransferStatusChangeEvent extends EventObject
      *
      * @return the source <code>FileTransfer</code> that triggered this event
      */
-    public FileTransfer getFileTransfer()
-    {
+    public FileTransfer getFileTransfer() {
         return (FileTransfer) source;
     }
 
@@ -112,8 +113,7 @@ public class FileTransferStatusChangeEvent extends EventObject
      *
      * @return the old state
      */
-    public int getOldStatus()
-    {
+    public int getOldStatus() {
         return oldStatus;
     }
 
@@ -122,8 +122,7 @@ public class FileTransferStatusChangeEvent extends EventObject
      *
      * @return the new state
      */
-    public int getNewStatus()
-    {
+    public int getNewStatus() {
         return newStatus;
     }
 
@@ -132,8 +131,7 @@ public class FileTransferStatusChangeEvent extends EventObject
      *
      * @return the reason of the status change
      */
-    public String getReason()
-    {
+    public String getReason() {
         return reason;
     }
 }

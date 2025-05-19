@@ -7,10 +7,10 @@ package org.atalk.impl.appstray;
 
 import androidx.core.app.NotificationCompat;
 
-import net.java.sip.communicator.service.systray.PopupMessage;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import net.java.sip.communicator.service.systray.PopupMessage;
 
 /**
  * Popup notification that consists of few merged previous popups.
@@ -18,8 +18,7 @@ import java.util.List;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AppMergedPopup extends AppPopup
-{
+public class AppMergedPopup extends AppPopup {
     /**
      * List of merged popups.
      */
@@ -30,8 +29,7 @@ public class AppMergedPopup extends AppPopup
      *
      * @param rootPopup root <code>AppPopup</code>.
      */
-    AppMergedPopup(AppPopup rootPopup)
-    {
+    AppMergedPopup(AppPopup rootPopup) {
         super(rootPopup.handler, rootPopup.popupMessage);
         this.nId = rootPopup.nId;
     }
@@ -40,8 +38,7 @@ public class AppMergedPopup extends AppPopup
      * {@inheritDoc}
      */
     @Override
-    protected AppPopup mergePopup(PopupMessage popupMessage)
-    {
+    protected AppPopup mergePopup(PopupMessage popupMessage) {
         // Timing out notifications are replaced - not valid in android
 //        AppPopup replace = null;
 //        if (mergedPopups.size() > 0) {
@@ -64,8 +61,7 @@ public class AppMergedPopup extends AppPopup
      * {@inheritDoc}
      */
     @Override
-    protected String getMessage()
-    {
+    protected String getMessage() {
         StringBuilder msg = new StringBuilder(super.getMessage());
         for (AppPopup popup : mergedPopups) {
             msg.append("\n").append(popup.getMessage());
@@ -77,8 +73,7 @@ public class AppMergedPopup extends AppPopup
      * {@inheritDoc}
      */
     @Override
-    NotificationCompat.Builder buildNotification(int nId)
-    {
+    NotificationCompat.Builder buildNotification(int nId) {
         NotificationCompat.Builder builder = super.buildNotification(nId);
         // Set number of events
         builder.setNumber(mergedPopups.size() + 1);
@@ -89,16 +84,14 @@ public class AppMergedPopup extends AppPopup
      * {@inheritDoc}
      */
     @Override
-    protected void onBuildInboxStyle(NotificationCompat.InboxStyle inboxStyle)
-    {
+    protected void onBuildInboxStyle(NotificationCompat.InboxStyle inboxStyle) {
         super.onBuildInboxStyle(inboxStyle);
         for (AppPopup popup : mergedPopups) {
             inboxStyle.addLine(popup.getMessage());
         }
     }
 
-    protected boolean displaySnoozeAction()
-    {
+    protected boolean displaySnoozeAction() {
         return mergedPopups.size() > 2;
     }
 }
