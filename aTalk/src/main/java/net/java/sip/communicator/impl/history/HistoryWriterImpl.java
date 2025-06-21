@@ -1,11 +1,20 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.impl.history;
 
 import static net.java.sip.communicator.service.history.HistoryService.DATE_FORMAT;
+
+import java.io.IOException;
+import java.security.InvalidParameterException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
 
 import net.java.sip.communicator.service.history.HistoryWriter;
 import net.java.sip.communicator.service.history.records.HistoryRecord;
@@ -18,497 +27,454 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import java.io.IOException;
-import java.security.InvalidParameterException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-
 /**
  * @author Alexander Pelov
  */
-public class HistoryWriterImpl implements HistoryWriter
-{
-	/**
-	 * Maximum records per file.
-	 */
-	public static final int MAX_RECORDS_PER_FILE = 150;
-	private static final String CDATA_SUFFIX = "_CDATA";
-	private Object docCreateLock = new Object();
-	private Object docWriteLock = new Object();
-	private HistoryImpl historyImpl;
-	private String[] structPropertyNames;
-	private Document currentDoc = null;
-	private String currentFile = null;
-	private int currentDocElements = -1;
+public class HistoryWriterImpl implements HistoryWriter {
+    /**
+     * Maximum records per file.
+     */
+    public static final int MAX_RECORDS_PER_FILE = 150;
+    private static final String CDATA_SUFFIX = "_CDATA";
+    private final Object docCreateLock = new Object();
+    private final Object docWriteLock = new Object();
+    private final HistoryImpl historyImpl;
+    private final String[] structPropertyNames;
+    private Document currentDoc = null;
+    private String currentFile = null;
+    private int currentDocElements = -1;
 
-	protected HistoryWriterImpl(HistoryImpl historyImpl) {
-		this.historyImpl = historyImpl;
+    protected HistoryWriterImpl(HistoryImpl historyImpl) {
+        this.historyImpl = historyImpl;
 
-		HistoryRecordStructure struct = this.historyImpl.getHistoryRecordsStructure();
-		this.structPropertyNames = struct.getPropertyNames();
-	}
+        HistoryRecordStructure struct = this.historyImpl.getHistoryRecordsStructure();
+        this.structPropertyNames = struct.getPropertyNames();
+    }
 
-	public void addRecord(HistoryRecord record)
-		throws IOException
-	{
-		this.addRecord(record.getPropertyNames(), record.getPropertyValues(), record.getTimestamp(), -1);
-	}
+    public void addRecord(HistoryRecord record)
+            throws IOException {
+        this.addRecord(record.getPropertyNames(), record.getPropertyValues(), record.getTimestamp(), -1);
+    }
 
-	public void addRecord(String[] propertyValues)
-		throws IOException
-	{
-		addRecord(structPropertyNames, propertyValues, new Date(), -1);
-	}
+    public void addRecord(String[] propertyValues)
+            throws IOException {
+        addRecord(structPropertyNames, propertyValues, new Date(), -1);
+    }
 
-	public void addRecord(String[] propertyValues, Date timestamp)
-		throws IOException
-	{
-		this.addRecord(structPropertyNames, propertyValues, timestamp, -1);
-	}
+    public void addRecord(String[] propertyValues, Date timestamp)
+            throws IOException {
+        this.addRecord(structPropertyNames, propertyValues, timestamp, -1);
+    }
 
-	/**
-	 * Stores the passed propertyValues complying with the historyRecordStructure.
-	 *
-	 * @param propertyValues
-	 *        The values of the record.
-	 * @param maxNumberOfRecords
-	 *        the maximum number of records to keep or value of -1 to ignore this param.
-	 *
-	 * @throws IOException
-	 */
-	public void addRecord(String[] propertyValues, int maxNumberOfRecords)
-		throws IOException
-	{
-		addRecord(structPropertyNames, propertyValues, new Date(), maxNumberOfRecords);
-	}
+    /**
+     * Stores the passed propertyValues complying with the historyRecordStructure.
+     *
+     * @param propertyValues The values of the record.
+     * @param maxNumberOfRecords the maximum number of records to keep or value of -1 to ignore this param.
+     *
+     * @throws IOException
+     */
+    public void addRecord(String[] propertyValues, int maxNumberOfRecords)
+            throws IOException {
+        addRecord(structPropertyNames, propertyValues, new Date(), maxNumberOfRecords);
+    }
 
-	/**
-	 * Adds new record to the current history document when the record property name ends with _CDATA this is removed
-	 * from the property name and a CDATA text node is created to store the text value
-	 *
-	 * @param propertyNames
-	 *        String[]
-	 * @param propertyValues
-	 *        String[]
-	 * @param date
-	 *        Date
-	 * @param maxNumberOfRecords
-	 *        the maximum number of records to keep or value of -1 to ignore this param.
-	 * @throws InvalidParameterException
-	 * @throws IOException
-	 */
-	private void addRecord(String[] propertyNames, String[] propertyValues, Date date, int maxNumberOfRecords)
-		throws InvalidParameterException, IOException
-	{
-		// Synchronized to assure that two concurrent threads can insert records
-		// safely.
-		synchronized (this.docCreateLock) {
-			if (this.currentDoc == null || this.currentDocElements > MAX_RECORDS_PER_FILE) {
-				this.createNewDoc(date, this.currentDoc == null);
-			}
-		}
-
-		synchronized (this.currentDoc) {
-			Node root = this.currentDoc.getFirstChild();
-			synchronized (root) {
-				// if we have setting for max number of records,
-				// check the number and when exceed them, remove the first one
-				if (maxNumberOfRecords > -1 && this.currentDocElements >= maxNumberOfRecords) {
-					// lets remove the first one
-					removeFirstRecord(root);
-				}
-
-				Element elem = createRecord(this.currentDoc, propertyNames, propertyValues, date);
-				root.appendChild(elem);
-				this.currentDocElements++;
-			}
-		}
-
-		// write changes
-		synchronized (this.docWriteLock) {
-			if (historyImpl.getHistoryServiceImpl().isCacheEnabled())
-				this.historyImpl.writeFile(this.currentFile);
-			else
-				this.historyImpl.writeFile(this.currentFile, this.currentDoc);
-		}
-	}
-
-	/**
-	 * Creates a record element for the supplied <code>doc</code> and populates it with the property names from
-	 * <code>propertyNames</code> and corresponding values from <code>propertyValues</code>. The <code>date</code> will be used for
-	 * the record timestamp attribute.
-	 * 
-	 * @param doc
-	 *        the parent of the element.
-	 * @param propertyNames
-	 *        property names for the element
-	 * @param propertyValues
-	 *        values for the properties
-	 * @param date
-	 *        the of creation of the record
-	 * @return the newly created element.
-	 */
-	private Element createRecord(Document doc, String[] propertyNames, String[] propertyValues, Date date)
-	{
-		Element elem = doc.createElement("record");
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
-		elem.setAttribute("timestamp", sdf.format(date));
-
-		for (int i = 0; i < propertyNames.length; i++) {
-			String propertyName = propertyNames[i];
-
-			if (propertyName.endsWith(CDATA_SUFFIX)) {
-				if (propertyValues[i] != null) {
-					propertyName = propertyName.replaceFirst(CDATA_SUFFIX, "");
-					Element propertyElement = doc.createElement(propertyName);
-					Text value = doc.createCDATASection(propertyValues[i].replaceAll("\0", " "));
-					propertyElement.appendChild(value);
-					elem.appendChild(propertyElement);
-				}
-			}
-			else {
-				if (propertyValues[i] != null) {
-					Element propertyElement = doc.createElement(propertyName);
-					Text value = doc.createTextNode(propertyValues[i].replaceAll("\0", " "));
-					propertyElement.appendChild(value);
-					elem.appendChild(propertyElement);
-				}
-			}
-		}
-		return elem;
-	}
-
-	/**
-	 * Finds the oldest node by timestamp in current root and deletes it.
-	 * 
-	 * @param root
-	 *        where to search for records
-	 */
-	private void removeFirstRecord(Node root)
-	{
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
-		NodeList nodes = ((Element) root).getElementsByTagName("record");
-		Node oldestNode = null;
-		Date oldestTimeStamp = null;
-
-		Node node;
-		for (int i = 0; i < nodes.getLength(); i++) {
-			node = nodes.item(i);
-
-			Date timestamp;
-			String ts = node.getAttributes().getNamedItem("timestamp").getNodeValue();
-			try {
-				timestamp = sdf.parse(ts);
-			}
-			catch (ParseException e) {
-				timestamp = new Date(Long.parseLong(ts));
-			}
-
-			if (oldestNode == null || (oldestTimeStamp.after(timestamp))) {
-				oldestNode = node;
-				oldestTimeStamp = timestamp;
+    /**
+     * Adds new record to the current history document when the record property name ends with _CDATA this is removed
+     * from the property name and a CDATA text node is created to store the text value
+     *
+     * @param propertyNames String[]
+     * @param propertyValues String[]
+     * @param date Date
+     * @param maxNumberOfRecords the maximum number of records to keep or value of -1 to ignore this param.
+     *
+     * @throws InvalidParameterException
+     * @throws IOException
+     */
+    private void addRecord(String[] propertyNames, String[] propertyValues, Date date, int maxNumberOfRecords)
+            throws InvalidParameterException, IOException {
+        // Synchronized to assure that two concurrent threads can insert records
+        // safely.
+        synchronized (this.docCreateLock) {
+            if (this.currentDoc == null || this.currentDocElements > MAX_RECORDS_PER_FILE) {
+                this.createNewDoc(date, this.currentDoc == null);
             }
-		}
-		if (oldestNode != null)
-			root.removeChild(oldestNode);
-	}
+        }
 
-	/**
-	 * Inserts a record from the passed <code>propertyValues</code> complying with the current historyRecordStructure. First
-	 * searches for the file to use to import the record, as files hold records with consecutive times and this fact is
-	 * used for searching and filtering records by date. This is why when inserting an old record we need to insert it
-	 * on the correct position.
-	 *
-	 * @param propertyValues
-	 *        The values of the record.
-	 * @param timestamp
-	 *        The timestamp of the record.
-	 * @param timestampProperty
-	 *        the property name for the timestamp of the record
-	 *
-	 * @throws IOException
-	 */
-	public void insertRecord(String[] propertyValues, Date timestamp, String timestampProperty)
-		throws IOException
-	{
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
-		Iterator<String> fileIterator = HistoryReaderImpl.filterFilesByDate(this.historyImpl.getFileList(), timestamp, null).iterator();
-		String filename = null;
-		while (fileIterator.hasNext()) {
-			filename = fileIterator.next();
+        synchronized (this.currentDoc) {
+            Node root = this.currentDoc.getFirstChild();
+            synchronized (root) {
+                // if we have setting for max number of records,
+                // check the number and when exceed them, remove the first one
+                if (maxNumberOfRecords > -1 && this.currentDocElements >= maxNumberOfRecords) {
+                    // lets remove the first one
+                    removeFirstRecord(root);
+                }
 
-			Document doc = this.historyImpl.getDocumentForFile(filename);
+                Element elem = createRecord(this.currentDoc, propertyNames, propertyValues, date);
+                root.appendChild(elem);
+                this.currentDocElements++;
+            }
+        }
 
-			if (doc == null)
-				continue;
+        // write changes
+        synchronized (this.docWriteLock) {
+            if (historyImpl.getHistoryServiceImpl().isCacheEnabled())
+                this.historyImpl.writeFile(this.currentFile);
+            else
+                this.historyImpl.writeFile(this.currentFile, this.currentDoc);
+        }
+    }
 
-			NodeList nodes = doc.getElementsByTagName("record");
-			boolean changed = false;
-			Node node;
-			for (int i = 0; i < nodes.getLength(); i++) {
-				node = nodes.item(i);
+    /**
+     * Creates a record element for the supplied <code>doc</code> and populates it with the property names from
+     * <code>propertyNames</code> and corresponding values from <code>propertyValues</code>. The <code>date</code> will be used for
+     * the record timestamp attribute.
+     *
+     * @param doc the parent of the element.
+     * @param propertyNames property names for the element
+     * @param propertyValues values for the properties
+     * @param date the of creation of the record
+     *
+     * @return the newly created element.
+     */
+    private Element createRecord(Document doc, String[] propertyNames, String[] propertyValues, Date date) {
+        Element elem = doc.createElement("record");
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
+        elem.setAttribute("timestamp", sdf.format(date));
 
-				Element idNode = XMLUtils.findChild((Element) node, timestampProperty);
-				if (idNode == null)
-					continue;
+        for (int i = 0; i < propertyNames.length; i++) {
+            String propertyName = propertyNames[i];
 
-				Node nestedNode = idNode.getFirstChild();
-				if (nestedNode == null)
-					continue;
+            if (propertyName.endsWith(CDATA_SUFFIX)) {
+                if (propertyValues[i] != null) {
+                    propertyName = propertyName.replaceFirst(CDATA_SUFFIX, "");
+                    Element propertyElement = doc.createElement(propertyName);
+                    Text value = doc.createCDATASection(propertyValues[i].replaceAll("\0", " "));
+                    propertyElement.appendChild(value);
+                    elem.appendChild(propertyElement);
+                }
+            }
+            else {
+                if (propertyValues[i] != null) {
+                    Element propertyElement = doc.createElement(propertyName);
+                    Text value = doc.createTextNode(propertyValues[i].replaceAll("\0", " "));
+                    propertyElement.appendChild(value);
+                    elem.appendChild(propertyElement);
+                }
+            }
+        }
+        return elem;
+    }
 
-				// Get nested TEXT node's value
-				String nodeValue = nestedNode.getNodeValue();
+    /**
+     * Finds the oldest node by timestamp in current root and deletes it.
+     *
+     * @param root where to search for records
+     */
+    private void removeFirstRecord(Node root) {
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
+        NodeList nodes = ((Element) root).getElementsByTagName("record");
+        Node oldestNode = null;
+        Date oldestTimeStamp = null;
 
-				Date nodeTimeStamp;
-				try {
-					nodeTimeStamp = sdf.parse(nodeValue);
-				}
-				catch (ParseException e) {
-					nodeTimeStamp = new Date(Long.parseLong(nodeValue));
-				}
+        Node node;
+        for (int i = 0; i < nodes.getLength(); i++) {
+            node = nodes.item(i);
 
-				if (nodeTimeStamp.before(timestamp))
-					continue;
+            Date timestamp;
+            String ts = node.getAttributes().getNamedItem("timestamp").getNodeValue();
+            try {
+                timestamp = sdf.parse(ts);
+            } catch (ParseException e) {
+                timestamp = new Date(Long.parseLong(ts));
+            }
 
-				Element newElem = createRecord(doc, structPropertyNames, propertyValues, timestamp);
-				doc.getFirstChild().insertBefore(newElem, node);
+            if (oldestNode == null || (oldestTimeStamp.after(timestamp))) {
+                oldestNode = node;
+                oldestTimeStamp = timestamp;
+            }
+        }
+        if (oldestNode != null)
+            root.removeChild(oldestNode);
+    }
 
-				changed = true;
-				break;
-			}
+    /**
+     * Inserts a record from the passed <code>propertyValues</code> complying with the current historyRecordStructure. First
+     * searches for the file to use to import the record, as files hold records with consecutive times and this fact is
+     * used for searching and filtering records by date. This is why when inserting an old record we need to insert it
+     * on the correct position.
+     *
+     * @param propertyValues The values of the record.
+     * @param timestamp The timestamp of the record.
+     * @param timestampProperty the property name for the timestamp of the record
+     *
+     * @throws IOException
+     */
+    public void insertRecord(String[] propertyValues, Date timestamp, String timestampProperty)
+            throws IOException {
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
+        Iterator<String> fileIterator = HistoryReaderImpl.filterFilesByDate(this.historyImpl.getFileList(), timestamp, null).iterator();
+        String filename = null;
+        while (fileIterator.hasNext()) {
+            filename = fileIterator.next();
 
-			if (changed) {
-				// write changes
-				synchronized (this.docWriteLock) {
-					this.historyImpl.writeFile(filename, doc);
-				}
+            Document doc = this.historyImpl.getDocumentForFile(filename);
 
-				// this prevents that the current writer, which holds instance for the last document he is editing will
-				// not override our last changes to the document
-				if (filename.equals(this.currentFile)) {
-					this.currentDoc = doc;
-				}
-				break;
-			}
-		}
-	}
+            if (doc == null)
+                continue;
 
-	/**
-	 * If no file is currently loaded loads the last opened file. If it does not exists or if the current file was set -
-	 * create a new file.
-	 *
-	 * @param date
-	 *        Date
-	 * @param loadLastFile
-	 *        boolean
-	 */
-	private void createNewDoc(Date date, boolean loadLastFile)
-	{
-		boolean loaded = false;
+            NodeList nodes = doc.getElementsByTagName("record");
+            boolean changed = false;
+            Node node;
+            for (int i = 0; i < nodes.getLength(); i++) {
+                node = nodes.item(i);
 
-		if (loadLastFile) {
-			Iterator<String> files = historyImpl.getFileList();
+                Element idNode = XMLUtils.findChild((Element) node, timestampProperty);
+                if (idNode == null)
+                    continue;
 
-			String file = null;
-			while (files.hasNext()) {
-				file = files.next();
-			}
+                Node nestedNode = idNode.getFirstChild();
+                if (nestedNode == null)
+                    continue;
 
-			if (file != null) {
-				this.currentDoc = this.historyImpl.getDocumentForFile(file);
-				this.currentFile = file;
-				loaded = true;
-			}
+                // Get nested TEXT node's value
+                String nodeValue = nestedNode.getNodeValue();
 
-			// if something happened and file was not loaded then we must create new one
-			if (this.currentDoc == null) {
-				loaded = false;
-			}
-		}
+                Date nodeTimeStamp;
+                try {
+                    nodeTimeStamp = sdf.parse(nodeValue);
+                } catch (ParseException e) {
+                    nodeTimeStamp = new Date(Long.parseLong(nodeValue));
+                }
 
-		if (!loaded) {
-			this.currentFile = Long.toString(date.getTime());
-			this.currentFile += ".xml";
+                if (nodeTimeStamp.before(timestamp))
+                    continue;
 
-			this.currentDoc = this.historyImpl.createDocument(this.currentFile);
-		}
+                Element newElem = createRecord(doc, structPropertyNames, propertyValues, timestamp);
+                doc.getFirstChild().insertBefore(newElem, node);
 
-		// TODO: Assert: Assert.assertNonNull(this.currentDoc, "There should be a current document created.");
-		this.currentDocElements = this.currentDoc.getFirstChild().getChildNodes().getLength();
-	}
+                changed = true;
+                break;
+            }
 
-	/**
-	 * Updates a record by searching for record with idProperty which have idValue and updating/creating the property
-	 * with newValue.
-	 *
-	 * @param idProperty
-	 *        name of the id property
-	 * @param idValue
-	 *        value of the id property
-	 * @param property
-	 *        the property to change
-	 * @param newValue
-	 *        the value of the changed property.
-	 */
-	public void updateRecord(String idProperty, String idValue, String property, String newValue)
-		throws IOException
-	{
-		Iterator<String> fileIterator = this.historyImpl.getFileList();
-		String filename = null;
-		while (fileIterator.hasNext()) {
-			filename = fileIterator.next();
+            if (changed) {
+                // write changes
+                synchronized (this.docWriteLock) {
+                    this.historyImpl.writeFile(filename, doc);
+                }
 
-			Document doc = this.historyImpl.getDocumentForFile(filename);
-			if (doc == null)
-				continue;
+                // this prevents that the current writer, which holds instance for the last document he is editing will
+                // not override our last changes to the document
+                if (filename.equals(this.currentFile)) {
+                    this.currentDoc = doc;
+                }
+                break;
+            }
+        }
+    }
 
-			NodeList nodes = doc.getElementsByTagName("record");
-			boolean changed = false;
-			Node node;
-			for (int i = 0; i < nodes.getLength(); i++) {
-				node = nodes.item(i);
+    /**
+     * If no file is currently loaded loads the last opened file. If it does not exists or if the current file was set -
+     * create a new file.
+     *
+     * @param date Date
+     * @param loadLastFile boolean
+     */
+    private void createNewDoc(Date date, boolean loadLastFile) {
+        boolean loaded = false;
 
-				Element idNode = XMLUtils.findChild((Element) node, idProperty);
-				if (idNode == null)
-					continue;
+        if (loadLastFile) {
+            Iterator<String> files = historyImpl.getFileList();
 
-				Node nestedNode = idNode.getFirstChild();
-				if (nestedNode == null)
-					continue;
+            String file = null;
+            while (files.hasNext()) {
+                file = files.next();
+            }
 
-				// Get nested TEXT node's value
-				String nodeValue = nestedNode.getNodeValue();
-				if (!nodeValue.equals(idValue))
-					continue;
+            if (file != null) {
+                this.currentDoc = this.historyImpl.getDocumentForFile(file);
+                this.currentFile = file;
+                loaded = true;
+            }
 
-				Element changedNode = XMLUtils.findChild((Element) node, property);
+            // if something happened and file was not loaded then we must create new one
+            if (this.currentDoc == null) {
+                loaded = false;
+            }
+        }
 
-				if (changedNode != null) {
-					Node changedNestedNode = changedNode.getFirstChild();
-					changedNestedNode.setNodeValue(newValue);
-				}
-				else {
-					Element propertyElement = this.currentDoc.createElement(property);
+        if (!loaded) {
+            this.currentFile = Long.toString(date.getTime());
+            this.currentFile += ".xml";
 
-					Text value = this.currentDoc.createTextNode(newValue.replaceAll("\0", " "));
-					propertyElement.appendChild(value);
-					node.appendChild(propertyElement);
-				}
+            this.currentDoc = this.historyImpl.createDocument(this.currentFile);
+        }
 
-				// change the timestamp, to reflect there was a change
-				SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
-				((Element) node).setAttribute("timestamp", sdf.format(new Date()));
-				changed = true;
-				break;
-			}
+        // TODO: Assert: Assert.assertNonNull(this.currentDoc, "There should be a current document created.");
+        this.currentDocElements = this.currentDoc.getFirstChild().getChildNodes().getLength();
+    }
 
-			if (changed) {
-				// write changes
-				synchronized (this.docWriteLock) {
-					this.historyImpl.writeFile(filename, doc);
-				}
+    /**
+     * Updates a record by searching for record with idProperty which have idValue and updating/creating the property
+     * with newValue.
+     *
+     * @param idProperty name of the id property
+     * @param idValue value of the id property
+     * @param property the property to change
+     * @param newValue the value of the changed property.
+     */
+    public void updateRecord(String idProperty, String idValue, String property, String newValue)
+            throws IOException {
+        Iterator<String> fileIterator = this.historyImpl.getFileList();
+        String filename = null;
+        while (fileIterator.hasNext()) {
+            filename = fileIterator.next();
 
-				// this prevents that the current writer, which holds instance for the last document he is editing will
-				// not override our last changes to the document
-				if (filename.equals(this.currentFile)) {
-					this.currentDoc = doc;
-				}
-				break;
-			}
-		}
-	}
+            Document doc = this.historyImpl.getDocumentForFile(filename);
+            if (doc == null)
+                continue;
 
-	/**
-	 * Updates history record using given <code>HistoryRecordUpdater</code> instance to find which is the record to be
-	 * updated and to get the new values for the fields
-	 * 
-	 * @param updater
-	 *        the <code>HistoryRecordUpdater</code> instance.
-	 */
-	public void updateRecord(HistoryRecordUpdater updater)
-		throws IOException
-	{
-		Iterator<String> fileIterator = this.historyImpl.getFileList();
-		String filename = null;
-		while (fileIterator.hasNext()) {
-			filename = fileIterator.next();
+            NodeList nodes = doc.getElementsByTagName("record");
+            boolean changed = false;
+            Node node;
+            for (int i = 0; i < nodes.getLength(); i++) {
+                node = nodes.item(i);
 
-			Document doc = this.historyImpl.getDocumentForFile(filename);
+                Element idNode = XMLUtils.findChild((Element) node, idProperty);
+                if (idNode == null)
+                    continue;
 
-			if (doc == null)
-				continue;
+                Node nestedNode = idNode.getFirstChild();
+                if (nestedNode == null)
+                    continue;
 
-			NodeList nodes = doc.getElementsByTagName("record");
+                // Get nested TEXT node's value
+                String nodeValue = nestedNode.getNodeValue();
+                if (!nodeValue.equals(idValue))
+                    continue;
 
-			boolean changed = false;
+                Element changedNode = XMLUtils.findChild((Element) node, property);
 
-			Node node;
-			for (int i = 0; i < nodes.getLength(); i++) {
-				node = nodes.item(i);
-				updater.setHistoryRecord(createHistoryRecordFromNode(node));
-				if (!updater.isMatching())
-					continue;
+                if (changedNode != null) {
+                    Node changedNestedNode = changedNode.getFirstChild();
+                    changedNestedNode.setNodeValue(newValue);
+                }
+                else {
+                    Element propertyElement = this.currentDoc.createElement(property);
 
-				// change the timestamp, to reflect there was a change
-				SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
-				((Element) node).setAttribute("timestamp", sdf.format(new Date()));
+                    Text value = this.currentDoc.createTextNode(newValue.replaceAll("\0", " "));
+                    propertyElement.appendChild(value);
+                    node.appendChild(propertyElement);
+                }
 
-				Map<String, String> updates = updater.getUpdateChanges();
-				for (String nodeName : updates.keySet()) {
-					Element changedNode = XMLUtils.findChild((Element) node, nodeName);
+                // change the timestamp, to reflect there was a change
+                SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
+                ((Element) node).setAttribute("timestamp", sdf.format(new Date()));
+                changed = true;
+                break;
+            }
 
-					if (changedNode != null) {
-						Node changedNestedNode = changedNode.getFirstChild();
+            if (changed) {
+                // write changes
+                synchronized (this.docWriteLock) {
+                    this.historyImpl.writeFile(filename, doc);
+                }
 
-						changedNestedNode.setNodeValue(updates.get(nodeName));
-						changed = true;
-					}
-				}
-			}
+                // this prevents that the current writer, which holds instance for the last document he is editing will
+                // not override our last changes to the document
+                if (filename.equals(this.currentFile)) {
+                    this.currentDoc = doc;
+                }
+                break;
+            }
+        }
+    }
 
-			if (changed) {
-				// write changes
-				synchronized (this.docWriteLock) {
-					this.historyImpl.writeFile(filename, doc);
-				}
+    /**
+     * Updates history record using given <code>HistoryRecordUpdater</code> instance to find which is the record to be
+     * updated and to get the new values for the fields
+     *
+     * @param updater the <code>HistoryRecordUpdater</code> instance.
+     */
+    public void updateRecord(HistoryRecordUpdater updater)
+            throws IOException {
+        Iterator<String> fileIterator = this.historyImpl.getFileList();
+        String filename = null;
+        while (fileIterator.hasNext()) {
+            filename = fileIterator.next();
 
-				// this prevents that the current writer, which holds instance for the last document he is editing will
-				// not override our last changes to the document
-				if (filename.equals(this.currentFile)) {
-					this.currentDoc = doc;
-				}
-				break;
-			}
-		}
-	}
+            Document doc = this.historyImpl.getDocumentForFile(filename);
 
-	/**
-	 * Creates <code>HistoryRecord</code> instance from <code>Node</code> object.
-	 * 
-	 * @param node
-	 *        the node
-	 * @return the <code>HistoryRecord</code> instance
-	 */
-	private HistoryRecord createHistoryRecordFromNode(Node node)
-	{
+            if (doc == null)
+                continue;
 
-		HistoryRecordStructure structure = historyImpl.getHistoryRecordsStructure();
+            NodeList nodes = doc.getElementsByTagName("record");
+
+            boolean changed = false;
+
+            Node node;
+            for (int i = 0; i < nodes.getLength(); i++) {
+                node = nodes.item(i);
+                updater.setHistoryRecord(createHistoryRecordFromNode(node));
+                if (!updater.isMatching())
+                    continue;
+
+                // change the timestamp, to reflect there was a change
+                SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
+                ((Element) node).setAttribute("timestamp", sdf.format(new Date()));
+
+                Map<String, String> updates = updater.getUpdateChanges();
+                for (String nodeName : updates.keySet()) {
+                    Element changedNode = XMLUtils.findChild((Element) node, nodeName);
+
+                    if (changedNode != null) {
+                        Node changedNestedNode = changedNode.getFirstChild();
+
+                        changedNestedNode.setNodeValue(updates.get(nodeName));
+                        changed = true;
+                    }
+                }
+            }
+
+            if (changed) {
+                // write changes
+                synchronized (this.docWriteLock) {
+                    this.historyImpl.writeFile(filename, doc);
+                }
+
+                // this prevents that the current writer, which holds instance for the last document he is editing will
+                // not override our last changes to the document
+                if (filename.equals(this.currentFile)) {
+                    this.currentDoc = doc;
+                }
+                break;
+            }
+        }
+    }
+
+    /**
+     * Creates <code>HistoryRecord</code> instance from <code>Node</code> object.
+     *
+     * @param node the node
+     *
+     * @return the <code>HistoryRecord</code> instance
+     */
+    private HistoryRecord createHistoryRecordFromNode(Node node) {
+
+        HistoryRecordStructure structure = historyImpl.getHistoryRecordsStructure();
         String[] propertyValues = new String[structure.getPropertyCount()];
 
-		int i = 0;
-		for (String propertyName : structure.getPropertyNames()) {
-			Element childNode = XMLUtils.findChild((Element) node, propertyName);
-			if (childNode == null) {
-				i++;
-				continue;
-			}
-			propertyValues[i] = childNode.getTextContent();
-			i++;
-		}
-		return new HistoryRecord(structure, propertyValues);
-	}
+        int i = 0;
+        for (String propertyName : structure.getPropertyNames()) {
+            Element childNode = XMLUtils.findChild((Element) node, propertyName);
+            if (childNode == null) {
+                i++;
+                continue;
+            }
+            propertyValues[i] = childNode.getTextContent();
+            i++;
+        }
+        return new HistoryRecord(structure, propertyValues);
+    }
 }

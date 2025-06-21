@@ -121,7 +121,7 @@ public class JingleIBBTransportImpl extends JingleTransport<JingleIBBTransport> 
         InBandBytestreamManager inBandBytestreamManager = InBandBytestreamManager.getByteStreamManager(connection);
         inBandBytestreamManager.setDefaultBlockSize(blockSize);
         try {
-            InBandBytestreamSession ibbSession= inBandBytestreamManager.establishSession(session.getRemote(), getStreamId());
+            InBandBytestreamSession ibbSession = inBandBytestreamManager.establishSession(session.getRemote(), getStreamId());
 
             // Must close both input and output streams to trigger sending of IBB <close/> element as defined in XEP-0047
             ibbSession.setCloseBothStreamsEnabled(true);

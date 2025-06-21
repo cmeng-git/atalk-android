@@ -253,13 +253,22 @@
 
     <!-- Advanced Settings -->
     <PreferenceCategory
-        android:key="pref.cat.settings.advanced"
         android:title="@string/advanced">
 
         <Preference
+            android:key="pref.key.settings.advanced"
             android:summary="@string/settings_expert_summary"
             android:title="@string/settings_expert"
             app:fragment="org.atalk.android.gui.settings.ExpertSettingsFragment" />
 
+        <Preference
+            android:key="pref.key.provisioning"
+            android:summary="@string/provisioning_summary"
+            android:title="@string/provisioning" >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetClass="org.atalk.android.gui.settings.ProvisioningSettings"
+                android:targetPackage="org.atalk.android" />
+        </Preference>
     </PreferenceCategory>
 </PreferenceScreen>

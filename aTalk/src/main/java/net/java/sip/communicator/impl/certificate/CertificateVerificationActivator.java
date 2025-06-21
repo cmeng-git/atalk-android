@@ -30,6 +30,7 @@ import org.osgi.framework.BundleContext;
  * The certificate verification bundle activator.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public class CertificateVerificationActivator implements BundleActivator {
     /**

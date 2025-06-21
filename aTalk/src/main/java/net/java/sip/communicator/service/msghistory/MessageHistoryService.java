@@ -6,6 +6,11 @@
  */
 package net.java.sip.communicator.service.msghistory;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.EventObject;
+import java.util.List;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.msghistory.event.MessageHistorySearchProgressListener;
 import net.java.sip.communicator.service.protocol.AccountID;
@@ -15,11 +20,6 @@ import net.java.sip.communicator.service.protocol.Contact;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.chatsession.ChatSessionRecord;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.EventObject;
-import java.util.List;
-
 /**
  * The Message History Service stores messages exchanged through the various protocols
  *
@@ -27,28 +27,28 @@ import java.util.List;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public interface MessageHistoryService
-{
+public interface MessageHistoryService {
     /**
      * Name of the property that indicates whether the logging of messages is enabled.
      */
-    public static final String PNAME_IS_MESSAGE_HISTORY_ENABLED = "msghistory.IS_MESSAGE_HISTORY_ENABLED";
+    String PNAME_IS_MESSAGE_HISTORY_ENABLED = "msghistory.IS_MESSAGE_HISTORY_ENABLED";
 
     /**
      * Name of the property that indicates whether the recent messages is enabled.
      */
-    public static final String PNAME_IS_RECENT_MESSAGES_DISABLED = "msghistory.IS_RECENT_MESSAGES_DISABLED";
+    String PNAME_IS_RECENT_MESSAGES_DISABLED = "msghistory.IS_RECENT_MESSAGES_DISABLED";
 
     /**
      * Name of the property that indicates whether the logging of messages is enabled.
      */
-    public static final String PNAME_IS_MESSAGE_HISTORY_PER_CONTACT_ENABLED_PREFIX = "msghistory.contact";
+    String PNAME_IS_MESSAGE_HISTORY_PER_CONTACT_ENABLED_PREFIX = "msghistory.contact";
 
     /**
      * Returns all the messages exchanged by all the contacts in the supplied metaContact after the given date
      *
      * @param contact MetaContact
      * @param startDate Date the start date of the conversations
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByStartDate(MetaContact contact, Date startDate);
@@ -58,6 +58,7 @@ public interface MessageHistoryService
      *
      * @param contact MetaContact
      * @param endDate Date the end date of the conversations
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByEndDate(MetaContact contact, Date endDate);
@@ -68,6 +69,7 @@ public interface MessageHistoryService
      * @param contact MetaContact
      * @param startDate Date the start date of the conversations
      * @param endDate Date the end date of the conversations
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByPeriod(MetaContact contact, Date startDate, Date endDate);
@@ -80,6 +82,7 @@ public interface MessageHistoryService
      * @param startDate Date the start date of the conversations
      * @param endDate Date the end date of the conversations
      * @param keywords array of keywords
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByPeriod(MetaContact contact, Date startDate, Date endDate, String[] keywords);
@@ -93,6 +96,7 @@ public interface MessageHistoryService
      * @param endDate Date the end date of the conversations
      * @param keywords array of keywords
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByPeriod(MetaContact contact, Date startDate, Date endDate,
@@ -103,6 +107,7 @@ public interface MessageHistoryService
      *
      * @param contact MetaContact
      * @param keyword keyword
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByKeyword(MetaContact contact, String keyword);
@@ -113,6 +118,7 @@ public interface MessageHistoryService
      * @param contact MetaContact
      * @param keyword keyword
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByKeyword(MetaContact contact, String keyword, boolean caseSensitive);
@@ -122,6 +128,7 @@ public interface MessageHistoryService
      *
      * @param contact MetaContact
      * @param keywords keyword
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByKeywords(MetaContact contact, String[] keywords);
@@ -132,6 +139,7 @@ public interface MessageHistoryService
      * @param contact MetaContact
      * @param keywords keyword
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByKeywords(MetaContact contact, String[] keywords, boolean caseSensitive);
@@ -141,6 +149,7 @@ public interface MessageHistoryService
      *
      * @param contact MetaContact
      * @param count messages count
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findLast(MetaContact contact, int count);
@@ -152,6 +161,7 @@ public interface MessageHistoryService
      * @param contact MetaContact
      * @param date messages after date
      * @param count messages count
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findFirstMessagesAfter(MetaContact contact, Date date, int count);
@@ -163,6 +173,7 @@ public interface MessageHistoryService
      * @param contact MetaContact
      * @param date messages before date
      * @param count messages count
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findLastMessagesBefore(MetaContact contact, Date date, int count);
@@ -172,6 +183,7 @@ public interface MessageHistoryService
      *
      * @param accountUid Account Uid
      * @param endDate end date for the session creation
+     *
      * @return Collection of ChatSessionRecord
      */
     Collection<ChatSessionRecord> findSessionByEndDate(String accountUid, Date endDate);
@@ -184,6 +196,7 @@ public interface MessageHistoryService
      * or <code>null</code> to search for all  providers
      * @param contactToFilter can be filtered by contact e.g. xyx123@atalk.org,
      * or <code>null</code> to search for all contacts
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findRecentMessagesPerContact(int count, String providerToFilter,
@@ -208,6 +221,7 @@ public interface MessageHistoryService
      *
      * @param room The chat room
      * @param startDate Date the start date of the conversations
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByStartDate(ChatRoom room, Date startDate);
@@ -217,6 +231,7 @@ public interface MessageHistoryService
      *
      * @param room The chat room
      * @param endDate Date the end date of the conversations
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByEndDate(ChatRoom room, Date endDate);
@@ -227,6 +242,7 @@ public interface MessageHistoryService
      * @param room The chat room
      * @param startDate Date the start date of the conversations
      * @param endDate Date the end date of the conversations
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByPeriod(ChatRoom room, Date startDate, Date endDate);
@@ -239,6 +255,7 @@ public interface MessageHistoryService
      * @param startDate Date the start date of the conversations
      * @param endDate Date the end date of the conversations
      * @param keywords array of keywords
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByPeriod(ChatRoom room, Date startDate, Date endDate, String[] keywords);
@@ -252,6 +269,7 @@ public interface MessageHistoryService
      * @param endDate Date the end date of the conversations
      * @param keywords array of keywords
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByPeriod(ChatRoom room, Date startDate, Date endDate,
@@ -262,6 +280,7 @@ public interface MessageHistoryService
      *
      * @param room The Chat room
      * @param keyword keyword
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByKeyword(ChatRoom room, String keyword);
@@ -272,6 +291,7 @@ public interface MessageHistoryService
      * @param room The chat room
      * @param keyword keyword
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByKeyword(ChatRoom room, String keyword, boolean caseSensitive);
@@ -281,6 +301,7 @@ public interface MessageHistoryService
      *
      * @param room The chat room
      * @param keywords keyword
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByKeywords(ChatRoom room, String[] keywords);
@@ -291,6 +312,7 @@ public interface MessageHistoryService
      * @param room The chat room
      * @param keywords keyword
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findByKeywords(ChatRoom room, String[] keywords, boolean caseSensitive);
@@ -300,6 +322,7 @@ public interface MessageHistoryService
      *
      * @param room The chat room
      * @param count messages count
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findLast(ChatRoom room, int count);
@@ -310,6 +333,7 @@ public interface MessageHistoryService
      * @param room The chat room
      * @param date messages after date
      * @param count messages count
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findFirstMessagesAfter(ChatRoom room, Date date, int count);
@@ -320,12 +344,14 @@ public interface MessageHistoryService
      * @param room The chat room
      * @param date messages before date
      * @param count messages count
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findLastMessagesBefore(ChatRoom room, Date date, int count);
 
     /**
      * Permanently removes all locally stored message history for the specified chatMode.
+     *
      * @param chatMode i.e. ChatSession.MODE_SINGLE or ChatSession.MODE_MULTI
      */
     int eraseLocallyStoredChatHistory(int chatMode);
@@ -387,6 +413,7 @@ public interface MessageHistoryService
      * Returns the sessionUuid by specified Object
      *
      * @param contact The chat Contact
+     *
      * @return sessionUuid - created if not exist
      */
     String getSessionUuidByJid(Contact contact);
@@ -399,6 +426,7 @@ public interface MessageHistoryService
      * Get the chatSession persistent chatType
      *
      * @param chatSession the chat session for which to fetch from
+     *
      * @return the chatType
      */
     int getSessionChatType(ChatSession chatSession);
@@ -408,6 +436,7 @@ public interface MessageHistoryService
      *
      * @param chatSession the chat session for which to apply to
      * @param chatType the chatType to store
+     *
      * @return number of columns affected
      */
     int setSessionChatType(ChatSession chatSession, int chatType);

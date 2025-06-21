@@ -488,10 +488,6 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
         boolean isJoined = (chatRoomWrapper.getChatRoom() != null) && chatRoomWrapper.getChatRoom().isJoined();
         PresenceStatus status = isJoined ? GlobalStatusEnum.ONLINE : GlobalStatusEnum.OFFLINE;
         return status.getStatusIcon();
-
-        // byte[] statusIcon = AppImageUtil.getImageBytes(this,
-        //     isJoined ? R.drawable.global_online : R.drawable.global_offline);
-        // return statusIcon
     }
 
     /**

@@ -45,8 +45,7 @@ import java.util.List;
  *
  * @author Eng Chong Meng
  */
-public class ComboBox extends LinearLayout
-{
+public class ComboBox extends LinearLayout {
     protected AutoCompleteTextView _text;
     protected List<String> spinnerList;
 
@@ -57,20 +56,17 @@ public class ComboBox extends LinearLayout
     private Context mContext;
     private LayoutInflater inflater;
 
-    public ComboBox(Context context)
-    {
+    public ComboBox(Context context) {
         super(context);
         this.createChildControls(context);
     }
 
-    public ComboBox(Context context, AttributeSet attrs)
-    {
+    public ComboBox(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.createChildControls(context);
     }
 
-    private void createChildControls(Context context)
-    {
+    private void createChildControls(Context context) {
         mContext = context;
         inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -107,8 +103,7 @@ public class ComboBox extends LinearLayout
      * @param source Source of suggestions.
      * @param column Which column from source to show.
      */
-    public void setSuggestionSource(Cursor source, String column)
-    {
+    public void setSuggestionSource(Cursor source, String column) {
         String[] from = new String[]{column};
         int[] to = new int[]{android.R.id.text1};
         SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this.getContext(),
@@ -119,16 +114,13 @@ public class ComboBox extends LinearLayout
         _text.setAdapter(cursorAdapter);
     }
 
-    public void setSuggestionSource(List<String> list)
-    {
+    public void setSuggestionSource(List<String> list) {
         spinnerList = list;
 
         // Create an ArrayAdapter using the string array and custom spinner item with radio button
-        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(this.getContext(), R.layout.simple_spinner_item, list)
-        {
+        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(this.getContext(), R.layout.simple_spinner_item, list) {
             // Allow to change font style in dropdown vew
-            public View getView(int position, View convertView, @NonNull ViewGroup parent)
-            {
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 if (convertView == null) {
                     convertView = inflater.inflate(R.layout.adapter_radio_item, null);
                 }
@@ -157,32 +149,28 @@ public class ComboBox extends LinearLayout
      *
      * @return Text or null if text isEmpty().
      */
-    public String getText()
-    {
+    public String getText() {
         return ViewUtil.toString(_text);
     }
 
     /**
      * Sets the text in combo box.
      */
-    public void setText(String text)
-    {
+    public void setText(String text) {
         _text.setText(text);
     }
 
     /**
      * Sets the textSize in comboBox.
      */
-    public void setTextSize(float size)
-    {
+    public void setTextSize(float size) {
         this.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
     }
 
     /**
      * Sets the unit and textSize in comboBox.
      */
-    public void setTextSize(int unit, float size)
-    {
+    public void setTextSize(int unit, float size) {
         _text.setTextSize(unit, size);
     }
 
@@ -191,8 +179,7 @@ public class ComboBox extends LinearLayout
      *
      * @param l AdapterView OnItemClickListener
      */
-    public void setOnItemClickListener(AdapterView.OnItemClickListener l)
-    {
+    public void setOnItemClickListener(AdapterView.OnItemClickListener l) {
         _text.setOnItemClickListener(l);
     }
 }

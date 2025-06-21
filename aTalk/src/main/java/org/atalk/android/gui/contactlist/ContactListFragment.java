@@ -512,6 +512,7 @@ public class ContactListFragment extends BaseFragment
 
                 case R.id.contact_ctx_menu_exit:
                     return true;
+
                 default:
                     return false;
             }

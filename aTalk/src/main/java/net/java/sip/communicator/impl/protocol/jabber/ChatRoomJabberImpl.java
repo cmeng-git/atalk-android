@@ -1038,7 +1038,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         }
 
         if (IMessage.ENCODE_HTML == message.getMimeType()) {
-            messageBuilder.addBody(null, Html.fromHtml(content).toString());
+            messageBuilder.addBody(null, Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY).toString());
 
             // Just add XHTML element as it will be ignored by buddy without XEP-0071: XHTML-IM support
             // Also carbon messages may send to buddy on difference clients with different capabilities
@@ -1113,7 +1113,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                         .appendCloseBodyTag();
 
                 // OMEMO normal body message content will strip off any html tags info
-                msgContent = Html.fromHtml(msgContent).toString();
+                msgContent = Html.fromHtml(msgContent, Html.FROM_HTML_MODE_LEGACY).toString();
                 encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
 
                 messageBuilder = StanzaBuilder.buildMessage();

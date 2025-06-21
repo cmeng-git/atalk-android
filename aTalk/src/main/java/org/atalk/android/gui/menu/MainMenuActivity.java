@@ -147,6 +147,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
+        menu.findItem(R.id.add_contact).setVisible(!ConfigurationUtils.isAddContactDisabled());
 
         // Get the SearchView and set the search theme
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);

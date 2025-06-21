@@ -15,26 +15,6 @@
  */
 package net.java.sip.communicator.impl.certificate;
 
-import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
-import net.java.sip.communicator.service.certificate.CertificateMatcher;
-import net.java.sip.communicator.service.certificate.CertificateService;
-import net.java.sip.communicator.service.certificate.KeyStoreType;
-import net.java.sip.communicator.service.certificate.VerifyCertificateDialogService;
-import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
-import net.java.sip.communicator.service.gui.AuthenticationWindowService;
-
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
-import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.httputil.HttpConnectionManager;
-import org.atalk.util.OSUtils;
-import org.bouncycastle.asn1.DERIA5String;
-import org.bouncycastle.asn1.x509.AccessDescription;
-import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
@@ -82,6 +62,28 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
+import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
+import net.java.sip.communicator.service.certificate.CertificateMatcher;
+import net.java.sip.communicator.service.certificate.CertificateService;
+import net.java.sip.communicator.service.certificate.KeyStoreType;
+import net.java.sip.communicator.service.certificate.VerifyCertificateDialogService;
+import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
+import net.java.sip.communicator.service.gui.AuthenticationWindowService;
+
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+import org.atalk.service.configuration.ConfigurationService;
+import org.atalk.service.httputil.OkHttpUtils;
+import org.atalk.util.OSUtils;
+import org.bouncycastle.asn1.DERIA5String;
+import org.bouncycastle.asn1.x509.AccessDescription;
+import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
+
+import okhttp3.HttpUrl;
+import okhttp3.ResponseBody;
 import timber.log.Timber;
 
 /**
@@ -92,18 +94,15 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class CertificateServiceImpl implements CertificateService, PropertyChangeListener
-{
+public class CertificateServiceImpl implements CertificateService, PropertyChangeListener {
     // ------------------------------------------------------------------------
     // static data
     // ------------------------------------------------------------------------
-    private final List<KeyStoreType> supportedTypes = new LinkedList<KeyStoreType>()
-    {
+    private final List<KeyStoreType> supportedTypes = new LinkedList<KeyStoreType>() {
         /**
          * Serial version UID.
          */
         private static final long serialVersionUID = 0L;
-
         {
             if (!OSUtils.IS_WINDOWS64) {
                 add(new KeyStoreType("PKCS11", new String[]{".dll", ".so"}, false));
@@ -154,38 +153,29 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     // ------------------------------------------------------------------------
     // Map access helpers
     // ------------------------------------------------------------------------
-
     /**
      * Helper method to avoid accessing null-lists in the session allowed certificate map
      *
      * @param propName the key to access
+     *
      * @return the list for the given list or a new, empty list put in place for the key
      */
-    private List<String> getSessionCertEntry(String propName)
-    {
-        List<String> entry = sessionAllowedCertificates.get(propName);
-        if (entry == null) {
-            entry = new LinkedList<>();
-            sessionAllowedCertificates.put(propName, entry);
-        }
-        return entry;
+    private List<String> getSessionCertEntry(String propName) {
+        return sessionAllowedCertificates.computeIfAbsent(propName, k -> new LinkedList<>());
     }
 
-    public void purgeSessionCertificate()
-    {
+    public void purgeSessionCertificate() {
         sessionAllowedCertificates.clear();
     }
 
     /**
      * AIA cache retrieval entry.
      */
-    private static class AiaCacheEntry
-    {
+    private static class AiaCacheEntry {
         Date cacheDate;
         X509Certificate cert;
 
-        AiaCacheEntry(Date cacheDate, X509Certificate cert)
-        {
+        AiaCacheEntry(Date cacheDate, X509Certificate cert) {
             this.cacheDate = cacheDate;
             this.cert = cert;
         }
@@ -194,12 +184,10 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     // ------------------------------------------------------------------------
     // TrustStore configuration
     // ------------------------------------------------------------------------
-
     /**
      * Initializes a new <code>CertificateServiceImpl</code> instance.
      */
-    public CertificateServiceImpl()
-    {
+    public CertificateServiceImpl() {
         setTrustStore();
         config.addPropertyChangeListener(PNAME_TRUSTSTORE_TYPE, this);
 
@@ -208,13 +196,11 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         Security.setProperty(SECURITY_OCSP_ENABLE, config.getString(PNAME_OCSP_ENABLED, "false"));
     }
 
-    public void propertyChange(PropertyChangeEvent evt)
-    {
+    public void propertyChange(PropertyChangeEvent evt) {
         setTrustStore();
     }
 
-    private void setTrustStore()
-    {
+    private void setTrustStore() {
         String tsType = (String) config.getProperty(PNAME_TRUSTSTORE_TYPE);
         String tsFile = (String) config.getProperty(PNAME_TRUSTSTORE_FILE);
         String tsPassword = credService.loadPassword(PNAME_TRUSTSTORE_PASSWORD);
@@ -250,8 +236,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      *
      * @see CertificateService#getSupportedKeyStoreTypes()
      */
-    public List<KeyStoreType> getSupportedKeyStoreTypes()
-    {
+    public List<KeyStoreType> getSupportedKeyStoreTypes() {
         return supportedTypes;
     }
 
@@ -260,8 +245,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      *
      * @see CertificateService#getClientAuthCertificateConfigs()
      */
-    public List<CertificateConfigEntry> getClientAuthCertificateConfigs()
-    {
+    public List<CertificateConfigEntry> getClientAuthCertificateConfigs() {
         List<CertificateConfigEntry> map = new LinkedList<>();
         for (String propName : config.getPropertyNamesByPrefix(PNAME_CLIENTAUTH_CERTCONFIG_BASE, false)) {
             String propValue = config.getString(propName);
@@ -295,8 +279,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      *
      * @see CertificateService#setClientAuthCertificateConfig(CertificateConfigEntry)
      */
-    public void setClientAuthCertificateConfig(CertificateConfigEntry e)
-    {
+    public void setClientAuthCertificateConfig(CertificateConfigEntry e) {
         if (e.getId() == null)
             e.setId("conf" + Math.abs(new Random().nextInt()));
         String pn = PNAME_CLIENTAUTH_CERTCONFIG_BASE + "." + e.getId();
@@ -317,8 +300,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      *
      * @see CertificateService#removeClientAuthCertificateConfig(String)
      */
-    public void removeClientAuthCertificateConfig(String id)
-    {
+    public void removeClientAuthCertificateConfig(String id) {
         for (String p : config.getPropertyNamesByPrefix(PNAME_CLIENTAUTH_CERTCONFIG_BASE + "." + id, true)) {
             config.removeProperty(p);
         }
@@ -328,15 +310,13 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     // ------------------------------------------------------------------------
     // Certificate trust handling
     // ------------------------------------------------------------------------
-
     /**
      * (non-Javadoc)
      *
      * @see CertificateService#addCertificateToTrust(Certificate, String, int)
      */
     public void addCertificateToTrust(Certificate cert, String trustFor, int trustMode)
-            throws CertificateException
-    {
+            throws CertificateException {
         String propName = PNAME_CERT_TRUST_PREFIX + CERT_TRUST_PARAM_SUBFIX + trustFor;
         String thumbprint = getThumbprint(cert, THUMBPRINT_HASH_ALGORITHM);
         switch (trustMode) {
@@ -362,8 +342,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      *
      * @return all the server authenticated certificates
      */
-    public List<String> getAllServerAuthCertificates()
-    {
+    public List<String> getAllServerAuthCertificates() {
         return config.getPropertyNamesByPrefix(PNAME_CERT_TRUST_PREFIX, false);
     }
 
@@ -372,8 +351,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      *
      * @param certEntry to be removed
      */
-    public void removeCertificateEntry(String certEntry)
-    {
+    public void removeCertificateEntry(String certEntry) {
         config.setProperty(certEntry, null);
     }
 
@@ -383,8 +361,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      * @see CertificateService#getSSLContext()
      */
     public SSLContext getSSLContext()
-            throws GeneralSecurityException
-    {
+            throws GeneralSecurityException {
         return getSSLContext(getTrustManager((Iterable<String>) null));
     }
 
@@ -394,8 +371,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      * @see CertificateService#getSSLContext(X509TrustManager)
      */
     public SSLContext getSSLContext(X509TrustManager trustManager)
-            throws GeneralSecurityException
-    {
+            throws GeneralSecurityException {
         try {
             KeyStore ks = KeyStore.getInstance(System.getProperty("javax.net.ssl.keyStoreType",
                     KeyStore.getDefaultType()));
@@ -416,8 +392,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     }
 
     private Builder loadKeyStore(final CertificateConfigEntry entry)
-            throws KeyStoreException, UnrecoverableEntryException
-    {
+            throws KeyStoreException, UnrecoverableEntryException {
         final File f = new File(entry.getKeyStore());
         final String keyStoreType = entry.getKeyStoreType().getName();
         if ("PKCS11".equals(keyStoreType)) {
@@ -465,6 +440,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                         }
                     }
                 }));
+
         return ksBuilder;
     }
 
@@ -474,15 +450,14 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      * @see CertificateService#getSSLContext(String, X509TrustManager)
      */
     public SSLContext getSSLContext(String clientCertConfig, X509TrustManager trustManager)
-            throws GeneralSecurityException
-    {
+            throws GeneralSecurityException {
         try {
             if (clientCertConfig == null)
                 return getSSLContext(trustManager);
 
             CertificateConfigEntry entry = null;
             for (CertificateConfigEntry e : getClientAuthCertificateConfigs()) {
-                if (e.toString().equals(clientCertConfig)) {
+                if (e.getId().equals(clientCertConfig)) {
                     entry = e;
                     break;
                 }
@@ -499,7 +474,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
 
             // Not supported: GeneralSecurityException: Cannot init SSLContext: ManagerFactoryParameters not supported
             // KeyStoreBuilderParameters ksBuilerParm = new KeyStoreBuilderParameters(loadKeyStore(entry));
-            // kmf.init(ksBuilerParm);
+            // kmf.init(ksBuilderParm);
 
             // so use getDefaultAlgorithm() => "PKIX"
             String kmfAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
@@ -519,8 +494,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      * @see CertificateService#getSSLContext(KeyManager[], X509TrustManager)
      */
     public SSLContext getSSLContext(KeyManager[] keyManagers, X509TrustManager trustManager)
-            throws GeneralSecurityException
-    {
+            throws GeneralSecurityException {
         // cmeng: need to take care o daneVerifier? from abstractXMPPConnection#getSmackTlsContext()
         // if (daneVerifier != null) {
         //     // User requested DANE verification.
@@ -543,8 +517,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      * @see CertificateService#getTrustManager(Iterable)
      */
     public X509TrustManager getTrustManager(Iterable<String> identitiesToTest)
-            throws GeneralSecurityException
-    {
+            throws GeneralSecurityException {
         return getTrustManager(identitiesToTest, new EMailAddressMatcher(), new BrowserLikeHostnameMatcher());
     }
 
@@ -554,8 +527,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      * @see CertificateService#getTrustManager(String)
      */
     public X509TrustManager getTrustManager(String identityToTest)
-            throws GeneralSecurityException
-    {
+            throws GeneralSecurityException {
         return getTrustManager(Collections.singletonList(identityToTest),
                 new EMailAddressMatcher(), new BrowserLikeHostnameMatcher());
     }
@@ -567,8 +539,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      */
     public X509TrustManager getTrustManager(String identityToTest,
             CertificateMatcher clientVerifier, CertificateMatcher serverVerifier)
-            throws GeneralSecurityException
-    {
+            throws GeneralSecurityException {
         return getTrustManager(Collections.singletonList(identityToTest), clientVerifier, serverVerifier);
     }
 
@@ -579,8 +550,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      */
     public X509TrustManager getTrustManager(final Iterable<String> identitiesToTest,
             final CertificateMatcher clientVerifier, final CertificateMatcher serverVerifier)
-            throws GeneralSecurityException
-    {
+            throws GeneralSecurityException {
         // Obtain the system default X509 trust manager
         X509TrustManager defaultTm = null;
         TrustManagerFactory tmFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -618,14 +588,13 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      * asks the user when the validation fails. When <code>null</code> is passed as the
      * <code>identityToTest</code> then no check is performed whether the certificate is valid for a
      * specific server or client.
-     *
+     * <p>
      * The trust manager which asks the client whether to trust particular certificate which is not
      * android root's CA trusted.
      *
-     * Return TrustManager to use in an SSLContext
+     * @Return TrustManager to use in an SSLContext
      */
-    private class EntityTrustManager implements X509TrustManager
-    {
+    private class EntityTrustManager implements X509TrustManager {
         private final X509TrustManager tm;
         private final Iterable<String> identitiesToTest;
         private final CertificateMatcher clientVerifier;
@@ -640,34 +609,29 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
          * @param serverVerifier The verifier to use in calls to checkServerTrusted
          */
         EntityTrustManager(X509TrustManager tm, final Iterable<String> identitiesToTest,
-                final CertificateMatcher clientVerifier, final CertificateMatcher serverVerifier)
-        {
+                final CertificateMatcher clientVerifier, final CertificateMatcher serverVerifier) {
             this.tm = tm;
             this.identitiesToTest = identitiesToTest;
             this.clientVerifier = clientVerifier;
             this.serverVerifier = serverVerifier;
         }
 
-        public X509Certificate[] getAcceptedIssuers()
-        {
+        public X509Certificate[] getAcceptedIssuers() {
             return tm.getAcceptedIssuers();
         }
 
         public void checkServerTrusted(X509Certificate[] chain, String authType)
-                throws CertificateException
-        {
+                throws CertificateException {
             checkCertTrusted(chain, authType, true);
         }
 
         public void checkClientTrusted(X509Certificate[] chain, String authType)
-                throws CertificateException
-        {
+                throws CertificateException {
             checkCertTrusted(chain, authType, false);
         }
 
         private void checkCertTrusted(X509Certificate[] chain, String authType, Boolean serverCheck)
-                throws CertificateException
-        {
+                throws CertificateException {
             // check and default configurations for property if missing default is null - false
             String defaultAlwaysTrustMode = CertificateVerificationActivator.getResources()
                     .getSettingsString(PNAME_ALWAYS_TRUST);
@@ -782,8 +746,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
          * In this case we throw the Root-CA away after the lookup
          */
         private X509Certificate[] tryBuildChain(X509Certificate[] chain)
-                throws IOException, URISyntaxException, CertificateException
-        {
+                throws IOException, URISyntaxException, CertificateException {
             if (chain.length != 1)
                 return chain;
 
@@ -826,9 +789,9 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                             || uri.getScheme().equals("https")))
                         continue;
 
-                    X509Certificate cert = null;
 
                     // try to get cert from cache first to avoid consecutive-slow http lookups
+                    X509Certificate cert = null;
                     AiaCacheEntry cache = aiaCache.get(uri);
                     if (cache != null && cache.cacheDate.after(new Date())) {
                         cert = cache.cert;
@@ -838,8 +801,9 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                         Timber.d("Downloading parent certificate for <%s> from <%s>",
                                 current.getSubjectDN(), uri);
                         try {
-                            InputStream is = HttpConnectionManager.open(uri.getPath(), false);
-                            if (is != null) {
+                            ResponseBody respBody = OkHttpUtils.open(HttpUrl.get(uri), false);
+                            if (respBody != null) {
+                                InputStream is = respBody.byteStream();
                                 cert = (X509Certificate) certFactory.generateCertificate(is);
                             }
                         } catch (Exception e) {
@@ -867,11 +831,9 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         }
     }
 
-    protected static class BrowserLikeHostnameMatcher implements CertificateMatcher
-    {
+    protected static class BrowserLikeHostnameMatcher implements CertificateMatcher {
         public void verify(Iterable<String> identitiesToTest, X509Certificate cert)
-                throws CertificateException
-        {
+                throws CertificateException {
             // check whether one of the hostname is present in the certificate
             boolean oneMatched = false;
             for (String identity : identitiesToTest) {
@@ -890,11 +852,9 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         }
     }
 
-    protected static class EMailAddressMatcher implements CertificateMatcher
-    {
+    protected static class EMailAddressMatcher implements CertificateMatcher {
         public void verify(Iterable<String> identitiesToTest, X509Certificate cert)
-                throws CertificateException
-        {
+                throws CertificateException {
             // check if the certificate contains the E-Mail address(es) in the SAN(s)
             // TODO: extract address from DN (E-field) too?
             boolean oneMatched = false;
@@ -919,13 +879,13 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      *
      * @param chain The chain of the certificates to check with user.
      * @param message A text that describes why the verification failed.
+     *
      * @return The result of the user interaction. One of
      * {@link CertificateService#DO_NOT_TRUST},
      * {@link CertificateService#TRUST_THIS_SESSION_ONLY},
      * {@link CertificateService#TRUST_ALWAYS}
      */
-    protected int verify(final X509Certificate[] chain, final String message)
-    {
+    protected int verify(final X509Certificate[] chain, final String message) {
         if (config.getBoolean(PNAME_NO_USER_INTERACTION, false))
             return DO_NOT_TRUST;
 
@@ -953,12 +913,13 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      *
      * @param cert The certificate to hash.
      * @param algorithm The hash algorithm to use.
+     *
      * @return The SHA-1 hash of the certificate.
+     *
      * @throws CertificateException Certificate exception
      */
     private static String getThumbprint(Certificate cert, String algorithm)
-            throws CertificateException
-    {
+            throws CertificateException {
         MessageDigest digest;
         try {
             digest = MessageDigest.getInstance(algorithm);
@@ -979,6 +940,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      *
      * @param cert the certificate to extract from
      * @param altNameType The type to be returned
+     *
      * @return SAN of the type
      * <p>
      * <PRE>
@@ -996,8 +958,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      * <p>
      * <PRE>
      */
-    private static Iterable<String> getSubjectAltNames(X509Certificate cert, int altNameType)
-    {
+    private static Iterable<String> getSubjectAltNames(X509Certificate cert, int altNameType) {
         Collection<List<?>> altNames;
         try {
             altNames = cert.getSubjectAlternativeNames();

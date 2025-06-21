@@ -19,8 +19,7 @@ import org.atalk.service.version.VersionService;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public abstract class AbstractVersionService implements VersionService
-{
+public abstract class AbstractVersionService implements VersionService {
     /**
      * The pattern that will parse strings to version object.
      */
@@ -30,11 +29,11 @@ public abstract class AbstractVersionService implements VersionService
      * Returns a Version instance corresponding to the <code>version</code> string.
      *
      * @param version a version String that we have obtained by calling a <code>Version.toString()</code> method.
+     *
      * @return the <code>Version</code> object corresponding to the <code>version</code> string. Or null
      * if we cannot parse the string.
      */
-    public Version parseVersionString(String version)
-    {
+    public Version parseVersionString(String version) {
         Matcher matcher = PARSE_VERSION_STRING_PATTERN.matcher(version);
 
         if (matcher.matches() && matcher.groupCount() == 3) {
@@ -52,6 +51,7 @@ public abstract class AbstractVersionService implements VersionService
      * @param majorVersion major version number.
      * @param minorVersion minor version number.
      * @param nightlyBuildId nightly build id string.
+     *
      * @return new <code>Version</code> instance specific to current implementation for given major,
      * minor and nightly build id parameters.
      */

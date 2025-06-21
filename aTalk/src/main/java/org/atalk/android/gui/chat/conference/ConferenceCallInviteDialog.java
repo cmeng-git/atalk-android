@@ -109,8 +109,8 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
      * @param conference the telephony conference in which the new instance is to invite contacts/participants
      * @param preselectedProvider the preselected protocol provider
      * @param protocolProviders the protocol providers list
-     * @param isJitsiVideobridge <code>true</code> if this dialog should create a conference through a Jitsi Videobridge;
-     * otherwise, <code>false</code>
+     * @param isJitsiVideobridge <code>true</code> if this dialog should create a conference through
+     * a Jitsi Videobridge; otherwise, <code>false</code>
      */
     public ConferenceCallInviteDialog(Context mContext, CallConference conference, ProtocolProviderService preselectedProvider,
             List<ProtocolProviderService> protocolProviders, final boolean isJitsiVideobridge) {

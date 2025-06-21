@@ -93,6 +93,13 @@
     </implements>
     <implements>
       <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0066.html"/>
+        <xmpp:version>1.5</xmpp:version>
+        <xmpp:note xml:lang='en'>XEP-0066: Out of Band Data</xmpp:note>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0070.html"/>
         <xmpp:version>1.0.1</xmpp:version>
         <xmpp:note xml:lang='en'>XEP-0070: Verifying HTTP Requests via XMPP</xmpp:note>

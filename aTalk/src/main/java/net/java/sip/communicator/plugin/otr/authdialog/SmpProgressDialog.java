@@ -6,11 +6,6 @@
  */
 package net.java.sip.communicator.plugin.otr.authdialog;
 
-import net.java.sip.communicator.plugin.otr.OtrActivator;
-import net.java.sip.communicator.service.protocol.Contact;
-
-import org.atalk.util.swing.TransparentPanel;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -28,6 +23,11 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 
+import net.java.sip.communicator.plugin.otr.OtrActivator;
+import net.java.sip.communicator.service.protocol.Contact;
+
+import org.atalk.util.swing.TransparentPanel;
+
 /**
  * The dialog that pops up when SMP negotiation starts.
  * It contains a progress bar that indicates the status of the SMP
@@ -36,8 +36,7 @@ import javax.swing.plaf.basic.BasicProgressBarUI;
  * @author Marin Dzhigarov
  */
 @SuppressWarnings("serial")
-public class SmpProgressDialog extends JDialog
-{
+public class SmpProgressDialog extends JDialog {
     private final JProgressBar progressBar = new JProgressBar(0, 100);
 
     private final Color successColor = new Color(86, 140, 2);
@@ -51,8 +50,7 @@ public class SmpProgressDialog extends JDialog
      *
      * @param contact The contact that this dialog is associated with.
      */
-    public SmpProgressDialog(Contact contact)
-    {
+    public SmpProgressDialog(Contact contact) {
         setTitle(OtrActivator.resourceService.getI18NString("plugin.otr.smpprogressdialog.TITLE"));
 
         JPanel mainPanel = new TransparentPanel();
@@ -81,15 +79,12 @@ public class SmpProgressDialog extends JDialog
     /**
      * Initializes the progress bar and sets it's progression to 1/3.
      */
-    public void init()
-    {
-        progressBar.setUI(new BasicProgressBarUI()
-        {
+    public void init() {
+        progressBar.setUI(new BasicProgressBarUI() {
             private Rectangle r = new Rectangle();
 
             @Override
-            protected void paintIndeterminate(Graphics g, JComponent c)
-            {
+            protected void paintIndeterminate(Graphics g, JComponent c) {
                 Graphics2D g2d = (Graphics2D) g;
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 r = getBox(r);
@@ -103,23 +98,20 @@ public class SmpProgressDialog extends JDialog
         iconLabel.setIcon(OtrActivator.resourceService.getImage("plugin.otr.ENCRYPTED_UNVERIFIED_ICON_22x22"));
     }
 
-    public void dispose()
-    {
+    public void dispose() {
     }
 
     /**
      * Sets the progress bar to 2/3 of completion.
      */
-    public void incrementProgress()
-    {
+    public void incrementProgress() {
         progressBar.setValue(66);
     }
 
     /**
      * Sets the progress bar to green.
      */
-    public void setProgressSuccess()
-    {
+    public void setProgressSuccess() {
         progressBar.setValue(100);
         progressBar.setForeground(successColor);
         progressBar.setStringPainted(true);
@@ -130,8 +122,7 @@ public class SmpProgressDialog extends JDialog
     /**
      * Sets the progress bar to red.
      */
-    public void setProgressFail()
-    {
+    public void setProgressFail() {
         progressBar.setValue(100);
         progressBar.setForeground(failColor);
         progressBar.setStringPainted(true);

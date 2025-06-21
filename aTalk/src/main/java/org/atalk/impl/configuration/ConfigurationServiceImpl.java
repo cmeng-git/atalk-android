@@ -314,7 +314,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
      * complaints (PropertyVetoException) have been received, the property will be actually
      * changed and a PropertyChangeEvent will be dispatched. All properties with prefix
      * propertyName will also be removed.
-     *
      * Does not store anything.
      *
      * @param propertyName the name of the property to change.
@@ -1426,7 +1425,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         } catch (Exception ex) {
             // we can function without defaults so we are just logging those.
             Timber.i("No defaults property file loaded: %s. Not a problem.", fileName);
-
             Timber.d(ex, "load exception");
         }
     }

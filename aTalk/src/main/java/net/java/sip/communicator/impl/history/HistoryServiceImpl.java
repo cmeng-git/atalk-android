@@ -18,6 +18,23 @@ package net.java.sip.communicator.impl.history;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Vector;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import net.java.sip.communicator.service.history.History;
 import net.java.sip.communicator.service.history.HistoryID;
 import net.java.sip.communicator.service.history.HistoryService;
@@ -37,23 +54,6 @@ import org.osgi.framework.ServiceReference;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.Vector;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import timber.log.Timber;
 
 /**
@@ -62,8 +62,7 @@ import timber.log.Timber;
  * @author Lubomir Marinov
  * @author Eng Chong Meng
  */
-public class HistoryServiceImpl implements HistoryService
-{
+public class HistoryServiceImpl implements HistoryService {
     /**
      * The data directory.
      */
@@ -83,7 +82,7 @@ public class HistoryServiceImpl implements HistoryService
 
     private final boolean cacheEnabled;
 
-    private SQLiteDatabase mDB;
+    private final SQLiteDatabase mDB;
 
     /**
      * Characters and their replacement in created folder names
@@ -100,19 +99,18 @@ public class HistoryServiceImpl implements HistoryService
      * Constructor.
      *
      * @param bundleContext OSGi bundle context
+     *
      * @throws Exception if something went wrong during initialization
      */
     public HistoryServiceImpl(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         this.cacheEnabled = getConfigurationService(bundleContext).getBoolean(CACHE_ENABLED_PROPERTY, false);
         this.fileAccessService = getFileAccessService(bundleContext);
         mDB = DatabaseBackend.getWritableDB();
     }
 
-    public Iterator<HistoryID> getExistingIDs()
-    {
+    public Iterator<HistoryID> getExistingIDs() {
         List<File> vect = new Vector<>();
         File histDir;
         try {
@@ -144,14 +142,12 @@ public class HistoryServiceImpl implements HistoryService
         }
     }
 
-    public boolean isHistoryExisting(HistoryID id)
-    {
+    public boolean isHistoryExisting(HistoryID id) {
         return this.histories.containsKey(id);
     }
 
     public History getHistory(HistoryID id)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         History retVal = null;
 
         synchronized (this.histories) {
@@ -166,8 +162,7 @@ public class HistoryServiceImpl implements HistoryService
     }
 
     public History createHistory(HistoryID id, HistoryRecordStructure recordStructure)
-            throws IllegalArgumentException, IOException
-    {
+            throws IllegalArgumentException, IOException {
         History retVal = null;
 
         synchronized (this.histories) {
@@ -190,13 +185,11 @@ public class HistoryServiceImpl implements HistoryService
         return retVal;
     }
 
-    protected FileAccessService getFileAccessService()
-    {
+    protected FileAccessService getFileAccessService() {
         return this.fileAccessService;
     }
 
-    protected DocumentBuilder getDocumentBuilder()
-    {
+    protected DocumentBuilder getDocumentBuilder() {
         return builder;
     }
 
@@ -205,13 +198,14 @@ public class HistoryServiceImpl implements HistoryService
      * DocumentBuilder
      *
      * @param file File the file to parse
+     *
      * @return Document the result document
+     *
      * @throws SAXException exception
      * @throws IOException exception
      */
     protected synchronized Document parse(File file)
-            throws SAXException, IOException
-    {
+            throws SAXException, IOException {
         FileInputStream fis = new FileInputStream(file);
         Document doc = builder.parse(fis);
         fis.close();
@@ -223,18 +217,18 @@ public class HistoryServiceImpl implements HistoryService
      * DocumentBuilder
      *
      * @param in ByteArrayInputStream the stream to parse
+     *
      * @return Document the result document
+     *
      * @throws SAXException exception
      * @throws IOException exception
      */
     protected synchronized Document parse(ByteArrayInputStream in)
-            throws SAXException, IOException
-    {
+            throws SAXException, IOException {
         return builder.parse(in);
     }
 
-    private void findDatFiles(List<File> vect, File directory)
-    {
+    private void findDatFiles(List<File> vect, File directory) {
         File[] files = directory.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
@@ -247,8 +241,7 @@ public class HistoryServiceImpl implements HistoryService
     }
 
     private File createHistoryDirectories(HistoryID id)
-            throws IOException
-    {
+            throws IOException {
         String[] idComponents = id.getID();
 
         // escape chars in directory names
@@ -282,8 +275,7 @@ public class HistoryServiceImpl implements HistoryService
      *
      * @return boolean
      */
-    protected boolean isCacheEnabled()
-    {
+    protected boolean isCacheEnabled() {
         return cacheEnabled;
     }
 
@@ -291,11 +283,11 @@ public class HistoryServiceImpl implements HistoryService
      * Permanently removes local stored History
      *
      * @param id HistoryID
+     *
      * @throws IOException
      */
     public void purgeLocallyStoredHistory(HistoryID id)
-            throws IOException
-    {
+            throws IOException {
         // get the history directory corresponding the given id
         File dir = this.createHistoryDirectories(id);
         Timber.log(TimberLog.FINER, "Removing history directory %s", dir);
@@ -321,8 +313,7 @@ public class HistoryServiceImpl implements HistoryService
      * - Remove only chatMessages for metaContacts
      * - Remove both chatSessions and chatMessages for muc
      */
-    public void purgeLocallyStoredHistory(Contact contact, String sessionUuid)
-    {
+    public void purgeLocallyStoredHistory(Contact contact, String sessionUuid) {
         String[] args = {sessionUuid};
         if (contact != null) {
             mDB.delete(ChatMessage.TABLE_NAME, ChatMessage.SESSION_UUID + "=?", args);
@@ -335,8 +326,7 @@ public class HistoryServiceImpl implements HistoryService
     /**
      * Clears locally(in memory) cached histories.
      */
-    public void purgeLocallyCachedHistories()
-    {
+    public void purgeLocallyCachedHistories() {
         histories.clear();
     }
 
@@ -347,10 +337,10 @@ public class HistoryServiceImpl implements HistoryService
      *
      * @param parentIDs the parent ids
      * @param hid the history to check
+     *
      * @return whether history is sub one (contained) of the parent.
      */
-    private boolean isSubHistory(String[] parentIDs, HistoryID hid)
-    {
+    private boolean isSubHistory(String[] parentIDs, HistoryID hid) {
         String[] hids = hid.getID();
 
         if (hids.length < parentIDs.length)
@@ -368,11 +358,11 @@ public class HistoryServiceImpl implements HistoryService
      * Deletes given directory and its content
      *
      * @param dir File
+     *
      * @throws IOException
      */
     private void deleteDirAndContent(File dir)
-            throws IOException
-    {
+            throws IOException {
         if (!dir.isDirectory())
             return;
 
@@ -394,8 +384,7 @@ public class HistoryServiceImpl implements HistoryService
      *
      * @param ids Ids - folder names as we are using FileSystem for storing files.
      */
-    private void escapeCharacters(String[] ids)
-    {
+    private void escapeCharacters(String[] ids) {
         for (int i = 0; i < ids.length; i++) {
             String currId = ids[i];
 
@@ -406,14 +395,12 @@ public class HistoryServiceImpl implements HistoryService
         }
     }
 
-    private static ConfigurationService getConfigurationService(BundleContext bundleContext)
-    {
+    private static ConfigurationService getConfigurationService(BundleContext bundleContext) {
         ServiceReference serviceReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
         return (serviceReference == null) ? null : (ConfigurationService) bundleContext.getService(serviceReference);
     }
 
-    private static FileAccessService getFileAccessService(BundleContext bundleContext)
-    {
+    private static FileAccessService getFileAccessService(BundleContext bundleContext) {
         return ServiceUtils.getService(bundleContext, FileAccessService.class);
     }
 
@@ -424,11 +411,11 @@ public class HistoryServiceImpl implements HistoryService
      *
      * @param oldId old and existing history
      * @param newId the place where content of oldId will be moved
+     *
      * @throws java.io.IOException problem moving to newId
      */
     public void moveHistory(HistoryID oldId, HistoryID newId)
-            throws IOException
-    {
+            throws IOException {
         if (!isHistoryCreated(oldId))// || !isHistoryExisting(newId))
             return;
 
@@ -450,10 +437,10 @@ public class HistoryServiceImpl implements HistoryService
      * Returns the folder for the given history without creating it.
      *
      * @param id the history
+     *
      * @return the folder for the history
      */
-    private File getDirForHistory(HistoryID id)
-    {
+    private File getDirForHistory(HistoryID id) {
         // put together subfolder names.
         String[] dirNames = id.getID();
         StringBuilder dirName = new StringBuilder();
@@ -482,10 +469,10 @@ public class HistoryServiceImpl implements HistoryService
      * Checks whether a history is created and stored. Exists in the file system.
      *
      * @param id the history to check
+     *
      * @return whether a history is created and stored.
      */
-    public boolean isHistoryCreated(HistoryID id)
-    {
+    public boolean isHistoryCreated(HistoryID id) {
         return getDirForHistory(id).exists();
     }
 
@@ -493,12 +480,13 @@ public class HistoryServiceImpl implements HistoryService
      * Enumerates existing histories.
      *
      * @param rawId the start of the HistoryID of all the histories that will be returned.
+     *
      * @return list of histories which HistoryID starts with <code>rawId</code>.
+     *
      * @throws IllegalArgumentException if the <code>rawId</code> contains ids which are missing in current history.
      */
     public List<HistoryID> getExistingHistories(String[] rawId)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         File histDir = null;
         try {
             histDir = getFileAccessService().getPrivatePersistentDirectory(DATA_DIRECTORY,
@@ -519,11 +507,9 @@ public class HistoryServiceImpl implements HistoryService
         if (!srcFolder.exists())
             return new ArrayList<>();
 
-        TreeMap<File, HistoryID> recentFiles = new TreeMap<>(new Comparator<File>()
-        {
+        TreeMap<File, HistoryID> recentFiles = new TreeMap<>(new Comparator<File>() {
             @Override
-            public int compare(File o1, File o2)
-            {
+            public int compare(File o1, File o2) {
                 return o1.getName().compareTo(o2.getName());
             }
         });
@@ -548,8 +534,7 @@ public class HistoryServiceImpl implements HistoryService
      * @param rawID the rawID.
      * @param res the result map.
      */
-    private void getExistingFiles(File sourceFolder, List<String> rawID, Map<File, HistoryID> res)
-    {
+    private void getExistingFiles(File sourceFolder, List<String> rawID, Map<File, HistoryID> res) {
         for (File f : sourceFolder.listFiles()) {
             if (f.isDirectory()) {
                 List<String> newRawID = new ArrayList<>(rawID);

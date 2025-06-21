@@ -16,8 +16,6 @@
  */
 package org.atalk.impl.appcertdialog;
 
-import static android.text.Html.FROM_HTML_MODE_LEGACY;
-
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
@@ -355,7 +353,7 @@ public class ConnectionInfo extends BaseActivity {
 
             AccountID accountId = getItem(position);
             String accountName = "<u>" + accountId + "</u>";
-            ciViewHolder.protocolService.setText(Html.fromHtml(accountName));
+            ciViewHolder.protocolService.setText(Html.fromHtml(accountName, Html.FROM_HTML_MODE_LEGACY));
 
             String detailInfo;
             ProtocolProviderService pps = accountId.getProtocolProvider();
@@ -366,7 +364,7 @@ public class ConnectionInfo extends BaseActivity {
                 detailInfo = getString(R.string.account_unregistered, "&#8226; ");
             }
 
-            ciViewHolder.connectionInfo.setText(Html.fromHtml(detailInfo, FROM_HTML_MODE_LEGACY, null, null));
+            ciViewHolder.connectionInfo.setText(Html.fromHtml(detailInfo, Html.FROM_HTML_MODE_LEGACY, null, null));
             return convertView;
         }
     }

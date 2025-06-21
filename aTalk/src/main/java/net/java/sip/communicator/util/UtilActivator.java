@@ -18,7 +18,6 @@ import net.java.sip.communicator.service.resources.ResourceManagementServiceUtil
 import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.FileAccessService;
-import org.atalk.service.neomedia.MediaConfigurationService;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.OSUtils;
@@ -164,17 +163,6 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
             mediaService = ServiceUtils.getService(bundleContext, MediaService.class);
         }
         return mediaService;
-    }
-
-    /**
-     * Returns the {@link MediaConfigurationService} instance registered in the <code>BundleContext</code> of the
-     * <code>UtilActivator</code>.
-     *
-     * @return the <code>UIService</code> instance registered in the <code>BundleContext</code> of the
-     * <code>UtilActivator</code>
-     */
-    public static MediaConfigurationService getMediaConfiguration() {
-        return ServiceUtils.getService(bundleContext, MediaConfigurationService.class);
     }
 
     /**

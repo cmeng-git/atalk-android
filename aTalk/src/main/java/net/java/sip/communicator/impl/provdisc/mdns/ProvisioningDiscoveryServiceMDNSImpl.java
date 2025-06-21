@@ -27,10 +27,8 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class ProvisioningDiscoveryServiceMDNSImpl
-        extends AbstractProvisioningDiscoveryService
-        implements DiscoveryListener
-{
+public class ProvisioningDiscoveryServiceMDNSImpl extends AbstractProvisioningDiscoveryService
+        implements DiscoveryListener {
     /**
      * Name of the method used to retrieve provisioning URL.
      */
@@ -44,13 +42,12 @@ public class ProvisioningDiscoveryServiceMDNSImpl
     /**
      * Constructor.
      */
-    public ProvisioningDiscoveryServiceMDNSImpl()
-    {
+    public ProvisioningDiscoveryServiceMDNSImpl() {
         try {
             discover = new MDNSProvisioningDiscover();
             discover.addDiscoveryListener(this);
         } catch (Exception e) {
-            Timber.w(e, "Cannot create JmDNS instance");
+            Timber.w("Cannot create JmDNS instance: %s", e.getMessage());
         }
     }
 
@@ -60,8 +57,7 @@ public class ProvisioningDiscoveryServiceMDNSImpl
      * @return method name
      */
     @Override
-    public String getMethodName()
-    {
+    public String getMethodName() {
         return METHOD_NAME;
     }
 
@@ -73,24 +69,20 @@ public class ProvisioningDiscoveryServiceMDNSImpl
      * @return provisioning URL
      */
     @Override
-    public String discoverURL()
-    {
+    public String discoverURL() {
         if (discover != null) {
             return discover.discoverProvisioningURL();
         }
-
         return null;
     }
 
     /**
      * Launch a mDNS discovery for a provisioning URL.
-     *
      * This method is asynchronous, the response will be notified to any
      * <code>ProvisioningListener</code> registered.
      */
     @Override
-    public void startDiscovery()
-    {
+    public void startDiscovery() {
         if (discover != null) {
             new Thread(discover).start();
         }
@@ -101,8 +93,7 @@ public class ProvisioningDiscoveryServiceMDNSImpl
      *
      * @param event provisioning event
      */
-    public void notifyProvisioningURL(DiscoveryEvent event)
-    {
+    public void notifyProvisioningURL(DiscoveryEvent event) {
         fireDiscoveryEvent(event);
     }
 }

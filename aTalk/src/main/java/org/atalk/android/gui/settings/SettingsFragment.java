@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceScreen;
 
@@ -74,12 +75,12 @@ public class SettingsFragment extends BasePreferenceFragment
     private static final String P_KEY_CALL = "pref.cat.settings.call";
 
     // Advance video/audio & Provisioning preference settings
-    private static final String P_KEY_ADVANCED = "pref.cat.settings.advanced";
+    private static final String P_KEY_ADVANCED = ExpertSettingsFragment.P_KEY_ADVANCED;
+    private static final String P_KEY_PROVISIONING = "pref.key.provisioning";
 
     // Interface Display settings
     public static final String P_KEY_LOCALE = "pref.key.locale";
     public static final String P_KEY_THEME = "pref.key.theme";
-
     private static final String P_KEY_WEB_PAGE = "gui.WEB_PAGE_ACCESS";
 
     // Message section
@@ -135,6 +136,11 @@ public class SettingsFragment extends BasePreferenceFragment
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the preferences from an XML resource
         setPreferencesFromResource(R.xml.preferences, rootKey);
+
+        // FFR: v2.1.5 NPE; use UtilActivator instead of AppGUIActivator which was initialized much later
+        mConfigService = UtilActivator.getConfigurationService();
+        mPreferenceScreen = getPreferenceScreen();
+        shPrefs = getPreferenceManager().getSharedPreferences();
     }
 
     /**
@@ -144,11 +150,6 @@ public class SettingsFragment extends BasePreferenceFragment
     public void onResume() {
         super.onResume();
         mActivity.setTitle(R.string.system_settings);
-
-        // FFR: v2.1.5 NPE; use UtilActivator instead of AppGUIActivator which was initialized much later
-        mConfigService = UtilActivator.getConfigurationService();
-        mPreferenceScreen = getPreferenceScreen();
-        shPrefs = getPreferenceManager().getSharedPreferences();
         shPrefs.registerOnSharedPreferenceChangeListener(this);
         shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
 
@@ -163,6 +164,19 @@ public class SettingsFragment extends BasePreferenceFragment
         // Notifications section
         initNotificationPreferences();
         initAutoStart();
+
+        // android OS cannot support removal of nested PreferenceCategory, so just disable all advance settings
+        if (ConfigurationUtils.isExpertSettingDisabled()) {
+            Preference prefAdvance = findPreference(P_KEY_ADVANCED);
+            if (prefAdvance != null)
+                prefAdvance.setVisible(false);
+        }
+
+        if (ConfigurationUtils.isProvisioningDisabled()) {
+            Preference prefProvisioning = findPreference(P_KEY_PROVISIONING);
+            if (prefProvisioning != null)
+                prefProvisioning.setVisible(false);
+        }
 
         if (!aTalk.disableMediaServiceOnFault) {
             MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
@@ -423,7 +437,7 @@ public class SettingsFragment extends BasePreferenceFragment
         if (myPrefCat != null)
             mPreferenceScreen.removePreference(myPrefCat);
 
-        // android OS cannot support removal of nested PreferenceCategory, so just disable all advance settings
+        // disable Expert setting if media call is disable
         myPrefCat = findPreference(P_KEY_ADVANCED);
         if (myPrefCat != null) {
             mPreferenceScreen.removePreference(myPrefCat);

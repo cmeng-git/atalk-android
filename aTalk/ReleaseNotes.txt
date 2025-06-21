@@ -1,5 +1,23 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.3.1 (403010)
+Release Date:   06/21/2025
+Author:         cmeng
+- Cleanup and fix all errors for Provisioning implementation classes.
+  Add new provisioning settings support in aTalk e.g. EXPERT_SETTING_DISABLED, PROVISIONING_DISABLED etc
+  Cleanup and fix all errors in Provisioning implementation classes.
+  See https://cmeng-git.github.io/atalk/faq.html#feature_16
+- Relocate 'Provisioning' menu to root UI Settings..., delink it from 'Expert settings'
+- Use ConfigEditText to ensure the preference UI is filled and shown the stored value on open without using summaryMapper;
+  When use, both preference "android:key" and the stored parameters must use the same name, else store will have extra "android:key" parameter.
+- ProvisioningSettings and ProvisioningServiceImpl variables must be in sync for proper saving and retrieval.
+- Allow user entry of username and password in provisioning setting for server authentication.
+- Rename HttpConnectionManager to OkhttpUtils; cleanup and fix all implementation errors for provisioning use. Remove httpUtils.
+- Remove unused classes LazyConfigurationForm, ConfigurationForm, ProvisioningForm, and MediaConfigurationService.
+- Improper Base64Encoded password in DB causes crash in CredentialsStorageServiceImpl#movePasswordProperty()
+- Create style_pref_button to ease user in preference button identification.
+
+=========================================================================
 Version:        4.3.0 (403000)
 Release Date:   05/19/2025
 Author:         cmeng

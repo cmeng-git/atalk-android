@@ -123,5 +123,4 @@ public class ChatRoomDestroyDialog extends BaseFragment {
         public void onDialogCancelled(DialogActivity dialog) {
         }
     }
-
 }

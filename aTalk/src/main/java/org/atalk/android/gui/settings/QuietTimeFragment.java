@@ -58,6 +58,8 @@ public class QuietTimeFragment extends BasePreferenceFragment
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the quiet time preferences from an XML resource
         setPreferencesFromResource(R.xml.quiet_time_preferences, rootKey);
+        mPreferenceScreen = getPreferenceScreen();
+        shPrefs = getPreferenceManager().getSharedPreferences();
     }
 
     /**
@@ -67,9 +69,6 @@ public class QuietTimeFragment extends BasePreferenceFragment
     public void onResume() {
         super.onResume();
         setPrefTitle(R.string.quiet_hours);
-
-        mPreferenceScreen = getPreferenceScreen();
-        shPrefs = getPreferenceManager().getSharedPreferences();
         shPrefs.registerOnSharedPreferenceChangeListener(this);
         shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
         initQuietTimePreferences();

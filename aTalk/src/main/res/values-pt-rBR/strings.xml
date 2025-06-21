@@ -1058,7 +1058,7 @@
     <string name="provisioning_manual">Especificar manualmente um URI de provisionamento</string>
     <string name="provisioning_method">Método de provisionamento</string>
     <string name="provisioning_failed">O provisionamento falhou</string>
-    <string name="provisioning_failed_message">&lt;html&gt;O provisionamento falhou. %1$s!&lt;br/&gt;Por favor, tente novamente mais tarde ou entre em contato com administrador.&lt;/html&gt;</string>
+    <string name="provisioning_failed_message">O provisionamento falhou. %1$s!/nPor favor, tente novamente mais tarde ou entre em contato com administrador.</string>
     <string name="provisioning">Provisionamento</string>
     <string name="provisioning_summary">Definir as configurações de provisionamento</string>
     <string name="provisioning_remove_credentials_message">Você tem certeza de que deseja remover a senha de provisionamento?</string>

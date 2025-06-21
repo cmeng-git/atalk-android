@@ -41,16 +41,15 @@ import java.util.List;
 import java.util.Properties;
 
 import net.java.sip.communicator.service.update.UpdateService;
-import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.dialogs.DialogActivity;
+import org.atalk.impl.appversion.VersionActivator;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
-import org.atalk.service.version.Version;
 import org.atalk.service.version.VersionService;
 import org.jetbrains.annotations.NotNull;
 
@@ -71,6 +70,7 @@ public class UpdateServiceImpl implements UpdateService {
 
     // filename is case-sensitive
     private static final String fileNameApk = String.format("aTalk-%s-%s.apk", BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE);
+
     // github apk is in the release directory; for apk download
     private static final String urlApk = "https://github.com/cmeng-git/atalk-android/releases/download/%s/";
 
@@ -78,6 +78,8 @@ public class UpdateServiceImpl implements UpdateService {
      * Apk mime type constant.
      */
     private static final String APK_MIME_TYPE = "application/vnd.android.package-archive";
+
+    private static final VersionService versionService = VersionActivator.getVersionService();
 
     /**
      * The download link for the installed application
@@ -379,24 +381,6 @@ public class UpdateServiceImpl implements UpdateService {
     }
 
     /**
-     * Gets the current (software) version.
-     *
-     * @return the current (software) version
-     */
-    public static Version getCurrentVersion() {
-        return getVersionService().getCurrentVersion();
-    }
-
-    /**
-     * Gets the current (software) version.
-     *
-     * @return the current (software) version
-     */
-    public static long getCurrentVersionCode() {
-        return getVersionService().getCurrentVersionCode();
-    }
-
-    /**
      * Gets the latest available (software) version online.
      *
      * @return the latest (software) version
@@ -407,22 +391,12 @@ public class UpdateServiceImpl implements UpdateService {
     }
 
     /**
-     * Returns the currently registered instance of version service.
-     *
-     * @return the current version service.
-     */
-    private static VersionService getVersionService() {
-        return ServiceUtils.getService(UpdateActivator.bundleContext, VersionService.class);
-    }
-
-    /**
      * Determines whether we are currently running the latest version.
      *
      * @return <code>true</code> if current running application is the latest version; otherwise, <code>false</code>
      */
     @Override
     public boolean isLatestVersion() {
-        VersionService versionService = getVersionService();
         currentVersion = versionService.getCurrentVersionName();
         currentVersionCode = versionService.getCurrentVersionCode();
 

@@ -181,7 +181,7 @@ public class CredentialsFragment extends BaseFragment {
         TextView reasonField = content.findViewById(R.id.reason_field);
         String xmlText = args.getString(ARG_LOGIN_REASON);
         if (!TextUtils.isEmpty(xmlText)) {
-            Spanned loginReason = Html.fromHtml(xmlText.replace("\n", "<br/>"));
+            Spanned loginReason = Html.fromHtml(xmlText.replace("\n", "<br/>"), Html.FROM_HTML_MODE_LEGACY);
             reasonField.setText(loginReason);
         }
 

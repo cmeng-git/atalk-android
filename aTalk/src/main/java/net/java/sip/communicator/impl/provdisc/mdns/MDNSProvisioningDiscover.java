@@ -15,9 +15,6 @@
  */
 package net.java.sip.communicator.impl.provdisc.mdns;
 
-import net.java.sip.communicator.service.provdisc.event.DiscoveryEvent;
-import net.java.sip.communicator.service.provdisc.event.DiscoveryListener;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -25,6 +22,9 @@ import java.util.List;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
+
+import net.java.sip.communicator.service.provdisc.event.DiscoveryEvent;
+import net.java.sip.communicator.service.provdisc.event.DiscoveryListener;
 
 import timber.log.Timber;
 
@@ -34,8 +34,7 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class MDNSProvisioningDiscover implements Runnable
-{
+public class MDNSProvisioningDiscover implements Runnable {
     /**
      * MDNS timeout (in milliseconds).
      */
@@ -44,7 +43,7 @@ public class MDNSProvisioningDiscover implements Runnable
     /**
      * List of <code>ProvisioningListener</code> that will be notified when a provisioning URL is retrieved.
      */
-    private List<DiscoveryListener> listeners = new ArrayList<>();
+    private final List<DiscoveryListener> listeners = new ArrayList<>();
 
     /**
      * Reference to JmDNS singleton.
@@ -54,15 +53,13 @@ public class MDNSProvisioningDiscover implements Runnable
     /**
      * Constructor.
      */
-    public MDNSProvisioningDiscover()
-    {
+    public MDNSProvisioningDiscover() {
     }
 
     /**
      * Thread entry point. It runs <code>discoverProvisioningURL</code> in a separate thread.
      */
-    public void run()
-    {
+    public void run() {
         String url = discoverProvisioningURL();
 
         if (url != null) {
@@ -81,13 +78,12 @@ public class MDNSProvisioningDiscover implements Runnable
      *
      * @return provisioning URL or null if no provisioning URL was discovered
      */
-    public String discoverProvisioningURL()
-    {
-        StringBuffer url = new StringBuffer();
+    public String discoverProvisioningURL() {
+        StringBuilder url = new StringBuilder();
         try {
             jmdns = JmDNS.create();
         } catch (IOException e) {
-            Timber.i(e, "Failed to create JmDNS");
+            Timber.i("Failed to create JmDNS: %s", e.getMessage());
             return null;
         }
 
@@ -115,7 +111,6 @@ public class MDNSProvisioningDiscover implements Runnable
                 url.append(tmp);
                 url.append("=");
                 url.append(info.getPropertyString(tmp));
-
                 if (en.hasMoreElements()) {
                     url.append("&");
                 }
@@ -126,9 +121,9 @@ public class MDNSProvisioningDiscover implements Runnable
             jmdns.close();
             jmdns = null;
         } catch (Exception e) {
-            Timber.w(e, "Failed to close JmDNS");
+            Timber.w("Failed to close JmDNS: %s", e.getMessage());
         }
-        return (url.toString().length() > 0) ? url.toString() : null;
+        return (url.length() > 0) ? url.toString() : null;
     }
 
     /**
@@ -136,8 +131,7 @@ public class MDNSProvisioningDiscover implements Runnable
      *
      * @param listener <code>ProvisioningListener</code> to add
      */
-    public void addDiscoveryListener(DiscoveryListener listener)
-    {
+    public void addDiscoveryListener(DiscoveryListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
@@ -148,10 +142,7 @@ public class MDNSProvisioningDiscover implements Runnable
      *
      * @param listener <code>ProvisioningListener</code> to add
      */
-    public void removeDiscoveryListener(DiscoveryListener listener)
-    {
-        if (listeners.contains(listener)) {
-            listeners.remove(listener);
-        }
+    public void removeDiscoveryListener(DiscoveryListener listener) {
+        listeners.remove(listener);
     }
 }

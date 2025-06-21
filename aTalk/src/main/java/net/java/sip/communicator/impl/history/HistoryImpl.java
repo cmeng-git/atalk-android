@@ -5,17 +5,6 @@
  */
 package net.java.sip.communicator.impl.history;
 
-import net.java.sip.communicator.service.history.History;
-import net.java.sip.communicator.service.history.HistoryID;
-import net.java.sip.communicator.service.history.HistoryReader;
-import net.java.sip.communicator.service.history.HistoryWriter;
-import net.java.sip.communicator.service.history.InteractiveHistoryReader;
-import net.java.sip.communicator.service.history.records.HistoryRecordStructure;
-
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.util.xml.XMLUtils;
-import org.w3c.dom.Document;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -27,6 +16,17 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import net.java.sip.communicator.service.history.History;
+import net.java.sip.communicator.service.history.HistoryID;
+import net.java.sip.communicator.service.history.HistoryReader;
+import net.java.sip.communicator.service.history.HistoryWriter;
+import net.java.sip.communicator.service.history.InteractiveHistoryReader;
+import net.java.sip.communicator.service.history.records.HistoryRecordStructure;
+
+import org.atalk.impl.timberlog.TimberLog;
+import org.atalk.util.xml.XMLUtils;
+import org.w3c.dom.Document;
+
 import timber.log.Timber;
 
 /**
@@ -34,20 +34,19 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class HistoryImpl implements History
-{
+public class HistoryImpl implements History {
     /**
      * The supported filetype.
      */
     public static final String SUPPORTED_FILETYPE = "xml";
 
-    private HistoryID id;
+    private final HistoryID id;
 
     private HistoryRecordStructure historyRecordStructure;
 
-    private HistoryServiceImpl historyServiceImpl;
+    private final HistoryServiceImpl historyServiceImpl;
 
-    private File directory;
+    private final File directory;
 
     private HistoryReader reader;
 
@@ -58,7 +57,7 @@ public class HistoryImpl implements History
 
     private HistoryWriter writer;
 
-    private SortedMap<String, Object> historyDocuments = new TreeMap<>();
+    private final SortedMap<String, Object> historyDocuments = new TreeMap<>();
 
     /**
      * Creates an instance of <code>HistoryImpl</code> by specifying the history identifier, the directory, the
@@ -69,14 +68,10 @@ public class HistoryImpl implements History
      * @param historyRecordStructure the structure
      * @param historyServiceImpl the parent history service
      */
-    protected HistoryImpl(HistoryID id, File directory, HistoryRecordStructure historyRecordStructure, HistoryServiceImpl historyServiceImpl)
-    {
-        // TODO: Assert: Assert.assertNonNull(historyServiceImpl, "The
-        // historyServiceImpl should be non-null.");
-        // TODO: Assert: Assert.assertNonNull(id, "The ID should be
-        // non-null.");
-        // TODO: Assert: Assert.assertNonNull(historyRecordStructure, "The
-        // structure should be non-null.");
+    protected HistoryImpl(HistoryID id, File directory, HistoryRecordStructure historyRecordStructure, HistoryServiceImpl historyServiceImpl) {
+        // TODO: Assert: Assert.assertNonNull(historyServiceImpl, "The historyServiceImpl should be non-null.");
+        // TODO: Assert: Assert.assertNonNull(id, "The ID should be non-null.");
+        // TODO: Assert: Assert.assertNonNull(historyRecordStructure, "The structure should be non-null.");
 
         this.id = id;
         this.directory = directory;
@@ -93,8 +88,7 @@ public class HistoryImpl implements History
      *
      * @return the identifier of this history
      */
-    public HistoryID getID()
-    {
+    public HistoryID getID() {
         return this.id;
     }
 
@@ -103,8 +97,7 @@ public class HistoryImpl implements History
      *
      * @return the current <code>HistoryRecordStructure</code>
      */
-    public HistoryRecordStructure getHistoryRecordsStructure()
-    {
+    public HistoryRecordStructure getHistoryRecordsStructure() {
         return this.historyRecordStructure;
     }
 
@@ -113,8 +106,7 @@ public class HistoryImpl implements History
      *
      * @param structure the new <code>HistoryRecordStructure</code> to use
      */
-    public void setHistoryRecordsStructure(HistoryRecordStructure structure)
-    {
+    public void setHistoryRecordsStructure(HistoryRecordStructure structure) {
         this.historyRecordStructure = structure;
 
         try {
@@ -126,8 +118,7 @@ public class HistoryImpl implements History
         }
     }
 
-    public HistoryReader getReader()
-    {
+    public HistoryReader getReader() {
         if (this.reader == null) {
             this.reader = new HistoryReaderImpl(this);
         }
@@ -141,27 +132,23 @@ public class HistoryImpl implements History
      *
      * @return an object that can be used to read and query this history
      */
-    public InteractiveHistoryReader getInteractiveReader()
-    {
+    public InteractiveHistoryReader getInteractiveReader() {
         if (interactiveReader == null)
             interactiveReader = new InteractiveHistoryReaderImpl(this);
         return interactiveReader;
     }
 
-    public HistoryWriter getWriter()
-    {
+    public HistoryWriter getWriter() {
         if (writer == null)
             writer = new HistoryWriterImpl(this);
         return writer;
     }
 
-    protected HistoryServiceImpl getHistoryServiceImpl()
-    {
+    protected HistoryServiceImpl getHistoryServiceImpl() {
         return this.historyServiceImpl;
     }
 
-    void reloadDocumentList()
-    {
+    void reloadDocumentList() {
         synchronized (this.historyDocuments) {
             this.historyDocuments.clear();
 
@@ -181,8 +168,7 @@ public class HistoryImpl implements History
         }
     }
 
-    protected Document createDocument(String filename)
-    {
+    protected Document createDocument(String filename) {
         Document retVal = null;
 
         synchronized (this.historyDocuments) {
@@ -201,8 +187,7 @@ public class HistoryImpl implements History
     }
 
     protected void writeFile(String filename)
-            throws InvalidParameterException, IOException
-    {
+            throws InvalidParameterException, IOException {
         File file = new File(this.directory, filename);
 
         synchronized (this.historyDocuments) {
@@ -223,8 +208,7 @@ public class HistoryImpl implements History
     }
 
     protected void writeFile(String filename, Document doc)
-            throws InvalidParameterException, IOException
-    {
+            throws InvalidParameterException, IOException {
         File file = new File(this.directory, filename);
 
         synchronized (this.historyDocuments) {
@@ -238,14 +222,12 @@ public class HistoryImpl implements History
         }
     }
 
-    protected Iterator<String> getFileList()
-    {
+    protected Iterator<String> getFileList() {
         return this.historyDocuments.keySet().iterator();
     }
 
     protected Document getDocumentForFile(String filename)
-            throws InvalidParameterException, RuntimeException
-    {
+            throws InvalidParameterException, RuntimeException {
         Document retVal = null;
 
         synchronized (this.historyDocuments) {
@@ -295,10 +277,10 @@ public class HistoryImpl implements History
      * Returns the fixed document as xml Document if file cannot be fixed return null
      *
      * @param file File the file trying to fix
+     *
      * @return Document the fixed doc
      */
-    public Document getFixedDocument(File file)
-    {
+    public Document getFixedDocument(File file) {
         Timber.i("Will try to fix file : %s", file);
         StringBuilder resultDocStr = new StringBuilder("<history>");
 
@@ -341,10 +323,10 @@ public class HistoryImpl implements History
      *
      * @param startingLine String
      * @param inReader BufferedReader
+     *
      * @return StringBuffer
      */
-    private StringBuffer getRecordNodeString(String startingLine, BufferedReader inReader)
-    {
+    private StringBuffer getRecordNodeString(String startingLine, BufferedReader inReader) {
         try {
             StringBuffer result = new StringBuffer(startingLine);
 
@@ -368,14 +350,14 @@ public class HistoryImpl implements History
      * Checks whether the given xml is valid
      *
      * @param str String
+     *
      * @return boolean
      */
-    private boolean isValidXML(String str)
-    {
+    private boolean isValidXML(String str) {
         try {
             this.historyServiceImpl.parse(new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception ex) {
-            Timber.e("not valid xml %s: %s",  str, ex.getMessage());
+            Timber.e("not valid xml %s: %s", str, ex.getMessage());
             return false;
         }
 

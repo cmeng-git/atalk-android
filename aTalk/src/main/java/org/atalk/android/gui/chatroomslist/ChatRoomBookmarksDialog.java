@@ -268,7 +268,6 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
 
                             try {
                                 EntityBareJid entityBareJid = JidCreate.entityBareFrom(chatRoom);
-
                                 bookmarkConference = new BookmarkConference(name, entityBareJid, isAutoJoin,
                                         Resourcepart.from(nickName), "");
                                 bookmarkConference.setBookmark(false);

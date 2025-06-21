@@ -86,8 +86,8 @@ public class OpenGLContext {
      */
     public void release() {
         if (mEGLDisplay != EGL14.EGL_NO_DISPLAY) {
-            // Android is unusual in that it uses a reference-counted EGLDisplay.  So for
-            // every eglInitialize() we need an eglTerminate().
+            // Android is unusual in that it uses a reference-counted EGLDisplay.
+            // So for every eglInitialize() we need an eglTerminate().
             EGL14.eglMakeCurrent(mEGLDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT);
             EGL14.eglDestroySurface(mEGLDisplay, mEGLSurface);
             EGL14.eglDestroyContext(mEGLDisplay, mEGLContext);

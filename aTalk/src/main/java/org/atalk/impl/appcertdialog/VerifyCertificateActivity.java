@@ -66,7 +66,7 @@ public class VerifyCertificateActivity extends BaseActivity
 
         setContentView(R.layout.verify_certificate);
         TextView msgView = findViewById(R.id.message);
-        msgView.setText(Html.fromHtml(certDialog.getMsg()));
+        msgView.setText(Html.fromHtml(certDialog.getMsg(), Html.FROM_HTML_MODE_LEGACY));
         setTitle(certDialog.getTitle());
     }
 

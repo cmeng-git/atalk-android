@@ -5,8 +5,6 @@
  */
 package net.java.sip.communicator.plugin.notificationwiring;
 
-import static android.text.Html.FROM_HTML_MODE_LEGACY;
-
 import android.text.Html;
 
 import androidx.fragment.app.Fragment;
@@ -1355,7 +1353,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         try {
             int messageTitleKey;
             // Android notification cannot support html tags
-            String message = Html.fromHtml(evt.getI18nMessage(), FROM_HTML_MODE_LEGACY).toString();
+            String message = Html.fromHtml(evt.getI18nMessage(), Html.FROM_HTML_MODE_LEGACY).toString();
 
             switch (evt.getEventSeverity()) {
                 // Don't play alert sound for Info or warning.

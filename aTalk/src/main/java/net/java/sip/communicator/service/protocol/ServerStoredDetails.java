@@ -5,14 +5,14 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The ServerStoredDetails class contains a relatively large set of details that various protocols
@@ -50,14 +50,12 @@ import java.util.TimeZone;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class ServerStoredDetails
-{
+public class ServerStoredDetails {
     /**
      * A generic detail used as the root of all other server stored details. This class should be extended
      * or instantiated by implementors with the purpose of representing details not defined here.
      */
-    public static class GenericDetail
-    {
+    public static class GenericDetail {
         protected String detailDisplayName;
         protected Object value;
 
@@ -68,8 +66,7 @@ public class ServerStoredDetails
          * detail
          * @param value the value of the detail.
          */
-        public GenericDetail(String detailDisplayName, Object value)
-        {
+        public GenericDetail(String detailDisplayName, Object value) {
             this.detailDisplayName = detailDisplayName;
             this.value = value;
         }
@@ -79,8 +76,7 @@ public class ServerStoredDetails
          *
          * @return the value of the detail.
          */
-        public Object getDetailValue()
-        {
+        public Object getDetailValue() {
             return value;
         }
 
@@ -90,8 +86,7 @@ public class ServerStoredDetails
          *
          * @return the detail's display (descriptive) name.
          */
-        public String getDetailDisplayName()
-        {
+        public String getDetailDisplayName() {
             return detailDisplayName;
         }
 
@@ -101,8 +96,7 @@ public class ServerStoredDetails
          * @return a String representation of the detail using both its value and display name.
          */
         @Override
-        public String toString()
-        {
+        public String toString() {
             return value == null ? "" : value.toString();
         }
 
@@ -110,12 +104,12 @@ public class ServerStoredDetails
          * Compares two GenericDetails according their DetailDisplayName and Value
          *
          * @param obj Object expected GenericDetail otherwise return false
+         *
          * @return <code>true</code> if this object has the same display name and value as <code>obj</code>
          * and false otherwise
          */
         @Override
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (!(obj instanceof GenericDetail))
                 return false;
 
@@ -135,8 +129,7 @@ public class ServerStoredDetails
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return Objects.hash(detailDisplayName, value);
         }
     }
@@ -145,15 +138,12 @@ public class ServerStoredDetails
      * A generic detail that should be used (extended) when representing details with a String
      * content.
      */
-    public static class StringDetail extends GenericDetail
-    {
-        public StringDetail(String detailDisplayName, String value)
-        {
+    public static class StringDetail extends GenericDetail {
+        public StringDetail(String detailDisplayName, String value) {
             super(detailDisplayName, value);
         }
 
-        public String getString()
-        {
+        public String getString() {
             return (String) value;
         }
     }
@@ -163,16 +153,13 @@ public class ServerStoredDetails
     /**
      * A detail representing an address (street and street/house number).
      */
-    public static class AddressDetail extends StringDetail
-    {
-        public AddressDetail(String address)
-        {
+    public static class AddressDetail extends StringDetail {
+        public AddressDetail(String address) {
             super("Address", address);
 
         }
 
-        public String getAddress()
-        {
+        public String getAddress() {
             return getString();
         }
     }
@@ -180,10 +167,8 @@ public class ServerStoredDetails
     /**
      * A detail representing a street name and number associated with a work address.
      */
-    public static class WorkAddressDetail extends AddressDetail
-    {
-        public WorkAddressDetail(String address)
-        {
+    public static class WorkAddressDetail extends AddressDetail {
+        public WorkAddressDetail(String address) {
             super(address);
         }
     }
@@ -191,15 +176,12 @@ public class ServerStoredDetails
     /**
      * A City name associated with a (home) address.
      */
-    public static class CityDetail extends StringDetail
-    {
-        public CityDetail(String cityName)
-        {
+    public static class CityDetail extends StringDetail {
+        public CityDetail(String cityName) {
             super("City", cityName);
         }
 
-        public String getCity()
-        {
+        public String getCity() {
             return getString();
         }
     }
@@ -207,10 +189,8 @@ public class ServerStoredDetails
     /**
      * A City name associated with a work address.
      */
-    public static class WorkCityDetail extends CityDetail
-    {
-        public WorkCityDetail(String cityName)
-        {
+    public static class WorkCityDetail extends CityDetail {
+        public WorkCityDetail(String cityName) {
             super(cityName);
         }
     }
@@ -218,15 +198,12 @@ public class ServerStoredDetails
     /**
      * The name of a state/province/region associated with a (home) address.
      */
-    public static class ProvinceDetail extends StringDetail
-    {
-        public ProvinceDetail(String province)
-        {
+    public static class ProvinceDetail extends StringDetail {
+        public ProvinceDetail(String province) {
             super("Region/Province/State", province);
         }
 
-        public String getProvince()
-        {
+        public String getProvince() {
             return getString();
         }
     }
@@ -234,10 +211,8 @@ public class ServerStoredDetails
     /**
      * The name of a state/province/region associated with a work address.
      */
-    public static class WorkProvinceDetail extends ProvinceDetail
-    {
-        public WorkProvinceDetail(String workProvince)
-        {
+    public static class WorkProvinceDetail extends ProvinceDetail {
+        public WorkProvinceDetail(String workProvince) {
             super(workProvince);
         }
     }
@@ -245,15 +220,12 @@ public class ServerStoredDetails
     /**
      * A postal or ZIP code associated with a (home) address.
      */
-    public static class PostalCodeDetail extends StringDetail
-    {
-        public PostalCodeDetail(String postalCode)
-        {
+    public static class PostalCodeDetail extends StringDetail {
+        public PostalCodeDetail(String postalCode) {
             super("Postal/Zip Code", postalCode);
         }
 
-        public String getPostalCode()
-        {
+        public String getPostalCode() {
             return getString();
         }
     }
@@ -261,31 +233,25 @@ public class ServerStoredDetails
     /**
      * A postal or ZIP code associated with a work address.
      */
-    public static class WorkPostalCodeDetail extends PostalCodeDetail
-    {
-        public WorkPostalCodeDetail(String postalCode)
-        {
+    public static class WorkPostalCodeDetail extends PostalCodeDetail {
+        public WorkPostalCodeDetail(String postalCode) {
             super(postalCode);
         }
     }
 
     // ------------------------------ LOCALE DETAILS --------------------------------
-
     /**
      * A generic detail that should be used (extended) when representing details that have anything
      * to do with locales (countries, languages, etc). Most of the locales field could be ignored
      * when extending the class. When representing a country for example we'd only be using the
      * fields concerning the country.
      */
-    public static class LocaleDetail extends GenericDetail
-    {
-        public LocaleDetail(String detailDisplayName, Locale locale)
-        {
+    public static class LocaleDetail extends GenericDetail {
+        public LocaleDetail(String detailDisplayName, Locale locale) {
             super(detailDisplayName, locale);
         }
 
-        public Locale getLocale()
-        {
+        public Locale getLocale() {
             return (Locale) getDetailValue();
         }
     }
@@ -293,21 +259,17 @@ public class ServerStoredDetails
     /**
      * A detail representing a country of residence for the corresponding subject.
      */
-    public static class CountryDetail extends LocaleDetail
-    {
-        public CountryDetail(Locale locale)
-        {
+    public static class CountryDetail extends LocaleDetail {
+        public CountryDetail(Locale locale) {
             super("Country", locale);
         }
 
-        public CountryDetail(String country)
-        {
+        public CountryDetail(String country) {
             super("Country", null);
             value = country;
         }
 
-        public Locale getLocale()
-        {
+        public Locale getLocale() {
             if (value instanceof Locale)
                 return (Locale) value;
             else
@@ -318,15 +280,12 @@ public class ServerStoredDetails
     /**
      * The name of a country associated with a work address.
      */
-    public static class WorkCountryDetail extends CountryDetail
-    {
-        public WorkCountryDetail(Locale locale)
-        {
+    public static class WorkCountryDetail extends CountryDetail {
+        public WorkCountryDetail(Locale locale) {
             super(locale);
         }
 
-        public WorkCountryDetail(String country)
-        {
+        public WorkCountryDetail(String country) {
             super(country);
         }
     }
@@ -336,10 +295,8 @@ public class ServerStoredDetails
     /**
      * A locale detail indicating a language spoken by the corresponding Contact.
      */
-    public static class SpokenLanguageDetail extends LocaleDetail
-    {
-        public SpokenLanguageDetail(Locale language)
-        {
+    public static class SpokenLanguageDetail extends LocaleDetail {
+        public SpokenLanguageDetail(Locale language) {
             super("Language", language);
         }
     }
@@ -349,15 +306,12 @@ public class ServerStoredDetails
     /**
      * A generic detail used for representing a (personal) phone number.
      */
-    public static class PhoneNumberDetail extends StringDetail
-    {
-        public PhoneNumberDetail(String number)
-        {
+    public static class PhoneNumberDetail extends StringDetail {
+        public PhoneNumberDetail(String number) {
             super("Phone", number);
         }
 
-        public String getNumber()
-        {
+        public String getNumber() {
             return getString();
         }
     }
@@ -365,10 +319,8 @@ public class ServerStoredDetails
     /**
      * A detail used for representing a work phone number.
      */
-    public static class WorkPhoneDetail extends PhoneNumberDetail
-    {
-        public WorkPhoneDetail(String workPhone)
-        {
+    public static class WorkPhoneDetail extends PhoneNumberDetail {
+        public WorkPhoneDetail(String workPhone) {
             super(workPhone);
             super.detailDisplayName = "Work Phone";
         }
@@ -377,10 +329,8 @@ public class ServerStoredDetails
     /**
      * A detail used for representing a (personal) mobile phone number.
      */
-    public static class MobilePhoneDetail extends PhoneNumberDetail
-    {
-        public MobilePhoneDetail(String privateMobile)
-        {
+    public static class MobilePhoneDetail extends PhoneNumberDetail {
+        public MobilePhoneDetail(String privateMobile) {
             super(privateMobile);
             super.detailDisplayName = "Mobile Phone";
         }
@@ -389,10 +339,8 @@ public class ServerStoredDetails
     /**
      * A detail used for representing a work mobile phone number.
      */
-    public static class WorkMobilePhoneDetail extends MobilePhoneDetail
-    {
-        public WorkMobilePhoneDetail(String workMobile)
-        {
+    public static class WorkMobilePhoneDetail extends MobilePhoneDetail {
+        public WorkMobilePhoneDetail(String workMobile) {
             super(workMobile);
         }
     }
@@ -400,10 +348,8 @@ public class ServerStoredDetails
     /**
      * A Fax number.
      */
-    public static class FaxDetail extends PhoneNumberDetail
-    {
-        public FaxDetail(String number)
-        {
+    public static class FaxDetail extends PhoneNumberDetail {
+        public FaxDetail(String number) {
             super(number);
             super.detailDisplayName = "Fax";
         }
@@ -412,10 +358,8 @@ public class ServerStoredDetails
     /**
      * A detail used for representing a video phone number.
      */
-    public static class VideoDetail extends PhoneNumberDetail
-    {
-        public VideoDetail(String number)
-        {
+    public static class VideoDetail extends PhoneNumberDetail {
+        public VideoDetail(String number) {
             super(number);
             super.detailDisplayName = "Video";
         }
@@ -424,10 +368,8 @@ public class ServerStoredDetails
     /**
      * A detail used for representing a work video phone number.
      */
-    public static class WorkVideoDetail extends VideoDetail
-    {
-        public WorkVideoDetail(String number)
-        {
+    public static class WorkVideoDetail extends VideoDetail {
+        public WorkVideoDetail(String number) {
             super(number);
         }
     }
@@ -435,10 +377,8 @@ public class ServerStoredDetails
     /**
      * A Pager number.
      */
-    public static class PagerDetail extends PhoneNumberDetail
-    {
-        public PagerDetail(String number)
-        {
+    public static class PagerDetail extends PhoneNumberDetail {
+        public PagerDetail(String number) {
             super(number);
             super.detailDisplayName = "Pager";
         }
@@ -449,16 +389,13 @@ public class ServerStoredDetails
     /**
      * A generic detail representing any url
      */
-    public static class URLDetail extends GenericDetail
-    {
-        public URLDetail(String name, Object url)
-        {
+    public static class URLDetail extends GenericDetail {
+        public URLDetail(String name, Object url) {
             super(name, url);
         }
 
 
-        public Object getURL()
-        {
+        public Object getURL() {
             return getDetailValue();
         }
 
@@ -466,12 +403,12 @@ public class ServerStoredDetails
          * Compares two URLDetails according their name and URLs
          *
          * @param obj Object expected URLDetail otherwise return false
+         *
          * @return <code>true</code> if this object has the same name and URL value as <code>obj</code> and
          * false otherwise
          */
         @Override
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (!(obj instanceof URLDetail))
                 return false;
 
@@ -498,10 +435,8 @@ public class ServerStoredDetails
     /**
      * A personal web page.
      */
-    public static class WebPageDetail extends URLDetail
-    {
-        public WebPageDetail(URL url)
-        {
+    public static class WebPageDetail extends URLDetail {
+        public WebPageDetail(URL url) {
             super("Web Page", url);
         }
     }
@@ -509,10 +444,8 @@ public class ServerStoredDetails
     /**
      * A web page associated with the subject's principal occupation (work).
      */
-    public static class WorkPageDetail extends WebPageDetail
-    {
-        public WorkPageDetail(URL url)
-        {
+    public static class WorkPageDetail extends WebPageDetail {
+        public WorkPageDetail(URL url) {
             super(url);
         }
     }
@@ -522,15 +455,12 @@ public class ServerStoredDetails
     /**
      * A generic detail used for representing binary content such as photos logos, avatars ....
      */
-    public static class BinaryDetail extends GenericDetail
-    {
-        public BinaryDetail(String displayDetailName, byte[] bytes)
-        {
+    public static class BinaryDetail extends GenericDetail {
+        public BinaryDetail(String displayDetailName, byte[] bytes) {
             super(displayDetailName, bytes);
         }
 
-        public byte[] getBytes()
-        {
+        public byte[] getBytes() {
             return (byte[]) getDetailValue();
         }
 
@@ -539,12 +469,12 @@ public class ServerStoredDetails
          * their getBytes() methods.
          *
          * @param obj Object expected BinaryDetail otherwise return false
+         *
          * @return <code>true</code> if this object has the same display name and value as <code>obj</code>
          * and false otherwise
          */
         @Override
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (!(obj instanceof BinaryDetail))
                 return false;
 
@@ -571,10 +501,8 @@ public class ServerStoredDetails
     /**
      * A detail containing any contact related images.
      */
-    public static class ImageDetail extends BinaryDetail
-    {
-        public ImageDetail(String detailDisplayName, byte[] image)
-        {
+    public static class ImageDetail extends BinaryDetail {
+        public ImageDetail(String detailDisplayName, byte[] image) {
             super(detailDisplayName, image);
         }
     }
@@ -584,15 +512,12 @@ public class ServerStoredDetails
     /**
      * A generic detail representing any kind of name.
      */
-    public static class NameDetail extends StringDetail
-    {
-        public NameDetail(String detailDisplayName, String name)
-        {
+    public static class NameDetail extends StringDetail {
+        public NameDetail(String detailDisplayName, String name) {
             super(detailDisplayName, name);
         }
 
-        public String getName()
-        {
+        public String getName() {
             return getString();
         }
     }
@@ -601,10 +526,8 @@ public class ServerStoredDetails
      * The name of the organization (company, ngo, university, hospital or other) employing the
      * corresponding contact.
      */
-    public static class WorkOrganizationNameDetail extends NameDetail
-    {
-        public WorkOrganizationNameDetail(String workOrganizationName)
-        {
+    public static class WorkOrganizationNameDetail extends NameDetail {
+        public WorkOrganizationNameDetail(String workOrganizationName) {
             super("Work Organization Name", workOrganizationName);
         }
     }
@@ -612,10 +535,8 @@ public class ServerStoredDetails
     /**
      * A first, given name.
      */
-    public static class FirstNameDetail extends NameDetail
-    {
-        public FirstNameDetail(String firstName)
-        {
+    public static class FirstNameDetail extends NameDetail {
+        public FirstNameDetail(String firstName) {
             super("First Name", firstName);
         }
     }
@@ -623,10 +544,8 @@ public class ServerStoredDetails
     /**
      * A Middle (father's) name.
      */
-    public static class MiddleNameDetail extends NameDetail
-    {
-        public MiddleNameDetail(String middleName)
-        {
+    public static class MiddleNameDetail extends NameDetail {
+        public MiddleNameDetail(String middleName) {
             super("Middle Name", middleName);
         }
     }
@@ -634,10 +553,8 @@ public class ServerStoredDetails
     /**
      * A last (family) name.
      */
-    public static class LastNameDetail extends NameDetail
-    {
-        public LastNameDetail(String lastName)
-        {
+    public static class LastNameDetail extends NameDetail {
+        public LastNameDetail(String lastName) {
             super("Last Name", lastName);
         }
     }
@@ -645,10 +562,8 @@ public class ServerStoredDetails
     /**
      * The name that should be displayed to identify the information author.
      */
-    public static class DisplayNameDetail extends NameDetail
-    {
-        public DisplayNameDetail(String name)
-        {
+    public static class DisplayNameDetail extends NameDetail {
+        public DisplayNameDetail(String name) {
             super("Display Name", name);
         }
     }
@@ -656,10 +571,8 @@ public class ServerStoredDetails
     /**
      * An informal name (nickname) used for referring to the subject.
      */
-    public static class NicknameDetail extends NameDetail
-    {
-        public NicknameDetail(String name)
-        {
+    public static class NicknameDetail extends NameDetail {
+        public NicknameDetail(String name) {
             super("Nickname", name);
         }
     }
@@ -668,13 +581,11 @@ public class ServerStoredDetails
      * A bi-state detail indicating a gender. Constructor is private and the only possible instances
      * are GenderDetail.MALE and GenderDetail.FEMALE construction.
      */
-    public static class GenderDetail extends StringDetail
-    {
+    public static class GenderDetail extends StringDetail {
         public static final GenderDetail MALE = new GenderDetail("Male");
         public static final GenderDetail FEMALE = new GenderDetail("Female");
 
-        public GenderDetail(String gender)
-        {
+        public GenderDetail(String gender) {
             super("Gender", gender);
         }
 
@@ -683,8 +594,7 @@ public class ServerStoredDetails
          *
          * @return a String with a "Male" or "Female" contents
          */
-        public String getGender()
-        {
+        public String getGender() {
             return getString();
         }
     }
@@ -696,15 +606,12 @@ public class ServerStoredDetails
      * support separate fields for year, month, day and time, or even age should try their best to
      * convert to a date (setting to 0 all unknown details).
      */
-    public static class CalendarDetail extends GenericDetail
-    {
-        public CalendarDetail(String detailDisplayName, Object date)
-        {
+    public static class CalendarDetail extends GenericDetail {
+        public CalendarDetail(String detailDisplayName, Object date) {
             super(detailDisplayName, date);
         }
 
-        public Object getCalendar()
-        {
+        public Object getCalendar() {
             return getDetailValue();
         }
     }
@@ -712,10 +619,8 @@ public class ServerStoredDetails
     /**
      * A complete birth date.
      */
-    public static class BirthDateDetail extends CalendarDetail
-    {
-        public BirthDateDetail(Object date)
-        {
+    public static class BirthDateDetail extends CalendarDetail {
+        public BirthDateDetail(Object date) {
             super("Birth Date", date);
         }
 
@@ -723,11 +628,11 @@ public class ServerStoredDetails
          * Compares two BirthDateDetails according to their Calender's year, month and day.
          *
          * @param obj Object expected BirthDateDetail otherwise return false
+         *
          * @return <code>true</code> if this object has the same value as <code>obj</code> and false otherwise
          */
         @Override
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (!(obj instanceof BirthDateDetail))
                 return false;
 
@@ -764,15 +669,12 @@ public class ServerStoredDetails
      * A generic detail meant to represent the time zone associated with the corresponding contact
      * and that could be extended to represent other time zone related details.
      */
-    public static class TimeZoneDetail extends GenericDetail
-    {
-        public TimeZoneDetail(String displayDetailName, TimeZone timeZone)
-        {
+    public static class TimeZoneDetail extends GenericDetail {
+        public TimeZoneDetail(String displayDetailName, TimeZone timeZone) {
             super(displayDetailName, timeZone);
         }
 
-        public TimeZone getTimeZone()
-        {
+        public TimeZone getTimeZone() {
             return (TimeZone) getDetailValue();
         }
     }
@@ -782,20 +684,16 @@ public class ServerStoredDetails
     /**
      * Represents a (personal) email address.
      */
-    public static class EmailAddressDetail extends StringDetail
-    {
-        public EmailAddressDetail(String value)
-        {
+    public static class EmailAddressDetail extends StringDetail {
+        public EmailAddressDetail(String value) {
             this("e-mail", value);
         }
 
-        protected EmailAddressDetail(String detailDisplayName, String value)
-        {
+        protected EmailAddressDetail(String detailDisplayName, String value) {
             super(detailDisplayName, value);
         }
 
-        public String getEMailAddress()
-        {
+        public String getEMailAddress() {
             return getString();
         }
     }
@@ -803,10 +701,8 @@ public class ServerStoredDetails
     /**
      * Represents a (personal) email address.
      */
-    public static class WorkEmailAddressDetail extends EmailAddressDetail
-    {
-        public WorkEmailAddressDetail(String value)
-        {
+    public static class WorkEmailAddressDetail extends EmailAddressDetail {
+        public WorkEmailAddressDetail(String value) {
             super("Work e-mail", value);
         }
     }
@@ -816,15 +712,12 @@ public class ServerStoredDetails
     /**
      * Represents a personal interest or hobby.
      */
-    public static class InterestDetail extends StringDetail
-    {
-        public InterestDetail(String value)
-        {
+    public static class InterestDetail extends StringDetail {
+        public InterestDetail(String value) {
             super("Interest", value);
         }
 
-        public String getInterest()
-        {
+        public String getInterest() {
             return getString();
         }
     }
@@ -834,15 +727,12 @@ public class ServerStoredDetails
     /**
      * A generic detail that should be used (extended) when representing any numbers.
      */
-    public static class NumberDetail extends GenericDetail
-    {
-        public NumberDetail(String detailName, java.math.BigDecimal value)
-        {
+    public static class NumberDetail extends GenericDetail {
+        public NumberDetail(String detailName, java.math.BigDecimal value) {
             super(detailName, value);
         }
 
-        public java.math.BigDecimal getNumber()
-        {
+        public java.math.BigDecimal getNumber() {
             return (java.math.BigDecimal) getDetailValue();
         }
     }
@@ -852,15 +742,12 @@ public class ServerStoredDetails
     /**
      * A generic detail that should be used (extended) when representing any boolean values.
      */
-    public static class BooleanDetail extends GenericDetail
-    {
-        public BooleanDetail(String detailName, boolean value)
-        {
+    public static class BooleanDetail extends GenericDetail {
+        public BooleanDetail(String detailName, boolean value) {
             super(detailName, value);
         }
 
-        public boolean getBoolean()
-        {
+        public boolean getBoolean() {
             return (Boolean) getDetailValue();
         }
     }
@@ -870,10 +757,8 @@ public class ServerStoredDetails
     /**
      * A job title.
      */
-    public static class JobTitleDetail extends StringDetail
-    {
-        public JobTitleDetail(String jobTitle)
-        {
+    public static class JobTitleDetail extends StringDetail {
+        public JobTitleDetail(String jobTitle) {
             super("Job Title", jobTitle);
         }
     }
@@ -881,10 +766,8 @@ public class ServerStoredDetails
     /**
      * Represents a (personal) "about me" short description.
      */
-    public static class AboutMeDetail extends StringDetail
-    {
-        public AboutMeDetail(String description)
-        {
+    public static class AboutMeDetail extends StringDetail {
+        public AboutMeDetail(String description) {
             super("Description", description);
         }
     }

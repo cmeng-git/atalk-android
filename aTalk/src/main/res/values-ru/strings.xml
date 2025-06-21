@@ -1052,7 +1052,7 @@
     <string name="provisioning_manual">Вручную укажите URI инициализации</string>
     <string name="provisioning_method">Метод предоставления</string>
     <string name="provisioning_failed">Ошибка предоставления</string>
-    <string name="provisioning_failed_message">&lt;html&gt;Произошла неудача. %1$s!&lt;br/&gt;Повторите попытку позже или обратитесь к своему администратору.&lt;/html&gt;</string>
+    <string name="provisioning_failed_message">Произошла неудача. %1$s!/nПовторите попытку позже или обратитесь к своему администратору.</string>
     <string name="provisioning">Предоставление</string>
     <string name="provisioning_summary">Настроить параметры настройки</string>
     <string name="provisioning_remove_credentials_message">Вы действительно хотите удалить пароль для обеспечения безопасности?</string>

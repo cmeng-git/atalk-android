@@ -464,7 +464,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             }
             quotedMessage = aTalkApp.getResString(R.string.chat_reply_quote,
                     replyMessage.getSender(), body);
-            chatMessageReply.setText(Html.fromHtml(quotedMessage, imageGetter, null));
+            chatMessageReply.setText(Html.fromHtml(quotedMessage, Html.FROM_HTML_MODE_LEGACY, imageGetter, null));
         }
         else {
             quotedMessage = null;

@@ -222,6 +222,7 @@ public class CryptoFragment extends BaseFragment
         // Initialize the padlock icon only after the Crypto menu is created
         doInit();
     }
+
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         boolean hasChange = false;

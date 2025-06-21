@@ -10,14 +10,14 @@
         <org.atalk.android.gui.settings.widget.ConfigListPreference
             android:entries="@array/pref_provisioning_method"
             android:entryValues="@array/pref_provisioning_method_values"
-            android:key="pref.key.provisioning_METHOD"
+            android:key="plugin.provisioning.METHOD"
             android:title="@string/provisioning_method"
             custom:disableDependentsValue="Manual"
             custom:disableOnNotEqualValue="true" />
 
         <org.atalk.android.gui.settings.widget.ConfigEditText
-            android:dependency="pref.key.provisioning_METHOD"
-            android:key="pref.key.provisioning_URL"
+            android:dependency="plugin.provisioning.METHOD"
+            android:key="plugin.provisioning.URL"
             android:title="@string/provisioning_manual" />
 
         <org.atalk.android.gui.settings.widget.ConfigEditText
@@ -31,19 +31,17 @@
         android:title="@string/provisioning_credentials">
 
         <org.atalk.android.gui.settings.widget.ConfigEditText
-            android:key="plugin.provisioning.auth.USERNAME"
-            android:title="@string/username_"
-            custom:editable="false" />
+            android:key="plugin.provisioning.USERNAME"
+            android:title="@string/username_" />
 
-        <org.atalk.android.gui.settings.widget.ConfigEditText
+        <EditTextPreference
             android:inputType="textPassword"
-            android:key="plugin.provisioning.auth"
-            android:title="@string/password_"
-            custom:editable="false" />
+            android:key="plugin.provisioning.PASSWORD"
+            android:title="@string/password_" />
 
         <Preference
-            android:enabled="false"
-            android:key="pref.key.provisioning.forget_password"
-            android:title="@string/provisioning_forget_password" />
+            android:key="pref.key.provisioning.FORGET_PASSWORD"
+            android:title="@string/provisioning_forget_password"
+            android:layout="@layout/style_pref_button"/>
     </PreferenceCategory>
 </PreferenceScreen>

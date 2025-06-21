@@ -5,34 +5,16 @@
  */
 package org.atalk.service.version;
 
+import androidx.annotation.NonNull;
+
 /**
  * Contains version information of the aTalk instance that we're currently running.
  *
  * @author Emil Ivov
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public interface Version extends Comparable<Version> {
-    /**
-     * The name of the <code>System</code> property the value of which is equal to the value of
-     * {@link #getApplicationName()}. Expected to be set by implementers of the
-     * <code>VersionService</code> and <code>Version</code> interfaces.
-     */
-    String PNAME_APPLICATION_NAME = "sip-communicator.application.name";
-
-    /**
-     * The name of the <code>System</code> property the value of which is equal to the value of
-     * {@link #toString()}. Expected to be set by implementers of the <code>VersionService</code> and
-     * <code>Version</code>  interfaces.
-     */
-    String PNAME_APPLICATION_VERSION = "sip-communicator.version";
-
-    /**
-     * Returns the version major of the current Jitsi version. In an example 2.3.1 version string
-     * 2 is the version major. The version major number changes when a relatively extensive set
-     * of new features and possibly re-architecturing have been applied to the aTalk.
-     *
-     * @return the version major integer.
-     */
     int getVersionMajor();
 
     /**
@@ -104,18 +86,12 @@ public interface Version extends Comparable<Version> {
     boolean equals(Object version);
 
     /**
-     * Returns the name of the application that we're currently running. Default MUST be aTalk.
-     *
-     * @return the name of the application that we're currently running. Default MUST be aTalk.
-     */
-    String getApplicationName();
-
-    /**
      * Returns a String representation of this Version instance. If you'd just like to obtain the
      * version of Jitsi so that you could display it (e.g. in a Help->About dialog) then all you
      * need is calling this method.
      *
      * @return a major.minor[.build] String containing the complete Jitsi version.
      */
+    @NonNull
     String toString();
 }

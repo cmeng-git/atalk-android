@@ -15,14 +15,6 @@
  */
 package net.java.sip.communicator.impl.provdisc.dhcp;
 
-import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
-import net.java.sip.communicator.service.provdisc.event.DiscoveryEvent;
-import net.java.sip.communicator.service.provdisc.event.DiscoveryListener;
-
-import org.dhcp4java.DHCPConstants;
-import org.dhcp4java.DHCPOption;
-import org.dhcp4java.DHCPPacket;
-
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Inet4Address;
@@ -34,6 +26,14 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Random;
 
+import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
+import net.java.sip.communicator.service.provdisc.event.DiscoveryEvent;
+import net.java.sip.communicator.service.provdisc.event.DiscoveryListener;
+
+import org.dhcp4java.DHCPConstants;
+import org.dhcp4java.DHCPOption;
+import org.dhcp4java.DHCPPacket;
+
 import timber.log.Timber;
 
 /**
@@ -42,8 +42,7 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class DHCPProvisioningDiscover implements Runnable
-{
+public class DHCPProvisioningDiscover implements Runnable {
     /**
      * DHCP socket timeout (in milliseconds).
      */
@@ -62,12 +61,12 @@ public class DHCPProvisioningDiscover implements Runnable
     /**
      * Listening port of the client. Note that the socket will send packet to DHCP server on port - 1.
      */
-    private final int port;
+    private final int mPort;
 
     /**
      * Option code of the specific provisioning option.
      */
-    private final byte option;
+    private final byte mOption;
 
     /**
      * List of <code>ProvisioningListener</code> that will be notified when a provisioning URL is retrieved.
@@ -79,16 +78,16 @@ public class DHCPProvisioningDiscover implements Runnable
      *
      * @param port port on which we will bound and listen for DHCP response
      * @param option code of the specific provisioning option
+     *
      * @throws Exception if anything goes wrong during initialization
      */
     public DHCPProvisioningDiscover(int port, byte option)
-            throws Exception
-    {
-        this.port = port;
-        this.option = option;
+            throws Exception {
+        mPort = port;
+        mOption = option;
+        xid = new Random().nextInt();
 
         socket = new DatagramSocket(port);
-        xid = new Random().nextInt();
 
         /*
          * set timeout so that we will not blocked forever if we have no response from DHCP server
@@ -102,8 +101,7 @@ public class DHCPProvisioningDiscover implements Runnable
      *
      * @return provisioning URL
      */
-    public String discoverProvisioningURL()
-    {
+    public String discoverProvisioningURL() {
         DHCPPacket inform = new DHCPPacket();
         byte[] macAddress;
         byte[] zeroIPAddress = {0x00, 0x00, 0x00, 0x00};
@@ -122,11 +120,11 @@ public class DHCPProvisioningDiscover implements Runnable
             inform.setYiaddr(InetAddress.getByAddress(zeroIPAddress));
             inform.setSiaddr(InetAddress.getByAddress(zeroIPAddress));
             inform.setGiaddr(InetAddress.getByAddress(zeroIPAddress));
-            //inform.setChaddr(macAddress);
+            // inform.setChaddr(macAddress);
             inform.setDhcp(true);
             inform.setDHCPMessageType(DHCPConstants.DHCPINFORM);
 
-            dhcpOpts[0] = new DHCPOption(DHCPConstants.DHO_DHCP_PARAMETER_REQUEST_LIST, new byte[]{option});
+            dhcpOpts[0] = new DHCPOption(DHCPConstants.DHO_DHCP_PARAMETER_REQUEST_LIST, new byte[]{mOption});
             inform.setOptions(dhcpOpts);
             Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
 
@@ -150,7 +148,7 @@ public class DHCPProvisioningDiscover implements Runnable
 
                             byte[] msg = p.serialize();
                             DatagramPacket pkt = new DatagramPacket(msg,
-                                    msg.length, InetAddress.getByAddress(broadcastIPAddr), port - 1);
+                                    msg.length, InetAddress.getByAddress(broadcastIPAddr), mPort - 1);
 
                             DHCPTransaction transaction = new DHCPTransaction(socket, pkt);
                             transaction.schedule();
@@ -175,14 +173,12 @@ public class DHCPProvisioningDiscover implements Runnable
                      */
                     socket.receive(pkt2);
                     DHCPPacket dhcp = DHCPPacket.getPacket(pkt2);
-
                     if (dhcp.getXid() != xid) {
                         continue;
                     }
 
-                    DHCPOption optProvisioning = dhcp.getOption(option);
-
                     /* notify */
+                    DHCPOption optProvisioning = dhcp.getOption(mOption);
                     if (optProvisioning != null) {
                         found = true;
                         for (DHCPTransaction t : transactions) {
@@ -192,10 +188,10 @@ public class DHCPProvisioningDiscover implements Runnable
                     }
                 }
             } catch (SocketTimeoutException est) {
-                Timber.w(est, "Timeout, no DHCP answer received");
+                Timber.w("Timeout, no DHCP answer received: %s", est.getMessage());
             }
         } catch (Exception e) {
-            Timber.w(e, "Exception occurred during DHCP discover");
+            Timber.w("Exception occurred during DHCP discover: %s", e.getMessage());
         }
 
         for (DHCPTransaction t : transactions) {
@@ -207,8 +203,7 @@ public class DHCPProvisioningDiscover implements Runnable
     /**
      * Thread entry point. It runs <code>discoverProvisioningURL</code> in a separate thread.
      */
-    public void run()
-    {
+    public void run() {
         String url = discoverProvisioningURL();
 
         if (url != null) {
@@ -226,8 +221,7 @@ public class DHCPProvisioningDiscover implements Runnable
      *
      * @param listener <code>ProvisioningListener</code> to add
      */
-    public void addDiscoveryListener(DiscoveryListener listener)
-    {
+    public void addDiscoveryListener(DiscoveryListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
@@ -238,8 +232,7 @@ public class DHCPProvisioningDiscover implements Runnable
      *
      * @param listener <code>ProvisioningListener</code> to add
      */
-    public void removeDiscoveryListener(DiscoveryListener listener)
-    {
+    public void removeDiscoveryListener(DiscoveryListener listener) {
         listeners.remove(listener);
     }
 }
