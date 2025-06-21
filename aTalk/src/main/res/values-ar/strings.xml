@@ -944,7 +944,7 @@
     <string name="provisioning_manual">تحديد عنوان URI للتزويد يدويًا</string>
     <string name="provisioning_method">طريقة التزويد</string>
     <string name="provisioning_failed">فشل التزويد</string>
-    <string name="provisioning_failed_message"><html>فشل التزويد. %1$s!<br/>يرجى المحاولة مرة أخرى لاحقًا أو التواصل مع مسؤولك.</html></string>
+    <string name="provisioning_failed_message">فشل التزويد. %1$s!يرجى المحاولة مرة أخرى لاحقًا أو التواصل مع مسؤولك.</string>
     <string name="provisioning">التزويد</string>
     <string name="provisioning_summary">تكوين إعدادات التزويد</string>
     <string name="provisioning_remove_credentials_message">هل أنت متأكد من أنك تريد إزالة كلمة مرور التزويد؟</string>

@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.service.history.event;
@@ -11,21 +11,18 @@ package net.java.sip.communicator.service.history.event;
  *
  * @author Yana Stamcheva
  */
-public interface HistoryQueryListener
-{
-	/**
-	 * Indicates that new <code>HistoryRecord</code> has been received as a result of the query.
-	 * 
-	 * @param event
-	 *        the <code>HistoryRecordEvent</code> containing information about the query results.
-	 */
-	public void historyRecordReceived(HistoryRecordEvent event);
+public interface HistoryQueryListener {
+    /**
+     * Indicates that new <code>HistoryRecord</code> has been received as a result of the query.
+     *
+     * @param event the <code>HistoryRecordEvent</code> containing information about the query results.
+     */
+    public void historyRecordReceived(HistoryRecordEvent event);
 
-	/**
-	 * Indicates that the status of the history has changed.
-	 * 
-	 * @param event
-	 *        the <code>HistoryQueryStatusEvent</code> containing information about the status change
-	 */
-	public void queryStatusChanged(HistoryQueryStatusEvent event);
+    /**
+     * Indicates that the status of the history has changed.
+     *
+     * @param event the <code>HistoryQueryStatusEvent</code> containing information about the status change
+     */
+    public void queryStatusChanged(HistoryQueryStatusEvent event);
 }

@@ -1038,7 +1038,7 @@
     <string name="provisioning_manual">Gebe manuell eine Provisioning-URI ein</string>ein
     <string name="provisioning_method">Provisionings-Methode</string>
     <string name="provisioning_failed">Provisioning fehlgeschlagen</string>
-    <string name="provisioning_failed_message">&lt;html&gt;Provisioning fehlgeschlagen. %1$s!&lt;br/&gt;Bitte versuche es später erneut oder wende dich an deinen Administrator.&lt;/html&gt;</string>
+    <string name="provisioning_failed_message">Provisioning fehlgeschlagen. %1$s!/nBitte versuche es später erneut oder wende dich an deinen Administrator.</string>
     <string name="provisioning">Provisioning</string>
     <string name="provisioning_summary">Provisionierungs-Einstellungen</string>
     <string name="provisioning_remove_credentials_message">Möchtest du das Provisioning-Kennwort wirklich entfernen?</string>

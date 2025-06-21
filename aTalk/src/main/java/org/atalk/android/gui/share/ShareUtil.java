@@ -116,7 +116,7 @@ public class ShareUtil {
 
             // replace all "\n" with <br/> to avoid strip by Html.fromHtml
             msgContent = msgContent.replaceAll("\n", "<br/>");
-            msgContent = Html.fromHtml(msgContent).toString();
+            msgContent = Html.fromHtml(msgContent, Html.FROM_HTML_MODE_LEGACY).toString();
             msgContent = msgContent.replaceAll("<br/>", "\n");
 
             shareIntent.putExtra(Intent.EXTRA_TEXT, msgContent);

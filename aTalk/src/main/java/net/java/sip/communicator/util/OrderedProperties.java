@@ -19,8 +19,7 @@ import java.util.Set;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class OrderedProperties extends Properties
-{
+public class OrderedProperties extends Properties {
     /**
      * Serial version UID.
      */
@@ -35,11 +34,11 @@ public class OrderedProperties extends Properties
      * Get the object pointed by key.
      *
      * @param key key
+     *
      * @return value pointed by key or null if not set
      */
     @Override
-    public Object get(Object key)
-    {
+    public Object get(Object key) {
         return linkedMap.get(key);
     }
 
@@ -48,11 +47,11 @@ public class OrderedProperties extends Properties
      *
      * @param key key
      * @param value value
+     *
      * @return previous value pointed by key if any, null otherwise
      */
     @Override
-    public Object put(Object key, Object value)
-    {
+    public Object put(Object key, Object value) {
         return linkedMap.put(key, value);
     }
 
@@ -60,11 +59,11 @@ public class OrderedProperties extends Properties
      * Remove a key entry
      *
      * @param key key
+     *
      * @return previous value pointed by key if any, null otherwise
      */
     @Override
-    public Object remove(Object key)
-    {
+    public Object remove(Object key) {
         return linkedMap.remove(key);
     }
 
@@ -72,8 +71,7 @@ public class OrderedProperties extends Properties
      * Clear the entries.
      */
     @Override
-    public void clear()
-    {
+    public void clear() {
         linkedMap.clear();
     }
 
@@ -83,8 +81,7 @@ public class OrderedProperties extends Properties
      * @return keys enumeration
      */
     @Override
-    public Enumeration<Object> keys()
-    {
+    public Enumeration<Object> keys() {
         return Collections.enumeration(linkedMap.keySet());
     }
 
@@ -94,8 +91,7 @@ public class OrderedProperties extends Properties
      * @return enumeration
      */
     @Override
-    public Enumeration<Object> elements()
-    {
+    public Enumeration<Object> elements() {
         return Collections.enumeration(linkedMap.values());
     }
 
@@ -105,8 +101,7 @@ public class OrderedProperties extends Properties
      * @return entry Set
      */
     @Override
-    public Set<Map.Entry<Object, Object>> entrySet()
-    {
+    public Set<Map.Entry<Object, Object>> entrySet() {
         return linkedMap.entrySet();
     }
 
@@ -116,8 +111,7 @@ public class OrderedProperties extends Properties
      * @return number of elements
      */
     @Override
-    public int size()
-    {
+    public int size() {
         return linkedMap.size();
     }
 }

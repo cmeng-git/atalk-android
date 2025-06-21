@@ -23,23 +23,22 @@ import net.java.sip.communicator.service.provdisc.event.DiscoveryListener;
  * DNS (A, AAAA, SRV, TXT) or mDNS (Bonjour).
  *
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
-public interface ProvisioningDiscoveryService
-{
+public interface ProvisioningDiscoveryService {
     /**
      * Get the name of the method name used to retrieve provisioning URL.
      *
      * @return method name
      */
-    public String getMethodName();
+    String getMethodName();
 
     /**
      * Launch a discovery for a provisioning URL.
-     *
      * This method is asynchronous, the response will be notified to any
      * <code>ProvisioningListener</code> registered.
      */
-    public void startDiscovery();
+    void startDiscovery();
 
     /**
      * Launch a discovery for a provisioning URL. This method is synchronous and
@@ -47,7 +46,7 @@ public interface ProvisioningDiscoveryService
      *
      * @return provisioning URL
      */
-    public String discoverURL();
+    String discoverURL();
 
     /**
      * Add a listener that will be notified when the
@@ -55,7 +54,7 @@ public interface ProvisioningDiscoveryService
      *
      * @param listener <code>ProvisioningListener</code> to add
      */
-    public void addDiscoveryListener(DiscoveryListener listener);
+    void addDiscoveryListener(DiscoveryListener listener);
 
     /**
      * Add a listener that will be notified when the
@@ -63,5 +62,5 @@ public interface ProvisioningDiscoveryService
      *
      * @param listener <code>ProvisioningListener</code> to add
      */
-    public void removeDiscoveryListener(DiscoveryListener listener);
+    void removeDiscoveryListener(DiscoveryListener listener);
 }

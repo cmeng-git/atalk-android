@@ -12,10 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import java.awt.Dimension;
+
 import org.atalk.android.aTalkApp;
 import org.atalk.impl.neomedia.codec.video.AndroidDecoder;
-
-import java.awt.Dimension;
 
 import timber.log.Timber;
 

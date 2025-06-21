@@ -200,22 +200,17 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
         // Check if the message history is enabled in the configuration service;
         // if not, then do not register the service.
-        boolean isMessageHistoryEnabled = configService.getBoolean(
-                MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED,
-                Boolean.parseBoolean(MessageHistoryActivator.getResources().getSettingsString(
-                        MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED)));
+        boolean isMessageHistoryEnabled = configService.getBoolean(PNAME_IS_MESSAGE_HISTORY_ENABLED,
+                Boolean.parseBoolean(MessageHistoryActivator.getResources().getSettingsString(PNAME_IS_MESSAGE_HISTORY_ENABLED)));
 
         // Load the "IS_MESSAGE_HISTORY_ENABLED" property.
-        isHistoryLoggingEnabled = configService.getBoolean(
-                MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED,
-                Boolean.parseBoolean(UtilActivator.getResources().getSettingsString(
-                        MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED)));
+        isHistoryLoggingEnabled = configService.getBoolean(PNAME_IS_MESSAGE_HISTORY_ENABLED,
+                Boolean.parseBoolean(UtilActivator.getResources().getSettingsString(PNAME_IS_MESSAGE_HISTORY_ENABLED)));
 
         // We are adding a property change listener in order to
         // listen for modifications of the isMessageHistoryEnabled property.
         msgHistoryPropListener = new MessageHistoryPropertyChangeListener();
-        configService.addPropertyChangeListener(
-                MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED, msgHistoryPropListener);
+        configService.addPropertyChangeListener(PNAME_IS_MESSAGE_HISTORY_ENABLED, msgHistoryPropListener);
 
         if (isMessageHistoryEnabled) {
             Timber.d("Starting the msg history implementation.");

@@ -109,7 +109,7 @@ public class LaunchArgHandler {
     /**
      * A reference to the instance of the
      */
-    private ArgDelegator argDelegator = new ArgDelegator();
+    private final ArgDelegator argDelegator = new ArgDelegator();
 
     /**
      * The singleton instance of this handler.
@@ -119,7 +119,7 @@ public class LaunchArgHandler {
     /**
      * The properties where we load version info from our update location.
      */
-    private Properties versionProperties = new Properties();
+    private final Properties versionProperties = new Properties();
 
     /**
      * Creates the sole instance of this class;
@@ -346,11 +346,11 @@ public class LaunchArgHandler {
         String name = getApplicationName();
         String version = getVersion();
 
-        if (name == null || name.trim().isEmpty()) {
+        if (name.trim().isEmpty()) {
             name = "atalk";
         }
 
-        if (version == null || version.trim().isEmpty()) {
+        if (version.trim().isEmpty()) {
             version = "build.by.SVN";
         }
         System.out.println(name + " " + version);
@@ -384,7 +384,6 @@ public class LaunchArgHandler {
      */
     private String getPackageName() {
         String name = versionProperties.getProperty(PNAME_PACKAGE_NAME);
-
         return name == null ? "atalk" : name;
     }
 

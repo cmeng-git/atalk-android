@@ -36,13 +36,13 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.atalk.persistance.FileBackend;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
+import org.atalk.persistance.FileBackend;
 
 import timber.log.Timber;
 

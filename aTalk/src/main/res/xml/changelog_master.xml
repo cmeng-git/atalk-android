@@ -6,8 +6,21 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="4.3.0 (05/19/2025)" versioncode="403000">
+    <release version="4.3.1 (06/21/2025)" versioncode="403010">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Cleanup and fix all errors in Provisioning implementation classes. See &lt;a href='https://cmeng-git.github.io/atalk/faq.html#feature_16'&gt;Provisioning&lt;/a&gt; </change>
+        <change>Relocate 'Provisioning' menu to root UI Settings..., delink it from 'Expert settings'</change>
+        <change>When use ConfigEditText, both preference 'android:key' and the stored parameters must use the same name, else store will have extra 'android:key' parameter</change>
+        <change>ProvisioningSettings and ProvisioningServiceImpl variables must be in sync for proper saving and retrieval</change>
+        <change>Allow user entry of username and password in provisioning setting for server authentication</change>
+        <change>Rename HttpConnectionManager to OkhttpUtils; cleanup and fix all implementation errors for provisioning use. Remove httpUtils</change>
+        <change>Remove unused classes LazyConfigurationForm, ConfigurationForm, ProvisioningForm, and MediaConfigurationService</change>
+        <change>Improper Base64Encoded password in DB causes crash in CredentialsStorageServiceImpl#movePasswordProperty</change>
+        <change>Create style_pref_button to ease user in preference button identification</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="4.3.0 (05/19/2025)" versioncode="403000">
         <change>Show Badge indicator on incoming file request; to ease user identification of the sender in contact list main UI</change>
         <change>Enable HeadsUp notification for incoming file transfer request to alert user when device is in standby</change>
         <change>Ensure multiple files send/receive for HTTPFileUpload, JingleFileSend and Legacy Bytestream transfer protocols are handled properly; improve UI and process reliability</change>

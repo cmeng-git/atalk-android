@@ -22,6 +22,7 @@ import org.atalk.service.neomedia.MediaStreamStats;
 
 /**
  * An extended interface for accessing the statistics of a {@link MediaStream}.
+ * <p>
  * The reason to extend the {@link MediaStreamStats} interface rather than
  * adding methods into it is to allow the implementation to reside in a separate class.
  * This is desirable in order to:

@@ -16,8 +16,6 @@
  */
 package org.atalk.android.gui.util;
 
-import static android.text.Html.FROM_HTML_MODE_LEGACY;
-
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
@@ -74,10 +72,10 @@ public class XhtmlImageParser implements Html.ImageGetter {
 
                 new Handler(Looper.getMainLooper()).post(() -> {
                     if (urlDrawable != null) {
-                        mTextView.setText(Html.fromHtml(XhtmlString, FROM_HTML_MODE_LEGACY, source -> urlDrawable, null));
+                        mTextView.setText(Html.fromHtml(XhtmlString, Html.FROM_HTML_MODE_LEGACY, source -> urlDrawable, null));
                     }
                     else {
-                        mTextView.setText(Html.fromHtml(XhtmlString, FROM_HTML_MODE_LEGACY, null, null));
+                        mTextView.setText(Html.fromHtml(XhtmlString, Html.FROM_HTML_MODE_LEGACY, null, null));
                     }
                     mTextView.setMovementMethod(LinkMovementMethod.getInstance());
                 });

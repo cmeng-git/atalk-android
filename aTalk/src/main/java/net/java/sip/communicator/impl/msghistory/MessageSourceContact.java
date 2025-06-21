@@ -306,7 +306,7 @@ public class MessageSourceContact extends DataObject
     /**
      * Changes display name.
      *
-     * @param displayName
+     * @param displayName String
      */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
@@ -412,7 +412,7 @@ public class MessageSourceContact extends DataObject
     /**
      * Sets current status.
      *
-     * @param status
+     * @param status PresenceStatus
      */
     public void setStatus(PresenceStatus status) {
         this.status = status;
@@ -490,10 +490,7 @@ public class MessageSourceContact extends DataObject
 
         if (!address.equals(that.address))
             return false;
-        if (!ppService.equals(that.ppService))
-            return false;
-
-        return true;
+        return ppService.equals(that.ppService);
     }
 
     @Override

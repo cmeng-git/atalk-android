@@ -453,7 +453,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             String content = event.getSourceMessage().getContent();
 
             if (IMessage.ENCODE_HTML == message.getMimeType()) {
-                messageBuilder.addBody(null, Html.fromHtml(content).toString());
+                messageBuilder.addBody(null, Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY).toString());
 
                 // Just add XHTML element as it will be ignored by buddy without XEP-0071: XHTML-IM support
                 // Also carbon messages may send to buddy on difference clients with different capabilities
@@ -573,7 +573,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                         .appendCloseBodyTag();
 
                 // OMEMO body message content will strip off any xhtml tags info
-                msgContent = Html.fromHtml(msgContent).toString();
+                msgContent = Html.fromHtml(msgContent, Html.FROM_HTML_MODE_LEGACY).toString();
                 encryptedMessage = omemoManager.encrypt(bareJid, msgContent);
 
                 messageBuilder = StanzaBuilder.buildMessage(message.getMessageUID());

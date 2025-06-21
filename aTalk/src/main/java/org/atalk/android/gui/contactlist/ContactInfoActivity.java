@@ -296,7 +296,7 @@ public class ContactInfoActivity extends BaseActivity
                     + urlString + "'>"
                     + urlString
                     + "</a>";
-            urlField.setText(Html.fromHtml(html));
+            urlField.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY));
             urlField.setOnClickListener(v -> {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
                 startActivity(browserIntent);

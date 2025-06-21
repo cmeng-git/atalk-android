@@ -27,5 +27,4 @@ public class Box extends JComponent implements Accessible {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

@@ -16,11 +16,11 @@
  */
 package net.java.sip.communicator.service.history;
 
-import net.java.sip.communicator.service.history.records.HistoryRecordStructure;
-
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+
+import net.java.sip.communicator.service.history.records.HistoryRecordStructure;
 
 /**
  * This service provides the functionality to store history records. The records are called <code>HistoryRecord</code>s and
@@ -32,9 +32,7 @@ import java.util.List;
  * @author Alexander Pelov
  * @author Eng Chong Meng
  */
-public interface HistoryService
-{
-
+public interface HistoryService {
     /**
      * Property and values used to be set in configuration Used in implementation to cache every opened history document
      * or not to cache them and to access them on every read
@@ -57,7 +55,9 @@ public interface HistoryService
      * Returns the history associated with this ID.
      *
      * @param id The ID of the history.
+     *
      * @return Returns the history with this ID.
+     *
      * @throws IllegalArgumentException Thrown if there is no such history.
      */
     History getHistory(HistoryID id)
@@ -67,7 +67,9 @@ public interface HistoryService
      * Enumerates existing histories.
      *
      * @param rawid the start of the HistoryID of all the histories that will be returned.
+     *
      * @return list of histories which HistoryID starts with <code>rawid</code>.
+     *
      * @throws IllegalArgumentException if the <code>rawid</code> contains ids which are missing in current history.
      */
     List<HistoryID> getExistingHistories(String[] rawid)
@@ -77,6 +79,7 @@ public interface HistoryService
      * Tests if a history with the given ID exists and is loaded.
      *
      * @param id The ID to test.
+     *
      * @return True if a history with this ID exists. False otherwise.
      */
     boolean isHistoryExisting(HistoryID id);
@@ -86,7 +89,9 @@ public interface HistoryService
      *
      * @param id The ID of the history to be created.
      * @param recordStructure The structure of the data.
+     *
      * @return Returns the history with this ID.
+     *
      * @throws IllegalArgumentException Thrown if such history already exists.
      * @throws IOException Thrown if the history could not be created due to a IO error.
      */
@@ -97,6 +102,7 @@ public interface HistoryService
      * Permanently removes local stored History
      *
      * @param id HistoryID
+     *
      * @throws IOException Thrown if the history could not be removed due to a IO error.
      */
     void purgeLocallyStoredHistory(HistoryID id)
@@ -112,6 +118,7 @@ public interface HistoryService
      *
      * @param oldId id of the old and existing history
      * @param newId the place where content of oldId will be moved
+     *
      * @throws java.io.IOException problem moving content to newId.
      */
     void moveHistory(HistoryID oldId, HistoryID newId)
@@ -121,6 +128,7 @@ public interface HistoryService
      * Checks whether a history is created and stored.
      *
      * @param id the history to check
+     *
      * @return whether a history is created and stored.
      */
     boolean isHistoryCreated(HistoryID id);

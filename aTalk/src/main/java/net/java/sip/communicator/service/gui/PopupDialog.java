@@ -132,8 +132,7 @@ public interface PopupDialog extends ExportedWindow
      * <code>initialSelectionValue</code> is the initial value to prompt the user with.
      * It is up to the UI implementation to decide how best to represent the
      * <code>selectionValues</code>. In the case of swing per example it could
-     * be a <code>JComboBox</code>, <code>JList</code> or
-     * <code>JTextField</code>. The message type is meant to be used by the ui
+     * be a <code>JList</code> or <code>JTextField</code>. The message type is meant to be used by the ui
      * implementation to determine the icon of the dialog.
      *
      * @param message the <code>Object</code> to display

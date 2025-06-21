@@ -19,7 +19,7 @@ import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.service.configuration.ConfigurationService;
 
 /**
- * Edit text preference which persists it's value through the <code>ConfigurationService</code>. Current value is reflected
+ * Edit text preference which persists its value through the <code>ConfigurationService</code>. Current value is reflected
  * in the summary. It also supports minimum and maximum value limits of integer or float type.
  *
  * @author Pawel Domas

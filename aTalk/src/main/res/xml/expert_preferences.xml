@@ -101,25 +101,4 @@
                 android:targetPackage="org.atalk.android" />
         </Preference>
     </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/other">
-
-        <!-- Preference
-            android:summary="@string/service_gui_settings_SIP_SUMMARY"
-            android:title="@string/service_gui_settings_SIP">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:targetClass="org.atalk.android.gui.settings.SipSettings"
-                android:targetPackage="org.atalk.android" />
-        </Preference -->
-
-        <Preference
-            android:summary="@string/provisioning_summary"
-            android:title="@string/provisioning" >
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:targetClass="org.atalk.android.gui.settings.ProvisioningSettings"
-                android:targetPackage="org.atalk.android" />
-        </Preference>
-    </PreferenceCategory>
 </PreferenceScreen>

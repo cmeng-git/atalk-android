@@ -29,8 +29,7 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class DHCPTransaction
-{
+public class DHCPTransaction {
     /**
      * Number of retransmission before giving up.
      */
@@ -45,34 +44,33 @@ public class DHCPTransaction
      * Fix interval for retransmission. This final interval will be obtained
      * by adding a random number between [-1, 1].
      */
-    private int interval = 2;
+    private int mInterval = 2;
 
     /**
      * The Timer that will trigger retransmission.
      */
-    private Timer timer = null;
+    private final Timer mTimer;
 
     /**
      * The DHCP packet content.
      */
-    private final DatagramPacket message;
+    private final DatagramPacket mPacket;
 
     /**
      * The socket that will be used to retransmit DHCP packet.
      */
-    private final DatagramSocket sock;
+    private final DatagramSocket mSock;
 
     /**
      * Constructor.
      *
      * @param sock UDP socket
-     * @param message DHCP packet content
+     * @param packet DHCP packet content
      */
-    public DHCPTransaction(DatagramSocket sock, DatagramPacket message)
-    {
-        this.sock = sock;
-        this.message = message;
-        this.timer = new Timer();
+    public DHCPTransaction(DatagramSocket sock, DatagramPacket packet) {
+        mSock = sock;
+        mPacket = packet;
+        mTimer = new Timer();
     }
 
     /**
@@ -81,31 +79,28 @@ public class DHCPTransaction
      * @throws Exception if message cannot be sent on the socket
      */
     public void schedule()
-            throws Exception
-    {
-        sock.send(message);
+            throws Exception {
+        mSock.send(mPacket);
 
         /* choose a random between [-1, 1] */
         int rand = new Random().nextInt(2) - 1;
-        timer.schedule(new RetransmissionHandler(), (interval + rand) * 1000);
+        mTimer.schedule(new RetransmissionHandler(), (mInterval + rand) * 1000L);
     }
 
     /**
      * Cancel the transaction (i.e stop retransmission).
      */
-    public void cancel()
-    {
-        timer.cancel();
+    public void cancel() {
+        mTimer.cancel();
     }
 
     /**
      * Set the maximum retransmission for a transaction.
      *
-     * @param maxRetransmit maximum retransmission for this transaction
+     * @param maxRetry maximum retransmission for this transaction
      */
-    public void setMaxRetransmit(int maxRetransmit)
-    {
-        this.maxRetransmit = maxRetransmit;
+    public void setMaxRetransmit(int maxRetry) {
+        maxRetransmit = maxRetry;
     }
 
     /**
@@ -113,9 +108,8 @@ public class DHCPTransaction
      *
      * @param interval interval to set
      */
-    public void setInterval(int interval)
-    {
-        this.interval = interval;
+    public void setInterval(int interval) {
+        mInterval = interval;
     }
 
     /**
@@ -123,30 +117,24 @@ public class DHCPTransaction
      *
      * @author Sebastien Vincent
      */
-    private class RetransmissionHandler
-            extends TimerTask
-    {
+    private class RetransmissionHandler extends TimerTask {
         /**
          * Thread entry point.
          */
         @Override
-        public void run()
-        {
+        public void run() {
             int rand = new Random().nextInt(2) - 1;
 
             try {
-                sock.send(message);
+                mSock.send(mPacket);
             } catch (Exception e) {
                 Timber.w(e, "Failed to send DHCP packet");
             }
 
             nbRetransmit++;
             if (nbRetransmit < maxRetransmit) {
-                timer.schedule(new RetransmissionHandler(),
-                        (interval + rand) * 1000);
+                mTimer.schedule(new RetransmissionHandler(), (mInterval + rand) * 1000L);
             }
         }
     }
-
-    ;
 }

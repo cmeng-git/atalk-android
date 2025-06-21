@@ -5,6 +5,8 @@
  */
 package org.atalk.service.version.util;
 
+import androidx.annotation.NonNull;
+
 import org.atalk.service.version.Version;
 
 /**
@@ -13,6 +15,7 @@ import org.atalk.service.version.Version;
  *
  * @author Emil Ivov
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public abstract class AbstractVersion implements Version {
     /**
@@ -174,13 +177,14 @@ public abstract class AbstractVersion implements Version {
      *
      * @return a major.minor[.build] String containing the complete Jitsi version.
      */
+    @NonNull
     @Override
     public String toString() {
-        StringBuffer versionStringBuff = new StringBuffer();
+        StringBuilder versionStringBuff = new StringBuilder();
 
-        versionStringBuff.append(Integer.toString(getVersionMajor()));
+        versionStringBuff.append(getVersionMajor());
         versionStringBuff.append(".");
-        versionStringBuff.append(Integer.toString(getVersionMinor()));
+        versionStringBuff.append(getVersionMinor());
 
         if (isPreRelease()) {
             versionStringBuff.append("-");

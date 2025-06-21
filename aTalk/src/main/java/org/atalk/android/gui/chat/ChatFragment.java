@@ -16,8 +16,6 @@
  */
 package org.atalk.android.gui.chat;
 
-import static android.text.Html.FROM_HTML_MODE_LEGACY;
-
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -2136,12 +2134,12 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                     body = body.replace("\n", "<br/>");
 
                     if (hasImgSrcTag && (msgView != null)) {
-                        msgView.setText(Html.fromHtml(body, FROM_HTML_MODE_LEGACY, new XhtmlImageParser(msgView, body), null));
+                        msgView.setText(Html.fromHtml(body, Html.FROM_HTML_MODE_LEGACY, new XhtmlImageParser(msgView, body), null));
                         // Async will update the text view, so just return null to caller.
                         return null;
                     }
                     else {
-                        msgBody = Html.fromHtml(body, FROM_HTML_MODE_LEGACY, imageGetter, null);
+                        msgBody = Html.fromHtml(body, Html.FROM_HTML_MODE_LEGACY, imageGetter, null);
                     }
 
                     // Proceed with Linkify process if msgBody contains no HTML tags

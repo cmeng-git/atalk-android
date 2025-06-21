@@ -11,7 +11,7 @@ import android.text.TextUtils;
 
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
-import androidx.preference.PreferenceCategory;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceScreen;
 
 import java.util.Objects;
@@ -37,7 +37,7 @@ import org.atalk.impl.neomedia.device.util.AndroidCamera;
 public class ExpertSettingsFragment extends BasePreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     // Advance video/audio settings
-    private static final String PC_KEY_ADVANCED = "pref.cat.settings.advanced";
+    public static final String P_KEY_ADVANCED = "pref.key.settings.advanced";
     // private static final String PC_KEY_VIDEO = "pref.cat.settings.video";
     // private static final String PC_KEY_AUDIO = "pref.cat.settings.audio";
 
@@ -77,6 +77,9 @@ public class ExpertSettingsFragment extends BasePreferenceFragment
         // Load the expert_preferences from an XML resource
         setPreferencesFromResource(R.xml.expert_preferences, rootKey);
         setPrefTitle(R.string.settings_expert);
+
+        mPreferenceScreen = getPreferenceScreen();
+        shPrefs = getPreferenceManager().getSharedPreferences();
     }
 
     /**
@@ -85,9 +88,6 @@ public class ExpertSettingsFragment extends BasePreferenceFragment
     @Override
     public void onResume() {
         super.onResume();
-
-        mPreferenceScreen = getPreferenceScreen();
-        shPrefs = getPreferenceManager().getSharedPreferences();
         shPrefs.registerOnSharedPreferenceChangeListener(this);
         shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
 
@@ -151,9 +151,9 @@ public class ExpertSettingsFragment extends BasePreferenceFragment
     // Disable all media options when MediaServiceImpl is not initialized due to text-relocation in ffmpeg
     private void disableMediaOptions() {
         // android OS cannot support removal of nested PreferenceCategory, so just disable all advance settings
-        PreferenceCategory myPrefCat = findPreference(PC_KEY_ADVANCED);
-        if (myPrefCat != null) {
-            mPreferenceScreen.removePreference(myPrefCat);
+        Preference myPre = findPreference(P_KEY_ADVANCED);
+        if (myPre != null) {
+            mPreferenceScreen.removePreference(myPre);
 
             // myPrefCat = (PreferenceCategory) findPreference(PC_KEY_VIDEO);
             // if (myPrefCat != null) {

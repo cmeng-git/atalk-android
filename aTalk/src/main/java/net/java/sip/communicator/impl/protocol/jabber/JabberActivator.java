@@ -250,9 +250,9 @@ public class JabberActivator implements BundleActivator {
      */
     public static NetworkAddressManagerService getNetworkAddressManagerService() {
         if (networkAddressManagerService == null) {
-            ServiceReference<?> confReference
+            ServiceReference<?> serviceReference
                     = bundleContext.getServiceReference(NetworkAddressManagerService.class.getName());
-            networkAddressManagerService = (NetworkAddressManagerService) bundleContext.getService(confReference);
+            networkAddressManagerService = (NetworkAddressManagerService) bundleContext.getService(serviceReference);
         }
         return networkAddressManagerService;
     }
@@ -265,8 +265,8 @@ public class JabberActivator implements BundleActivator {
      */
     public static CredentialsStorageService getCredentialsStorageService() {
         if (credentialsService == null) {
-            ServiceReference<?> confReference = bundleContext.getServiceReference(CredentialsStorageService.class.getName());
-            credentialsService = (CredentialsStorageService) bundleContext.getService(confReference);
+            ServiceReference<?> serviceReference = bundleContext.getServiceReference(CredentialsStorageService.class.getName());
+            credentialsService = (CredentialsStorageService) bundleContext.getService(serviceReference);
         }
         return credentialsService;
     }

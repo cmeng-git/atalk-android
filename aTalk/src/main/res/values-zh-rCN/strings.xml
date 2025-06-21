@@ -1061,7 +1061,7 @@
     <string name="provisioning_manual">手动指定配置 URI</string>
     <string name="provisioning_method">配置方法</string>
     <string name="provisioning_failed">配置失败</string>
-    <string name="provisioning_failed_message">&lt;html>供应失败。%1$s！&lt;br />请稍后再试或联系您的管理员。&lt;html></string>
+    <string name="provisioning_failed_message">供应失败。%1$s！/n请稍后再试或联系您的管理员。</string>
     <string name="provisioning">供应</string>
     <string name="provisioning_summary">配置供应设置</string>
     <string name="provisioning_remove_credentials_message">您确定要删除配置密码吗？</string>

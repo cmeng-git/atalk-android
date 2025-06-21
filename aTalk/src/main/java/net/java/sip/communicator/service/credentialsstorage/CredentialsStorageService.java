@@ -22,35 +22,37 @@ package net.java.sip.communicator.service.credentialsstorage;
  * @author Dmitri Melnikov
  * @author Eng Chong Meng
  */
-public interface CredentialsStorageService
-{
+public interface CredentialsStorageService {
     /**
      * Store the password for the account that starts with the given prefix.
      *
      * @param accountUuid account UUID
      * @param password the password to store
+     *
      * @return <code>true</code> if the specified <code>password</code> was successfully
      * stored; otherwise, <code>false</code>
      */
-    public boolean storePassword(String accountUuid, String password);
+    boolean storePassword(String accountUuid, String password);
 
     /**
      * Load the password for the account that starts with the given prefix.
      *
      * @param accountUuid account UUID
+     *
      * @return the loaded password for the <code>accountUuid</code>
      */
-    public String loadPassword(String accountUuid);
+    String loadPassword(String accountUuid);
 
     /**
      * Remove the password for the account that starts with the given prefix.
      *
      * @param accountUuid account UUID
+     *
      * @return <code>true</code> if the password for the specified
      * <code>accountUuid</code> was successfully removed; otherwise,
      * <code>false</code>
      */
-    public boolean removePassword(String accountUuid);
+    boolean removePassword(String accountUuid);
 
     /**
      * Checks if master password was set by the user and
@@ -58,7 +60,7 @@ public interface CredentialsStorageService
      *
      * @return <code>true</code> if used, <code>false</code> if not
      */
-    public boolean isUsingMasterPassword();
+    boolean isUsingMasterPassword();
 
     /**
      * Changes the old master password to the new one.
@@ -67,26 +69,29 @@ public interface CredentialsStorageService
      *
      * @param oldPassword the old master password
      * @param newPassword the new master password
+     *
      * @return <code>true</code> if master password was changed successfully;
      * <code>false</code>, otherwise
      */
-    public boolean changeMasterPassword(String oldPassword, String newPassword);
+    boolean changeMasterPassword(String oldPassword, String newPassword);
 
     /**
      * Verifies the correctness of the master password.
      *
      * @param master the master password to verify
+     *
      * @return <code>true</code> if the password is correct; <code>false</code>,
      * otherwise
      */
-    public boolean verifyMasterPassword(String master);
+    boolean verifyMasterPassword(String master);
 
     /**
      * Checks if the account password that starts with the given prefix is saved
      * in encrypted form.
      *
      * @param accountUuid account UUID
+     *
      * @return <code>true</code> if saved, <code>false</code> if not
      */
-    public boolean isStoredEncrypted(String accountUuid);
+    boolean isStoredEncrypted(String accountUuid);
 }

@@ -24,7 +24,6 @@ import timber.log.Timber;
 /**
  * Class that uses DHCP to retrieve provisioning URL. Basically it sends a
  * DHCPINFORM message with a custom option code in parameters list.
- *
  * Note that DHCP server have to understand this option and thus configured to
  * answer with a HTTP/HTTPS URL.
  *
@@ -32,8 +31,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class ProvisioningDiscoveryServiceDHCPImpl extends AbstractProvisioningDiscoveryService
-        implements DiscoveryListener
-{
+        implements DiscoveryListener {
     /**
      * DHCP provisioning discover object.
      */
@@ -50,16 +48,14 @@ public class ProvisioningDiscoveryServiceDHCPImpl extends AbstractProvisioningDi
      * @return method name
      */
     @Override
-    public String getMethodName()
-    {
+    public String getMethodName() {
         return METHOD_NAME;
     }
 
     /**
      * Constructor.
      */
-    public ProvisioningDiscoveryServiceDHCPImpl()
-    {
+    public ProvisioningDiscoveryServiceDHCPImpl() {
         try {
             discover = new DHCPProvisioningDiscover(6768, (byte) 224);
             discover.addDiscoveryListener(this);
@@ -76,25 +72,21 @@ public class ProvisioningDiscoveryServiceDHCPImpl extends AbstractProvisioningDi
      * @return provisioning URL
      */
     @Override
-    public String discoverURL()
-    {
+    public String discoverURL() {
         if (discover != null) {
             return discover.discoverProvisioningURL();
         }
-
         return null;
     }
 
     /**
      * Launch a discovery for a provisioning URL by sending a DHCP Inform
      * with parameter list option containing a custom option code.
-     *
      * This method is asynchronous, the response will be notified to any
      * <code>ProvisioningListener</code> registered.
      */
     @Override
-    public void startDiscovery()
-    {
+    public void startDiscovery() {
         if (discover != null) {
             new Thread(discover).start();
         }
@@ -105,8 +97,7 @@ public class ProvisioningDiscoveryServiceDHCPImpl extends AbstractProvisioningDi
      *
      * @param event provisioning event
      */
-    public void notifyProvisioningURL(DiscoveryEvent event)
-    {
+    public void notifyProvisioningURL(DiscoveryEvent event) {
         fireDiscoveryEvent(event);
     }
 }

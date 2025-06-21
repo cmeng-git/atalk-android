@@ -23,8 +23,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class VersionServiceImpl extends AbstractVersionService
-{
+public class VersionServiceImpl extends AbstractVersionService {
     /**
      * Current version instance.
      */
@@ -38,8 +37,7 @@ public class VersionServiceImpl extends AbstractVersionService
      * Creates a new instance of <code>VersionServiceImpl</code> and parses current version from
      * android:versionName attribute from PackageInfo.
      */
-    public VersionServiceImpl()
-    {
+    public VersionServiceImpl() {
         Context ctx = aTalkApp.getInstance();
         PackageManager pckgMan = ctx.getPackageManager();
         try {
@@ -70,18 +68,18 @@ public class VersionServiceImpl extends AbstractVersionService
      * @return a <code>Version</code> object containing version details of the Jitsi version that
      * we're currently running.
      */
-    public Version getCurrentVersion()
-    {
+    @Override
+    public Version getCurrentVersion() {
         return CURRENT_VERSION;
     }
 
-    public long getCurrentVersionCode()
-    {
+    @Override
+    public long getCurrentVersionCode() {
         return CURRENT_VERSION_CODE;
     }
 
-    public String getCurrentVersionName()
-    {
+    @Override
+    public String getCurrentVersionName() {
         return CURRENT_VERSION_NAME;
     }
 
@@ -89,8 +87,7 @@ public class VersionServiceImpl extends AbstractVersionService
      * {@inheritDoc}
      */
     @Override
-    protected Version createVersionImpl(int majorVersion, int minorVersion, String nightlyBuildId)
-    {
+    protected Version createVersionImpl(int majorVersion, int minorVersion, String nightlyBuildId) {
         return new VersionImpl(majorVersion, minorVersion, nightlyBuildId);
     }
 }

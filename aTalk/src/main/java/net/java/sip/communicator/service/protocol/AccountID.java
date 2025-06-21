@@ -99,13 +99,10 @@ public class AccountID {
     protected String otrFingerprint;
 
     protected String statusMessage = "status_Message";
-
     protected JSONObject mKeys = new JSONObject();
 
-
     /**
-     * The default properties common key prefix used in lib/atalk-defaults.properties which are
-     * independent of protocol.
+     * The default properties common key prefix used in lib/atalk-defaults.properties which are independent of protocol.
      */
     protected static final String DEFAULT_PREFIX = "protocol.";
 

@@ -5,22 +5,22 @@
  */
 package net.java.sip.communicator.service.history;
 
-import net.java.sip.communicator.service.history.records.HistoryRecord;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
+
+import net.java.sip.communicator.service.history.records.HistoryRecord;
 
 /**
  * @author Alexander Pelov
  * @author Hristo Terezov
  */
-public interface HistoryWriter
-{
+public interface HistoryWriter {
     /**
      * Stores the passed record complying with the historyRecordStructure.
      *
      * @param record The record to be added.
+     *
      * @throws IOException
      */
     void addRecord(HistoryRecord record)
@@ -30,6 +30,7 @@ public interface HistoryWriter
      * Stores the passed propertyValues complying with the historyRecordStructure.
      *
      * @param propertyValues The values of the record.
+     *
      * @throws IOException
      */
     void addRecord(String[] propertyValues)
@@ -40,6 +41,7 @@ public interface HistoryWriter
      *
      * @param propertyValues The values of the record.
      * @param maxNumberOfRecords the maximum number of records to keep or value of -1 to ignore this param.
+     *
      * @throws IOException
      */
     void addRecord(String[] propertyValues, int maxNumberOfRecords)
@@ -50,6 +52,7 @@ public interface HistoryWriter
      *
      * @param propertyValues The values of the record.
      * @param timestamp The timestamp of the record.
+     *
      * @throws IOException
      */
     void addRecord(String[] propertyValues, Date timestamp)
@@ -60,6 +63,7 @@ public interface HistoryWriter
      *
      * @param propertyValues The values of the record.
      * @param timestamp The timestamp of the record.
+     *
      * @throws IOException
      */
     void insertRecord(String[] propertyValues, Date timestamp, String timestampProperty)
@@ -89,8 +93,7 @@ public interface HistoryWriter
     /**
      * This interface is used to find a history record to update and to get the new values for the record.
      */
-    interface HistoryRecordUpdater
-    {
+    interface HistoryRecordUpdater {
         /**
          * Sets the current history record.
          *

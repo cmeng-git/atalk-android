@@ -354,7 +354,7 @@ public interface ConfigurationService
      * 2. The sip-communicator directory in the user.home ($HOME/.sip-communicator)
      * 3. A location
      * in the classpath (such as the sip-communicator jar file).
-     *
+     * <p>
      * In the last case the file is copied to the sip-communicator configuration directory right
      * after being extracted from the classpath location.
      *
@@ -372,7 +372,7 @@ public interface ConfigurationService
      * 1. The current directory. <br>
      * 2. The sip-communicator directory in the user.home ($HOME/.sip-communicator) 3. A location
      * in the classpath (such as the sip-communicator jar file).
-     *
+     * <p>
      * In the last case the file is copied to the sip-communicator configuration directory right
      * after being extracted from the classpath location.
      *

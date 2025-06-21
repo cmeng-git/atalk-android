@@ -8,6 +8,11 @@ package org.atalk.android.gui.account;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
+import java.beans.PropertyChangeEvent;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.OperationSet;
 import net.java.sip.communicator.service.protocol.OperationSetAvatar;
@@ -28,9 +33,9 @@ import net.java.sip.communicator.util.UtilActivator;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.gui.util.AccountUtil;
-import org.atalk.android.util.AppImageUtil;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.gui.util.event.EventListenerList;
+import org.atalk.android.util.AppImageUtil;
 import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.resources.ResourceManagementService;
@@ -41,11 +46,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
-
-import java.beans.PropertyChangeEvent;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 import timber.log.Timber;
 
@@ -61,8 +61,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class Account implements ProviderPresenceStatusListener, RegistrationStateChangeListener,
-        ServiceListener, AvatarListener
-{
+        ServiceListener, AvatarListener {
     /**
      * Unique identifier for the account
      */
@@ -91,12 +90,12 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
     /**
      * List of {@link EventListener}s that listen for {@link AccountEvent}s.
      */
-    private EventListenerList<AccountEvent> listeners = new EventListenerList<>();
+    private final EventListenerList<AccountEvent> listeners = new EventListenerList<>();
 
     /**
      * The {@link Drawable} representing protocol's image
      */
-    private Drawable protocolIcon;
+    private final Drawable protocolIcon;
 
     /**
      * Current avatar image
@@ -110,8 +109,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      * @param context the {@link BundleContext} of parent {@link OSGiActivity}
      * @param activityContext the {@link Context} of parent {@link android.app.Activity}
      */
-    public Account(AccountID accountID, BundleContext context, Context activityContext)
-    {
+    public Account(AccountID accountID, BundleContext context, Context activityContext) {
         mAccountID = accountID;
         setProtocolProvider(AccountUtils.getRegisteredProviderForAccount(accountID));
 
@@ -127,8 +125,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @return protocol's icon
      */
-    private Drawable initProtocolIcon()
-    {
+    private Drawable initProtocolIcon() {
         byte[] blob = null;
 
         if (protocolProvider != null)
@@ -153,10 +150,10 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      * Loads an image from a given image path.
      *
      * @param imagePath The identifier of the image.
+     *
      * @return The image for the given identifier.
      */
-    public static byte[] loadIcon(String imagePath)
-    {
+    public static byte[] loadIcon(String imagePath) {
         ResourceManagementService resources = UtilActivator.getResources();
         byte[] icon = null;
 
@@ -186,8 +183,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @return the {@link ProtocolProviderService} if currently registered for encapsulated
      */
-    public ProtocolProviderService getProtocolProvider()
-    {
+    public ProtocolProviderService getProtocolProvider() {
         return protocolProvider;
     }
 
@@ -197,8 +193,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      * @return the {@link OperationSetPresence} if the protocol is active and supports it or
      * <code>null</code> otherwise
      */
-    OperationSetPresence getPresenceOpSet()
-    {
+    OperationSetPresence getPresenceOpSet() {
         if (protocolProvider == null)
             return null;
 
@@ -213,8 +208,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      * and active or
      * <code>null</code> otherwise
      */
-    OperationSetAvatar getAvatarOpSet()
-    {
+    OperationSetAvatar getAvatarOpSet() {
         if (protocolProvider == null)
             return null;
 
@@ -227,8 +221,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @param event the {@link ServiceEvent}
      */
-    public void serviceChanged(ServiceEvent event)
-    {
+    public void serviceChanged(ServiceEvent event) {
         // if the event is caused by a bundle being stopped, we don't want to
         // know
         if (event.getServiceReference().getBundle().getState() == Bundle.STOPPING) {
@@ -263,8 +256,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      * from current
      * {@link #protocolProvider}
      */
-    private void setProtocolProvider(ProtocolProviderService protocolProvider)
-    {
+    private void setProtocolProvider(ProtocolProviderService protocolProvider) {
         if (this.protocolProvider != null && protocolProvider != null) {
             if (this.protocolProvider == protocolProvider) {
                 // It's the same
@@ -320,8 +312,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
     /**
      * Unregisters from all services and clears {@link #listeners}
      */
-    public void destroy()
-    {
+    public void destroy() {
         setProtocolProvider(null);
         bundleContext.removeServiceListener(this);
         listeners.clear();
@@ -334,8 +325,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @param listener the {@link EventListener} that listens for changes on this {@link Account} object
      */
-    public void addAccountEventListener(EventListener<AccountEvent> listener)
-    {
+    public void addAccountEventListener(EventListener<AccountEvent> listener) {
         Timber.log(TimberLog.FINER, "Added change listener %s", listener);
         listeners.addEventListener(listener);
     }
@@ -346,32 +336,27 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      * @param listener the {@link EventListener} that doesn't want to be notified about the changes to this
      * {@link Account} anymore
      */
-    public void removeAccountEventListener(EventListener<AccountEvent> listener)
-    {
+    public void removeAccountEventListener(EventListener<AccountEvent> listener) {
         Timber.log(TimberLog.FINER, "Removed change listener %s", listener);
         listeners.removeEventListener(listener);
     }
 
-    public void providerStatusChanged(ProviderPresenceStatusChangeEvent evt)
-    {
+    public void providerStatusChanged(ProviderPresenceStatusChangeEvent evt) {
         Timber.log(TimberLog.FINER, "Provider status notification");
         listeners.notifyEventListeners(new AccountEvent(this, AccountEvent.PRESENCE_STATUS_CHANGE));
     }
 
-    public void providerStatusMessageChanged(PropertyChangeEvent evt)
-    {
+    public void providerStatusMessageChanged(PropertyChangeEvent evt) {
         Timber.log(TimberLog.FINER, "Provider status msg notification");
         listeners.notifyEventListeners(new AccountEvent(this, AccountEvent.STATUS_MSG_CHANGE));
     }
 
-    public void registrationStateChanged(RegistrationStateChangeEvent evt)
-    {
+    public void registrationStateChanged(RegistrationStateChangeEvent evt) {
         Timber.log(TimberLog.FINER, "Provider registration notification");
         listeners.notifyEventListeners(new AccountEvent(this, AccountEvent.REGISTRATION_CHANGE));
     }
 
-    public void avatarChanged(AvatarEvent event)
-    {
+    public void avatarChanged(AvatarEvent event) {
         Timber.log(TimberLog.FINER, "Avatar changed notification");
         updateAvatar(event.getNewAvatar());
         listeners.notifyEventListeners(new AccountEvent(this, AccountEvent.AVATAR_CHANGE));
@@ -382,8 +367,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @return the display name of this {@link Account}
      */
-    public String getAccountName()
-    {
+    public String getAccountName() {
         return mAccountID.getDisplayName();
     }
 
@@ -392,8 +376,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @return current presence status name
      */
-    public String getStatusName()
-    {
+    public String getStatusName() {
         OperationSetPresence presence = getPresenceOpSet();
         if (presence != null) {
             return presence.getPresenceStatus().getStatusName();
@@ -406,8 +389,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @return the protocol's icon valid for this {@link Account}
      */
-    public Drawable getProtocolIcon()
-    {
+    public Drawable getProtocolIcon() {
         return protocolIcon;
     }
 
@@ -416,8 +398,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @return the icon describing actual {@link PresenceStatus} of this {@link Account}
      */
-    public Drawable getStatusIcon()
-    {
+    public Drawable getStatusIcon() {
         OperationSetPresence presence = getPresenceOpSet();
 
         if (presence != null) {
@@ -435,8 +416,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @return <code>true</code> if this {@link Account} is enabled
      */
-    boolean isEnabled()
-    {
+    boolean isEnabled() {
         return mAccountID.isEnabled();
     }
 
@@ -445,8 +425,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @return the {@link AccountID} encapsulated by this instance of {@link Account}
      */
-    public AccountID getAccountID()
-    {
+    public AccountID getAccountID() {
         return mAccountID;
     }
 
@@ -455,13 +434,11 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @return A String identifying the user inside this particular service.
      */
-    public String getUserID()
-    {
+    public String getUserID() {
         return mAccountID.getUserID();
     }
 
-    public Jid getJid()
-    {
+    public Jid getJid() {
         Jid jid = null;
         try {
             jid = JidCreate.from(mAccountID.getUserID());
@@ -477,8 +454,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @param newAvatar an array of bytes with raw avatar image data
      */
-    private void updateAvatar(byte[] newAvatar)
-    {
+    private void updateAvatar(byte[] newAvatar) {
         if (newAvatar == null) {
             avatarIcon = AccountUtil.getDefaultAvatarIcon(activityContext);
         }
@@ -492,8 +468,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @return the {@link Drawable} of account avatar
      */
-    public Drawable getAvatarIcon()
-    {
+    public Drawable getAvatarIcon() {
         if (avatarIcon == null) {
             byte[] avatarBlob = null;
 

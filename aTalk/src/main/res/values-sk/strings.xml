@@ -1057,7 +1057,7 @@
     <string name="provisioning_manual">Ručne určte URI dotácie</string>
     <string name="provisioning_method">Spôsob poskytovania</string>
     <string name="provisioning_failed">Poskytovanie zlyhalo</string>
-    <string name="provisioning_failed_message">&lt;html>Provisioning failed. %1$s!&lt;br/>Please, try again later or contact your administrator.&lt;/html></string>
+    <string name="provisioning_failed_message">Provisioning failed. %1$s!/nPlease, try again later or contact your administrator.</string>
     <string name="provisioning">Provisioning</string>
     <string name="provisioning_summary">Nakonfigurujte nastavenia poskytovania</string>
     <string name="provisioning_remove_credentials_message">Naozaj chcete odstrániť heslo na spravovanie účtu?</string>

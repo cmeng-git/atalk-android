@@ -13,6 +13,7 @@ import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.impl.appversion.VersionActivator;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.atalk.service.fileaccess.FileCategory;
@@ -110,7 +111,7 @@ public class LogUploadServiceImpl implements LogUploadService
             Timber.w(e, "An exception occurred while writing debug info");
         }
 
-        VersionService versionSerVice = JabberActivator.getVersionService();
+        VersionService versionSerVice = VersionActivator.getVersionService();
         Timber.i("Device installed with aTalk version: %s, version code: %s",
                 versionSerVice.getCurrentVersion(), versionSerVice.getCurrentVersionCode());
     }

@@ -148,7 +148,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
     /**
      * The last jitter received/sent in a RTCP feedback (in RTP timestamp units).
      */
-    private double[] jitterRTPTimestampUnits = {0, 0};
+    private final double[] jitterRTPTimestampUnits = {0, 0};
 
     /**
      * The source data stream to analyze in order to compute the stats.
@@ -158,7 +158,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
     /**
      * The last number of received/sent Bytes.
      */
-    private long[] nbByte = {0, 0};
+    private final long[] nbByte = {0, 0};
 
     /**
      * The total number of discarded packets

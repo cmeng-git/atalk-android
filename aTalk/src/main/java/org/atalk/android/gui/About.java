@@ -94,6 +94,7 @@ public class About extends BaseActivity implements View.OnClickListener {
             new String[]{"XEP-0054: vcard-temp 1.2", "https://xmpp.org/extensions/xep-0054.html"},
             new String[]{"XEP-0060: Publish-Subscribe 1.24.1", "https://xmpp.org/extensions/xep-0060.html"},
             new String[]{"XEP-0065: SOCKS5 Bytestreams 1.8.2", "https://xmpp.org/extensions/xep-0065.html"},
+            new String[]{"XEP-0066: Out of Band Data 1.5", "https://xmpp.org/extensions/xep-0066.html"},
             new String[]{"XEP-0070: Verifying HTTP Requests via XMPP 1.0.1", "https://xmpp.org/extensions/xep-0070.html"},
             new String[]{"XEP-0071: XHTML-IM 1.5.4", "https://xmpp.org/extensions/xep-0071.html"},
             new String[]{"XEP-0077: In-Band Registration 2.4", "https://xmpp.org/extensions/xep-0077.html"},

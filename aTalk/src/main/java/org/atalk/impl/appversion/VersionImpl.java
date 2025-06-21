@@ -5,11 +5,6 @@
  */
 package org.atalk.impl.appversion;
 
-import net.java.sip.communicator.util.ServiceUtils;
-
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
-import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.service.version.util.AbstractVersion;
 
 /**
@@ -18,18 +13,7 @@ import org.atalk.service.version.util.AbstractVersion;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class VersionImpl extends AbstractVersion
-{
-    /**
-     * Default application name.
-     */
-    private static final String DEFAULT_APPLICATION_NAME = aTalkApp.getResString(R.string.application_name);
-
-    /**
-     * The name of this application.
-     */
-    private static String applicationName = null;
-
+public class VersionImpl extends AbstractVersion {
     /**
      * Indicates if this aTalk version corresponds to a nightly build of a repository snapshot or
      * to an official aTalk release.
@@ -44,8 +28,7 @@ public class VersionImpl extends AbstractVersion
      * @param minor the minor version number.
      * @param nightBuildID the nightly build id.
      */
-    public VersionImpl(int major, int minor, String nightBuildID)
-    {
+    public VersionImpl(int major, int minor, String nightBuildID) {
         super(major, minor, nightBuildID);
 
     }
@@ -54,8 +37,7 @@ public class VersionImpl extends AbstractVersion
      * {@inheritDoc}
      */
     @Override
-    public boolean isNightly()
-    {
+    public boolean isNightly() {
         return IS_NIGHTLY_BUILD;
     }
 
@@ -63,8 +45,7 @@ public class VersionImpl extends AbstractVersion
      * {@inheritDoc}
      */
     @Override
-    public boolean isPreRelease()
-    {
+    public boolean isPreRelease() {
         return false;
     }
 
@@ -74,37 +55,7 @@ public class VersionImpl extends AbstractVersion
      *
      * @return a String containing the version pre-release ID.
      */
-    public String getPreReleaseID()
-    {
+    public String getPreReleaseID() {
         return null;
-    }
-
-    /**
-     * Returns the name of the application that we're currently running. Default MUST be aTalk.
-     *
-     * @return the name of the application that we're currently running. Default MUST be aTalk.
-     */
-    public String getApplicationName()
-    {
-        if (applicationName == null) {
-            try {
-                /*
-                 * XXX There is no need to have the ResourceManagementService instance as a static
-                 * field of the VersionImpl class because it will be used once only anyway.
-                 */
-                ResourceManagementService resources = ServiceUtils.getService(
-                        VersionActivator.bundleContext, ResourceManagementService.class);
-
-                if (resources != null) {
-                    applicationName = resources.getSettingsString("service.gui.APPLICATION_NAME");
-                }
-            } catch (Exception e) {
-                // if resource bundle is not found or the key is missing return the default name
-            } finally {
-                if (applicationName == null)
-                    applicationName = DEFAULT_APPLICATION_NAME;
-            }
-        }
-        return applicationName;
     }
 }

@@ -1075,7 +1075,7 @@
     <string name="provisioning_manual">Especificar manualmente una URI de aprovisionamiento</string>
     <string name="provisioning_method">Método de aprovisionamiento</string>
     <string name="provisioning_failed">Fallo en el aprovisionamiento</string>
-    <string name="provisioning_failed_message">&lt;html>Falló el aprovisionamiento. %1$s!&lt;br/>Por favor, inténtarlo de nuevo más tarde o ponte en contacto con su administrador.&lt;/html></string>
+    <string name="provisioning_failed_message">Falló el aprovisionamiento. %1$s!\nPor favor, inténtarlo de nuevo más tarde o ponte en contacto con su administrador</string>
     <string name="provisioning">Aprovisionamiento</string>
     <string name="provisioning_summary">Configurar las opciones de aprovisionamiento</string>
     <string name="provisioning_remove_credentials_message">¿Seguro que se desea eliminar la contraseña de aprovisionamiento?</string>

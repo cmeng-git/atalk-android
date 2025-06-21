@@ -15,12 +15,6 @@
  */
 package net.java.sip.communicator.service.netaddr;
 
-import net.java.sip.communicator.service.netaddr.event.NetworkConfigurationChangeListener;
-
-import org.ice4j.ice.Agent;
-import org.ice4j.ice.IceMediaStream;
-import org.ice4j.ice.harvest.StunCandidateHarvester;
-
 import java.io.IOException;
 import java.net.BindException;
 import java.net.DatagramSocket;
@@ -28,14 +22,19 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 
+import net.java.sip.communicator.service.netaddr.event.NetworkConfigurationChangeListener;
+
+import org.ice4j.ice.Agent;
+import org.ice4j.ice.IceMediaStream;
+import org.ice4j.ice.harvest.StunCandidateHarvester;
+
 /**
  * The NetworkAddressManagerService takes care of problems such as
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public interface NetworkAddressManagerService
-{
+public interface NetworkAddressManagerService {
     /**
      * The default number of binds that a <code>NetworkAddressManagerService</code> implementation
      * should execute in case a port is already bound to (each retry would be on a different port).
@@ -52,26 +51,26 @@ public interface NetworkAddressManagerService
     /**
      * Returns an InetAddress instance that represents the localhost, and that a socket can bind
      * upon or distribute to peers as a contact address.
-     *
+     * <p>
      * This method tries to make for the ambiguity in the implementation of the InetAddress
      * .getLocalHost() method.
-     * (see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4665037).
-     *
+     * (see <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4665037">...</a>).
+     * <p>
      * To put it briefly, the issue is about choosing a local source address to bind to or to
      * distribute to peers. It is possible and even quite probable to expect that a machine may
      * dispose with multiple addresses and each of them may be valid for a specific destination.
      * Example cases include:
-     *
+     * <p>
      * 1) A dual stack IPv6/IPv4 box. <br>
      * 2) A double NIC box with a leg on the Internet and another one in a private LAN <br>
      * 3) In the presence of a virtual interface over a VPN or a MobileIP(v6) tunnel.
-     *
+     * <p>
      * In all such cases a source local address needs to be chosen according to the intended
      * destination and after consulting the local routing table.
      *
-     *
      * @param intendedDestination the address of the destination that we'd like to access through
      * the local address that we are requesting.
+     *
      * @return an InetAddress instance representing the local host, and that a socket can bind
      * upon or distribute to peers as a contact address.
      */
@@ -83,8 +82,10 @@ public interface NetworkAddressManagerService
      *
      * @param intendedDestination the destination that we'd like to use this address with.
      * @param port the port whose mapping we are interested in.
+     *
      * @return a public address corresponding to the specified port or null if all attempts to
      * retrieve such an address have failed.
+     *
      * @throws IOException if an error occurs while the underlying resolver lib is using sockets.
      * @throws BindException if the port is already in use.
      */
@@ -95,6 +96,7 @@ public interface NetworkAddressManagerService
      * Returns the hardware address (i.e. MAC address) of the specified interface name.
      *
      * @param iface the <code>NetworkInterface</code>
+     *
      * @return array of bytes representing the layer 2 address
      */
     byte[] getHardwareAddress(NetworkInterface iface);
@@ -112,7 +114,9 @@ public interface NetworkAddressManagerService
      * @param minPort the port number where we should first try to bind before moving to the next
      * one (i.e. <code>minPort + 1</code>)
      * @param maxPort the maximum port number where we should try binding before giving up and throwing an exception.
+     *
      * @return the newly created <code>DatagramSocket</code>.
+     *
      * @throws IllegalArgumentException if either <code>minPort</code> or <code>maxPort</code> is not a valid port number.
      * @throws IOException if an error occurs while the underlying resolver lib is using sockets.
      * @throws BindException if we couldn't find a free port between <code>minPort</code> and
@@ -153,6 +157,7 @@ public interface NetworkAddressManagerService
      * won't be using credentials in case we only have a STUN server).
      * @param password the password that we'd like to try when connecting to a TURN server (we
      * won't be using credentials in case we only have a STUN server).
+     *
      * @return A {@link StunCandidateHarvester} corresponding to the TURN or STUN server we
      * discovered or <code>null</code> if there were no such records for the specified <code>domainName</code>
      */
@@ -166,7 +171,9 @@ public interface NetworkAddressManagerService
      * would automatically go to rtpPort + 1)
      * @param streamName the name of the stream to create
      * @param agent the <code>Agent</code> that should create the stream.
+     *
      * @return the newly created <code>IceMediaStream</code>.
+     *
      * @throws IllegalArgumentException if <code>rtpPort</code> is not a valid port number.
      * @throws IOException if an error occurs while the underlying resolver is using sockets.
      * @throws BindException if we couldn't find a free port between within the default number of retries.
@@ -182,7 +189,9 @@ public interface NetworkAddressManagerService
      * would automatically go to portBase + 1)
      * @param streamName the name of the stream to create
      * @param agent the <code>Agent</code> that should create the stream.
+     *
      * @return the newly created <code>IceMediaStream</code>.
+     *
      * @throws IllegalArgumentException if <code>portBase</code> is not a valid port number. If
      * <code>numComponents</code> is neither 1 nor 2.
      * @throws IOException if an error occurs while the underlying resolver is using sockets.

@@ -12,14 +12,6 @@ import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-import net.java.sip.communicator.service.resources.AbstractResourcesService;
-
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.service.osgi.OSGiService;
-import org.atalk.service.resources.ResourceManagementService;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,29 +23,37 @@ import java.net.URLStreamHandlerFactory;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import net.java.sip.communicator.service.resources.AbstractResourcesService;
+
+import org.atalk.impl.timberlog.TimberLog;
+import org.atalk.service.osgi.OSGiService;
+import org.atalk.service.resources.ResourceManagementService;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+
 import timber.log.Timber;
 
 /**
  * An Android implementation of the {@link ResourceManagementService}.
- *
+ * <p>
  * Strings - requests are redirected to the strings defined in "strings.xml" file, but in case
  * the string is not found it will try to look for strings defined in default string resources.
- *
+ * <p>
  * Dots in keys are replaced with "_", as they can not be used for string names in "strings.xml".
  * For example the string for key "service.gui.CLOSE" should be declared as:
  * &lt;string name="service_gui_CLOSE"&gt;Close&lt;/string&gt;
- *
+ * <p>
  * Requests for other locales are redirected to corresponding folders as it's defined in Android
  * localization mechanism.
- *
+ * <p>
  * Colors - mapped directly to those defined in /res/values/colors.xml
- *
+ * <p>
  * Sounds - are stored in res/raw folder. The mappings are read from the sounds.properties or
  * other SoundPack's provided. Properties should point to sound file names without the extension.
  * For example: BUSY=busy (points to /res/raw/busy.wav)
- *
+ * <p>
  * Images - images work the same as sounds except they are stored in drawable folders.
- *
+ * <p>
  * For parts of aTalk source that directly referred to image paths it will map the requests to the
  * drawable Android application resource names, so that we can take advantage of built-in image
  * size resolving mechanism. The mapping must be specified in file {@link #IMAGE_PATH_RESOURCE}.properties.
@@ -66,8 +66,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AndroidResourceServiceImpl extends AbstractResourcesService
-{
+public class AndroidResourceServiceImpl extends AbstractResourcesService {
     /**
      * Path to the .properties file containing image path's translations to android drawable resources
      */
@@ -81,7 +80,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     /**
      * Android image path translation resource TODO: Remove direct path requests for resources
      */
-    private ResourceBundle androidImagePathPack;
+    private final ResourceBundle androidImagePathPack;
 
     /**
      * The {@link Resources} object for application context
@@ -91,12 +90,12 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     /**
      * The application package name(org.atalk.android)
      */
-    private String packageName;
+    private final String packageName;
 
     /**
      * The Android application context
      */
-    private Context androidContext;
+    private final Context mContext;
 
     /**
      * The {@link Resources} cache for language other than default
@@ -113,8 +112,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     /**
      * Initializes already registered default resource packs.
      */
-    AndroidResourceServiceImpl()
-    {
+    AndroidResourceServiceImpl() {
         super(AndroidResourceManagementActivator.bundleContext);
 
         androidImagePathPack = ResourceBundle.getBundle(IMAGE_PATH_RESOURCE);
@@ -126,7 +124,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
 
         resources = osgiService.getResources();
         packageName = osgiService.getPackageName();
-        androidContext = osgiService.getApplicationContext();
+        mContext = osgiService.getApplicationContext();
 
         if (!factorySet) {
             URL.setURLStreamHandlerFactory(new AndroidResourceURLHandlerFactory());
@@ -135,8 +133,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     }
 
     @Override
-    protected void onSkinPackChanged()
-    {
+    protected void onSkinPackChanged() {
         // Not interested (at least for now)
     }
 
@@ -144,10 +141,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Gets the resource ID for given color <code>strKey</code>.
      *
      * @param strKey the color text identifier that has to be resolved
+     *
      * @return the resource ID for given color <code>strKey</code>
      */
-    private int getColorId(String strKey)
-    {
+    private int getColorId(String strKey) {
         return getResourceId("color", strKey);
     }
 
@@ -155,10 +152,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Returns the int representation of the color corresponding to the given key.
      *
      * @param key The key of the color in the colors properties file.
+     *
      * @return the int representation of the color corresponding to the given key.
      */
-    public int getColor(String key)
-    {
+    public int getColor(String key) {
         int id = getColorId(key);
         if (id == 0) {
             return 0xFFFFFFFF;
@@ -170,10 +167,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Returns the string representation of the color corresponding to the given key.
      *
      * @param key The key of the color in the colors properties file.
+     *
      * @return the string representation of the color corresponding to the given key.
      */
-    public String getColorString(String key)
-    {
+    public String getColorString(String key) {
         int id = getColorId(key);
         if (id == 0) {
             return "0xFFFFFFFF";
@@ -186,8 +183,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      *
      * @param key the name of drawable
      */
-    private int getDrawableId(String key)
-    {
+    private int getDrawableId(String key) {
         return getResourceId("drawable", key);
     }
 
@@ -196,10 +192,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      *
      * @param typeName the type name (color, drawable, raw, string ...)
      * @param key the resource name
+     *
      * @return the resource id for the given name of specified type
      */
-    private int getResourceId(String typeName, String key)
-    {
+    private int getResourceId(String typeName, String key) {
         int id = resources.getIdentifier(key, typeName, packageName);
         if (id == 0)
             Timber.e("Unresolved '%s' key: %s", typeName, key);
@@ -210,10 +206,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Returns the <code>InputStream</code> of the image corresponding to the given path.
      *
      * @param path The path to the image file.
+     *
      * @return the <code>InputStream</code> of the image corresponding to the given path.
      */
-    public InputStream getImageInputStreamForPath(String path)
-    {
+    public InputStream getImageInputStreamForPath(String path) {
         Timber.log(TimberLog.FINER, "Request for resource path: %s", path);
 
         if (androidImagePathPack.containsKey(path)) {
@@ -231,10 +227,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Returns the <code>InputStream</code> of the image corresponding to the given key.
      *
      * @param key The identifier of the image in the resource properties file.
+     *
      * @return the <code>InputStream</code> of the image corresponding to the given key.
      */
-    public InputStream getImageInputStream(String key)
-    {
+    public InputStream getImageInputStream(String key) {
         // Try to lookup images.properties for key mapping
         String resolvedPath = super.getImagePath(key);
         if (resolvedPath != null) {
@@ -252,10 +248,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Returns the <code>URL</code> of the image corresponding to the given key.
      *
      * @param key The identifier of the image in the resource properties file.
+     *
      * @return the <code>URL</code> of the image corresponding to the given key
      */
-    public URL getImageURL(String key)
-    {
+    public URL getImageURL(String key) {
         return getImageURLForPath(getImagePath(key));
     }
 
@@ -263,10 +259,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Returns the <code>URL</code> of the image corresponding to the given path.
      *
      * @param path The path to the given image file.
+     *
      * @return the <code>URL</code> of the image corresponding to the given path.
      */
-    public URL getImageURLForPath(String path)
-    {
+    public URL getImageURLForPath(String path) {
         if (path == null)
             return null;
 
@@ -281,10 +277,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Returns the image path corresponding to the given key.
      *
      * @param key The identifier of the image in the resource properties file.
+     *
      * @return the image path corresponding to the given key.
      */
-    public String getImagePath(String key)
-    {
+    public String getImagePath(String key) {
         String reference = super.getImagePath(key);
         if (reference == null) {
             // If no mapping found use key directly
@@ -302,16 +298,15 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Returns the string resource id for given <code>key</code>.
      *
      * @param key the name of string resource as defined in "strings.xml"
+     *
      * @return the string value for given <code>key</code>
      */
-    private int getStringId(String key)
-    {
+    private int getStringId(String key) {
         return getResourceId("string", key);
     }
 
     @Override
-    protected String doGetI18String(String key, Locale locale)
-    {
+    protected String doGetI18String(String key, Locale locale) {
         Resources usedRes = resources;
         Locale resourcesLocale = usedRes.getConfiguration().locale;
         if (locale != null && !locale.equals(resourcesLocale)) {
@@ -320,9 +315,9 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
                 // case another request may come up
                 Configuration conf = resources.getConfiguration();
                 conf.locale = locale;
-                AssetManager assets = androidContext.getAssets();
+                AssetManager assets = mContext.getAssets();
                 DisplayMetrics metrics = new DisplayMetrics();
-                WindowManager wm = (WindowManager) androidContext.getSystemService(Context.WINDOW_SERVICE);
+                WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
                 wm.getDefaultDisplay().getMetrics(metrics);
                 cachedLocaleResources = new Resources(assets, metrics, conf);
                 cachedResLocale = locale;
@@ -346,10 +341,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * The sound resource identifier. Sounds are stored in res/raw folder.
      *
      * @param key the name of sound, for busy.wav it will be just busy
+     *
      * @return the sound resource id for given <code>key</code>
      */
-    private int getSoundId(String key)
-    {
+    private int getSoundId(String key) {
         return getResourceId("raw", key);
     }
 
@@ -357,10 +352,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Returns the <code>URL</code> of the sound corresponding to the given property key.
      *
      * @param key the key string
+     *
      * @return the <code>URL</code> of the sound corresponding to the given property key.
      */
-    public URL getSoundURL(String key)
-    {
+    public URL getSoundURL(String key) {
         try {
             String path = getSoundPath(key);
             if (path == null)
@@ -376,10 +371,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Returns the <code>URL</code> of the sound corresponding to the given path.
      *
      * @param path the path, for which we're looking for a sound URL
+     *
      * @return the <code>URL</code> of the sound corresponding to the given path.
      */
-    public URL getSoundURLForPath(String path)
-    {
+    public URL getSoundURLForPath(String path) {
         return getSoundURL(path);
     }
 
@@ -389,8 +384,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * @param soundKey the key, for the sound path
      */
     @Override
-    public String getSoundPath(String soundKey)
-    {
+    public String getSoundPath(String soundKey) {
         String reference = super.getSoundPath(soundKey);
         if (reference == null) {
             // If there's no definition in .properties try to access directly by the name
@@ -409,12 +403,13 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Not supported at the moment.
      *
      * @param file the zip file from which we prepare a skin
+     *
      * @return the prepared file
+     *
      * @throws Exception
      */
     public File prepareSkinBundleFromZip(File file)
-            throws Exception
-    {
+            throws Exception {
         throw new UnsupportedOperationException();
     }
 
@@ -422,10 +417,8 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Some kind of hack to be able to produce URLs pointing to Android resources. It allows to
      * produce URL with protocol name of {@link #PROTOCOL} that will be later handled by this factory.
      */
-    static private class AndroidResourceURLHandlerFactory implements URLStreamHandlerFactory
-    {
-        public URLStreamHandler createURLStreamHandler(String s)
-        {
+    static private class AndroidResourceURLHandlerFactory implements URLStreamHandlerFactory {
+        public URLStreamHandler createURLStreamHandler(String s) {
             if (s.equals(PROTOCOL)) {
                 return new AndroidResourceURlHandler();
             }
@@ -436,12 +429,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     /**
      * The URL handler that handles Android resource paths redirected to Android resources.
      */
-    static private class AndroidResourceURlHandler extends URLStreamHandler
-    {
+    static private class AndroidResourceURlHandler extends URLStreamHandler {
         @Override
         protected URLConnection openConnection(URL url)
-                throws IOException
-        {
+                throws IOException {
             return new AndroidURLConnection(url);
         }
     }
@@ -450,26 +441,22 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * It does open {@link InputStream} from URLs that were produced for
      * {@link AndroidResourceURLHandlerFactory#PROTOCOL} protocol.
      */
-    static private class AndroidURLConnection extends URLConnection
-    {
+    static private class AndroidURLConnection extends URLConnection {
 
         private int id = 0;
 
-        protected AndroidURLConnection(URL url)
-        {
+        protected AndroidURLConnection(URL url) {
             super(url);
         }
 
         @Override
         public void connect()
-                throws IOException
-        {
+                throws IOException {
         }
 
         @Override
         public InputStream getInputStream()
-                throws IOException
-        {
+                throws IOException {
             String idStr = super.getURL().getHost();
             try {
                 this.id = Integer.parseInt(idStr);

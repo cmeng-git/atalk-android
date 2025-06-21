@@ -1051,7 +1051,7 @@
     <string name="provisioning_manual">Secara manual menentukan URI penyediaan</string>
     <string name="provisioning_method">Metode Provisioning</string>
     <string name="provisioning_failed">Penyediaan gagal</string>
-    <string name="provisioning_failed_message">&lt;html>Penyediaan gagal. %1$s!&lt;br/>Silakan, coba lagi nanti atau hubungi administrator Anda.&lt;/html></string>
+    <string name="provisioning_failed_message">Penyediaan gagal. %1$s!/nSilakan, coba lagi nanti atau hubungi administrator Anda.</string>
     <string name="provisioning">Provisioning</string>
     <string name="provisioning_summary">Konfigurasikan pengaturan penyediaan</string>
     <string name="provisioning_remove_credentials_message">Anda yakin ingin menghapus kata sandi provisioning?</string>

@@ -71,7 +71,7 @@ aTalk is an xmpp client designed for android and supports the following features
 * In-Band Registration with captcha option support
 * Multiple accounts creation
 * User selectable Themes support
-* Multi-language UI support (Bahasa Indonesia, Chinese Simplified, English, German, Portuguese (Brazil), Russian, Slovak and Spanish)
+* Multi-language UI support (Arabic, Bahasa Indonesia, Chinese Simplified, English, German, Portuguese (Brazil), Russian, Slovak and Spanish)
 
 ## XMPP Standards Implemented
 
@@ -87,6 +87,7 @@ It supports the following XEP's, standards for XMPP clients.
 * [XEP-0054: vcard-temp 1.2](https://xmpp.org/extensions/xep-0054.html)
 * [XEP-0060: Publish-Subscribe 1.26.0](https://xmpp.org/extensions/xep-0060.html)
 * [XEP-0065: SOCKS5 Bytestreams 1.8.2](https://xmpp.org/extensions/xep-0065.html)
+* [XEP-0066: Out of Band Data 1.5](https://xmpp.org/extensions/xep-0066.html)
 * [XEP-0070: Verifying HTTP Requests via XMPP 1.0.1](https://xmpp.org/extensions/xep-0070.html)
 * [XEP-0071: XHTML-IM 1.5.4](https://xmpp.org/extensions/xep-0071.html)
 * [XEP-0077: In-Band Registration 2.4](https://xmpp.org/extensions/xep-0077.html)

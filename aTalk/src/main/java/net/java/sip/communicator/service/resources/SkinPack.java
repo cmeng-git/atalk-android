@@ -21,48 +21,40 @@ import java.util.Map;
  * Default Skin Pack interface.
  *
  * @author Adam Netocny
+ * @author Eng Chong Meng
  */
-public interface SkinPack
-    extends ResourcePack
+public interface SkinPack extends ResourcePack
 {
     /**
      * Default resource name.
      */
-    public static final String RESOURCE_NAME_DEFAULT_VALUE = "SkinPack";
+    String RESOURCE_NAME_DEFAULT_VALUE = "SkinPack";
 
     /**
-     * Returns a <code>Map</code>, containing all [key, value] pairs for image
-     * resource pack.
+     * Returns a <code>Map</code>, containing all [key, value] pairs for image resource pack.
      *
-     * @return a <code>Map</code>, containing all [key, value] pairs for image
-     * resource pack.
+     * @return a <code>Map</code>, containing all [key, value] pairs for image resource pack.
      */
-    public Map<String, String> getImageResources();
+    Map<String, String> getImageResources();
 
     /**
-     * Returns a <code>Map</code>, containing all [key, value] pairs for style
-     * resource pack.
+     * Returns a <code>Map</code>, containing all [key, value] pairs for style resource pack.
      *
-     * @return a <code>Map</code>, containing all [key, value] pairs for style
-     * resource pack.
+     * @return a <code>Map</code>, containing all [key, value] pairs for style resource pack.
      */
-    public Map<String, String> getStyleResources();
+    Map<String, String> getStyleResources();
 
     /**
-     * Returns a <code>Map</code>, containing all [key, value] pairs for color
-     * resource pack.
+     * Returns a <code>Map</code>, containing all [key, value] pairs for color resource pack.
      *
-     * @return a <code>Map</code>, containing all [key, value] pairs for color
-     * resource pack.
+     * @return a <code>Map</code>, containing all [key, value] pairs for color resource pack.
      */
-    public Map<String, String> getColorResources();
+    Map<String, String> getColorResources();
 
     /**
-     * Returns a <code>Map</code>, containing all [key, value] pairs for settings
-     * resource pack.
+     * Returns a <code>Map</code>, containing all [key, value] pairs for settings resource pack.
      *
-     * @return a <code>Map</code>, containing all [key, value] pairs for settings
-     * resource pack.
+     * @return a <code>Map</code>, containing all [key, value] pairs for settings resource pack.
      */
-    public Map<String, String> getSettingsResources();
+    Map<String, String> getSettingsResources();
 }

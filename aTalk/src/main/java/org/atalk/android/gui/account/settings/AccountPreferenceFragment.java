@@ -188,7 +188,6 @@ public abstract class AccountPreferenceFragment extends BasePreferenceFragment
             mActivity.finish();
             return;
         }
-
         shPrefs = getPreferenceManager().getSharedPreferences();
         mEditor = shPrefs.edit();
 
