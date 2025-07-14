@@ -506,7 +506,7 @@ public class SystemActivityNotificationsServiceImpl
                     className = SYSTEM_ACTIVITY_MANAGER_ANDROID_CLASS;
                 }
                 if (className != null)
-                    currentRunningManager = (SystemActivityManager) Class.forName(className).newInstance();
+                    currentRunningManager = (SystemActivityManager) Class.forName(className).getDeclaredConstructor().newInstance();
             } catch (Throwable t) {
                 Timber.e(t, "Error creating manager");
             }

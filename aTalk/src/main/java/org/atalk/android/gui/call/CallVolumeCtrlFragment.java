@@ -52,7 +52,7 @@ public class CallVolumeCtrlFragment extends BaseFragment implements VolumeChange
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        audioManager = (AudioManager) aTalkApp.getInstance().getSystemService(Context.AUDIO_SERVICE);
+        audioManager = aTalkApp.getAudioManager();
         MediaServiceImpl mediaService = NeomediaActivator.getMediaServiceImpl();
         if (mediaService != null)
             volumeControl = mediaService.getOutputVolumeControl();

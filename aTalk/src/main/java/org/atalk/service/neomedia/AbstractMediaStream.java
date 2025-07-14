@@ -5,6 +5,12 @@
  */
 package org.atalk.service.neomedia;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.atalk.impl.neomedia.codec.REDBlock;
 import org.atalk.impl.neomedia.rtp.MediaStreamTrackReceiver;
 import org.atalk.impl.neomedia.rtp.TransportCCEngine;
@@ -12,19 +18,12 @@ import org.atalk.impl.neomedia.transform.TransformEngineChain;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.ByteArrayBuffer;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Abstract base implementation of <code>MediaStream</code> to ease the implementation of the interface.
  *
  * @author Lyubomir Marinov
  */
-public abstract class AbstractMediaStream implements MediaStream
-{
+public abstract class AbstractMediaStream implements MediaStream {
     /**
      * The name of this stream, that some protocols may use for diagnostic purposes.
      */
@@ -53,11 +52,11 @@ public abstract class AbstractMediaStream implements MediaStream
      * changes such as a SSRC ID which becomes known.
      *
      * @param listener the <code>PropertyChangeListener</code> to register for <code>PropertyChangeEvent</code>s
+     *
      * @see MediaStream#addPropertyChangeListener(PropertyChangeListener)
      */
     @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener)
-    {
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
@@ -72,13 +71,13 @@ public abstract class AbstractMediaStream implements MediaStream
      * @param illegalArgumentExceptionMessage the message of the <code>IllegalArgumentException</code> to be thrown if the state of this
      * instance would've been compromised if <code>direction</code> and the <code>MediaDevice</code>
      * associated with <code>deviceDirection</code> were both set on this instance
+     *
      * @throws IllegalArgumentException if the state of this instance would've been compromised were both <code>direction</code>
      * and the <code>MediaDevice</code> associated with <code>deviceDirection</code> set on this instance
      */
     protected void assertDirection(MediaDirection direction, MediaDirection deviceDirection,
             String illegalArgumentExceptionMessage)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         if ((direction != null) && !direction.and(deviceDirection).equals(direction))
             throw new IllegalArgumentException(illegalArgumentExceptionMessage);
     }
@@ -92,8 +91,7 @@ public abstract class AbstractMediaStream implements MediaStream
      * @param oldValue the value of the property with the specified name before the change
      * @param newValue the value of the property with the specified name after the change
      */
-    protected void firePropertyChange(String property, Object oldValue, Object newValue)
-    {
+    protected void firePropertyChange(String property, Object oldValue, Object newValue) {
         propertyChangeSupport.firePropertyChange(property, oldValue, newValue);
     }
 
@@ -105,8 +103,7 @@ public abstract class AbstractMediaStream implements MediaStream
      * @return the name of this stream or <code>null</code> if no name has been set.
      */
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -114,8 +111,7 @@ public abstract class AbstractMediaStream implements MediaStream
      * {@inheritDoc}
      */
     @Override
-    public Object getProperty(String propertyName)
-    {
+    public Object getProperty(String propertyName) {
         return properties.get(propertyName);
     }
 
@@ -125,8 +121,7 @@ public abstract class AbstractMediaStream implements MediaStream
      * @param format the <code>MediaFormat</code> to handle the attributes of
      * @param attrs the attributes <code>Map</code> to handle
      */
-    protected void handleAttributes(MediaFormat format, Map<String, String> attrs)
-    {
+    protected void handleAttributes(MediaFormat format, Map<String, String> attrs) {
     }
 
     /**
@@ -134,11 +129,11 @@ public abstract class AbstractMediaStream implements MediaStream
      *
      * @param pkt the packet to send.
      * @param data {@code true} to send an RTP packet or {@code false} to send an RTCP packet.
+     *
      * @throws TransmissionFailedException if the transmission failed.
      */
     public void injectPacket(RawPacket pkt, boolean data)
-            throws TransmissionFailedException
-    {
+            throws TransmissionFailedException {
         injectPacket(pkt, data, /* after */null);
     }
 
@@ -147,11 +142,11 @@ public abstract class AbstractMediaStream implements MediaStream
      * receive further property change events.
      *
      * @param listener the <code>PropertyChangeListener</code> to remove
+     *
      * @see MediaStream#removePropertyChangeListener(PropertyChangeListener)
      */
     @Override
-    public void removePropertyChangeListener(PropertyChangeListener listener)
-    {
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
@@ -162,8 +157,7 @@ public abstract class AbstractMediaStream implements MediaStream
      * @param name the name of this stream or <code>null</code> if no name has been set.
      */
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -171,8 +165,7 @@ public abstract class AbstractMediaStream implements MediaStream
      * {@inheritDoc}
      */
     @Override
-    public void setProperty(String propertyName, Object value)
-    {
+    public void setProperty(String propertyName, Object value) {
         if (value == null)
             properties.remove(propertyName);
         else
@@ -184,8 +177,7 @@ public abstract class AbstractMediaStream implements MediaStream
      * {@inheritDoc}
      */
     @Override
-    public void setRTPTranslator(RTPTranslator rtpTranslator)
-    {
+    public void setRTPTranslator(RTPTranslator rtpTranslator) {
         if (this.rtpTranslator != rtpTranslator) {
             this.rtpTranslator = rtpTranslator;
         }
@@ -195,8 +187,7 @@ public abstract class AbstractMediaStream implements MediaStream
      * {@inheritDoc}
      */
     @Override
-    public RTPTranslator getRTPTranslator()
-    {
+    public RTPTranslator getRTPTranslator() {
         return rtpTranslator;
     }
 
@@ -204,8 +195,7 @@ public abstract class AbstractMediaStream implements MediaStream
      * {@inheritDoc}
      */
     @Override
-    public TransformEngineChain getTransformEngineChain()
-    {
+    public TransformEngineChain getTransformEngineChain() {
         return null;
     }
 
@@ -213,8 +203,7 @@ public abstract class AbstractMediaStream implements MediaStream
      * {@inheritDoc}
      */
     @Override
-    public byte getDynamicRTPPayloadType(String codec)
-    {
+    public byte getDynamicRTPPayloadType(String codec) {
         return -1;
     }
 
@@ -222,8 +211,7 @@ public abstract class AbstractMediaStream implements MediaStream
      * {@inheritDoc}
      */
     @Override
-    public MediaStreamTrackReceiver getMediaStreamTrackReceiver()
-    {
+    public MediaStreamTrackReceiver getMediaStreamTrackReceiver() {
         return null;
     }
 
@@ -231,8 +219,7 @@ public abstract class AbstractMediaStream implements MediaStream
      * {@inheritDoc}
      */
     @Override
-    public MediaFormat getFormat(byte pt)
-    {
+    public MediaFormat getFormat(byte pt) {
         return null;
     }
 
@@ -240,25 +227,14 @@ public abstract class AbstractMediaStream implements MediaStream
      * {@inheritDoc}
      */
     @Override
-    public void setTransportCCEngine(TransportCCEngine engine)
-    {
+    public void setTransportCCEngine(TransportCCEngine engine) {
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public REDBlock getPrimaryREDBlock(ByteArrayBuffer baf)
-    {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public REDBlock getPrimaryREDBlock(RawPacket pkt)
-    {
+    public REDBlock getPrimaryREDBlock(RawPacket pkt) {
         return null;
     }
 }

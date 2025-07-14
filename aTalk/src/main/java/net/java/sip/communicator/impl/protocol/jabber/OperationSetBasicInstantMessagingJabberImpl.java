@@ -12,6 +12,7 @@ import android.text.Html;
 import android.text.TextUtils;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -162,7 +163,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * A prefix helps to make sure that thread ID's are unique across multiple instances.
      */
-    private static final String prefix = RandomStringUtils.random(5);
+    private static final String prefix = RandomStringUtils.secure().next(5);
 
     /**
      * Keeps track of the current increment, which is appended to the prefix to forum a unique thread ID.

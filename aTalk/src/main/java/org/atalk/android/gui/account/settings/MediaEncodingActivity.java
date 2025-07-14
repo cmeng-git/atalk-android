@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 
+import androidx.core.content.IntentCompat;
+import androidx.core.os.BundleCompat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.java.sip.communicator.service.protocol.EncodingsRegistrationUtil;
+import net.java.sip.communicator.service.protocol.EncodingsRegistration;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
 import org.atalk.android.BaseActivity;
@@ -37,10 +40,10 @@ import org.jetbrains.annotations.NotNull;
  * Activity allows user to edit audio or video encodings settings and set their priority.
  * The intent starting this activity must be parametrized with:<br/>
  * - {@link #ENC_MEDIA_TYPE_KEY} with {@link MediaType} which specifies if audio or video encoding will be edited<br/>
- * - {@link #EXTRA_KEY_ENC_REG} with {@link EncodingsRegistrationUtil} instance which  encoding properties<br/>
+ * - {@link #EXTRA_KEY_ENC_REG} with {@link EncodingsRegistration} instance which  encoding properties<br/>
  * <br/>
  * After activity finishes it's job it return in {@link Intent} the
- * {@link EncodingsRegistrationUtil} under its key and additional <code>boolean</code> flag
+ * {@link EncodingsRegistration} under its key and additional <code>boolean</code> flag
  * indicating whether any changes has been made under key: {@link #EXTRA_KEY_HAS_CHANGES}.
  *
  * @author Pawel Domas
@@ -54,7 +57,7 @@ public class MediaEncodingActivity extends BaseActivity
     public static final String ENC_MEDIA_TYPE_KEY = "media_type";
 
     /**
-     * The intent's key for {@link EncodingsRegistrationUtil}
+     * The intent's key for {@link EncodingsRegistration}
      */
     public static final String EXTRA_KEY_ENC_REG = "encRegObj";
 
@@ -89,9 +92,9 @@ public class MediaEncodingActivity extends BaseActivity
     private boolean isOverrideEncodings;
 
     /**
-     * The {@link EncodingsRegistrationUtil} object that stores encoding and their priorities
+     * The {@link EncodingsRegistration} object that stores encoding and their priorities
      */
-    private EncodingsRegistrationUtil mEncReg;
+    private EncodingsRegistration mEncReg;
 
     /**
      * Flag indicating whether any changes has been made to the configuration
@@ -134,24 +137,27 @@ public class MediaEncodingActivity extends BaseActivity
     private void loadEncodings(Bundle savedInstanceState) {
         Intent intent = getIntent();
         if (savedInstanceState == null) {
-            mEncReg = (EncodingsRegistrationUtil) intent.getSerializableExtra(EXTRA_KEY_ENC_REG);
+            mEncReg =  IntentCompat.getSerializableExtra(intent, EXTRA_KEY_ENC_REG, EncodingsRegistration.class);
         }
         else {
-            mEncReg = (EncodingsRegistrationUtil) savedInstanceState.getSerializable(STATE_ENC_REG);
+            mEncReg = BundleCompat.getSerializable(savedInstanceState, STATE_ENC_REG, EncodingsRegistration.class);
             hasChanges = savedInstanceState.getBoolean(STATE_HAS_CHANGES);
         }
 
-        isOverrideEncodings = mEncReg.isOverrideEncodings();
-        Map<String, String> encodingProperties = mEncReg.getEncodingProperties();
+        Map<String, String> encodingProperties = new HashMap<>();
+        if (mEncReg != null) {
+            isOverrideEncodings = mEncReg.isOverrideEncodings();
+            encodingProperties = mEncReg.getEncodingProperties();
+        }
 
         MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
         if (mediaServiceImpl != null) {
-            this.encodingConfiguration = mediaServiceImpl.createEmptyEncodingConfiguration();
+            encodingConfiguration = mediaServiceImpl.createEmptyEncodingConfiguration();
             encodingConfiguration.loadProperties(encodingProperties, ProtocolProviderFactory.ENCODING_PROP_PREFIX);
             encodingConfiguration.storeProperties(encodingProperties,
                     ProtocolProviderFactory.ENCODING_PROP_PREFIX + ".");
 
-            this.mediaType = (MediaType) intent.getSerializableExtra(ENC_MEDIA_TYPE_KEY);
+            this.mediaType = IntentCompat.getSerializableExtra(intent, ENC_MEDIA_TYPE_KEY, MediaType.class);
             if (savedInstanceState == null) {
                 List<MediaFormat> encodings = getEncodings(encodingConfiguration, mediaType);
                 List<Integer> priorities = getPriorities(encodings, encodingConfiguration);
@@ -285,7 +291,6 @@ public class MediaEncodingActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         encodingsFragment.setEnabled(isOverrideEncodings);
-
         return true;
     }
 

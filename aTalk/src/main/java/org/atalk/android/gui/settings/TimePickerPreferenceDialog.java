@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TimePicker;
 
+import androidx.annotation.NonNull;
 import androidx.preference.PreferenceDialogFragmentCompat;
 
 /**
@@ -50,7 +51,7 @@ public class TimePickerPreferenceDialog extends PreferenceDialogFragmentCompat {
      * @return a reference copy of the TimePicker
      */
     @Override
-    protected View onCreateDialogView(Context context) {
+    protected View onCreateDialogView(@NonNull Context context) {
         timePicker = new TimePicker(context);
         timePicker.setIs24HourView(android.text.format.DateFormat.is24HourFormat(getContext()));
         return timePicker;
@@ -67,8 +68,8 @@ public class TimePickerPreferenceDialog extends PreferenceDialogFragmentCompat {
         TimePreference pref = (TimePreference) getPreference();
         long time = pref.getPersistedValue();
 
-        timePicker.setCurrentHour((int) ((time % (24 * 60)) / 60));
-        timePicker.setCurrentMinute((int) ((time % (24 * 60)) % 60));
+        timePicker.setHour((int) ((time % (24 * 60)) / 60));
+        timePicker.setMinute((int) ((time % (24 * 60)) % 60));
     }
 
     /**
@@ -81,7 +82,7 @@ public class TimePickerPreferenceDialog extends PreferenceDialogFragmentCompat {
         // Save the user changed settings
         if (positiveResult) {
             TimePreference pref = (TimePreference) getPreference();
-            pref.setTime(timePicker.getCurrentHour() * 60 + timePicker.getCurrentMinute());
+            pref.setTime(timePicker.getHour() * 60L + timePicker.getMinute());
         }
     }
 }

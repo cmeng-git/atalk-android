@@ -10,7 +10,7 @@ LOCAL_CFLAGS = -DFIXED_POINT -DUSE_KISS_FFT -DEXPORT="" -UHAVE_CONFIG_H
 
 ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
     LOCAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp -fslp-vectorize-aggressive
-    LOCAL_LDFLAGS := -Wl,--fix-cortex-a8
+    LOCAL_LDFLAGS := -Wl,-z,max-page-size=16384,--fix-cortex-a8
 endif
 
 LOCAL_C_INCLUDES += \

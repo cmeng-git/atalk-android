@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -583,7 +584,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
         // has refreshed the listView and auto onScroll(); Too earlier access cause deleted
         // viewHolders still appear in chat view.
         if (lastDeletedMessageDate != null) {
-            new Handler().postDelayed(() -> {
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 int deletedTop = chatListAdapter.getMessagePosFromDate(lastDeletedMessageDate);
                 // Timber.d("Last deleted message position: %s; %s", deletedTop, lastDeletedMessageDate);
                 lastDeletedMessageDate = null;

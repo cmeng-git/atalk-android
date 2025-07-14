@@ -26,6 +26,7 @@ import android.media.PlaybackParams;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.text.TextUtils;
 
@@ -156,7 +157,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
                 break;
 
             case ACTION_RECORDING:
-                mHandlerRecord = new Handler();
+                mHandlerRecord = new Handler(Looper.getMainLooper());
                 recordAudio();
                 break;
 
@@ -223,7 +224,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
             return false;
 
         if (mHandlerPlayback == null)
-            mHandlerPlayback = new Handler();
+            mHandlerPlayback = new Handler(Looper.getMainLooper());
 
         mPlayer = new MediaPlayer();
         uriPlayers.put(uri, mPlayer);
@@ -257,7 +258,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
             return;
 
         if (mHandlerPlayback == null)
-            mHandlerPlayback = new Handler();
+            mHandlerPlayback = new Handler(Looper.getMainLooper());
 
         // Check player status on return to chatSession before start new
         mPlayer = uriPlayers.get(uri);
@@ -545,7 +546,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
             mRecorder.prepare();
             mRecorder.start();
         } catch (IllegalStateException e) {
-            e.printStackTrace();
+            Timber.w("Record audio: %s", e.getMessage());
         } catch (IOException e) {
             Timber.e("io problems while recording [%s]: %s", audioFile.getAbsolutePath(), e.getMessage());
         }

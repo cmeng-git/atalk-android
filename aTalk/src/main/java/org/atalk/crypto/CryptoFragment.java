@@ -294,7 +294,7 @@ public class CryptoFragment extends BaseFragment
             mMHS.setSessionChatType(activeChat.getChatSession(), mChatType);
             return true;
         }
-        return super.onOptionsItemSelected(menuItem);
+        return false;
     }
 
     /**
@@ -1135,17 +1135,17 @@ public class CryptoFragment extends BaseFragment
             switch (chatType) {
                 case MSGTYPE_NORMAL:
                 case MSGTYPE_MUC_NORMAL:
-                    onOptionsItemSelected(mNone);
+                    onMenuItemSelected(mNone);
                     break;
 
                 case MSGTYPE_OMEMO:
                     // Do not emulate Omemo button press if mOmemoManager is null
                     if (mOmemoManager != null) {
-                        onOptionsItemSelected(mOmemo);
+                        onMenuItemSelected(mOmemo);
                     }
                     break;
                 case MSGTYPE_OTR:
-                    onOptionsItemSelected(mOtr);
+                    onMenuItemSelected(mOtr);
             }
         });
     }

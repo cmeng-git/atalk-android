@@ -27,6 +27,7 @@ import android.webkit.HttpAuthHandler;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.WebViewDatabase;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
@@ -59,10 +60,20 @@ public class MyWebViewClient extends WebViewClient {
         mContext = viewFragment.getContext();
     }
 
+    /**
+     * If you click on any link inside the webpage of the WebView, that page will not be loaded inside your WebView.
+     * In order to do that you need to extend your class from WebViewClient and override the method below.
+     * https://developer.android.com/guide/webapps/webview#HandlingNavigation
+     *
+     * @param webView The WebView that is initiating the callback.
+     * @param request Object containing the details of the request.
+     *
+     * @return {@code true} to cancel the current load, otherwise return {@code false}.
+     */
     @Override
-    public boolean shouldOverrideUrlLoading(WebView webView, String url) {
-        // Timber.d("shouldOverrideUrlLoading for url (webView url): %s (%s)", url, webView.getUrl());
+    public boolean shouldOverrideUrlLoading(WebView webView, WebResourceRequest request) {
         // This user clicked url is from the same website, so do not override; let MyWebViewClient load the page
+        String url = request.getUrl().toString();
         if (isDomainMatch(webView, url)) {
             viewFragment.addLastUrl(url);
             return false;
@@ -84,37 +95,15 @@ public class MyWebViewClient extends WebViewClient {
         return true;
     }
 
-    /**
-     * If you click on any link inside the webpage of the WebView, that page will not be loaded inside your WebView.
-     * In order to do that you need to extend your class from WebViewClient and override the method below.
-     * https://developer.android.com/guide/webapps/webview#HandlingNavigation
-     *
-     * @param view The WebView that is initiating the callback.
-     * @param request Object containing the details of the request.
-     *
-     * @return {@code true} to cancel the current load, otherwise return {@code false}.
-     */
     @Override
-    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        String url = request.getUrl().toString();
-        return shouldOverrideUrlLoading(view, url);
-    }
-
-    // public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
-    // {
-    //     view.loadUrl("file:///android_asset/movim/error.html");
-    // }
-
-    // public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error)
-    // {
-    //     // view.loadUrl("file:///android_asset/movim/ssl.html");
-    // }
-
-    @Override
-    public void onReceivedHttpAuthRequest(final WebView view, final HttpAuthHandler handler, final String host,
+    public void onReceivedHttpAuthRequest(final WebView webView, final HttpAuthHandler handler, final String host,
             final String realm) {
         final String[] httpAuth = new String[2];
-        final String[] viewAuth = view.getHttpAuthUsernamePassword(host, realm);
+        final String[] viewAuth = webView.getHttpAuthUsernamePassword(host, realm);
+
+        // Required API-26
+        // WebViewDatabase webViewDatabase =  WebViewDatabase.getInstance(mContext);
+        // final String[] viewAuth = webViewDatabase.getHttpAuthUsernamePassword(host, realm);
 
         httpAuth[0] = (viewAuth != null) ? viewAuth[0] : "";
         httpAuth[1] = (viewAuth != null) ? viewAuth[1] : "";
@@ -125,7 +114,7 @@ public class MyWebViewClient extends WebViewClient {
         }
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View authView = inflater.inflate(R.layout.http_login_dialog, view, false);
+        View authView = inflater.inflate(R.layout.http_login_dialog, webView, false);
 
         final EditText usernameInput = authView.findViewById(R.id.username);
         usernameInput.setText(httpAuth[0]);
@@ -147,7 +136,7 @@ public class MyWebViewClient extends WebViewClient {
         authView.findViewById(R.id.button_signin).setOnClickListener(v -> {
             httpAuth[0] = ViewUtil.toString(usernameInput);
             httpAuth[1] = ViewUtil.toString(mPasswordField);
-            view.setHttpAuthUsernamePassword(host, realm, httpAuth[0], httpAuth[1]);
+            webView.setHttpAuthUsernamePassword(host, realm, httpAuth[0], httpAuth[1]);
             handler.proceed(httpAuth[0], httpAuth[1]);
             dialog.dismiss();
         });

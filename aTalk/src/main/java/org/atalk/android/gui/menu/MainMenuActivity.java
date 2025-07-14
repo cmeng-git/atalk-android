@@ -18,7 +18,6 @@
 package org.atalk.android.gui.menu;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -61,6 +60,7 @@ import org.atalk.android.gui.contactlist.AddContactActivity;
 import org.atalk.android.gui.contactlist.ContactBlockListActivity;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
+import org.atalk.android.gui.dialogs.ProgressDialog;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.plugin.geolocation.GeoLocationActivity;
 import org.atalk.android.plugin.permissions.PermissionsActivity;
@@ -235,14 +235,14 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         if (disableMediaServiceOnFault || (videoBridgeMenuItem == null))
             return;
 
-        final ProgressDialog progressDialog;
+        final long pDialogId;
         if (!done) {
-            progressDialog = ProgressDialog.show(MainMenuActivity.this,
+            pDialogId = ProgressDialog.show(MainMenuActivity.this,
                     getString(R.string.please_wait),
-                    getString(R.string.server_info_fetching), true, true);
+                    getString(R.string.server_info_fetching), true);
         }
         else {
-            progressDialog = null;
+            pDialogId = -1;
         }
 
         new Thread(() -> {
@@ -252,9 +252,9 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
             } catch (Exception ex) {
                 Timber.e("Init VideoBridge: %s ", ex.getMessage());
             }
-            if (progressDialog != null && progressDialog.isShowing()) {
+            if (ProgressDialog.isShowing(pDialogId)) {
+                ProgressDialog.dismiss(pDialogId);
                 done = true;
-                progressDialog.dismiss();
             }
         }).start();
     }

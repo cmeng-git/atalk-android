@@ -136,8 +136,8 @@ public class CaptchaDialog extends Dialog {
         // Scale the captcha to the display resolution
         DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
         Bitmap captcha = Bitmap.createScaledBitmap(mCaptcha,
-                (int) (mCaptcha.getWidth() * metrics.scaledDensity),
-                (int) (mCaptcha.getHeight() * metrics.scaledDensity), false);
+                (int) (mCaptcha.getWidth() * metrics.density),
+                (int) (mCaptcha.getHeight() * metrics.density), false);
         mImageView.setImageBitmap(captcha);
 
         Body bodyExt = mMessage.getExtension(Body.class);

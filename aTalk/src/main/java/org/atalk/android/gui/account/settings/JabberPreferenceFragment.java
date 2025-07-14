@@ -12,13 +12,14 @@ import android.text.TextUtils;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
+import androidx.core.content.IntentCompat;
 import androidx.preference.Preference;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.plugin.jabberaccregwizz.AccountRegistrationImpl;
-import net.java.sip.communicator.service.protocol.EncodingsRegistrationUtil;
+import net.java.sip.communicator.service.protocol.EncodingsRegistration;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration;
@@ -95,7 +96,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
      * {@inheritDoc}
      */
     @Override
-    protected EncodingsRegistrationUtil getEncodingsRegistration() {
+    protected EncodingsRegistration getEncodingsRegistration() {
         return jbrReg.getEncodingsRegistration();
     }
 
@@ -211,23 +212,27 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
+                    if (data == null)
+                        return;
 
                     boolean hasChanges = data.getBooleanExtra(SecurityActivity.EXTR_KEY_HAS_CHANGES, false);
                     if (!hasChanges)
                         return;
 
-                    SecurityAccountRegistration secReg = (SecurityAccountRegistration)
-                            data.getSerializableExtra(SecurityActivity.EXTR_KEY_SEC_REGISTRATION);
+                    SecurityAccountRegistration secReg = IntentCompat.getSerializableExtra(data,
+                            SecurityActivity.EXTR_KEY_SEC_REGISTRATION, SecurityAccountRegistration.class);
 
-                    SecurityAccountRegistration myReg = getSecurityRegistration();
-                    myReg.setCallEncryption(secReg.isCallEncryption());
-                    myReg.setEncryptionProtocol(secReg.getEncryptionProtocol());
-                    myReg.setEncryptionProtocolStatus(secReg.getEncryptionProtocolStatus());
-                    myReg.setSipZrtpAttribute(secReg.isSipZrtpAttribute());
-                    myReg.setZIDSalt(secReg.getZIDSalt());
-                    myReg.setDtlsCertSa(secReg.getDtlsCertSa());
-                    myReg.setSavpOption(secReg.getSavpOption());
-                    myReg.setSDesCipherSuites(secReg.getSDesCipherSuites());
+                    if (secReg != null) {
+                        SecurityAccountRegistration myReg = getSecurityRegistration();
+                        myReg.setCallEncryption(secReg.isCallEncryption());
+                        myReg.setEncryptionProtocol(secReg.getEncryptionProtocol());
+                        myReg.setEncryptionProtocolStatus(secReg.getEncryptionProtocolStatus());
+                        myReg.setSipZrtpAttribute(secReg.isSipZrtpAttribute());
+                        myReg.setZIDSalt(secReg.getZIDSalt());
+                        myReg.setDtlsCertSa(secReg.getDtlsCertSa());
+                        myReg.setSavpOption(secReg.getSavpOption());
+                        myReg.setSDesCipherSuites(secReg.getSDesCipherSuites());
+                    }
                     uncommittedChanges = true;
                 }
             }
@@ -242,7 +247,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
         Intent intent = new Intent(mActivity, MediaEncodingActivity.class);
         intent.putExtra(MediaEncodingActivity.ENC_MEDIA_TYPE_KEY, mediaType);
 
-        EncodingsRegistrationUtil encodingsRegistration = getEncodingsRegistration();
+        EncodingsRegistration encodingsRegistration = getEncodingsRegistration();
         if (encodingsRegistration == null)
             throw new NullPointerException();
         intent.putExtra(MediaEncodingActivity.EXTRA_KEY_ENC_REG, encodingsRegistration);
@@ -256,17 +261,20 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
+                    if (data == null)
+                        return;
 
                     boolean hasChanges = data.getBooleanExtra(MediaEncodingActivity.EXTRA_KEY_HAS_CHANGES, false);
                     if (!hasChanges)
                         return;
 
-                    EncodingsRegistrationUtil encReg = (EncodingsRegistrationUtil)
-                            data.getSerializableExtra(MediaEncodingActivity.EXTRA_KEY_ENC_REG);
-
-                    EncodingsRegistrationUtil myReg = getEncodingsRegistration();
-                    myReg.setOverrideEncodings(encReg.isOverrideEncodings());
-                    myReg.setEncodingProperties(encReg.getEncodingProperties());
+                    EncodingsRegistration encReg = IntentCompat.getSerializableExtra(data,
+                            MediaEncodingActivity.EXTRA_KEY_ENC_REG, EncodingsRegistration.class);
+                    if (encReg != null) {
+                        EncodingsRegistration myReg = getEncodingsRegistration();
+                        myReg.setOverrideEncodings(encReg.isOverrideEncodings());
+                        myReg.setEncodingProperties(encReg.getEncodingProperties());
+                    }
                     uncommittedChanges = true;
                 }
             }

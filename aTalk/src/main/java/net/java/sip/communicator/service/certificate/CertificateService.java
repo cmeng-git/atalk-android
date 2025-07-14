@@ -1,12 +1,12 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may
  * obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the
  * License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for
@@ -32,15 +32,13 @@ import javax.net.ssl.X509TrustManager;
  * @author Ingo Bauersachs
  * @author Eng Chong Meng
  */
-public interface CertificateService
-{
+public interface CertificateService {
     // ------------------------------------------------------------------------
     // Configuration property names
     // ------------------------------------------------------------------------
 
     /**
      * Property that is being applied to the system properties for PKIX TrustManager Support
-     *
      * <code>com.sun.net.ssl.checkRevocation</code> and
      * <code>com.sun.security.enableCRLDP</code>
      * <code>ocsp.enable</code>
@@ -154,6 +152,7 @@ public interface CertificateService
      * valid for a specific server or client.
      *
      * @return An SSL context based on a user confirming trust manager.
+     *
      * @throws GeneralSecurityException a general security-related exception
      */
     SSLContext getSSLContext()
@@ -163,7 +162,9 @@ public interface CertificateService
      * Get an SSL Context with the specified trustManager.
      *
      * @param trustManager The trustManager that will be used by the created SSLContext
+     *
      * @return An SSL context based on the supplied trust manager.
+     *
      * @throws GeneralSecurityException a general security-related exception
      */
     SSLContext getSSLContext(X509TrustManager trustManager)
@@ -175,7 +176,9 @@ public interface CertificateService
      * @param clientCertConfig The ID of a client certificate configuration entry that is to be
      * used when the server asks for a client TLS certificate
      * @param trustManager The trustManager that will be used by the created SSLContext
+     *
      * @return An SSL context based on the supplied trust manager.
+     *
      * @throws GeneralSecurityException a general security-related exception
      */
     SSLContext getSSLContext(String clientCertConfig, X509TrustManager trustManager)
@@ -186,7 +189,9 @@ public interface CertificateService
      *
      * @param keyManagers The key manager(s) to be used for client authentication
      * @param trustManager The trustManager that will be used by the created SSLContext
+     *
      * @return An SSL context based on the supplied trust manager.
+     *
      * @throws GeneralSecurityException a general security-related exception
      */
     SSLContext getSSLContext(KeyManager[] keyManagers, X509TrustManager trustManager)
@@ -201,7 +206,9 @@ public interface CertificateService
      *
      * @param identitiesToTest when not <code>null</code>, the values are assumed to be hostNames for invocations of
      * checkServerTrusted and e-mail addresses for invocations of checkClientTrusted
+     *
      * @return TrustManager to use in an SSLContext
+     *
      * @throws GeneralSecurityException a general security-related exception
      */
     X509TrustManager getTrustManager(Iterable<String> identitiesToTest)
@@ -210,7 +217,9 @@ public interface CertificateService
     /**
      * @param identityToTest when not <code>null</code>, the value is assumed to be a hostname for invocations of
      * checkServerTrusted and an e-mail address for invocations of checkClientTrusted
+     *
      * @return TrustManager to use in an SSLContext
+     *
      * @throws GeneralSecurityException a general security-related exception
      * @see #getTrustManager(Iterable)
      */
@@ -221,7 +230,9 @@ public interface CertificateService
      * @param identityToTest The identity to match against the supplied verifiers.
      * @param clientVerifier The verifier to use in calls to checkClientTrusted
      * @param serverVerifier The verifier to use in calls to checkServerTrusted
+     *
      * @return TrustManager to use in an SSLContext
+     *
      * @see #getTrustManager(Iterable, CertificateMatcher, CertificateMatcher)
      */
     X509TrustManager getTrustManager(final String identityToTest,
@@ -237,7 +248,9 @@ public interface CertificateService
      * @param identitiesToTest The identities to match against the supplied verifiers.
      * @param clientVerifier The verifier to use in calls to checkClientTrusted
      * @param serverVerifier The verifier to use in calls to checkServerTrusted
+     *
      * @return TrustManager to use in an SSLContext
+     *
      * @throws GeneralSecurityException a general security-related exception
      */
     X509TrustManager getTrustManager(final Iterable<String> identitiesToTest,
@@ -250,6 +263,7 @@ public interface CertificateService
      * @param cert The certificate to add to the trust store.
      * @param trustFor The certificate owner
      * @param trustMode Whether to trust the certificate permanently or only for the current session.
+     *
      * @throws CertificateException when the thumbprint could not be calculated
      */
     void addCertificateToTrust(Certificate cert, String trustFor, int trustMode)

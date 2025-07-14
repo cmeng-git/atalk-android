@@ -228,7 +228,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier {
 
                     Object o = null;
                     try {
-                        o = Class.forName(className).newInstance();
+                        o = Class.forName(className).getDeclaredConstructor().newInstance();
                     } catch (ClassNotFoundException e) {
                         Timber.e("Class not found: %s", e.getMessage());
                     } catch (Throwable t) {
@@ -404,7 +404,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier {
         String className = getRendererClassName();
         if (className != null) {
             try {
-                return (Renderer) Class.forName(className).newInstance();
+                return (Renderer) Class.forName(className).getDeclaredConstructor().newInstance();
             } catch (Throwable t) {
                 if (t instanceof ThreadDeath)
                     throw (ThreadDeath) t;

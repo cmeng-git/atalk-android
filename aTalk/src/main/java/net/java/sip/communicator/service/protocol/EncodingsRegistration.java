@@ -19,7 +19,7 @@ import java.util.Map;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class EncodingsRegistrationUtil implements Serializable
+public class EncodingsRegistration implements Serializable
 {
     /**
      * Whether to override global encoding settings.

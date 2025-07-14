@@ -26,8 +26,7 @@ import org.ice4j.util.RateStatistics;
  * @author Boris Grozev
  */
 public class SendTrackStatsImpl extends AbstractTrackStats
-    implements SendTrackStats
-{
+        implements SendTrackStats {
     /**
      * The highest sent sequence number.
      */
@@ -50,29 +49,28 @@ public class SendTrackStatsImpl extends AbstractTrackStats
 
     /**
      * Initializes a new instance.
+     *
      * @param interval the interval in milliseconds over which average bit- and
      * packet-rates will be computed.
      */
-    SendTrackStatsImpl(int interval, long ssrc)
-    {
+    SendTrackStatsImpl(int interval, long ssrc) {
         super(interval, ssrc);
     }
 
     /**
      * Notifies this instance that an RTP packet with a particular sequence
      * number was sent (or is about to be sent).
+     *
      * @param seq the RTP sequence number.
      * @param length the length in bytes.
      */
-    void rtpPacketSent(int seq, int length)
-    {
+    void rtpPacketSent(int seq, int length) {
         long now = System.currentTimeMillis();
 
         // update the bit- and packet-rate
         super.packetProcessed(length, now, true);
 
-        if (highestSeq == -1)
-        {
+        if (highestSeq == -1) {
             highestSeq = seq;
             return;
         }
@@ -84,24 +82,20 @@ public class SendTrackStatsImpl extends AbstractTrackStats
         // between the sender and us, and we need to take this into account
         // when calculating packet loss to the receiver.
         int diff = RTPUtils.getSequenceNumberDelta(seq, highestSeq);
-        if (diff <= 0)
-        {
+        if (diff <= 0) {
             // An old packet, already counted as not send. Un-not-send it ;)
             packetsNotSentRate.update(-1, now);
         }
-        else
-        {
+        else {
             // A newer packet.
             highestSeq = seq;
 
             // diff = 1 is the "normal" case (i.e. we received the very next
             // packet).
-            if (diff > 1)
-            {
+            if (diff > 1) {
                 packetsNotSentRate.update(diff - 1, now);
             }
         }
-
         // update bytes, packets, loss...
     }
 
@@ -113,11 +107,9 @@ public class SendTrackStatsImpl extends AbstractTrackStats
      * (i.e. in the case of jitsi-videobridge the loss rate from the sender to the bridge).
      */
     @Override
-    public double getLossRate()
-    {
+    public double getLossRate() {
         long now = System.currentTimeMillis();
-        if (fractionLostLastUpdate == -1 || now - fractionLostLastUpdate > 8000)
-        {
+        if (fractionLostLastUpdate == -1 || now - fractionLostLastUpdate > 8000) {
             // We haven't received a RR recently, so assume no loss.
             return 0;
         }
@@ -127,8 +119,8 @@ public class SendTrackStatsImpl extends AbstractTrackStats
         long packetsSent = packetRate.getAccumulatedCount(now);
 
         double fractionNotSent
-            = (packetsSent+packetsNotSent > 0)
-            ? (packetsNotSent / (packetsNotSent+packetsSent)) : 0;
+                = (packetsSent + packetsNotSent > 0)
+                ? ((double) packetsNotSent / (packetsNotSent + packetsSent)) : 0;
 
         return Math.max(0, fractionLost - fractionNotSent);
     }
@@ -137,29 +129,28 @@ public class SendTrackStatsImpl extends AbstractTrackStats
      * {@inheritDoc}
      */
     @Override
-    public int getHighestSent()
-    {
+    public int getHighestSent() {
         return highestSeq;
     }
 
     /**
      * Notifies this instance that an RTCP packet with a given length in bytes
      * was sent (or is about to be sent).
+     *
      * @param length
      */
-    void rtcpPacketSent(int length)
-    {
+    void rtcpPacketSent(int length) {
         super.packetProcessed(length, System.currentTimeMillis(), false);
     }
 
     /**
      * Notifies this instance that an RTCP Receiver Report with a given value
      * for the "fraction lost" field was received.
+     *
      * @param fractionLost the value of the "fraction lost" field from an RTCP
      * Receiver Report as an unsigned integer.
      */
-    void rtcpReceiverReportReceived(int fractionLost)
-    {
+    void rtcpReceiverReportReceived(int fractionLost) {
         this.fractionLost = fractionLost / 256d;
         this.fractionLostLastUpdate = System.currentTimeMillis();
     }

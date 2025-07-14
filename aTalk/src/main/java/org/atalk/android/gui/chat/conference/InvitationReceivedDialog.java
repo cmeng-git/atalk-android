@@ -34,6 +34,8 @@ import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.ViewUtil;
 import org.jxmpp.jid.EntityJid;
 
+import timber.log.Timber;
+
 /**
  * The dialog that pops up when a chat room invitation is received.
  *
@@ -153,7 +155,7 @@ public class InvitationReceivedDialog extends Dialog {
     /**
      * Handles the <code>ActionEvent</code> triggered when one user clicks on one of the buttons.
      */
-    private boolean onAcceptClicked() {
+    private void onAcceptClicked() {
         if (mInvitationAdHoc == null) {
             MUCActivator.getMUCService().acceptInvitation(mInvitation);
         }
@@ -161,10 +163,9 @@ public class InvitationReceivedDialog extends Dialog {
             try {
                 mMultiUserChatManager.acceptInvitation(mInvitationAdHoc, mMultiUserChatAdHocOpSet);
             } catch (OperationFailedException e1) {
-                e1.printStackTrace();
+                Timber.w("Invitation Accepted: %s", e1.getMessage());
             }
         }
-        return true;
     }
 
     private void onRejectClicked() {
@@ -173,7 +174,7 @@ public class InvitationReceivedDialog extends Dialog {
             try {
                 MUCActivator.getMUCService().rejectInvitation(mMultiUserChatOpSet, mInvitation, reasonField);
             } catch (OperationFailedException e) {
-                e.printStackTrace();
+                Timber.w("Invitation Rejected: %s", e.getMessage());
             }
         }
         if (mMultiUserChatAdHocOpSet != null)

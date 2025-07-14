@@ -7,12 +7,6 @@ package net.java.sip.communicator.service.protocol;
 
 import static org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl.DEFAULT_SIGNATURE_AND_HASH_ALGORITHM;
 
-import net.java.sip.communicator.util.UtilActivator;
-
-import org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl;
-import org.atalk.service.neomedia.SDesControl;
-import org.atalk.service.neomedia.SrtpControlType;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -21,6 +15,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.java.sip.communicator.util.UtilActivator;
+
+import org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl;
+import org.atalk.service.neomedia.SDesControl;
+import org.atalk.service.neomedia.SrtpControlType;
 
 /**
  * The <code>SecurityAccountRegistration</code> is used to determine security options for different
@@ -33,8 +33,7 @@ import java.util.Map;
  * @author Eng Chong Meng
  * @author MilanKral
  */
-public abstract class SecurityAccountRegistration implements Serializable
-{
+public abstract class SecurityAccountRegistration implements Serializable {
     /**
      * The encryption protocols managed by this SecurityPanel.
      */
@@ -89,17 +88,14 @@ public abstract class SecurityAccountRegistration implements Serializable
     /**
      * Initializes the security account registration properties with the default values.
      */
-    public SecurityAccountRegistration()
-    {
+    public SecurityAccountRegistration() {
         // Sets the default values.
-        mEncryptionProtocol = new HashMap<String, Integer>()
-        {{
+        mEncryptionProtocol = new HashMap<String, Integer>() {{
             put("ZRTP", 0);
             put("DTLS_SRTP", 1);
         }};
 
-        mEncryptionProtocolStatus = new HashMap<String, Boolean>()
-        {{
+        mEncryptionProtocolStatus = new HashMap<String, Boolean>() {{
             put("ZRTP", true);
             put("DTLS_SRTP", true);
         }};
@@ -114,8 +110,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @return If call encryption is enabled
      */
-    public boolean isCallEncryption()
-    {
+    public boolean isCallEncryption() {
         return mCallEncryptionEnable;
     }
 
@@ -124,8 +119,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @param callEncryption if we want to set call encryption on as default
      */
-    public void setCallEncryption(boolean callEncryption)
-    {
+    public void setCallEncryption(boolean callEncryption) {
         mCallEncryptionEnable = callEncryption;
     }
 
@@ -134,8 +128,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @return include the ZRTP attribute to SIP/SDP or to Jabber/ Jingle IQ
      */
-    public boolean isSipZrtpAttribute()
-    {
+    public boolean isSipZrtpAttribute() {
         return mSipZrtpAttribute;
     }
 
@@ -144,8 +137,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @param sipZrtpAttribute include the ZRTP attribute to SIP/SDP or to Jabber/IQ
      */
-    public void setSipZrtpAttribute(boolean sipZrtpAttribute)
-    {
+    public void setSipZrtpAttribute(boolean sipZrtpAttribute) {
         mSipZrtpAttribute = sipZrtpAttribute;
     }
 
@@ -154,8 +146,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @return True if SDES is enabled. False, otherwise.
      */
-    public boolean isSDesEnable()
-    {
+    public boolean isSDesEnable() {
         return mSdesEnable;
     }
 
@@ -164,8 +155,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @param sdesEnable True to enable SDES. False, otherwise.
      */
-    public void setSDesEnable(boolean sdesEnable)
-    {
+    public void setSDesEnable(boolean sdesEnable) {
         mSdesEnable = sdesEnable;
     }
 
@@ -174,8 +164,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @return The list of cipher suites enabled for SDES. Null if no cipher suite is enabled.
      */
-    public String getSDesCipherSuites()
-    {
+    public String getSDesCipherSuites() {
         return mSdesCipherSuites;
     }
 
@@ -184,8 +173,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @param cipherSuites The list of cipher suites enabled for SDES. Null if no cipher suite is enabled.
      */
-    public void setSDesCipherSuites(String cipherSuites)
-    {
+    public void setSDesCipherSuites(String cipherSuites) {
         mSdesCipherSuites = cipherSuites;
     }
 
@@ -194,16 +182,14 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @return the tls certificate signature algorithm.
      */
-    public String getDtlsCertSa()
-    {
+    public String getDtlsCertSa() {
         return mTlsCertificateSA;
     }
 
     /**
      * Set the tls certificate signature algorithm.
      */
-    public void setDtlsCertSa(String certSA)
-    {
+    public void setDtlsCertSa(String certSA) {
         mTlsCertificateSA = certSA;
     }
 
@@ -224,8 +210,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @return The map between the encryption protocols and their priority order.
      */
-    public Map<String, Integer> getEncryptionProtocol()
-    {
+    public Map<String, Integer> getEncryptionProtocol() {
         return mEncryptionProtocol;
     }
 
@@ -234,8 +219,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @param encryptionProtocol The map between the encryption protocols and their priority order.
      */
-    public void setEncryptionProtocol(Map<String, Integer> encryptionProtocol)
-    {
+    public void setEncryptionProtocol(Map<String, Integer> encryptionProtocol) {
         mEncryptionProtocol = encryptionProtocol;
     }
 
@@ -244,8 +228,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @return The map between the encryption protocols and their status.
      */
-    public Map<String, Boolean> getEncryptionProtocolStatus()
-    {
+    public Map<String, Boolean> getEncryptionProtocolStatus() {
         return mEncryptionProtocolStatus;
     }
 
@@ -254,8 +237,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @param encryptionProtocolStatus The map between the encryption protocols and their status.
      */
-    public void setEncryptionProtocolStatus(Map<String, Boolean> encryptionProtocolStatus)
-    {
+    public void setEncryptionProtocolStatus(Map<String, Boolean> encryptionProtocolStatus) {
         mEncryptionProtocolStatus = encryptionProtocolStatus;
     }
 
@@ -264,8 +246,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @param properties The property list to fill in.
      */
-    private void addEncryptionProtocolsToProperties(Map<String, String> properties)
-    {
+    private void addEncryptionProtocolsToProperties(Map<String, String> properties) {
         for (Map.Entry<String, Integer> e : getEncryptionProtocol().entrySet()) {
             properties.put(ProtocolProviderFactory.ENCRYPTION_PROTOCOL + "." + e.getKey(), e.getValue().toString());
         }
@@ -276,8 +257,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @param properties The property list to fill in.
      */
-    private void addEncryptionProtocolStatusToProperties(Map<String, String> properties)
-    {
+    private void addEncryptionProtocolStatusToProperties(Map<String, String> properties) {
         for (Map.Entry<String, Boolean> e : getEncryptionProtocolStatus().entrySet()) {
             properties.put(ProtocolProviderFactory.ENCRYPTION_PROTOCOL_STATUS + "." + e.getKey(), e.getValue().toString());
         }
@@ -288,8 +268,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @param propertiesMap the map that will be used for storing security properties held by this object.
      */
-    public void storeProperties(Map<String, String> propertiesMap)
-    {
+    public void storeProperties(Map<String, String> propertiesMap) {
         propertiesMap.put(ProtocolProviderFactory.DEFAULT_ENCRYPTION, Boolean.toString(isCallEncryption()));
 
         // Sets the ordered list of encryption protocols.
@@ -309,8 +288,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @param accountID the account identifier.
      */
-    public void loadAccount(AccountID accountID)
-    {
+    public void loadAccount(AccountID accountID) {
         // Clear all the default values
         mEncryptionProtocol = new HashMap<>();
         mEncryptionProtocolStatus = new HashMap<>();
@@ -359,13 +337,13 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @param encryptionProtocol The map of encryption protocols with their priority available for this account.
      * @param encryptionProtocolStatus The map of encryption protocol statuses.
+     *
      * @return <code>Object[]</code> array holding:<br/>
      * - at [0] <code>String[]</code> the list of extracted protocol names<br/>
      * - at [1] <code>boolean[]</code> the list of of protocol status flags
      */
     public static Object[] loadEncryptionProtocol(Map<String, Integer> encryptionProtocol,
-            Map<String, Boolean> encryptionProtocolStatus)
-    {
+            Map<String, Boolean> encryptionProtocolStatus) {
         int nbEncryptionProtocol = ENCRYPTION_PROTOCOL.size();
         String[] encryption = new String[nbEncryptionProtocol];
         boolean[] selectedEncryption = new boolean[nbEncryptionProtocol];
@@ -409,10 +387,10 @@ public abstract class SecurityAccountRegistration implements Serializable
      * Checks if a specific <code>protocol</code> is on the list of supported (encryption) protocols.
      *
      * @param protocol the protocol name
+     *
      * @return <code>true</code> if <code>protocol</code> is supported; <code>false</code>, otherwise
      */
-    private static boolean isExistingEncryptionProtocol(String protocol)
-    {
+    private static boolean isExistingEncryptionProtocol(String protocol) {
         return ENCRYPTION_PROTOCOL.contains(protocol);
     }
 
@@ -421,8 +399,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @return ZID salt
      */
-    public String getZIDSalt()
-    {
+    public String getZIDSalt() {
         return mZIDSalt;
     }
 
@@ -431,16 +408,14 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @param ZIDSalt new ZID salt value
      */
-    public void setZIDSalt(final String ZIDSalt)
-    {
+    public void setZIDSalt(final String ZIDSalt) {
         mZIDSalt = ZIDSalt;
     }
 
     /**
      * Generate new random value for the ZID salt and update the ZIDSalt.
      */
-    public String randomZIDSalt()
-    {
+    public String randomZIDSalt() {
         mZIDSalt = new BigInteger(256, mSecureRandom).toString(32);
         return mZIDSalt;
     }

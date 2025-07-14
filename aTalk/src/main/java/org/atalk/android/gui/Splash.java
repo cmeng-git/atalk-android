@@ -18,6 +18,7 @@ package org.atalk.android.gui;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -49,7 +50,7 @@ public class Splash extends BaseActivity {
         myImageView.startAnimation(myFadeInAnimation);
         mFirstRun = false;
 
-        new Handler().postDelayed(() -> {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Timber.d("End of Splash screen Timer");
             mProgressBar.clearAnimation();
             myImageView.clearAnimation();

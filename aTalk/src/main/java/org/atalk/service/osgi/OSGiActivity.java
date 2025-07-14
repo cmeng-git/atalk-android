@@ -280,7 +280,8 @@ public class OSGiActivity extends BaseActivity {
             Intent upIntent = NavUtils.getParentActivityIntent(this);
             if (upIntent != null) {
                 Timber.w("Process UpIntent for: %s", this.getLocalClassName());
-                NavUtils.navigateUpTo(this, upIntent);
+                // NavUtils.navigateUpTo(this, upIntent);
+                navigateUpTo(upIntent);
             }
             else {
                 Timber.w("Replace Up with BackKeyPress for: %s", this.getLocalClassName());

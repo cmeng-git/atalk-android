@@ -107,27 +107,6 @@ public class AppUtils {
         lastNotificationText = null;
     }
 
-    /**
-     * Indicates if the service given by <code>activityClass</code> is currently running.
-     *
-     * @param context the Android context
-     * @param activityClass the activity class to check
-     *
-     * @return <code>true</code> if the activity given by the class is running, <code>false</code> - otherwise
-     */
-    public static boolean isActivityRunning(Context context, Class<?> activityClass) {
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> services = activityManager.getRunningTasks(Integer.MAX_VALUE);
-
-        boolean isServiceFound = false;
-        for (int i = 0; i < services.size(); i++) {
-            if (services.get(i).topActivity.getClassName().equals(activityClass.getName())) {
-                isServiceFound = true;
-            }
-        }
-        return isServiceFound;
-    }
-
     public static void setOnTouchBackgroundEffect(View view) {
         view.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -161,15 +140,6 @@ public class AppUtils {
 
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-    }
-
-    /**
-     * Returns <code>true</code> if current <code>Thread</code> is UI thread.
-     *
-     * @return <code>true</code> if current <code>Thread</code> is UI thread.
-     */
-    public static boolean isUIThread() {
-        return Looper.getMainLooper().getThread() == Thread.currentThread();
     }
 
     /**

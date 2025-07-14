@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -230,7 +231,7 @@ public class ChatInviteDialog extends Dialog
             contactListView.collapseGroup(groupPosition);
         else {
             contactListView.expandGroup(groupPosition, true);
-            new Handler().postDelayed(()
+            new Handler(Looper.getMainLooper()).postDelayed(()
                     -> refreshContactSelected(groupPosition), 500);
         }
         return true;

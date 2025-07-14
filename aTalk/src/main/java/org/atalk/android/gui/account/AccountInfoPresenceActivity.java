@@ -5,14 +5,11 @@
  */
 package org.atalk.android.gui.account;
 
-import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -91,6 +88,7 @@ import org.atalk.android.gui.account.settings.AccountPreferenceActivity;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.contactlist.ContactInfoActivity;
 import org.atalk.android.gui.dialogs.DialogActivity;
+import org.atalk.android.gui.dialogs.ProgressDialog;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.util.AppImageUtil;
@@ -216,7 +214,7 @@ public class AccountInfoPresenceActivity extends BaseActivity
 
     private ImageView mCalenderButton;
     private SoftKeyboard softKeyboard;
-    private ProgressDialog progressDialog;
+    private long pDialogId;
     private boolean isRegistered;
 
     @Override
@@ -287,8 +285,8 @@ public class AccountInfoPresenceActivity extends BaseActivity
     @Override
     protected void onStop() {
         super.onStop();
-        if (progressDialog != null && progressDialog.isShowing())
-            progressDialog.dismiss();
+        if (ProgressDialog.isShowing(pDialogId))
+            ProgressDialog.dismiss(pDialogId);
     }
 
     @Override
@@ -1319,8 +1317,8 @@ public class AccountInfoPresenceActivity extends BaseActivity
                 // abort all account info changes if user goes offline
                 hasChanges = false;
 
-                if (progressDialog != null) {
-                    progressDialog.setMessage(getString(R.string.accountinfo_discard_change));
+                if (ProgressDialog.isShowing(pDialogId)) {
+                   ProgressDialog.setMessage(pDialogId, getString(R.string.accountinfo_discard_change));
                 }
             }
             // Publish status in new thread
@@ -1333,18 +1331,18 @@ public class AccountInfoPresenceActivity extends BaseActivity
      * Auto cancel the dialog at end of applying cycle
      */
     public void launchApplyProgressDialog() {
-        progressDialog = ProgressDialog.show(this, getString(R.string.please_wait),
-                getString(R.string.apply_changes), true, true);
+        pDialogId = ProgressDialog.show(this, getString(R.string.please_wait),
+                getString(R.string.apply_changes), true);
         new Thread(() -> {
             try {
                 commitStatusChanges();
                 SubmitChangesAction();
-                // too fast to be viewed user at times - so pause for 2.0 seconds
+                // too fast to be viewed by user at times - so pause for 2.0 seconds
                 Thread.sleep(2000);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                Timber.w("Progress Dialog: %s", ex.getMessage());
             }
-            progressDialog.dismiss();
+            ProgressDialog.dismiss(pDialogId);
             finish();
         }).start();
     }

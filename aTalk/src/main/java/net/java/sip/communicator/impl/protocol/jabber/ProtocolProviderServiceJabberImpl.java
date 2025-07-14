@@ -3248,7 +3248,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      *
      * @return the socket which is used for this connection.
      *
-     * @see XMPPTCPConnection#socket
+     * @see XMPPTCPConnection# socket
      */
     public Socket getSocket() {
         Socket socket = null;

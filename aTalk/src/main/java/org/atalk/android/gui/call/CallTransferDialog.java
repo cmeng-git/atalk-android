@@ -21,12 +21,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
+
+import java.util.Collection;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.protocol.CallPeer;
@@ -41,8 +44,6 @@ import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.contactlist.model.MetaGroupExpandHandler;
 import org.jxmpp.jid.Jid;
 
-import java.util.Collection;
-
 import timber.log.Timber;
 
 /**
@@ -51,8 +52,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class CallTransferDialog extends Dialog
-        implements OnChildClickListener, OnGroupClickListener, DialogInterface.OnShowListener
-{
+        implements OnChildClickListener, OnGroupClickListener, DialogInterface.OnShowListener {
     private final CallPeer mInitialPeer;
 
     private CallPeer mCallPeer = null;
@@ -77,8 +77,7 @@ public class CallTransferDialog extends Dialog
      * @param initialPeer the callPeer that launches this dialog, and to which the call transfer request is sent
      * @param callPeers contains callPeer for attended call transfer, empty otherwise
      */
-    public CallTransferDialog(Context mContext, CallPeer initialPeer, Collection<CallPeer> callPeers)
-    {
+    public CallTransferDialog(Context mContext, CallPeer initialPeer, Collection<CallPeer> callPeers) {
         super(mContext);
         mInitialPeer = initialPeer;
         if (!callPeers.isEmpty()) {
@@ -89,8 +88,7 @@ public class CallTransferDialog extends Dialog
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle((mInitialPeer.getPeerJid().asBareJid()));
 
@@ -114,8 +112,7 @@ public class CallTransferDialog extends Dialog
     /**
      * Transfer call to the selected contact as Unattended or Attended if mCallPeer != null
      */
-    private void transferCall()
-    {
+    private void transferCall() {
         if (mCallPeer != null) {
             Jid callContact = mSelectedContact.getJid();
             if (callContact.isParentOf(mCallPeer.getPeerJid())) {
@@ -129,8 +126,7 @@ public class CallTransferDialog extends Dialog
     /**
      * Enable the mTransfer button if mSelected != null
      */
-    private void updateTransferState()
-    {
+    private void updateTransferState() {
         if (mSelectedContact == null) {
             mTransferButton.setEnabled(false);
             mTransferButton.setAlpha(.3f);
@@ -141,8 +137,7 @@ public class CallTransferDialog extends Dialog
         }
     }
 
-    private void initListAdapter()
-    {
+    private void initListAdapter() {
         transferListView.setAdapter(getContactListAdapter());
 
         // Attach contact groups expand memory
@@ -156,8 +151,7 @@ public class CallTransferDialog extends Dialog
         contactListAdapter.invalidateViews();
     }
 
-    private MetaContactListAdapter getContactListAdapter()
-    {
+    private MetaContactListAdapter getContactListAdapter() {
         if (contactListAdapter == null) {
             // FFR: clf may be null; use new instance will crash dialog on select contact
             ContactListFragment clf = (ContactListFragment) aTalk.getFragment(aTalk.CL_FRAGMENT);
@@ -178,11 +172,11 @@ public class CallTransferDialog extends Dialog
      * @param groupPosition The group position that contains the child that was clicked
      * @param childPosition The child position within the group
      * @param id The row id of the child that was clicked
+     *
      * @return True if the click was handled
      */
     @Override
-    public boolean onChildClick(ExpandableListView listView, View v, int groupPosition, int childPosition, long id)
-    {
+    public boolean onChildClick(ExpandableListView listView, View v, int groupPosition, int childPosition, long id) {
         BaseContactListAdapter adapter = (BaseContactListAdapter) listView.getExpandableListAdapter();
         Object clicked = adapter.getChild(groupPosition, childPosition);
 
@@ -208,16 +202,16 @@ public class CallTransferDialog extends Dialog
      * @param v the view
      * @param groupPosition the position of the group
      * @param id the identifier
+     *
      * @return <code>true</code> if the group click action has been performed
      */
     @Override
-    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
-    {
+    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
         if (transferListView.isGroupExpanded(groupPosition))
             transferListView.collapseGroup(groupPosition);
         else {
             transferListView.expandGroup(groupPosition, true);
-            new Handler().postDelayed(()
+            new Handler(Looper.getMainLooper()).postDelayed(()
                     -> refreshContactSelected(groupPosition), 500);
         }
         return true;
@@ -230,8 +224,7 @@ public class CallTransferDialog extends Dialog
      *
      * @param grpPosition the contact list group position
      */
-    private void refreshContactSelected(int grpPosition)
-    {
+    private void refreshContactSelected(int grpPosition) {
         int lastIndex = transferListView.getCount();
         for (int index = 0; index <= lastIndex; index++) {
             long lPosition = transferListView.getExpandableListPosition(index);
@@ -264,14 +257,12 @@ public class CallTransferDialog extends Dialog
     }
 
     @Override
-    public void onShow(DialogInterface arg0)
-    {
+    public void onShow(DialogInterface arg0) {
         refreshContactSelected(-1);
         updateTransferState();
     }
 
-    public void closeDialog()
-    {
+    public void closeDialog() {
         // must clear dialogMode on exit dialog
         contactListAdapter.setDialogMode(false);
         cancel();

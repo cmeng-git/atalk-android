@@ -17,6 +17,7 @@ import android.view.View;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,9 +83,9 @@ public class DialogActivity extends BaseActivity {
     public static final String EXTRA_CANCELABLE = "cancelable";
 
     /**
-     * Hide all buttons.
+     * Hide all buttons i.e. OK and Cancel.
      */
-    public static final String EXTRA_REMOVE_BUTTONS = "remove_buttons";
+    public static final String EXTRA_HIDE_BUTTONS = "hide_buttons";
 
     /**
      * Static map holds listeners for currently displayed dialogs.
@@ -160,7 +161,7 @@ public class DialogActivity extends BaseActivity {
                 try {
                     // Instantiate content fragment
                     Class<?> contentClass = Class.forName(contentFragment);
-                    Fragment fragment = (Fragment) contentClass.newInstance();
+                    Fragment fragment = (Fragment) contentClass.getDeclaredConstructor().newInstance();
 
                     // Set fragment arguments
                     fragment.setArguments(intent.getBundleExtra(EXTRA_CONTENT_ARGS));
@@ -192,12 +193,12 @@ public class DialogActivity extends BaseActivity {
             mListener = listenersMap.get(mListenerId);
         }
 
-        this.cancelable = intent.getBooleanExtra(EXTRA_CANCELABLE, false);
-        // Prevents from closing the dialog on outside touch
+        // Prevent from closing the dialog on outside touch
+        cancelable = intent.getBooleanExtra(EXTRA_CANCELABLE, false);
         setFinishOnTouchOutside(cancelable);
 
         // Removes the buttons
-        if (intent.getBooleanExtra(EXTRA_REMOVE_BUTTONS, false)) {
+        if (intent.getBooleanExtra(EXTRA_HIDE_BUTTONS, false)) {
             ViewUtil.ensureVisible(mContent, R.id.okButton, false);
             ViewUtil.ensureVisible(mContent, R.id.cancelButton, false);
         }

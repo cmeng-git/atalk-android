@@ -34,12 +34,13 @@ aTalk is an xmpp client designed for android and supports the following features
 * Support Stickers, Bitmoji and Emoji rich content sharing via Google Gboard
 * Send and receive files for all document types and images with thumbnail preview and gif animation
 * Auto accept file transfer with max file size option
-* Implement fault-tolerance file transfer algorithm, via Jingle File Transfer, Legacy In-Band/SOCK5 Bytestreams and HttpFileUpload protocols to ease and enhance file sharing reliability
+* Implement fault-tolerance file transfer algorithm, via HttpFileUpload, Jingle File Transfer, and Legacy In-Band/SOCK5 Bytestreams protocols to ease and enhance file sharing reliability
+* Support secured file transfer via HttpFileUpload using aesgcm://, or via Jingle Encrypted Transport (JET)
 * Enhance and harmonize UI for file sharing in chat and chatRoom
 * Support share, quote and forward of messages and media with previews prior to sending
 * Support multi-instances of audio media player with functions: Play, Pause, Resume, Stop and Seek
 * Support unread message badges in contact and chatRoom list views
-* User selectable option for heads-up notification and quite hours
+* User selectable option for heads-up notification and quiet hours
 * Share of social media links are tagged with thumbnail and title
 * Support Text to Speech and speech recognition UI with enable option per chat session (contact and group chat)
 * XEP-0012: Last Activity time associated with contacts
@@ -207,18 +208,18 @@ Other contributors:
 
 ## aTalk apk build for android
 * Following development environment setups are used to build aTalk.apk<br/>
-  a. Android Studio Hedgehog | 2023.1.1 Patch<br/>
-  b. distributionUrl=https://services.gradle.org/distributions/gradle-8.5-bin.zip
-  c. classpath 'com.android.tools.build:gradle:8.2.2'
-  d. Ubuntu 22.04 with proper environment setup for development<br>
+  a. Android Studio Narwhal | 2025.1.1<br/>
+  b. distributionUrl=https://services.gradle.org/distributions/gradle-8.14.3-bin.zip
+  c. classpath 'com.android.tools.build:gradle:8.11.1'
+  d. Ubuntu 24.04 with proper environment setup for development<br>
   Note: all shell scripts in aTalk are written to run on linux OS only e.g. Ubuntu
-* aTalk uses native jni libraries, required to be built manually or downloaded prior to android NDK build.<br/>
+* aTalk uses native jni libraries, required to be downloaded and built manually prior to android NDK build.<br/>
   The static jni libraries must be built prior to android studio apk build process.
 * You must run the gradle task 'initJniLibs' to build all the jni libraries used in aTalk.<br/>
   See aTalk/jni/static_library_build directory readme files for more information<br/>
   on linux environment setup, and the execution of jni libraries build scripts.
 * You must run the gradle task 'getJniLibs' to fetch the jni libraries prior to android ndk build process.<br/>
-  These libraries sources include: opus, speex and ogg
+  These libraries sources include: opus, speex, ogg and g729
 
 ## Feedback and Contributions
 If you can't find your language in UI and would like to help then translate the app on https://toolate.othing.xyz/projects/atalk/.

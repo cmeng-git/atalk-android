@@ -16,9 +16,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.os.BundleCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.atalk.android.R;
@@ -89,7 +91,6 @@ public class MediaEncodingsFragment extends BasePreferenceFragment implements To
 
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
-
     }
 
     /**
@@ -100,8 +101,8 @@ public class MediaEncodingsFragment extends BasePreferenceFragment implements To
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle bundle = savedInstanceState == null ? getArguments() : savedInstanceState;
 
-        encodings = (List<String>) bundle.get(ARG_ENCODINGS);
-        priorities = (List<Integer>) bundle.get(ARG_PRIORITIES);
+        encodings = BundleCompat.getSerializable(bundle, ARG_ENCODINGS, ArrayList.class);
+        priorities = BundleCompat.getSerializable(bundle, ARG_PRIORITIES, ArrayList.class);
 
         if (encodings.contains("VP8/90000"))
             setPrefTitle(R.string.settings_video_codec);
@@ -113,7 +114,7 @@ public class MediaEncodingsFragment extends BasePreferenceFragment implements To
         /*
          * The {@link TouchInterceptor} widget that allows user to drag items to set their order
          */
-        TouchInterceptor listWidget = (TouchInterceptor) content.findViewById(R.id.encodingList);
+        TouchInterceptor listWidget = content.findViewById(R.id.encodingList);
         this.adapter = new OrderListAdapter(R.layout.encoding_item);
 
         listWidget.setAdapter(adapter);

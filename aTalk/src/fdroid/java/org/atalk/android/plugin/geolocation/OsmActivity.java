@@ -22,9 +22,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.net.ConnectivityManager;
+import android.net.ConnectivityManager.NetworkCallback;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.IntentCompat;
+import androidx.core.os.BundleCompat;
 import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
@@ -52,26 +58,38 @@ public class OsmActivity extends BaseActivity {
 
     private int mLocationFetchMode = GeoConstants.ZERO_FIX;
 
+    private ConnectivityManager manager;
+    private NetworkCallback networkCallback;
+
     /**
      * The idea behind that is to force a MapView refresh when switching from offline to online.
      * If you don't do that, the map may display - when online - approximated tiles
      * - that were computed when offline
      * - that could be replaced by downloaded tiles
      * - but as the display is not refreshed there's no try to get better tiles
-     *
-     * @since 6.0
      */
-    private final BroadcastReceiver networkReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            try {
+    private void registerNetworkCallback() {
+        manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkRequest request = new NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .build();
+
+        networkCallback = new NetworkCallback() {
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                super.onAvailable(network);
                 osmFragment.invalidateMapView();
-            } catch (NullPointerException e) {
-                // lazy handling of an improbable NPE
-                Timber.e("Network receiver exception: %s", e.getMessage());
             }
-        }
-    };
+
+            @Override
+            public void onUnavailable() {
+                super.onUnavailable();
+                osmFragment.invalidateMapView();            }
+        };
+        manager.registerNetworkCallback(request, networkCallback);
+    }
 
     /**
      * Called when the activity is first created.
@@ -86,17 +104,16 @@ public class OsmActivity extends BaseActivity {
         // noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         if (savedInstanceState == null) {
             mLocationFetchMode = getIntent().getIntExtra(GeoIntentKey.LOCATION_FETCH_MODE, GeoConstants.FOLLOW_ME_FIX);
-            mLocation = getIntent().getParcelableExtra(GeoIntentKey.LOCATION);
-            mLocations = getIntent().getParcelableArrayListExtra(GeoIntentKey.LOCATION_LIST);
+            mLocation = IntentCompat.getParcelableExtra(getIntent(), GeoIntentKey.LOCATION, Location.class);
+            mLocations = IntentCompat.getParcelableArrayListExtra(getIntent(), GeoIntentKey.LOCATION_LIST, Location.class);
         }
         else {
             mLocationFetchMode = savedInstanceState.getInt(GeoIntentKey.LOCATION_FETCH_MODE, GeoConstants.FOLLOW_ME_FIX);
-            mLocation = savedInstanceState.getParcelable(GeoIntentKey.LOCATION);
-            mLocations = savedInstanceState.getParcelableArrayList(GeoIntentKey.LOCATION_LIST);
+            mLocation = BundleCompat.getParcelable(savedInstanceState, GeoIntentKey.LOCATION, Location.class);
+            mLocations = BundleCompat.getParcelableArrayList(savedInstanceState, GeoIntentKey.LOCATION_LIST, Location.class);
         }
 
         FragmentManager fm = getSupportFragmentManager();
@@ -115,7 +132,14 @@ public class OsmActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        registerNetworkCallback();
         aTalkApp.setCurrentActivity(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        manager.unregisterNetworkCallback(networkCallback);
+        super.onDestroy();
     }
 
     @Override
@@ -130,12 +154,6 @@ public class OsmActivity extends BaseActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
-    }
-
-    @Override
-    protected void onDestroy() {
-        unregisterReceiver(networkReceiver);
-        super.onDestroy();
     }
 
     /**

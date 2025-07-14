@@ -13,6 +13,9 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
+import java.util.Date;
+import java.util.EventObject;
+
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
@@ -23,9 +26,6 @@ import net.java.sip.communicator.service.protocol.IMessage;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.persistance.FileBackend;
 
-import java.util.Date;
-import java.util.EventObject;
-
 /**
  * <code>MessageReceivedEvent</code>s indicate reception of an instant message.
  *
@@ -33,8 +33,7 @@ import java.util.EventObject;
  * @author Lubomir Marinov
  * @author Eng Chong Meng
  */
-public class ChatRoomMessageReceivedEvent extends EventObject
-{
+public class ChatRoomMessageReceivedEvent extends EventObject {
     /**
      * Serial version UID.
      */
@@ -84,12 +83,11 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      * (one of the XXX_MESSAGE_RECEIVED static fields).
      */
     public ChatRoomMessageReceivedEvent(ChatRoom source, ChatRoomMember from, Date timestamp,
-            IMessage message, int eventType)
-    {
+            IMessage message, int eventType) {
         super(source);
         // Convert to MESSAGE_HTTP_FILE_DOWNLOAD if it is http download link
         if (FileBackend.isHttpFileDnLink(message.getContent())) {
-                eventType = ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD;
+            eventType = ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD;
         }
 
         this.from = from;
@@ -109,8 +107,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      * @return a reference to the <code>ChatRoomMember</code> that has send the <code>IMessage</code>
      * whose reception this event represents.
      */
-    public ChatRoomMember getSourceChatRoomMember()
-    {
+    public ChatRoomMember getSourceChatRoomMember() {
         return from;
     }
 
@@ -119,8 +116,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      *
      * @return the <code>IMessage</code> that triggered this event.
      */
-    public IMessage getMessage()
-    {
+    public IMessage getMessage() {
         return mMessage;
     }
 
@@ -129,8 +125,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      *
      * @return a Date indicating when the event occurred.
      */
-    public Date getTimestamp()
-    {
+    public Date getTimestamp() {
         return mTimestamp;
     }
 
@@ -139,8 +134,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      *
      * @return the <code>ChatRoom</code> that triggered this event.
      */
-    public ChatRoom getSourceChatRoom()
-    {
+    public ChatRoom getSourceChatRoom() {
         return (ChatRoom) getSource();
     }
 
@@ -150,8 +144,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      *
      * @return one of the XXX_MESSAGE_RECEIVED fields of this class indicating the type of this event.
      */
-    public int getEventType()
-    {
+    public int getEventType() {
         return mEventType;
     }
 
@@ -160,8 +153,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      *
      * @return is current event for history message.
      */
-    public boolean isHistoryMessage()
-    {
+    public boolean isHistoryMessage() {
         return mHistoryMessage;
     }
 
@@ -170,8 +162,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      *
      * @return true if current event is from autoJoined chatRoom.
      */
-    public boolean isAutoJoin()
-    {
+    public boolean isAutoJoin() {
         return isAutoJoin;
     }
 
@@ -180,8 +171,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      *
      * @param historyMessage whether its event for history message.
      */
-    public void setHistoryMessage(boolean historyMessage)
-    {
+    public void setHistoryMessage(boolean historyMessage) {
         mHistoryMessage = historyMessage;
     }
 
@@ -190,8 +180,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      *
      * @param isImportant the value to be set.
      */
-    public void setImportantMessage(boolean isImportant)
-    {
+    public void setImportantMessage(boolean isImportant) {
         isImportantMessage = isImportant;
     }
 
@@ -200,8 +189,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      *
      * @return <code>true</code> if message is important and <code>false</code> if not.
      */
-    public boolean isImportantMessage()
-    {
+    public boolean isImportantMessage() {
         return isImportantMessage;
     }
 }

@@ -21,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.IntentCompat;
 
 import net.java.sip.communicator.plugin.notificationwiring.SoundProperties;
 import net.java.sip.communicator.service.notification.NotificationAction;
@@ -323,7 +324,7 @@ public class NotificationDetails extends BaseActivity
             if (resultCode != Activity.RESULT_OK || result == null) {
                 return null;
             }
-            return result.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+            return IntentCompat.getParcelableExtra(result, RingtoneManager.EXTRA_RINGTONE_PICKED_URI, Uri.class);
         }
     }
 

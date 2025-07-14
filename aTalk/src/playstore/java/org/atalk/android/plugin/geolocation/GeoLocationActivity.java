@@ -39,15 +39,13 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class GeoLocationActivity extends GeoLocationBase implements OnMapsSdkInitializedCallback
-{
+public class GeoLocationActivity extends GeoLocationBase implements OnMapsSdkInitializedCallback {
     private static final int GOOGLE_PLAY_SERVICES_ERROR_DIALOG = 102;
     private GoogleApiAvailability googleApiAvailability;
     private SplitStreetViewPanoramaAndMapActivity mSVP = null;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         googleApiAvailability = GoogleApiAvailability.getInstance();
         // Not required to override; default to use LATEST
@@ -55,15 +53,13 @@ public class GeoLocationActivity extends GeoLocationBase implements OnMapsSdkIni
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         setMainTitle(R.string.geo_street_views_map);
         mSVP = null;
     }
 
-    public void showStreetMap(Location location)
-    {
+    public void showStreetMap(Location location) {
         if (!isGoogleServiceAvailable()) {
             showGooglePlayServicesErrorDialog();
             return;
@@ -76,7 +72,7 @@ public class GeoLocationActivity extends GeoLocationBase implements OnMapsSdkIni
             intent.putExtra(SplitStreetViewPanoramaAndMapActivity.MARKER_POSITION_KEY, latLng);
             startActivity(intent);
         }
-        else if (!isGpsShare()){
+        else if (!isGpsShare()) {
             if (mSVP == null) {
                 Activity currentActivity = aTalkApp.getCurrentActivity();
                 if (currentActivity != null) {
@@ -92,21 +88,18 @@ public class GeoLocationActivity extends GeoLocationBase implements OnMapsSdkIni
         }
     }
 
-    private boolean isGoogleServiceAvailable()
-    {
+    private boolean isGoogleServiceAvailable() {
         return googleApiAvailability.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS;
     }
 
-    private void showGooglePlayServicesErrorDialog()
-    {
+    private void showGooglePlayServicesErrorDialog() {
         int errorCode = googleApiAvailability.isGooglePlayServicesAvailable(this);
         if (googleApiAvailability.isUserResolvableError(errorCode))
             googleApiAvailability.getErrorDialog(this, errorCode, GOOGLE_PLAY_SERVICES_ERROR_DIALOG).show();
     }
 
     @Override
-    public void onMapsSdkInitialized(@NonNull MapsInitializer.Renderer renderer)
-    {
+    public void onMapsSdkInitialized(@NonNull MapsInitializer.Renderer renderer) {
         switch (renderer) {
             case LATEST:
                 Timber.d("GoogleMap: The latest version of the renderer is used.");

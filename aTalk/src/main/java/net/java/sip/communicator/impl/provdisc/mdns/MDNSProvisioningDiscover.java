@@ -95,7 +95,9 @@ public class MDNSProvisioningDiscover implements Runnable {
 
         if (info != null && info.getName().equals("Provisioning URL")) {
             String protocol = info.getApplication();
-            url.append(info.getURL(protocol));
+            String[] urls = info.getURLs(protocol);
+            String sUrl = urls.length > 0 ? urls[0] : protocol + "://null:" + info.getPort();
+            url.append(sUrl);
             Enumeration<String> en = info.getPropertyNames();
             if (en.hasMoreElements()) {
                 url.append("?");

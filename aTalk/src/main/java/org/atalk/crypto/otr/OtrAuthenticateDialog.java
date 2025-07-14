@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.core.content.IntentCompat;
+
 import java.security.PublicKey;
 import java.util.Date;
 import java.util.UUID;
@@ -56,9 +58,12 @@ public class OtrAuthenticateDialog extends BaseActivity {
         setContentView(R.layout.otr_authenticate_dialog);
         setTitle(R.string.plugin_otr_authbuddydialog_TITLE);
 
-        UUID guid = (UUID) getIntent().getSerializableExtra(EXTRA_SESSION_UUID);
+        UUID guid = IntentCompat.getSerializableExtra(getIntent(), EXTRA_SESSION_UUID, UUID.class);
         ScSessionID sessionID = ScOtrEngineImpl.getScSessionForGuid(guid);
-        this.otrContact = ScOtrEngineImpl.getOtrContact(sessionID.getSessionID());
+        if (sessionID == null)
+            return;
+
+        otrContact = ScOtrEngineImpl.getOtrContact(sessionID.getSessionID());
         Contact contact = otrContact.contact;
 
         // Local fingerprint.

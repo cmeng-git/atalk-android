@@ -26,8 +26,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.text.TextUtils;
+
+import androidx.core.content.IntentCompat;
 
 import java.util.ArrayList;
 
@@ -88,7 +91,7 @@ public class ShareUtil {
 
             if (!imageUris.isEmpty()) {
                 // must wait for user first before starting file transfer if any
-                new Handler().postDelayed(() -> {
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     Intent intent = share(activity, imageUris);
                     try {
                         activity.startActivity(Intent.createChooser(intent, activity.getText(R.string.share_file)));
@@ -225,13 +228,12 @@ public class ShareUtil {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            ComponentName clickedComponent = intent.getParcelableExtra(Intent.EXTRA_CHOSEN_COMPONENT);
-
+            ComponentName clickedComponent = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_CHOSEN_COMPONENT, ComponentName.class);
             if (mediaIntent == null)
                 return;
 
             // must wait for user to complete text share before starting file share
-            new Handler().postDelayed(() -> {
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 try {
                     context.startActivity(mediaIntent);
                     mediaIntent = null;

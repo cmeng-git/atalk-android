@@ -19,6 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.os.BundleCompat;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -38,15 +39,9 @@ public class SecurityProtocolsDialogFragment extends BaseDialogFragment {
     /**
      * The encryption protocols managed by this dialog.
      */
-    // public static final String[] encryptionProtocols = {"ZRTP", "SDES"};
+    public static final String ENCRYPTION_PRIORITY = "encryption_priority";
 
-    public static final String ARG_ENCRYPTION = "arg_encryption";
-
-    public static final String ARG_ENCRYPTION_STATUS = "arg_encryption_status";
-
-    public static final String STATE_ENCRYPTION = "state_encryption";
-
-    public static final String STATE_ENCRYPTION_STATUS = "state_encryption_status";
+    public static final String ENCRYPTION_STATE = "encryption_state";
 
     /**
      * The list model for the protocols
@@ -74,14 +69,12 @@ public class SecurityProtocolsDialogFragment extends BaseDialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            mProtocolsAdapter = new ProtocolsAdapter((Map<String, Integer>) getArguments().get(ARG_ENCRYPTION),
-                    (Map<String, Boolean>) getArguments().get(ARG_ENCRYPTION_STATUS));
+        Bundle bundle = (savedInstanceState == null) ? getArguments() : savedInstanceState;
+        if (bundle != null) {
+            mProtocolsAdapter= new ProtocolsAdapter(BundleCompat.getSerializable(bundle, ENCRYPTION_PRIORITY, HashMap.class),
+                    BundleCompat.getSerializable(bundle, ENCRYPTION_STATE, HashMap.class));
         }
-        else {
-            mProtocolsAdapter = new ProtocolsAdapter(savedInstanceState.getStringArray(STATE_ENCRYPTION),
-                    (Map<String, Boolean>) savedInstanceState.get(STATE_ENCRYPTION_STATUS));
-        }
+
         // Get the layout inflater
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View contentView = inflater.inflate(R.layout.sec_protocols_dialog, null);
@@ -108,8 +101,8 @@ public class SecurityProtocolsDialogFragment extends BaseDialogFragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(STATE_ENCRYPTION, mProtocolsAdapter.mEncryption);
-        outState.putSerializable(STATE_ENCRYPTION_STATUS, (Serializable) mProtocolsAdapter.mEncryptionStatus);
+        outState.putSerializable(ENCRYPTION_PRIORITY, mProtocolsAdapter.mEncryption);
+        outState.putSerializable(ENCRYPTION_STATE, (Serializable) mProtocolsAdapter.mEncryptionState);
     }
 
     /**
@@ -123,7 +116,7 @@ public class SecurityProtocolsDialogFragment extends BaseDialogFragment {
             protocol.put(mProtocolsAdapter.mEncryption[i], i);
         }
         securityReg.setEncryptionProtocol(protocol);
-        securityReg.setEncryptionProtocolStatus(mProtocolsAdapter.mEncryptionStatus);
+        securityReg.setEncryptionProtocolStatus(mProtocolsAdapter.mEncryptionState);
     }
 
     /**
@@ -158,7 +151,7 @@ public class SecurityProtocolsDialogFragment extends BaseDialogFragment {
          * The array of encryption protocol names and their on/off status in mEncryptionStatus
          */
         protected String[] mEncryption;
-        protected Map<String, Boolean> mEncryptionStatus;
+        protected Map<String, Boolean> mEncryptionState;
 
         /**
          * Creates a new instance of {@link ProtocolsAdapter}
@@ -173,7 +166,7 @@ public class SecurityProtocolsDialogFragment extends BaseDialogFragment {
                 if (!encryptionStatus.containsKey(enc))
                     encryptionStatus.put(enc, false);
             }
-            this.mEncryptionStatus = encryptionStatus;
+            mEncryptionState = encryptionStatus;
         }
 
         /**
@@ -183,8 +176,8 @@ public class SecurityProtocolsDialogFragment extends BaseDialogFragment {
          * @param encryptionStatus reference copy
          */
         ProtocolsAdapter(String[] encryption, Map<String, Boolean> encryptionStatus) {
-            this.mEncryption = encryption;
-            this.mEncryptionStatus = encryptionStatus;
+            mEncryption = encryption;
+            mEncryptionState = encryptionStatus;
         }
 
         public int getCount() {
@@ -209,9 +202,9 @@ public class SecurityProtocolsDialogFragment extends BaseDialogFragment {
             tv.setText(encryption);
 
             CheckBox cb = v.findViewById(android.R.id.checkbox);
-            cb.setChecked(mEncryptionStatus.containsKey(encryption) && mEncryptionStatus.get(encryption));
+            cb.setChecked(mEncryptionState.containsKey(encryption) && Boolean.TRUE.equals(mEncryptionState.get(encryption)));
             cb.setOnCheckedChangeListener((cb1, state) -> {
-                mEncryptionStatus.put(encryption, state);
+                mEncryptionState.put(encryption, state);
                 hasChanges = true;
             });
             return v;

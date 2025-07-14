@@ -14,7 +14,7 @@ endif
 ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
 #    LOCAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp -mvectorize-with-neon-quad
     LOCAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp -fslp-vectorize-aggressive
-    LOCAL_LDFLAGS := -Wl,--fix-cortex-a8
+    LOCAL_LDFLAGS := -Wl,-z,max-page-size=16384,--fix-cortex-a8
 endif
 
 LOCAL_C_INCLUDES := \

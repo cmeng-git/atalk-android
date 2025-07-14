@@ -24,6 +24,8 @@ import android.view.Surface;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.IntentCompat;
+import androidx.core.os.BundleCompat;
 
 import java.util.ArrayList;
 
@@ -42,6 +44,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
 import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
@@ -50,7 +53,7 @@ import timber.log.Timber;
 /**
  * This shows how to create a simple activity with streetView and a map
  */
-public class SplitStreetViewPanoramaAndMapActivity extends AppCompatActivity
+public class SplitStreetViewPanoramaAndMapActivity extends BaseActivity
         implements OnMarkerDragListener, OnStreetViewPanoramaChangeListener, SensorEventListener {
     public static final String MARKER_POSITION_KEY = "MarkerPosition";
     public static final String MARKER_LIST = "MarkerList";
@@ -68,6 +71,7 @@ public class SplitStreetViewPanoramaAndMapActivity extends AppCompatActivity
     private double mAngle;
 
     private ArrayList<LatLng> markerList = new ArrayList<>();
+    private LatLng markerPosition;
     private Thread mThread = null;
 
     @Override
@@ -79,43 +83,44 @@ public class SplitStreetViewPanoramaAndMapActivity extends AppCompatActivity
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-        final LatLng markerPosition;
         if (savedInstanceState == null) {
-            markerPosition = getIntent().getParcelableExtra(MARKER_POSITION_KEY);
+            markerPosition = IntentCompat.getParcelableExtra(getIntent(), MARKER_POSITION_KEY, LatLng.class);
             if (getIntent().hasExtra(MARKER_LIST))
-                markerList = getIntent().getParcelableArrayListExtra(MARKER_LIST);
+                markerList = IntentCompat.getParcelableArrayListExtra(getIntent(), MARKER_LIST, LatLng.class);
         }
         else {
-            markerPosition = savedInstanceState.getParcelable(MARKER_POSITION_KEY);
-            markerList = savedInstanceState.getParcelableArrayList(MARKER_LIST);
+            markerPosition = BundleCompat.getParcelable(savedInstanceState, MARKER_POSITION_KEY, LatLng.class);
+            markerList = BundleCompat.getParcelableArrayList(savedInstanceState, MARKER_LIST, LatLng.class);
         }
 
         SupportStreetViewPanoramaFragment streetViewPanoramaFragment =
                 (SupportStreetViewPanoramaFragment) getSupportFragmentManager().findFragmentById(R.id.street_view);
-        streetViewPanoramaFragment.getStreetViewPanoramaAsync(
-                panorama -> {
-                    mStreetViewPanorama = panorama;
-                    mStreetViewPanorama.setOnStreetViewPanoramaChangeListener(this);
-                    // Only need to set the position once as the streetView fragment will maintain its state.
-                    mStreetViewPanorama.setPosition(markerPosition);
-                });
+        if (streetViewPanoramaFragment != null)
+            streetViewPanoramaFragment.getStreetViewPanoramaAsync(
+                    panorama -> {
+                        mStreetViewPanorama = panorama;
+                        mStreetViewPanorama.setOnStreetViewPanoramaChangeListener(this);
+                        // Only need to set the position once as the streetView fragment will maintain its state.
+                        mStreetViewPanorama.setPosition(markerPosition);
+                    });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_view);
-        mapFragment.getMapAsync(
-                map -> {
-                    mMap = map;
-                    map.setOnMarkerDragListener(SplitStreetViewPanoramaAndMapActivity.this);
-                    // Creates a draggable marker. Long press to drag.
-                    mMarker = map.addMarker(new MarkerOptions()
-                            .position(markerPosition)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.pegman))
-                            .draggable(true));
+        if (mapFragment != null)
+            mapFragment.getMapAsync(
+                    map -> {
+                        mMap = map;
+                        map.setOnMarkerDragListener(SplitStreetViewPanoramaAndMapActivity.this);
+                        // Creates a draggable marker. Long press to drag.
+                        mMarker = map.addMarker(new MarkerOptions()
+                                .position(markerPosition)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pegman))
+                                .draggable(true));
 
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, 15.5f));
-                    if (markerList != null && !markerList.isEmpty()) {
-                        startLocationUpdate(markerList);
-                    }
-                });
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, 15.5f));
+                        if (markerList != null && !markerList.isEmpty()) {
+                            startLocationUpdate(markerList);
+                        }
+                    });
     }
 
     @Override
@@ -196,7 +201,7 @@ public class SplitStreetViewPanoramaAndMapActivity extends AppCompatActivity
 
                 if (Math.abs(bearing - mAngle) > 2.0) {
                     // Realign bearing direction if system is in landscape mode
-                    int rotation = getWindowManager().getDefaultDisplay().getRotation();
+                    int rotation = getDisplayRotation();
                     if (rotation == Surface.ROTATION_90)
                         bearing += 90.0f;
                     else if (rotation == Surface.ROTATION_270)
@@ -212,7 +217,7 @@ public class SplitStreetViewPanoramaAndMapActivity extends AppCompatActivity
 //            float bearing = Math.round(event.values[0]);
 //
 //            // Realign bearing direction if system is in landscape mode
-//            int rotation = getWindowManager().getDefaultDisplay().getRotation();
+//            int rotation = getDisplayRotation;
 //            if (rotation == Surface.ROTATION_90)
 //                bearing += 90.0f;
 //            else if (rotation == Surface.ROTATION_270)
@@ -254,7 +259,6 @@ public class SplitStreetViewPanoramaAndMapActivity extends AppCompatActivity
     private void updateSVPCamera(float bearing) {
         if (mStreetViewPanorama != null) {
             StreetViewPanoramaCamera previous = mStreetViewPanorama.getPanoramaCamera();
-
             StreetViewPanoramaCamera camera = new StreetViewPanoramaCamera.Builder(previous)
                     .bearing(bearing)
                     .build();

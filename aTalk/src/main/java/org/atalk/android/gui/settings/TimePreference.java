@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
+import androidx.annotation.NonNull;
 import androidx.preference.DialogPreference;
 import androidx.preference.Preference;
 
@@ -81,11 +82,11 @@ public class TimePreference extends DialogPreference
      * get the TimePreference persistent value the timePicker value update
      */
     public Long getPersistedValue() {
-        return (long) getPersistedLong(DEFAULT_VALUE);
+        return getPersistedLong(DEFAULT_VALUE);
     }
 
     @Override
-    public boolean onPreferenceChange(final Preference preference, final Object newValue) {
+    public boolean onPreferenceChange(@NonNull final Preference preference, final Object newValue) {
         ((TimePreference) preference).updateSummary((Long) newValue);
         return true;
     }

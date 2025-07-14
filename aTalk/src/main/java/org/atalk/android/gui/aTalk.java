@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -142,7 +143,7 @@ public class aTalk extends MainMenuActivity {
         // allow 15 seconds for first launch login to complete before showing history log if the activity is still active
         ChangeLog cl = new ChangeLog(this);
         if (cl.isFirstRun()) {
-            runOnUiThread(() -> new Handler().postDelayed(() -> {
+            runOnUiThread(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 if (!isFinishing()) {
                     cl.getLogDialog().show();
                 }

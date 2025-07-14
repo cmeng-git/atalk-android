@@ -49,8 +49,8 @@ public class FMJPlugInConfiguration
      */
     private static final String[] CUSTOM_CODECS = {
             // "org.atalk.impl.neomedia.codec.AndroidMediaCodec",
-            OSUtils.IS_ANDROID ? "org.atalk.impl.neomedia.codec.video.AndroidEncoder" : null,
-            OSUtils.IS_ANDROID ? "org.atalk.impl.neomedia.codec.video.AndroidDecoder" : null,
+            "org.atalk.impl.neomedia.codec.video.AndroidEncoder",
+            "org.atalk.impl.neomedia.codec.video.AndroidDecoder",
             "org.atalk.impl.neomedia.codec.audio.alaw.DePacketizer",
             "org.atalk.impl.neomedia.codec.audio.alaw.JavaEncoder",
             "org.atalk.impl.neomedia.codec.audio.alaw.Packetizer",
@@ -111,11 +111,11 @@ public class FMJPlugInConfiguration
             "org.atalk.impl.neomedia.codec.video.h264.Packetizer",
             "org.atalk.impl.neomedia.codec.video.SwScale",
 
-            // Adaptive Multi-Rate Wideband (AMR-WB)
-             "org.atalk.impl.neomedia.codec.audio.amrwb.DePacketizer",
-             "org.atalk.impl.neomedia.codec.audio.amrwb.JNIDecoder",
-             "org.atalk.impl.neomedia.codec.audio.amrwb.JNIEncoder",
-             "org.atalk.impl.neomedia.codec.audio.amrwb.Packetizer",
+            // Adaptive Multi-Rate Wideband (AMR-WB) - codec libraries not included in ffmpeg build.
+            // "org.atalk.impl.neomedia.codec.audio.amrwb.DePacketizer",
+            // "org.atalk.impl.neomedia.codec.audio.amrwb.JNIDecoder",
+            // "org.atalk.impl.neomedia.codec.audio.amrwb.JNIEncoder",
+            //  "org.atalk.impl.neomedia.codec.audio.amrwb.Packetizer",
     };
 
     /**
@@ -203,7 +203,7 @@ public class FMJPlugInConfiguration
             else {
                 commit = true;
                 try {
-                    Codec codec = (Codec) Class.forName(className).newInstance();
+                    Codec codec = (Codec) Class.forName(className).getDeclaredConstructor().newInstance();
                     PlugInManager.addPlugIn(
                             className,
                             codec.getSupportedInputFormats(),
@@ -306,7 +306,7 @@ public class FMJPlugInConfiguration
 
             boolean registered;
             try {
-                Multiplexer multiplexer = (Multiplexer) Class.forName(className).newInstance();
+                Multiplexer multiplexer = (Multiplexer) Class.forName(className).getDeclaredConstructor().newInstance();
                 registered = PlugInManager.addPlugIn(
                         className,
                         multiplexer.getSupportedInputFormats(),

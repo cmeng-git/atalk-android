@@ -1,16 +1,16 @@
 package org.atalk.impl.neomedia.stats;
 
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.impl.neomedia.MediaStreamStatsImpl;
 import org.atalk.service.neomedia.stats.MediaStreamStats2;
 import org.atalk.service.neomedia.stats.ReceiveTrackStats;
 import org.atalk.service.neomedia.stats.SendTrackStats;
 import org.atalk.service.neomedia.stats.TrackStats;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import timber.log.Timber;
 
@@ -19,8 +19,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class MediaStreamStats2Impl extends MediaStreamStatsImpl
-        implements MediaStreamStats2
-{
+        implements MediaStreamStats2 {
     /**
      * Window over which rates will be computed.
      */
@@ -54,8 +53,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
     /**
      * Initializes a new {@link MediaStreamStats2Impl} instance.
      */
-    public MediaStreamStats2Impl(MediaStreamImpl mediaStream)
-    {
+    public MediaStreamStats2Impl(MediaStreamImpl mediaStream) {
         super(mediaStream);
     }
 
@@ -66,8 +64,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * @param seq the RTP sequence number of the packet.
      * @param length the length in bytes of the packet.
      */
-    public void rtpPacketReceived(long ssrc, int seq, int length)
-    {
+    public void rtpPacketReceived(long ssrc, int seq, int length) {
         synchronized (receiveStats) {
             getReceiveStats(ssrc).rtpPacketReceived(seq, length);
             receiveStats.packetProcessed(length, System.currentTimeMillis(), true);
@@ -81,8 +78,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * @param length the length in bytes of the packet.
      */
 
-    public void rtpPacketRetransmitted(long ssrc, long length)
-    {
+    public void rtpPacketRetransmitted(long ssrc, long length) {
         getSendStats(ssrc).rtpPacketRetransmitted(length);
         sendStats.rtpPacketRetransmitted(length);
     }
@@ -95,8 +91,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * @param ssrc the SSRC of the packet.
      * @param length the length in bytes of the packet.
      */
-    public void rtpPacketNotRetransmitted(long ssrc, long length)
-    {
+    public void rtpPacketNotRetransmitted(long ssrc, long length) {
         getSendStats(ssrc).rtpPacketNotRetransmitted(length);
         sendStats.rtpPacketNotRetransmitted(length);
     }
@@ -107,8 +102,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      *
      * @param ssrc the SSRC of the requested packet.
      */
-    public void rtpPacketCacheMiss(long ssrc)
-    {
+    public void rtpPacketCacheMiss(long ssrc) {
         getSendStats(ssrc).rtpPacketCacheMiss();
         sendStats.rtpPacketCacheMiss();
     }
@@ -122,8 +116,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * @param length the length in bytes of the packet.
      * @param skipStats whether to skip this packet.
      */
-    public void rtpPacketSent(long ssrc, int seq, int length, boolean skipStats)
-    {
+    public void rtpPacketSent(long ssrc, int seq, int length, boolean skipStats) {
         if (skipStats) {
             return;
         }
@@ -142,20 +135,17 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * @param ssrc the SSRC of the packet.
      * @param fractionLost the value of the "fraction lost" field.
      */
-    public void rtcpReceiverReportReceived(long ssrc, int fractionLost)
-    {
+    public void rtcpReceiverReportReceived(long ssrc, int fractionLost) {
         synchronized (sendStats) {
             getSendStats(ssrc).rtcpReceiverReportReceived(fractionLost);
         }
-
         this.cleanSendStatsOld();
     }
 
     /**
      * Clean old send stats.
      */
-    private void cleanSendStatsOld()
-    {
+    private void cleanSendStatsOld() {
         if (this.sendSsrcStatsToClean.isEmpty()) {
             return;
         }
@@ -176,8 +166,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * @param ssrc the SSRC of the packet.
      * @param length the length in bytes of the packet.
      */
-    public void rtcpPacketReceived(long ssrc, int length)
-    {
+    public void rtcpPacketReceived(long ssrc, int length) {
         synchronized (receiveStats) {
             getReceiveStats(ssrc).rtcpPacketReceived(length);
             receiveStats.packetProcessed(length, System.currentTimeMillis(), false);
@@ -191,8 +180,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * @param ssrc the SSRC of the packet.
      * @param length the length in bytes of the packet.
      */
-    public void rtcpPacketSent(long ssrc, int length)
-    {
+    public void rtcpPacketSent(long ssrc, int length) {
         synchronized (sendStats) {
             getSendStats(ssrc).rtcpPacketSent(length);
             sendStats.packetProcessed(length, System.currentTimeMillis(), false);
@@ -206,8 +194,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * @param direction whether the jitter is for a received or sent stream.
      * @param jitter the new jitter value in milliseconds.
      */
-    public void updateJitter(long ssrc, StreamDirection direction, double jitter)
-    {
+    public void updateJitter(long ssrc, StreamDirection direction, double jitter) {
         // Maintain a jitter value for the entire MediaStream, and for
         // the individual SSRCs(if available)
         if (direction == StreamDirection.DOWNLOAD) {
@@ -236,8 +223,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * @param ssrc the SSRC of the stream for which the jitter changed.
      * @param rtt the new measured RTT in milliseconds.
      */
-    public void updateRtt(long ssrc, long rtt)
-    {
+    public void updateRtt(long ssrc, long rtt) {
         // RTT value for the entire MediaStream
         receiveStats.setRtt(rtt);
         sendStats.setRtt(rtt);
@@ -262,8 +248,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * {@inheritDoc}
      */
     @Override
-    public ReceiveTrackStats getReceiveStats()
-    {
+    public ReceiveTrackStats getReceiveStats() {
         return receiveStats;
     }
 
@@ -271,8 +256,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * {@inheritDoc}
      */
     @Override
-    public SendTrackStats getSendStats()
-    {
+    public SendTrackStats getSendStats() {
         return sendStats;
     }
 
@@ -280,8 +264,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * {@inheritDoc}
      */
     @Override
-    public ReceiveTrackStatsImpl getReceiveStats(long ssrc)
-    {
+    public ReceiveTrackStatsImpl getReceiveStats(long ssrc) {
         if (ssrc < 0) {
             Timber.e("No received stats for an invalid SSRC: %s", ssrc);
             // We don't want to lose the data (and trigger an NPE), but at
@@ -306,8 +289,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * {@inheritDoc}
      */
     @Override
-    public SendTrackStatsImpl getSendStats(long ssrc)
-    {
+    public SendTrackStatsImpl getSendStats(long ssrc) {
         if (ssrc < 0) {
             Timber.e("No send stats for an invalid SSRC: %s", ssrc);
             // We don't want to lose the data (and trigger an NPE), but at
@@ -332,8 +314,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * {@inheritDoc}
      */
     @Override
-    public Collection<? extends SendTrackStats> getAllSendStats()
-    {
+    public Collection<? extends SendTrackStats> getAllSendStats() {
         return sendSsrcStats.values();
     }
 
@@ -341,8 +322,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * {@inheritDoc}
      */
     @Override
-    public Collection<? extends ReceiveTrackStats> getAllReceiveStats()
-    {
+    public Collection<? extends ReceiveTrackStats> getAllReceiveStats() {
         return receiveSsrcStats.values();
     }
 
@@ -351,8 +331,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      *
      * @param ssrc the ssrc to process.
      */
-    public void removeReceiveSsrc(long ssrc)
-    {
+    public void removeReceiveSsrc(long ssrc) {
         receiveSsrcStats.remove(ssrc);
     }
 
@@ -361,16 +340,14 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      *
      * @param ssrc the ssrc to clear.
      */
-    public void clearSendSsrc(long ssrc)
-    {
+    public void clearSendSsrc(long ssrc) {
         sendSsrcStatsToClean.put(ssrc, System.currentTimeMillis() + INTERVAL);
     }
 
     /**
      * An {@link TrackStats} implementation which aggregates values for a collection of {@link TrackStats} instances.
      */
-    private abstract class AggregateTrackStats<T> extends AbstractTrackStats
-    {
+    private abstract class AggregateTrackStats<T> extends AbstractTrackStats {
         /**
          * The collection of {@link TrackStats} for which this instance
          * aggregates.
@@ -383,8 +360,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
          * @param interval the interval in milliseconds over which average values will be calculated.
          * @param children a reference to the map which holds the statistics to aggregate.
          */
-        AggregateTrackStats(int interval, Map<Long, ? extends T> children)
-        {
+        AggregateTrackStats(int interval, Map<Long, ? extends T> children) {
             super(interval, -1);
             this.children = children;
         }
@@ -393,8 +369,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
          * {@inheritDoc}
          */
         @Override
-        protected void packetProcessed(int length, long now, boolean rtp)
-        {
+        protected void packetProcessed(int length, long now, boolean rtp) {
             // A hack to make RTCP packets count towards the aggregate packet rate.
             super.packetProcessed(length, now, true);
         }
@@ -405,16 +380,14 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * a collection of {@link SendTrackStats} instances.
      */
     private class AggregateSendTrackStats extends AggregateTrackStats<SendTrackStats>
-            implements SendTrackStats
-    {
+            implements SendTrackStats {
         /**
          * Initializes a new {@link AggregateTrackStats} instance.
          *
          * @param interval the interval in milliseconds over which average values will be calculated.
          * @param children a reference to the map which holds the statistics to aggregate.
          */
-        AggregateSendTrackStats(int interval, Map<Long, ? extends SendTrackStats> children)
-        {
+        AggregateSendTrackStats(int interval, Map<Long, ? extends SendTrackStats> children) {
             super(interval, children);
         }
 
@@ -422,8 +395,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
          * {@inheritDoc}
          */
         @Override
-        public double getLossRate()
-        {
+        public double getLossRate() {
             double sum = 0;
             int count = 0;
             for (SendTrackStats child : children.values()) {
@@ -440,8 +412,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
          * {@inheritDoc}
          */
         @Override
-        public int getHighestSent()
-        {
+        public int getHighestSent() {
             return -1;
         }
     }
@@ -451,16 +422,14 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * for a collection of {@link ReceiveTrackStats} instances.
      */
     private class AggregateReceiveTrackStats extends AggregateTrackStats<ReceiveTrackStats>
-            implements ReceiveTrackStats
-    {
+            implements ReceiveTrackStats {
         /**
          * Initializes a new {@link AggregateTrackStats} instance.
          *
          * @param interval the interval in milliseconds over which average values will be calculated.
          * @param children a reference to the map which holds the statistics to
          */
-        AggregateReceiveTrackStats(int interval, Map<Long, ? extends ReceiveTrackStats> children)
-        {
+        AggregateReceiveTrackStats(int interval, Map<Long, ? extends ReceiveTrackStats> children) {
             super(interval, children);
         }
 
@@ -468,8 +437,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
          * {@inheritDoc}
          */
         @Override
-        public long getPacketsLost()
-        {
+        public long getPacketsLost() {
             long lost = 0;
             for (ReceiveTrackStats child : children.values()) {
                 lost += child.getPacketsLost();
@@ -481,8 +449,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
          * {@inheritDoc}
          */
         @Override
-        public long getCurrentPackets()
-        {
+        public long getCurrentPackets() {
             long packets = 0;
             for (ReceiveTrackStats child : children.values()) {
                 packets += child.getCurrentPackets();
@@ -494,8 +461,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
          * {@inheritDoc}
          */
         @Override
-        public long getCurrentPacketsLost()
-        {
+        public long getCurrentPacketsLost() {
             long packetsLost = 0;
             for (ReceiveTrackStats child : children.values()) {
                 packetsLost += child.getCurrentPacketsLost();
@@ -509,8 +475,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
          * @return the loss rate in the last interval.
          */
         @Override
-        public double getLossRate()
-        {
+        public double getLossRate() {
             long lost = 0;
             long expected = 0;
 

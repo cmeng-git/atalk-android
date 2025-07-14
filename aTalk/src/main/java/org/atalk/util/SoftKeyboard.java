@@ -7,6 +7,7 @@ package org.atalk.util;
  */
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,7 @@ public class SoftKeyboard implements View.OnFocusChangeListener {
     public void openSoftKeyboard() {
         if (!isKeyboardShow) {
             layoutBottom = getLayoutCoordinates();
-            imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
+            imm.showSoftInput(tempView, InputMethodManager.SHOW_IMPLICIT);
             softKeyboardThread.keyboardOpened();
             isKeyboardShow = true;
         }
@@ -55,7 +56,7 @@ public class SoftKeyboard implements View.OnFocusChangeListener {
 
     public void closeSoftKeyboard() {
         if (isKeyboardShow) {
-            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+            imm.hideSoftInputFromWindow(tempView.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
             isKeyboardShow = false;
         }
     }
@@ -126,16 +127,14 @@ public class SoftKeyboard implements View.OnFocusChangeListener {
     }
 
     // This handler will clear focus of selected EditText
-    private final Handler mHandler = new Handler() {
+    private final Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message m) {
-            switch (m.what) {
-                case CLEAR_FOCUS:
-                    if (tempView != null) {
-                        tempView.clearFocus();
-                        tempView = null;
-                    }
-                    break;
+            if (m.what == CLEAR_FOCUS) {
+                if (tempView != null) {
+                    tempView.clearFocus();
+                    tempView = null;
+                }
             }
         }
     };

@@ -23,13 +23,13 @@ public class VibrateHandlerImpl implements VibrateNotificationHandler {
     /**
      * The <code>Vibrator</code> if present on this device.
      */
-    private final Vibrator vibratorService;
+    private final Vibrator mVibrator;
 
     /**
      * Creates new instance of <code>VibrateHandlerImpl</code>.
      */
     public VibrateHandlerImpl() {
-        this.vibratorService = (Vibrator) aTalkApp.getInstance().getSystemService(Context.VIBRATOR_SERVICE);
+        mVibrator = (Vibrator) aTalkApp.getInstance().getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     /**
@@ -38,25 +38,23 @@ public class VibrateHandlerImpl implements VibrateNotificationHandler {
      * @return <code>true</code> if the <code>Vibrator</code> service is present on this device.
      */
     private boolean hasVibrator() {
-        return (vibratorService != null) && vibratorService.hasVibrator();
+        return (mVibrator != null) && mVibrator.hasVibrator();
     }
 
     /**
      * {@inheritDoc}
      */
     public void vibrate(VibrateNotificationAction action) {
-        if (!hasVibrator())
-            return;
-        vibratorService.vibrate(action.getPattern(), action.getRepeat());
+        if (hasVibrator())
+            mVibrator.vibrate(action.getPattern(), action.getRepeat());
     }
 
     /**
      * {@inheritDoc}
      */
     public void cancel() {
-        if (!hasVibrator())
-            return;
-        vibratorService.cancel();
+        if (hasVibrator())
+            mVibrator.cancel();
     }
 
     /**

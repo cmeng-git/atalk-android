@@ -31,6 +31,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.IntentCompat;
 import androidx.core.location.LocationListenerCompat;
 import androidx.core.location.LocationManagerCompat;
 import androidx.core.location.LocationRequestCompat;
@@ -79,7 +80,9 @@ public class LocationBgService extends Service implements LocationListenerCompat
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mProvider = mLocationManager.getBestProvider(criteria, true);
+        // FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         Timber.d("Best location provider selected: %s", mProvider);
+
     }
 
     @SuppressWarnings("MissingPermission")
@@ -94,13 +97,15 @@ public class LocationBgService extends Service implements LocationListenerCompat
 
         Timber.d("Location background service start command %s", actionIntent);
         if (actionIntent.equals(GeoConstants.ACTION_LOCATION_FETCH_START)) {
-            GeoLocationRequest geoLocationRequest = intent.getParcelableExtra(GeoIntentKey.LOCATION_REQUEST);
-            mLocationMode = geoLocationRequest.getLocationFetchMode();
-            mAddressRequest = geoLocationRequest.getAddressRequest();
-            mLocationUpdateMinTime = geoLocationRequest.getLocationUpdateMinTime();
-            mLocationUpdateMinDistance = geoLocationRequest.getLocationUpdateMinDistance();
-            fallBackToLastLocationTime = geoLocationRequest.getFallBackToLastLocationTime();
-            requestLocationUpdates();
+            GeoLocationRequest geoLocationRequest = IntentCompat.getParcelableExtra(intent, GeoIntentKey.LOCATION_REQUEST, GeoLocationRequest.class);
+            if (geoLocationRequest != null) {
+                mLocationMode = geoLocationRequest.getLocationFetchMode();
+                mAddressRequest = geoLocationRequest.getAddressRequest();
+                mLocationUpdateMinTime = geoLocationRequest.getLocationUpdateMinTime();
+                mLocationUpdateMinDistance = geoLocationRequest.getLocationUpdateMinDistance();
+                fallBackToLastLocationTime = geoLocationRequest.getFallBackToLastLocationTime();
+                requestLocationUpdates();
+            }
         }
         else if (actionIntent.equals(GeoConstants.ACTION_LOCATION_FETCH_STOP)) {
             stopLocationService();

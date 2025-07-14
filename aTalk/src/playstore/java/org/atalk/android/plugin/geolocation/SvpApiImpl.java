@@ -19,13 +19,13 @@ package org.atalk.android.plugin.geolocation;
 import android.app.Activity;
 import android.content.Intent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.SvpApi;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The <code>SvpApiImpl</code> working in conjunction with ChatFragment to provide street map view support.
@@ -33,14 +33,12 @@ import java.util.List;
  *
  * @author Eng Chong Meng
  */
-public class SvpApiImpl implements SvpApi
-{
+public class SvpApiImpl implements SvpApi {
     /**
      * Perform google street map view when user click the show map button
      */
     @Override
-    public void onSVPClick(Activity activity, double[] dblLocation)
-    {
+    public void onSVPClick(Activity activity, double[] dblLocation) {
         Intent intent = new Intent(activity, SplitStreetViewPanoramaAndMapActivity.class);
         intent.putExtra(SplitStreetViewPanoramaAndMapActivity.MARKER_POSITION_KEY, toLatLng(dblLocation));
         activity.startActivity(intent);
@@ -52,8 +50,7 @@ public class SvpApiImpl implements SvpApi
      * @param dblLocations List of double[] values containing Latitude, Longitude and Altitude
      */
     @Override
-    public void onSVPLongClick(Activity activity, List<double[]> dblLocations)
-    {
+    public void onSVPLongClick(Activity activity, List<double[]> dblLocations) {
         ArrayList<LatLng> xLatLng = new ArrayList<>();
         for (double[] entry : dblLocations) {
             xLatLng.add(toLatLng(entry));
@@ -71,11 +68,11 @@ public class SvpApiImpl implements SvpApi
      *
      * @param mSVP SplitStreetViewPanoramaAndMapActivity
      * @param dblLocation: double[] value containing Latitude, Longitude and Altitude
-     * @return  SplitStreetViewPanoramaAndMapActivity, updated if any
+     *
+     * @return SplitStreetViewPanoramaAndMapActivity, updated if any
      */
     @Override
-    public Object svpHandler(Object mSVP, double[] dblLocation)
-    {
+    public Object svpHandler(Object mSVP, double[] dblLocation) {
         if (mSVP == null) {
             Activity currentActivity = aTalkApp.getCurrentActivity();
             if (currentActivity != null) {
@@ -94,6 +91,7 @@ public class SvpApiImpl implements SvpApi
      * Covert double[] to LatLng
      *
      * @param dblLocation double[] value containing Latitude, Longitude and Altitude
+     *
      * @return LatLng
      */
     private LatLng toLatLng(double[] dblLocation) {

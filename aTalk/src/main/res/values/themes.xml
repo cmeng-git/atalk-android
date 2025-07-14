@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme.Dark" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/color_primary</item>
@@ -143,7 +144,7 @@
     </style>
 
     <style name="AppTheme" parent="AppTheme.Dark">
-<!--        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>-->
+        <!-- <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>-->
     </style>
 
     <style name="AppTheme_NoActionBar" parent="@style/Theme.AppCompat.NoActionBar">
@@ -206,7 +207,7 @@
         <item name="android:windowNoTitle">false</item>
     </style>
 
-    <style name="Dialog_Light" parent="Theme.AppCompat.Light.Dialog.MinWidth" >
+    <style name="Dialog_Light" parent="Theme.AppCompat.Light.Dialog.MinWidth">
         <item name="android:windowTitleStyle">@style/DialogWindowTitle</item>
         <item name="android:windowNoTitle">false</item>
     </style>
@@ -234,4 +235,8 @@
 
     <style name="AppTheme_Transparent" parent="@android:style/Theme.NoDisplay" />
 
+    <!-- In styles.xml -->
+    <style name="OptOutEdgeToEdgeActivityTheme" parent="@android:style/Theme.Translucent">
+        <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:targetApi="35">true</item>
+    </style>
 </resources>

@@ -17,6 +17,7 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.IntentCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.fragment.app.ListFragment;
@@ -67,7 +68,7 @@ public class ServerListActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         Intent intent = getIntent();
-        this.registration = (JabberAccountRegistration) intent.getSerializableExtra(JABBER_REGISTRATION_KEY);
+        this.registration = IntentCompat.getSerializableExtra(intent, JABBER_REGISTRATION_KEY, JabberAccountRegistration.class);
         int listType = intent.getIntExtra(REQUEST_CODE_KEY, -1);
         if (listType == RCODE_STUN_TURN) {
             mAdapter = new StunServerAdapter(this, registration);
@@ -94,9 +95,7 @@ public class ServerListActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.server_list_menu, menu);
+        getMenuInflater().inflate(R.menu.server_list_menu, menu);
         return true;
     }
 

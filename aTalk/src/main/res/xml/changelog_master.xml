@@ -6,8 +6,28 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="4.3.1 (06/21/2025)" versioncode="403010">
+    <release version="4.4.0 (07/14/2025)" versioncode="404000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Upgrade aTalk to support Android-16 Baklava (API-36), with android SDK environment setup changes</change>
+        <change>Build aTalk native libraries with support for 16 KB devices; compile aTalk jni libraries using 16 KB ELF alignment</change>
+        <change>Third party libraries upgraded to latest compatible version for API-36</change>
+        <change>Add support to properly handle EdgeToEdge overlay content in aTalkApp; not compatible with aTalk</change>
+        <change>Received muc message incorrectly classified as outgoing message; introduced in 4.3.0 release</change>
+        <change>Fix auto normal/omemo switching on received omemo message; errors introduced during MenuProvider migration</change>
+        <change>Remove ContentEditText class; implement ChatController using OnReceiveContentListener interface instead</change>
+        <change>ReImplement FullScreenHelper for aTalk usage and to remove all deprecated functions</change>
+        <change>Replace deprecated ProgressDialog with aTalk customized ProgressDialog implementation</change>
+        <change>Replace deprecated NetworkInfo with networkCapabilities to check for VPN connection in AndroidUsingLinkProperties</change>
+        <change>Migrate all deprecated bundle/intent.getSerializable... to BundleCompat/IntentCompat.getSerializable...</change>
+        <change>Replace TimePicker deprecated method calls</change>
+        <change>ReImplement TouchInterceptor or avoid use of deprecated function calls</change>
+        <change>Reimplement OsmActivity using NetworkCallback instead of BroadcastReceiver</change>
+        <change>Update deprecated function calls for smack libraries</change>
+        <change>Remove tools:replace = "android:allowBackup,android:label" in manifest file</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="4.3.1 (06/21/2025)" versioncode="403010">
         <change>Cleanup and fix all errors in Provisioning implementation classes. See &lt;a href='https://cmeng-git.github.io/atalk/faq.html#feature_16'&gt;Provisioning&lt;/a&gt; </change>
         <change>Relocate 'Provisioning' menu to root UI Settings..., delink it from 'Expert settings'</change>
         <change>When use ConfigEditText, both preference 'android:key' and the stored parameters must use the same name, else store will have extra 'android:key' parameter</change>

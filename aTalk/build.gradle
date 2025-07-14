@@ -2,7 +2,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url "https://jitpack.io" }
+        maven { url = 'https://jitpack.io' }
     }
 
     dependencies {
@@ -24,7 +24,7 @@ repositories {
 //    }
     maven {
         // Git project library as local library project (ucrop) - see https://jitpack.io/docs/
-        url 'https://jitpack.io'
+        url = 'https://jitpack.io'
     }
 }
 
@@ -50,16 +50,22 @@ configurations.implementation {
     exclude group: "org.igniterealtime.smack", module: "smack-omemo"
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 android {
-    compileSdk rootProject.compileSdk
-    buildToolsVersion rootProject.buildTools
+    compileSdk = rootProject.compileSdk
+    buildToolsVersion = rootProject.buildTools
 
     defaultConfig {
-        namespace 'org.atalk.android'
-        applicationId "org.atalk.android"
+        namespace = 'org.atalk.android'
+        applicationId = 'org.atalk.android'
 
-        versionCode 403010
-        versionName "4.3.1"
+        versionCode 404000
+        versionName "4.4.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -68,17 +74,18 @@ android {
             ndkBuild {
                 arguments "-Cjni"
             }
+            cmake {
+                // Passes optional arguments to CMake.
+                arguments "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+            }
         }
-
         ndk {
             // Specifies the ABI configurations of your native libraries
             // Gradle should build and package with your APK.
             abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
         }
     }
-
-    // aTalk is only compatible to ndkVersion '20.0.5594570' max version
-    ndkVersion '22.1.7171670'
+    ndkVersion = '28.1.13356709'
 
     /*
      * Is OK for release version, but when build for debug it throws the following message and hangs aTalk:
@@ -98,13 +105,13 @@ android {
     }
 
     buildFeatures {
-        dataBinding true
+        dataBinding = true
 
         // for view binding to replace butterKnife in PermissionsActivity:
-        viewBinding true
+        viewBinding = true
 
         // Required for gradle version >= 8.0.0 and above
-        buildConfig true
+        buildConfig = true
     }
 
     flavorDimensions "distribution"
@@ -121,15 +128,15 @@ android {
     buildTypes {
         release {
             // cannot enable for aTalk string resource as not all usages are per android style
-            shrinkResources false
+            shrinkResources = false
             // too many missing references when enable
-            minifyEnabled false
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
         debug {
-            debuggable true
-            minifyEnabled false
+            debuggable = true
+            minifyEnabled = false
         }
     }
 
@@ -152,7 +159,7 @@ android {
                 }
             }
         }
-        buildTypes.release.signingConfig signingConfigs.release
+        buildTypes.release.signingConfig = signingConfigs.release
     }
 
     sourceSets {
@@ -171,9 +178,9 @@ android {
     }
 
     lintOptions {
-        abortOnError false
-        checkDependencies true
-        lintConfig file("lint.xml")
+        abortOnError = false
+        checkDependencies = true
+        lintConfig = file("lint.xml")
         disable 'NonConstantResourceId'
         // disable 'MissingTranslation', 'InvalidPackage', 'MissingQuantity', 'AppCompatResource'
     }
@@ -193,8 +200,7 @@ android {
 }
 
 ext {
-    // for official maven release
-    // smackVersion = '4.5.0-alpha1'
+    // for official maven release; smackVersion = '4.5.0-alpha1'
     smackVersion = '4.4.8'
 
     // May need manual cleanup for new SNAPSHOT update if same name with date change only:
@@ -212,11 +218,9 @@ dependencies {
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    // 1.13.x is only compatible with API-34
-    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.core:core-ktx:1.16.0'
 
-    // 1.10.0 only compatible with API-35
-    implementation 'androidx.activity:activity-ktx:1.9.3'
+    implementation 'androidx.activity:activity-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.fragment:fragment-ktx:1.8.8'
@@ -224,16 +228,12 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    // 1.5.x only compatible with API-35
-    implementation 'androidx.media3:media3-exoplayer:1.4.1'
-    implementation 'androidx.media3:media3-ui:1.4.1'
+    implementation 'androidx.media3:media3-exoplayer:1.7.1'
+    implementation 'androidx.media3:media3-ui:1.7.1'
+    // implementation "androidx.webkit:webkit:1.14.0"
 
     implementation 'com.jakewharton:butterknife:10.2.3'
-
-    // Drop butterknife-compiler:10.2.3 for PermissionsActivity dependency, use View Binding instead;
-    // butterknife-compiler:10.2.3 is only compatible with jdk-15 max
-    // annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
-
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.4.9'
     implementation('com.jakewharton.timber:timber:5.0.1') {
         transitive = false
     }
@@ -245,13 +245,11 @@ dependencies {
     implementation 'com.github.evgenyneu:js-evaluator-for-android:v6.0.0'
 
     implementation 'com.github.yalantis:ucrop:2.2.10'
-    // Do not update to 1.7.x or higher; has problem and reported need to use gradle 7 which is not compatible with aTalk.
     implementation 'com.google.android.material:material:1.12.0'
 
-    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.29'
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.4.2'
-    implementation 'com.splitwise:tokenautocomplete:4.0.0-beta01'
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.16' // 4.12.0'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.9'
+    implementation 'com.splitwise:tokenautocomplete:4.0.0-beta05'
+    implementation 'com.squareup.okhttp3:okhttp:5.1.0' // 4.12.0'
 
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
     // implementation 'com.github.cketti:ckchangelog-core:2.0.0-beta02'
@@ -262,8 +260,8 @@ dependencies {
     // commons-codec:1.16.x not compatible with Note10, crashes with No static method isEmpty([B)Z in class org/apache/commons/codec/binary/BinaryCodec;
     // or its super classes (declaration of 'org.apache.commons.codec.binary.BinaryCodec' appears in /system/framework/org.apache.http.legacy.jar)
     implementation 'commons-codec:commons-codec:1.15'
-    implementation 'org.apache.commons:commons-text:1.10.0'
-    implementation 'org.apache.james:apache-mime4j-core:0.8.9'
+    implementation 'org.apache.commons:commons-text:1.13.1'
+    implementation 'org.apache.james:apache-mime4j-core:0.8.12'
     implementation 'org.bitlet:weupnp:0.1.4'
 
     // bcprov-jdk15on-1.65 works with Android. From bcprov-jdk15on-1.66, Java 16 (major version 59) is required which Android Studio does not support.
@@ -272,22 +270,19 @@ dependencies {
     // (org.bouncycastle:bcprov-jdk15on:1.65) and jetified-bcprov-jdk15to18-1.68 (org.bouncycastle:bcprov-jdk15to18:1.68)
 
     //noinspection GradleDependency
-    implementation 'org.bouncycastle:bcpg-jdk15on:1.65'   // zrtp
+    implementation 'org.bouncycastle:bcpg-jdk15on:1.70'   // zrtp
     //noinspection GradleDependency
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.65' // CertificateServiceImpl jcajce
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.70' // CertificateServiceImpl jcajce
     //noinspection GradleDependency
-    implementation 'org.bouncycastle:bctls-jdk15on:1.65'  // dtls-srtp
-
-    //noinspection GradleDependency (define and use in smack)
-    // implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
+    implementation 'org.bouncycastle:bctls-jdk15on:1.70'  // dtls-srtp
 
     // For debug and tracing for bouncycastle - AS allows direct copy and replacement of bc source for debug
 //    implementation jarjar.repackage {
-//        from('org.bouncycastle:bctls-jdk15on:1.65') {
+//        from('org.bouncycastle:bctls-jdk15on:1.70') {
 //            transitive = false
 //        }
 //        destinationDir new File("${projectDir}/libs")
-//        destinationName "bctls-jdk15on-1.65.jar"
+//        destinationName "bctls-jdk15on-1.70.jar"
 //
 //        classDelete 'org.bouncycastle.tls.DTLSServerProtocol**'
 //        classDelete 'org.bouncycastle.tls.DTLSClientProtocol**'
@@ -296,11 +291,11 @@ dependencies {
 
     // Fix ZRTP X25519 key exchange - https://github.com/jitsi/zrtp4j/commit/f7575bf6301927a997675726002d309b2acdd5d9
     // Truncate ZRTP KDF output as per RFC - https://github.com/jitsi/zrtp4j/commit/0baa502b9269d0d8a31247d032ee4896f945a344
-    // note: bcprov-jdk15on-1.66.jar -> Unsupported class file major version 59
+    // note: 4.1.3 has duplicate class error: org.bouncycastle:bcprov-jdk15on:1.70 and bcprov-jdk18on-1.71.jar
     implementation 'org.jitsi:zrtp4j-light:4.1.2'
 
     // Required for provisioning discovery
-    implementation 'org.jmdns:jmdns:3.5.7'
+    implementation 'org.jmdns:jmdns:3.6.1'
     implementation 'org.opentelecoms.sdp:sdp-api:1.0'
 
     implementation "org.igniterealtime.smack:smack-android-extensions:$smackVersion"
@@ -319,16 +314,17 @@ dependencies {
     // implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
     implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
 
-    // No static method entityFullFrom() : 1.1.0
+    // 1.1.0: Has only static method entityFullFrom(CharSequence) cannot accept String
     implementation 'org.jxmpp:jxmpp-jid:1.0.3'
     implementation 'org.osgi:osgi.core:8.0.0'
 
     // playStore version use google map services
     playstoreImplementation "com.google.android.gms:play-services-maps:19.2.0"
     playstoreImplementation "com.google.android.gms:play-services-panorama:17.1.0"
+    // playstoreImplementation "com.google.android.gms:play-services-location:21.3.0"
 
     // fdroid version use osmdroid library
-    fdroidImplementation 'org.osmdroid:osmdroid-android:6.1.17'
+    fdroidImplementation 'org.osmdroid:osmdroid-android:6.1.20'
 
     /*
      * https://www.javatips.net/api/jarjar-master/jarjar-gradle/src/main/java/org/anarres/gradle/plugin/jarjar/JarjarController.java
@@ -527,7 +523,7 @@ task initJniLibs(type: Exec) {
  * The version.properties is retrieved during app update check to asses if there is a new update
  */
 task updateVersionFile(type: Copy) {
-    description '<!-- Generate version.properties file -->'
+    description = '<!-- Generate version.properties file -->'
 
     def versionName = android.defaultConfig.versionName
     def versionCode = android.defaultConfig.versionCode
