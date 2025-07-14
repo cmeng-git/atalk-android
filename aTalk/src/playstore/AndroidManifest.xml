@@ -1,33 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="org.atalk.android"
     android:installLocation="internalOnly">
 
-    <application >
-
-    <!--
-          The API key for Google Maps-based APIs is defined as a string resource.
-          (See the file "res/values/google_maps_api.xml").
-          Note that the API key is linked to the encryption key used to sign the APK.
-          You need a different API key for each encryption key, including the release key
-          that is used to sign the APK for publishing.
-          You can define the keys for the debug and release targets in src/debug/ and src/release/.
-     -->
+    <application android:icon="@drawable/ic_logo">
+        <!--
+              The API key for Google Maps-based APIs is defined as a string resource.
+              (See the file "res/values/google_maps_api.xml").
+              Note that the API key is linked to the encryption key used to sign the APK.
+              You need a different API key for each encryption key, including the release key
+              that is used to sign the APK for publishing.
+              You can define the keys for the debug and release targets in src/debug/ and src/release/.
+         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key"/>
+            android:value="@string/google_maps_key" />
 
         <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
          App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
+            android:value="@integer/google_play_services_version" />
 
         <activity
             android:name="org.atalk.android.plugin.geolocation.SplitStreetViewPanoramaAndMapActivity"
             android:label="@string/split_street_view_panorama_and_map_label" />
-
     </application>
-
 </manifest>

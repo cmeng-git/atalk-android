@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.aTalkApp;
 import org.atalk.impl.timberlog.TimberLog;
 
@@ -52,7 +53,7 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
      * @param activity parent <code>Activity</code>.
      * @param container the container that will hold maintained <code>View</code>.
      */
-    public OpenGlCtxProvider(Activity activity, ViewGroup container) {
+    public OpenGlCtxProvider(BaseActivity activity, ViewGroup container) {
         super(activity, container);
     }
 
@@ -106,7 +107,7 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
 
         // Create an identity matrix
         Matrix matrix = new Matrix();
-        int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
+        int rotation = mActivity.getDisplayRotation();
         if (Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation) {
             int degree = 90 * (rotation - 2);
 
@@ -149,7 +150,7 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
             bufferHeight = mVideoSize.height;
         }
 
-        int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
+        int rotation = mActivity.getDisplayRotation();
         if (Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation) {
             degree = 90 * (rotation - 2);
         }

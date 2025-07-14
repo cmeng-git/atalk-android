@@ -16,13 +16,13 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -82,6 +82,7 @@ import org.atalk.service.neomedia.SDesControl;
 import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.service.neomedia.ZrtpControl;
+import org.atalk.util.FullScreenHelper;
 import org.atalk.util.MediaType;
 import org.jetbrains.annotations.NotNull;
 import org.jxmpp.jid.Jid;
@@ -207,6 +208,7 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
      */
     private volatile boolean finishing = false;
 
+    private FullScreenHelper fullScreenHelper;
     private ImageView peerAvatar;
     private ImageView microphoneButton;
     private ImageView speakerphoneButton;
@@ -226,11 +228,8 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.call_video_audio);
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-        );
+        setScreenOn();
+        fullScreenHelper = new FullScreenHelper(this);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -479,7 +478,7 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
                 // getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new CallEnded()).commit();
 
                 // auto exit 3 seconds after call ended successfully
-                new Handler().postDelayed(this::finish, 5000);
+                new Handler(Looper.getMainLooper()).postDelayed(this::finish, 5000);
             });
         }).start();
     }
@@ -498,31 +497,12 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
 
     @Override
     public void onRemoteVideoChange(boolean isRemoteVideoVisible) {
-        if (isRemoteVideoVisible)
-            hideSystemUI();
-        else
-            showSystemUI();
-    }
-
-    private void hideSystemUI() {
-        // Enables regular immersive mode.
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE
-                // Set the content to appear under the system bars so that the
-                // content doesn't resize when the system bars hide and show.
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                // Hide the nav bar and status bar
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN);
-    }
-
-    // Restore the system bars by removing all the flags. On end call,
-    // do not request for full screen nor hide navigation bar, let user selected navigation state take control.
-    public void showSystemUI() {
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        if (isRemoteVideoVisible) {
+            fullScreenHelper.enterFullScreen();
+        }
+        else {
+            fullScreenHelper.exitFullScreen();
+        }
     }
 
     /**

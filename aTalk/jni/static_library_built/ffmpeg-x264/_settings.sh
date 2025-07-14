@@ -141,25 +141,30 @@ export PATH=${TOOLCHAIN_PREFIX}/bin:$PATH
 export CROSS_PREFIX_API=${TOOLCHAIN_PREFIX}/bin/${NDK_ABIARCH}${ANDROID_API}-
 
 if [[ ($1 == "armeabi-v7a") ]]; then
+  ## only valid for ndk 23.2.8568313+ CROSS_PREFIX=${TOOLCHAIN_PREFIX}/bin/${NDK_ABIARCH}-
   export CROSS_PREFIX="${TOOLCHAIN_PREFIX}/bin/arm-linux-androideabi-"
 else
   export CROSS_PREFIX=${TOOLCHAIN_PREFIX}/bin/${NDK_ABIARCH}-
 fi
+LLVM_PREFIX="${TOOLCHAIN_PREFIX}/bin/"
 
 export CFLAGS="${CFLAGS}"
 export CPPFLAGS="${CFLAGS}"
 export CXXFLAGS="${CFLAGS} -std=c++11"
 export ASFLAGS="${ASFLAGS}"
 
-export AS="${CROSS_PREFIX_API}clang"
 export CC="${CROSS_PREFIX_API}clang"
 export CXX="${CROSS_PREFIX_API}clang++"
+export AS="${CROSS_PREFIX_API}clang"
 
-export AR="${CROSS_PREFIX}ar"
-export LD="${CROSS_PREFIX}ld.gold"
-export NM="${CROSS_PREFIX}nm"
+# llvm-strip error: not stripping symbol xxx because it is named in a relocation
 export STRIP="${CROSS_PREFIX}strip"
-export STRING="${CROSS_PREFIX}string"
+
+export AR="${LLVM_PREFIX}llvm-ar"
+export LD="${LLVM_PREFIX}ld.lld"
+export NM="${LLVM_PREFIX}llvm-nm"
+export RANLIB="${LLVM_PREFIX}llvm-ranlib"
+export STRINGS="${LLVM_PREFIX}llvm-strings"
 
 export PKG_CONFIG="${CROSS_PREFIX}pkg-config"
 export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig

@@ -1,5 +1,58 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.4.0 (404000)
+Release Date:   07/14/2025
+Author:         cmeng
+- Upgrade aTalk to support Android-16 Baklava (API-36) with the following changes:
+  * Android Studio Narwhal | 2025.1.1
+  * https://services.gradle.org/distributions/gradle-8.14.2-bin.zip
+  * classpath 'com.android.tools.build:gradle:8.11.1'
+  * classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21'
+- add org.gradle.configuration-cache=false in gradle.properties
+- Remove tools:replace="android:allowBackup,android:label" in manifest file.
+- add plugins {id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'} in settings.gradle
+- Third party libraries upgraded to latest compatible version for API-36:
+  * core-ktx: 1.16.0 <= 1.13.1
+  * activity-ktx:1.10.1 <= 1.9.3
+  * media3-exoplayer:1.7.1 <=> 1.4.1
+  * media3-ui:1.7.1 <= 1.4.1
+  * threetenabp:1.4.9 <= 1.4.2
+  * libphonenumber:9.0.9 <= 8.12.29
+  * okhttp:5.1.0 <= 5.0.0-alpha.16
+  * commons-text:1.13.1 <= 1.10.0
+  * apache-mime4j-core:0.8.12 <= 0.8.9
+  * bcpg-jdk15on:1.70, bcpkix-jdk15on:1.70 bctls-jdk15on:1.70 <= 1.65
+  * jmdns:3.6.1 <= 3.5.7
+  * osmdroid-android:6.1.20 <= 6.1.17
+  * lifecycle-runtime-ktx:2.9.1 <= 2.7.0
+  * appcompat:1.7.1 < 1.7.0
+  * recyclerview:1.4.0 <= 1.3.2
+- Build aTalk with support for 16 KB devices; Compile aTalk jni libraries using 16 KB ELF alignment
+  * https://developer.android.com/guide/practices/page-sizes#ndk-build
+  * use ndkVersion = '28.1.13356709' <= '22.1.7171670'
+  * add LOCAL_LDFLAGS += "-Wl,-z,max-page-size=16384" in all Android.mk files
+  * add APP_SUPPORT_FLEXIBLE_PAGE_SIZES := true Application.k
+- Add support to properly handle EdgeToEdge overlay content in aTalkApp; not compatible with aTalk.
+- Received muc message incorrectly classified as outgoing message; introduced in 4.3.0 release.
+- Fix auto normal/omemo switching on received omemo message; errors introduced during MenuProvider migration.
+- Remove ContentEditText class; Implement ChatController using OnReceiveContentListener interface instead.
+- ReImplement FullScreenHelper for aTalk usage and to remove all deprecated functions.
+- Replace deprecated ProgressDialog with aTalk customized ProgressDialog implementation.
+- Replace deprecated NetworkInfo with networkCapabilities to check for VPN connection in AndroidUsingLinkProperties.
+- Migrate deprecated intent.getSerializableExtra() to IntentCompat.getSerializableExtra(), and
+  bundle.getSerializable() to BundleCompat.getSerializable().
+- Replace TimePicker deprecated method calls.
+- ReImplement TouchInterceptor or avoid use of deprecated function calls.
+- Reimplement OsmActivity using NetworkCallback instead of BroadcastReceiver.
+- Update deprecated function calls in Smack libraries.
+
+*** Observation with no solution implemented:
+- AppGUIActivator.getContactListService() (registered in ContactlistActivator) in ChatSessionManager has null reference
+  on start debug - SDK JIT problem? not fixed
+- JNI static_library_built still using ndk/22.1.7171670; problem with ndk/28.1.13356709
+  e.g. llvm-strip: error: 'common/arm/quant-a-10.o': not stripping symbol 'mask_2bit' because it is named in a relocation
+
+=========================================================================
 Version:        4.3.1 (403010)
 Release Date:   06/21/2025
 Author:         cmeng

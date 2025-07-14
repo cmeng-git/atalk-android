@@ -41,6 +41,7 @@ import androidx.annotation.NonNull;
 import androidx.core.location.LocationListenerCompat;
 import androidx.core.location.LocationManagerCompat;
 import androidx.core.location.LocationRequestCompat;
+import androidx.core.os.BundleCompat;
 import androidx.core.view.MenuProvider;
 
 import java.util.ArrayList;
@@ -170,8 +171,8 @@ public class OsmFragment extends BaseFragment implements MenuProvider, LocationL
         Bundle args = getArguments();
         if (args != null) {
             mLocationFetchMode = args.getInt(GeoIntentKey.LOCATION_FETCH_MODE);
-            mLocation = args.getParcelable(GeoIntentKey.LOCATION);
-            mLocations = args.getParcelableArrayList(GeoIntentKey.LOCATION_LIST);
+            mLocation = BundleCompat.getParcelable(args, GeoIntentKey.LOCATION, Location.class);
+            mLocations = BundleCompat.getParcelableArrayList(args, GeoIntentKey.LOCATION_LIST, Location.class);
         }
 
         btCenterMap = view.findViewById(R.id.ic_center_map);
@@ -307,7 +308,8 @@ public class OsmFragment extends BaseFragment implements MenuProvider, LocationL
             btFollowMe.setImageResource(R.drawable.ic_follow_me_on);
             if (GeoConstants.ZERO_FIX != mLocationFetchMode) {
                 mLocationFetchMode = GeoConstants.FOLLOW_ME_FIX;
-                LocationManagerCompat.requestLocationUpdates(mLocationManager, mProvider, mLocationRequest, this, Looper.myLooper());
+                LocationManagerCompat.requestLocationUpdates(mLocationManager, mProvider, mLocationRequest,
+                        this, Looper.getMainLooper());
             }
         }
         else {
@@ -318,7 +320,7 @@ public class OsmFragment extends BaseFragment implements MenuProvider, LocationL
 
     private void setDeviceOrientation() {
         int orientation;
-        int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
+        int rotation = mActivity.getDisplayRotation();
         switch (rotation) {
             case Surface.ROTATION_0:
                 orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
@@ -335,8 +337,8 @@ public class OsmFragment extends BaseFragment implements MenuProvider, LocationL
                 orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
                 break;
 
-            default:
             case Surface.ROTATION_270:
+            default:
                 mDeviceOrientation = 270;
                 orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
                 break;
@@ -387,7 +389,7 @@ public class OsmFragment extends BaseFragment implements MenuProvider, LocationL
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(@NonNull Location location) {
         if (GeoConstants.FOLLOW_ME_FIX == mLocationFetchMode) {
             mLocation = location;
         }

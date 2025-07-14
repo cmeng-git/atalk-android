@@ -313,8 +313,8 @@ public class IBRCaptchaProcessDialog extends Dialog {
                 // Scale the captcha to the display resolution
                 DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
                 Bitmap captcha = Bitmap.createScaledBitmap(mCaptcha,
-                        (int) (mCaptcha.getWidth() * metrics.scaledDensity),
-                        (int) (mCaptcha.getHeight() * metrics.scaledDensity), false);
+                        (int) (mCaptcha.getWidth() * metrics.density),
+                        (int) (mCaptcha.getHeight() * metrics.density), false);
                 mImageView.setImageBitmap(captcha);
                 mCaptchaText.setHint(R.string.captcha_ibr_hint);
                 mCaptchaText.requestFocus();

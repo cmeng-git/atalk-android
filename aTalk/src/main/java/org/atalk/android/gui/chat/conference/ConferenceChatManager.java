@@ -20,6 +20,7 @@ import java.util.Vector;
 import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
+import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 import net.java.sip.communicator.service.muc.ChatRoomListChangeEvent;
@@ -100,6 +101,8 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
     private final ConferenceChatManager multiUserChatManager;
 
+    private final MUCServiceImpl mucService;
+
     /**
      * A list of all <code>AdHocChatRoomListChangeListener</code>-s.
      */
@@ -118,6 +121,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             }
         }.start();
         AppGUIActivator.bundleContext.addServiceListener(this);
+        mucService = MUCActivator.getMUCService();
     }
 
     /**
@@ -219,7 +223,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         if (sourceChatRoom.isSystem()) {
             ChatRoomProviderWrapper serverWrapper
-                    = MUCActivator.getMUCService().findServerWrapperFromProvider(sourceChatRoom.getParentProvider());
+                    = mucService.findServerWrapperFromProvider(sourceChatRoom.getParentProvider());
             chatPanel = ChatSessionManager.getMultiChat(serverWrapper.getSystemRoomWrapper(), createWindow);
         }
         else {
@@ -403,12 +407,12 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      */
     public void localUserPresenceChanged(final LocalUserChatRoomPresenceChangeEvent evt) {
         ChatRoom sourceChatRoom = evt.getChatRoom();
-        ChatRoomWrapper chatRoomWrapper = MUCActivator.getMUCService().findChatRoomWrapperFromChatRoom(sourceChatRoom);
+        ChatRoomWrapper chatRoomWrapper = mucService.findChatRoomWrapperFromChatRoom(sourceChatRoom);
 
         String eventType = evt.getEventType();
         if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED.equals(eventType)) {
             if (chatRoomWrapper != null) {
-                MUCActivator.getMUCService().fireChatRoomListChangedEvent(chatRoomWrapper,
+                mucService.fireChatRoomListChangedEvent(chatRoomWrapper,
                         ChatRoomListChangeEvent.CHAT_ROOM_CHANGED);
 
                 boolean createWindow = false;
@@ -436,7 +440,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             }
 
             if (sourceChatRoom.isSystem()) {
-                ChatRoomProviderWrapper serverWrapper = MUCActivator.getMUCService()
+                ChatRoomProviderWrapper serverWrapper = mucService
                         .findServerWrapperFromProvider(sourceChatRoom.getParentProvider());
                 serverWrapper.setSystemRoom(sourceChatRoom);
             }
@@ -472,7 +476,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                     }
                 }
                 // Need to refresh the chat room's list in order to change the state of the chat room to offline.
-                MUCActivator.getMUCService().fireChatRoomListChangedEvent(chatRoomWrapper,
+                mucService.fireChatRoomListChangedEvent(chatRoomWrapper,
                         ChatRoomListChangeEvent.CHAT_ROOM_CHANGED);
             }
             sourceChatRoom.removeMessageListener(this);
@@ -576,7 +580,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             leaveChatRoom(chatRoomWrapper);
 
         AppGUIActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
-        MUCActivator.getMUCService().removeChatRoom(chatRoomWrapper);
+        mucService.removeChatRoom(chatRoomWrapper);
 
     }
 
@@ -608,7 +612,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      * @param chatRoomWrapper the <code>ChatRoom</code> to leave.
      */
     public void leaveChatRoom(ChatRoomWrapper chatRoomWrapper) {
-        ChatRoomWrapper leavedRoomWrapped = MUCActivator.getMUCService().leaveChatRoom(chatRoomWrapper);
+        ChatRoomWrapper leavedRoomWrapped = mucService.leaveChatRoom(chatRoomWrapper);
         if (leavedRoomWrapped != null) {
             // AppGUIActivator.getUIService().closeChatRoomWindow(leavedRoomWrapped);
         }
@@ -912,7 +916,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         if (evt.isInitial())
             return;
         ChatRoom sourceChatRoom = evt.getSourceChatRoom();
-        ChatRoomWrapper chatRoomWrapper = MUCActivator.getMUCService().findChatRoomWrapperFromChatRoom(sourceChatRoom);
+        ChatRoomWrapper chatRoomWrapper = mucService.findChatRoomWrapperFromChatRoom(sourceChatRoom);
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(chatRoomWrapper, true);
         ChatSessionManager.setCurrentChatId(chatPanel.getChatSession().getChatId());
     }

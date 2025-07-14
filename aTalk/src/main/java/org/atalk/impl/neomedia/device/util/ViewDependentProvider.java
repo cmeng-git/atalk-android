@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 
 import java.awt.Dimension;
 
+import org.atalk.android.BaseActivity;
+
 import timber.log.Timber;
 
 /**
@@ -35,7 +37,7 @@ public abstract class ViewDependentProvider<T> {
     /**
      * <code>Activity</code> context.
      */
-    protected final Activity mActivity;
+    protected final BaseActivity mActivity;
 
     /**
      * The container that will hold maintained view.
@@ -73,7 +75,7 @@ public abstract class ViewDependentProvider<T> {
      * @param activity parent <code>Activity</code> that manages the <code>container</code>.
      * @param container the container that will hold maintained <code>View</code>.
      */
-    public ViewDependentProvider(Activity activity, ViewGroup container) {
+    public ViewDependentProvider(BaseActivity activity, ViewGroup container) {
         mActivity = activity;
         mContainer = container;
     }

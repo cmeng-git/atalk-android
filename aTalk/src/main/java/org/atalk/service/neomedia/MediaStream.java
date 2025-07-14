@@ -5,6 +5,11 @@
  */
 package org.atalk.service.neomedia;
 
+import java.beans.PropertyChangeListener;
+import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.Map;
+
 import org.atalk.impl.neomedia.codec.REDBlock;
 import org.atalk.impl.neomedia.rtp.MediaStreamTrackReceiver;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
@@ -16,11 +21,6 @@ import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.stats.MediaStreamStats2;
 import org.atalk.util.ByteArrayBuffer;
 
-import java.beans.PropertyChangeListener;
-import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.Map;
-
 /**
  * The <code>MediaStream</code> class represents a (generally) bidirectional RTP stream between exactly
  * two parties. The class reflects one of the media stream, in the SDP sense of the word.
@@ -30,8 +30,7 @@ import java.util.Map;
  * @author Emil Ivov
  * @author Lyubomir Marinov
  */
-public interface MediaStream
-{
+public interface MediaStream {
     /**
      * The name of the property which indicates whether the local SSRC is currently available.
      */
@@ -145,6 +144,7 @@ public interface MediaStream
      * first one it encounters while iterating through the map.
      *
      * @param codec the encoding whose payload type we are trying to obtain.
+     *
      * @return the payload type number that has been negotiated for the specified <code>codec</code>
      * or <code>-1</code> if no payload type has been negotiated for it.
      */
@@ -161,6 +161,7 @@ public interface MediaStream
      * Returns the <code>MediaFormat</code> that is associated to the payload type passed in as a parameter.
      *
      * @param payloadType the payload type of the <code>MediaFormat</code> to get.
+     *
      * @return the <code>MediaFormat</code> that is associated to the payload type passed in as a parameter.
      */
     MediaFormat getFormat(byte payloadType);
@@ -195,6 +196,7 @@ public interface MediaStream
      *
      * @param propertyName the name of the opaque property of this <code>MediaStream</code>
      * the value of which is to be returned
+     *
      * @return the value of the opaque property of this <code>MediaStream</code> specified by <code>propertyName</code>
      */
     Object getProperty(String propertyName);
@@ -257,6 +259,7 @@ public interface MediaStream
      *
      * @return the <code>MediaStreamTarget</code> describing the data (e.g. RTP) and the control data
      * (e.g. RTCP) locations to which this <code>MediaStream</code> is to send and from which it is to receive
+     *
      * @see MediaStream#setTarget(MediaStreamTarget)
      */
     MediaStreamTarget getTarget();
@@ -434,6 +437,7 @@ public interface MediaStream
      * this {@code MediaStream}. Generally, the value of {@code after} should be {@code null}
      * unless the injection is being performed by a {@code TransformEngine} itself (while executing
      * {@code transform} or {@code reverseTransform} of a {@code PacketTransformer} of its own even).
+     *
      * @throws TransmissionFailedException if the transmission failed.
      */
     void injectPacket(RawPacket pkt, boolean data, TransformEngine after)
@@ -445,6 +449,7 @@ public interface MediaStream
      * @param buf the buffer that holds the RTP payload.
      * @param off the offset in the buff where the RTP payload is found.
      * @param len then length of the RTP payload in the buffer.
+     *
      * @return true if the packet is a key frame, false otherwise.
      */
     boolean isKeyFrame(byte[] buf, int off, int len);
@@ -460,19 +465,8 @@ public interface MediaStream
      * Gets the primary {@link REDBlock} that contains the payload of the RTP
      * packet passed in as a parameter.
      *
-     * @param baf the {@link ByteArrayBuffer} that holds the RTP payload.
-     * @return the primary {@link REDBlock} that contains the payload of the RTP
-     * packet passed in as a parameter, or null if the buffer is invalid.
-     * @Deprecated use getPrimaryREDBlock(RawPacket)
-     */
-    @Deprecated
-    REDBlock getPrimaryREDBlock(ByteArrayBuffer baf);
-
-    /**
-     * Gets the primary {@link REDBlock} that contains the payload of the RTP
-     * packet passed in as a parameter.
-     *
      * @param pkt the {@link RawPacket} that holds the RTP payload.
+     *
      * @return the primary {@link REDBlock} that contains the payload of the RTP
      * packet passed in as a parameter, or null if the buffer is invalid.
      */

@@ -367,14 +367,14 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
 
     // The notification volume for aTalk - no good to implement as it affect all notifications
     //    private void setNotificationVolume() {
-    //        AudioManager audioManager = (AudioManager)  aTalkApp.getInstance().getSystemService(Context.AUDIO_SERVICE);
+    //        AudioManager audioManager = aTalkApp.getAudioManager();
     //        currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
     //        Timber.d("Current volume: %s", currentVolume);
     //        audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), 0);
     //    }
     //
     //    private void restoreNotificationVolume() {
-    //        AudioManager audioManager = (AudioManager)  aTalkApp.getInstance().getSystemService(Context.AUDIO_SERVICE);
+    //        AudioManager audioManager = aTalkApp.getAudioManager();
     //        Timber.d("Current volume restore: %s", currentVolume);
     //        audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, currentVolume, 0);
     //    }

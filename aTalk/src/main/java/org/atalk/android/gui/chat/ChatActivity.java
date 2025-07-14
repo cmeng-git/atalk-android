@@ -211,7 +211,7 @@ public class ChatActivity extends BaseActivity
         // Use SOFT_INPUT_ADJUST_PAN mode only in horizontal orientation, which doesn't provide
         // enough space to write messages comfortably. Adjust pan is causing copy-paste options
         // not being displayed as well as the action bar which contains few useful options.
-        int rotation = getWindowManager().getDefaultDisplay().getRotation();
+        int rotation = getDisplayRotation();
         if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         }
@@ -261,7 +261,7 @@ public class ChatActivity extends BaseActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(@NonNull Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent, null);
     }

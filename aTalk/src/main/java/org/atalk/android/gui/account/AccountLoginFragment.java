@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
+import androidx.core.os.BundleCompat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -319,8 +320,8 @@ public class AccountLoginFragment extends BaseFragment implements AdapterView.On
         Bundle extras = getArguments();
         if (extras != null) {
             if (accountCreated) { // Pass the new account back to the account manager
-                AccountAuthenticatorResponse response
-                        = extras.getParcelable(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+                AccountAuthenticatorResponse response = BundleCompat.getParcelable(extras,
+                        AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, AccountAuthenticatorResponse.class);
 
                 Bundle result = new Bundle();
                 result.putString(AccountManager.KEY_ACCOUNT_NAME, username);

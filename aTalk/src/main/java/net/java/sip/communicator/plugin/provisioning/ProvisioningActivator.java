@@ -87,7 +87,7 @@ public class ProvisioningActivator implements BundleActivator {
         }
 
         provisioningService.start(url);
-        bundleContext.registerService(ProvisioningService.class.getName(), provisioningService, null);
+        bundleContext.registerService(ProvisioningService.class, provisioningService, null);
         Timber.d("Provisioning discovery [REGISTERED]");
     }
 
@@ -112,7 +112,7 @@ public class ProvisioningActivator implements BundleActivator {
      */
     public static ConfigurationService getConfigurationService() {
         if (configurationService == null) {
-            ServiceReference<?> confReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
+            ServiceReference<?> confReference = bundleContext.getServiceReference(ConfigurationService.class);
             configurationService = (ConfigurationService) bundleContext.getService(confReference);
         }
         return configurationService;
@@ -126,7 +126,7 @@ public class ProvisioningActivator implements BundleActivator {
      */
     public static CredentialsStorageService getCredentialsStorageService() {
         if (credentialsService == null) {
-            ServiceReference<?> credentialsReference = bundleContext.getServiceReference(CredentialsStorageService.class.getName());
+            ServiceReference<?> credentialsReference = bundleContext.getServiceReference(CredentialsStorageService.class);
             credentialsService = (CredentialsStorageService) bundleContext.getService(credentialsReference);
         }
         return credentialsService;
@@ -140,7 +140,7 @@ public class ProvisioningActivator implements BundleActivator {
      */
     public static NetworkAddressManagerService getNetworkAddressManagerService() {
         if (netaddrService == null) {
-            ServiceReference<?> netAddrReference = bundleContext.getServiceReference(NetworkAddressManagerService.class.getName());
+            ServiceReference<?> netAddrReference = bundleContext.getServiceReference(NetworkAddressManagerService.class);
             netaddrService = (NetworkAddressManagerService) bundleContext.getService(netAddrReference);
         }
         return netaddrService;

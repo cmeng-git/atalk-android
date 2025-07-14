@@ -28,7 +28,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.RequestBody.Companion;
 import timber.log.Timber;
 
 public class OkHttpUtils {
@@ -78,6 +77,7 @@ public class OkHttpUtils {
         return builder.build();
     }
 
+    // Trusting a Self-Signed Certificate in OkHttp
     public static void setupTrustManager(final OkHttpClient.Builder builder, String url) {
         try {
             final X509TrustManager trustManager = HttpUtilActivator.getCertificateVerificationService().getTrustManager(url);

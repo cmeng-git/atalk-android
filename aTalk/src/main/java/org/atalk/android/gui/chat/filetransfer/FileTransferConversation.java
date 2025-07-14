@@ -18,6 +18,7 @@ package org.atalk.android.gui.chat.filetransfer;
 
 import static org.atalk.persistance.FileBackend.getMimeType;
 
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,6 +34,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +49,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.IntentCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.io.File;
@@ -78,6 +81,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatActivity;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.plugin.audioservice.AudioBgService;
+import org.atalk.android.plugin.audioservice.AudioBgService.PlaybackState;
 import org.atalk.persistance.FileBackend;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.util.StringUtils;
@@ -348,7 +352,7 @@ public abstract class FileTransferConversation extends BaseFragment
      */
     protected boolean checkAutoAccept(long fileSize) {
         if (fileSize > 0 && ConfigurationUtils.isAutoAcceptFile(fileSize)) {
-            runOnUiThread(() -> new Handler().postDelayed(() -> {
+            runOnUiThread(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 messageViewHolder.acceptButton.performClick();
             }, 500));
             return true;
@@ -789,17 +793,15 @@ public abstract class FileTransferConversation extends BaseFragment
     private boolean playerInit() {
         if (isMediaAudio) {
             if (playerState == STATE_STOP) {
-
-                if (!bcReceiverInit(mXferFile))
-                    return false;
-
-                Intent intent = new Intent(mChatActivity, AudioBgService.class);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.setDataAndType(mUri, mimeType);
-                intent.setAction(AudioBgService.ACTION_PLAYER_INIT);
-                mChatActivity.startService(intent);
+                if (bcReceiverInit(mXferFile)) {
+                    Intent intent = new Intent(mChatActivity, AudioBgService.class);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    intent.setDataAndType(mUri, mimeType);
+                    intent.setAction(AudioBgService.ACTION_PLAYER_INIT);
+                    mChatActivity.startService(intent);
+                    return true;
+                }
             }
-            return true;
         }
         return false;
     }
@@ -810,7 +812,6 @@ public abstract class FileTransferConversation extends BaseFragment
     private void playerStop() {
         if (isMediaAudio) {
             if ((playerState == STATE_PAUSE) || (playerState == STATE_PLAY)) {
-
                 Intent intent = new Intent(mChatActivity, AudioBgService.class);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 intent.setDataAndType(mUri, mimeType);
@@ -837,30 +838,29 @@ public abstract class FileTransferConversation extends BaseFragment
                 return;
             }
             else if (playerState == STATE_STOP) {
-                if (!bcReceiverInit(mXferFile))
-                    return;
+                if (bcReceiverInit(mXferFile)) {
+                    intent.setAction(AudioBgService.ACTION_PLAYER_START);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    intent.setDataAndType(mUri, mimeType);
+                    mChatActivity.startService(intent);
+                }
+                return;
             }
 
-            intent.setAction(AudioBgService.ACTION_PLAYER_START);
+            intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.setDataAndType(mUri, mimeType);
-            mChatActivity.startService(intent);
-            return;
-        }
 
-        intent = new Intent(Intent.ACTION_VIEW);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.setDataAndType(mUri, mimeType);
-
-        PackageManager manager = mChatActivity.getPackageManager();
-        List<ResolveInfo> info = manager.queryIntentActivities(intent, 0);
-        if (info.isEmpty()) {
-            intent.setDataAndType(mUri, "*/*");
-        }
-        try {
-            mChatActivity.startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            aTalkApp.showToastMessage(R.string.file_open_no_application);
+            PackageManager manager = mChatActivity.getPackageManager();
+            List<ResolveInfo> info = manager.queryIntentActivities(intent, 0);
+            if (info.isEmpty()) {
+                intent.setDataAndType(mUri, "*/*");
+            }
+            try {
+                mChatActivity.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                aTalkApp.showToastMessage(R.string.file_open_no_application);
+            }
         }
     }
 
@@ -871,15 +871,14 @@ public abstract class FileTransferConversation extends BaseFragment
      */
     private void playerSeek(int position) {
         if (isMediaAudio) {
-            if (!bcReceiverInit(mXferFile))
-                return;
-
-            Intent intent = new Intent(mChatActivity, AudioBgService.class);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setDataAndType(mUri, mimeType);
-            intent.putExtra(AudioBgService.PLAYBACK_POSITION, position);
-            intent.setAction(AudioBgService.ACTION_PLAYER_SEEK);
-            mChatActivity.startService(intent);
+            if (bcReceiverInit(mXferFile)) {
+                Intent intent = new Intent(mChatActivity, AudioBgService.class);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(mUri, mimeType);
+                intent.putExtra(AudioBgService.PLAYBACK_POSITION, position);
+                intent.setAction(AudioBgService.ACTION_PLAYER_SEEK);
+                mChatActivity.startService(intent);
+            }
         }
     }
 
@@ -887,10 +886,11 @@ public abstract class FileTransferConversation extends BaseFragment
      * Media player BroadcastReceiver to animate and update player view holder info
      */
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @SuppressLint("UnsafeIntentLaunch")
         @Override
         public void onReceive(Context context, Intent intent) {
             // proceed only if it is the playback of the current mUri
-            if (!mUri.equals(intent.getParcelableExtra(AudioBgService.PLAYBACK_URI)))
+            if (!mUri.equals(IntentCompat.getParcelableExtra(intent, AudioBgService.PLAYBACK_URI, Uri.class)))
                 return;
 
             int position = intent.getIntExtra(AudioBgService.PLAYBACK_POSITION, 0);
@@ -905,48 +905,49 @@ public abstract class FileTransferConversation extends BaseFragment
 
             }
             else if (AudioBgService.PLAYBACK_STATE.equals(intent.getAction())) {
-                AudioBgService.PlaybackState playbackState
-                        = (AudioBgService.PlaybackState) intent.getSerializableExtra(AudioBgService.PLAYBACK_STATE);
-
+                PlaybackState playbackState
+                        = IntentCompat.getSerializableExtra(intent, AudioBgService.PLAYBACK_STATE, PlaybackState.class);
                 Timber.d("Audio playback state: %s (%s/%s): %s", playbackState, position, audioDuration, mUri.getPath());
-                switch (playbackState) {
-                    case init:
-                        playerState = STATE_IDLE;
-                        messageViewHolder.playbackDuration.setText(formatTime(audioDuration));
-                        messageViewHolder.playbackPosition.setText(formatTime(0));
-                        messageViewHolder.playbackSeekBar.setMax(audioDuration);
-                        messageViewHolder.playbackSeekBar.setProgress(0);
+                if (playbackState != null) {
+                    switch (playbackState) {
+                        case init:
+                            playerState = STATE_IDLE;
+                            messageViewHolder.playbackDuration.setText(formatTime(audioDuration));
+                            messageViewHolder.playbackPosition.setText(formatTime(0));
+                            messageViewHolder.playbackSeekBar.setMax(audioDuration);
+                            messageViewHolder.playbackSeekBar.setProgress(0);
 
-                        messageViewHolder.playbackPlay.setImageResource(R.drawable.ic_player_stop);
-                        mPlayerAnimate.stop();
-                        break;
+                            messageViewHolder.playbackPlay.setImageResource(R.drawable.ic_player_stop);
+                            mPlayerAnimate.stop();
+                            break;
 
-                    case play:
-                        playerState = STATE_PLAY;
-                        messageViewHolder.playbackSeekBar.setMax(audioDuration);
-                        messageViewHolder.playerView.clearAnimation();
+                        case play:
+                            playerState = STATE_PLAY;
+                            messageViewHolder.playbackSeekBar.setMax(audioDuration);
+                            messageViewHolder.playerView.clearAnimation();
 
-                        messageViewHolder.playbackPlay.setImageDrawable(null);
-                        mPlayerAnimate.start();
-                        break;
+                            messageViewHolder.playbackPlay.setImageDrawable(null);
+                            mPlayerAnimate.start();
+                            break;
 
-                    case stop:
-                        playerState = STATE_STOP;
-                        bcRegisters.remove(mUri);
-                        LocalBroadcastManager.getInstance(mChatActivity).unregisterReceiver(mReceiver);
-                    case pause:
-                        if (playerState != STATE_STOP) {
-                            playerState = STATE_PAUSE;
-                        }
-                        messageViewHolder.playbackPosition.setText(formatTime(position));
-                        messageViewHolder.playbackDuration.setText(formatTime(audioDuration - position));
-                        messageViewHolder.playbackSeekBar.setMax(audioDuration);
-                        messageViewHolder.playbackSeekBar.setProgress(position);
+                        case stop:
+                            playerState = STATE_STOP;
+                            bcRegisters.remove(mUri);
+                            LocalBroadcastManager.getInstance(mChatActivity).unregisterReceiver(mReceiver);
+                        case pause:
+                            if (playerState != STATE_STOP) {
+                                playerState = STATE_PAUSE;
+                            }
+                            messageViewHolder.playbackPosition.setText(formatTime(position));
+                            messageViewHolder.playbackDuration.setText(formatTime(audioDuration - position));
+                            messageViewHolder.playbackSeekBar.setMax(audioDuration);
+                            messageViewHolder.playbackSeekBar.setProgress(position);
 
-                        mPlayerAnimate.stop();
-                        messageViewHolder.playbackPlay.setImageResource((playerState == STATE_PAUSE)
-                                ? R.drawable.ic_player_pause : R.drawable.ic_player_stop);
-                        break;
+                            mPlayerAnimate.stop();
+                            messageViewHolder.playbackPlay.setImageResource((playerState == STATE_PAUSE)
+                                    ? R.drawable.ic_player_pause : R.drawable.ic_player_stop);
+                            break;
+                    }
                 }
             }
         }

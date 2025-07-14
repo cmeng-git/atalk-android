@@ -21,7 +21,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
-import android.net.NetworkInfo;
+import android.net.NetworkCapabilities;
 import android.net.RouteInfo;
 
 import java.net.Inet4Address;
@@ -36,7 +36,6 @@ import org.minidns.dnsserverlookup.AndroidUsingExec;
 /**
  * A DNS server lookup mechanism using Android's Link Properties method available on Android API 21 or higher.
  * Use {@link #setup(Context)} to setup this mechanism.
- *
  * Requires the ACCESS_NETWORK_STATE permission.
  *
  */
@@ -86,19 +85,19 @@ public class AndroidUsingLinkProperties extends AbstractDnsServerLookupMechanism
     public List<String> getDnsServerAddresses()
     {
         final List<String> servers = new ArrayList<>();
-        final Network network = getActiveNetwork();
-        if (network == null) {
+        final Network activeNetwork = getActiveNetwork();
+        if (activeNetwork == null) {
             return null;
         }
 
-        LinkProperties linkProperties = connectivityManager.getLinkProperties(network);
+        LinkProperties linkProperties = connectivityManager.getLinkProperties(activeNetwork);
         if (linkProperties == null) {
             return null;
         }
 
         int vpnOffset = 0;
-        final NetworkInfo networkInfo = connectivityManager.getNetworkInfo(network);
-        final boolean isVpn = networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_VPN;
+        final NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork);
+        final boolean isVpn =  networkCapabilities != null && networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN);
         final List<String> v4v6Servers = getIPv4First(linkProperties.getDnsServers());
         // Timber.d("hasDefaultRoute: %s activeNetwork: %s || isVpn: %s || IP: %s",
         //        hasDefaultRoute(linkProperties), network, isVpn, toListOfStrings(linkProperties.getDnsServers()));

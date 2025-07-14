@@ -27,5 +27,6 @@ LOCAL_SRC_FILES := \
  SrtpCipherCtrOpenSsl.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/android/$(TARGET_ARCH_ABI)/include
 LOCAL_CFLAGS = -DFIXED_POINT -DUSE_KISS_FFT -DEXPORT="" -UHAVE_CONFIG_H -Wdeprecated-declarations
+LOCAL_LDFLAGS += "-Wl,-z,max-page-size=16384"
 
 include $(BUILD_SHARED_LIBRARY)

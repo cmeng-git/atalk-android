@@ -36,6 +36,8 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.core.os.ParcelCompat;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +50,7 @@ import timber.log.Timber;
 
 public class Attachment implements Parcelable {
     Attachment(Parcel in) {
-        uri = in.readParcelable(Uri.class.getClassLoader());
+        uri = ParcelCompat.readParcelable(in, Uri.class.getClassLoader(), Uri.class);
         mime = in.readString();
         uuid = UUID.fromString(in.readString());
         type = Type.valueOf(in.readString());

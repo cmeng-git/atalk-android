@@ -77,7 +77,6 @@
         android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme"
         tools:ignore="DataExtractionRules"
-        tools:replace="android:allowBackup,android:label"
         tools:targetApi="tiramisu">
 
         <!-- android:enableOnBackInvokedCallback="true"  required source change

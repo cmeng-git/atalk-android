@@ -16,21 +16,31 @@
  */
 package org.atalk.android;
 
+import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.TypedValue;
+import android.view.Display;
+import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.util.LocaleHelper;
@@ -67,6 +77,7 @@ public class BaseActivity extends AppCompatActivity {
         ThemeHelper.setTheme(this);
         super.onCreate(savedInstanceState);
         configureToolBar();
+        // addMarginsForE2E(this);
 
         // Registers exit action listener
         ContextCompat.registerReceiver(this, exitListener,
@@ -153,6 +164,24 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    // Perform this in aTalkApp.
+//    public static void addMarginsForE2E(Activity activity) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+//            // must not use getRootView();
+//            View view = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+//            ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
+//                Insets barsInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+//                v.setPadding(
+//                        barsInsets.left,
+//                        barsInsets.top,
+//                        barsInsets.right,
+//                        barsInsets.bottom
+//                );
+//                return WindowInsetsCompat.CONSUMED;
+//            });
+//        }
+//    }
+
     /**
      * Returns the content <code>View</code>.
      *
@@ -160,6 +189,16 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected View getContentView() {
         return findViewById(android.R.id.content);
+    }
+
+    /**
+     * Should return current {@link Display} rotation as defined in {@link Display#getRotation()}.
+     *
+     * @return current {@link Display} rotation as one of values:
+     * {@link Surface#ROTATION_0}, {@link Surface#ROTATION_90}, {@link Surface#ROTATION_180}, {@link Surface#ROTATION_270}.
+     */
+    public int getDisplayRotation() {
+        return ActivityCompat.getDisplayOrDefault(this).getRotation();
     }
 
     /**
@@ -176,6 +215,21 @@ public class BaseActivity extends AppCompatActivity {
 
             actionBar.setLogo(R.drawable.ic_icon);
             actionBar.setTitle(resId);
+        }
+    }
+
+    public void setScreenOn() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setTurnScreenOn(true);
+            setShowWhenLocked(true);
+            KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+            keyguardManager.requestDismissKeyguard(this, null);
+        }
+        else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                    | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         }
     }
 

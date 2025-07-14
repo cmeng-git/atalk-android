@@ -32,6 +32,7 @@ LOCAL_CFLAGS        := -DNULL=0 -DSOCKLEN_T=socklen_t -DLOCALE_NOT_USED -D_LARGE
 
 LOCAL_CFLAGS        += -Drestrict='' -D__EMX__ -DOPUS_BUILD -DFIXED_POINT=1 -DDISABLE_FLOAT_API -DUSE_ALLOCA -DHAVE_LRINT -DHAVE_LRINTF -DAVOID_TABLES
 LOCAL_CFLAGS        +=  -w -std=gnu99 -O3 -fno-strict-aliasing -fprefetch-loop-arrays  -fno-math-errno
+LOCAL_LDFLAGS 		+= "-Wl,-z,max-page-size=16384"
 LOCAL_CPPFLAGS      := -DBSD=1
 LOCAL_CPPFLAGS      += -ffast-math -O3 -funroll-loops
 

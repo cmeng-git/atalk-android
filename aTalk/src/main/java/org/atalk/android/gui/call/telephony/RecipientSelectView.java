@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract.Contacts;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -26,23 +27,22 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.app.LoaderManager.LoaderCallbacks;
 import androidx.loader.content.Loader;
 
-import com.tokenautocomplete.TokenCompleteTextView;
-
-import org.apache.james.mime4j.util.CharsetUtil;
-import org.atalk.android.R;
-import org.atalk.android.gui.aTalk;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
+import com.tokenautocomplete.TokenCompleteTextView;
+
+import org.apache.james.mime4j.util.CharsetUtil;
+import org.atalk.android.R;
+import org.atalk.android.gui.aTalk;
+
 import timber.log.Timber;
 
 public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectView.Recipient>
-        implements LoaderCallbacks<List<RecipientSelectView.Recipient>>, AlternateRecipientAdapter.AlternateRecipientListener
-{
+        implements LoaderCallbacks<List<RecipientSelectView.Recipient>>, AlternateRecipientAdapter.AlternateRecipientListener {
     private static final int MINIMUM_LENGTH_FOR_FILTERING = 2;
     private static final String ARG_QUERY = "query";
     private static final int LOADER_ID_FILTERING = 0;
@@ -50,33 +50,29 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
 
     private RecipientAdapter adapter;
     @Nullable
-    private LoaderManager loaderManager;
+    private LoaderManager mLoaderManager;
 
     private ListPopupWindow alternatesPopup;
     private AlternateRecipientAdapter alternatesAdapter;
     private Recipient alternatesPopupRecipient;
     private TokenListener<Recipient> listener;
 
-    public RecipientSelectView(Context context)
-    {
+    public RecipientSelectView(Context context) {
         super(context);
         initView(context);
     }
 
-    public RecipientSelectView(Context context, AttributeSet attrs)
-    {
+    public RecipientSelectView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(context);
     }
 
-    public RecipientSelectView(Context context, AttributeSet attrs, int defStyle)
-    {
+    public RecipientSelectView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initView(context);
     }
 
-    private void initView(Context context)
-    {
+    private void initView(Context context) {
         alternatesPopup = new ListPopupWindow(context);
         alternatesAdapter = new AlternateRecipientAdapter(context, this);
         alternatesPopup.setAdapter(alternatesAdapter);
@@ -93,12 +89,11 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
         setLongClickable(true);
 
         // cmeng - must init loaderManager in initView to take care of screen rotation
-        loaderManager = LoaderManager.getInstance(aTalk.getFragment(aTalk.CL_FRAGMENT));
+        mLoaderManager = LoaderManager.getInstance(aTalk.getFragment(aTalk.CL_FRAGMENT));
     }
 
     @Override
-    protected View getViewForObject(Recipient recipient)
-    {
+    protected View getViewForObject(@NonNull Recipient recipient) {
         View view = inflateLayout();
         RecipientTokenViewHolder holder = new RecipientTokenViewHolder(view);
         view.setTag(holder);
@@ -107,23 +102,21 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
     }
 
     @SuppressLint("InflateParams")
-    private View inflateLayout()
-    {
+    private View inflateLayout() {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         return layoutInflater.inflate(R.layout.recipient_token_item, null, false);
     }
 
-    private void bindObjectView(Recipient recipient, View view)
-    {
+    private void bindObjectView(Recipient recipient, View view) {
         RecipientTokenViewHolder holder = (RecipientTokenViewHolder) view.getTag();
         holder.vName.setText(recipient.getDisplayNameOrPhone());
         holder.vPhone.setText(recipient.getPhone());
         RecipientAdapter.setContactPhotoOrPlaceholder(getContext(), holder.vContactPhoto, recipient);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
-    public boolean onTouchEvent(@NonNull MotionEvent event)
-    {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         int action = event.getActionMasked();
         Editable text = getText();
 
@@ -131,7 +124,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
             int offset = getOffsetForPosition(event.getX(), event.getY());
 
             if (offset != -1) {
-                TokenImageSpan[] links = text.getSpans(offset, offset, RecipientTokenSpan.class);
+                TokenImageSpan[] links = text.getSpans(offset, offset, TokenImageSpan.class);
                 if (links.length > 0) {
                     showAlternates(links[0].getToken());
                     return true;
@@ -142,8 +135,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
     }
 
     @Override
-    protected Recipient defaultObject(String completionText)
-    {
+    protected Recipient defaultObject(@NonNull String completionText) {
         Address[] parsedAddresses = Address.parse(completionText);
         if (!CharsetUtil.isASCII(completionText)) {
             setError(getContext().getString(R.string.recipient_error_non_ascii));
@@ -157,30 +149,22 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
         return new Recipient(parsedAddresses[0]);
     }
 
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return getObjects().isEmpty();
     }
 
-    public void setLoaderManager(@Nullable LoaderManager loaderManager)
-    {
-        this.loaderManager = loaderManager;
-    }
-
     @Override
-    protected void onDetachedFromWindow()
-    {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (loaderManager != null) {
-            loaderManager.destroyLoader(LOADER_ID_ALTERNATES);
-            loaderManager.destroyLoader(LOADER_ID_FILTERING);
-            loaderManager = null;
+        if (mLoaderManager != null) {
+            mLoaderManager.destroyLoader(LOADER_ID_ALTERNATES);
+            mLoaderManager.destroyLoader(LOADER_ID_FILTERING);
+            mLoaderManager = null;
         }
     }
 
     @Override
-    public void onFocusChanged(boolean hasFocus, int direction, Rect previous)
-    {
+    public void onFocusChanged(boolean hasFocus, int direction, Rect previous) {
         super.onFocusChanged(hasFocus, direction, previous);
         if (hasFocus) {
             displayKeyboard();
@@ -193,16 +177,14 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
      * positions, forces the IMM to reset cleaner.
      */
     @Override
-    protected void replaceText(CharSequence text)
-    {
+    protected void replaceText(@NonNull CharSequence text) {
         super.replaceText(text);
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null)
             imm.updateSelection(this, getSelectionStart(), getSelectionEnd(), -1, -1);
     }
 
-    private void displayKeyboard()
-    {
+    private void displayKeyboard() {
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
@@ -210,8 +192,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
     }
 
     @Override
-    public void showDropDown()
-    {
+    public void showDropDown() {
         boolean cursorIsValid = adapter != null;
         if (!cursorIsValid) {
             return;
@@ -220,8 +201,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
     }
 
     @Override
-    public void performCompletion()
-    {
+    public void performCompletion() {
         if (getListSelection() == ListView.INVALID_POSITION && enoughToFilter()) {
             Object recipientText = defaultObject(currentCompletionText());
             if (recipientText != null) {
@@ -234,44 +214,40 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
     }
 
     @Override
-    protected void performFiltering(@NonNull CharSequence text, int keyCode)
-    {
-        if (loaderManager == null) {
+    protected void performFiltering(@NonNull CharSequence text, int keyCode) {
+        if (mLoaderManager == null) {
             return;
         }
 
         String query = text.toString();
         if (TextUtils.isEmpty(query) || query.length() < MINIMUM_LENGTH_FOR_FILTERING) {
-            loaderManager.destroyLoader(LOADER_ID_FILTERING);
+            mLoaderManager.destroyLoader(LOADER_ID_FILTERING);
             return;
         }
         Bundle args = new Bundle();
         args.putString(ARG_QUERY, query);
-        loaderManager.restartLoader(LOADER_ID_FILTERING, args, this);
+        mLoaderManager.restartLoader(LOADER_ID_FILTERING, args, this);
     }
 
-    private void redrawAllTokens()
-    {
+    private void redrawAllTokens() {
         Editable text = getText();
         if (text == null) {
             return;
         }
-        RecipientTokenSpan[] recipientSpans = text.getSpans(0, text.length(), RecipientTokenSpan.class);
-        for (RecipientTokenSpan recipientSpan : recipientSpans) {
-            bindObjectView(recipientSpan.getToken(), recipientSpan.view);
+        TokenImageSpan[] recipientSpans = text.getSpans(0, text.length(), TokenImageSpan.class);
+        for (TokenImageSpan recipientSpan : recipientSpans) {
+            bindObjectView(recipientSpan.getToken(), recipientSpan.getView());
         }
         invalidate();
     }
 
-    public void addRecipients(Recipient... recipients)
-    {
+    public void addRecipients(Recipient... recipients) {
         for (Recipient recipient : recipients) {
             addObjectSync(recipient);
         }
     }
 
-    public Address[] getAddresses()
-    {
+    public Address[] getAddresses() {
         List<Recipient> recipients = getObjects();
         Address[] address = new Address[recipients.size()];
         for (int i = 0; i < address.length; i++) {
@@ -280,9 +256,8 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
         return address;
     }
 
-    private void showAlternates(Recipient recipient)
-    {
-        if (loaderManager == null) {
+    private void showAlternates(Recipient recipient) {
+        if (mLoaderManager == null) {
             return;
         }
 
@@ -291,18 +266,16 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
             imm.hideSoftInputFromWindow(getWindowToken(), 0);
 
         alternatesPopupRecipient = recipient;
-        loaderManager.restartLoader(LOADER_ID_ALTERNATES, null, RecipientSelectView.this);
+        mLoaderManager.restartLoader(LOADER_ID_ALTERNATES, null, RecipientSelectView.this);
     }
 
-    public void postShowAlternatesPopup(final List<Recipient> data)
-    {
+    public void postShowAlternatesPopup(final List<Recipient> data) {
         // We delay this call so the soft keyboard is gone by the time the popup is layout
-        new Handler().post(() -> showAlternatesPopup(data));
+        new Handler(Looper.getMainLooper()).post(() -> showAlternatesPopup(data));
     }
 
-    public void showAlternatesPopup(List<Recipient> data)
-    {
-        if (loaderManager == null) {
+    public void showAlternatesPopup(List<Recipient> data) {
+        if (mLoaderManager == null) {
             return;
         }
 
@@ -322,15 +295,14 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event)
-    {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         alternatesPopup.dismiss();
         return super.onKeyDown(keyCode, event);
     }
 
+    @NonNull
     @Override
-    public Loader<List<Recipient>> onCreateLoader(int id, Bundle args)
-    {
+    public Loader<List<Recipient>> onCreateLoader(int id, Bundle args) {
         switch (id) {
             case LOADER_ID_FILTERING: {
                 String query = args != null && args.containsKey(ARG_QUERY) ? args.getString(ARG_QUERY) : "";
@@ -351,9 +323,8 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Recipient>> loader, List<Recipient> data)
-    {
-        if (loaderManager == null) {
+    public void onLoadFinished(@NonNull Loader<List<Recipient>> loader, List<Recipient> data) {
+        if (mLoaderManager == null) {
             return;
         }
 
@@ -364,23 +335,21 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
             }
             case LOADER_ID_ALTERNATES: {
                 postShowAlternatesPopup(data);
-                loaderManager.destroyLoader(LOADER_ID_ALTERNATES);
+                mLoaderManager.destroyLoader(LOADER_ID_ALTERNATES);
                 break;
             }
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Recipient>> loader)
-    {
+    public void onLoaderReset(Loader<List<Recipient>> loader) {
         if (loader.getId() == LOADER_ID_FILTERING) {
             adapter.setHighlight(null);
             adapter.setRecipients(null);
         }
     }
 
-    public boolean tryPerformCompletion()
-    {
+    public boolean tryPerformCompletion() {
         if (!hasUncompletedText()) {
             return false;
         }
@@ -391,33 +360,28 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
         return previousNumRecipients != numRecipients;
     }
 
-    private int getTokenCount()
-    {
+    private int getTokenCount() {
         return getObjects().size();
     }
 
-    public boolean hasUncompletedText()
-    {
+    public boolean hasUncompletedText() {
         String currentCompletionText = currentCompletionText();
         return !TextUtils.isEmpty(currentCompletionText) && !isPlaceholderText(currentCompletionText);
     }
 
-    static private boolean isPlaceholderText(String currentCompletionText)
-    {
+    static private boolean isPlaceholderText(String currentCompletionText) {
         // TODO string matching here is sort of a hack, but it's somewhat reliable and the info isn't easily available
         return currentCompletionText.startsWith("+") && currentCompletionText.substring(1).matches("[0-9]+");
     }
 
     @Override
-    public void onRecipientRemove(Recipient currentRecipient)
-    {
+    public void onRecipientRemove(Recipient currentRecipient) {
         alternatesPopup.dismiss();
         removeObjectSync(currentRecipient);
     }
 
     @Override
-    public void onRecipientChange(Recipient recipientToReplace, Recipient alternateRecipient)
-    {
+    public void onRecipientChange(Recipient recipientToReplace, Recipient alternateRecipient) {
         alternatesPopup.dismiss();
 
         List<Recipient> currentRecipients = getObjects();
@@ -445,34 +409,32 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
 
     /**
      * This method builds the span given a address object. We override it with identical
-     * functionality, but using the custom RecipientTokenSpan class which allows us to
+     * functionality, but using the custom TokenImageSpan class which allows us to
      * retrieve the view for redrawing at a later point.
      */
     @Override
-    protected TokenImageSpan buildSpanForObject(Recipient obj)
-    {
+    protected TokenImageSpan buildSpanForObject(Recipient obj) {
         if (obj == null) {
             return null;
         }
         View tokenView = getViewForObject(obj);
-        return new RecipientTokenSpan(tokenView, obj);
+        return (tokenView == null) ? null : new TokenImageSpan(tokenView, obj);
     }
 
     /**
      * Find the token view tied to a given address. This method relies on spans to
-     * be of the RecipientTokenSpan class, as created by the buildSpanForObject method.
+     * be of the TokenImageSpan class, as created by the buildSpanForObject method.
      */
-    private View getTokenViewForRecipient(Recipient currentRecipient)
-    {
+    private View getTokenViewForRecipient(Recipient currentRecipient) {
         Editable text = getText();
         if (text == null) {
             return null;
         }
 
-        RecipientTokenSpan[] recipientSpans = text.getSpans(0, text.length(), RecipientTokenSpan.class);
-        for (RecipientTokenSpan recipientSpan : recipientSpans) {
+        TokenImageSpan[] recipientSpans = text.getSpans(0, text.length(), TokenImageSpan.class);
+        for (TokenImageSpan recipientSpan : recipientSpans) {
             if (recipientSpan.getToken().equals(currentRecipient)) {
-                return recipientSpan.view;
+                return recipientSpan.getView();
             }
         }
         return null;
@@ -482,44 +444,28 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
      * We use a specialized version of TokenCompleteTextView.TokenListener as well,
      * adding a callback for onTokenChanged.
      */
-    public void setTokenListener(TokenListener<Recipient> listener)
-    {
+    public void setTokenListener(TokenListener<Recipient> listener) {
         super.setTokenListener(listener);
         this.listener = listener;
     }
 
-    public interface TokenListener<T> extends TokenCompleteTextView.TokenListener<T>
-    {
+    public interface TokenListener<T> extends TokenCompleteTextView.TokenListener<T> {
         void onTokenChanged(T token);
     }
 
-    private class RecipientTokenSpan extends TokenImageSpan
-    {
-        private final View view;
-
-        public RecipientTokenSpan(View view, Recipient token)
-        {
-            super(view, token);
-            this.view = view;
-        }
-    }
-
-    private static class RecipientTokenViewHolder
-    {
+    private static class RecipientTokenViewHolder {
         final TextView vName;
         final TextView vPhone;
         final ImageView vContactPhoto;
 
-        RecipientTokenViewHolder(View view)
-        {
+        RecipientTokenViewHolder(View view) {
             vName = view.findViewById(android.R.id.text1);
             vPhone = view.findViewById(android.R.id.text2);
             vContactPhoto = view.findViewById(R.id.contact_photo);
         }
     }
 
-    public static class Recipient implements Serializable
-    {
+    public static class Recipient implements Serializable {
         @Nullable // null means the address is not associated with a contact
         public final Long contactId;
         public final String contactLookupKey;
@@ -531,23 +477,20 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
         @Nullable // null if the contact has no photo. transient because we serialize this manually, see below.
         public transient Uri photoThumbnailUri;
 
-        public Recipient(@NonNull Address address)
-        {
+        public Recipient(@NonNull Address address) {
             this.address = address;
             this.contactId = null;
             this.contactLookupKey = null;
         }
 
-        public Recipient(String name, String phone, String addressLabel, long contactId, String lookupKey)
-        {
+        public Recipient(String name, String phone, String addressLabel, long contactId, String lookupKey) {
             this.address = new Address(phone, name);
             this.contactId = contactId;
             this.addressLabel = addressLabel;
             this.contactLookupKey = lookupKey;
         }
 
-        public String getDisplayNameOrPhone()
-        {
+        public String getDisplayNameOrPhone() {
             final String displayName = getDisplayName();
             if (displayName != null) {
                 return displayName;
@@ -555,19 +498,16 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
             return address.getAddress();
         }
 
-        public String getPhone()
-        {
+        public String getPhone() {
             return address.getAddress();
         }
 
-        public static boolean isValidPhoneNum(CharSequence target)
-        {
+        public static boolean isValidPhoneNum(CharSequence target) {
             return (target != null) && (target.length() >= 4)
                     && android.util.Patterns.PHONE.matcher(target).matches();
         }
 
-        public String getDisplayNameOrUnknown(Context context)
-        {
+        public String getDisplayNameOrUnknown(Context context) {
             String displayName = getDisplayName();
             if (displayName != null) {
                 return displayName;
@@ -575,8 +515,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
             return context.getString(R.string.unknown_recipient);
         }
 
-        public String getNameOrUnknown(Context context)
-        {
+        public String getNameOrUnknown(Context context) {
             String name = address.getPerson();
             if (name != null) {
                 return name;
@@ -584,8 +523,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
             return context.getString(R.string.unknown_recipient);
         }
 
-        private String getDisplayName()
-        {
+        private String getDisplayName() {
             if (TextUtils.isEmpty(address.getPerson())) {
                 return null;
             }
@@ -598,8 +536,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
         }
 
         @Nullable
-        public Uri getContactLookupUri()
-        {
+        public Uri getContactLookupUri() {
             if (contactId == null) {
                 return null;
             }
@@ -607,15 +544,13 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
         }
 
         @Override
-        public boolean equals(Object o)
-        {
+        public boolean equals(Object o) {
             // Equality is entirely up to the address
             return o instanceof Recipient && address.equals(((Recipient) o).address);
         }
 
         private void writeObject(ObjectOutputStream oos)
-                throws IOException
-        {
+                throws IOException {
             oos.defaultWriteObject();
 
             // custom serialization, Android's Uri class is not serializable
@@ -629,8 +564,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
         }
 
         private void readObject(ObjectInputStream ois)
-                throws ClassNotFoundException, IOException
-        {
+                throws ClassNotFoundException, IOException {
             ois.defaultReadObject();
             // custom deserialization, Android's Uri class is not serializable
             if (ois.readInt() != 0) {

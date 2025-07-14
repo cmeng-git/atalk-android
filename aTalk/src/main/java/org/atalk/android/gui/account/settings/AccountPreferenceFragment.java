@@ -5,25 +5,25 @@
  */
 package org.atalk.android.gui.account.settings;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.preference.ListPreference;
 
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
 import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.EncodingsRegistrationUtil;
+import net.java.sip.communicator.service.protocol.EncodingsRegistration;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AppGUIActivator;
+import org.atalk.android.gui.dialogs.ProgressDialog;
 import org.atalk.android.gui.settings.BasePreferenceFragment;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.osgi.framework.BundleContext;
@@ -79,7 +79,7 @@ public abstract class AccountPreferenceFragment extends BasePreferenceFragment
     /**
      * The progress dialog shown when changes are being committed
      */
-    private ProgressDialog mProgressDialog;
+    private long pDialogId = -1;
 
     /**
      * The wizard used to edit accounts
@@ -121,13 +121,13 @@ public abstract class AccountPreferenceFragment extends BasePreferenceFragment
     }
 
     /**
-     * Method should return <code>EncodingsRegistrationUtil</code> if it supported by impl fragment.
+     * Method should return <code>EncodingsRegistration</code> if it supported by impl fragment.
      * Preference categories with keys: <code>pref_cat_audio_encoding</code> and/or
      * <code>pref_cat_video_encoding</code> must be included in preferences xml to trigger encodings activities.
      *
-     * @return impl fragments should return <code>EncodingsRegistrationUtil</code> if encodings are supported.
+     * @return impl fragments should return <code>EncodingsRegistration</code> if encodings are supported.
      */
-    protected abstract EncodingsRegistrationUtil getEncodingsRegistration();
+    protected abstract EncodingsRegistration getEncodingsRegistration();
 
     /**
      * Method should return <code>SecurityAccountRegistration</code> if security details are supported
@@ -222,7 +222,7 @@ public abstract class AccountPreferenceFragment extends BasePreferenceFragment
     public void onStop() {
         shPrefs.unregisterOnSharedPreferenceChangeListener(this);
         shPrefs.unregisterOnSharedPreferenceChangeListener(summaryMapper);
-        dismissOperationInProgressDialog();
+        dismissProgressDialog();
         super.onStop();
     }
 
@@ -343,7 +343,7 @@ public abstract class AccountPreferenceFragment extends BasePreferenceFragment
             if (commitThread != null)
                 return;
 
-            displayOperationInProgressDialog();
+            displayProgressDialog();
             commitThread = new Thread(() -> {
                 doCommitChanges();
                 mActivity.finish();
@@ -358,13 +358,12 @@ public abstract class AccountPreferenceFragment extends BasePreferenceFragment
     /**
      * Shows the "in progress" dialog with a TOT of 5S if commit hangs
      */
-    private void displayOperationInProgressDialog() {
-        Context context = getView().getRootView().getContext();
-        CharSequence title = getResources().getText(R.string.commit_progress_title);
-        CharSequence msg = getResources().getText(R.string.commit_progress_message);
-        mProgressDialog = ProgressDialog.show(context, title, msg, true, false);
+    private void displayProgressDialog() {
+        String title = mContext.getString(R.string.commit_progress_title);
+        String msg = mContext.getString(R.string.commit_progress_message);
+        pDialogId = ProgressDialog.show(mContext, title, msg, false);
 
-        new Handler().postDelayed(() -> {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Timber.d("Timeout in saving");
             mActivity.finish();
         }, 5000);
@@ -373,11 +372,10 @@ public abstract class AccountPreferenceFragment extends BasePreferenceFragment
     /**
      * Hides the "in progress" dialog
      */
-    private void dismissOperationInProgressDialog() {
-        Timber.d("Dismiss mProgressDialog: %s", mProgressDialog);
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
+    private void dismissProgressDialog() {
+        if (ProgressDialog.isShowing(pDialogId)) {
+            ProgressDialog.dismiss(pDialogId);
+            pDialogId = -1;
         }
     }
 }

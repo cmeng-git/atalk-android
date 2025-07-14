@@ -1,5 +1,6 @@
 package org.atalk.android.gui.menu;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,6 +86,7 @@ public class GlobalStatusMenu
     public static final int ANIM_REFLECT = 4;
     private static final int ANIM_AUTO = 5;
 
+    @SuppressLint("ClickableViewAccessibility")
     public GlobalStatusMenu(FragmentActivity activity) {
         mActivity = activity;
         mWindow = new PopupWindow(activity);
@@ -377,11 +380,10 @@ public class GlobalStatusMenu
         if (rootWidth == 0) {
             rootWidth = mRootView.getMeasuredWidth();
         }
-        Point screenSize = new Point();
-        mWindowManager.getDefaultDisplay().getSize(screenSize);
 
         // automatically get X coord of popup (top left)
-        if ((anchorRect.left + rootWidth) > screenSize.x) {
+        Dimension screenSize = aTalkApp.mDisplaySize;
+        if ((anchorRect.left + rootWidth) > screenSize.width) {
             xPos = anchorRect.left - (rootWidth - anchor.getWidth());
             xPos = Math.max(xPos, 0);
             arrowPos = anchorRect.centerX() - xPos;
@@ -396,7 +398,7 @@ public class GlobalStatusMenu
         }
 
         int dyTop = anchorRect.top;
-        int dyBottom = screenSize.y - anchorRect.bottom;
+        int dyBottom = screenSize.height - anchorRect.bottom;
         boolean onTop = dyTop > dyBottom;
         if (onTop) {
             if (rootHeight > dyTop) {
@@ -416,7 +418,7 @@ public class GlobalStatusMenu
             }
         }
         showArrow(((onTop) ? R.id.arrow_down : R.id.arrow_up), arrowPos);
-        setAnimationStyle(screenSize.x, anchorRect.centerX(), onTop);
+        setAnimationStyle(screenSize.width, anchorRect.centerX(), onTop);
         mWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
     }
 

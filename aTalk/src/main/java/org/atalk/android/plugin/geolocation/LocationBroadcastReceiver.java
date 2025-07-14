@@ -21,6 +21,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 
+import androidx.core.content.IntentCompat;
+
 /**
  * GeoLocation broadcast receiver implementation.
  *
@@ -36,7 +38,7 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (GeoConstants.INTENT_LOCATION_RECEIVED.equals(intent.getAction())) {
-            Location location = intent.getParcelableExtra(GeoIntentKey.LOCATION);
+            Location location = IntentCompat.getParcelableExtra(intent, GeoIntentKey.LOCATION, Location.class);
             String locAddress = intent.getStringExtra(GeoIntentKey.ADDRESS);
             geoLocationListener.onLocationReceived(location, locAddress);
         } else if (GeoConstants.INTENT_NO_LOCATION_RECEIVED.equals(intent.getAction())) {

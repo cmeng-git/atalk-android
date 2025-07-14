@@ -5,17 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
-
-import org.atalk.android.aTalkApp;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class TTSService extends Service implements TextToSpeech.OnInitListener
-{
+import org.atalk.android.aTalkApp;
+
+public class TTSService extends Service implements TextToSpeech.OnInitListener {
     public static final String EXTRA_MESSAGE = "message";
     public static final String EXTRA_QMODE = "qmode";
 
@@ -27,15 +27,13 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener
     private boolean qMode = true;
 
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         super.onCreate();
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         handler.removeCallbacksAndMessages(null);
         message = intent.getStringExtra(TTSService.EXTRA_MESSAGE);
         qMode = intent.getBooleanExtra(TTSService.EXTRA_QMODE, true);
@@ -53,8 +51,7 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         if (mTTS != null) {
             mTTS.stop();
             mTTS.shutdown();
@@ -68,8 +65,7 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener
      * @param status {@link TextToSpeech#SUCCESS} or {@link TextToSpeech#ERROR}.
      */
     @Override
-    public void onInit(int status)
-    {
+    public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
             if (mTTS != null) {
                 Locale language = mTTS.getDefaultVoice().getLocale();
@@ -90,8 +86,7 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener
         }
     }
 
-    public void speak(String text, boolean qMode)
-    {
+    public void speak(String text, boolean qMode) {
         if ((mTTS != null) && !TextUtils.isEmpty(text)) {
             text = text.replaceAll("<.*?>", "");
 
@@ -114,10 +109,10 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener
      * Split the text to speak into List each of less than TextToSpeech.getMaxSpeechInputLength()
      *
      * @param text speak text string
+     *
      * @return Split text in List<String>
      */
-    public static List<String> splitEqually(String text)
-    {
+    public static List<String> splitEqually(String text) {
         int size = TextToSpeech.getMaxSpeechInputLength() - 1;
 
         // Give the list the right capacity to start with.
@@ -130,8 +125,7 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener
     }
 
     @Override
-    public IBinder onBind(Intent arg0)
-    {
+    public IBinder onBind(Intent arg0) {
         return null;
     }
 }

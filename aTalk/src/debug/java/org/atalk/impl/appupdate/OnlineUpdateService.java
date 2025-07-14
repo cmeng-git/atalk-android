@@ -113,8 +113,8 @@ public class OnlineUpdateService extends IntentService {
     }
 
     private void setNextAlarm(int nextAlarmTime) {
-        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), OnlineUpdateService.class);
         intent.setAction(ACTION_AUTO_UPDATE_APP);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent,
                 getPendingIntentFlag(false, true));
@@ -126,8 +126,8 @@ public class OnlineUpdateService extends IntentService {
     }
 
     private void stopAlarm() {
-        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), OnlineUpdateService.class);
         intent.setAction(ACTION_AUTO_UPDATE_APP);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent,
                 getPendingIntentFlag(false, true));

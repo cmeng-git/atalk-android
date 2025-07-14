@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 
 import java.awt.Component;
@@ -727,7 +728,7 @@ public class VideoHandlerFragment extends BaseFragment implements MenuProvider, 
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 
             // Realign call group info start from left if system is in landscape mode
-            // int rotation = mCallActivity.getWindowManager().getDefaultDisplay().getRotation();
+            // int rotation = mCallActivity.getDisplayRotation();
             // if ((rotation == Surface.ROTATION_90) || (rotation == Surface.ROTATION_270))
             //     params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
@@ -784,11 +785,10 @@ public class VideoHandlerFragment extends BaseFragment implements MenuProvider, 
         int marginBottom = 0;
         // If we have remote video
         if (remoteVideoContainer.getChildCount() > 0) {
-            DisplayMetrics displaymetrics = new DisplayMetrics();
-            mCallActivity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            Dimension displaySize = aTalkApp.getDisplaySize();
 
             int ctrlButtonsHeight = ctrlButtonsGroup.getHeight();
-            marginBottom = (int) (0.10 * displaymetrics.heightPixels);
+            marginBottom = (int) (0.10 * displaySize.height);
 
             if (marginBottom < ctrlButtonsHeight
                     && ctrlButtonsGroup.getVisibility() == View.VISIBLE) {

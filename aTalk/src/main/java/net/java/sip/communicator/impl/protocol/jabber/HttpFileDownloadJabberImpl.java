@@ -24,6 +24,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Looper;
 
 import androidx.core.content.ContextCompat;
 
@@ -406,7 +407,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
     private static final int MAX_IDLE_TIME = 60000 / UPDATE_INTERVAL;
 
     private boolean isProgressCheckerRunning = false;
-    private final Handler handler = new Handler();
+    private final Handler handler = new Handler(Looper.getMainLooper());
     private int waitTime;
 
     /**

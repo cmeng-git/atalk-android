@@ -82,12 +82,7 @@ public class CallNotificationManager {
      * @return the <code>CallNotificationManager</code>.
      */
     public static synchronized CallNotificationManager getInstanceFor(String callId) {
-        CallNotificationManager callNotificationManager = INSTANCES.get(callId);
-        if (callNotificationManager == null) {
-            callNotificationManager = new CallNotificationManager(callId);
-            INSTANCES.put(callId, callNotificationManager);
-        }
-        return callNotificationManager;
+        return INSTANCES.computeIfAbsent(callId, CallNotificationManager::new);
     }
 
     /**
@@ -229,7 +224,7 @@ public class CallNotificationManager {
             try {
                 pVideo.send();
             } catch (PendingIntent.CanceledException e) {
-                e.printStackTrace();
+                Timber.w("Back to call: %s", e.getMessage());
             }
         }
     }

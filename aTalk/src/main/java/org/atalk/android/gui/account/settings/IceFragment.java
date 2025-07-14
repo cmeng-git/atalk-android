@@ -12,6 +12,7 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
+import androidx.core.content.IntentCompat;
 
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
@@ -126,14 +127,17 @@ public class IceFragment extends BasePreferenceFragment
     ActivityResultLauncher<Intent> getStunServes = registerForActivityResult(new StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-
                     // Gets edited STUN servers list
-                    JabberAccountRegistration serialized = (JabberAccountRegistration)
-                            data.getSerializableExtra(ServerListActivity.JABBER_REGISTRATION_KEY);
+                    JabberAccountRegistration jabberRegistraction = null;
+                    Intent data = result.getData();
+                    if (data != null) {
+                        jabberRegistraction = IntentCompat.getSerializableExtra(data,
+                                ServerListActivity.JABBER_REGISTRATION_KEY, JabberAccountRegistration.class);
+                    }
 
                     jbrReg.getAdditionalStunServers().clear();
-                    jbrReg.getAdditionalStunServers().addAll(serialized.getAdditionalStunServers());
+                    if (jabberRegistraction != null)
+                        jbrReg.getAdditionalStunServers().addAll(jabberRegistraction.getAdditionalStunServers());
                     JabberPreferenceFragment.setUncommittedChanges();
                 }
             }
@@ -156,12 +160,16 @@ public class IceFragment extends BasePreferenceFragment
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     // Gets edited Jingle Nodes list
+                    JabberAccountRegistration jabberRegistraction = null;
                     Intent data = result.getData();
-                    JabberAccountRegistration serialized = (JabberAccountRegistration)
-                            data.getSerializableExtra(ServerListActivity.JABBER_REGISTRATION_KEY);
+                    if (data != null) {
+                        jabberRegistraction = IntentCompat.getSerializableExtra(data,
+                                ServerListActivity.JABBER_REGISTRATION_KEY, JabberAccountRegistration.class);
+                    }
 
                     jbrReg.getAdditionalJingleNodes().clear();
-                    jbrReg.getAdditionalJingleNodes().addAll(serialized.getAdditionalJingleNodes());
+                    if (jabberRegistraction != null)
+                        jbrReg.getAdditionalJingleNodes().addAll(jabberRegistraction.getAdditionalJingleNodes());
                     JabberPreferenceFragment.setUncommittedChanges();
                 }
             }

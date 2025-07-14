@@ -21,8 +21,7 @@ package net.java.sip.communicator.service.update;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public interface UpdateService
-{
+public interface UpdateService {
     /**
      * Checks for updates and notify user of any new version, and take necessary action.
      */

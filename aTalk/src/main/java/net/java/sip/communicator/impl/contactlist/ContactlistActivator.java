@@ -53,7 +53,7 @@ public class ContactlistActivator implements BundleActivator {
         mclServiceImpl = new MetaContactListServiceImpl();
 
         // reg the icq account man.
-        context.registerService(MetaContactListService.class.getName(), mclServiceImpl, null);
+        context.registerService(MetaContactListService.class, mclServiceImpl, null);
         mclServiceImpl.start(context);
         Timber.d("Service Impl: %s [REGISTERED]", getClass().getName());
     }

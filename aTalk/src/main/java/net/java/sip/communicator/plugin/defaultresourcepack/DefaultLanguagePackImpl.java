@@ -4,17 +4,14 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
 package net.java.sip.communicator.plugin.defaultresourcepack;
-
-import net.java.sip.communicator.service.resources.LanguagePack;
-import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
 
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -28,11 +25,13 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
 
+import net.java.sip.communicator.service.resources.LanguagePack;
+import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
+
 /**
  * @author Damian Minkov
  */
-public class DefaultLanguagePackImpl implements LanguagePack
-{
+public class DefaultLanguagePackImpl implements LanguagePack {
     private static final String DEFAULT_RESOURCE_PATH = "resources.languages.resources";
 
     /**
@@ -53,8 +52,7 @@ public class DefaultLanguagePackImpl implements LanguagePack
     /**
      * Constructor.
      */
-    public DefaultLanguagePackImpl()
-    {
+    public DefaultLanguagePackImpl() {
         // Finds all the files *.properties in the path : /resources/languages.
         Enumeration<?> fsEnum = DefaultResourcePackActivator.bundleContext.getBundle()
                 .findEntries("/resources/languages", "*.properties", false);
@@ -78,8 +76,7 @@ public class DefaultLanguagePackImpl implements LanguagePack
      *
      * @return a <code>Map</code>, containing all [key, value] pairs for this resource pack.
      */
-    public Map<String, String> getResources()
-    {
+    public Map<String, String> getResources() {
         return getResources(Locale.getDefault());
     }
 
@@ -87,22 +84,20 @@ public class DefaultLanguagePackImpl implements LanguagePack
      * Returns a <code>Map</code>, containing all [key, value] pairs for the given locale.
      *
      * @param locale The <code>Locale</code> we're looking for.
+     *
      * @return a <code>Map</code>, containing all [key, value] pairs for the given locale.
      */
-    public Map<String, String> getResources(Locale locale)
-    {
+    public Map<String, String> getResources(Locale locale) {
         // check if we didn't computed it at the previous call
         if (locale.equals(localeInBuffer) && lastResourcesAsked != null) {
             return lastResourcesAsked;
         }
 
         ResourceBundle resourceBundle
-                = ResourceBundle.getBundle(DEFAULT_RESOURCE_PATH, locale, new ResourceBundle.Control()
-        {
+                = ResourceBundle.getBundle(DEFAULT_RESOURCE_PATH, locale, new ResourceBundle.Control() {
             // work around Java's backwards compatibility
             @Override
-            public String toBundleName(String baseName, Locale locale)
-            {
+            public String toBundleName(String baseName, Locale locale) {
                 if (locale.equals(new Locale("he"))) {
                     return baseName + "_he";
                 }
@@ -130,11 +125,11 @@ public class DefaultLanguagePackImpl implements LanguagePack
      * Returns a Set of the keys contained only in the ResourceBundle for locale.
      *
      * @param locale the locale for which the keys are requested
+     *
      * @return a Set of the keys contained only in the ResourceBundle for locale
      */
     @SuppressWarnings("unchecked")
-    public Set<String> getResourceKeys(Locale locale)
-    {
+    public Set<String> getResourceKeys(Locale locale) {
         try {
             Method handleKeySet = ResourceBundle.class.getDeclaredMethod("handleKeySet");
             handleKeySet.setAccessible(true);
@@ -149,8 +144,7 @@ public class DefaultLanguagePackImpl implements LanguagePack
      *
      * @return the name of this resource pack.
      */
-    public String getName()
-    {
+    public String getName() {
         return "Default Language Resources";
     }
 
@@ -159,8 +153,7 @@ public class DefaultLanguagePackImpl implements LanguagePack
      *
      * @return the description of this resource pack.
      */
-    public String getDescription()
-    {
+    public String getDescription() {
         return "Provide Jitsi default Language resource pack.";
     }
 
@@ -172,8 +165,7 @@ public class DefaultLanguagePackImpl implements LanguagePack
      * @param resourceBundle The initial <code>ResourceBundle</code>, corresponding to the "main" properties file.
      * @param resources A <code>Map</code> that would store the data.
      */
-    private void initResources(ResourceBundle resourceBundle, Map<String, String> resources)
-    {
+    private void initResources(ResourceBundle resourceBundle, Map<String, String> resources) {
         Enumeration<String> colorKeys = resourceBundle.getKeys();
 
         while (colorKeys.hasMoreElements()) {
@@ -186,8 +178,7 @@ public class DefaultLanguagePackImpl implements LanguagePack
     /**
      * Finds all plugin color resources, matching the "images-*.properties" pattern and adds them to this resource pack.
      */
-    private void initPluginResources(Map<String, String> resources, Locale locale)
-    {
+    private void initPluginResources(Map<String, String> resources, Locale locale) {
         Iterator<String> pluginProperties
                 = DefaultResourcePackActivator.findResourcePaths("resources/languages", "strings-*.properties");
 
@@ -207,8 +198,7 @@ public class DefaultLanguagePackImpl implements LanguagePack
      *
      * @return all the locales this Language pack contains.
      */
-    public Iterator<Locale> getAvailableLocales()
-    {
+    public Iterator<Locale> getAvailableLocales() {
         return availableLocales.iterator();
     }
 }

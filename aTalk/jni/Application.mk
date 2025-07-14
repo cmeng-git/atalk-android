@@ -28,6 +28,9 @@ APP_STL := c++_shared
 # Enforced the support for Exceptions and RTTI in all generated machine code.
 APP_CPPFLAGS := -frtti -fexceptions
 
+# Compile app using 16 KB ELF alignment
+APP_SUPPORT_FLEXIBLE_PAGE_SIZES := true
+
 # To build app's native (JNI) code with Address Sanitizer
 # https://developer.android.com/ndk/guides/asan#ndk-build
 # APP_CFLAGS := -fsanitize=address -fno-omit-frame-pointer
@@ -40,5 +43,4 @@ APP_CPPFLAGS := -frtti -fexceptions
 #android:debuggable="true" 	Debug; Symbols; Optimized*1 	Debug; Symbols; Not optimized*2	(same as NDK_DEBUG=1)
 #android:debuggable="false"	Release; Symbols; Optimized 	Release; Symbols; Not optimized	Release; No symbols; Optimized*3
 NDK_DEBUG := false
-
 NDK_TOOLCHAIN_VERSION := clang

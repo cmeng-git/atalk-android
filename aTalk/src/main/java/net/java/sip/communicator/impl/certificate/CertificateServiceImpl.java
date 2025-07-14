@@ -70,6 +70,7 @@ import net.java.sip.communicator.service.certificate.VerifyCertificateDialogServ
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.service.gui.AuthenticationWindowService;
 
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.service.configuration.ConfigurationService;
@@ -832,13 +833,13 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     }
 
     protected static class BrowserLikeHostnameMatcher implements CertificateMatcher {
-        public void verify(Iterable<String> identitiesToTest, X509Certificate cert)
+        public void verify(Iterable<String> identitiesToTest, X509Certificate certificate)
                 throws CertificateException {
             // check whether one of the hostname is present in the certificate
             boolean oneMatched = false;
             for (String identity : identitiesToTest) {
                 try {
-                    org.apache.http.conn.ssl.SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER.verify(identity, cert);
+                    SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER.verify(identity, certificate);
                     oneMatched = true;
                     break;
                 } catch (SSLException e) {
@@ -848,7 +849,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
 
             if (!oneMatched)
                 throw new CertificateException("None of <" + identitiesToTest
-                        + "> matched the cert with CN=" + cert.getSubjectDN());
+                        + "> matched the cert with CN=" + certificate.getSubjectDN());
         }
     }
 

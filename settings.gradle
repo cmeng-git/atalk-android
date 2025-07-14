@@ -2,3 +2,7 @@ pluginManagement {
     include ':aTalk'
     include ':android-youtube-player:core'
 }
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}

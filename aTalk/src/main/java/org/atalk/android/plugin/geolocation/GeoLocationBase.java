@@ -33,11 +33,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import java.util.Locale;
+
 import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-
-import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -47,8 +47,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class GeoLocationBase extends BaseActivity implements View.OnClickListener,
-        SeekBar.OnSeekBarChangeListener, GeoLocationListener
-{
+        SeekBar.OnSeekBarChangeListener, GeoLocationListener {
     public static final String SHARE_ALLOW = "Share_Allow";
 
     private static LocationListener mCallBack;
@@ -81,8 +80,7 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
     private float delta = 0; // for demo
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setMainTitle(R.string.location);
         isFollowMe = (mGeoLocationDelegate != null);
@@ -149,15 +147,13 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState)
-    {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(SHARE_ALLOW, mShareAllow);
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         aTalkApp.setCurrentActivity(this);
         mLocation = null;
@@ -172,8 +168,7 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
         if (!isFollowMe && (mGeoLocationDelegate != null)) {
             mGeoLocationDelegate.unregisterLocationBroadcastReceiver();
@@ -182,8 +177,7 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
     }
 
     @Override
-    public void onClick(View view)
-    {
+    public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_single_fix:
                 mLocationFetchMode = GeoConstants.SINGLE_FIX;
@@ -225,8 +219,7 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
         }
     }
 
-    private void updateSendButton(boolean followMe)
-    {
+    private void updateSendButton(boolean followMe) {
         if (followMe) {
             isFollowMe = false;
             mBtnFollowMe.setText(getString(R.string.follow_me_start, gpsMinDistance, sendTimeInterval));
@@ -241,25 +234,21 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
         }
     }
 
-    public boolean isGpsShare()
-    {
+    public boolean isGpsShare() {
         return isFollowMe && isGpsShare;
     }
 
     @Override
-    public void onLocationPermissionGranted()
-    {
+    public void onLocationPermissionGranted() {
         showToast("Location permission granted");
     }
 
     @Override
-    public void onLocationPermissionDenied()
-    {
+    public void onLocationPermissionDenied() {
         showToast("Location permission denied");
     }
 
-    public void onLocationReceived(Location location, String locAddress)
-    {
+    public void onLocationReceived(Location location, String locAddress) {
         if (mDemo) {
             delta += 0.0001;
             location.setLatitude(location.getLatitude() + delta);
@@ -292,25 +281,21 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
      *
      * @param location at which the pointer is place and map centered
      */
-    public void showStreetMap(Location location)
-    {
+    public void showStreetMap(Location location) {
     }
 
     @Override
-    public void onLocationReceivedNone()
-    {
+    public void onLocationReceivedNone() {
         showToast("No location received");
     }
 
     @Override
-    public void onLocationProviderEnabled()
-    {
+    public void onLocationProviderEnabled() {
         showToast("Location services are now ON");
     }
 
     @Override
-    public void onLocationProviderDisabled()
-    {
+    public void onLocationProviderDisabled() {
         showToast("Location services are still Off");
     }
 
@@ -324,8 +309,7 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
      * @param fromUser True if the progress change was initiated by the user.
      */
     @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-    {
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (seekBar == mSeekDistanceInterval)
             gpsMinDistance = progress * gpsDistanceStep;
         else {
@@ -340,61 +324,51 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar)
-    {
+    public void onStartTrackingTouch(SeekBar seekBar) {
     }
 
     @Override
-    public void onStopTrackingTouch(SeekBar seekBar)
-    {
+    public void onStopTrackingTouch(SeekBar seekBar) {
         if (isFollowMe) {
             mBtnFollowMe.setText(getString(R.string.follow_me_stop, gpsMinDistance, sendTimeInterval));
         }
         showToast(getString(R.string.apply_new_location_setting));
     }
 
-    private void showToast(String message)
-    {
+    private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    public static void registeredLocationListener(LocationListener listener)
-    {
+    public static void registeredLocationListener(LocationListener listener) {
         mCallBack = listener;
     }
 
-    public interface LocationListener
-    {
+    public interface LocationListener {
         void onResult(Location location, String locAddress);
 
     }
 
-    protected Location getLastKnownLocation()
-    {
+    protected Location getLastKnownLocation() {
         return mGeoLocationDelegate.getLastKnownLocation();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mGeoLocationDelegate.onActivityResult(requestCode);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         mGeoLocationDelegate.onRequestPermissionsResult(requestCode, grantResults);
     }
 
-    private void requestLocationUpdates(GeoLocationRequest geoLocationRequest)
-    {
+    private void requestLocationUpdates(GeoLocationRequest geoLocationRequest) {
         mGeoLocationDelegate.requestLocationUpdate(geoLocationRequest);
     }
 
-    private void stopLocationUpdates()
-    {
+    private void stopLocationUpdates() {
         mGeoLocationDelegate.stopLocationUpdates();
     }
 }

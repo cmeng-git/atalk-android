@@ -16,24 +16,35 @@
  */
 package org.atalk.impl.appupdate;
 
+import static org.atalk.impl.appstray.NotificationPopupHandler.getPendingIntentFlag;
+
 import android.annotation.SuppressLint;
 import android.app.DownloadManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageInstaller;
+import android.content.pm.PackageInstaller.Session;
+import android.content.pm.PackageInstaller.SessionParams;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Build;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.content.IntentCompat;
+import androidx.documentfile.provider.DocumentFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -227,9 +238,13 @@ public class UpdateServiceImpl implements UpdateService {
                 new DialogActivity.DialogListener() {
                     @Override
                     public boolean onConfirmClicked(DialogActivity dialog) {
+                        // Not working!
+                        // return installPackage(aTalkApp.getInstance(), fileUri);
+
                         // Need REQUEST_INSTALL_PACKAGES in manifest; Intent.ACTION_VIEW works for both
                         Intent intent;
-                        intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                        intent = new Intent();
+                        intent.setAction(Intent.ACTION_INSTALL_PACKAGE);
                         intent.setDataAndType(fileUri, APK_MIME_TYPE);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -241,6 +256,112 @@ public class UpdateServiceImpl implements UpdateService {
                     public void onDialogCancelled(@NotNull DialogActivity dialog) {
                     }
                 }, latestVersion);
+    }
+
+    public static boolean installPackage(Context context, Uri fileUri) {
+        PackageInstaller installer = context.getPackageManager().getPackageInstaller();
+        SessionParams params = new SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+        params.setAppPackageName(context.getPackageName());
+
+        try (InputStream apkStream = context.getContentResolver().openInputStream(fileUri)) {
+            if (apkStream == null) return false;
+
+            DocumentFile docFile = DocumentFile.fromSingleUri(context, fileUri);
+            long length = (docFile != null) ? docFile.length() : -1;
+            params.setSize(length);
+
+            int mSessionId = installer.createSession(params);
+            Session session = installer.openSession(mSessionId);
+
+            // Copy the contents of apkStream to sessionStream
+            try (OutputStream sessionStream = session.openWrite("installApk", 0, length)) {
+                byte[] buffer = new byte[65536];
+                int bytesRead;
+                while ((bytesRead = apkStream.read(buffer)) != -1) {
+                    sessionStream.write(buffer, 0, bytesRead);
+                }
+                session.fsync(sessionStream);
+                apkStream.close();
+            }
+
+            installer.registerSessionCallback(new PackageInstaller.SessionCallback() {
+                @Override
+                public void onCreated(int sessionId) {
+                    // Timber.d("Package installer created: %s", sessionId);
+                    PackageInstaller.SessionInfo sessionInfo = installer.getSessionInfo(sessionId);
+                    Timber.d("Package installer created: (%s) %s", sessionId, sessionInfo.getSize());
+                }
+
+                @Override
+                public void onBadgingChanged(int sessionId) {
+                    Timber.d("Package installation badging: %s", sessionId);
+                }
+
+                @Override
+                public void onActiveChanged(int sessionId, boolean active) {
+                    Timber.d("Package installation active: (%s) %s", sessionId, active);
+                }
+
+                @Override
+                public void onProgressChanged(int sessionId, float progress) {
+                    Timber.d("Package installation progress: (%s) %s", sessionId, progress);
+                }
+
+                @Override
+                public void onFinished(int sessionId, boolean success) {
+                    Timber.d("Package installation completed: (%s) %s", sessionId, success);
+                    if (sessionId == mSessionId) {
+                        if (success) {
+                            Timber.d("Package installation successful!");
+                        }
+                        else {
+                            Timber.d("Package installation failed!");
+                        }
+                    }
+                }
+            });
+
+            Intent intent = new Intent(context, InstallReceiver.class);
+            // Intent intent = new Intent("android.intent.action.MAIN");
+            PendingIntent statusReceiver = PendingIntent.getBroadcast(context, mSessionId, intent,
+                    getPendingIntentFlag(false, true));
+            session.commit(statusReceiver.getIntentSender());
+            // session.close();
+
+        } catch (IOException e) {
+            Timber.w("Package installation: %s", e.getMessage());
+        }
+
+        return true;
+    }
+
+    public static class InstallReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int result = intent.getIntExtra(PackageInstaller.EXTRA_STATUS, PackageInstaller.STATUS_FAILURE);
+            String packageName = context.getPackageName();
+            Timber.d("Package Installer Callback: result= %s, packageName = %s", result, packageName);
+
+            switch (result) {
+                case PackageInstaller.STATUS_PENDING_USER_ACTION:
+                    // this should not happen in M, but will happen in L and L-MR1
+                    Intent confirmationIntent = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_INTENT, Intent.class);
+                    if (confirmationIntent != null) {
+                        confirmationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(confirmationIntent);
+                    }
+                    break;
+
+                case PackageInstaller.STATUS_SUCCESS:
+                    Timber.d("Package %s installation complete", packageName);
+                    new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100).startTone(ToneGenerator.TONE_PROP_ACK);
+                    break;
+
+                default:
+                    String msg = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE);
+                    Timber.e("Package Installer received Status:(%s) %s", result, msg);
+            }
+        }
     }
 
     /**

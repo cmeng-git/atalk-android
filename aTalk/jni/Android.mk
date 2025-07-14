@@ -46,6 +46,11 @@ LOCAL_PATH := $(ROOT)
 include $(CLEAR_VARS)
 #include ./h264/Android.mk
 
+# ================================= LibVPX static library ============================================
+# LOCAL_PATH := $(ROOT)/static_library_built/libvpx
+# include $(CLEAR_VARS)
+# include $(LOCAL_PATH)/libvpx/build/make/Android.mk
+
 # ================================= LibVPX (VP8 / VP9) ================================
 ### VPX shared library build using static libraries pre-built from source (v1.12.0) on Ubuntu
 LOCAL_PATH := $(ROOT)

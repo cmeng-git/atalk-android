@@ -15,13 +15,11 @@ import org.osgi.framework.BundleContext;
  *
  * @author Pawel Domas
  */
-public class CertificateDialogActivator extends SimpleServiceActivator<CertificateDialogServiceImpl>
-{
+public class CertificateDialogActivator extends SimpleServiceActivator<CertificateDialogServiceImpl> {
     /**
      * Creates a new instance of CertificateDialogActivator.
      */
-    public CertificateDialogActivator()
-    {
+    public CertificateDialogActivator() {
         super(VerifyCertificateDialogService.class, "Android verify certificate service");
     }
 
@@ -29,8 +27,7 @@ public class CertificateDialogActivator extends SimpleServiceActivator<Certifica
      * {@inheritDoc}
      */
     @Override
-    protected CertificateDialogServiceImpl createServiceImpl()
-    {
+    protected CertificateDialogServiceImpl createServiceImpl() {
         impl = new CertificateDialogServiceImpl();
         return impl;
     }
@@ -44,10 +41,10 @@ public class CertificateDialogActivator extends SimpleServiceActivator<Certifica
      * Gets the <code>VerifyCertDialog</code> for given <code>requestId</code>.
      *
      * @param requestId identifier of the request managed by <code>CertificateDialogServiceImpl</code>.
+     *
      * @return <code>VerifyCertDialog</code> for given <code>requestId</code> or <code>null</code> if service has been shutdown.
      */
-    public static VerifyCertDialog getDialog(Long requestId)
-    {
+    public static VerifyCertDialog getDialog(Long requestId) {
         if (impl != null) {
             return impl.retrieveDialog(requestId);
         }
@@ -61,8 +58,7 @@ public class CertificateDialogActivator extends SimpleServiceActivator<Certifica
      */
     @Override
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         super.stop(bundleContext);
         // Clears service reference
         impl = null;

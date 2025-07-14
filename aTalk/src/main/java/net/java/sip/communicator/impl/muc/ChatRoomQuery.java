@@ -54,7 +54,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     /**
      * The query string.
      */
-    private String queryString;
+    private final String queryString;
 
     /**
      * List with the current results for the query.
@@ -64,7 +64,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     /**
      * MUC service.
      */
-    private MUCServiceImpl mucService;
+    private final MUCServiceImpl mucService;
 
     /**
      * The number of contact query listeners.
@@ -187,7 +187,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
                 fireContactChanged(foundContact);
             }
             else {
-                ChatRoomWrapper chatRoom = MUCActivator.getMUCService().findChatRoomWrapperFromChatRoom(sourceChatRoom);
+                ChatRoomWrapper chatRoom = mucService.findChatRoomWrapperFromChatRoom(sourceChatRoom);
                 if (chatRoom != null)
                     addChatRoom(sourceChatRoom, false, chatRoom.isAutoJoin());
             }

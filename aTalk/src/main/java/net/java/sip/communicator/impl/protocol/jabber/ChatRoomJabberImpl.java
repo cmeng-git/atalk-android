@@ -78,7 +78,6 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -295,8 +294,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     private int mCaptchaState = CaptchaDialog.unknown;
     private final MucMessageListener messageListener;
 
-    private Message captchaMessage;
-
     /**
      * Creates an instance of a chat room and initialize all the necessary listeners
      * for group chat status monitoring
@@ -338,7 +335,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public void initCaptchaProcess(final Message message) {
         // Set flag to ignore reply timeout
-        captchaMessage = message;
         mCaptchaState = CaptchaDialog.awaiting;
 
         // Do not proceed to launch CaptchaDialog if app is in background - system crash
@@ -1882,7 +1878,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Sets <code>ext</code> as the only <code>ExtensionElement</code> that belongs to given <code>namespace</code> of the <code>packet</code>.
      *
-     * @param packet the <code>Packet<code> to be modified.
+     * @param stanza the <code>Packet<code> to be modified.
      * @param extension the <code>ConferenceDescriptionPacketExtension<code> to set, or <code>null</code> to not set one.
      * @param namespace the namespace of <code>ExtensionElement</code>.
      * @param matchElementName if {@code true} only extensions matching both the element name and namespace will be matched
@@ -1890,31 +1886,31 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return whether packet was modified.
      */
-    private static boolean setPacketExtension(Stanza packet, ExtensionElement extension, String namespace, boolean matchElementName) {
+    private static boolean setPacketExtension(Stanza stanza, ExtensionElement extension, String namespace, boolean matchElementName) {
         boolean modified = false;
         if (StringUtils.isEmpty(namespace)) {
-            return modified;
+            return false;
         }
 
         // clear previous announcements
         ExtensionElement pe;
         if (matchElementName && extension != null) {
             String element = extension.getElementName();
-            while (null != (pe = packet.getExtensionElement(element, namespace))) {
-                if (packet.removeExtension(pe) != null) {
+            while (null != (stanza.getExtensionElement(element, namespace))) {
+                if (stanza.removeExtension(element, namespace) != null) {
                     modified = true;
                 }
             }
         }
         else {
-            while (null != (pe = packet.getExtension(namespace))) {
-                if (packet.removeExtension(pe) != null) {
+            while (null != (pe = stanza.getExtension(namespace))) {
+                if (stanza.removeExtension(pe.getElementName(), namespace) != null) {
                     modified = true;
                 }
             }
         }
         if (extension != null) {
-            packet.addExtension(extension);
+            stanza.addExtension(extension);
             modified = true;
         }
         return modified;
@@ -1939,7 +1935,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public void publishPresenceStatus(String newStatus) {
         if (lastPresenceSent != null) {
-            lastPresenceSent.setStatus(newStatus);
+            lastPresenceSent = lastPresenceSent
+                    .asBuilder()
+                    .setStatus(newStatus)
+                    .build();
             try {
                 sendLastPresence();
             } catch (NotConnectedException | InterruptedException e) {
@@ -2007,10 +2006,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             List<Jid> membersToRemove = getMembersWhiteList();
             membersToRemove.removeAll(members);
 
-            if (membersToRemove.size() > 0)
+            if (!membersToRemove.isEmpty())
                 mMultiUserChat.revokeMembership(membersToRemove);
 
-            if (members.size() > 0)
+            if (!members.isEmpty())
                 mMultiUserChat.grantMembership(members);
         } catch (XMPPException | NoResponseException | NotConnectedException
                  | InterruptedException e) {
@@ -2022,8 +2021,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Prepares and sends the last seen presence.
      * Removes the initial <x> extension and sets new id.
      *
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException Not Connected Exception
+     * @throws InterruptedException Interrupted Exception
      */
     private void sendLastPresence() throws NotConnectedException, InterruptedException {
         // The initial presence sent by smack contains an empty "x" extension.
@@ -2204,10 +2203,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             Timber.d("Received room message %s %s", fromJid, message.toString());
             // Check received message for sent message: either a delivery report or a incoming message
             // from the chaRoom server. Check using nick OR jid in case user join with a different nick.
-            Jid toJid = message.getTo();
             Resourcepart userNick = getUserNickname();
             if ((userNick != null && userNick.equals(fromNick))
-                    || toJid.equals(getUserJid(member.getChatRoom()))) {
+                    || fromJid.equals(getUserJid(member.getChatRoom()))) {
 
                 // MUC received message may be relayed from server on message sent hence reCreate the message if required
                 if (IMessage.FLAG_REMOTE_ONLY == (mEncType & IMessage.FLAG_REMOTE_ONLY)) {
@@ -2261,9 +2259,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             ourJid = getUserJid(chatRoom);
         }
 
-        Timber.e("isOwnSendChatMessage %s == %s", fromJid, ourJid);
+        Timber.d("isOwnSendChatMessage %s == %s", fromJid, ourJid);
         return (userNick != null && userNick.equals(fromNick))
-                || toJid.equals(ourJid);
+                || fromJid.equals(ourJid);
     }
 
     /**
@@ -2666,7 +2664,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * able to send messages to the room occupants.
      *
      * @param nickname the nickname of the visitor to grant voice in the room (e.g. "john").
-     *
+     * <p>
      * XMPPException if an error occurs granting voice to a visitor. In particular, a 403
      * error can occur if the occupant that intended to grant voice is not a moderator in
      * this room (i.e. Forbidden error); or a 400 error can occur if the provided nickname is
@@ -2753,7 +2751,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * able to send messages to the room occupants.
      *
      * @param nickname the nickname of the participant to revoke voice (e.g. "john").
-     *
+     * <p>
      * XMPPException if an error occurs revoking voice from a participant. In particular, a
      * 405 error can occur if a moderator or a user with an affiliation of "owner" or "admin"
      * was tried to revoke his voice (i.e. Not Allowed error); or a 400 error can occur if
@@ -2987,19 +2985,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         for (ExtensionElement ext : presencePacketExtensions) {
             presenceBuilder.overrideExtension(ext);
         }
-
         lastPresenceSent = presenceBuilder.build();
-    }
-
-    /**
-     * Stores the last sent presence.
-     */
-    private class LastPresenceListener implements StanzaListener {
-        @Override
-        public void processStanza(Stanza packet)
-                throws NotConnectedException, InterruptedException, NotLoggedInException {
-            lastPresenceSent = (Presence) packet;
-        }
     }
 
     /**

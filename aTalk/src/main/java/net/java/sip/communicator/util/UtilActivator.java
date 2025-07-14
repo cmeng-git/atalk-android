@@ -71,7 +71,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
      */
     private void loadLoggingConfig() {
         try {
-            Class.forName("net.java.sip.communicator.util.JavaUtilLoggingConfig").newInstance();
+            Class.forName("net.java.sip.communicator.util.JavaUtilLoggingConfig").getDeclaredConstructor().newInstance();
         } catch (Throwable t) {
         }
     }

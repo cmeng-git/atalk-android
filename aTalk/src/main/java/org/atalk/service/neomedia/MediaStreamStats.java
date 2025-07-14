@@ -170,8 +170,7 @@ public interface MediaStreamStats
 	 * stream since the stream is created.
 	 *
 	 * @return the total number of packets.
-	 * @deprecated use the appropriate method from {@link MediaStreamStats2}
-	 * instead.
+	 * @deprecated use the appropriate method from {@link MediaStreamStats2} instead.
 	 */
 	@Deprecated
 	long getNbPackets();
@@ -308,8 +307,7 @@ public interface MediaStreamStats
 	 * Gets the average of the RTP jitter values reported to us in RTCP reports, in milliseconds.
 	 * Returns -1D if the value is unknown.
 	 *
-	 * @return the average of the RTP jitter values reported to us in RTCP reports, in
-	 * milliseconds.
+	 * @return the average of the RTP jitter values reported to us in RTCP reports, in milliseconds.
 	 * Returns -1D if the value is unknown.
 	 */
 	double getAvgDownloadJitterMs();

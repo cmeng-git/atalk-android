@@ -805,7 +805,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
 
             if ((renderers == null) || !renderers.contains(customRenderer)) {
                 try {
-                    Renderer customRendererInstance = (Renderer) Class.forName(customRenderer).newInstance();
+                    Renderer customRendererInstance = (Renderer) Class.forName(customRenderer).getDeclaredConstructor().newInstance();
                     PlugInManager.addPlugIn(customRenderer, customRendererInstance.getSupportedInputFormats(),
                             null, PlugInManager.RENDERER);
                     commit = true;

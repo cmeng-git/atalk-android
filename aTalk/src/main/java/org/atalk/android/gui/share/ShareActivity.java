@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.content.IntentCompat;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -131,7 +132,7 @@ public class ShareActivity extends BaseActivity {
 
         if (Intent.ACTION_SEND.equals(action)) {
             final String text = intent.getStringExtra(Intent.EXTRA_TEXT);
-            final Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            final Uri uri = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri.class);
 
             if (type != null && uri != null) {
                 mShare.uris.clear();
@@ -142,7 +143,7 @@ public class ShareActivity extends BaseActivity {
             }
         }
         else if (Intent.ACTION_SEND_MULTIPLE.equals(action)) {
-            final ArrayList<Uri> uris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+            final ArrayList<Uri> uris = IntentCompat.getParcelableArrayListExtra(intent, Intent.EXTRA_STREAM, Uri.class);
             mShare.uris = (uris == null) ? new ArrayList<>() : uris;
 
             // aTalk send extra_text in categories in this case

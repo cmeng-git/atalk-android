@@ -49,8 +49,7 @@ public interface OperationSetVideoTelephony extends OperationSet
             throws OperationFailedException;
 
     /**
-     * Gets the visual/video <code>Component</code> available in this telephony for a specific
-     * <code>CallPeer</code>.
+     * Gets the visual/video <code>Component</code> available in this telephony for a specific <code>CallPeer</code>.
      *
      * @param peer the <code>CallPeer</code> whose video is to be retrieved
      * @return the visual/video <code>Component</code> available in this telephony for the specified

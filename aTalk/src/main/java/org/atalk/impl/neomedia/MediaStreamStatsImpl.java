@@ -79,8 +79,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
      * Keeps track of when a given Network Time Protocol (NTP) time (found in an SR) has been
      * received. This is used to compute the correct Round-Trip-Time (RTT) in the translator case.
      */
-    private final Map<Long, Long> emission2reception
-            = Collections.synchronizedMap(new LRUCache<>(100));
+    private final Map<Long, Long> emission2reception = Collections.synchronizedMap(new LRUCache<>(100));
 
     /**
      * Computes an Exponentially Weighted Moving Average (EWMA). Thus, the most recent history
@@ -1297,12 +1296,12 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
     /**
      * {@inheritDoc}
      * <p>
-     * This method is different from {@link #getUploadRateKiloBitPerSec()} in that: 1. It is not
-     * necessary for {@link #updateStats()} to be called periodically by the user of libjitsi in
-     * order for it to return correct values. 2. The returned value is based on the average bitrate
-     * over a fixed window, as opposed to an EWMA. 3. The measurement is performed after the
-     * {@link MediaStream}'s transformations, notably after simulcast layers are dropped (i.e.
-     * closer to the network interface).
+     * This method is different from {@link #getUploadRateKiloBitPerSec()} in that:
+     * 1. It is not necessary for {@link #updateStats()} to be called periodically by the user
+     * of libjitsi in order for it to return correct values.
+     * 2. The returned value is based on the average bitrate over a fixed window, as opposed to an EWMA.
+     * 3. The measurement is performed after the {@link MediaStream}'s transformations, notably after
+     * simulcast layers are dropped (i.e. closer to the network interface).
      * <p>
      * The return value includes RTP payload and RTP headers, as well as RTCP.
      */

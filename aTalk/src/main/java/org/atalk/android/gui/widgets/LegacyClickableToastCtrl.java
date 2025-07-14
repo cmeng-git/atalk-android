@@ -7,6 +7,7 @@ package org.atalk.android.gui.widgets;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -18,8 +19,7 @@ import org.atalk.android.R;
  *
  * @author Pawel Domas
  */
-public class LegacyClickableToastCtrl
-{
+public class LegacyClickableToastCtrl {
     /**
      * How long the toast will be displayed.
      */
@@ -33,17 +33,22 @@ public class LegacyClickableToastCtrl
     /**
      * The <code>TextView</code> displaying message text.
      */
-    private TextView messageView;
+    private final TextView messageView;
 
     /**
      * Handler object used for hiding the toast if it's not clicked.
      */
-    private Handler hideHandler = new Handler();
+    private final Handler hideHandler = new Handler(Looper.getMainLooper());
+
+    /**
+     * Hides the toast after delay.
+     */
+    private final Runnable hideRunnable = () -> hideToast(false);
 
     /**
      * The listener that will be notified when the toast is clicked.
      */
-    private View.OnClickListener clickListener;
+    private final View.OnClickListener clickListener;
 
     /**
      * State object for message text.
@@ -56,8 +61,7 @@ public class LegacyClickableToastCtrl
      * @param toastView the <code>View</code> that will be animated. Must contain <code>R.id.toast_msg</code> <code>TextView</code>.
      * @param clickListener the click listener that will be notified when the toast is clicked.
      */
-    public LegacyClickableToastCtrl(View toastView, View.OnClickListener clickListener)
-    {
+    public LegacyClickableToastCtrl(View toastView, View.OnClickListener clickListener) {
         this(toastView, clickListener, R.id.toast_msg);
     }
 
@@ -69,12 +73,9 @@ public class LegacyClickableToastCtrl
      * @param toastButtonId the id of <code>View</code> contained in <code>toastView
      * </code> that will be used as a button.
      */
-    public LegacyClickableToastCtrl(View toastView, View.OnClickListener clickListener, int toastButtonId)
-    {
+    public LegacyClickableToastCtrl(View toastView, View.OnClickListener clickListener, int toastButtonId) {
         this.toastView = toastView;
-
         this.clickListener = clickListener;
-
         messageView = toastView.findViewById(R.id.toast_msg);
 
         toastView.findViewById(toastButtonId).setOnClickListener(view -> {
@@ -91,8 +92,7 @@ public class LegacyClickableToastCtrl
      * @param immediate if <code>true</code> there wil be no animation.
      * @param message the toast text to use.
      */
-    public void showToast(boolean immediate, CharSequence message)
-    {
+    public void showToast(boolean immediate, CharSequence message) {
         toastMessage = message;
         messageView.setText(toastMessage);
 
@@ -106,8 +106,7 @@ public class LegacyClickableToastCtrl
      *
      * @param immediate if <code>true</code> no animation will be used.
      */
-    public void hideToast(boolean immediate)
-    {
+    public void hideToast(boolean immediate) {
         hideHandler.removeCallbacks(hideRunnable);
         if (immediate) {
             onHide();
@@ -117,8 +116,7 @@ public class LegacyClickableToastCtrl
     /**
      * Performed to hide the toast view.
      */
-    protected void onHide()
-    {
+    protected void onHide() {
         toastView.setVisibility(View.GONE);
         toastMessage = null;
     }
@@ -126,16 +124,14 @@ public class LegacyClickableToastCtrl
     /**
      * {@inheritDoc}
      */
-    public void onSaveInstanceState(Bundle outState)
-    {
+    public void onSaveInstanceState(Bundle outState) {
         outState.putCharSequence("toast_message", toastMessage);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void onRestoreInstanceState(Bundle savedInstanceState)
-    {
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             toastMessage = savedInstanceState.getCharSequence("toast_message");
 
@@ -144,9 +140,4 @@ public class LegacyClickableToastCtrl
             }
         }
     }
-
-    /**
-     * Hides the toast after delay.
-     */
-    private Runnable hideRunnable = () -> hideToast(false);
 }
