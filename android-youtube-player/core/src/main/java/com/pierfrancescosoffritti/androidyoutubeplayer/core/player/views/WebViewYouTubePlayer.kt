@@ -7,22 +7,24 @@ import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
 import android.view.View
+import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
+import androidx.core.graphics.createBitmap
 import com.pierfrancescosoffritti.androidyoutubeplayer.R
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayerBridge
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.Utils
-import java.util.*
+import java.util.Collections
 
 /**
  * WebView implementation of [YouTubePlayer]. The player runs inside the WebView, using the IFrame Player API.
  */
-internal class WebViewYouTubePlayer(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : WebView(context, attrs, defStyleAttr), YouTubePlayer, YouTubePlayerBridge.YouTubePlayerBridgeCallbacks {
+internal class WebViewYouTubePlayer(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    WebView(context, attrs, defStyleAttr), YouTubePlayer, YouTubePlayerBridge.YouTubePlayerBridgeCallbacks {
 
     private lateinit var youTubePlayerInitListener: (YouTubePlayer) -> Unit
 
@@ -52,8 +54,8 @@ internal class WebViewYouTubePlayer(context: Context, attrs: AttributeSet? = nul
         mainThreadHandler.post { loadUrl("javascript:loadPlaylist('$playlist', $startIndex)") }
     }
 
-    override fun loadPlaylist_videoIds(videoIds: String) {
-        mainThreadHandler.post { loadUrl("javascript:loadPlaylist_videoIds('$videoIds')") }
+    override fun loadPlaylistVideoIds(videoIds: String) {
+        mainThreadHandler.post { loadUrl("javascript:loadPlaylistVideoIds('$videoIds')") }
     }
 
     override fun play() {
@@ -139,8 +141,8 @@ internal class WebViewYouTubePlayer(context: Context, attrs: AttributeSet? = nul
         addJavascriptInterface(YouTubePlayerBridge(this), "YouTubePlayerBridge")
 
         val htmlPage = Utils
-                .readHTMLFromUTF8File(resources.openRawResource(R.raw.ayp_youtube_player))
-                .replace("<<injectedPlayerVars>>", playerOptions.toString())
+            .readHTMLFromUTF8File(resources.openRawResource(R.raw.ayp_youtube_player))
+            .replace("<<injectedPlayerVars>>", playerOptions.toString())
 
         loadDataWithBaseURL(playerOptions.getOrigin(), htmlPage, "text/html", "utf-8", null)
 
@@ -148,7 +150,17 @@ internal class WebViewYouTubePlayer(context: Context, attrs: AttributeSet? = nul
         webChromeClient = object : WebChromeClient() {
             override fun getDefaultVideoPoster(): Bitmap {
                 val result = super.getDefaultVideoPoster()
-                return result ?: Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565)
+                return result ?: createBitmap(1, 1, Bitmap.Config.RGB_565)
+            }
+
+            override fun onPermissionRequest(request: PermissionRequest) {
+                if (request.resources[0] == PermissionRequest.RESOURCE_VIDEO_CAPTURE) {
+                    // Deny camera access
+                    request.deny()
+                }
+                else {
+                    super.onPermissionRequest(request) // Handle other permissions normally
+                }
             }
         }
     }

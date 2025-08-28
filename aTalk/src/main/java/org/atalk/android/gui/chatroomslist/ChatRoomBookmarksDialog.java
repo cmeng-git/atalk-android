@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
@@ -205,20 +206,22 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         BookmarkConference bookmarkConference;
 
         public void execute() {
-            Executors.newSingleThreadExecutor().execute(() -> {
-                doInBackground();
+            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                eService.execute(() -> {
+                    doInBackground();
 
-                mParent.runOnUiThread(() -> {
-                    if (!mAccountBookmarkConferencesList.isEmpty()) {
-                        Object[] keySet = mAccountBookmarkConferencesList.keySet().toArray();
-                        if (keySet.length > 0) {
-                            String accountId = (String) keySet[0];
-                            if (StringUtils.isNotEmpty(accountId))
-                                initChatRoomSpinner(accountId);
+                    mParent.runOnUiThread(() -> {
+                        if (!mAccountBookmarkConferencesList.isEmpty()) {
+                            Object[] keySet = mAccountBookmarkConferencesList.keySet().toArray();
+                            if (keySet.length > 0) {
+                                String accountId = (String) keySet[0];
+                                if (StringUtils.isNotEmpty(accountId))
+                                    initChatRoomSpinner(accountId);
+                            }
                         }
-                    }
+                    });
                 });
-            });
+            }
         }
 
         private void doInBackground() {

@@ -333,7 +333,7 @@ public class OperationSetContactCapabilitiesJabberImpl
     }
 
     /**
-     * Fires event that contact capabilities has changed. This is called on received discovery info
+     * Fire event that contact capabilities has changed. This is called on received discovery info
      * for a particular jid, so we use its online and opSets for this particular jid
      *
      * @param user the user Jid to search for its contact.

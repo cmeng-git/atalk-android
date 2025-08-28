@@ -75,17 +75,9 @@ public class YoutubePlayerFragment extends BaseFragment {
     private static final float rateStep = 0.25f;
     private float mSpeed = 1.0f;
 
-    private FragmentActivity mContext;
     private static final ConfigurationService configService = UtilActivator.getConfigurationService();
 
     public YoutubePlayerFragment() {
-    }
-
-    @Override
-    public void onAttach(@NonNull @NotNull Context context) {
-        super.onAttach(context);
-        mContext = (FragmentActivity) context;
-        fullScreenHelper = new FullScreenHelper(mFragmentActivity);
     }
 
     /**
@@ -116,6 +108,7 @@ public class YoutubePlayerFragment extends BaseFragment {
                 }
             }
         }
+        fullScreenHelper = new FullScreenHelper(mFragmentActivity);
 
         initYouTubePlayerView();
         return view;
@@ -201,7 +194,7 @@ public class YoutubePlayerFragment extends BaseFragment {
                 view -> youTubePlayer.nextVideo());
 
         if (videoId.contains(SEPARATOR)) {
-            youTubePlayer.loadPlaylist_videoIds(videoId);
+            youTubePlayer.loadPlaylistVideoIds(videoId);
         }
         else {
             youTubePlayer.loadPlaylist(videoId, 0);
@@ -234,12 +227,12 @@ public class YoutubePlayerFragment extends BaseFragment {
     private void addActionsToPlayer(YouTubePlayer youTubePlayer) {
         Drawable rewindActionIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_rewind);
         Drawable forwardActionIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_forward);
-        Drawable offYoutubeActionIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_hide_screen);
+        Drawable hideScreenActionIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_hide_screen);
         Drawable rateIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_speed);
 
         assert rewindActionIcon != null;
         assert forwardActionIcon != null;
-        assert offYoutubeActionIcon != null;
+        assert hideScreenActionIcon != null;
         assert rateIcon != null;
 
         youTubePlayerView.getPlayerUiController().setRewindAction(rewindActionIcon,
@@ -263,7 +256,7 @@ public class YoutubePlayerFragment extends BaseFragment {
                 });
 
         // End youtube player and hide UI
-        youTubePlayerView.getPlayerUiController().setHideScreenAction(offYoutubeActionIcon,
+        youTubePlayerView.getPlayerUiController().setHideScreenAction(hideScreenActionIcon,
                 view -> {
                     ((ChatActivity) mContext).releasePlayer();
                 }
@@ -317,7 +310,7 @@ public class YoutubePlayerFragment extends BaseFragment {
      */
     private void playVideoUrlExt(String videoUrl) {
         // remove the youtube player fragment
-        mContext.getSupportFragmentManager().beginTransaction().remove(this).commit();
+        mFragmentActivity.getSupportFragmentManager().beginTransaction().remove(this).commit();
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

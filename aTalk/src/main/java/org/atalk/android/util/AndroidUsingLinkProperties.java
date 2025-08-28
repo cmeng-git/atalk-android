@@ -37,10 +37,8 @@ import org.minidns.dnsserverlookup.AndroidUsingExec;
  * A DNS server lookup mechanism using Android's Link Properties method available on Android API 21 or higher.
  * Use {@link #setup(Context)} to setup this mechanism.
  * Requires the ACCESS_NETWORK_STATE permission.
- *
  */
-public class AndroidUsingLinkProperties extends AbstractDnsServerLookupMechanism
-{
+public class AndroidUsingLinkProperties extends AbstractDnsServerLookupMechanism {
     private final ConnectivityManager connectivityManager;
 
     /**
@@ -48,30 +46,27 @@ public class AndroidUsingLinkProperties extends AbstractDnsServerLookupMechanism
      * ideally before you do your first DNS lookup.
      *
      * @param context a Context instance.
+     *
      * @return the instance of the newly setup mechanism
      */
-    public static AndroidUsingLinkProperties setup(Context context)
-    {
+    public static AndroidUsingLinkProperties setup(Context context) {
         AndroidUsingLinkProperties androidUsingLinkProperties = new AndroidUsingLinkProperties(context);
         DnsClient.addDnsServerLookupMechanism(androidUsingLinkProperties);
         return androidUsingLinkProperties;
     }
 
-    public AndroidUsingLinkProperties(Context context)
-    {
+    public AndroidUsingLinkProperties(Context context) {
         super(AndroidUsingLinkProperties.class.getSimpleName(), AndroidUsingExec.PRIORITY - 1);
         connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     @SuppressLint("ObsoleteSdkInt")
     @Override
-    public boolean isAvailable()
-    {
-		return true;
+    public boolean isAvailable() {
+        return true;
     }
 
-    private Network getActiveNetwork()
-    {
+    private Network getActiveNetwork() {
         // ConnectivityManager.getActiveNetwork() is API 23; null if otherwise
         return connectivityManager.getActiveNetwork();
     }
@@ -82,8 +77,7 @@ public class AndroidUsingLinkProperties extends AbstractDnsServerLookupMechanism
      * @return servers list or null
      */
     @Override
-    public List<String> getDnsServerAddresses()
-    {
+    public List<String> getDnsServerAddresses() {
         final List<String> servers = new ArrayList<>();
         final Network activeNetwork = getActiveNetwork();
         if (activeNetwork == null) {
@@ -97,7 +91,7 @@ public class AndroidUsingLinkProperties extends AbstractDnsServerLookupMechanism
 
         int vpnOffset = 0;
         final NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork);
-        final boolean isVpn =  networkCapabilities != null && networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN);
+        final boolean isVpn = networkCapabilities != null && networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN);
         final List<String> v4v6Servers = getIPv4First(linkProperties.getDnsServers());
         // Timber.d("hasDefaultRoute: %s activeNetwork: %s || isVpn: %s || IP: %s",
         //        hasDefaultRoute(linkProperties), network, isVpn, toListOfStrings(linkProperties.getDnsServers()));
@@ -122,10 +116,10 @@ public class AndroidUsingLinkProperties extends AbstractDnsServerLookupMechanism
      * Sort and return the list of given InetAddress in IPv4-IPv6 order, and keeping original in order
      *
      * @param in list of unsorted InetAddress
+     *
      * @return sorted vp4 vp6 IP addresses
      */
-    private static List<String> getIPv4First(List<InetAddress> in)
-    {
+    private static List<String> getIPv4First(List<InetAddress> in) {
         List<String> out = new ArrayList<>();
         int i = 0;
         for (InetAddress addr : in) {
@@ -139,8 +133,7 @@ public class AndroidUsingLinkProperties extends AbstractDnsServerLookupMechanism
         return out;
     }
 
-    private static boolean hasDefaultRoute(LinkProperties linkProperties)
-    {
+    private static boolean hasDefaultRoute(LinkProperties linkProperties) {
         for (RouteInfo route : linkProperties.getRoutes()) {
             if (route.isDefaultRoute()) {
                 return true;

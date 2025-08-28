@@ -702,7 +702,7 @@ public class OperationSetBasicTelephonyJabberImpl
     /**
      * Register JingleSession Handler immediately upon accepting the call via JingleMessage; to avoid race condition
      * when receiving call from conversations where transport is sent individually after session-initiate at fast pace.
-     * https://discourse.igniterealtime.org/t/smack-4-4-5-jingle-manager-implementation-has-problem-to-handle-conversations-incoming-call/91573
+     * <a href="https://discourse.igniterealtime.org/t/smack-4-4-5-jingle-manager-implementation-has-problem-to-handle-conversations-incoming-call/91573">...</a>
      *
      * @param type JingleMessage type
      * @param remote the remote caller

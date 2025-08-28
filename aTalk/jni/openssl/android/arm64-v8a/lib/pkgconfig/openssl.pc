@@ -1,9 +1,9 @@
 prefix=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/openssl/../../openssl/android/arm64-v8a
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
-includedir=${prefix}/include
+includedir=${prefix}/include 
 
 Name: OpenSSL
 Description: Secure Sockets Layer and cryptography libraries and tools
-Version: 1.1.1t
+Version: 3.5.2
 Requires: libssl libcrypto

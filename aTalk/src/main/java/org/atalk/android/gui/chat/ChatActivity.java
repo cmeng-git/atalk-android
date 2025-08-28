@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.muc.ChatRoomWrapperImpl;
@@ -1203,34 +1204,36 @@ public class ChatActivity extends BaseActivity
         private String mUrl;
 
         public void execute(String... params) {
-            Executors.newSingleThreadExecutor().execute(() -> {
-                // mUrl = "https://vimeo.com/45196609";  // invalid link
-                mUrl = params[0];
-                final String result = getUrlInfo(mUrl);
+            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                eService.execute(() -> {
+                    // mUrl = "https://vimeo.com/45196609";  // invalid link
+                    mUrl = params[0];
+                    final String result = getUrlInfo(mUrl);
 
-                runOnUiThread(() -> {
-                            String urlInfo = null;
-                            if (!TextUtils.isEmpty(result)) {
-                                try {
-                                    final JSONObject attributes = new JSONObject(result);
-                                    String title = attributes.getString("title");
-                                    String imageUrl = attributes.getString("thumbnail_url");
+                    runOnUiThread(() -> {
+                                String urlInfo = null;
+                                if (!TextUtils.isEmpty(result)) {
+                                    try {
+                                        final JSONObject attributes = new JSONObject(result);
+                                        String title = attributes.getString("title");
+                                        String imageUrl = attributes.getString("thumbnail_url");
 
-                                    urlInfo = getString(R.string.url_media_share, imageUrl, title, mUrl);
-                                    selectedChatPanel.sendMessage(urlInfo, IMessage.ENCODE_HTML);
-                                } catch (JSONException e) {
-                                    Timber.w("Exception in JSONObject access: %s", result);
+                                        urlInfo = getString(R.string.url_media_share, imageUrl, title, mUrl);
+                                        selectedChatPanel.sendMessage(urlInfo, IMessage.ENCODE_HTML);
+                                    } catch (JSONException e) {
+                                        Timber.w("Exception in JSONObject access: %s", result);
+                                    }
+                                }
+
+                                // send mUrl instead fetch urlInfo failed
+                                if (urlInfo == null) {
+                                    // selectedChatPanel.setEditedText(mUrl); too late as controller msgEdit is already initialized
+                                    selectedChatPanel.sendMessage(mUrl, IMessage.ENCODE_PLAIN);
                                 }
                             }
-
-                            // send mUrl instead fetch urlInfo failed
-                            if (urlInfo == null) {
-                                // selectedChatPanel.setEditedText(mUrl); too late as controller msgEdit is already initialized
-                                selectedChatPanel.sendMessage(mUrl, IMessage.ENCODE_PLAIN);
-                            }
-                        }
-                );
-            });
+                    );
+                });
+            }
         }
 
         /***

@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
@@ -453,19 +454,21 @@ public class ChatRoomConfiguration extends BaseFragment {
             }
 
             public void execute() {
-                Executors.newSingleThreadExecutor().execute(() -> {
-                    final Form initForm = doInBackground();
+                try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                    eService.execute(() -> {
+                        final Form initForm = doInBackground();
 
-                    runOnUiThread(() -> {
-                        if (initForm != null) {
-                            mTitle.setText(initForm.getTitle());
+                        runOnUiThread(() -> {
+                            if (initForm != null) {
+                                mTitle.setText(initForm.getTitle());
 
-                            formFields = initForm.getDataForm().getFields();
-                            replyForm = initForm.getFillableForm();
-                        }
-                        configListAdapter.notifyDataSetChanged();
+                                formFields = initForm.getDataForm().getFields();
+                                replyForm = initForm.getFillableForm();
+                            }
+                            configListAdapter.notifyDataSetChanged();
+                        });
                     });
-                });
+                }
             }
 
             private Form doInBackground() {

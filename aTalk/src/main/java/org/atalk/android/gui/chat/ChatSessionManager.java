@@ -620,7 +620,7 @@ public class ChatSessionManager {
             return null;
 
         ChatPanel chatPanel = new ChatPanel(metaContact);
-        // The ContactResource to be selected in the newly created ChatPanel
+        // The ContactResource to be selected in the newly created ChatPanel.
         ContactResource contactResource = ContactResource.BASE_RESOURCE;
         Collection<ContactResource> resources = metaContact.getDefaultContact().getResources();
         // cmeng: resources == null if user account not registered with server

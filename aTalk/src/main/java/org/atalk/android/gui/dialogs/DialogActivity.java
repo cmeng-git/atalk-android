@@ -134,7 +134,7 @@ public class DialogActivity extends BaseActivity {
      */
     public static final String ACTION_FOCUS_DIALOG = "org.atalk.gui.focus_dialog";
 
-    private boolean cancelable;
+    private boolean mCancelable;
     private View mContent;
 
     /**
@@ -167,7 +167,9 @@ public class DialogActivity extends BaseActivity {
                     fragment.setArguments(intent.getBundleExtra(EXTRA_CONTENT_ARGS));
 
                     // Insert the fragment
-                    getSupportFragmentManager().beginTransaction().replace(R.id.alertContent, fragment).commit();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.alertContent, fragment)
+                            .commit();
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -183,9 +185,11 @@ public class DialogActivity extends BaseActivity {
         if (confirmTxt != null) {
             ViewUtil.setTextViewValue(mContent, R.id.okButton, confirmTxt);
         }
+        findViewById(R.id.okButton).setOnClickListener(this::onOkClicked);
 
         // Show cancel button if confirm label is not null
         ViewUtil.ensureVisible(mContent, R.id.cancelButton, confirmTxt != null);
+        findViewById(R.id.cancelButton).setOnClickListener(this::onCancelClicked);
 
         // Sets the listener
         mListenerId = intent.getLongExtra(EXTRA_LISTENER_ID, -1);
@@ -194,8 +198,8 @@ public class DialogActivity extends BaseActivity {
         }
 
         // Prevent from closing the dialog on outside touch
-        cancelable = intent.getBooleanExtra(EXTRA_CANCELABLE, false);
-        setFinishOnTouchOutside(cancelable);
+        mCancelable = intent.getBooleanExtra(EXTRA_CANCELABLE, false);
+        setFinishOnTouchOutside(mCancelable);
 
         // Removes the buttons
         if (intent.getBooleanExtra(EXTRA_HIDE_BUTTONS, false)) {
@@ -230,7 +234,7 @@ public class DialogActivity extends BaseActivity {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (!cancelable &&
+        if (!mCancelable &&
                 keyCode == KeyEvent.KEYCODE_BACK) {
             return true;
         }

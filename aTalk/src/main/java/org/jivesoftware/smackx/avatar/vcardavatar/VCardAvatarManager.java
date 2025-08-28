@@ -274,11 +274,11 @@ public class VCardAvatarManager extends AvatarManager {
          * {avatarHash} => <photo>avatarHash</photo>
          */
         VCardTempXUpdate vCardTemp = stanza.getExtension(VCardTempXUpdate.class);
-        String newAvatarId = vCardTemp.getAvatarHash();
+        String newAvatarId = vCardTemp.getAvatarHash(); // can be null
         // Timber.d("Received vcard-temp: %s %s '%s'", from, oldAvatarId, newAvatarId);
 
         /* acts if only avatarId is received. null => client not ready so no action */
-        if (!StringUtils.isEmpty(newAvatarId) && isAvatarNew(from, newAvatarId)) {
+        if (StringUtils.isNotEmpty(newAvatarId) && isAvatarNew(from, newAvatarId)) {
             /*
              * If autoDownload is enabled, download VCard and it will also update all
              * relevant avatar information if download is successful

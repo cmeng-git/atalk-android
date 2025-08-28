@@ -11,9 +11,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SelDatagramChannel
-{
-    private final static ExecutorService executorService = Executors.newFixedThreadPool(10);
+public class SelDatagramChannel {
+    private final static ExecutorService executorService = Executors.newWorkStealingPool();
     private static Selector selector;
 
     // Instance Properties
@@ -21,8 +20,7 @@ public class SelDatagramChannel
     private DatagramListener datagramListener;
     private final static Object obj = new Object();
 
-    private static void init()
-    {
+    private static void init() {
         try {
             selector = Selector.open();
             while (!selector.isOpen()) {
@@ -86,15 +84,13 @@ public class SelDatagramChannel
         }
     }
 
-    protected SelDatagramChannel(final DatagramChannel channel, final DatagramListener datagramListener)
-    {
+    protected SelDatagramChannel(final DatagramChannel channel, final DatagramListener datagramListener) {
         this.channel = channel;
         this.datagramListener = datagramListener;
     }
 
     public static SelDatagramChannel open(final DatagramListener datagramListener, final SocketAddress localAddress)
-            throws IOException
-    {
+            throws IOException {
         synchronized (executorService) {
             if (selector == null) {
                 init();
@@ -113,14 +109,12 @@ public class SelDatagramChannel
     }
 
     public int send(final ByteBuffer src, final SocketAddress target)
-            throws IOException
-    {
+            throws IOException {
         return this.channel.send(src, target);
     }
 
     public void close()
-            throws IOException
-    {
+            throws IOException {
         final SelectionKey k = channel.keyFor(selector);
         if (k != null) {
             synchronized (obj) {
@@ -133,8 +127,7 @@ public class SelDatagramChannel
         }
     }
 
-    public void setDatagramListener(DatagramListener listener)
-    {
+    public void setDatagramListener(DatagramListener listener) {
         this.datagramListener = listener;
     }
 }

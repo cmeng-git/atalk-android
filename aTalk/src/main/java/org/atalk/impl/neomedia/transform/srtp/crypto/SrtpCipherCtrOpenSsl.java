@@ -19,8 +19,7 @@ package org.atalk.impl.neomedia.transform.srtp.crypto;
  * @see SrtpCipherCtr
  * SrtpCipherCtr implementation using OpenSSL via JNI.
  */
-public class SrtpCipherCtrOpenSsl extends SrtpCipherCtr
-{
+public class SrtpCipherCtrOpenSsl extends SrtpCipherCtr {
     private static native long AES128CTR_CTX_create();
 
     private static native void AES128CTR_CTX_destroy(long ctx);
@@ -45,8 +44,7 @@ public class SrtpCipherCtrOpenSsl extends SrtpCipherCtr
      */
     private long ctx = 0;
 
-    public SrtpCipherCtrOpenSsl()
-    {
+    public SrtpCipherCtrOpenSsl() {
         if (!OpenSslWrapperLoader.isLoaded())
             throw new RuntimeException("OpenSSL wrapper not loaded");
 
@@ -58,8 +56,7 @@ public class SrtpCipherCtrOpenSsl extends SrtpCipherCtr
     /**
      * {@inheritDoc}
      */
-    public void init(byte[] key)
-    {
+    public void init(byte[] key) {
         switch (key.length) {
             case 16:
                 if (!AES128CTR_CTX_init(ctx, key))
@@ -88,8 +85,7 @@ public class SrtpCipherCtrOpenSsl extends SrtpCipherCtr
      */
     @Override
     protected void finalize()
-            throws Throwable
-    {
+            throws Throwable {
         try {
             // Well, the destroying in the finalizer should exist as a backup
             // anyway. There is no way to explicitly invoke the destroying at
@@ -106,8 +102,7 @@ public class SrtpCipherCtrOpenSsl extends SrtpCipherCtr
     /**
      * {@inheritDoc}
      */
-    public void process(byte[] data, int off, int len, byte[] iv)
-    {
+    public void process(byte[] data, int off, int len, byte[] iv) {
         checkProcessArgs(data, off, len, iv);
 
         switch (key_length) {

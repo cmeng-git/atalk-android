@@ -23,14 +23,19 @@ else
   LIB_SPEEX_GIT="speex-1.2.1"
 fi
 
-# LIB_SPEEX_VERSION="1.2beta3"
-LIB_SPEEX="libspeex"
+if [[ $# -eq 2 ]]; then
+  LIB_OGG_GIT=$2
+else
+  LIB_OGG_GIT="v1.3.5"
+fi
+echo -e "\n### Fetch (speex-1.2rc1 & ${LIB_SPEEX_GIT}) and (ogg ${LIB_OGG_GIT}) libraries source ###"
 
+LIB_SPEEX="libspeex"
 if [[ -d ${LIB_SPEEX} ]]; then
   # version="$(grep '^#define SPEEX_VERSION' < ${LIB_SPEEX}/arch.h | sed 's/^.*\([1-9]\.[0-9][a-z]*[0-9]\).*$/\1/')"
   version="$(grep '^#define SPEEX_VERSION' < ${LIB_SPEEX}/arch.h | sed 's/^.*\([1-9]\.[0-9]\.[0-9]\).*$/\1/')"
   if [[ "${LIB_SPEEX_GIT}" =~ .*"${version}".* ]]; then
-    echo -e "\n========== Current speex source is: ${LIB_SPEEX}-${version} =========="
+    echo -e "========== Current speex source is: ${LIB_SPEEX}-${version} ==========\n"
     exit 0
   fi
 fi
@@ -43,14 +48,7 @@ echo -e "======== Completed speex library source update ========================
 
 
 ## ==================== libogg ================= ##
-if [[ $# -eq 2 ]]; then
-  LIB_OGG_GIT=$2
-else
-  LIB_OGG_GIT="v1.3.5"
-fi
-
 LIB_OGG="libogg"
-
 #if [[ -d ${LIB_OGG} ]]; then
 #  version="$(grep '^PACKAGE_VERSION' < ${LIB_OGG}/package_version | sed 's/^.*\([1-9]\.[0-9]\.[0-9]\).*$/\1/')"
 #  if [[ "${LIB_OGG_GIT}" =~ .*"${version}".* ]]; then

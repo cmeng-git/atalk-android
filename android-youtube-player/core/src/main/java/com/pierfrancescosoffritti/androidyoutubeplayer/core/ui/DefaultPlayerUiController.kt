@@ -21,6 +21,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.menu.defaultMenu.
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.utils.FadeViewHelper
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.views.YouTubePlayerSeekBar
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.views.YouTubePlayerSeekBarListener
+import androidx.core.net.toUri
 
 internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYouTubePlayerView, private val youTubePlayer: YouTubePlayer) : PlayerUiController, YouTubePlayerListener, YouTubePlayerFullScreenListener, YouTubePlayerSeekBarListener {
 
@@ -327,7 +328,8 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
 
     override fun onVideoId(youTubePlayer: YouTubePlayer, videoId: String) {
         youTubeButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=" + videoId + "#t=" + youtubePlayerSeekBar.seekBar.progress))
+            val intent = Intent(Intent.ACTION_VIEW,
+                ("https://www.youtube.com/watch?v=" + videoId + "#t=" + youtubePlayerSeekBar.seekBar.progress).toUri())
             try {
                 youTubeButton.context.startActivity(intent)
             } catch (e: Exception) {

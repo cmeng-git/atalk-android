@@ -46,7 +46,7 @@ public class PopupMessage {
     /**
      * Additional info to be used by the <code>PopupMessageHandler</code>.
      */
-    private Object tag;
+    private Object mTag;
 
     /**
      * Suggested timeout value in ms for hiding the popup if not clicked (-1 for infinity)
@@ -105,7 +105,7 @@ public class PopupMessage {
      */
     public PopupMessage(String title, String message, Object tag) {
         this(title, message);
-        this.tag = tag;
+        mTag = tag;
     }
 
     /**
@@ -119,7 +119,7 @@ public class PopupMessage {
      */
     public PopupMessage(String title, String message, byte[] imageIcon, Object tag) {
         this(title, message, imageIcon);
-        this.tag = tag;
+        mTag = tag;
     }
 
     /**
@@ -218,7 +218,7 @@ public class PopupMessage {
      * @return the object used to tag this <code>PopupMessage</code>
      */
     public Object getTag() {
-        return tag;
+        return mTag;
     }
 
     /**
@@ -227,7 +227,7 @@ public class PopupMessage {
      * @param tag the object to set
      */
     public void setTag(Object tag) {
-        this.tag = tag;
+        mTag = tag;
     }
 
     /**

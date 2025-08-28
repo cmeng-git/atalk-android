@@ -19,12 +19,13 @@
 if [[ $# -eq 1 ]]; then
   LIB_OPENSSL_GIT=$1
 else
-  LIB_OPENSSL_GIT="openssl-1.1.1t"
+  LIB_OPENSSL_GIT="openssl-3.5.2"
 fi
-
 LIB_OPENSSL="openssl"
-if [[ -d ${LIB_OPENSSL} ]]; then
-  version="$(grep '^# define OPENSSL_VERSION_TEXT' < ${LIB_OPENSSL}/include/openssl/opensslv.h | sed 's/^.*\([1-9]\.[0-9]\.[0-9][a-z]\).*$/\1/')"
+
+# latest version release only generate the opensslv.h after firt configure run
+if [[ -d ${LIB_OPENSSL} ]] && [[ -f ${LIB_OPENSSL}/include/openssl/opensslv.h ]]; then
+  version="$(grep '^# define OPENSSL_VERSION_TEXT' < ${LIB_OPENSSL}/include/openssl/opensslv.h | sed 's/^.*\([1-9]\.[0-9]\.[0-9][a-z]*\).*$/\1/')"
   if [[ "${LIB_OPENSSL_GIT}" =~ .*"${version}".* ]]; then
     echo -e "\n========== Current openssl source is: ${LIB_OPENSSL} (${version}) =========="
     exit 0

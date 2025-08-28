@@ -38,14 +38,12 @@
         <Button
             android:id="@+id/cancelButton"
             style="@style/ButtonTop"
-            android:onClick="onCancelClicked"
             android:text="@string/cancel" />
 
         <Button
             android:id="@+id/okButton"
             style="@style/ButtonTop"
             android:layout_marginStart="4dp"
-            android:onClick="onOkClicked"
             android:text="@string/ok" />
     </LinearLayout>
 </LinearLayout>

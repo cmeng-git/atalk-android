@@ -201,9 +201,6 @@ public class About extends BaseActivity implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.ok_button:
-                finish();
-                break;
             case R.id.check_new_version:
                 new Thread() {
                     @Override
@@ -216,17 +213,22 @@ public class About extends BaseActivity implements View.OnClickListener {
                     }
                 }.start();
                 break;
+
             case R.id.submit_logs:
                 aTalkApp.showSendLogsDialog();
                 break;
+
             case R.id.history_log:
                 ChangeLog cl = new ChangeLog(this);
                 cl.getFullLogDialog().show();
                 break;
+
             case R.id.atalk_help:
             case R.id.atalk_link:
                 atalkUrlAccess(this, getString(R.string.AboutDialog_Link));
                 break;
+
+            case R.id.ok_button:
             default:
                 finish();
                 break;

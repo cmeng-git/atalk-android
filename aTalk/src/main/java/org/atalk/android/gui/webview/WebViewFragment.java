@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,8 +33,6 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-
-// import androidx.webkit.WebViewAssetLoader;
 
 import android.widget.ProgressBar;
 
@@ -58,7 +57,7 @@ import timber.log.Timber;
 
 /**
  * The class displays the content accessed via given web link
- * https://developer.android.com/guide/webapps/webview
+ * <a href="https://developer.android.com/guide/webapps/webview">...</a>
  *
  * @author Eng Chong Meng
  */
@@ -132,7 +131,8 @@ public class WebViewFragment extends BaseFragment implements OnKeyListener {
         else {
             webUrl = urlStack.pop();
         }
-        webview.loadUrl(webUrl);
+        if (!TextUtils.isEmpty(webUrl))
+            webview.loadUrl(webUrl);
         return contentView;
     }
 

@@ -215,10 +215,10 @@ Other contributors:
   Note: all shell scripts in aTalk are written to run on linux OS only e.g. Ubuntu
 * aTalk uses native jni libraries, required to be downloaded and built manually prior to android NDK build.<br/>
   The static jni libraries must be built prior to android studio apk build process.
-* You must run the gradle task 'initJniLibs' to build all the jni libraries used in aTalk.<br/>
+* You must run the gradle task 'buildJniStaticLibs' to build all the jni static libraries used in aTalk.<br/>
   See aTalk/jni/static_library_build directory readme files for more information<br/>
   on linux environment setup, and the execution of jni libraries build scripts.
-* You must run the gradle task 'getJniLibs' to fetch the jni libraries prior to android ndk build process.<br/>
+* You must run the gradle task 'initJniLibs' to fetch the jni libraries prior to android ndk build process.<br/>
   These libraries sources include: opus, speex, ogg and g729
 
 ## Feedback and Contributions

@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
@@ -169,22 +170,24 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     private class InitComboBox {
         public void execute() {
 
-            Executors.newSingleThreadExecutor().execute(() -> {
-                final List<String> chatRoomList = doInBackground();
+            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                eService.execute(() -> {
+                    final List<String> chatRoomList = doInBackground();
 
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    if (chatRoomList.isEmpty())
-                        chatRoomList.add(CHATROOM);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (chatRoomList.isEmpty())
+                            chatRoomList.add(CHATROOM);
 
-                    chatRoomComboBox.setText(chatRoomList.get(0));
-                    // Must do this after setText as it clear the list; otherwise only one item in the list
-                    chatRoomComboBox.setSuggestionSource(chatRoomList);
+                        chatRoomComboBox.setText(chatRoomList.get(0));
+                        // Must do this after setText as it clear the list; otherwise only one item in the list
+                        chatRoomComboBox.setSuggestionSource(chatRoomList);
 
-                    // Update the dialog form fields with all the relevant values, for first chatRoomWrapperList entry if available.
-                    if (!chatRoomWrapperList.isEmpty())
-                        onItemClick(null, chatRoomComboBox, 0, 0);
+                        // Update the dialog form fields with all the relevant values, for first chatRoomWrapperList entry if available.
+                        if (!chatRoomWrapperList.isEmpty())
+                            onItemClick(null, chatRoomComboBox, 0, 0);
+                    });
                 });
-            });
+            }
         }
 
         private List<String> doInBackground() {

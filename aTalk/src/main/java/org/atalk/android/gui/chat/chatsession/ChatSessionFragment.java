@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
@@ -336,16 +337,18 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
             }
 
             public void execute() {
-                Executors.newSingleThreadExecutor().execute(() -> {
-                    doInBackground();
+                try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                    eService.execute(() -> {
+                        doInBackground();
 
-                    runOnUiThread(() -> {
-                        if (!sessionRecords.isEmpty()) {
-                            chatSessionAdapter.notifyDataSetChanged();
-                        }
-                        setTitle();
+                        runOnUiThread(() -> {
+                            if (!sessionRecords.isEmpty()) {
+                                chatSessionAdapter.notifyDataSetChanged();
+                            }
+                            setTitle();
+                        });
                     });
-                });
+                }
             }
 
             private void doInBackground() {
@@ -515,12 +518,14 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
      */
     private class InitChatRoomWrapper {
         public void execute() {
-            Executors.newSingleThreadExecutor().execute(() -> {
-                doInBackground();
+            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                eService.execute(() -> {
+                    doInBackground();
 
-                runOnUiThread(() -> {
+                    runOnUiThread(() -> {
+                    });
                 });
-            });
+            }
         }
 
         private void doInBackground() {

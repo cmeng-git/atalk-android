@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.callhistory.CallHistoryActivator;
@@ -302,13 +303,15 @@ public class EntityListHelper {
         }
 
         public void execute(Object... mDescriptor) {
-            Executors.newSingleThreadExecutor().execute(() -> {
-                final int msgCount = doInBackground(mDescriptor);
+            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                eService.execute(() -> {
+                    final int msgCount = doInBackground(mDescriptor);
 
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    mCallback.onTaskComplete(msgCount, msgUUIDs);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        mCallback.onTaskComplete(msgCount, msgUUIDs);
+                    });
                 });
-            });
+            }
         }
 
         private Integer doInBackground(Object... mDescriptor) {
@@ -391,13 +394,15 @@ public class EntityListHelper {
         }
 
         public void execute() {
-            Executors.newSingleThreadExecutor().execute(() -> {
-                int msgCount = doInBackground();
+            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                eService.execute(() -> {
+                    int msgCount = doInBackground();
 
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    mCallback.onTaskComplete(msgCount, null);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        mCallback.onTaskComplete(msgCount, null);
+                    });
                 });
-            });
+            }
         }
 
         private int doInBackground() {
@@ -472,13 +477,15 @@ public class EntityListHelper {
         }
 
         public void execute() {
-            Executors.newSingleThreadExecutor().execute(() -> {
-                int msgCount = doInBackground();
+            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                eService.execute(() -> {
+                    int msgCount = doInBackground();
 
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    mCallback.onTaskComplete(msgCount, callUUIDs);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        mCallback.onTaskComplete(msgCount, callUUIDs);
+                    });
                 });
-            });
+            }
         }
 
         private Integer doInBackground() {

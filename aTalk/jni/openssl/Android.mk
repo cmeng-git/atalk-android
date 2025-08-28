@@ -1,22 +1,22 @@
 LOCAL_PATH := $(call my-dir)
 
-# Enable to be able to use ALOG* with #include "cutils/log.h"
-#log_c_includes += system/core/include
-#log_shared_libraries := liblog
+############### crypto_static ########################
+# target static library
+include $(CLEAR_VARS)
+LOCAL_MODULE := libcrypto
+LOCAL_SRC_FILES := android/$(TARGET_ARCH_ABI)/lib/libcrypto.a
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
+include $(PREBUILT_STATIC_LIBRARY)
 
-# These makefiles are here instead of being Android.mk files in the
-# respective crypto, ssl, and apps directories so
-# that import_openssl.sh import won't remove them.
-
-HOST_OS := linux
-
-include $(LOCAL_PATH)/build-config.mk
-include $(LOCAL_PATH)/Crypto.mk
-include $(LOCAL_PATH)/Ssl.mk
+############### ssl_static ########################
+# target static library
+include $(CLEAR_VARS)
+LOCAL_MODULE := libssl
+LOCAL_SRC_FILES := android/$(TARGET_ARCH_ABI)/lib/libssl.a
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
+include $(PREBUILT_STATIC_LIBRARY)
 
 # ========== jnopenssl (.so library) ==================
-$(info ### Building Shared Library jnopnessl from source: $(TARGET_ARCH_ABI) ###)
-
 include $(CLEAR_VARS)
 LOCAL_MODULE := jnopenssl
 LOCAL_LDLIBS := -llog -lz
@@ -25,7 +25,6 @@ LOCAL_SRC_FILES := \
  Hmac.c \
  OpenSslWrapperLoader.c \
  SrtpCipherCtrOpenSsl.c
-
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/android/$(TARGET_ARCH_ABI)/include
 LOCAL_CFLAGS = -DFIXED_POINT -DUSE_KISS_FFT -DEXPORT="" -UHAVE_CONFIG_H -Wdeprecated-declarations
 LOCAL_LDFLAGS += "-Wl,-z,max-page-size=16384"

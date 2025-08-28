@@ -12,12 +12,14 @@
         }
     </style>
 
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <script src="https://www.youtube.com/iframe_api"></script>
-    </head>
+    <!-- cmeng (20250810): move script loading to body section to resolve javascript loading error when previous yt play failed -->
+<!--    <head>-->
+<!--        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">-->
+<!--        <script src="https://www.youtube.com/iframe_api"></script>-->
+<!--    </head>-->
 
     <body>
+        <!-- The <iframe> (and video player) will replace this <div> tag. -->
         <div id="youTubePlayerDOM"></div>
     </body>
 
@@ -30,10 +32,18 @@
         var BUFFERING = "BUFFERING";
         var CUED = "CUED";
         
-        var YouTubePlayerBridge = window.YouTubePlayerBridge;
+        // This code loads the IFrame Player API code asynchronously.
+        var tag = document.createElement('script');
+
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
     	var player;
         var timerId;
+        var YouTubePlayerBridge = window.YouTubePlayerBridge;
 
+        // This function creates an <iframe> (and YouTube player) after the API code downloads.
     	function onYouTubeIframeAPIReady() {
             YouTubePlayerBridge.sendYouTubeIFrameAPIReady();
             
@@ -55,6 +65,7 @@
     		});
     	}
 
+        // The API calls this function when the player's state changes.
     	function sendPlayerStateChange(playerState) {
             clearTimeout(timerId);
 
@@ -104,7 +115,6 @@
         }
 
         // JAVA to WEB functions
-
         function seekTo(startSeconds) {
         	player.seekTo(startSeconds, true);
         }
@@ -146,7 +156,7 @@
             });
         }
 
-        function loadPlaylist_videoIds(IdsString) {
+        function loadPlaylistVideoIds(IdsString) {
             const videoIds = [];
             const IdsArray = IdsString.split(",");
 

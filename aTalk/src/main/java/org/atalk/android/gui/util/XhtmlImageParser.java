@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -66,20 +67,22 @@ public class XhtmlImageParser implements Html.ImageGetter {
      */
     public class HttpGetDrawableTask {
         public void execute(String... params) {
-            Executors.newSingleThreadExecutor().execute(() -> {
-                String urlString = params[0];
-                final Drawable urlDrawable = getDrawable(urlString);
+            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                eService.execute(() -> {
+                    String urlString = params[0];
+                    final Drawable urlDrawable = getDrawable(urlString);
 
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    if (urlDrawable != null) {
-                        mTextView.setText(Html.fromHtml(XhtmlString, Html.FROM_HTML_MODE_LEGACY, source -> urlDrawable, null));
-                    }
-                    else {
-                        mTextView.setText(Html.fromHtml(XhtmlString, Html.FROM_HTML_MODE_LEGACY, null, null));
-                    }
-                    mTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (urlDrawable != null) {
+                            mTextView.setText(Html.fromHtml(XhtmlString, Html.FROM_HTML_MODE_LEGACY, source -> urlDrawable, null));
+                        }
+                        else {
+                            mTextView.setText(Html.fromHtml(XhtmlString, Html.FROM_HTML_MODE_LEGACY, null, null));
+                        }
+                        mTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                    });
                 });
-            });
+            }
         }
 
         /***

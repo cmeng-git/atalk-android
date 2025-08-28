@@ -7,6 +7,11 @@ package org.atalk.android.gui;
 
 import android.graphics.Point;
 
+import java.awt.Dimension;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.Container;
@@ -29,11 +34,6 @@ import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
 
-import java.awt.Dimension;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * Android <code>UIService</code> stub. Currently used only for supplying the
  * <code>SecurityAuthority</code> to the reconnect plugin.
@@ -41,8 +41,7 @@ import java.util.List;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AppUIServiceImpl implements UIService
-{
+public class AppUIServiceImpl implements UIService {
     private final ConferenceChatManager conferenceChatManager = new ConferenceChatManager();
     /**
      * Default security authority.
@@ -54,8 +53,7 @@ public class AppUIServiceImpl implements UIService
      *
      * @param defaultSecurityAuthority default security authority that will be used.
      */
-    public AppUIServiceImpl(SecurityAuthority defaultSecurityAuthority)
-    {
+    public AppUIServiceImpl(SecurityAuthority defaultSecurityAuthority) {
         this.defaultSecurityAuthority = defaultSecurityAuthority;
     }
 
@@ -64,11 +62,11 @@ public class AppUIServiceImpl implements UIService
      * used by the systray service in order to detect the visibility of the application.
      *
      * @return {@code true</code> if the application is visible and <code>false} otherwise.
+     *
      * @see #setVisible(boolean)
      */
     @Override
-    public boolean isVisible()
-    {
+    public boolean isVisible() {
         return (aTalkApp.getCurrentActivity() != null);
     }
 
@@ -79,11 +77,11 @@ public class AppUIServiceImpl implements UIService
      *
      * @param visible if {@code true}, shows the main application window; otherwise, hides the main
      * application window.
+     *
      * @see #isVisible()
      */
     @Override
-    public void setVisible(boolean visible)
-    {
+    public void setVisible(boolean visible) {
     }
 
     /**
@@ -93,8 +91,7 @@ public class AppUIServiceImpl implements UIService
      * @return The top left corner coordinates of the main application window.
      */
     @Override
-    public Point getLocation()
-    {
+    public Point getLocation() {
         return new Point(0, 0);
     }
 
@@ -105,8 +102,7 @@ public class AppUIServiceImpl implements UIService
      * @param y The new y coordinate.
      */
     @Override
-    public void setLocation(int x, int y)
-    {
+    public void setLocation(int x, int y) {
     }
 
     /**
@@ -115,8 +111,7 @@ public class AppUIServiceImpl implements UIService
      * @return the size of the main application display window.
      */
     @Override
-    public Dimension getSize()
-    {
+    public Dimension getSize() {
         return aTalkApp.getDisplaySize();
     }
 
@@ -127,32 +122,28 @@ public class AppUIServiceImpl implements UIService
      * @param height The height of the window.
      */
     @Override
-    public void setSize(int width, int height)
-    {
+    public void setSize(int width, int height) {
     }
 
     /**
      * Minimizes the main application window.
      */
     @Override
-    public void minimize()
-    {
+    public void minimize() {
     }
 
     /**
      * Maximizes the main application window.
      */
     @Override
-    public void maximize()
-    {
+    public void maximize() {
     }
 
     /**
      * Restores the main application window.
      */
     @Override
-    public void restore()
-    {
+    public void restore() {
     }
 
     /**
@@ -162,8 +153,7 @@ public class AppUIServiceImpl implements UIService
      * @param height The new height.
      */
     @Override
-    public void resize(int width, int height)
-    {
+    public void resize(int width, int height) {
     }
 
     /**
@@ -173,16 +163,14 @@ public class AppUIServiceImpl implements UIService
      * @param y The y coordinate.
      */
     @Override
-    public void move(int x, int y)
-    {
+    public void move(int x, int y) {
     }
 
     /**
      * Brings the focus to the main application window.
      */
     @Override
-    public void bringToFront()
-    {
+    public void bringToFront() {
     }
 
     /**
@@ -193,8 +181,7 @@ public class AppUIServiceImpl implements UIService
      * window, otherwise returns FALSE
      */
     @Override
-    public boolean getExitOnMainWindowClose()
-    {
+    public boolean getExitOnMainWindowClose() {
         return false;
     }
 
@@ -208,8 +195,7 @@ public class AppUIServiceImpl implements UIService
      * application window will be only hidden.
      */
     @Override
-    public void setExitOnMainWindowClose(boolean exitOnClose)
-    {
+    public void setExitOnMainWindowClose(boolean exitOnClose) {
     }
 
     /**
@@ -219,14 +205,15 @@ public class AppUIServiceImpl implements UIService
      * method.
      *
      * @param windowID One of the WINDOW_XXX WindowID-s.
+     *
      * @return the window to be shown.
+     *
      * @throws IllegalArgumentException if the specified <code>windowID</code> is not recognized by the implementation (note that
      * implementations MUST properly handle all WINDOW_XXX ID-s.
      */
     @Override
     public ExportedWindow getExportedWindow(WindowID windowID)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         return null;
     }
 
@@ -238,14 +225,15 @@ public class AppUIServiceImpl implements UIService
      *
      * @param windowID One of the WINDOW_XXX WindowID-s.
      * @param params The parameters to be passed to the returned exported window.
+     *
      * @return the window to be shown.
+     *
      * @throws IllegalArgumentException if the specified <code>windowID</code> is not recognized by the implementation (note that
      * implementations MUST properly handle all WINDOW_XXX ID-s.
      */
     @Override
     public ExportedWindow getExportedWindow(WindowID windowID, Object[] params)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         return null;
     }
 
@@ -255,11 +243,11 @@ public class AppUIServiceImpl implements UIService
      * to question the user.
      *
      * @return a {@code PopupDialog}.
+     *
      * @see net.java.sip.communicator.service.gui.PopupDialog
      */
     @Override
-    public PopupDialog getPopupDialog()
-    {
+    public PopupDialog getPopupDialog() {
         return null;
     }
 
@@ -267,11 +255,11 @@ public class AppUIServiceImpl implements UIService
      * Returns the <code>Chat</code> corresponding to the given <code>Contact</code>.
      *
      * @param contact the <code>Contact</code> for which the searched chat is about.
+     *
      * @return the <code>Chat</code> corresponding to the given <code>Contact</code>.
      */
     @Override
-    public Chat getChat(Contact contact)
-    {
+    public Chat getChat(Contact contact) {
         return ChatSessionManager.createChatForContact(contact);
     }
 
@@ -279,11 +267,11 @@ public class AppUIServiceImpl implements UIService
      * Returns the <code>Chat</code> corresponding to the given <code>ChatRoom</code>.
      *
      * @param chatRoom the <code>ChatRoom</code> for which the searched chat is about.
+     *
      * @return the <code>Chat</code> corresponding to the given <code>ChatRoom</code>.
      */
     @Override
-    public Chat getChat(ChatRoom chatRoom)
-    {
+    public Chat getChat(ChatRoom chatRoom) {
         return ChatSessionManager.getMultiChat(chatRoom, true);
     }
 
@@ -293,8 +281,7 @@ public class AppUIServiceImpl implements UIService
      * @return A list of all open Chats
      */
     @Override
-    public List<Chat> getChats()
-    {
+    public List<Chat> getChats() {
         return ChatSessionManager.getActiveChats();
     }
 
@@ -303,11 +290,11 @@ public class AppUIServiceImpl implements UIService
      * conversation. If it is a group chat an exception will be thrown.
      *
      * @param chat The chat to get the MetaContact from
+     *
      * @return The MetaContact corresponding to the chat.
      */
     @Override
-    public MetaContact getChatContact(Chat chat)
-    {
+    public MetaContact getChatContact(Chat chat) {
         ChatPanel chatPanel = (ChatPanel) chat;
         return (MetaContact) chatPanel.getChatSession().getDescriptor();
     }
@@ -318,8 +305,7 @@ public class AppUIServiceImpl implements UIService
      * @return the selected <code>Chat</code>.
      */
     @Override
-    public Chat getCurrentChat()
-    {
+    public Chat getCurrentChat() {
         return ChatSessionManager.getCurrentChatPanel();
     }
 
@@ -331,8 +317,7 @@ public class AppUIServiceImpl implements UIService
      * @return the phone number currently entered in the phone number field.
      */
     @Override
-    public String getCurrentPhoneNumber()
-    {
+    public String getCurrentPhoneNumber() {
         return null;
     }
 
@@ -344,8 +329,7 @@ public class AppUIServiceImpl implements UIService
      * @param phoneNumber the phone number to enter.
      */
     @Override
-    public void setCurrentPhoneNumber(String phoneNumber)
-    {
+    public void setCurrentPhoneNumber(String phoneNumber) {
     }
 
     /**
@@ -356,13 +340,13 @@ public class AppUIServiceImpl implements UIService
      * protocol URI handlers.
      *
      * @param protocolProvider the <code>ProtocolProviderService</code> for which the authentication window is about.
+     *
      * @return a default implementation of the <code>SecurityAuthority</code> interface that can be
      * used by non-UI components that would like to
      * launch the registration process for a protocol provider.
      */
     @Override
-    public SecurityAuthority getDefaultSecurityAuthority(ProtocolProviderService protocolProvider)
-    {
+    public SecurityAuthority getDefaultSecurityAuthority(ProtocolProviderService protocolProvider) {
         return defaultSecurityAuthority;
     }
 
@@ -380,8 +364,7 @@ public class AppUIServiceImpl implements UIService
      * implementation.
      */
     @Override
-    public Iterator<WindowID> getSupportedExportedWindows()
-    {
+    public Iterator<WindowID> getSupportedExportedWindows() {
         return null;
     }
 
@@ -390,13 +373,13 @@ public class AppUIServiceImpl implements UIService
      * implementation.
      *
      * @param windowID one of the <code>WindowID</code>-s, defined in the <code>ExportedWindow</code> interface.
+     *
      * @return {@code true} if the component with the given <code>WindowID</code> is contained in
      * the current UI implementation,
      * {@code false} otherwise.
      */
     @Override
-    public boolean isExportedWindowSupported(WindowID windowID)
-    {
+    public boolean isExportedWindowSupported(WindowID windowID) {
         return false;
     }
 
@@ -414,8 +397,7 @@ public class AppUIServiceImpl implements UIService
      * implementation.
      */
     @Override
-    public Iterator<Container> getSupportedContainers()
-    {
+    public Iterator<Container> getSupportedContainers() {
         return null;
     }
 
@@ -424,13 +406,13 @@ public class AppUIServiceImpl implements UIService
      * implementation.
      *
      * @param containderID One of the CONTAINER_XXX Container-s.
+     *
      * @return {@code true} if the container with the given <code>Container</code> is supported
      * from the current UI implementation,
      * {@code false} otherwise.
      */
     @Override
-    public boolean isContainerSupported(Container containderID)
-    {
+    public boolean isContainerSupported(Container containderID) {
         return false;
     }
 
@@ -448,8 +430,7 @@ public class AppUIServiceImpl implements UIService
      * <code>false</code>
      */
     @Override
-    public boolean useMacOSXScreenMenuBar()
-    {
+    public boolean useMacOSXScreenMenuBar() {
         return false;
     }
 
@@ -459,8 +440,7 @@ public class AppUIServiceImpl implements UIService
      * @return all active <code>Chats</code>.
      */
     @Override
-    public Collection<Chat> getAllChats()
-    {
+    public Collection<Chat> getAllChats() {
         return ChatSessionManager.getActiveChats();
     }
 
@@ -470,8 +450,7 @@ public class AppUIServiceImpl implements UIService
      * @param listener listener to be registered
      */
     @Override
-    public void addChatListener(ChatListener listener)
-    {
+    public void addChatListener(ChatListener listener) {
         ChatSessionManager.addChatListener(listener);
     }
 
@@ -481,8 +460,7 @@ public class AppUIServiceImpl implements UIService
      * @param listener listener to be unregistered
      */
     @Override
-    public void removeChatListener(ChatListener listener)
-    {
+    public void removeChatListener(ChatListener listener) {
         ChatSessionManager.removeChatListener(listener);
     }
 
@@ -491,8 +469,7 @@ public class AppUIServiceImpl implements UIService
      * skin and refresh automatically the user interface.
      */
     @Override
-    public void repaintUI()
-    {
+    public void repaintUI() {
     }
 
     /**
@@ -502,8 +479,7 @@ public class AppUIServiceImpl implements UIService
      * newly created <code>Call</code>
      */
     @Override
-    public void createCall(String[] participants)
-    {
+    public void createCall(String[] participants) {
     }
 
     /**
@@ -513,8 +489,7 @@ public class AppUIServiceImpl implements UIService
      * newly created <code>Chat</code>
      */
     @Override
-    public void startChat(String[] participants)
-    {
+    public void startChat(String[] participants) {
     }
 
     /**
@@ -525,8 +500,7 @@ public class AppUIServiceImpl implements UIService
      * @param isSmsEnabled whether sms option should be enabled if possible
      */
     @Override
-    public void startChat(String[] participants, boolean isSmsEnabled)
-    {
+    public void startChat(String[] participants, boolean isSmsEnabled) {
     }
 
     /**
@@ -535,8 +509,7 @@ public class AppUIServiceImpl implements UIService
      * @return a collection of all currently in progress calls.
      */
     @Override
-    public Collection<Call> getInProgressCalls()
-    {
+    public Collection<Call> getInProgressCalls() {
         return CallManager.getActiveCalls();
     }
 
@@ -546,8 +519,7 @@ public class AppUIServiceImpl implements UIService
      * @return the login manager used by the current UI implementation
      */
     @Override
-    public LoginManager getLoginManager()
-    {
+    public LoginManager getLoginManager() {
         return AppGUIActivator.getLoginManager();
     }
 
@@ -556,8 +528,7 @@ public class AppUIServiceImpl implements UIService
      *
      * @return the chat conference manager.
      */
-    public ConferenceChatManager getConferenceChatManager()
-    {
+    public ConferenceChatManager getConferenceChatManager() {
         return conferenceChatManager;
     }
 
@@ -567,8 +538,7 @@ public class AppUIServiceImpl implements UIService
      * @param chatRoom the chat room associated with the chat room window
      */
     @Override
-    public void openChatRoomWindow(ChatRoomWrapper chatRoom)
-    {
+    public void openChatRoomWindow(ChatRoomWrapper chatRoom) {
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(chatRoom, true);
         // ChatSessionManager.openChat(chatPanel, true);
         ChatSessionManager.setCurrentChatId(chatPanel.getChatSession().getChatId());
@@ -580,8 +550,7 @@ public class AppUIServiceImpl implements UIService
      * @param chatRoom the chat room associated with the chat room window
      */
     @Override
-    public void closeChatRoomWindow(ChatRoomWrapper chatRoom)
-    {
+    public void closeChatRoomWindow(ChatRoomWrapper chatRoom) {
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(chatRoom, false);
         if (chatPanel != null) {
             ChatSessionManager.removeActiveChat(chatPanel);
@@ -592,8 +561,7 @@ public class AppUIServiceImpl implements UIService
      * Shows Add chat room dialog.
      */
     @Override
-    public void showAddChatRoomDialog()
-    {
+    public void showAddChatRoomDialog() {
         // ChatRoomTableDialog.showChatRoomTableDialog();
     }
 
@@ -604,8 +572,7 @@ public class AppUIServiceImpl implements UIService
      * @param pps the protocol provider service of the chat room
      */
     @Override
-    public void showChatRoomAutoOpenConfigDialog(ProtocolProviderService pps, String chatRoomId)
-    {
+    public void showChatRoomAutoOpenConfigDialog(ProtocolProviderService pps, String chatRoomId) {
         // ChatRoomAutoOpenConfigDialog.showChatRoomAutoOpenConfigDialog(pps, chatRoomId);
     }
 }

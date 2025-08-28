@@ -27,7 +27,6 @@ import android.webkit.HttpAuthHandler;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.webkit.WebViewDatabase;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
@@ -42,7 +41,7 @@ import timber.log.Timber;
 
 /**
  * The class implements the WebViewClient for App internal web access
- * https://developer.android.com/guide/webapps/webview
+ * <a href="https://developer.android.com/guide/webapps/webview">...</a>
  *
  * @author Eng Chong Meng
  */
@@ -63,7 +62,7 @@ public class MyWebViewClient extends WebViewClient {
     /**
      * If you click on any link inside the webpage of the WebView, that page will not be loaded inside your WebView.
      * In order to do that you need to extend your class from WebViewClient and override the method below.
-     * https://developer.android.com/guide/webapps/webview#HandlingNavigation
+     * <a href="https://developer.android.com/guide/webapps/webview#HandlingNavigation">...</a>
      *
      * @param webView The WebView that is initiating the callback.
      * @param request Object containing the details of the request.

@@ -6,8 +6,20 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="4.4.0 (07/14/2025)" versioncode="404000">
+    <release version="4.5.0 (08/28/2025)" versioncode="405000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Upgrade jni libraries build sources: libvpx 1.15.2 (1.13.1); opus 1.5.2 (1.3.2); openssl 3.5.2 (1.1.1t)</change>
+        <change>Fix cast exception introduced in v4.0.0 when apply fix for duplicate sending of the initial &lt;presence/> stanza by smack ServiceDiscoveryManager</change>
+        <change>Fix endless loop in discoverInfoNonBlocking at times, block all BareJid invalid discInfo access</change>
+        <change>Fix notification replied message not shown in chatSession UI, until it is closed and reopen</change>
+        <change>Jni scripts clean up, and Standardize jni *.mk naming convention</change>
+        <change>Update openssl jni scripts to take care of new library releases in version checking</change>
+        <change>Change build.gradle task names to properly reflect the actual tasks performed</change>
+        <change>Add new Finnish (suomi) language support</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="4.4.0 (07/14/2025)" versioncode="404000">
         <change>Upgrade aTalk to support Android-16 Baklava (API-36), with android SDK environment setup changes</change>
         <change>Build aTalk native libraries with support for 16 KB devices; compile aTalk jni libraries using 16 KB ELF alignment</change>
         <change>Third party libraries upgraded to latest compatible version for API-36</change>

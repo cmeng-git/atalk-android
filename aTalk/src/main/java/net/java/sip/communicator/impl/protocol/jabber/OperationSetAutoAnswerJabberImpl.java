@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.AbstractOperationSetBasicAutoAnswer;
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.Call;
@@ -14,8 +16,6 @@ import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -24,15 +24,13 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Vincent Lucas
  */
-public class OperationSetAutoAnswerJabberImpl extends AbstractOperationSetBasicAutoAnswer
-{
+public class OperationSetAutoAnswerJabberImpl extends AbstractOperationSetBasicAutoAnswer {
     /**
      * Creates this operation set, loads stored values, populating local variable settings.
      *
      * @param protocolProvider the parent Protocol Provider.
      */
-    public OperationSetAutoAnswerJabberImpl(ProtocolProviderServiceJabberImpl protocolProvider)
-    {
+    public OperationSetAutoAnswerJabberImpl(ProtocolProviderServiceJabberImpl protocolProvider) {
         super(protocolProvider);
         this.load();
     }
@@ -41,8 +39,7 @@ public class OperationSetAutoAnswerJabberImpl extends AbstractOperationSetBasicA
      * Save values to account properties.
      */
     @Override
-    protected void save()
-    {
+    protected void save() {
         AccountID acc = mPPS.getAccountID();
         Map<String, String> accProps = acc.getAccountProperties();
 
@@ -52,7 +49,7 @@ public class OperationSetAutoAnswerJabberImpl extends AbstractOperationSetBasicA
         if (mAnswerUnconditional)
             accProps.put(AUTO_ANSWER_UNCOND_PROP, Boolean.TRUE.toString());
 
-        accProps.put(AUTO_ANSWER_WITH_VIDEO_PROP, Boolean.toString(this.mAnswerWithVideo));
+        accProps.put(AUTO_ANSWER_WITH_VIDEO_PROP, Boolean.toString(mAnswerWithVideo));
         acc.setAccountProperties(accProps);
         JabberActivator.getProtocolProviderFactory().storeAccount(acc);
     }
@@ -61,11 +58,11 @@ public class OperationSetAutoAnswerJabberImpl extends AbstractOperationSetBasicA
      * Checks if the call satisfy the auto answer conditions.
      *
      * @param call The new incoming call to auto-answer if needed.
+     *
      * @return <code>true</code> if the call satisfy the auto answer conditions. <code>False</code> otherwise.
      */
     @Override
-    protected boolean satisfyAutoAnswerConditions(Call call)
-    {
+    protected boolean satisfyAutoAnswerConditions(Call call) {
         // The jabber implementation does not support advanced auto answer functionality.
         // We only need to check if the specific Call object knows it has to be auto-answered.
         return call.isAutoAnswer();
@@ -77,10 +74,10 @@ public class OperationSetAutoAnswerJabberImpl extends AbstractOperationSetBasicA
      * @param call The new incoming call to auto-answer if needed.
      * @param directions The media type (audio / video) stream directions.
      * @param jingleSessionInit Jingle session-initiate is used to check if incoming call is via JingleMessage accept
+     *
      * @return <code>true</code> if we have processed and no further processing is needed, <code>false</code> otherwise.
      */
-    public boolean autoAnswer(Call call, Map<MediaType, MediaDirection> directions, Jingle jingleSessionInit)
-    {
+    public boolean autoAnswer(Call call, Map<MediaType, MediaDirection> directions, Jingle jingleSessionInit) {
         // 2022/11/29 (v3.0.5): Allow proceed to auto-answer the call if it is already accepted in JingleMessageSessionImpl
         // JingleMessage <propose/> will call via ReceivedCallActivity UI when android is in locked screen;
         // Check aTalkApp.isForeground for incoming alert to continue.

@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -76,7 +75,6 @@ class YouTubePlayerView(context: Context, attrs: AttributeSet? = null, defStyleA
                 videoId?.let {
                     youTubePlayer.loadOrCueVideo(legacyTubePlayerView.canPlay && autoPlay, videoId, 0f)
                 }
-
                 youTubePlayer.removeListener(this)
             }
         }

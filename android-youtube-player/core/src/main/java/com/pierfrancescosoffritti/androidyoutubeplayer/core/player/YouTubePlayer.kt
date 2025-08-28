@@ -27,7 +27,7 @@ interface YouTubePlayer {
      */
     fun loadPlaylist(playlist: String, startIndex: Int)
 
-    fun loadPlaylist_videoIds(videoIds: String)
+    fun loadPlaylistVideoIds(videoIds: String)
 
     fun play()
     fun pause()

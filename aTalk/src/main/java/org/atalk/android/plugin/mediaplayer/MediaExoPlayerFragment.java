@@ -92,7 +92,7 @@ public class MediaExoPlayerFragment extends BaseFragment {
 
     @SuppressLint("CommitPrefEdits")
     @Override
-    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Bundle args = getArguments();
@@ -173,9 +173,9 @@ public class MediaExoPlayerFragment extends BaseFragment {
      */
     private void playMedia(MediaItem mediaItem) {
         if (mediaItem != null) {
-            mSpeed = (float) configService.getDouble(PREF_PLAYBACK_SPEED, 1.0);
-
+            mSpeed = (float) configService.getDouble(PREF_PLAYBACK_SPEED, 1.0f);
             setPlaybackSpeed(mSpeed);
+
             mExoPlayer.setMediaItem(mediaItem, 0);
             mExoPlayer.setPlayWhenReady(true);
             mExoPlayer.prepare();
@@ -271,7 +271,7 @@ public class MediaExoPlayerFragment extends BaseFragment {
             switch (playbackState) {
                 case ExoPlayer.STATE_IDLE:
                     aTalkApp.showToastMessage(R.string.playback_error);
-                    // Attempt to use android player if exoplaer failed to play
+                    // Attempt to use android player if exoplayer failed to play
                     playVideoUrlExt(mediaUrl);
                     break;
 

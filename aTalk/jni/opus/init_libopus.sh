@@ -19,21 +19,22 @@
 if [[ $# -eq 1 ]]; then
   LIB_OPUS_GIT=$1
 else
-  LIB_OPUS_GIT="opus-1.3.1"
+  LIB_OPUS_GIT="opus-1.5.2"
 fi
+echo -e "\n### Fetch opus library source ${LIB_OPUS_GIT} ###"
 
 LIB_OPUS="opus"
 if [[ -d ${LIB_OPUS} ]]; then
   version="$(grep '^PACKAGE_VERSION' < ${LIB_OPUS}/package_version | sed 's/^.*\([1-9]\.[0-9]\.[0-9]\).*$/\1/')"
   if [[ "${LIB_OPUS_GIT}" =~ .*"${version}".* ]]; then
-    echo -e "\n========== Current opus source is: ${LIB_OPUS}-${version} =========="
+    echo -e "========== Current opus source is: ${LIB_OPUS}-${version} ==========\n"
     exit 0
   fi
 fi
 
 rm -rf ${LIB_OPUS}
 echo -e "\n================ Fetching library source for ${LIB_OPUS}: ${LIB_OPUS_GIT} ============================"
-wget -O- https://archive.mozilla.org/pub/opus/${LIB_OPUS_GIT}.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_OPUS}
+wget -O- https://downloads.xiph.org/releases/opus/${LIB_OPUS_GIT}.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_OPUS}
 echo -e "======== Completed opus library source update ============================"
 
 # For testing only

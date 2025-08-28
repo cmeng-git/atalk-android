@@ -26,6 +26,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
@@ -84,13 +85,15 @@ public class ChatRoomInfoDialog extends BaseDialogFragment {
         String errMsg;
 
         public void execute() {
-            Executors.newSingleThreadExecutor().execute(() -> {
-                final RoomInfo roomInfo = doInBackground();
+            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                eService.execute(() -> {
+                    final RoomInfo roomInfo = doInBackground();
 
-                runOnUiThread(() -> {
-                    onPostExecute(roomInfo);
+                    runOnUiThread(() -> {
+                        onPostExecute(roomInfo);
+                    });
                 });
-            });
+            }
         }
 
         private RoomInfo doInBackground() {

@@ -14,8 +14,7 @@ import net.java.sip.communicator.service.systray.event.SystrayPopupMessageListen
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public interface PopupMessageNotificationHandler extends NotificationHandler
-{
+public interface PopupMessageNotificationHandler extends NotificationHandler {
     /**
      * Shows the given <code>PopupMessage</code>
      *

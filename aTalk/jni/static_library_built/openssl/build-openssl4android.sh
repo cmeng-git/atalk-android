@@ -19,16 +19,19 @@ set -u
 . _settings.sh
 
 LIB_OPENSSL="openssl"
-LIB_OPENSSL_GIT="openssl-1.1.1t"
+LIB_OPENSSL_GIT="openssl-3.5.2"
 
 # Auto fetch and unarchive libopenssl from online repository with the given version i.e. LIB_OPENSSL_GIT
 ./init_libopenssl.sh ${LIB_OPENSSL_GIT}
-version="$(grep '^# define OPENSSL_VERSION_TEXT' < ${LIB_OPENSSL}/include/openssl/opensslv.h | sed 's/^.*\([1-9]\.[0-9]\.[0-9][a-z]\).*$/\1/')"
+if [[ -d ${LIB_OPENSSL} ]] && [[ -f ${LIB_OPENSSL}/include/openssl/opensslv.h ]]; then
+  version="$(grep '^# define OPENSSL_VERSION_TEXT' < ${LIB_OPENSSL}/include/openssl/opensslv.h | sed 's/^.*\([1-9]\.[0-9]\.[0-9][a-z]*\).*$/\1/')"
+else
+  version=${LIB_OPENSSL_GIT}
+fi
 
 # configure and make for specified architectures
 configure_make() {
   ABI=$1;
-  echo -e "\n** BUILD STARTED: ${LIB_OPENSSL} (${version}) for ${ABI} **"
 
   pushd "${LIB_OPENSSL}" || exit
   configure "$1"
@@ -66,6 +69,8 @@ configure_make() {
 for ((i=0; i < ${#ABIS[@]}; i++))
 do
   if [[ $# -eq 0 ]] || [[ "$1" == "${ABIS[i]}" ]]; then
+    echo -e "\n** BUILD STARTED: ${LIB_OPENSSL} (${version}) for ${ABIS[i]} **"
+
     # Do not build 64 bit arch if ANDROID_API is less than 21 which is
     # the minimum supported API level for 64 bit.
     [[ ${ANDROID_API} -lt 21 ]] && ( echo "${ABIS[i]}" | grep 64 > /dev/null ) && continue;

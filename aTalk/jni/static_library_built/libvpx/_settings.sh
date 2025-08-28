@@ -16,12 +16,9 @@
 
 # Uncomment the line below to see all script echo to terminal
 # set -x
-# export ANDROID_NDK=/opt/android/android-ndk-r18b
-export ANDROID_NDK=/opt/android/android-sdk/ndk/22.1.7171670/
 
-# strip is missing after 22.1.7171670
-# export ANDROID_NDK=/opt/android/android-sdk/ndk/25.2.9519653/
-# export ANDROID_NDK=/opt/android/android-sdk/ndk/26.1.10909125/
+# Max NDK version with 'ld.gold' and 'as', that are only compatible with libvpx
+export ANDROID_NDK=/opt/android/android-sdk/ndk/22.1.7171670/
 
 if [[ -z $ANDROID_NDK ]] || [[ ! -d $ANDROID_NDK ]] ; then
 	echo "You need to set ANDROID_NDK environment variable, exiting"
@@ -34,7 +31,7 @@ set -u
 
 # Never mix two api level to build static library for use on the same apk.
 # Set to API:21 for aTalk 64-bit architecture support and minSdk support
-# Does not build 64-bit arch if ANDROID_API is less than 21 i.e. the minimum supported API level for 64-bit.
+# Does not build 64-bit arch if ANDROID_API < 21 i.e. the minimum supported API level for 64-bit.
 ANDROID_API=24
 
 # Do not change naming convention of the ABIS; see:
@@ -44,7 +41,6 @@ ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")
 
 BASEDIR=`pwd`
 NDK=${ANDROID_NDK}
-HOST_NUM_CORES=$(nproc)
 
 # https://gcc.gnu.org/onlinedocs/gcc-4.9.1/gcc/Optimize-Options.html
 # Note: vpx with ABIs x86 and x86_64 build has error with option -fstack-protector-all
@@ -96,7 +92,7 @@ configure() {
       # x264 build has own undefined references e.g. x264_8_pixel_sad_16x16_neon - show up when build ffmpeg 
       NDK_ARCH="arm64"
       NDK_ABIARCH="aarch64-linux-android"
-      CFLAGS="${CFLAGS_} -O3-march=armv8-a"
+      CFLAGS="${CFLAGS_} -O3 -march=armv8-a"
       # Supported emulations: aarch64linux aarch64elf aarch64elf32 aarch64elf32b aarch64elfb armelf armelfb
       # aarch64linuxb aarch64linux32 aarch64linux32b armelfb_linux_eabi armelf_linux_eabi
 	  #-march=armv8-a or arch64linux: all are not valid for libvpx v1.8.2 build with standalone toolchains
@@ -121,7 +117,7 @@ configure() {
   esac
 
   # Use the prebuilt toolchain instead of using make_standalone_toolchain.py.
-  TOOLCHAIN_PREFIX=$NDK/toolchains/llvm/prebuilt/linux-x86_64/
+  TOOLCHAIN_PREFIX=$NDK/toolchains/llvm/prebuilt/linux-x86_64
 
   # Define the install-directory of the libs and include files etc
   # Directly install to aTalk ./jni/vpx
@@ -134,8 +130,6 @@ configure() {
 
   if [[ ($1 == "armeabi-v7a") ]]; then
     export CROSS_PREFIX="${TOOLCHAIN_PREFIX}/bin/arm-linux-androideabi-"
-  else
-    export CROSS_PREFIX=${TOOLCHAIN_PREFIX}/bin/${NDK_ABIARCH}-
   fi
 
   export CFLAGS="${CFLAGS}"
@@ -146,8 +140,10 @@ configure() {
   export CC="${CROSS_PREFIX_API}clang"
   export CXX="${CROSS_PREFIX_API}clang++"
 
-  export AS="${CROSS_PREFIX}as"
+  # not compatible with ld.lid.
   export LD="${CROSS_PREFIX}ld.gold"
+  # must specified this; else Fatal error: invalid -march= option: `armv7-a'
+  export AS="${CROSS_PREFIX}as"
   export STRIP="${CROSS_PREFIX}strip"
 
   echo "**********************************************"

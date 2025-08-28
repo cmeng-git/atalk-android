@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
@@ -735,13 +736,15 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         }
 
         public void execute() {
-            Executors.newSingleThreadExecutor().execute(() -> {
-                final String result = doInBackground();
+            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                eService.execute(() -> {
+                    final String result = doInBackground();
 
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    onPostExecute(result);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        onPostExecute(result);
+                    });
                 });
-            });
+            }
         }
 
         /**

@@ -26,8 +26,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class PopupClickReceiver extends BroadcastReceiver
-{
+public class PopupClickReceiver extends BroadcastReceiver {
     /**
      * Popup clicked action name used for <code>Intent</code> handling by this <code>BroadcastReceiver</code>.
      */
@@ -66,16 +65,14 @@ public class PopupClickReceiver extends BroadcastReceiver
      *
      * @param notificationHandler the <code>NotificationPopupHandler</code> that manages the popups.
      */
-    public PopupClickReceiver(NotificationPopupHandler notificationHandler)
-    {
+    public PopupClickReceiver(NotificationPopupHandler notificationHandler) {
         this.notificationHandler = notificationHandler;
     }
 
     /**
      * Registers this <code>BroadcastReceiver</code>.
      */
-    void registerReceiver()
-    {
+    void registerReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_POPUP_CLICK);
         filter.addAction(ACTION_POPUP_CLEAR);
@@ -90,8 +87,7 @@ public class PopupClickReceiver extends BroadcastReceiver
     /**
      * Unregisters this <code>BroadcastReceiver</code>.
      */
-    void unregisterReceiver()
-    {
+    void unregisterReceiver() {
         aTalkApp.getInstance().unregisterReceiver(this);
     }
 
@@ -99,8 +95,7 @@ public class PopupClickReceiver extends BroadcastReceiver
      * {@inheritDoc}
      */
     @Override
-    public void onReceive(Context context, Intent intent)
-    {
+    public void onReceive(Context context, Intent intent) {
         int notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1);
         if (notificationId == -1) {
             Timber.w("Invalid notification id = -1");
@@ -138,10 +133,10 @@ public class PopupClickReceiver extends BroadcastReceiver
      * Creates "on click" <code>Intent</code> for notification popup identified by given <code>notificationId</code>.
      *
      * @param notificationId the id of popup message notification.
+     *
      * @return new "on click" <code>Intent</code> for given <code>notificationId</code>.
      */
-    public static Intent createIntent(int notificationId)
-    {
+    public static Intent createIntent(int notificationId) {
         Intent intent = new Intent();
         intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(ACTION_POPUP_CLICK);
@@ -153,10 +148,10 @@ public class PopupClickReceiver extends BroadcastReceiver
      * Creates "on deleted" <code>Intent</code> for notification popup identified by given <code>notificationId</code>.
      *
      * @param notificationId the id of popup message notification.
+     *
      * @return new "on deleted" <code>Intent</code> for given <code>notificationId</code>.
      */
-    public static Intent createDeleteIntent(int notificationId)
-    {
+    public static Intent createDeleteIntent(int notificationId) {
         Intent intent = new Intent();
         intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(ACTION_POPUP_CLEAR);
@@ -168,10 +163,10 @@ public class PopupClickReceiver extends BroadcastReceiver
      * Creates "on deleted" <code>Intent</code> for notification popup identified by given <code>notificationId</code>.
      *
      * @param notificationId the id of popup message notification.
+     *
      * @return new "on deleted" <code>Intent</code> for given <code>notificationId</code>.
      */
-    public static Intent createReplyIntent(int notificationId)
-    {
+    public static Intent createReplyIntent(int notificationId) {
         Intent intent = new Intent();
         intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(ACTION_REPLY_TO);
@@ -183,10 +178,10 @@ public class PopupClickReceiver extends BroadcastReceiver
      * Creates "on deleted" <code>Intent</code> for notification popup identified by given <code>notificationId</code>.
      *
      * @param notificationId the id of popup message notification.
+     *
      * @return new "on deleted" <code>Intent</code> for given <code>notificationId</code>.
      */
-    public static Intent createMarkAsReadIntent(int notificationId)
-    {
+    public static Intent createMarkAsReadIntent(int notificationId) {
         Intent intent = new Intent();
         intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(ACTION_MARK_AS_READ);
@@ -198,10 +193,10 @@ public class PopupClickReceiver extends BroadcastReceiver
      * Creates "on deleted" <code>Intent</code> for notification popup identified by given <code>notificationId</code>.
      *
      * @param notificationId the id of popup message notification.
+     *
      * @return new "on deleted" <code>Intent</code> for given <code>notificationId</code>.
      */
-    public static Intent createSnoozeIntent(int notificationId)
-    {
+    public static Intent createSnoozeIntent(int notificationId) {
         Intent intent = new Intent();
         intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(ACTION_SNOOZE);
@@ -213,10 +208,10 @@ public class PopupClickReceiver extends BroadcastReceiver
      * Creates call dismiss <code>Intent</code> for notification popup identified by given <code>notificationId</code>.
      *
      * @param notificationId the id of popup message notification.
+     *
      * @return new dismiss <code>Intent</code> for given <code>notificationId</code>.
      */
-    public static Intent createCallDismiss(int notificationId)
-    {
+    public static Intent createCallDismiss(int notificationId) {
         Intent intent = new Intent();
         intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(ACTION_CALL_DISMISS);

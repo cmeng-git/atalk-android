@@ -16,7 +16,6 @@
  */
 package org.atalk.android.gui.call;
 
-import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
@@ -36,7 +35,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import java.util.ArrayList;
@@ -47,6 +45,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.callhistory.CallHistoryActivator;
@@ -268,16 +267,18 @@ public class CallHistoryFragment extends BaseFragment
             }
 
             public void execute() {
-                Executors.newSingleThreadExecutor().execute(() -> {
-                    doInBackground();
+                try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                    eService.execute(() -> {
+                        doInBackground();
 
-                    BaseActivity.uiHandler.post(() -> {
-                        if (!callRecords.isEmpty()) {
-                            callHistoryAdapter.notifyDataSetChanged();
-                        }
-                        setTitle();
+                        BaseActivity.uiHandler.post(() -> {
+                            if (!callRecords.isEmpty()) {
+                                callHistoryAdapter.notifyDataSetChanged();
+                            }
+                            setTitle();
+                        });
                     });
-                });
+                }
             }
 
             private void doInBackground() {

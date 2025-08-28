@@ -69,11 +69,12 @@ public class JingleNodeDialogFragment extends DialogFragment {
         View contentView = inflater.inflate(R.layout.jingle_node_dialog, null);
 
         // Builds the dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder = builder.setTitle(R.string.jbr_jingle_nodes);
-        builder = builder.setView(contentView)
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.jbr_jingle_nodes)
+                .setView(contentView)
                 .setPositiveButton(R.string.save, null)
                 .setNeutralButton(R.string.cancel, null);
+
         if (descriptor != null) {
             // Add remove button if it''s not "create new" dialog
             builder = builder.setNegativeButton(R.string.remove, null);

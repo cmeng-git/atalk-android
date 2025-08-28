@@ -793,7 +793,18 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      */
     public void sendMessage(String message, int encType) {
         cacheBlocked = true;
+        replyMessage(message, encType);
+        cacheBlocked = false;
+    }
 
+    /**
+     * Handle reply message via notification on messaged received.
+     * Must cached the send message,
+     *
+     * @param message the text string to be sent
+     * @param encType The encType of the message to be sent: RemoteOnly | 1=text/html or 0=text/plain.
+     */
+    public void replyMessage(String message, int encType) {
         int encryption = IMessage.ENCRYPTION_NONE;
         if (isOmemoChat())
             encryption = IMessage.ENCRYPTION_OMEMO;
@@ -804,7 +815,6 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
             mCurrentChatTransport.sendInstantMessage(message, encryption | encType);
         } catch (Exception ex) {
             aTalkApp.showToastMessage(ex.getMessage());
-            cacheBlocked = false;
         }
     }
 

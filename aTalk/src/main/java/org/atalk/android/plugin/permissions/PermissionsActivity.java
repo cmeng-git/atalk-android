@@ -126,7 +126,6 @@ public class PermissionsActivity extends BaseActivity {
 
         // Always request permission on first apk launch for android.M
         if (aTalkApp.permissionFirstRequest) {
-
             // see if we should show the splash screen and wait for it to complete before continue
             if (Splash.isFirstRun()) {
                 Intent intent = new Intent(this, Splash.class);
@@ -365,7 +364,8 @@ public class PermissionsActivity extends BaseActivity {
                 String[] requestedPermissions = packageInfo.requestedPermissions;
                 if (requestedPermissions != null) {
                     for (String requestedPermission : requestedPermissions) {
-                        if (getFeedbackViewForPermission(requestedPermission) == null)
+                        if (getFeedbackViewForPermission(requestedPermission) == null
+                                || !permissionList.contains(requestedPermission))
                             continue;
 
                         PermissionRequest pr = new PermissionRequest(requestedPermission);
@@ -398,7 +398,7 @@ public class PermissionsActivity extends BaseActivity {
         /*
          * It seems that some android devices have init all requested permissions to permanently denied states
          * i.e. incorrect return value for: ActivityCompat.shouldShowRequestPermissionRationale == false
-         * Must prompt user if < 3 permission has been granted to aTalk - will not work in almost cases;
+         * Must prompt user if < 3 permission has been granted to aTalk - will not work in most cases;
          *
          * Do not disturb user, if he has chosen partially granted the permissions.
          */
@@ -604,6 +604,7 @@ public class PermissionsActivity extends BaseActivity {
             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                 feedbackView = mBinding.storagePermissionFeedback;
                 break;
+
             default:
                 feedbackView = null;
         }
@@ -614,7 +615,6 @@ public class PermissionsActivity extends BaseActivity {
      * Android Battery Usage Optimization Request; Will only be called if >= Build.VERSION_CODES.M
      ***********************************************************************************************/
     private boolean openBatteryOptimizationDialogIfNeeded() {
-
         // Will always request for battery optimization disable for aTalk on every aTalk new launch, if not disabled
         if (isOptimizingBattery()) {
             // Do not launch this within a dialog, else result return on dialog user click

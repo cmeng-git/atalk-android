@@ -23,6 +23,8 @@ if [[ -z $ANDROID_NDK_HOME ]] || [[ ! -d $ANDROID_NDK_HOME ]] ; then
 	echo "e.g.: export ANDROID_NDK_HOME=/opt/android/android-sdk/ndk/22.1.7171670"
 	exit 1
 fi
+# required by latest openssl release
+export ANDROID_NDK_ROOT=${ANDROID_NDK_HOME}
 
 set -u
 

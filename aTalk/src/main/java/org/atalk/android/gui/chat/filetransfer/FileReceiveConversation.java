@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 
 import java.io.File;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
@@ -240,15 +241,17 @@ public class FileReceiveConversation extends FileTransferConversation
      */
     private class AcceptFile {
         public void execute() {
-            Executors.newSingleThreadExecutor().execute(() -> {
-                doInBackground();
+            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                eService.execute(() -> {
+                    doInBackground();
 
-                runOnUiThread(() -> {
-                    if (mFileTransfer != null) {
-                        setFileTransfer(mFileTransfer, fileTransferRequest.getFileSize());
-                    }
+                    runOnUiThread(() -> {
+                        if (mFileTransfer != null) {
+                            setFileTransfer(mFileTransfer, fileTransferRequest.getFileSize());
+                        }
+                    });
                 });
-            });
+            }
         }
 
         protected void doInBackground() {

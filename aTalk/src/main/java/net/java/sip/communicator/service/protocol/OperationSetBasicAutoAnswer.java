@@ -11,8 +11,7 @@ package net.java.sip.communicator.service.protocol;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public interface OperationSetBasicAutoAnswer extends OperationSet
-{
+public interface OperationSetBasicAutoAnswer extends OperationSet {
     /**
      * Auto-answer unconditional account property.
      */

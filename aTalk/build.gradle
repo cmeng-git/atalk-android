@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        google()
         mavenCentral()
         maven { url = 'https://jitpack.io' }
     }
@@ -15,7 +14,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.anarres.jarjar'
 
 repositories {
-    google()
+
     mavenCentral()
 //    maven {
 //        // May need manual cleanup for new SNAPSHOT update if same name with date change only:
@@ -64,8 +63,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 404000
-        versionName "4.4.0"
+        versionCode 405000
+        versionName "4.5.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -218,18 +217,18 @@ dependencies {
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.core:core-ktx:1.16.0'
+    implementation 'androidx.core:core-ktx:1.17.0'
 
     implementation 'androidx.activity:activity-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'androidx.fragment:fragment-ktx:1.8.8'
+    implementation 'androidx.fragment:fragment-ktx:1.8.9'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.media3:media3-exoplayer:1.7.1'
-    implementation 'androidx.media3:media3-ui:1.7.1'
+    implementation 'androidx.media3:media3-exoplayer:1.8.0'
+    implementation 'androidx.media3:media3-ui:1.8.0'
     // implementation "androidx.webkit:webkit:1.14.0"
 
     implementation 'com.jakewharton:butterknife:10.2.3'
@@ -247,7 +246,7 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.10'
     implementation 'com.google.android.material:material:1.12.0'
 
-    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.9'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.12'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta05'
     implementation 'com.squareup.okhttp3:okhttp:5.1.0' // 4.12.0'
 
@@ -260,8 +259,8 @@ dependencies {
     // commons-codec:1.16.x not compatible with Note10, crashes with No static method isEmpty([B)Z in class org/apache/commons/codec/binary/BinaryCodec;
     // or its super classes (declaration of 'org.apache.commons.codec.binary.BinaryCodec' appears in /system/framework/org.apache.http.legacy.jar)
     implementation 'commons-codec:commons-codec:1.15'
-    implementation 'org.apache.commons:commons-text:1.13.1'
-    implementation 'org.apache.james:apache-mime4j-core:0.8.12'
+    implementation 'org.apache.commons:commons-text:1.14.0'
+    implementation 'org.apache.james:apache-mime4j-core:0.8.13'
     implementation 'org.bitlet:weupnp:0.1.4'
 
     // bcprov-jdk15on-1.65 works with Android. From bcprov-jdk15on-1.66, Java 16 (major version 59) is required which Android Studio does not support.
@@ -498,22 +497,23 @@ dependencies {
 }
 
 /*
- * The task downloads both libOpus, libSpeex, and bcg729 sources per the specified version in the scripts.
- * Build of the dynamic libraries *.so for openssl, vpx, ffmpeg and the two libs etc are performed by android NDKBuild.
+ * This task downloads lib sources for vpx, opus, speex, and bcg729 per the specified version in the scripts.
+ * Build of the dynamic libraries *.so for vpx, openssl, ffmpeg and x264 etc are performed by android NDKBuild.
  * This task must be executed at least once prior to aTalk apk build process.
+ * It is also being executed in buildJniStaticLibs(), and this task can be omitted.
  */
-task getJniLibs(type: Exec) {
+task initJniLibs(type: Exec) {
     workingDir "${projectDir}/jni/"
-    executable './fetch-jnilibs4atalk.sh'
+    executable './init-jnilibs4atalk.sh'
 }
 
 /*
- * The task fetches the sources if not found, and builds for all the 3 static libraries i.e. openssl, vpx and ffmpeg
- * per the specified versions in the scripts. The task also performs the getJinLibs()
+ * This task fetches the sources if not found or incorrect version, and builds the static libraries for:
+ * openssl, x264 and ffmpeg per the specified versions in the scripts. The task also performs the initJniLibs().
  * This task needs to be executed at least once before the actual aTalk apk build process.
  * Refer to all README files in .jni/static_library_built for more detail.
  */
-task initJniLibs(type: Exec) {
+task buildJniStaticLibs(type: Exec) {
     workingDir "${projectDir}/jni/static_library_built"
     executable './build-jnilibs4atalk.sh'
 }

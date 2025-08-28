@@ -166,6 +166,7 @@ enum vp8e_enc_control_id {
    *
    * \note Valid range for VP8: -16..16
    * \note Valid range for VP9: -9..9
+   * \note A negative value (-n) is treated as its absolute value (n) in VP9.
    *
    * Supported in codecs: VP8, VP9
    */
@@ -302,7 +303,7 @@ enum vp8e_enc_control_id {
    * the feature is off, i.e., no golden frame boost in CBR mode and
    * average bitrate target is used.
    *
-   * For example, to allow 100% more bits, i.e, 2X, in a golden frame
+   * For example, to allow 100% more bits, i.e., 2X, in a golden frame
    * than average frame, set this to 100.
    *
    * Supported in codecs: VP9
@@ -598,7 +599,7 @@ enum vp8e_enc_control_id {
    * the feature is off, i.e., no golden frame boost in CBR mode and
    * average bitrate target is used.
    *
-   * For example, to allow 100% more bits, i.e, 2X, in a golden frame
+   * For example, to allow 100% more bits, i.e., 2X, in a golden frame
    * than average frame, set this to 100.
    *
    * Supported in codecs: VP8
@@ -767,6 +768,14 @@ enum vp8e_enc_control_id {
    *
    */
   VP9E_SET_QUANTIZER_ONE_PASS,
+
+  /*!\brief Codec control function to enable key frame temporal filtering.
+   *
+   * Vp9 allows the encoder to run key frame temporal filtering and use it to
+   * improve the compression performance. To enable, set this parameter to be
+   * 1. The default value is set to be 0.
+   */
+  VP9E_SET_KEY_FRAME_FILTERING,
 };
 
 /*!\brief vpx 1-D scaling mode
@@ -1097,6 +1106,8 @@ VPX_CTRL_USE_TYPE(VP8E_SET_RTC_EXTERNAL_RATECTRL, int)
 #define VPX_CTRL_VP8E_SET_RTC_EXTERNAL_RATECTRL
 VPX_CTRL_USE_TYPE(VP9E_SET_QUANTIZER_ONE_PASS, int)
 #define VPX_CTRL_VP9E_SET_QUANTIZER_ONE_PASS
+VPX_CTRL_USE_TYPE(VP9E_SET_KEY_FRAME_FILTERING, int)
+#define VPX_CTRL_VP9E_SET_KEY_FRAME_FILTERING
 
 /*!\endcond */
 /*! @} - end defgroup vp8_encoder */

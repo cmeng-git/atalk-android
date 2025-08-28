@@ -23,12 +23,12 @@
  */
 package org.atalk.impl.neomedia.transform.srtp;
 
+import java.util.Arrays;
+
 import org.atalk.impl.neomedia.transform.srtp.utils.SrtcpPacketUtils;
 import org.atalk.impl.neomedia.transform.srtp.utils.SrtpPacketUtils;
 import org.atalk.util.ByteArrayBuffer;
 import org.bouncycastle.crypto.params.KeyParameter;
-
-import java.util.Arrays;
 
 import timber.log.Timber;
 
@@ -57,8 +57,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class SrtcpCryptoContext extends BaseSrtpCryptoContext
-{
+public class SrtcpCryptoContext extends BaseSrtpCryptoContext {
     /**
      * Index received so far
      */
@@ -74,8 +73,7 @@ public class SrtcpCryptoContext extends BaseSrtpCryptoContext
      *
      * @param ssrc SSRC of this SrtcpCryptoContext
      */
-    public SrtcpCryptoContext(int ssrc)
-    {
+    public SrtcpCryptoContext(int ssrc) {
         super(ssrc);
     }
 
@@ -92,8 +90,7 @@ public class SrtcpCryptoContext extends BaseSrtpCryptoContext
      * authentication algorithm, etc
      */
     @SuppressWarnings("fallthrough")
-    public SrtcpCryptoContext(int ssrc, byte[] masterKey, byte[] masterSalt, SrtpPolicy policy)
-    {
+    public SrtcpCryptoContext(int ssrc, byte[] masterKey, byte[] masterSalt, SrtpPolicy policy) {
         super(ssrc, masterKey, masterSalt, policy);
         deriveSrtcpKeys(masterKey, masterSalt);
     }
@@ -104,10 +101,10 @@ public class SrtcpCryptoContext extends BaseSrtpCryptoContext
      * real (not faked) through authentication.
      *
      * @param index index number of the SRTCP packet
-     * @return true if this sequence number indicates the packet is not a replayed one, false if not
+     *
+     * @return SrtpErrorStatus.OK if this sequence number indicates the packet is not a replayed, else error otherwise
      */
-    SrtpErrorStatus checkReplay(int index)
-    {
+    SrtpErrorStatus checkReplay(int index) {
         // Compute the index of the previously received packet and its delta to the new received packet.
         long delta = index - receivedIndex;
 
@@ -124,8 +121,7 @@ public class SrtcpCryptoContext extends BaseSrtpCryptoContext
     /**
      * Derives the srtcp session keys from the master key.
      */
-    private void deriveSrtcpKeys(byte[] masterKey, byte[] masterSalt)
-    {
+    private void deriveSrtcpKeys(byte[] masterKey, byte[] masterSalt) {
         SrtpKdf kdf = new SrtpKdf(masterKey, masterSalt, policy);
 
         // compute the session salt
@@ -159,8 +155,7 @@ public class SrtcpCryptoContext extends BaseSrtpCryptoContext
      *
      * @param pkt the RTP packet to be encrypted/decrypted
      */
-    private void processPacketAesCm(ByteArrayBuffer pkt, int index)
-    {
+    private void processPacketAesCm(ByteArrayBuffer pkt, int index) {
         int ssrc = SrtcpPacketUtils.getSenderSsrc(pkt);
 
         /*
@@ -205,8 +200,7 @@ public class SrtcpCryptoContext extends BaseSrtpCryptoContext
      *
      * @param pkt the RTP packet to be encrypted/decrypted
      */
-    private void processPacketAesF8(ByteArrayBuffer pkt, int index)
-    {
+    private void processPacketAesF8(ByteArrayBuffer pkt, int index) {
         // 4 bytes of the iv are zero
         // the first byte of the RTP header is not used.
         ivStore[0] = 0;
@@ -245,11 +239,11 @@ public class SrtcpCryptoContext extends BaseSrtpCryptoContext
      * managed transportation) instead.
      *
      * @param pkt the received RTCP packet
+     *
      * @return <code>SrtpErrorStatus#OK</code> if the packet can be accepted or another
      * error status if authentication or replay check failed
      */
-    synchronized public SrtpErrorStatus reverseTransformPacket(ByteArrayBuffer pkt)
-    {
+    synchronized public SrtpErrorStatus reverseTransformPacket(ByteArrayBuffer pkt) {
         boolean decrypt = false;
         int tagLength = policy.getAuthTagLength();
 
@@ -321,8 +315,7 @@ public class SrtcpCryptoContext extends BaseSrtpCryptoContext
      *
      * @param pkt the RTP packet that is going to be sent out
      */
-    synchronized public SrtpErrorStatus transformPacket(ByteArrayBuffer pkt)
-    {
+    synchronized public SrtpErrorStatus transformPacket(ByteArrayBuffer pkt) {
         boolean encrypt = false;
         /* Encrypt the packet using Counter Mode encryption */
         if (policy.getEncType() == SrtpPolicy.AESCM_ENCRYPTION
@@ -360,8 +353,7 @@ public class SrtcpCryptoContext extends BaseSrtpCryptoContext
     /**
      * Logs the current state of the replay window, for debugging purposes.
      */
-    private void logReplayWindow(long newIdx)
-    {
+    private void logReplayWindow(long newIdx) {
         Timber.d("Updated replay window with %s. %s", newIdx,
                 SrtpPacketUtils.formatReplayWindow(receivedIndex, replayWindow, REPLAY_WINDOW_SIZE));
     }
@@ -371,8 +363,7 @@ public class SrtcpCryptoContext extends BaseSrtpCryptoContext
      *
      * @param index index number of the accepted packet
      */
-    private void update(int index)
-    {
+    private void update(int index) {
         int delta = index - receivedIndex;
 
         /* update the replay bit mask */

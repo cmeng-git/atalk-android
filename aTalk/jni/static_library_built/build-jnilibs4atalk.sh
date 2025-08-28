@@ -19,6 +19,6 @@ popd
 
 # fetch the libraries source for android NDK build
 pushd ../ || exit
-  echo "### Building ffmpeg-x264 jni library ###"
- ./fetch-jnilibs4atalk.sh
+  echo "### Init all other jni libraries for android NDK build ###"
+ ./init-jnilibs4atalk.sh
 popd

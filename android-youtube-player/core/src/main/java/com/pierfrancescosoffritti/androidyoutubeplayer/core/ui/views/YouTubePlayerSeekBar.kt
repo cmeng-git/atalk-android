@@ -113,7 +113,6 @@ class YouTubePlayerSeekBar(context: Context, attrs: AttributeSet? = null): Linea
     }
 
     // YouTubePlayerListener
-
     override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
         newSeekBarProgress = -1
         updateState(state)

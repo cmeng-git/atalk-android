@@ -7,6 +7,7 @@ package org.atalk.android.gui.chat;
 
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -141,6 +142,7 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      *
      * @return the <code>Fragment</code> at the given position in this pager
      */
+    @NonNull
     @Override
     public Fragment getItem(int pos) {
         return ChatFragment.newInstance(chats.get(pos));
@@ -154,8 +156,9 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      *
      * @return the created <code>ChatFragment</code>
      */
+    @NonNull
     @Override
-    public Object instantiateItem(ViewGroup container, final int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, final int position) {
         return super.instantiateItem(container, position);
     }
 
@@ -175,7 +178,7 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      * {@inheritDoc}
      */
     @Override
-    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+    public void setPrimaryItem(@NonNull ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
 
         /*

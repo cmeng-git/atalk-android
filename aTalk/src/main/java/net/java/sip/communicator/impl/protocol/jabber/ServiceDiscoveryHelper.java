@@ -148,7 +148,11 @@ public class ServiceDiscoveryHelper {
     public DiscoverInfo discoverInfoNonBlocking(Jid entityJid) {
         // Check if we have it cached in the Entity Capabilities Manager
         DiscoverInfo discoverInfo = EntityCapsManager.getDiscoverInfoByUser(entityJid);
-        if (discoverInfo != null) {
+        if (entityJid instanceof BareJid)
+            Timber.e(new Exception("Warning! discoInfo for BareJid: " + entityJid));
+
+        // discoverInfo is not available for BareJid
+        if (discoverInfo != null || entityJid instanceof BareJid) {
             return discoverInfo;
         }
 
@@ -241,9 +245,6 @@ public class ServiceDiscoveryHelper {
          * @param entityJid the entity.
          */
         public void addEntityForRetrieve(Jid entityJid) {
-            if (entityJid instanceof BareJid)
-                Timber.e("Warning! discoInfo for BareJid '%s' repeated access for every call!!!", entityJid.toString());
-
             synchronized (entities) {
                 if (!entities.contains(entityJid)) {
                     entities.add(entityJid);

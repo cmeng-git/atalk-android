@@ -967,7 +967,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             String proxyPassword = mAccountID.getAccountPropertyString(
                     ProtocolProviderFactory.PROXY_PASSWORD, mAccountID.getProxyPassword());
 
-            if (proxyAddress == null || proxyAddress.length() == 0) {
+            if (proxyAddress == null || proxyAddress.isEmpty()) {
                 throw new OperationFailedException("Missing Proxy Address",
                         OperationFailedException.INVALID_ACCOUNT_PROPERTIES);
             }

@@ -7,6 +7,12 @@ package net.java.sip.communicator.service.protocol;
 
 import android.text.TextUtils;
 
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
 import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
 import net.java.sip.communicator.service.protocol.event.CallChangeListener;
 import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
@@ -16,12 +22,6 @@ import net.java.sip.communicator.util.DataObject;
 
 import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smackx.jingle.JingleManager;
-
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
 
 import timber.log.Timber;
 
@@ -38,8 +38,7 @@ import timber.log.Timber;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public abstract class Call extends DataObject
-{
+public abstract class Call extends DataObject {
     /**
      * The name of the <code>Call</code> property which represents its telephony conference-related state.
      */
@@ -108,8 +107,7 @@ public abstract class Call extends DataObject
      * @param sourceProvider the proto provider that created us.
      * @param sid the Jingle session-initiate id if provided.
      */
-    protected Call(ProtocolProviderService sourceProvider, String sid)
-    {
+    protected Call(ProtocolProviderService sourceProvider, String sid) {
         // create the uid
         if (TextUtils.isEmpty(sid)) {
             callId = JingleManager.randomId();
@@ -134,8 +132,7 @@ public abstract class Call extends DataObject
      *
      * @return a String uniquely identifying the call.
      */
-    public String getCallId()
-    {
+    public String getCallId() {
         return callId;
     }
 
@@ -145,11 +142,11 @@ public abstract class Call extends DataObject
      * represented by both objects to be the same.
      *
      * @param obj the call to compare this one with.
+     *
      * @return true in case both objects are pertaining to the same call and false otherwise.
      */
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (!(obj instanceof Call))
             return false;
         return (obj == this) || ((Call) obj).getCallId().equals(getCallId());
@@ -161,8 +158,7 @@ public abstract class Call extends DataObject
      * @return a hash code value for this call.
      */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return getCallId().hashCode();
     }
 
@@ -172,8 +168,7 @@ public abstract class Call extends DataObject
      *
      * @param listener the listener to register
      */
-    public void addCallChangeListener(CallChangeListener listener)
-    {
+    public void addCallChangeListener(CallChangeListener listener) {
         synchronized (callListeners) {
             if (!callListeners.contains(listener)) {
                 callListeners.add(listener);
@@ -186,8 +181,7 @@ public abstract class Call extends DataObject
      *
      * @param listener the listener to register
      */
-    public void removeCallChangeListener(CallChangeListener listener)
-    {
+    public void removeCallChangeListener(CallChangeListener listener) {
         synchronized (callListeners) {
             callListeners.remove(listener);
         }
@@ -198,8 +192,7 @@ public abstract class Call extends DataObject
      *
      * @return a reference to the <code>ProtocolProviderService</code> instance that created this call.
      */
-    public ProtocolProviderService getProtocolProvider()
-    {
+    public ProtocolProviderService getProtocolProvider() {
         return this.protocolProvider;
     }
 
@@ -210,8 +203,7 @@ public abstract class Call extends DataObject
      * @param sourceCallPeer the source <code>CallPeer</code> for the newly created event.
      * @param eventID the ID of the event to create (see constants defined in <code>CallPeerEvent</code>)
      */
-    protected void fireCallPeerEvent(CallPeer sourceCallPeer, int eventID)
-    {
+    protected void fireCallPeerEvent(CallPeer sourceCallPeer, int eventID) {
         fireCallPeerEvent(sourceCallPeer, eventID, false);
     }
 
@@ -224,8 +216,7 @@ public abstract class Call extends DataObject
      * @param delayed <code>true</code> if the adding/removing of the peer from the GUI should be delayed and
      * <code>false</code> if not.
      */
-    protected void fireCallPeerEvent(CallPeer sourceCallPeer, int eventID, boolean delayed)
-    {
+    protected void fireCallPeerEvent(CallPeer sourceCallPeer, int eventID, boolean delayed) {
         CallPeerEvent event = new CallPeerEvent(sourceCallPeer, this, eventID, delayed);
         // Timber.d("Dispatching CallPeer event to %s listeners. The event is: %s", callListeners.size(), event);
 
@@ -252,8 +243,7 @@ public abstract class Call extends DataObject
      */
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Call: id=" + getCallId() + " peers=" + getCallPeerCount();
     }
 
@@ -266,8 +256,7 @@ public abstract class Call extends DataObject
      * @param oldValue the value of the call property that changed, before the event had occurred.
      * @param newValue the value of the call property that changed, after the event has occurred.
      */
-    protected void fireCallChangeEvent(String type, Object oldValue, Object newValue)
-    {
+    protected void fireCallChangeEvent(String type, Object oldValue, Object newValue) {
         fireCallChangeEvent(type, oldValue, newValue, null);
     }
 
@@ -280,8 +269,7 @@ public abstract class Call extends DataObject
      * @param newValue the value of the call property that changed, after the event has occurred.
      * @param cause the event that is the initial cause of the current one.
      */
-    protected void fireCallChangeEvent(String type, Object oldValue, Object newValue, CallPeerChangeEvent cause)
-    {
+    protected void fireCallChangeEvent(String type, Object oldValue, Object newValue, CallPeerChangeEvent cause) {
         CallChangeEvent event = new CallChangeEvent(this, type, oldValue, newValue, cause);
         Timber.d("Dispatching CallChangeEvent to (%s) listeners. %s", callListeners.size(), event);
 
@@ -298,8 +286,7 @@ public abstract class Call extends DataObject
      *
      * @return a reference to the <code>CallState</code> instance that the call is currently in.
      */
-    public CallState getCallState()
-    {
+    public CallState getCallState() {
         return callState;
     }
 
@@ -308,8 +295,7 @@ public abstract class Call extends DataObject
      *
      * @param newState a reference to the <code>CallState</code> instance that the call is to enter.
      */
-    protected void setCallState(CallState newState)
-    {
+    protected void setCallState(CallState newState) {
         setCallState(newState, null);
     }
 
@@ -321,8 +307,7 @@ public abstract class Call extends DataObject
      * @param cause the <code>CallPeerChangeEvent</code> which is the cause for the request to have this
      * <code>Call</code> enter the specified <code>CallState</code>
      */
-    protected void setCallState(CallState newState, CallPeerChangeEvent cause)
-    {
+    protected void setCallState(CallState newState, CallPeerChangeEvent cause) {
         CallState oldState = getCallState();
         if (oldState != newState) {
             callState = newState;
@@ -341,8 +326,7 @@ public abstract class Call extends DataObject
      *
      * @return the default call encryption flag
      */
-    public boolean isDefaultEncrypted()
-    {
+    public boolean isDefaultEncrypted() {
         return defaultEncryption;
     }
 
@@ -351,8 +335,7 @@ public abstract class Call extends DataObject
      *
      * @return include the ZRTP attribute to SIP/SDP
      */
-    public boolean isSipZrtpAttribute()
-    {
+    public boolean isSipZrtpAttribute() {
         return sipZrtpAttribute;
     }
 
@@ -405,8 +388,7 @@ public abstract class Call extends DataObject
      * @return a new <code>CallConference</code> instance which is to represent the telephony
      * conference-related state of this <code>Call</code>
      */
-    protected CallConference createConference()
-    {
+    protected CallConference createConference() {
         return new CallConference();
     }
 
@@ -419,8 +401,7 @@ public abstract class Call extends DataObject
      * @return a <code>CallConference</code> instance which represents the telephony conference-related
      * state of this <code>Call</code>.
      */
-    public CallConference getConference()
-    {
+    public CallConference getConference() {
         if (conference == null) {
             CallConference newValue = createConference();
 
@@ -447,8 +428,7 @@ public abstract class Call extends DataObject
      * @param conference the <code>CallConference</code> instance to represent the telephony conference-related
      * state of this <code>Call</code>
      */
-    public void setConference(CallConference conference)
-    {
+    public void setConference(CallConference conference) {
         if (this.conference != conference) {
             CallConference oldValue = this.conference;
 
@@ -500,8 +480,7 @@ public abstract class Call extends DataObject
      *
      * @return <code>true</code> iff incoming calls into this <code>Call</code> should be auto-answered.
      */
-    public boolean isAutoAnswer()
-    {
+    public boolean isAutoAnswer() {
         return isAutoAnswer;
     }
 
@@ -510,8 +489,7 @@ public abstract class Call extends DataObject
      *
      * @param autoAnswer whether incoming calls into this <code>Call</code> should be auto-answered.
      */
-    public void setAutoAnswer(boolean autoAnswer)
-    {
+    public void setAutoAnswer(boolean autoAnswer) {
         isAutoAnswer = autoAnswer;
     }
 }

@@ -23,13 +23,11 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class PopupMessageNotificationHandlerImpl implements PopupMessageNotificationHandler
-{
+public class PopupMessageNotificationHandlerImpl implements PopupMessageNotificationHandler {
     /**
      * {@inheritDoc}
      */
-    public String getActionType()
-    {
+    public String getActionType() {
         return NotificationAction.ACTION_POPUP_MESSAGE;
     }
 
@@ -39,8 +37,7 @@ public class PopupMessageNotificationHandlerImpl implements PopupMessageNotifica
      * @param action the action to act upon
      * @param data <code>NotificationData</code> that contains the name/key, icon and extra info for popup message
      */
-    public void popupMessage(PopupMessageNotificationAction action, NotificationData data)
-    {
+    public void popupMessage(PopupMessageNotificationAction action, NotificationData data) {
         SystrayService sysTray = NotificationActivator.getSystray();
         if (sysTray == null)
             return;
@@ -67,8 +64,7 @@ public class PopupMessageNotificationHandlerImpl implements PopupMessageNotifica
      *
      * @param listener the listener to add
      */
-    public void addPopupMessageListener(SystrayPopupMessageListener listener)
-    {
+    public void addPopupMessageListener(SystrayPopupMessageListener listener) {
         SystrayService sysTray = NotificationActivator.getSystray();
         if (sysTray == null)
             return;
@@ -81,8 +77,7 @@ public class PopupMessageNotificationHandlerImpl implements PopupMessageNotifica
      *
      * @param listener the listener to remove
      */
-    public void removePopupMessageListener(SystrayPopupMessageListener listener)
-    {
+    public void removePopupMessageListener(SystrayPopupMessageListener listener) {
         SystrayService sysTray = NotificationActivator.getSystray();
         if (sysTray == null)
             return;

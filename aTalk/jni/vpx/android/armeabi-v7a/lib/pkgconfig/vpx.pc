@@ -1,4 +1,4 @@
-# pkg-config file from libvpx v1.13.1
+# pkg-config file from libvpx v1.15.2
 prefix=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/libvpx/../../vpx/android/armeabi-v7a
 exec_prefix=${prefix}
 libdir=${prefix}/lib
@@ -6,7 +6,7 @@ includedir=${prefix}/include
 
 Name: vpx
 Description: WebM Project VPx codec implementation
-Version: 1.13.1
+Version: 1.15.2
 Requires:
 Conflicts:
 Libs: -L${libdir} -lvpx -lm

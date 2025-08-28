@@ -24,4 +24,4 @@ Built all
 --------------------------------------
 * Instead of build each static library separately, you may execute the build-jnilibs4atalk.sh<br/>
 to build all the above three static libraries
-* You may also run the task "initJniLibs" from within the gradle to build the 3 static libraries.
+* You may also run the task "buildJniStaticLibs" from within the gradle to build the 3 static libraries.

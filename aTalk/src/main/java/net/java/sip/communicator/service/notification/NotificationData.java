@@ -13,8 +13,7 @@ import java.util.Map;
  *
  * @author Ingo Bauersachs
  */
-public class NotificationData
-{
+public class NotificationData {
     /**
      * The name/key of the <code>NotificationData</code> extra which is provided to
      * {@link CommandNotificationHandler#execute(CommandNotificationAction, Map)} i.e. a
@@ -24,8 +23,8 @@ public class NotificationData
 
     /**
      * The name/key of the <code>NotificationData</code> extra which is provided to
-     * {@link PopupMessageNotificationHandler#popupMessage(PopupMessageNotificationAction, String, String, byte[], Object)}
-     * i.e. an <code>Object</code> which is known by the (argument) name <code>tag</code>.
+     * {@link PopupMessageNotificationHandler#popupMessage(PopupMessageNotificationAction, NotificationData)}
+     * i.e. NotificationData contains an <code>Object</code> which is known by the (argument) name <code>tag</code>.
      */
     public static final String POPUP_MESSAGE_HANDLER_TAG_EXTRA = "PopupMessageNotificationHandler.tag";
 
@@ -38,12 +37,14 @@ public class NotificationData
 
     /**
      * The type of the event that we'd like to fire a notification for.
+     *
      * @see net.java.sip.communicator.plugin.notificationwiring.NotificationManager
      */
     private final String eventType;
 
     /**
      * The sub-category of the event type.
+     *
      * @see net.java.sip.communicator.service.systray.SystrayService
      */
     private final int msgType;
@@ -69,8 +70,7 @@ public class NotificationData
      * @param extras additional/extra {@link NotificationHandler}-specific data to be provided
      * by the new instance to the various <code>NotificationHandler</code>
      */
-    NotificationData(String eventType, int msgType, String title, String message, byte[] icon, Map<String, Object> extras)
-    {
+    NotificationData(String eventType, int msgType, String title, String message, byte[] icon, Map<String, Object> extras) {
         this.eventType = eventType;
         this.msgType = msgType;
         this.title = title;
@@ -84,8 +84,7 @@ public class NotificationData
      *
      * @return the eventType
      */
-    public String getEventType()
-    {
+    public String getEventType() {
         return eventType;
     }
 
@@ -94,8 +93,7 @@ public class NotificationData
      *
      * @return the msgType
      */
-    public int getMessageType()
-    {
+    public int getMessageType() {
         return msgType;
     }
 
@@ -105,8 +103,7 @@ public class NotificationData
      * @return the <code>NotificationHandler</code>-specific extras provided to this instance. The keys are among the
      * <code>XXX_EXTRA</code> constants defined by the <code>NotificationData</code> class
      */
-    public Map<String, Object> getExtras()
-    {
+    public Map<String, Object> getExtras() {
         return Collections.unmodifiableMap(extras);
     }
 
@@ -115,11 +112,11 @@ public class NotificationData
      *
      * @param key the key whose associated <code>NotificationHandler</code>-specific extra is to be returned. Well known keys
      * are defined by the <code>NotificationData</code> class as the <code>XXX_EXTRA</code> constants.
+     *
      * @return the <code>NotificationHandler</code>-specific extra provided to this instance associated with the specified
      * <code>key</code>
      */
-    public Object getExtra(String key)
-    {
+    public Object getExtra(String key) {
         return (extras == null) ? null : extras.get(key);
     }
 
@@ -128,8 +125,7 @@ public class NotificationData
      *
      * @return the icon
      */
-    public byte[] getIcon()
-    {
+    public byte[] getIcon() {
         return icon;
     }
 
@@ -138,8 +134,7 @@ public class NotificationData
      *
      * @return the message
      */
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
 
@@ -148,8 +143,7 @@ public class NotificationData
      *
      * @return the title
      */
-    public String getTitle()
-    {
+    public String getTitle() {
         return title;
     }
 }

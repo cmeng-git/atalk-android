@@ -5,10 +5,10 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.util.Iterator;
+
 import net.java.sip.communicator.service.protocol.event.CallPeerAdapter;
 import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
-
-import java.util.Iterator;
 
 import timber.log.Timber;
 
@@ -19,8 +19,7 @@ import timber.log.Timber;
  * @author Vincent Lucas
  * @author Eng Chong Meng
  */
-public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSetBasicAutoAnswer
-{
+public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSetBasicAutoAnswer {
     /**
      * The parent Protocol Provider.
      */
@@ -46,16 +45,14 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      *
      * @param protocolProvider the parent Protocol Provider.
      */
-    public AbstractOperationSetBasicAutoAnswer(ProtocolProviderService protocolProvider)
-    {
+    public AbstractOperationSetBasicAutoAnswer(ProtocolProviderService protocolProvider) {
         this.mPPS = protocolProvider;
     }
 
     /**
      * Load values from account properties.
      */
-    protected void load()
-    {
+    protected void load() {
         AccountID acc = mPPS.getAccountID();
 
         mAnswerUnconditional = acc.getAccountPropertyBoolean(AUTO_ANSWER_UNCOND_PROP, false);
@@ -70,16 +67,14 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
     /**
      * Clear local settings.
      */
-    protected void clearLocal()
-    {
+    protected void clearLocal() {
         mAnswerUnconditional = false;
     }
 
     /**
      * Clear any previous settings.
      */
-    public void clear()
-    {
+    public void clear() {
         clearLocal();
         mAnswerWithVideo = false;
         save();
@@ -90,12 +85,12 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      *
      * @param call The new incoming call to auto-answer if needed.
      * @param isVideoCall Indicates if the remote peer which has created this call wish to have a video call.
+     *
      * @return <code>true</code> if we have processed and no further processing is needed, <code>false</code> otherwise.
      */
-    public boolean autoAnswer(Call call, boolean isVideoCall)
-    {
+    public boolean autoAnswer(Call call, boolean isVideoCall) {
         if (answerOnJingleMessageAccept || mAnswerUnconditional || satisfyAutoAnswerConditions(call)) {
-            this.answerCall(call, isVideoCall);
+            answerCall(call, isVideoCall);
             return true;
         }
         return false;
@@ -107,8 +102,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      * @param call The new incoming call to auto-answer if needed.
      * @param isVideoCall Indicates if the remote peer which has created this call wish to have a video call.
      */
-    protected void answerCall(Call call, boolean isVideoCall)
-    {
+    protected void answerCall(Call call, boolean isVideoCall) {
         // We are here because we satisfy the conditional, or unconditional is true.
         Iterator<? extends CallPeer> peers = call.getCallPeers();
 
@@ -121,6 +115,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      * Checks if the call satisfy the auto answer conditions.
      *
      * @param call The new incoming call to auto-answer if needed.
+     *
      * @return <code>true</code> if the call satisfy the auto answer conditions. <code>False</code> otherwise.
      */
     protected abstract boolean satisfyAutoAnswerConditions(Call call);
@@ -128,8 +123,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
     /**
      * Sets the auto answer option to unconditionally answer all incoming calls.
      */
-    public void setAutoAnswerUnconditional()
-    {
+    public void setAutoAnswerUnconditional() {
         clearLocal();
         mAnswerUnconditional = true;
         save();
@@ -140,8 +134,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      *
      * @return is auto answer set to unconditional.
      */
-    public boolean isAutoAnswerUnconditionalSet()
-    {
+    public boolean isAutoAnswerUnconditionalSet() {
         return mAnswerUnconditional;
     }
 
@@ -151,10 +144,9 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      * @param answerWithVideo A boolean set to true to activate the auto answer with video
      * when receiving a video call. False otherwise.
      */
-    public void setAutoAnswerWithVideo(boolean answerWithVideo)
-    {
-        this.mAnswerWithVideo = answerWithVideo;
-        this.save();
+    public void setAutoAnswerWithVideo(boolean answerWithVideo) {
+        mAnswerWithVideo = answerWithVideo;
+        save();
     }
 
     /**
@@ -163,16 +155,14 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      * @return A boolean set to true if the auto answer with video when receiving a video call is
      * activated. False otherwise.
      */
-    public boolean isAutoAnswerWithVideoSet()
-    {
-        return this.mAnswerWithVideo;
+    public boolean isAutoAnswerWithVideoSet() {
+        return mAnswerWithVideo;
     }
 
     /**
      * Waits for peer to switch into INCOMING_CALL state, before auto-answering the call in a new thread.
      */
-    private class AutoAnswerThread extends CallPeerAdapter implements Runnable
-    {
+    private class AutoAnswerThread extends CallPeerAdapter implements Runnable {
         /**
          * The call peer which has generated the call.
          */
@@ -189,8 +179,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
          * @param peer The call peer which has generated the call.
          * @param isVideoCall Indicates if the remote peer which has created this call wish to have a video call.
          */
-        public AutoAnswerThread(CallPeer peer, boolean isVideoCall)
-        {
+        public AutoAnswerThread(CallPeer peer, boolean isVideoCall) {
             this.peer = peer;
             this.isVideoCall = isVideoCall;
 
@@ -205,8 +194,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
         /**
          * Answers the call.
          */
-        public void run()
-        {
+        public void run() {
             OperationSetBasicTelephony<?> opSetBasicTelephony = mPPS.getOperationSet(OperationSetBasicTelephony.class);
             OperationSetVideoTelephony opSetVideoTelephony = mPPS.getOperationSet(OperationSetVideoTelephony.class);
             try {
@@ -230,8 +218,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
          * @param evt the <code>CallPeerChangeEvent</code> instance containing the
          */
         @Override
-        public void peerStateChanged(CallPeerChangeEvent evt)
-        {
+        public void peerStateChanged(CallPeerChangeEvent evt) {
             CallPeerState newState = (CallPeerState) evt.getNewValue();
 
             if (newState == CallPeerState.INCOMING_CALL) {

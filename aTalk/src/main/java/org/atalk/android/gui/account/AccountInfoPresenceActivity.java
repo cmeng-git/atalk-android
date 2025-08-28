@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.yalantis.ucrop.UCrop;
@@ -622,38 +623,40 @@ public class AccountInfoPresenceActivity extends BaseActivity
              * Called on the event dispatching thread (not on the worker thread)
              * after the {@code construct} method has returned.
              */
-            Executors.newSingleThreadExecutor().execute(() -> {
-                Iterator<GenericDetail> allDetails = accountInfoOpSet.getAllAvailableDetails();
-                runOnUiThread(() -> {
-                    if (allDetails != null) {
-                        while (allDetails.hasNext()) {
-                            GenericDetail detail = allDetails.next();
-                            loadDetail(detail);
-                        }
+            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                eService.execute(() -> {
+                    Iterator<GenericDetail> allDetails = accountInfoOpSet.getAllAvailableDetails();
+                    runOnUiThread(() -> {
+                        if (allDetails != null) {
+                            while (allDetails.hasNext()) {
+                                GenericDetail detail = allDetails.next();
+                                loadDetail(detail);
+                            }
 
-                        // Setup textFields' editable state and addTextChangedListener if enabled
-                        boolean isEditable;
-                        for (Class<? extends GenericDetail> editable : detailToTextField.keySet()) {
-                            EditText field = detailToTextField.get(editable);
-                            isEditable = accountInfoOpSet.isDetailClassEditable(editable);
+                            // Setup textFields' editable state and addTextChangedListener if enabled
+                            boolean isEditable;
+                            for (Class<? extends GenericDetail> editable : detailToTextField.keySet()) {
+                                EditText field = detailToTextField.get(editable);
+                                isEditable = accountInfoOpSet.isDetailClassEditable(editable);
 
-                            if (editable.equals(BirthDateDetail.class))
-                                mCalenderButton.setEnabled(isEditable);
-                            else if (editable.equals(ImageDetail.class))
-                                avatarView.setEnabled(isEditable);
-                            else {
-                                if (field != null) {
-                                    field.setEnabled(isEditable);
-                                    if (isEditable)
-                                        field.addTextChangedListener(editTextWatcher);
+                                if (editable.equals(BirthDateDetail.class))
+                                    mCalenderButton.setEnabled(isEditable);
+                                else if (editable.equals(ImageDetail.class))
+                                    avatarView.setEnabled(isEditable);
+                                else {
+                                    if (field != null) {
+                                        field.setEnabled(isEditable);
+                                        if (isEditable)
+                                            field.addTextChangedListener(editTextWatcher);
+                                    }
                                 }
                             }
                         }
-                    }
-                    // get user avatar via XEP-0084
-                    getUserAvatarData();
+                        // get user avatar via XEP-0084
+                        getUserAvatarData();
+                    });
                 });
-            });
+            }
         }
     }
 

@@ -1,32 +1,30 @@
 #!/bin/bash
 #
 # Copyright 2016 Eng Chong Meng
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# (20210521) aTalk v2.6.1 uses libvpx-1.10.0, and the scripts are verified for this version only
 #set -x
 set -u
 . _settings.sh
+HOST_NUM_CORES=$(nproc)
 
 LIB_VPX="libvpx"
-LIB_GIT=v1.13.1
+LIB_GIT=v1.15.2
+echo -e "\n### Fetch and generate libs-xxx.mk files for vpx ${LIB_GIT} ###"
 
 # Auto fetch and unarchive libvpx from online repository
 ./init_libvpx.sh ${LIB_GIT}
-
-# Applying required patches to libvpx-1.10.0
-./libvpx_patch.sh ${LIB_VPX}
 
 if [[ -f "${LIB_VPX}/build/make/version.sh" ]]; then
   version=$("${LIB_VPX}/build/make/version.sh" --bare "${LIB_VPX}")
@@ -34,10 +32,7 @@ fi
 
 # Unarchive library, then configure and make for specified architectures
 configure_make() {
-  pushd "${LIB_VPX}" || exit
   ABI=$1;
-  echo -e "\n** BUILD STARTED: ${LIB_VPX} (${version}) for ${ABI} **"
-
   configure "$@"
   case ${ABI} in
 	armeabi-v7a)
@@ -91,16 +86,19 @@ configure_make() {
     --disable-webm-io || exit 1
 
   make -j"${HOST_NUM_CORES}" install
-  popd || true
 }
 
+pushd "${LIB_VPX}" || exit
 for ((i=0; i < ${#ABIS[@]}; i++))
 do
   if [[ $# -eq 0 ]] || [[ "$1" == "${ABIS[i]}" ]]; then
+    echo -e "\n** BUILD STARTED: ${LIB_VPX} (${version}) for ${ABIS[i]} **"
+
     # Do not build 64 bit arch if ANDROID_API is less than 21 which is
     # the minimum supported API level for 64 bit.
     [[ ${ANDROID_API} -lt 21 ]] && ( echo "${ABIS[i]}" | grep 64 > /dev/null ) && continue;
     configure_make "${ABIS[i]}"
-    echo -e "** BUILD COMPLETED: ${LIB_VPX} for ${ABIS[i]} **\n\n"
+    echo -e "** BUILD COMPLETED: ${LIB_VPX} for ${ABIS[i]} **\n"
   fi
 done
+popd || true

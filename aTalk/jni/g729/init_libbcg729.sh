@@ -23,11 +23,12 @@ else
   LIB_BCG729_VER="1.1.1"
   LIB_BCG729_GIT="${LIB_BCG729_VER}/${LIB_BCG729}-${LIB_BCG729_VER}"
 fi
+echo -e "\n### Fetch g729 (bcg729-${LIB_BCG729_VER}) libraries source ###"
 
 if [[ -d ${LIB_BCG729} ]]; then
   version="$(grep '^project' < ${LIB_BCG729}/CMakeLists.txt | sed 's/^.*\([1-9]\.[0-9]\.[0-9]\).*$/\1/')"
   if [[ "${LIB_BCG729_VER}" =~ .*"${version}".* ]]; then
-    echo -e "\n========== Current ${LIB_BCG729} source is: ${LIB_BCG729}-${version} =========="
+    echo -e "========== Current ${LIB_BCG729} source is: ${LIB_BCG729}-${version} ==========\n"
     exit 0
   fi
 fi

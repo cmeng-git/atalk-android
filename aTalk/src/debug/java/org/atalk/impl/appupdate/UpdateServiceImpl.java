@@ -260,7 +260,7 @@ public class UpdateServiceImpl implements UpdateService {
 
     public static boolean installPackage(Context context, Uri fileUri) {
         PackageInstaller installer = context.getPackageManager().getPackageInstaller();
-        SessionParams params = new SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+        SessionParams params = new SessionParams(SessionParams.MODE_FULL_INSTALL);
         params.setAppPackageName(context.getPackageName());
 
         try (InputStream apkStream = context.getContentResolver().openInputStream(fileUri)) {

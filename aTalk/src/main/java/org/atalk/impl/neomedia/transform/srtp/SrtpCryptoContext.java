@@ -34,11 +34,11 @@
  */
 package org.atalk.impl.neomedia.transform.srtp;
 
+import java.util.Arrays;
+
 import org.atalk.impl.neomedia.transform.srtp.utils.SrtpPacketUtils;
 import org.atalk.util.ByteArrayBuffer;
 import org.bouncycastle.crypto.params.KeyParameter;
-
-import java.util.Arrays;
 
 import timber.log.Timber;
 
@@ -63,8 +63,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class SrtpCryptoContext extends BaseSrtpCryptoContext
-{
+public class SrtpCryptoContext extends BaseSrtpCryptoContext {
     /**
      * For the receiver only, the rollover counter guessed from the sequence number of the received
      * packet that is currently being processed (i.e. the value is valid during the execution of
@@ -106,8 +105,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
      * the new instance is to be used by an SRTP receiver
      * @param ssrc SSRC of this SrtpCryptoContext
      */
-    public SrtpCryptoContext(boolean sender, int ssrc)
-    {
+    public SrtpCryptoContext(boolean sender, int ssrc) {
         super(ssrc);
         this.sender = sender;
         roc = 0;
@@ -131,8 +129,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
      */
     public SrtpCryptoContext(
             boolean sender, int ssrc, int roc,
-            byte[] masterK, byte[] masterS, SrtpPolicy policy)
-    {
+            byte[] masterK, byte[] masterS, SrtpPolicy policy) {
         super(ssrc, masterK, masterS, policy);
         this.sender = sender;
         this.roc = roc;
@@ -145,11 +142,11 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
      * <code>SrtpCryptoContext</code> specifies that authentication is to be performed.
      *
      * @param pkt the <code>RawPacket</code> to authenticate
+     *
      * @return <code>true</code> if the <code>policy</code> of this <code>SrtpCryptoContext</code> specifies that authentication
      * is to not be performed or <code>pkt</code> was successfully authenticated; otherwise, <code>false</code>
      */
-    private SrtpErrorStatus authenticatePacket(ByteArrayBuffer pkt)
-    {
+    private SrtpErrorStatus authenticatePacket(ByteArrayBuffer pkt) {
         if (policy.getAuthType() != SrtpPolicy.NULL_AUTHENTICATION) {
             int tagLength = policy.getAuthTagLength();
 
@@ -178,11 +175,11 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
      *
      * @param seqNo sequence number of the packet
      * @param guessedIndex guessed ROC
+     *
      * @return <code>true</code> if the specified sequence number indicates that the
      * packet is not a replayed one; <code>false</code>, otherwise.
      */
-    SrtpErrorStatus checkReplay(int seqNo, long guessedIndex)
-    {
+    SrtpErrorStatus checkReplay(int seqNo, long guessedIndex) {
         // Compute the index of the previously received packet and its delta to the newly received packet.
         long localIndex = (((long) roc) << 16) | s_l;
         long delta = guessedIndex - localIndex;
@@ -212,8 +209,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
     /**
      * Derives the srtp session keys from the master key
      */
-    private void deriveSrtpKeys(byte[] masterKey, byte[] masterSalt)
-    {
+    private void deriveSrtpKeys(byte[] masterKey, byte[] masterSalt) {
         SrtpKdf kdf = new SrtpKdf(masterKey, masterSalt, policy);
 
         // compute the session salt
@@ -247,10 +243,10 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
      * SRTP packet with a specific sequence number.
      *
      * @param seqNo the sequence number of the received SRTP packet.
+     *
      * @return the SRTP index of the received SRTP packet with the specified <code>seqNo</code>
      */
-    private long guessIndex(int seqNo)
-    {
+    private long guessIndex(int seqNo) {
         if (s_l < 32768) {
             if (seqNo - s_l > 32768)
                 guessedROC = roc - 1;
@@ -271,8 +267,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
      *
      * @param pkt the RTP packet to be encrypted/decrypted
      */
-    private void processPacketAesCm(ByteArrayBuffer pkt)
-    {
+    private void processPacketAesCm(ByteArrayBuffer pkt) {
         int ssrc = SrtpPacketUtils.getSsrc(pkt);
         int seqNo = SrtpPacketUtils.getSequenceNumber(pkt);
         long index = (((long) guessedROC) << 16) | seqNo;
@@ -306,8 +301,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
      *
      * @param pkt the RTP packet to be encrypted/decrypted
      */
-    private void processPacketAesF8(ByteArrayBuffer pkt)
-    {
+    private void processPacketAesF8(ByteArrayBuffer pkt) {
         // 11 bytes of the RTP header are the 11 bytes of the iv
         // the first byte of the RTP header is not used.
         System.arraycopy(pkt.getBuffer(), pkt.getOffset(), ivStore, 0, 12);
@@ -344,11 +338,11 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
      * @param pkt the RTP packet that is just received
      * @param skipDecryption if {@code true}, the decryption of the packet will not be performed (so as not to waste
      * resources when it is not needed). The packet will still be authenticated and the ROC updated.
+     *
      * @return {@link SrtpErrorStatus#OK} if the packet can be accepted; an error status if
      * the packet failed authentication or failed replay check
      */
-    synchronized public SrtpErrorStatus reverseTransformPacket(ByteArrayBuffer pkt, boolean skipDecryption)
-    {
+    synchronized public SrtpErrorStatus reverseTransformPacket(ByteArrayBuffer pkt, boolean skipDecryption) {
         if (!SrtpPacketUtils.validatePacketLength(pkt, policy.getAuthTagLength())) {
             /* Too short to be a valid SRTP packet */
             return SrtpErrorStatus.INVALID_PACKET;
@@ -426,8 +420,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
      *
      * @param pkt the RTP packet that is going to be sent out
      */
-    synchronized public SrtpErrorStatus transformPacket(ByteArrayBuffer pkt)
-    {
+    synchronized public SrtpErrorStatus transformPacket(ByteArrayBuffer pkt) {
         int seqNo = SrtpPacketUtils.getSequenceNumber(pkt);
 
         if (!seqNumSet) {
@@ -484,8 +477,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
      * @param seqNo the sequence number of the accepted SRTP packet
      * @param guessedIndex the SRTP index of the accepted SRTP packet calculated by <code>guessIndex(int)</code>
      */
-    private void update(int seqNo, long guessedIndex)
-    {
+    private void update(int seqNo, long guessedIndex) {
         long delta = guessedIndex - ((((long) roc) << 16) | s_l);
 
         /* Update the replay bit mask. */
@@ -517,8 +509,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
     /**
      * Logs the current state of the replay window, for debugging purposes.
      */
-    private void logReplayWindow(long newIdx)
-    {
+    private void logReplayWindow(long newIdx) {
         Timber.d("Updated replay window with seqNo: %s. %s", newIdx,
                 SrtpPacketUtils.formatReplayWindow((roc << 16 | s_l), replayWindow, REPLAY_WINDOW_SIZE));
     }

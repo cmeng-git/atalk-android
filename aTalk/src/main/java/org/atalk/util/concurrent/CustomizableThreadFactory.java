@@ -25,8 +25,7 @@ import java.util.concurrent.ThreadFactory;
  */
 public final class CustomizableThreadFactory implements ThreadFactory
 {
-    private final ThreadFactory defaultThreadFactory
-        = Executors.defaultThreadFactory();
+    private final ThreadFactory defaultThreadFactory = Executors.defaultThreadFactory();
 
     private final String threadNamePrefix;
 
