@@ -30,10 +30,11 @@ if [[ -f "${LIB_VPX}/build/make/version.sh" ]]; then
   version=$("${LIB_VPX}/build/make/version.sh" --bare "${LIB_VPX}")
 fi
 
-# Unarchive library, then configure and make for specified architectures
+# configure and make for the specified ABI architectures
 configure_make() {
   ABI=$1;
   configure "$@"
+
   case ${ABI} in
 	armeabi-v7a)
       # TARGET="armv7-android-gcc --enable-neon --disable-neon-asm"
@@ -64,7 +65,6 @@ configure_make() {
   # valid only for 1.14.0; Not required for ndk: 22.1.7171670
   # --disable-neon-i8mm \
   # --disable-neon-dotprod \
-  PREFIX=${BASEDIR}/../../vpx/android/${ABI}
 
   ./configure \
     --prefix="${PREFIX}" \
@@ -93,10 +93,6 @@ for ((i=0; i < ${#ABIS[@]}; i++))
 do
   if [[ $# -eq 0 ]] || [[ "$1" == "${ABIS[i]}" ]]; then
     echo -e "\n** BUILD STARTED: ${LIB_VPX} (${version}) for ${ABIS[i]} **"
-
-    # Do not build 64 bit arch if ANDROID_API is less than 21 which is
-    # the minimum supported API level for 64 bit.
-    [[ ${ANDROID_API} -lt 21 ]] && ( echo "${ABIS[i]}" | grep 64 > /dev/null ) && continue;
     configure_make "${ABIS[i]}"
     echo -e "** BUILD COMPLETED: ${LIB_VPX} for ${ABIS[i]} **\n"
   fi

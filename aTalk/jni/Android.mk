@@ -32,7 +32,7 @@ include $(CLEAR_VARS)
 #include $(PREBUILT_SHARED_LIBRARY)
 
 ### FFMPEG library build using static libraries (ffmpeg=v5.1 / x264=164.3095) pre-built on ubuntu
-include ./ffmpeg/Android.mk
+include ./ffmpeg/Android_a.mk
 
 ### FFMPEG library build using shared libraries (ffmpeg=v5.1 / x264=164.3095) - multiple .so generated
 #include ./ffmpeg/Android_so.mk
@@ -49,14 +49,15 @@ include $(CLEAR_VARS)
 # ================================= LibVPX static library ============================================
 # LOCAL_PATH := $(ROOT)/static_library_built/libvpx
 # include $(CLEAR_VARS)
-# include $(LOCAL_PATH)/libvpx/build/make/Android.mk
+# include $(LOCAL_PATH)/libvpx/build/make/Android_ndk.mk
 
 # ================================= LibVPX (VP8 / VP9) ================================
 ### VPX shared library build using static libraries pre-built from source (v1.15.2) on Ubuntu
 LOCAL_PATH := $(ROOT)
 include $(CLEAR_VARS)
 VPX_DIR   := vpx
-include $(VPX_DIR)/Android.mk
+include $(VPX_DIR)/Android_a.mk
+# include $(VPX_DIR)/Android_ndk.mk
 
 # ================================= Opus ==============================================
 ### Opus sources is in directory jni/opus
@@ -107,5 +108,5 @@ include $(CLEAR_VARS)
 # include openssl/Android_ndk.mk
 
 ## Built from static library from source on ubuntu 22.04
-# (unable to build from source in jni using Android.mk)
-include ./openssl/Android.mk
+# (unable to build from source in jni using Android_ndk.mk)
+include ./openssl/Android_a.mk

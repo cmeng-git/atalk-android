@@ -63,8 +63,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 405000
-        versionName "4.5.0"
+        versionCode 405010
+        versionName "4.5.1"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -84,7 +84,7 @@ android {
             abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
         }
     }
-    ndkVersion = '28.1.13356709'
+    ndkVersion = '28.2.13676358'
 
     /*
      * Is OK for release version, but when build for debug it throws the following message and hangs aTalk:
@@ -238,15 +238,15 @@ dependencies {
     }
     implementation 'com.karumi:dexter:6.2.3'
 
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
-    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:5.0.4'
+    implementation 'com.github.bumptech.glide:glide:5.0.4'
     implementation 'com.github.seancfoley:ipaddress:5.5.1'
     implementation 'com.github.evgenyneu:js-evaluator-for-android:v6.0.0'
 
     implementation 'com.github.yalantis:ucrop:2.2.10'
     implementation 'com.google.android.material:material:1.12.0'
 
-    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.12'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.13'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta05'
     implementation 'com.squareup.okhttp3:okhttp:5.1.0' // 4.12.0'
 
@@ -294,13 +294,13 @@ dependencies {
     implementation 'org.jitsi:zrtp4j-light:4.1.2'
 
     // Required for provisioning discovery
-    implementation 'org.jmdns:jmdns:3.6.1'
+    implementation 'org.jmdns:jmdns:3.6.2'
     implementation 'org.opentelecoms.sdp:sdp-api:1.0'
 
     implementation "org.igniterealtime.smack:smack-android-extensions:$smackVersion"
     implementation "org.igniterealtime.jbosh:jbosh:0.9.2"
 
-    implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
+    // implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
     implementation "org.igniterealtime.smack:smack-core:$smackVersion"
     // implementation "org.igniterealtime.smack:smack-experimental:$smackVersion"
     // implementation "org.igniterealtime.smack:smack-extensions:$smackVersion"
@@ -412,6 +412,16 @@ dependencies {
         classRename 'org.apache.commons.codec.binary.Base64', 'org.apache.commons.codec.binary.ApacheBase64'
     }
 
+    // smack-bosh
+    implementation jarjar.repackage("smack-bosh-${smackVersion}.jar") {
+        from("org.igniterealtime.smack:smack-bosh:${smackVersion}") {
+            transitive = false
+        }
+
+        // Fix XMPP-Bosh reconnection failure on network changed
+        classDelete 'org.jivesoftware.smack.bosh.XMPPBOSHConnection**'
+    }
+
     // smack-experimental
     implementation jarjar.repackage("smack-experimental-${smackVersion}.jar") {
         from("org.igniterealtime.smack:smack-experimental:${smackVersion}") {
@@ -509,7 +519,7 @@ task initJniLibs(type: Exec) {
 
 /*
  * This task fetches the sources if not found or incorrect version, and builds the static libraries for:
- * openssl, x264 and ffmpeg per the specified versions in the scripts. The task also performs the initJniLibs().
+ * vpx, openssl, x264 and ffmpeg per the specified versions in the scripts. The task also performs the initJniLibs().
  * This task needs to be executed at least once before the actual aTalk apk build process.
  * Refer to all README files in .jni/static_library_built for more detail.
  */

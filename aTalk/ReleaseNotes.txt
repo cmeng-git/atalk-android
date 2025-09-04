@@ -1,5 +1,13 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.5.1 (405010)
+Release Date:   09/04/2025
+Author:         cmeng
+- Fix XMPP-Bosh reconnection failure on network changes; Need to set XMPPBOSHConnection#isFirstInitialization to true on network close on error.
+- Set ndkVersion = '28.2.13676358' in build.gradle
+- Clean up NDK build script files for vpx etc.
+
+=========================================================================
 Version:        4.5.0 (405000)
 Release Date:   08/28/2025
 Author:         cmeng

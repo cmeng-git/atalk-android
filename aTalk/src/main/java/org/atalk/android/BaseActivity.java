@@ -16,7 +16,6 @@
  */
 package org.atalk.android;
 
-import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -38,9 +37,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.util.LocaleHelper;
@@ -77,7 +73,6 @@ public class BaseActivity extends AppCompatActivity {
         ThemeHelper.setTheme(this);
         super.onCreate(savedInstanceState);
         configureToolBar();
-        // addMarginsForE2E(this);
 
         // Registers exit action listener
         ContextCompat.registerReceiver(this, exitListener,
@@ -163,24 +158,6 @@ public class BaseActivity extends AppCompatActivity {
             ActionBarUtil.setAvatar(this, R.drawable.ic_icon);
         }
     }
-
-    // Perform this in aTalkApp.
-//    public static void addMarginsForE2E(Activity activity) {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-//            // must not use getRootView();
-//            View view = activity.getWindow().getDecorView().findViewById(android.R.id.content);
-//            ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
-//                Insets barsInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
-//                v.setPadding(
-//                        barsInsets.left,
-//                        barsInsets.top,
-//                        barsInsets.right,
-//                        barsInsets.bottom
-//                );
-//                return WindowInsetsCompat.CONSUMED;
-//            });
-//        }
-//    }
 
     /**
      * Returns the content <code>View</code>.

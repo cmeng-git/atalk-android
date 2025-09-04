@@ -16,18 +16,11 @@
 
 # Uncomment the line below to see all script echo to terminal
 # set -x
+set -u
 
 # Max NDK version with 'ld.gold' and 'as', that are only compatible with libvpx
-export ANDROID_NDK=/opt/android/android-sdk/ndk/22.1.7171670/
-
-if [[ -z $ANDROID_NDK ]] || [[ ! -d $ANDROID_NDK ]] ; then
-	echo "You need to set ANDROID_NDK environment variable, exiting"
-	echo "Use: export ANDROID_NDK='your_path_to_ndk'"
-	echo "e.g.: export ANDROID_NDK=/opt/android/android-sdk/ndk/22.1.7171670"
-	exit 1
-fi
-
-set -u
+# export NDK not required for libvpx build
+NDK=/opt/android/android-sdk/ndk/22.1.7171670/
 
 # Never mix two api level to build static library for use on the same apk.
 # Set to API:21 for aTalk 64-bit architecture support and minSdk support
@@ -40,7 +33,6 @@ ANDROID_API=24
 ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")
 
 BASEDIR=`pwd`
-NDK=${ANDROID_NDK}
 
 # https://gcc.gnu.org/onlinedocs/gcc-4.9.1/gcc/Optimize-Options.html
 # Note: vpx with ABIs x86 and x86_64 build has error with option -fstack-protector-all
@@ -121,10 +113,8 @@ configure() {
 
   # Define the install-directory of the libs and include files etc
   # Directly install to aTalk ./jni/vpx
-  # required by libvpx build/make/Android.mk
-  # BUILD_PFX=${BASEDIR}/../../vpx/libvpx
-  export BUILD_PFX=vpx/libvpx
-  
+  PREFIX=${BASEDIR}/android/${ABI}
+
   # Add the standalone toolchain to the search path.
   export PATH=${TOOLCHAIN_PREFIX}/bin:$PATH
   export CROSS_PREFIX=${TOOLCHAIN_PREFIX}/bin/${NDK_ABIARCH}-
@@ -151,6 +141,6 @@ configure() {
   echo "**********************************************"
   echo "### Use NDK=${NDK}"
   echo "### Use ANDROID_API=${ANDROID_API}"
-  echo "### Install directory: BUILD_PFX=${BUILD_PFX}"
+  echo "### Install directory: PREFIX=${PREFIX}"
   echo "**********************************************"
 }

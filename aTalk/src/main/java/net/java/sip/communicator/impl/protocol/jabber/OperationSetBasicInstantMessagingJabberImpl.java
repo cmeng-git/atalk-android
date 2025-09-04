@@ -12,7 +12,6 @@ import android.text.Html;
 import android.text.TextUtils;
 
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;

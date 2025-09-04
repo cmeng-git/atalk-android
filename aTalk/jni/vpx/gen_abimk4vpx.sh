@@ -17,6 +17,7 @@
 #set -x
 set -u
 . _settings.sh
+HOST_NUM_CORES=$(nproc)
 
 LIB_VPX="libvpx"
 LIB_GIT=v1.15.2
@@ -29,7 +30,7 @@ if [[ -f "${LIB_VPX}/build/make/version.sh" ]]; then
   version=$("${LIB_VPX}/build/make/version.sh" --bare "${LIB_VPX}")
 fi
 
-# Generate the make file for the specified ABI architectures
+# configure and make for the specified ABI architectures
 configure_make() {
   ABI=$1;
   configure "$@"
@@ -50,12 +51,20 @@ configure_make() {
     ;;
   esac
 
+  if [[ -f "config.log" ]]; then
+      config_target="$(grep "Configuring for target" < "config.log" | sed "s/^.* '\(.*\)'$/\1/")"
+      if [[ ${TARGET} != "${config_target}" ]]; then
+        make clean
+      fi
+  else
+    make clean
+  fi
+
   # Directly install to aTalk ./jni/vpx
   # --enable-bitstream-debug \
   # valid only for 1.14.0; Not required for ndk: 22.1.7171670
   # --disable-neon-i8mm \
   # --disable-neon-dotprod \
-  PREFIX=${BASEDIR}/../../vpx/android/${ABI}
 
   ./configure \
     --prefix="${PREFIX}" \
@@ -75,18 +84,19 @@ configure_make() {
     --enable-vp9-highbitdepth \
     --enable-better-hw-compatibility \
     --disable-webm-io || exit 1
+
+  make -j"${HOST_NUM_CORES}"
 }
 
 pushd "${LIB_VPX}" || exit
 for ((i=0; i < ${#ABIS[@]}; i++))
 do
   if [[ $# -eq 0 ]] || [[ "$1" == "${ABIS[i]}" ]]; then
-    echo -e "\n** CONFIGURE STARTED: ${LIB_VPX} (${version}) for ${ABIS[i]} **"
+    echo -e "\n** BUILD STARTED: ${LIB_VPX} (${version}) for ${ABIS[i]} **"
     configure_make "${ABIS[i]}"
-    if [[ -f ./libs-${TARGET}.mk ]]; then
-      mv ./libs-${TARGET}.mk ../
-    fi
-    echo -e "** CONFIGURE COMPLETED: ${LIB_VPX} for ${ABIS[i]} **\n"
+    echo -e "** BUILD COMPLETED: ${LIB_VPX} for ${ABIS[i]} **\n"
   fi
 done
+# must only move the files outside the loop.
+# mv ./libs-*.mk ../
 popd || true
