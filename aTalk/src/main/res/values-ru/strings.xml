@@ -32,11 +32,11 @@
     <string name="account_server_override">Отменить настройку сервера</string>
     <string name="account_ibr_on_server">Зарегистрировать новую учётную запись на сервере</string>
     <string name="account_server_ip">IP-адрес сервера для подключения</string>
-    <string name="ibr_registration">Регистрация IB</string>
+    <string name="ibr_registration">Регистрация на сервере</string>
     <string name="captcha_ibr_request">Регистрация проверка через Captcha</string>
     <string name="captcha_ibr_failed">Ошибка регистрации неверный код с проверочной капчи!\n%1$s</string>
-    <string name="captcha_ibr_success">Регистрация-Captcha прошла успешно.\nВы можете перейти к регистрации!</string>
-    <string name="captcha_ibr_reason">Inband регистрация, запрошенная пользователем</string>
+    <string name="captcha_ibr_success">Регистрация-Captcha прошла успешно.\nВы можете теперь войти!</string>
+    <string name="captcha_ibr_reason">Регистрация, запрошенная пользователем</string>
     <string name="captcha_ibr_pwd_empty">Ошибка: поле пароля пусто!</string>
     <string name="captcha_ibr_hint">Введите текст, который вы видите</string>
     <string name="captcha_ibr_retry">Нажмите «ОК», чтобы повторить попытку, или «Отмена», чтобы завершить</string>
