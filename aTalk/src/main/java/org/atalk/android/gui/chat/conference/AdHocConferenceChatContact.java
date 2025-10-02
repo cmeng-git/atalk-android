@@ -25,22 +25,19 @@ import org.atalk.android.gui.chat.ChatContact;
  * @author Valentin Martinet
  * @author Lubomir Marinov
  */
-public class AdHocConferenceChatContact extends ChatContact<Contact>
-{
+public class AdHocConferenceChatContact extends ChatContact<Contact> {
 
     /**
      * Creates an instance of <code>AdHocConferenceChatContact</code> by passing to it the <code>Contact</code> for which it is created.
      *
      * @param participant the <code>Contact</code> for which this <code>AdHocConferenceChatContact</code> is created.
      */
-    public AdHocConferenceChatContact(Contact participant)
-    {
+    public AdHocConferenceChatContact(Contact participant) {
         super(participant);
     }
 
     @Override
-    protected byte[] getAvatarBytes()
-    {
+    protected byte[] getAvatarBytes() {
         return descriptor.getImage(false);
     }
 
@@ -50,8 +47,7 @@ public class AdHocConferenceChatContact extends ChatContact<Contact>
      * @return the contact name
      */
     @Override
-    public String getName()
-    {
+    public String getName() {
         String name = descriptor.getDisplayName();
         if (StringUtils.isEmpty(name))
             name = aTalkApp.getResString(R.string.unknown_user);
@@ -62,8 +58,7 @@ public class AdHocConferenceChatContact extends ChatContact<Contact>
      * Implements ChatContact#getUID(). Delegates to Contact#getAddress() because it's supposed to be unique.
      */
     @Override
-    public String getUID()
-    {
+    public String getUID() {
         return descriptor.getAddress();
     }
 }

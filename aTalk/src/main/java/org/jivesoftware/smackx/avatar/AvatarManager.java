@@ -189,7 +189,7 @@ public class AvatarManager extends Manager {
      * @param avatarImage Byte[] value of avatar image data.
      */
     protected static boolean addAvatarImageByAvatarId(String avatarId, byte[] avatarImage) {
-        if (!StringUtils.isEmpty(avatarId) && isAvatarNew(null, avatarId)) {
+        if (StringUtils.isNotEmpty(avatarId) && isAvatarNew(null, avatarId)) {
             cacheAvatar.addAvatarByHash(avatarId, avatarImage);
             if (persistentAvatarCache != null)
                 persistentAvatarCache.addAvatarByHash(avatarId, avatarImage);
@@ -210,7 +210,7 @@ public class AvatarManager extends Manager {
             return null;
 
         String avatarId = getAvatarHash(avatarImage);
-        if (!StringUtils.isEmpty(avatarId)) {
+        if (StringUtils.isNotEmpty(avatarId)) {
             addAvatarImageByAvatarId(avatarId, avatarImage);
         }
         return avatarId;
@@ -282,7 +282,7 @@ public class AvatarManager extends Manager {
      */
     protected static void addJidToAvatarHashIndex(BareJid userId, String avatarHash) {
         // Create an index hash for the jid
-        if (!StringUtils.isEmpty(avatarHash)) {
+        if (StringUtils.isNotEmpty(avatarHash)) {
             cacheJidToAvatarId.put(userId, avatarHash);
             if (persistentJidToHashIndex != null) {
                 persistentJidToHashIndex.addHashByJid(userId, avatarHash);
@@ -300,7 +300,7 @@ public class AvatarManager extends Manager {
         String avatarId = getAvatarHashByJid(jid);
         LOGGER.log(Level.INFO, "Purge avatar from store for: (" + jid + ") => " + avatarId);
 
-        if (!StringUtils.isEmpty(avatarId)) {
+        if (StringUtils.isNotEmpty(avatarId)) {
             if (persistentAvatarCache != null) {
                 persistentAvatarCache.purgeItemFor(avatarId);
             }
@@ -351,7 +351,7 @@ public class AvatarManager extends Manager {
             BareJid contactJid = rosterEntry.getJid();
             if (!contactJid.equals(userId.toString())) {
                 String imageHash = getAvatarHashByJid(contactJid);
-                if (!StringUtils.isEmpty(imageHash) && imageHash.equals(avatarHash)) {
+                if (StringUtils.isNotEmpty(imageHash) && imageHash.equals(avatarHash)) {
                     return true;
                 }
             }
@@ -405,14 +405,14 @@ public class AvatarManager extends Manager {
             String rosterContacts = persistentJidToHashIndex.getHashForJid(rosterFileName);
 
             // Remove avatar info for all contacts of this account
-            if (!StringUtils.isNullOrEmpty(rosterContacts)) {
+            if (StringUtils.isNotEmpty(rosterContacts)) {
                 String[] contacts = rosterContacts.split(",");
                 for (String contact : contacts) {
                     BareJid contactJid = JidCreate.bareFrom(contact);
                     String imageHash = getAvatarHashByJid(contactJid);
 
                     // May purge multipleOwner's avatar info - leave them as it???
-                    if (!StringUtils.isEmpty(imageHash)) { // && isHashMultipleOwner(contactJid, imageHash))
+                    if (StringUtils.isNotEmpty(imageHash)) { // && isHashMultipleOwner(contactJid, imageHash))
                         persistentJidToHashIndex.purgeItemFor(contactJid);
                         if (persistentAvatarCache != null)
                             persistentAvatarCache.purgeItemFor(imageHash);
@@ -427,7 +427,7 @@ public class AvatarManager extends Manager {
 
                 // Finally remove account own avatar info
                 String imageHash = getAvatarHashByJid(account);
-                if (!StringUtils.isEmpty(imageHash))
+                if (StringUtils.isNotEmpty(imageHash))
                     persistentAvatarCache.purgeItemFor(imageHash);
                 persistentJidToHashIndex.purgeItemFor(account);
 

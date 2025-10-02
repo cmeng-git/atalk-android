@@ -227,7 +227,7 @@ public class AppCallListener implements CallListener, CallChangeListener {
      * a. an incoming call is accepted via Jingle Message Initiation or
      * b. an outgoing call has been initiated.
      *
-     * @param call the <code>Call</code> to be handled
+     * @param sid the Call sid to be handled
      */
     private void startVideoCallActivity(String sid) {
         // Check for resource permission before continue; min mic is enabled

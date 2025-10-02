@@ -235,11 +235,9 @@ public class CallHistoryContactSource implements ContactSourceService {
         }
 
         /**
-         * Returns the <code>ContactSourceService</code>, where this query was first
-         * initiated.
+         * Returns the <code>ContactSourceService</code>, where this query was first initiated.
          *
-         * @return the <code>ContactSourceService</code>, where this query was first
-         * initiated
+         * @return the <code>ContactSourceService</code>, where this query was first initiated
          */
         public ContactSourceService getContactSource() {
             return CallHistoryContactSource.this;

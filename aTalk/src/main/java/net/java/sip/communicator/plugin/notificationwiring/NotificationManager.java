@@ -1105,7 +1105,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         }
 
         // update unread count for fired notification.
-        updateMessageCount(contact);
+        updateUnreadCount(contact);
     }
 
     /**
@@ -1115,7 +1115,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param contact the message recipient to which the unread count is to be updated
      */
-    public static void updateMessageCount(Contact contact) {
+    public static void updateUnreadCount(Contact contact) {
         MetaContact metaContact = AppGUIActivator.getContactListService().findMetaContactByContact(contact);
         if (metaContact != null) {
             int unreadCount = metaContact.getUnreadCount() + 1;

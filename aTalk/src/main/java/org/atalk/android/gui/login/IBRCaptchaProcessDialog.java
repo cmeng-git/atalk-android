@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -333,7 +332,7 @@ public class IBRCaptchaProcessDialog extends Dialog {
     private void getCaptcha(String urlString) {
         new Thread(() -> {
             try {
-                if (!TextUtils.isEmpty(urlString)) {
+                if (StringUtils.isNotEmpty(urlString)) {
                     URL url = new URL(urlString);
                     mCaptcha = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                     showCaptchaContent();
@@ -539,7 +538,7 @@ public class IBRCaptchaProcessDialog extends Dialog {
                 errMsg = ex.getMessage();
                 if (ex instanceof XMPPException.XMPPErrorException) {
                     String errDetails = ((XMPPException.XMPPErrorException) ex).getStanzaError().getDescriptiveText();
-                    if (!StringUtils.isEmpty(errDetails))
+                    if (StringUtils.isNotEmpty(errDetails))
                         errMsg += "\n" + errDetails;
                 }
             }

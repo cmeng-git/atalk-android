@@ -14,6 +14,8 @@ import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
+
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallState;
 import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
@@ -46,7 +48,7 @@ public class ReceivedCallActivity extends BaseActivity implements CallChangeList
     /**
      * The corresponding call.
      */
-    private Call call;
+    private Call mCall;
 
     /**
      * Called when the activity is starting. Initializes the call identifier.
@@ -64,11 +66,11 @@ public class ReceivedCallActivity extends BaseActivity implements CallChangeList
         hangupView.setOnClickListener(v -> hangupCall());
 
         ImageView mCallButton = findViewById(R.id.callButton);
-        mCallButton.setOnClickListener(v -> answerCall(call, false));
+        mCallButton.setOnClickListener(v -> answerCall(mCall, false));
 
         // Proceed with video call only if camera permission is granted.
         ImageView mVideoCallButton = findViewById(R.id.videoCallButton);
-        mVideoCallButton.setOnClickListener(v -> answerCall(call,
+        mVideoCallButton.setOnClickListener(v -> answerCall(mCall,
                 aTalk.hasPermission(this, false, aTalk.PRC_CAMERA, Manifest.permission.CAMERA)));
 
         Bundle extras = getIntent().getExtras();
@@ -77,15 +79,15 @@ public class ReceivedCallActivity extends BaseActivity implements CallChangeList
             mSid = extras.getString(CallManager.CALL_SID);
 
             // Handling the incoming JingleCall
-            call = CallManager.getActiveCall(mSid);
-            if (call != null) {
+            mCall = CallManager.getActiveCall(mSid);
+            if (mCall != null) {
                 // call.setAutoAnswer(mAutoAccept);
 
-                String Callee = CallUIUtils.getCalleeAddress(call);
+                String Callee = CallUIUtils.getCalleeAddress(mCall);
                 TextView addressView = findViewById(R.id.calleeAddress);
                 addressView.setText(Callee);
 
-                byte[] avatar = CallUIUtils.getCalleeAvatar(call);
+                byte[] avatar = CallUIUtils.getCalleeAvatar(mCall);
                 if (avatar != null) {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.length);
                     ImageView avatarView = findViewById(R.id.calleeAvatar);
@@ -101,6 +103,7 @@ public class ReceivedCallActivity extends BaseActivity implements CallChangeList
             if (extras.getBoolean(CallManager.AUTO_ACCEPT, false))
                 mVideoCallButton.performClick();
         }
+        getOnBackPressedDispatcher().addCallback(backPressedCallback);
     }
 
     /**
@@ -110,12 +113,12 @@ public class ReceivedCallActivity extends BaseActivity implements CallChangeList
     protected void onResume() {
         super.onResume();
         // Call is null for call via JingleMessage <propose/>
-        if (call != null) {
-            if (call.getCallState().equals(CallState.CALL_ENDED)) {
+        if (mCall != null) {
+            if (mCall.getCallState().equals(CallState.CALL_ENDED)) {
                 finish();
             }
             else {
-                call.addCallChangeListener(this);
+                mCall.addCallChangeListener(this);
             }
         }
     }
@@ -125,8 +128,8 @@ public class ReceivedCallActivity extends BaseActivity implements CallChangeList
      */
     @Override
     protected void onPause() {
-        if (call != null) {
-            call.removeCallChangeListener(this);
+        if (mCall != null) {
+            mCall.removeCallChangeListener(this);
         }
         NotificationPopupHandler.removeCallNotification(mSid);
         super.onPause();
@@ -151,22 +154,19 @@ public class ReceivedCallActivity extends BaseActivity implements CallChangeList
      * Hangs up the call and finishes this <code>Activity</code>.
      */
     private void hangupCall() {
-        CallManager.hangupCall(call);
+        CallManager.hangupCall(mCall);
         finish();
     }
 
-    /**
-     * {@inheritDoc}
+    /*
+     * Do not allow backKey to terminate call; use hangup call button.
      */
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        // Block the back key action to end this activity.
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // hangupCall();
-            return true;
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+          // Block the back key action to end the call activity.
         }
-        return super.onKeyUp(keyCode, event);
-    }
+    };
 
     /**
      * Indicates that a new call peer has joined the source call.
@@ -174,7 +174,6 @@ public class ReceivedCallActivity extends BaseActivity implements CallChangeList
      * @param evt the <code>CallPeerEvent</code> containing the source call and call peer.
      */
     public void callPeerAdded(CallPeerEvent evt) {
-
     }
 
     /**
@@ -183,7 +182,6 @@ public class ReceivedCallActivity extends BaseActivity implements CallChangeList
      * @param evt the <code>CallPeerEvent</code> containing the source call and call peer.
      */
     public void callPeerRemoved(CallPeerEvent evt) {
-
     }
 
     /**

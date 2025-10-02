@@ -109,7 +109,6 @@ public class MediaStreamTrackDesc
     /**
      * Gets the last "stable" bitrate (in bps) of the encoding of the specified index. The
      * "stable" bitrate is measured on every new frame and with a 5000ms window.
-     *
      * to have fresh data and not just its active property to be set to true.
      *
      * @return the last "stable" bitrate (bps) of the encoding at the specified index.

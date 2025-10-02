@@ -1,4 +1,5 @@
 #!/bin/bash
+# set -x
 . _settings.sh "$@"
 
 pushd x264 || exit
@@ -26,7 +27,10 @@ fi
 # for ndk-r16b and above
 # --extra-cflags="-isystem ${NDK_SYSROOT}/usr/include/${NDK_ABIARCH} -isystem ${NDK_SYSROOT}/usr/include"
 
-make clean
+# Check for existence of config.h (old make) before proceed with clean.
+if [[ -f "config.h" ]]; then
+  make clean
+fi
 
 ./configure \
   --prefix=${PREFIX} \

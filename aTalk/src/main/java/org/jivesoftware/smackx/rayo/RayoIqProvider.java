@@ -13,7 +13,7 @@
  */
 package org.jivesoftware.smackx.rayo;
 
-import org.apache.commons.lang3.StringUtils;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.DefaultExtensionElementProvider;
@@ -86,7 +86,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
             String dst = parser.getAttributeValue("", DialIq.DST_ATTR_NAME);
 
             // Destination is mandatory
-            if (StringUtils.isEmpty(dst))
+            if (StringUtils.isNullOrEmpty(dst))
                 return null;
 
             dial.setSource(src);
@@ -95,7 +95,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         else if (RefIq.ELEMENT.equals(rootElement)) {
             iq = ref = new RefIq();
             String uri = parser.getAttributeValue("", RefIq.URI_ATTR_NAME);
-            if (StringUtils.isEmpty(uri))
+            if (StringUtils.isNullOrEmpty(uri))
                 return null;
             ref.setUri(uri);
         }

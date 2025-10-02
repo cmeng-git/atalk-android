@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import com.yalantis.ucrop.UCrop;
 
@@ -623,8 +624,8 @@ public class AccountInfoPresenceActivity extends BaseActivity
              * Called on the event dispatching thread (not on the worker thread)
              * after the {@code construct} method has returned.
              */
-            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                eService.execute(() -> {
+            try (ExecutorService sThread = Executors.newSingleThreadExecutor()) {
+                sThread.execute(() -> {
                     Iterator<GenericDetail> allDetails = accountInfoOpSet.getAllAvailableDetails();
                     runOnUiThread(() -> {
                         if (allDetails != null) {
@@ -656,6 +657,16 @@ public class AccountInfoPresenceActivity extends BaseActivity
                         getUserAvatarData();
                     });
                 });
+                sThread.shutdown();
+                try {
+                    if (!sThread.awaitTermination(1500, TimeUnit.MILLISECONDS)) {
+                        Timber.w("DetailsLoadWorker shutDown on timeout!");
+                        sThread.shutdownNow();
+                    }
+                } catch (InterruptedException ex) {
+                    sThread.shutdownNow();
+                    Thread.currentThread().interrupt();
+                }
             }
         }
     }

@@ -267,8 +267,8 @@ public class CallHistoryFragment extends BaseFragment
             }
 
             public void execute() {
-                try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                    eService.execute(() -> {
+                try (ExecutorService sThread = Executors.newSingleThreadExecutor()) {
+                    sThread.execute(() -> {
                         doInBackground();
 
                         BaseActivity.uiHandler.post(() -> {

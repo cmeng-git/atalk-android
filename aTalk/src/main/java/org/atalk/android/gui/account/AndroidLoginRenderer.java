@@ -7,6 +7,8 @@ package org.atalk.android.gui.account;
 
 import android.graphics.drawable.Drawable;
 
+import java.beans.PropertyChangeEvent;
+
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
 import net.java.sip.communicator.service.muc.MUCService;
@@ -34,13 +36,11 @@ import org.atalk.android.gui.authorization.AuthorizationHandlerImpl;
 import org.atalk.android.gui.call.AppCallListener;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.util.AppImageUtil;
 import org.atalk.android.gui.util.AppUtils;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.gui.util.event.EventListenerList;
+import org.atalk.android.util.AppImageUtil;
 import org.atalk.service.osgi.OSGiService;
-
-import java.beans.PropertyChangeEvent;
 
 /**
  * The <code>AndroidLoginRenderer</code> is the Android renderer for login events.
@@ -49,8 +49,7 @@ import java.beans.PropertyChangeEvent;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AndroidLoginRenderer implements LoginRenderer
-{
+public class AndroidLoginRenderer implements LoginRenderer {
     /**
      * The <code>CallListener</code>.
      */
@@ -106,8 +105,7 @@ public class AndroidLoginRenderer implements LoginRenderer
      *
      * @param defaultSecurityAuthority the security authority that will be used by this login renderer
      */
-    public AndroidLoginRenderer(SecurityAuthority defaultSecurityAuthority)
-    {
+    public AndroidLoginRenderer(SecurityAuthority defaultSecurityAuthority) {
         androidCallListener = new AppCallListener();
         mSecurityAuthority = defaultSecurityAuthority;
         authorizationHandler = new AuthorizationHandlerImpl();
@@ -118,8 +116,7 @@ public class AndroidLoginRenderer implements LoginRenderer
      *
      * @param protocolProvider the protocol provider for which we add the user interface
      */
-    public void addProtocolProviderUI(ProtocolProviderService protocolProvider)
-    {
+    public void addProtocolProviderUI(ProtocolProviderService protocolProvider) {
         OperationSetBasicTelephony<?> telOpSet = protocolProvider.getOperationSet(OperationSetBasicTelephony.class);
         if (telOpSet != null) {
             telOpSet.addCallListener(androidCallListener);
@@ -136,8 +133,7 @@ public class AndroidLoginRenderer implements LoginRenderer
      *
      * @param protocolProvider the protocol provider to remove
      */
-    public void removeProtocolProviderUI(ProtocolProviderService protocolProvider)
-    {
+    public void removeProtocolProviderUI(ProtocolProviderService protocolProvider) {
         OperationSetBasicTelephony<?> telOpSet = protocolProvider.getOperationSet(OperationSetBasicTelephony.class);
         if (telOpSet != null) {
             telOpSet.removeCallListener(androidCallListener);
@@ -157,8 +153,7 @@ public class AndroidLoginRenderer implements LoginRenderer
      *
      * @param protocolProvider the protocol provider for which we add the connecting user interface
      */
-    public void startConnectingUI(ProtocolProviderService protocolProvider)
-    {
+    public void startConnectingUI(ProtocolProviderService protocolProvider) {
     }
 
     /**
@@ -166,8 +161,7 @@ public class AndroidLoginRenderer implements LoginRenderer
      *
      * @param protocolProvider the protocol provider for which we remove the connecting user interface
      */
-    public void stopConnectingUI(ProtocolProviderService protocolProvider)
-    {
+    public void stopConnectingUI(ProtocolProviderService protocolProvider) {
     }
 
     /**
@@ -176,8 +170,7 @@ public class AndroidLoginRenderer implements LoginRenderer
      * @param protocolProvider the <code>ProtocolProviderService</code> corresponding to the connected account
      * @param date the date/time at which the account has connected
      */
-    public void protocolProviderConnected(ProtocolProviderService protocolProvider, long date)
-    {
+    public void protocolProviderConnected(ProtocolProviderService protocolProvider, long date) {
         OperationSetPresence presence = AccountStatusUtils.getProtocolPresenceOpSet(protocolProvider);
         if (presence != null) {
             presence.setAuthorizationHandler(authorizationHandler);
@@ -199,23 +192,19 @@ public class AndroidLoginRenderer implements LoginRenderer
      * @param loginManagerCallback the <code>LoginManager</code> implementation, which is managing the process
      */
     public void protocolProviderConnectionFailed(final ProtocolProviderService protocolProvider,
-            final LoginManager loginManagerCallback)
-    {
+            final LoginManager loginManagerCallback) {
         AccountID accountID = protocolProvider.getAccountID();
         DialogActivity.showConfirmDialog(aTalkApp.getInstance(),
                 R.string.error,
                 R.string.connection_failed_message,
                 R.string.retry,
-                new DialogActivity.DialogListener()
-                {
-                    public boolean onConfirmClicked(DialogActivity dialog)
-                    {
+                new DialogActivity.DialogListener() {
+                    public boolean onConfirmClicked(DialogActivity dialog) {
                         loginManagerCallback.login(protocolProvider);
                         return true;
                     }
 
-                    public void onDialogCancelled(DialogActivity dialog)
-                    {
+                    public void onDialogCancelled(DialogActivity dialog) {
                     }
                 }, accountID.getUserID(), accountID.getService());
     }
@@ -225,18 +214,17 @@ public class AndroidLoginRenderer implements LoginRenderer
      *
      * @param protocolProvider the specific <code>ProtocolProviderService</code>, for which we're obtaining a security
      * authority
+     *
      * @return the <code>SecurityAuthority</code> implementation related to this login renderer
      */
-    public SecurityAuthority getSecurityAuthorityImpl(ProtocolProviderService protocolProvider)
-    {
+    public SecurityAuthority getSecurityAuthorityImpl(ProtocolProviderService protocolProvider) {
         return mSecurityAuthority;
     }
 
     /**
      * Updates aTalk icon notification to reflect current global status.
      */
-    public void updateaTalkIconNotification()
-    {
+    public void updateaTalkIconNotification() {
         String status;
         if (getGlobalStatus().isOnline()) {
             // At least one provider is online
@@ -262,8 +250,7 @@ public class AndroidLoginRenderer implements LoginRenderer
      *
      * @param l the listener to be add.
      */
-    public void addGlobalStatusListener(EventListener<PresenceStatus> l)
-    {
+    public void addGlobalStatusListener(EventListener<PresenceStatus> l) {
         globalStatusListeners.addEventListener(l);
     }
 
@@ -272,8 +259,7 @@ public class AndroidLoginRenderer implements LoginRenderer
      *
      * @param l the listener to remove.
      */
-    public void removeGlobalStatusListener(EventListener<PresenceStatus> l)
-    {
+    public void removeGlobalStatusListener(EventListener<PresenceStatus> l) {
         globalStatusListeners.removeEventListener(l);
     }
 
@@ -282,8 +268,7 @@ public class AndroidLoginRenderer implements LoginRenderer
      *
      * @return current global status.
      */
-    public PresenceStatus getGlobalStatus()
-    {
+    public PresenceStatus getGlobalStatus() {
         if (globalStatus == null) {
             GlobalStatusService gss = AppGUIActivator.getGlobalStatusService();
             globalStatus = gss != null ? gss.getGlobalPresenceStatus() : GlobalStatusEnum.OFFLINE;
@@ -294,8 +279,7 @@ public class AndroidLoginRenderer implements LoginRenderer
     /**
      * AuthorizationHandler instance used by this login renderer.
      */
-    public AuthorizationHandlerImpl getAuthorizationHandler()
-    {
+    public AuthorizationHandlerImpl getAuthorizationHandler() {
         return authorizationHandler;
     }
 
@@ -303,15 +287,12 @@ public class AndroidLoginRenderer implements LoginRenderer
      * Listens for all providerStatusChanged and providerStatusMessageChanged events in order
      * to refresh the account status panel, when a status is changed.
      */
-    private class UIProviderPresenceStatusListener implements ProviderPresenceStatusListener
-    {
-        public void providerStatusChanged(ProviderPresenceStatusChangeEvent evt)
-        {
+    private class UIProviderPresenceStatusListener implements ProviderPresenceStatusListener {
+        public void providerStatusChanged(ProviderPresenceStatusChangeEvent evt) {
             updateGlobalStatus();
         }
 
-        public void providerStatusMessageChanged(PropertyChangeEvent evt)
-        {
+        public void providerStatusMessageChanged(PropertyChangeEvent evt) {
         }
     }
 
@@ -319,19 +300,18 @@ public class AndroidLoginRenderer implements LoginRenderer
      * Indicates if the given <code>protocolProvider</code> related user interface is already rendered.
      *
      * @param protocolProvider the <code>ProtocolProviderService</code>, which related user interface we're looking for
+     *
      * @return <code>true</code> if the given <code>protocolProvider</code> related user interface is
      * already rendered
      */
-    public boolean containsProtocolProviderUI(ProtocolProviderService protocolProvider)
-    {
+    public boolean containsProtocolProviderUI(ProtocolProviderService protocolProvider) {
         return false;
     }
 
     /**
      * Updates the global status by picking the most connected protocol provider status.
      */
-    private void updateGlobalStatus()
-    {
+    private void updateGlobalStatus() {
         // Only if the GUI is active (bundle context will be null on shutdown)
         if (AppGUIActivator.bundleContext != null) {
             // Invalidate local status image
@@ -349,8 +329,7 @@ public class AndroidLoginRenderer implements LoginRenderer
      *
      * @return the local user avatar drawable.
      */
-    public Drawable getLocalAvatarDrawable(ProtocolProviderService provider)
-    {
+    public Drawable getLocalAvatarDrawable(ProtocolProviderService provider) {
         GlobalDisplayDetailsService displayDetailsService
                 = AppGUIActivator.getGlobalDisplayDetailsService();
 
@@ -368,8 +347,7 @@ public class AndroidLoginRenderer implements LoginRenderer
      *
      * @return the local user status drawable
      */
-    synchronized public Drawable getLocalStatusDrawable()
-    {
+    synchronized public Drawable getLocalStatusDrawable() {
         byte[] statusImage = StatusUtil.getContactStatusIcon(getGlobalStatus());
         if (statusImage != localStatusRaw) {
             localStatusRaw = statusImage;

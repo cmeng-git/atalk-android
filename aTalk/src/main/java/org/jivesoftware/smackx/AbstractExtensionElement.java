@@ -13,9 +13,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -320,7 +320,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement {
         XmlStringBuilder childBuilder = new XmlStringBuilder();
 
         if (childElements.isEmpty() && childBuilder.length() == 0) {
-            if (StringUtils.isEmpty(text)) {
+            if (StringUtils.isNullOrEmpty(text)) {
                 return xml.closeEmptyElement();
             }
             else
@@ -329,7 +329,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement {
         else {
             synchronized (childElements) {
                 if (childElements.isEmpty() && (childBuilder.length() == 0)
-                        && (StringUtils.isEmpty(text))) {
+                        && (StringUtils.isNullOrEmpty(text))) {
                     return xml.closeEmptyElement();
                 }
                 else {

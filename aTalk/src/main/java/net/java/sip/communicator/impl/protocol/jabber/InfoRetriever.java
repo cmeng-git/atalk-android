@@ -5,6 +5,20 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.AboutMeDetail;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.AddressDetail;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.BirthDateDetail;
@@ -45,20 +59,6 @@ import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -67,8 +67,7 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class InfoRetriever
-{
+public class InfoRetriever {
     /**
      * A callback to the Jabber provider that created us.
      */
@@ -83,8 +82,7 @@ public class InfoRetriever
     public static final String BDAY_FORMAT_MEDIUM = "MMM dd, yyyy";
     public static final String BDAY_FORMAT_SHORT = "yyyy-mm-dd";
 
-    protected InfoRetriever(ProtocolProviderServiceJabberImpl jabberProvider, EntityBareJid ownerUin)
-    {
+    protected InfoRetriever(ProtocolProviderServiceJabberImpl jabberProvider, EntityBareJid ownerUin) {
         this.jabberProvider = jabberProvider;
     }
 
@@ -95,10 +93,10 @@ public class InfoRetriever
      *
      * @param uin String
      * @param detailClass Class
+     *
      * @return Iterator
      */
-    <T extends GenericDetail> Iterator<T> getDetailsAndDescendants(EntityBareJid uin, Class<T> detailClass)
-    {
+    <T extends GenericDetail> Iterator<T> getDetailsAndDescendants(EntityBareJid uin, Class<T> detailClass) {
         List<GenericDetail> details = getUserDetails(uin);
         List<T> result = new LinkedList<>();
 
@@ -116,10 +114,10 @@ public class InfoRetriever
      *
      * @param uin String
      * @param detailClass Class
+     *
      * @return Iterator
      */
-    Iterator<GenericDetail> getDetails(EntityBareJid uin, Class<? extends GenericDetail> detailClass)
-    {
+    Iterator<GenericDetail> getDetails(EntityBareJid uin, Class<? extends GenericDetail> detailClass) {
         List<GenericDetail> details = getUserDetails(uin);
         List<GenericDetail> result = new LinkedList<>();
 
@@ -139,10 +137,10 @@ public class InfoRetriever
      * request the full info for the given bareJid waits and return this details
      *
      * @param bareJid String
+     *
      * @return Vector the details
      */
-    List<GenericDetail> clearUserDetails(BareJid bareJid)
-    {
+    List<GenericDetail> clearUserDetails(BareJid bareJid) {
         return retrievedDetails.remove(bareJid);
     }
 
@@ -150,10 +148,10 @@ public class InfoRetriever
      * request the full info for the given bareJid waits and return this details
      *
      * @param bareJid String
+     *
      * @return Vector the details
      */
-    List<GenericDetail> getUserDetails(EntityBareJid bareJid)
-    {
+    List<GenericDetail> getUserDetails(EntityBareJid bareJid) {
         List<GenericDetail> result = getCachedUserDetails(bareJid);
         if (result == null) {
             return retrieveDetails(bareJid);
@@ -168,10 +166,10 @@ public class InfoRetriever
      * {@link ServerStoredContactListJabberImpl.ImageRetriever#run()}
      *
      * @param bareJid the address to search for.
+     *
      * @return the details or empty list.
      */
-    protected synchronized List<GenericDetail> retrieveDetails(EntityBareJid bareJid)
-    {
+    protected synchronized List<GenericDetail> retrieveDetails(EntityBareJid bareJid) {
         Timber.w(new Exception("Retrieve Details (Testing debug info: ignore): " + bareJid));
         List<GenericDetail> result = new LinkedList<>();
         XMPPConnection connection = jabberProvider.getConnection();
@@ -230,7 +228,7 @@ public class InfoRetriever
                     DateFormat dateFormatShort = new SimpleDateFormat(BDAY_FORMAT_SHORT, Locale.US);
                     birthDate = dateFormatShort.parse(tmp);
                 } catch (ParseException e) {
-                    Timber.w("%s %s",errMessage, ex.getMessage());
+                    Timber.w("%s %s", errMessage, ex.getMessage());
                 }
             }
 
@@ -238,7 +236,8 @@ public class InfoRetriever
                 Calendar birthDateCalendar = Calendar.getInstance();
                 birthDateCalendar.setTime(birthDate);
                 birthDateDetail = new BirthDateDetail(birthDateCalendar);
-            } else
+            }
+            else
                 birthDateDetail = new BirthDateDetail(tmp);
 
             result.add(birthDateDetail);
@@ -390,10 +389,10 @@ public class InfoRetriever
      * request the full info for the given bareJid if available in cache.
      *
      * @param bareJid to search for
+     *
      * @return list of the details if any.
      */
-    List<GenericDetail> getCachedUserDetails(BareJid bareJid)
-    {
+    List<GenericDetail> getCachedUserDetails(BareJid bareJid) {
         return retrievedDetails.get(bareJid);
     }
 
@@ -403,8 +402,7 @@ public class InfoRetriever
      * @param bareJid the contact address
      * @param details the details to add
      */
-    void addCachedUserDetails(BareJid bareJid, List<GenericDetail> details)
-    {
+    void addCachedUserDetails(BareJid bareJid, List<GenericDetail> details) {
         retrievedDetails.put(bareJid, details);
     }
 
@@ -412,10 +410,10 @@ public class InfoRetriever
      * Checks for full name tag in the <code>card</code>.
      *
      * @param card the card to check.
+     *
      * @return the Full name if existing, null otherwise.
      */
-    String checkForFullName(VCard card)
-    {
+    String checkForFullName(VCard card) {
         String vcardXml = card.toXML(XmlEnvironment.EMPTY).toString();
         int indexOpen = vcardXml.indexOf(TAG_FN_OPEN);
 
@@ -433,15 +431,13 @@ public class InfoRetriever
     /**
      * Work department
      */
-    public static class WorkDepartmentNameDetail extends NameDetail
-    {
+    public static class WorkDepartmentNameDetail extends NameDetail {
         /**
          * Constructor.
          *
          * @param workDepartmentName name of the work department
          */
-        public WorkDepartmentNameDetail(String workDepartmentName)
-        {
+        public WorkDepartmentNameDetail(String workDepartmentName) {
             super("Work Department Name", workDepartmentName);
         }
     }
@@ -449,15 +445,13 @@ public class InfoRetriever
     /**
      * Fax at work
      */
-    public static class WorkFaxDetail extends FaxDetail
-    {
+    public static class WorkFaxDetail extends FaxDetail {
         /**
          * Constructor.
          *
          * @param number work fax number
          */
-        public WorkFaxDetail(String number)
-        {
+        public WorkFaxDetail(String number) {
             super(number);
             super.detailDisplayName = "WorkFax";
         }
@@ -466,15 +460,13 @@ public class InfoRetriever
     /**
      * Pager at work
      */
-    public static class WorkPagerDetail extends PhoneNumberDetail
-    {
+    public static class WorkPagerDetail extends PhoneNumberDetail {
         /**
          * Constructor.
          *
          * @param number work pager number
          */
-        public WorkPagerDetail(String number)
-        {
+        public WorkPagerDetail(String number) {
             super(number);
             super.detailDisplayName = "WorkPager";
         }

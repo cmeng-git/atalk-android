@@ -208,8 +208,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
      * performing a single saving of the property store to the configuration file which is known
      * to be slow because it involves converting the whole store to a string representation
      * and writing a file to the disk.
-     *
-     * @throws ConfigPropertyVetoException in case someone is not happy with the change.
      */
     @Override
     public void setProperties(Map<String, Object> properties)
@@ -373,19 +371,19 @@ public class ConfigurationServiceImpl implements ConfigurationService {
      * that have the specified prefix. Depending on the value of the <code>exactPrefixMatch</code>
      * parameter the method will (when false) or will not (when exactPrefixMatch is true) include
      * property names that have prefixes longer than the specified <code>prefix</code> param.
-     *
+     * <p>
      * Example:
      * Imagine a configuration service instance containing 2 properties only:<br>
      * <code>
      * net.java.sip.communicator.PROP1=value1<br>
      * net.java.sip.communicator.service.protocol.PROP1=value2
      * </code>
-     *
+     * <p>
      * A call to this method with a prefix="net.java.sip.communicator" and exactPrefixMatch=true
      * would only return the first property - net.java.sip.communicator.PROP1, whereas the same
      * call with exactPrefixMatch=false would return both properties as the second prefix
      * includes the requested prefix string.
-     *
+     * <p>
      * In addition to stored properties this method will also search the default mutable and
      * immutable properties.
      *
@@ -1249,7 +1247,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
             return;
 
         Pattern exclusion = null;
-        if (!StringUtils.isNullOrEmpty(excludePattern)) {
+        if (StringUtils.isNotEmpty(excludePattern)) {
             exclusion = Pattern.compile(excludePattern, Pattern.CASE_INSENSITIVE);
         }
 
@@ -1274,8 +1272,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
      * files have to be in a location that's in the classpath.
      */
     private void preloadSystemPropertyFiles() {
-        String propFilesListStr
-                = StringUtils.returnIfNotEmptyTrimmed(System.getProperty(SYS_PROPS_FILE_NAME_PROPERTY));
+        String propFilesListStr = StringUtils.returnIfNotEmptyTrimmed(System.getProperty(SYS_PROPS_FILE_NAME_PROPERTY));
         if (propFilesListStr == null)
             return;
 

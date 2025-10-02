@@ -268,7 +268,7 @@ public class UserAvatarManager extends AvatarManager {
      */
     public boolean downloadAvatar(EntityBareJid from, String avatarId, Info info) {
         /* acts if only new avatarId is received. null => client not ready so no action; also it is still connected */
-        if (!StringUtils.isEmpty(avatarId) && isAvatarNew(from, avatarId) && (mConnection != null)) {
+        if (StringUtils.isNotEmpty(avatarId) && isAvatarNew(from, avatarId) && (mConnection != null)) {
             try {
                 String oldAvatarId = getAvatarHashByJid(from);
                 AvatarRetriever retriever = AvatarRetrieverFactory.getRetriever(mConnection, from, info);
@@ -287,7 +287,7 @@ public class UserAvatarManager extends AvatarManager {
                  * - the currentAvatarHash is single user owner
                  * - skip if currentAvatarHash.equals(avatarId) => cache and persistent not sync
                  */
-                if (!StringUtils.isEmpty(oldAvatarId) && !oldAvatarId.equals(avatarId)
+                if (StringUtils.isNotEmpty(oldAvatarId) && !oldAvatarId.equals(avatarId)
                         && !isHashMultipleOwner(from, oldAvatarId))
                     persistentAvatarCache.purgeItemFor(oldAvatarId);
 

@@ -246,6 +246,9 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
             callTransfer = extras.containsKey(CallManager.CALL_TRANSFER) && extras.getBoolean(CallManager.CALL_TRANSFER);
 
         }
+        if (mCall == null)
+            return;
+
         // Registers as the call state listener
         mCall.addCallChangeListener(this);
         callConference = mCall.getConference();
@@ -343,7 +346,7 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (sasToastControl != null)
             sasToastControl.onRestoreInstanceState(savedInstanceState);

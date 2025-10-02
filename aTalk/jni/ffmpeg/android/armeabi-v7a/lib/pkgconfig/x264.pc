@@ -5,7 +5,7 @@ includedir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_
 
 Name: x264
 Description: H.264 (MPEG4 AVC) encoder library
-Version: 0.164.3108
+Version: 0.165.3222
 Libs: -L${exec_prefix}/lib -lx264 -lm
 Libs.private: 
 Cflags: -I/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/armeabi-v7a/include/x264 

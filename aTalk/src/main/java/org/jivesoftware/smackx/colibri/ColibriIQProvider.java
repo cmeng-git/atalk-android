@@ -446,7 +446,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                             String connID = parser.getAttributeValue("",
                                     ColibriConferenceIQ.ChannelCommon.ID_ATTR_NAME);
 
-                            if (StringUtils.isEmpty(connID) && StringUtils.isEmpty(endpoint)) {
+                            if (StringUtils.isNullOrEmpty(connID) && StringUtils.isNullOrEmpty(endpoint)) {
                                 sctpConnection = null;
                                 continue;
                             }

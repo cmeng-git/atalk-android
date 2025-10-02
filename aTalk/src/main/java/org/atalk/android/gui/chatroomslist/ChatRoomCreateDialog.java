@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -124,13 +123,14 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         subjectField.setText("");
         findViewById(R.id.subject_clear).setOnClickListener(v -> subjectField.setText(""));
 
-        chatRoomComboBox = findViewById(R.id.chatRoom_Combo);
-        chatRoomComboBox.setOnItemClickListener(this);
-        new InitComboBox().execute();
-
+        // Must init accountsSpinner prior to InitComboBox()
         accountsSpinner = findViewById(R.id.jid_Accounts_Spinner);
         // Init AccountSpinner only after initComboBox(), else onItemSelected() will get trigger.
         initAccountSpinner();
+
+        chatRoomComboBox = findViewById(R.id.chatRoom_Combo);
+        chatRoomComboBox.setOnItemClickListener(this);
+        new InitComboBox().execute();
 
         mJoinButton = findViewById(R.id.button_Join);
         mJoinButton.setOnClickListener(v -> {
@@ -266,7 +266,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 
             String pwd = chatRoomWrapper.loadPassword();
             passwordField.setText(pwd);
-            mSavePasswordCheckBox.setChecked(!TextUtils.isEmpty(pwd));
+            mSavePasswordCheckBox.setChecked(StringUtils.isNotEmpty(pwd));
 
             ChatRoom chatroom = chatRoomWrapper.getChatRoom();
             if (chatroom != null) {
@@ -292,7 +292,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
             nickName = chatRoomWrapper.getNickName();
         }
 
-        if (TextUtils.isEmpty(nickName) && (getSelectedProvider() != null)) {
+        if (StringUtils.isEmpty(nickName) && (getSelectedProvider() != null)) {
             ProtocolProviderService pps = getSelectedProvider().getProtocolProvider();
             if (pps != null) {
                 nickName = AppGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
@@ -381,7 +381,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                 EntityBareJid entityBareJid = chatRoomWrapper.getEntityBareJid();
 
                 // Use subject for bookmark name if not null; else use chatRoomID
-                String name = TextUtils.isEmpty(subject) ? chatRoomID : subject;
+                String name = StringUtils.isEmpty(subject) ? chatRoomID : subject;
                 BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());
                 try {
                     bookmarkManager.addBookmarkedConference(name, entityBareJid, false,
@@ -422,7 +422,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
             mParent.startActivity(chatIntent);
             return true;
         }
-        else if (TextUtils.isEmpty(chatRoomID)) {
+        else if (StringUtils.isEmpty(chatRoomID)) {
             aTalkApp.showToastMessage(R.string.chatroom_join_name);
         }
         else if (nickName == null) {

@@ -23,8 +23,7 @@ import java.util.Iterator;
  *
  * @author Damian Minkov
  */
-public interface CustomContactActionsService<T>
-{
+public interface CustomContactActionsService<T> {
     /**
      * Returns the template class that this service has been initialized with
      *
@@ -38,7 +37,7 @@ public interface CustomContactActionsService<T>
      * @return an iterator over a list of <code>ContactAction</code>s
      */
     public Iterator<ContactAction<T>> getCustomContactActions();
-    
+
     /**
      * Returns all custom actions menu items defined by this service.
      *

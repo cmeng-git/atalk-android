@@ -54,17 +54,17 @@ public class CallInfoDialogFragment extends BaseDialogFragment {
     /**
      * Unicode constant for up arrow.
      */
-    private static final String UP_ARROW = "\u2191";
+    private static final String UP_ARROW = "↑";
 
     /**
      * Unicode constant for down arrow.
      */
-    private static final String DOWN_ARROW = "\u2193";
+    private static final String DOWN_ARROW = "↓";
 
     /**
      * The call handled by this dialog.
      */
-    private Call call;
+    private Call mCall;
 
     /**
      * Reference to the thread that calculates media statistics and updates the view.
@@ -97,7 +97,7 @@ public class CallInfoDialogFragment extends BaseDialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Retrieves the call from manager.
         String callKey = getArguments().getString(CALL_KEY_EXTRA);
-        this.call = CallManager.getActiveCall(callKey);
+        mCall = CallManager.getActiveCall(callKey);
         // Inflates the view.
         viewContainer = inflater.inflate(R.layout.call_info, container, true);
 
@@ -158,7 +158,7 @@ public class CallInfoDialogFragment extends BaseDialogFragment {
      * Updates the view to display actual call information.
      */
     private void doUpdateView() {
-        CallConference conference = call.getConference();
+        CallConference conference = mCall.getConference();
         List<Call> calls = conference.getCalls();
         if (calls.isEmpty())
             return;
@@ -532,7 +532,7 @@ public class CallInfoDialogFragment extends BaseDialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (call == null) {
+        if (mCall == null) {
             dismiss();
             return;
         }
@@ -568,7 +568,7 @@ public class CallInfoDialogFragment extends BaseDialogFragment {
      * exception will occur.
      */
     private void updateMediaStats() {
-        CallConference conference = call.getConference();
+        CallConference conference = mCall.getConference();
 
         for (CallPeer callPeer : conference.getCallPeers()) {
             if (!(callPeer instanceof MediaAwareCallPeer)) {

@@ -205,7 +205,7 @@ public class VCardAvatarManager extends AvatarManager {
                      * - skip if currentAvatarHash.equals(avatarId)
                      *	   => cache and persistent not sync (pre-checked)
                      */
-                    if (!StringUtils.isNullOrNotEmpty(oldAvatarId)
+                    if (StringUtils.isNotEmpty(oldAvatarId)
                             && !isHashMultipleOwner(from, oldAvatarId))
                         persistentAvatarCache.purgeItemFor(oldAvatarId);
 

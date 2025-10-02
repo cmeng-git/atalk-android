@@ -19,7 +19,6 @@ package net.java.sip.communicator.impl.msghistory;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -690,7 +689,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         String msgBody = "";
         String endTimeStamp = String.valueOf(new Date().getTime());
 
-        if (!TextUtils.isEmpty(sessionUuid)) {
+        if (StringUtils.isNotEmpty(sessionUuid)) {
             String[] columns = {ChatMessage.MSG_BODY};
             String[] args = {sessionUuid, endTimeStamp};
             Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, columns, ChatMessage.SESSION_UUID + "=? AND "
@@ -822,20 +821,20 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
             // Ignore any OOB or empty body message
             // if (msg.hasExtension(OutOfBandData.QNAME) || TextUtils.isEmpty(msg.getBody())) {
-            if (TextUtils.isEmpty(msg.getBody())) {
+            if (StringUtils.isEmpty(msg.getBody())) {
                 Timber.w("Skip empty or OOB forward MAM message: %s", msg.getStanzaId());
                 continue;
             }
 
             // Some received/DomainBareJid message does not have msgId. So use stanzaId from StanzaIdElement if found.
             String msgId = msg.getStanzaId();
-            if (TextUtils.isEmpty(msgId)) {
+            if (StringUtils.isEmpty(msgId)) {
                 OriginIdElement orgStanzaElement = OriginIdElement.getOriginId(msg);
                 if (orgStanzaElement != null) {
                     msgId = orgStanzaElement.getId();
                 }
             }
-            if (TextUtils.isEmpty(msgId)) {
+            if (StringUtils.isEmpty(msgId)) {
                 continue;
             }
             // mam messages always sent as <delay/>
@@ -903,13 +902,13 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         // Some received/DomainBareJid message does not have msgId. So use stanzaId from StanzaIdElement if found.
         boolean isUnexpected = false;
         String msgId = message.getStanzaId();
-        if (TextUtils.isEmpty(msgId)) {
+        if (StringUtils.isEmpty(msgId)) {
             OriginIdElement orgStanzaElement = OriginIdElement.getOriginId(message);
             if (orgStanzaElement != null)
                 msgId = orgStanzaElement.getId();
         }
 
-        if (!TextUtils.isEmpty(msgId)) {
+        if (StringUtils.isNotEmpty(msgId)) {
             String[] args = {msgId, ChatMessage.DIR_IN};
             Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, null, ChatMessage.UUID
                     + "=? AND " + ChatMessage.DIRECTION + "=?", args, null, null, null);
@@ -956,7 +955,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             whereCondition += ChatSession.ENTITY_JID + "=?";
             argList.add(contactToFilter);
         }
-        if (argList.size() > 0)
+        if (!argList.isEmpty())
             args = argList.toArray(new String[0]);
 
         Cursor cursor = mDB.query(ChatSession.TABLE_NAME, null, whereCondition, args, null,
@@ -1031,7 +1030,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 null, null, null);
         while (cursor.moveToNext()) {
             sessionUuid = cursor.getString(0);
-            if (!TextUtils.isEmpty(sessionUuid))
+            if (StringUtils.isNotEmpty(sessionUuid))
                 sessionUuids.add(sessionUuid);
         }
         cursor.close();
@@ -1053,7 +1052,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      */
     public int getMessageCountForSessionUuid(String sessionUuid) {
         int msgCount = 0;
-        if (!TextUtils.isEmpty(sessionUuid)) {
+        if (StringUtils.isNotEmpty(sessionUuid)) {
             String[] args = {sessionUuid};
             Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, null, ChatMessage.SESSION_UUID + "=?", args,
                     null, null, null);
@@ -1511,7 +1510,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         // Replace last message in DB with the new received correction message content only - no new message record
         IMessage message = evt.getSourceMessage();
         String msgCorrectionId = evt.getCorrectedMessageUID();
-        if (!TextUtils.isEmpty(msgCorrectionId))
+        if (StringUtils.isNotEmpty(msgCorrectionId))
             message.setMessageUID(msgCorrectionId);
 
         String sessionUuid = getSessionUuidByJid(contact);
@@ -1532,7 +1531,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
         // Replace last message in DB with the new delivered correction message content only - no new message record
         String msgCorrectionId = evt.getCorrectedMessageUID();
-        if (!TextUtils.isEmpty(msgCorrectionId))
+        if (StringUtils.isNotEmpty(msgCorrectionId))
             message.setMessageUID(msgCorrectionId);
 
         String sessionUuid = getSessionUuidByJid(contact);
@@ -2537,7 +2536,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      */
     public List<String> getLocallyStoredFilePath(String sessionUuid) {
         List<String> msgFilePathDel = new ArrayList<>();
-        if (TextUtils.isEmpty(sessionUuid)) {
+        if (StringUtils.isEmpty(sessionUuid)) {
             return msgFilePathDel;
         }
 
@@ -2549,7 +2548,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 args, null, null, null);
         while (cursor.moveToNext()) {
             filePath = cursor.getString(0);
-            if (!TextUtils.isEmpty(filePath)) {
+            if (StringUtils.isNotEmpty(filePath)) {
                 msgFilePathDel.add(filePath);
             }
         }
@@ -2571,7 +2570,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 null, null, null, null);
         while (cursor.moveToNext()) {
             filePath = cursor.getString(0);
-            if (!TextUtils.isEmpty(filePath)) {
+            if (StringUtils.isNotEmpty(filePath)) {
                 msgFilePathDel.add(filePath);
             }
         }

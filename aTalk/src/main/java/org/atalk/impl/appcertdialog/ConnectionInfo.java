@@ -193,6 +193,9 @@ public class ConnectionInfo extends BaseActivity {
     private void showSslCertificateDeleteAlert(int position) {
         AccountID accountId = mCIAdapter.getItem(position);
         List<String> certs = certificateEntry.get(accountId);
+        if (certs == null)
+            return;
+
         // Just display the SSL certificate info if none to delete
         if (certs.isEmpty()) {
             showSslCertificate(position);

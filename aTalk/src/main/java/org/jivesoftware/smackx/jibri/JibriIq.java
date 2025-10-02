@@ -7,20 +7,17 @@ package org.jivesoftware.smackx.jibri;
 
 import java.util.Locale;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.jid.EntityBareJid;
 
 /**
  * The IQ used to control conference recording with Jibri component.
- *
  * Start the recording:
- *
  * 1. Send Jibri IQ with {@link Action#START} to Jibri.
  * 2. Jibri replies with RESULT and status {@link Status#PENDING}.
  * 3. Jibri sends SET IQ with status {@link Status#ON} once recording actually starts.
- *
  * Stop the recording:
  *
  * 1. Send Jibri IQ with {@link Action#STOP} to Jibri.
@@ -475,7 +472,7 @@ public class JibriIq extends IQ {
          * does not reflect any of valid values.
          */
         public static Action parse(String action) {
-            if (StringUtils.isEmpty(action))
+            if (StringUtils.isNullOrEmpty(action))
                 return UNDEFINED;
 
             try {
@@ -536,7 +533,7 @@ public class JibriIq extends IQ {
          * {@link #UNDEFINED} if given string does not reflect any of valid values.
          */
         public static RecordingMode parse(String status) {
-            if (StringUtils.isEmpty(status))
+            if (StringUtils.isNullOrEmpty(status))
                 return UNDEFINED;
 
             try {
@@ -575,7 +572,7 @@ public class JibriIq extends IQ {
          * {@link #UNDEFINED} if given string does not reflect any of valid values.
          */
         public static FailureReason parse(String status) {
-            if (StringUtils.isEmpty(status))
+            if (StringUtils.isNullOrEmpty(status))
                 return UNDEFINED;
 
             try {
@@ -642,7 +639,7 @@ public class JibriIq extends IQ {
          * does not reflect any of valid values.
          */
         public static Status parse(String status) {
-            if (StringUtils.isEmpty(status))
+            if (StringUtils.isNullOrEmpty(status))
                 return UNDEFINED;
 
             try {

@@ -12,13 +12,11 @@ import net.java.sip.communicator.service.protocol.event.MessageWaitingListener;
  *
  * @author Damian Minkov
  */
-public interface OperationSetMessageWaiting extends OperationSet
-{
+public interface OperationSetMessageWaiting extends OperationSet {
     /**
      * Message waiting types.
      */
-    public enum MessageType
-    {
+    public enum MessageType {
         VOICE("voice-message"),
         FAX("fax-message"),
         PAGER("pager-message"),
@@ -36,8 +34,7 @@ public interface OperationSetMessageWaiting extends OperationSet
          *
          * @param type the type.
          */
-        private MessageType(String type)
-        {
+        private MessageType(String type) {
             this.type = type;
         }
 
@@ -47,8 +44,7 @@ public interface OperationSetMessageWaiting extends OperationSet
          * @return the message type.
          */
         @Override
-        public String toString()
-        {
+        public String toString() {
             return type;
         }
 
@@ -56,10 +52,10 @@ public interface OperationSetMessageWaiting extends OperationSet
          * Returns MessageType by its type name.
          *
          * @param type the type.
+         *
          * @return the corresponding MessageType.
          */
-        public static MessageType valueOfByType(String type)
-        {
+        public static MessageType valueOfByType(String type) {
             for (MessageType mt : values()) {
                 if (mt.toString().equals(type))
                     return mt;

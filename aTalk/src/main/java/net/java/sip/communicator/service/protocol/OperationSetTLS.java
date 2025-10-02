@@ -12,8 +12,7 @@ import java.security.cert.Certificate;
  *
  * @author Markus Kilas
  */
-public interface OperationSetTLS extends OperationSet
-{
+public interface OperationSetTLS extends OperationSet {
     /**
      * Returns the negotiated cipher suite
      *

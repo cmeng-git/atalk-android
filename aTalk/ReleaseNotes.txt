@@ -1,5 +1,21 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.5.2 (405020)
+Release Date:   10/02/2025
+Author:         cmeng
+- Executors.newSingleThreadExecutor() in AccountInfoPresenceActivity$DetailsLoadWorker must implement shutdown and awaitTermination, else ANR in FFR:
+  at java.util.concurrent.ThreadPoolExecutor.awaitTermination (ThreadPoolExecutor.java:1471)
+  at java.util.concurrent.Executors$DelegatedExecutorService.awaitTermination (Executors.java:700)
+  at org.atalk.android.gui.account.AccountInfoPresenceActivity$DetailsLoadWorker$$ExternalSyntheticThrowIAE2.m (D8$$SyntheticClass)
+
+  a. at org.atalk.android.gui.chat.chatsession.ChatSessionFragment$InitChatRoomWrapper.execute (ChatSessionFragment.java:528)
+  b. at org.atalk.android.gui.chat.ChatFragment$LoadHistoryTask.execute (ChatFragment.java:2329)
+  c. at org.atalk.android.gui.chat.ChatFragment$SendFile.execute (ChatFragment.java:2641)
+  d. at org.atalk.android.gui.chatroomslist.ChatRoomCreateDialog$InitComboBox.execute (ChatRoomCreateDialog.java:190)
+  e. at org.atalk.android.gui.chatroomslist.ChatRoomBookmarksDialog$InitBookmarkedConference.execute (ChatRoomBookmarksDialog.java:224)
+- Avoid using smack StringUtils.isEmpty as it does not check for null content.
+
+=========================================================================
 Version:        4.5.1 (405010)
 Release Date:   09/04/2025
 Author:         cmeng
@@ -7,18 +23,24 @@ Author:         cmeng
 - Set ndkVersion = '28.2.13676358' in build.gradle
 - Clean up NDK build script files for vpx etc.
 
+*** Observation with no solution implemented: ***
+SSL Certificate is not available when using XMPP-Bosh Connection
+
 =========================================================================
 Version:        4.5.0 (405000)
-Release Date:   08/28/2025
+Release Date:   09/04/2025
 Author:         cmeng
 - Upgrade jni libraries:
   * libvpx 1.15.2 <= 1.13.1
   * opus 1.5.2 <= 1.3.2
   * openssl 3.5.2 <= 1.1.1t
+  * x264 165 <= 164
 - Fix cast exception introduced in 4.0.0 when apply fix for duplicate sending of the initial <presence/> stanza by smack ServiceDiscoveryManager.
   Cause Bosh connection to crash. Need to cast to common base class in isSendPresence = ((AbstractXMPPConnection) connection).getConfiguration().isSendPresence()
 - Fix endless loop in discoverInfoNonBlocking at times, caused by BareJid discInfo access; Block all BareJid discoInfo access.
 - Fix notification replied message not shown in chatSession UI, until it is closed and reopen.
+- Fix XMPP-Bosh reconnection failure on network changes; Need to set XMPPBOSHConnection#isFirstInitialization to true on network close on error.
+- Set ndkVersion = '28.2.13676358' in build.gradle
 - Jni scripts clean up, and Standardize jni *.mk naming convention.
 - Update openssl jni scripts to take care of new library releases in version checking
 - Change build.gradle task names to properly reflect the actual tasks performed.
@@ -29,12 +51,7 @@ Author:         cmeng
   ChatState receive is normal.
 - libvpx build process
 1. Building of libvpx using build.make.Android_ndk.mk does not work
-a. build.make.Android.mk info errors:
-# comments in Android.mk is outdated i.e. sdk-path is invalid
-# set APP_ABI e.g. "arm64-v8a" to match the --target passed to configure ??? TARGET use internal defined variables i.e. "arm64-android-gcc".
-
-2. BUILD_PFX must be specified and exported during configure
-3. make: *** No rule to make target 'vp8_rtcd.h', needed by 'vpx/vpx_config.c' etc...
+a comments in Android.mk is outdated i.e. sdk-path is invalid
 
 =========================================================================
 Version:        4.4.0 (404000)

@@ -342,18 +342,20 @@ public class ChatRoomListFragment extends BaseFragment
          */
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomID());
+            ChatPanel chatPanel = ChatSessionManager.getMultiChat(mClickedChatRoom, true);
             switch (item.getItemId()) {
                 case R.id.chatroom_tts_enable:
-                    if (mClickedChatRoom.isTtsEnable()) {
-                        mClickedChatRoom.setTtsEnable(false);
-                        mChatRoomTtsEnable.setTitle(R.string.tts_enable);
+                    if (mClickedChatRoom != null && chatPanel != null) {
+                        if (mClickedChatRoom.isTtsEnable()) {
+                            mClickedChatRoom.setTtsEnable(false);
+                            mChatRoomTtsEnable.setTitle(R.string.tts_enable);
+                        }
+                        else {
+                            mClickedChatRoom.setTtsEnable(true);
+                            mChatRoomTtsEnable.setTitle(R.string.tts_disable);
+                        }
+                        chatPanel.updateChatTtsOption();
                     }
-                    else {
-                        mClickedChatRoom.setTtsEnable(true);
-                        mChatRoomTtsEnable.setTitle(R.string.tts_disable);
-                    }
-                    ChatSessionManager.getMultiChat(mClickedChatRoom, true).updateChatTtsOption();
                     return true;
 
                 case R.id.close_current_chat:

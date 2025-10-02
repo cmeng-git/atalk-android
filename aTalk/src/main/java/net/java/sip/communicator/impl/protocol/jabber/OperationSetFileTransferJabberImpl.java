@@ -457,7 +457,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
      */
     void fireFileTransferRequest(IncomingFileTransferRequest request) {
         Contact contact = request.getSender();
-        NotificationManager.updateMessageCount(contact);
+        NotificationManager.updateUnreadCount(contact);
 
         // Create an event associated to this global request.
         FileTransferRequestEvent event = new FileTransferRequestEvent(this, request, new Date());

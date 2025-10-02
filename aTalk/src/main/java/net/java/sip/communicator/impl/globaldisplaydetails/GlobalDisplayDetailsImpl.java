@@ -7,8 +7,6 @@ package net.java.sip.communicator.impl.globaldisplaydetails;
 
 import static org.atalk.android.gui.call.CallUIUtils.DEFAULT_PERSONAL_PHOTO;
 
-import android.text.TextUtils;
-
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
 import net.java.sip.communicator.service.globaldisplaydetails.event.GlobalAvatarChangeEvent;
 import net.java.sip.communicator.service.globaldisplaydetails.event.GlobalDisplayDetailsListener;
@@ -310,7 +308,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
                 fireGlobalAvatarEvent(globalAvatar);
             }
 
-            if (!isUpdate || (!TextUtils.isEmpty(provisionedDisplayName)
+            if (!isUpdate || (!StringUtils.isEmpty(provisionedDisplayName)
                     && StringUtils.isNotEmpty(globalDisplayName)))
                 return;
 

@@ -15,6 +15,12 @@
  */
 package net.java.sip.communicator.impl.callhistory;
 
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.callhistory.CallPeerRecord;
 import net.java.sip.communicator.service.callhistory.CallRecord;
 import net.java.sip.communicator.service.contactsource.ContactDetail;
@@ -37,12 +43,6 @@ import net.java.sip.communicator.util.GuiUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 /**
  * The <code>CallHistorySourceContact</code> is an implementation of the
  * <code>SourceContact</code> interface based on a <code>CallRecord</code>.
@@ -50,8 +50,7 @@ import java.util.Map;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class CallHistorySourceContact extends DataObject implements SourceContact
-{
+public class CallHistorySourceContact extends DataObject implements SourceContact {
     /**
      * Whether we need to strip saved addresses to numbers. We strip everything
      * before '@', if it is absent nothing is changed from the saved address.
@@ -77,13 +76,13 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     /**
      * The outgoing call icon.
      */
-    private static byte[] outgoingIcon
+    private static final byte[] outgoingIcon
             = CallHistoryActivator.getResources().getImageInBytes("gui.icons.OUTGOING_CALL");
 
     /**
      * The missed call icon.
      */
-    private static byte[] missedCallIcon
+    private static final byte[] missedCallIcon
             = CallHistoryActivator.getResources().getImageInBytes("gui.icons.MISSED_CALL");
 
     /**
@@ -107,8 +106,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      * @param contactSource the contact source
      * @param callRecord the call record
      */
-    public CallHistorySourceContact(CallHistoryContactSource contactSource, CallRecord callRecord)
-    {
+    public CallHistorySourceContact(CallHistoryContactSource contactSource, CallRecord callRecord) {
         this.contactSource = contactSource;
         this.callRecord = callRecord;
 
@@ -124,8 +122,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     /**
      * Initializes peer details.
      */
-    private void initPeerDetails()
-    {
+    private void initPeerDetails() {
         boolean stripAddress = false;
         String stripAddressProp = CallHistoryActivator.getResources().getSettingsString(STRIP_ADDRESSES_TO_NUMBERS);
 
@@ -142,7 +139,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
                 }
 
                 String peerRecordDisplayName = peerRecord.getDisplayName();
-                if (peerRecordDisplayName == null || peerRecordDisplayName.length() == 0)
+                if (peerRecordDisplayName == null || peerRecordDisplayName.isEmpty())
                     peerRecordDisplayName = peerAddress;
 
                 ContactDetail contactDetail = new ContactDetail(peerAddress, peerRecordDisplayName);
@@ -228,8 +225,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      *
      * @return a list of available contact details
      */
-    public List<ContactDetail> getContactDetails()
-    {
+    public List<ContactDetail> getContactDetails() {
         return new LinkedList<>(contactDetails);
     }
 
@@ -238,8 +234,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      *
      * @return the parent <code>ContactSourceService</code> from which this contact came from
      */
-    public ContactSourceService getContactSource()
-    {
+    public ContactSourceService getContactSource() {
         return contactSource;
     }
 
@@ -249,8 +244,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      *
      * @return the display details of the search contact
      */
-    public String getDisplayDetails()
-    {
+    public String getDisplayDetails() {
         return displayDetails;
     }
 
@@ -260,8 +254,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      *
      * @return the display name of this search contact
      */
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return displayName;
     }
 
@@ -271,8 +264,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      *
      * @return the byte array of the image or null if no image is available
      */
-    public byte[] getImage()
-    {
+    public byte[] getImage() {
         if (callRecord.getDirection().equals(CallRecord.IN)) {
             // if the call record has reason for normal call clearing
             // means it was answered somewhere else, then we don't mark it as missed
@@ -292,10 +284,10 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      * Returns a list of all <code>ContactDetail</code>s supporting the given <code>OperationSet</code> class.
      *
      * @param operationSet the <code>OperationSet</code> class we're looking for
+     *
      * @return a list of all <code>ContactDetail</code>s supporting the given <code>OperationSet</code> class.
      */
-    public List<ContactDetail> getContactDetails(Class<? extends OperationSet> operationSet)
-    {
+    public List<ContactDetail> getContactDetails(Class<? extends OperationSet> operationSet) {
         // We support only call details or persistence presence so we can add contacts.
         if (!(operationSet.equals(OperationSetBasicTelephony.class)
                 || operationSet.equals(OperationSetPersistentPresence.class)))
@@ -308,11 +300,11 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      * Returns a list of all <code>ContactDetail</code>s corresponding to the given category.
      *
      * @param category the <code>OperationSet</code> class we're looking for
+     *
      * @return a list of all <code>ContactDetail</code>s corresponding to the given category
      */
     public List<ContactDetail> getContactDetails(ContactDetail.Category category)
-            throws OperationNotSupportedException
-    {
+            throws OperationNotSupportedException {
         // We don't support category for call history details, so we return null.
         throw new OperationNotSupportedException("Categories are not supported for call history records.");
     }
@@ -322,10 +314,10 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      *
      * @param operationSet the <code>OperationSet</code> class, for which we would
      * like to obtain a <code>ContactDetail</code>
+     *
      * @return the preferred <code>ContactDetail</code> for a given <code>OperationSet</code> class
      */
-    public ContactDetail getPreferredContactDetail(Class<? extends OperationSet> operationSet)
-    {
+    public ContactDetail getPreferredContactDetail(Class<? extends OperationSet> operationSet) {
         // We support only call details
         // or persistence presence so we can add contacts.
         if (!(operationSet.equals(OperationSetBasicTelephony.class)
@@ -339,10 +331,10 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      * Returns the date string to show for the given date.
      *
      * @param date the date to format
+     *
      * @return the date string to show for the given date
      */
-    public static String getDateString(long date)
-    {
+    public static String getDateString(long date) {
         String time = GuiUtils.formatTime(date);
 
         // If the current date we don't go in there and we'll return just the time.
@@ -358,8 +350,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      *
      * @return the PresenceStatus representing the state of this source contact.
      */
-    public PresenceStatus getPresenceStatus()
-    {
+    public PresenceStatus getPresenceStatus() {
         return null;
     }
 
@@ -368,8 +359,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      *
      * @return the index of this source contact in its parent
      */
-    public int getIndex()
-    {
+    public int getIndex() {
         return -1;
     }
 
@@ -379,8 +369,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      * Not implemented.
      */
     @Override
-    public String getContactAddress()
-    {
+    public String getContactAddress() {
         return null;
     }
 
@@ -390,8 +379,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      * Not implemented.
      */
     @Override
-    public void setContactAddress(String contactAddress)
-    {
+    public void setContactAddress(String contactAddress) {
     }
 
     /**
@@ -401,8 +389,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
      * @return whether this is the default image for this SourceContact.
      */
     @Override
-    public boolean isDefaultImage()
-    {
+    public boolean isDefaultImage() {
         // in this SourceContact we always show a default image based
         // on the call direction (in, out or missed)
         return true;

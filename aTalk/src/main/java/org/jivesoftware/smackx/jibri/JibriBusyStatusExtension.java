@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.jibri;
 
 import javax.xml.namespace.QName;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.AbstractExtensionElement;
 import org.jivesoftware.smackx.DefaultExtensionElementProvider;
 
@@ -91,7 +91,7 @@ public class JibriBusyStatusExtension extends AbstractExtensionElement {
          * {@link #UNDEFINED} if given string does not reflect any of valid values.
          */
         public static BusyStatus parse(String status) {
-            if (StringUtils.isEmpty(status))
+            if (StringUtils.isNullOrEmpty(status))
                 return UNDEFINED;
 
             try {

@@ -5,10 +5,10 @@
  */
 package org.jivesoftware.smackx.colibri;
 
-import org.apache.commons.lang3.StringUtils;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
 import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
@@ -379,7 +379,7 @@ public class ColibriBuilder
             throws IllegalArgumentException
     {
         Objects.requireNonNull(transport, "transport");
-        if ((conferenceState == null) || StringUtils.isEmpty(conferenceState.getID())) {
+        if ((conferenceState == null) || StringUtils.isNullOrEmpty(conferenceState.getID())) {
             // We are not initialized yet.
 
             // XXX by returning false we silently indicate that there is no
@@ -416,7 +416,7 @@ public class ColibriBuilder
     {
         Objects.requireNonNull(channelInfo, "channelInfo");
         // Formulate the ColibriConferenceIQ request which is to be sent.
-        if ((conferenceState == null) || StringUtils.isEmpty(conferenceState.getID())) {
+        if ((conferenceState == null) || StringUtils.isNullOrEmpty(conferenceState.getID())) {
             return false;
         }
 
@@ -532,7 +532,7 @@ public class ColibriBuilder
         Objects.requireNonNull(contentName, "contentName");
         Objects.requireNonNull(channel, "channel");
 
-        if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
+        if (conferenceState == null || StringUtils.isNullOrEmpty(conferenceState.getID())) {
             // We are not initialized yet
 
             // XXX by returning false we silently indicate that there is no
@@ -564,7 +564,7 @@ public class ColibriBuilder
         Objects.requireNonNull(sourceMap, "sourceMap");
         Objects.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
-        if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
+        if (conferenceState == null || StringUtils.isNullOrEmpty(conferenceState.getID())) {
             // We are not initialized yet
             return false;
         }
@@ -604,7 +604,7 @@ public class ColibriBuilder
         Objects.requireNonNull(octoRelays, "octoRelays");
         Objects.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
-        if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
+        if (conferenceState == null || StringUtils.isNullOrEmpty(conferenceState.getID())) {
             // We are not initialized yet
             return false;
         }
@@ -645,7 +645,7 @@ public class ColibriBuilder
         Objects.requireNonNull(sourceGroupMap, "sourceGroupMap");
         Objects.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
-        if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
+        if (conferenceState == null || StringUtils.isNullOrEmpty(conferenceState.getID())) {
             // We are not initialized yet
             return false;
         }
@@ -690,7 +690,7 @@ public class ColibriBuilder
         Objects.requireNonNull(transportMap, "transportMap");
         Objects.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
-        if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
+        if (conferenceState == null || StringUtils.isNullOrEmpty(conferenceState.getID())) {
             // We are not initialized yet
             return false;
         }
@@ -736,7 +736,7 @@ public class ColibriBuilder
         Objects.requireNonNull(mediaDirectionMap, "mediaDirectionMap");
         Objects.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
-        if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
+        if (conferenceState == null || StringUtils.isNullOrEmpty(conferenceState.getID())) {
             // We are not initialized yet
             return false;
         }

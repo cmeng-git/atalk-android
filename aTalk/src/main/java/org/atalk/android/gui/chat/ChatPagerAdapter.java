@@ -29,7 +29,7 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     /**
      * The list of contained chat session ids.
      */
-    private final List<String> chats;
+    private final List<String> mChats;
 
     /**
      * Parent <code>ChatActivity</code>.
@@ -49,7 +49,7 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      */
     public ChatPagerAdapter(FragmentManager fm, ChatActivity parent) {
         super(fm);
-        this.chats = ChatSessionManager.getActiveChatsIDs();
+        mChats = ChatSessionManager.getActiveChatIds();
         this.parent = parent;
         ChatSessionManager.addChatListener(this);
     }
@@ -73,10 +73,10 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      * @return chat id corresponding to the given position
      */
     public String getChatId(int pos) {
-        synchronized (chats) {
-            if (chats.size() <= pos)
+        synchronized (mChats) {
+            if (mChats.size() <= pos)
                 return null;
-            return chats.get(pos);
+            return mChats.get(pos);
         }
     }
 
@@ -91,7 +91,7 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
         if (sessionId == null)
             return -1;
 
-        for (int i = 0; i < chats.size(); i++) {
+        for (int i = 0; i < mChats.size(); i++) {
             if (getChatId(i).equals(sessionId))
                 return i;
         }
@@ -104,8 +104,8 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      * @param chatId the chat id to remove from this pager
      */
     public void removeChatSession(String chatId) {
-        synchronized (chats) {
-            if (chats.remove(chatId)) {
+        synchronized (mChats) {
+            if (mChats.remove(chatId)) {
                 notifyDataSetChanged();
             }
         }
@@ -115,8 +115,8 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      * Removes all <code>ChatFragment</code>s from this pager.
      */
     public void removeAllChatSessions() {
-        synchronized (chats) {
-            chats.clear();
+        synchronized (mChats) {
+            mChats.clear();
         }
         notifyDataSetChanged();
     }
@@ -130,9 +130,9 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     @Override
     public int getItemPosition(Object object) {
         String id = ((ChatFragment) object).getChatPanel().getChatSession().getChatId();
-        synchronized (chats) {
-            if (chats.contains(id))
-                return chats.indexOf(id);
+        synchronized (mChats) {
+            if (mChats.contains(id))
+                return mChats.indexOf(id);
         }
         return PagerAdapter.POSITION_NONE;
     }
@@ -145,7 +145,7 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     @NonNull
     @Override
     public Fragment getItem(int pos) {
-        return ChatFragment.newInstance(chats.get(pos));
+        return ChatFragment.newInstance(mChats.get(pos));
     }
 
     /**
@@ -169,8 +169,8 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      */
     @Override
     public int getCount() {
-        synchronized (chats) {
-            return chats.size();
+        synchronized (mChats) {
+            return mChats.size();
         }
     }
 
@@ -206,8 +206,8 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     @Override
     public void chatCreated(final Chat chat) {
         parent.runOnUiThread(() -> {
-            synchronized (chats) {
-                chats.add(((ChatPanel) chat).getChatSession().getChatId());
+            synchronized (mChats) {
+                mChats.add(((ChatPanel) chat).getChatSession().getChatId());
                 notifyDataSetChanged();
             }
         });

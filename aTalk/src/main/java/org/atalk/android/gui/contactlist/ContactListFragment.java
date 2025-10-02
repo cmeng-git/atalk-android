@@ -424,7 +424,8 @@ public class ContactListFragment extends BaseFragment
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             FragmentTransaction ft;
-            ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedContact);
+            ChatPanel chatPanel = ChatSessionManager.createChatForChatId(mClickedContact.getMetaUID(),
+                    ChatSessionManager.MC_CHAT);
 
             switch (item.getItemId()) {
                 case R.id.close_chat:
@@ -447,7 +448,7 @@ public class ContactListFragment extends BaseFragment
                     return true;
 
                 case R.id.contact_tts_enable:
-                    if (mClickedContact != null) {
+                    if (mClickedContact != null && chatPanel != null) {
                         Contact contact = mClickedContact.getDefaultContact();
                         if (contact.isTtsEnable()) {
                             contact.setTtsEnable(false);
@@ -457,8 +458,7 @@ public class ContactListFragment extends BaseFragment
                             contact.setTtsEnable(true);
                             mContactTtsEnable.setTitle(R.string.tts_disable);
                         }
-                        ChatSessionManager.createChatForChatId(mClickedContact.getMetaUID(),
-                                ChatSessionManager.MC_CHAT).updateChatTtsOption();
+                        chatPanel.updateChatTtsOption();
                     }
                     return true;
 

@@ -23,8 +23,7 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author Pawel Domas
  */
-public class PasswordUtil
-{
+public class PasswordUtil {
     /**
      * The method will replace password argument values with 'X' in a string
      * which represents command line arguments(arg=value arg2=value4).
@@ -33,11 +32,11 @@ public class PasswordUtil
      * where each argument is separated by space and value is
      * assigned by '=' sign. For example "arg=value -arg2=value4 --arg3=val45".
      * @param passwordArg the name of password argument to be shadowed.
+     *
      * @return <code>cmdLine</code> string with password argument values shadowed by
      * 'X'
      */
-    public static String replacePassword(String cmdLine, String passwordArg)
-    {
+    public static String replacePassword(String cmdLine, String passwordArg) {
         int passwordIdx = cmdLine.indexOf(passwordArg + "=");
         if (passwordIdx != -1) {
             // Get arg=pass
@@ -61,10 +60,10 @@ public class PasswordUtil
      *
      * @param string command line argument string, e.g. "arg=3 pass=secret"
      * @param passwordArgs the array which contains the names of password argument to be shadowed.
+     *
      * @return <code>cmdLine</code> string with password arguments values shadowed by 'X'
      */
-    public static String replacePasswords(String string, String[] passwordArgs)
-    {
+    public static String replacePasswords(String string, String[] passwordArgs) {
         if (passwordArgs != null) {
             for (String passArg : passwordArgs) {
                 if (StringUtils.isEmpty(passArg))

@@ -129,7 +129,7 @@ public class NotificationHelper extends ContextWrapper {
      *
      * @param channel Name of notification channel.
      */
-    @TargetApi(Build.VERSION_CODES.O)
+    @androidx.annotation.RequiresApi(Build.VERSION_CODES.O)
     public void goToNotificationSettings(String channel) {
         Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
         intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
@@ -140,11 +140,11 @@ public class NotificationHelper extends ContextWrapper {
     /**
      * Delete any unused (or all if force is true) channel IDs.
      * Must force to re-init all notification channels if higher priority changes are made to any existing channel.
-     * See https://developer.android.com/develop/ui/views/notifications/channels#UpdateChannel
+     * See <a href="https://developer.android.com/develop/ui/views/notifications/channels#UpdateChannel">...</a>
      *
      * @param force force delete the notification channel
      */
-    @TargetApi(Build.VERSION_CODES.O)
+    @androidx.annotation.RequiresApi(Build.VERSION_CODES.O)
     private void deleteObsoletedChannelIds(boolean force) {
         List<NotificationChannel> channelGroups = notificationManager.getNotificationChannels();
         for (NotificationChannel nc : channelGroups) {

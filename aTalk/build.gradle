@@ -63,8 +63,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 405010
-        versionName "4.5.1"
+        versionCode 405020
+        versionName "4.5.2"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -219,7 +219,7 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.17.0'
 
-    implementation 'androidx.activity:activity-ktx:1.10.1'
+    implementation 'androidx.activity:activity-ktx:1.11.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.fragment:fragment-ktx:1.8.9'
@@ -238,15 +238,15 @@ dependencies {
     }
     implementation 'com.karumi:dexter:6.2.3'
 
-    annotationProcessor 'com.github.bumptech.glide:compiler:5.0.4'
-    implementation 'com.github.bumptech.glide:glide:5.0.4'
+    annotationProcessor 'com.github.bumptech.glide:compiler:5.0.5'
+    implementation 'com.github.bumptech.glide:glide:5.0.5'
     implementation 'com.github.seancfoley:ipaddress:5.5.1'
     implementation 'com.github.evgenyneu:js-evaluator-for-android:v6.0.0'
 
     implementation 'com.github.yalantis:ucrop:2.2.10'
-    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.android.material:material:1.13.0'
 
-    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.13'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.14'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta05'
     implementation 'com.squareup.okhttp3:okhttp:5.1.0' // 4.12.0'
 
@@ -533,7 +533,7 @@ task buildJniStaticLibs(type: Exec) {
  * The version.properties is retrieved during app update check to asses if there is a new update
  */
 task updateVersionFile(type: Copy) {
-    description = '<!-- Generate version.properties file -->'
+    def description = '<!-- Generate version.properties file -->'
 
     def versionName = android.defaultConfig.versionName
     def versionCode = android.defaultConfig.versionCode

@@ -6,15 +6,15 @@
  */
 package net.java.sip.communicator.service.gui;
 
+import java.awt.Component;
+import java.util.Collection;
+import java.util.List;
+
 import net.java.sip.communicator.service.contactsource.ContactQuery;
 import net.java.sip.communicator.service.contactsource.ContactQueryListener;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.gui.event.ContactListListener;
 import net.java.sip.communicator.service.gui.event.MetaContactQueryListener;
-
-import java.awt.Component;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * The <code>ContactList</code> interface represents a contact list. All contact
@@ -22,8 +22,7 @@ import java.util.List;
  *
  * @author Yana Stamcheva
  */
-public interface ContactList extends ContactQueryListener, MetaContactQueryListener
-{
+public interface ContactList extends ContactQueryListener, MetaContactQueryListener {
     /**
      * Returns the actual component corresponding to the contact list.
      *
@@ -43,6 +42,7 @@ public interface ContactList extends ContactQueryListener, MetaContactQueryListe
      *
      * @param contactSource the <code>ContactSourceService</code>, which
      * corresponding external source implementation we're looking for
+     *
      * @return the <code>ExternalContactSource</code> corresponding to the given <code>ContactSourceService</code>
      */
     UIContactSource getContactSource(ContactSourceService contactSource);
@@ -84,6 +84,7 @@ public interface ContactList extends ContactQueryListener, MetaContactQueryListe
      * Returns all <code>UIContactSource</code>s of the given type.
      *
      * @param type the type of sources we're looking for
+     *
      * @return a list of all <code>UIContactSource</code>s of the given type
      */
     List<UIContactSource> getContactSources(int type);
@@ -159,6 +160,7 @@ public interface ContactList extends ContactQueryListener, MetaContactQueryListe
      * <code>UIGroup</code>.
      *
      * @param group the parent <code>UIGroup</code>
+     *
      * @return a collection of all direct child <code>UIContact</code>s of the given <code>UIGroup</code>
      */
     Collection<UIContact> getContacts(final UIGroup group);
@@ -181,6 +183,7 @@ public interface ContactList extends ContactQueryListener, MetaContactQueryListe
      * Applies the given <code>filter</code>.
      *
      * @param filter the <code>ContactListFilter</code> to apply.
+     *
      * @return the filter query
      */
     FilterQuery applyFilter(ContactListFilter filter);

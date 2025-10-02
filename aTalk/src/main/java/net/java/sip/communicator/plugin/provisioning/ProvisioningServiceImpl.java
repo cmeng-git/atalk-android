@@ -345,50 +345,48 @@ public class ProvisioningServiceImpl implements ProvisioningService {
                 }
             }
 
-            ResponseBody responseBody = null;
             String errorMsg = "";
-            try {
-                responseBody = OkHttpUtils.postForm(pUrl, jsonObject, username, password, null);
+            try (ResponseBody responseBody = OkHttpUtils.postForm(pUrl, jsonObject, username, password, null)) {
+                // if there was an error in retrieving, then stop
+                // if canceled, lets check whether provisioning is mandatory
+                if (responseBody == null) {
+                    if (configService.getBoolean(PROVISIONING_MANDATORY_PROP, false)) {
+                        DialogActivity.showDialog(aTalkApp.getInstance(), R.string.provisioning_failed,
+                                R.string.provisioning_failed_message, errorMsg);
+
+                        // as shutdown service is not started and other bundles are scheduled to start, stop all of them
+                        Bundle[] bundles = ProvisioningActivator.bundleContext.getBundles();
+                        if (bundles != null && bundles.length != 0) {
+                            for (Bundle b : ProvisioningActivator.bundleContext.getBundles()) {
+                                try {
+                                    // skip our Bundle avoiding stopping us while starting and NPE in felix
+                                    if (ProvisioningActivator.bundleContext.equals(b.getBundleContext())) {
+                                        continue;
+                                    }
+                                    b.stop();
+                                } catch (BundleException ex) {
+                                    Timber.e(ex, "Failed to being gentle stop %s", b.getLocation());
+                                }
+                            }
+                        }
+                    }
+                    // stop processing
+                    return null;
+                }
+                else {
+                    return responseBody.byteStream();
+                }
             } catch (IOException e) {
                 errorMsg = e.getLocalizedMessage();
                 Timber.e("Provisioning failed posting form: %s", errorMsg);
                 aTalkApp.showToastMessage(R.string.provisioning_failed_message, errorMsg);
             }
-
-            // if there was an error in retrieving, then stop
-            // if canceled, lets check whether provisioning is mandatory
-            if (responseBody == null) {
-                if (configService.getBoolean(PROVISIONING_MANDATORY_PROP, false)) {
-                    DialogActivity.showDialog(aTalkApp.getInstance(), R.string.provisioning_failed,
-                            R.string.provisioning_failed_message, errorMsg);
-
-                    // as shutdown service is not started and other bundles are scheduled to start, stop all of them
-                    Bundle[] bundles = ProvisioningActivator.bundleContext.getBundles();
-                    if (bundles != null && bundles.length != 0) {
-                        for (Bundle b : ProvisioningActivator.bundleContext.getBundles()) {
-                            try {
-                                // skip our Bundle avoiding stopping us while starting and NPE in felix
-                                if (ProvisioningActivator.bundleContext.equals(b.getBundleContext())) {
-                                    continue;
-                                }
-                                b.stop();
-                            } catch (BundleException ex) {
-                                Timber.e(ex, "Failed to being gentle stop %s", b.getLocation());
-                            }
-                        }
-                    }
-                }
-                // stop processing
-                return null;
-            } else {
-                return responseBody.byteStream();
-            }
         } catch (Exception e) {
             String errMsg = aTalkApp.getResString(R.string.provisioning_failed_message, e.getMessage());
             Timber.d(errMsg);
             aTalkApp.showToastMessage(errMsg);
-            return null;
         }
+        return null;
     }
 
     /**

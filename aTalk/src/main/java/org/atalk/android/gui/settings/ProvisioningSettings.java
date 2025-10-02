@@ -7,7 +7,6 @@ package org.atalk.android.gui.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.EditTextPreference;
@@ -17,12 +16,12 @@ import net.java.sip.communicator.plugin.provisioning.ProvisioningActivator;
 import net.java.sip.communicator.plugin.provisioning.ProvisioningServiceImpl;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.util.StringUtils;
 
 /**
  * Provisioning preferences Settings.
@@ -98,7 +97,7 @@ public class ProvisioningSettings extends BaseActivity {
 
             // Enable clear credentials button if password exists
             prefForgetPass = findPreference(P_KEY_FORGET_PASSWORD);
-            prefForgetPass.setVisible(!TextUtils.isEmpty(password));
+            prefForgetPass.setVisible(StringUtils.isNotEmpty(password));
 
             // Forget password action handler
             prefForgetPass.setOnPreferenceClickListener(preference -> {
@@ -131,7 +130,7 @@ public class ProvisioningSettings extends BaseActivity {
          * Asks the user for confirmation of password clearing and eventually clears it.
          */
         private void askForgetPassword() {
-            if (StringUtils.isNullOrEmpty(prefPassword.getText())) {
+            if (StringUtils.isEmpty(prefPassword.getText())) {
                 return;
             }
 
@@ -152,7 +151,7 @@ public class ProvisioningSettings extends BaseActivity {
          */
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (StringUtils.isNullOrEmpty(key))
+            if (StringUtils.isEmpty(key))
                 return;
 
             switch (key) {
@@ -164,7 +163,7 @@ public class ProvisioningSettings extends BaseActivity {
 
                 case P_KEY_URL:
                     String url = sharedPreferences.getString(P_KEY_URL, null);
-                    if (!StringUtils.isNullOrEmpty(url))
+                    if (StringUtils.isNotEmpty(url))
                         mConfig.setProperty(ProvisioningServiceImpl.PROVISIONING_URL_PROP, url);
                     else
                         mConfig.setProperty(ProvisioningServiceImpl.PROVISIONING_URL_PROP, null);
@@ -173,13 +172,13 @@ public class ProvisioningSettings extends BaseActivity {
                 // Seems Jitsi impl does not allow user to change user and password
                 case P_KEY_USERNAME:
                     String username = sharedPreferences.getString(P_KEY_USERNAME, null);
-                    if (!StringUtils.isNullOrEmpty(username))
+                    if (StringUtils.isNotEmpty(username))
                         mConfig.setProperty(ProvisioningServiceImpl.PROVISIONING_USERNAME_PROP, username);
                     break;
 
                 case P_KEY_PASSWORD:
-                    String password = sharedPreferences.getString(P_KEY_PASSWORD, null);
-                    if (StringUtils.isNullOrEmpty(password, true)) {
+                    String password = StringUtils.normalizeSpace(sharedPreferences.getString(P_KEY_PASSWORD, null));
+                    if (StringUtils.isEmpty(password)) {
                         credentialsService.removePassword(ProvisioningServiceImpl.PROVISIONING_PASSWORD_PROP);
                         prefForgetPass.setVisible(false);
                     }

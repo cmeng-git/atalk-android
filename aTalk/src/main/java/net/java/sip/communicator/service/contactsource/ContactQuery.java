@@ -26,46 +26,48 @@ import java.util.List;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public interface ContactQuery
-{
+public interface ContactQuery {
     /**
      * Indicates that this query has been completed.
      */
-    public static final int QUERY_COMPLETED = 0;
+    int QUERY_COMPLETED = 0;
 
     /**
      * Indicates that this query has been canceled.
      */
-    public static final int QUERY_CANCELED = 1;
+    int QUERY_CANCELED = 1;
 
     /**
      * Indicates that this query has been stopped because of an error.
      */
-    public static final int QUERY_ERROR = 2;
+    int QUERY_ERROR = 2;
 
     /**
      * Indicates that this query is in progress.
      */
-    public static final int QUERY_IN_PROGRESS = 3;
+    int QUERY_IN_PROGRESS = 3;
 
     /**
      * Returns the <code>ContactSourceService</code>, where this query was first  initiated.
+     *
      * @return the <code>ContactSourceService</code>, where this query was first initiated
      */
     ContactSourceService getContactSource();
 
     /**
      * Returns the query string, this query was created for.
+     *
      * @return the query string, this query was created for
      */
     String getQueryString();
 
     /**
      * Returns the list of <code>SourceContact</code>s returned by this query.
+     *
      * @return the list of <code>SourceContact</code>s returned by this query
      */
     List<SourceContact> getQueryResults();
-    
+
     /**
      * Starts the query.
      */
@@ -78,6 +80,7 @@ public interface ContactQuery
 
     /**
      * Returns the status of this query. One of the static constants QUERY_XXXX defined in this class.
+     *
      * @return the status of this query
      */
     int getStatus();
@@ -87,6 +90,7 @@ public interface ContactQuery
      * listeners. The <code>ContactQueryListener</code> would be notified each
      * time a new <code>ContactQuery</code> result has been received or if the
      * query has been completed or has been canceled by user or for any other reason.
+     *
      * @param l the <code>ContactQueryListener</code> to add
      */
     void addContactQueryListener(ContactQueryListener l);
@@ -96,6 +100,7 @@ public interface ContactQuery
      * registered listeners. The <code>ContactQueryListener</code> would be
      * notified each time a new <code>ContactQuery</code> result has been received
      * or if the query has been completed or has been canceled by user or for any other reason.
+     *
      * @param l the <code>ContactQueryListener</code> to remove
      */
     void removeContactQueryListener(ContactQueryListener l);

@@ -97,7 +97,7 @@ public class EntityListHelper {
         args.putBoolean(CustomDialogCbox.ARG_CB_ENABLE, cbEnable);
 
         // Displays the history delete dialog and waits for user confirmation
-        DialogActivity.showCustomDialog(aTalkApp.getInstance(), title, CustomDialogCbox.class.getName(),
+        DialogActivity.showCustomDialog(context, title, CustomDialogCbox.class.getName(),
                 args, btnText, new DialogActivity.DialogListener() {
                     public boolean onConfirmClicked(DialogActivity dialog) {
                         CheckBox cbDomain = dialog.findViewById(R.id.cb_option);
@@ -253,10 +253,11 @@ public class EntityListHelper {
         else
             return;
 
-        String title = aTalkApp.getResString(R.string.history_contact, entityJid);
-        String message = aTalkApp.getResString(R.string.history_purge_for_contact_warning, entityJid);
-        String cbMessage = aTalkApp.getResString(R.string.history_purge_media);
-        String btnText = aTalkApp.getResString(R.string.purge);
+        Context context = aTalkApp.getInstance();
+        String title = context.getString(R.string.history_contact, entityJid);
+        String message = context.getString(R.string.history_purge_for_contact_warning, entityJid);
+        String cbMessage = context.getString(R.string.history_purge_media);
+        String btnText = context.getString(R.string.purge);
 
         Bundle args = new Bundle();
         args.putString(CustomDialogCbox.ARG_MESSAGE, message);

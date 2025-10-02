@@ -99,17 +99,6 @@ public class MetaContactListAdapter extends BaseContactListAdapter
 
     private final List<OperationSetPresence> opSetPresence = new ArrayList<>();
 
-//    /**
-//     * The default filter is initially set to the PresenceFilter. But anyone
-//     * could change it by calling setDefaultFilter().
-//     */
-//    private final ContactListFilter defaultFilter = presenceFilter;
-
-//    /**
-//     * The current filter.
-//     */
-//    private final ContactListFilter currentFilter = defaultFilter;
-
     /**
      * The currently used filter query.
      */
@@ -797,7 +786,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
                                     filteredList.add(metaContact);
                             }
 
-                            if (filteredList.size() > 0) {
+                            if (!filteredList.isEmpty()) {
                                 groups.add(metaGroup);
                                 contacts.add(filteredList);
                             }
@@ -1005,44 +994,6 @@ public class MetaContactListAdapter extends BaseContactListAdapter
             return metaGroup.getGroupName();
     }
 
-    //	/**
-    //	 * Sets the default filter to the given <code>filter</code>.
-    //	 *
-    //	 * @param filter the <code>ContactListFilter</code> to set as default
-    //	 */
-    //	public void setDefaultFilter(ContactListFilter filter) {
-    //		this.defaultFilter = filter;
-    //		this.currentFilter = defaultFilter;
-    //	}
-    //
-    //	/**
-    //	 * Gets the default filter for this contact list.
-    //	 *
-    //	 * @return the default filter for this contact list
-    //	 */
-    //	public ContactListFilter getDefaultFilter() {
-    //		return defaultFilter;
-    //	}
-    //
-    //	/**
-    //	 * Returns the currently applied filter.
-    //	 *
-    //	 * @return the currently applied filter
-    //	 */
-    //	public ContactListFilter getCurrentFilter() {
-    //		return currentFilter;
-    //	}
-    //
-    //	/**
-    //	 * Returns the currently applied filter.
-    //	 *
-    //	 * @return the currently applied filter
-    //	 */
-    //
-    //	public String getCurrentFilterQuery() {
-    //		return currentFilterQuery;
-    //	}
-    //
     //	/**
     //	 * Initializes the list of available contact sources for this contact list.
     //	 */

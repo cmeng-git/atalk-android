@@ -148,8 +148,8 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                                 .putExtra(CallManager.AUTO_ACCEPT, !aTalkApp.isDeviceLocked())
                                 .putExtra(CallManager.CALL_EVENT, NotificationManager.INCOMING_CALL);
                     }
-                    // Take the call via ReceivedCallActivity inorder to end call alert properly; auto-answer once
-                    // the call has been accepted via the headsup notification.
+                    // Take the call via ReceivedCallActivity inorder to end call alert properly;
+                    // auto-answer once the call has been accepted via the headsup notification.
                     else {
                         fullScreenIntent = new Intent(mContext, ReceivedCallActivity.class)
                                 .putExtra(CallManager.CALL_SID, mSid)

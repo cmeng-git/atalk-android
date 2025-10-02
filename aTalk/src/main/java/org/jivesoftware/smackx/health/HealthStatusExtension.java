@@ -15,8 +15,8 @@
  */
 package org.jivesoftware.smackx.health;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.AbstractExtensionElement;
 import org.jivesoftware.smackx.DefaultExtensionElementProvider;
 
@@ -88,7 +88,7 @@ public class HealthStatusExtension extends AbstractExtensionElement {
          * {@link #UNDEFINED} if given string does not reflect any of valid values.
          */
         public static Health parse(String health) {
-            if (StringUtils.isEmpty(health)) {
+            if (StringUtils.isNullOrEmpty(health)) {
                 return UNDEFINED;
             }
             try {

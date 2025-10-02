@@ -9,7 +9,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.text.TextUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -1023,7 +1022,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 String file = boshURI.getPath();
                 // use rawQuery as getQuery() decodes the string
                 String query = boshURI.getRawQuery();
-                if (!TextUtils.isEmpty(query)) {
+                if (StringUtils.isNotEmpty(query)) {
                     file += "?" + query;
                 }
 
@@ -1818,7 +1817,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     public boolean changePasswordOnServer(String pwd) {
         boolean passwordChange = true;
 
-        if (isRegistered() && !TextUtils.isEmpty(pwd)) {
+        if (isRegistered() && StringUtils.isNotEmpty(pwd)) {
             String msg = aTalkApp.getResString(R.string.password_change_on_server_successful);
             AccountManager accountManager = AccountManager.getInstance(mConnection);
             try {
@@ -2711,7 +2710,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 || (failMode == SecurityAuthority.SASL_ERROR_EXTERNAL)
                 || (failMode == SecurityAuthority.SECURITY_EXCEPTION)
                 || (failMode == SecurityAuthority.POLICY_VIOLATION)) {
-            if (TextUtils.isEmpty(reason) && (ex.getCause() != null))
+            if (StringUtils.isEmpty(reason) && (ex.getCause() != null))
                 reason = ex.getCause().getMessage();
             DialogActivity.showDialog(aTalkApp.getInstance(),
                     aTalkApp.getResString(R.string.error), reason);

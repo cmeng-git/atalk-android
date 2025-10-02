@@ -53,7 +53,7 @@ public class IceCandidateHarvester
                     int port = service.getPort();
                     String transport = service.getTransport();
 
-                    if (StringUtils.isEmpty(host) || StringUtils.isEmpty(transport) || port < 0) {
+                    if (StringUtils.isNullOrEmpty(host) || StringUtils.isNullOrEmpty(transport) || port < 0) {
                         continue;
                     }
 

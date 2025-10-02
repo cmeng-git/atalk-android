@@ -45,7 +45,7 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:3.7.0"
 
     api "androidx.annotation:annotation:1.9.1"
-    api 'androidx.lifecycle:lifecycle-runtime-ktx:2.9.3'
+    api 'androidx.lifecycle:lifecycle-runtime-ktx:2.9.4'
 
     implementation "androidx.appcompat:appcompat:1.7.1"
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
