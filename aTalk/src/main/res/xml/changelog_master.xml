@@ -7,8 +7,16 @@
 -->
 
 <changelog>
-    <release version="4.5.2 (10/02/2025)" versioncode="405020">
+    <release version="4.5.3 (10/09/2025)" versioncode="405030">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Last AccountInfoPresenceActivity$DetailsLoadWorker fix seems not effective. Move some tasks execution out of the UI thread.</change>
+        <change>Also change all its other tasks to run under ExecutorService thread; seems not required to runOnUiThread</change>
+        <change>Reset hasChanges to false on first entry to AccountInfoPresenceActivity$DetailsLoadWorker</change>
+        <change>Migrate more deprecated method onBackPressed to use OnBackPressedCallback</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="4.5.2 (10/02/2025)" versioncode="405020">
         <change>Executors.newSingleThreadExecutor() in AccountInfoPresenceActivity$DetailsLoadWorker must implement shutdown and awaitTermination 1.5s, else ANR in FFR</change>
         <change>Avoid using smack StringUtils.isEmpty as it does not check for null content</change>
         <change>Bug fixes and enhancements</change>

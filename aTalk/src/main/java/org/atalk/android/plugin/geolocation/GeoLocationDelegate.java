@@ -18,8 +18,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import org.atalk.android.R;
 
-public class GeoLocationDelegate
-{
+public class GeoLocationDelegate {
     private static final int PERMISSIONS_REQUEST = 100;
     private static final int ENABLE_LOCATION_SERVICES_REQUEST = 101;
 
@@ -30,40 +29,34 @@ public class GeoLocationDelegate
     private LocationManager mLocationManager;
     private GeoLocationRequest mGeoLocationRequest;
 
-    public GeoLocationDelegate(Activity activity, GeoLocationListener geoLocationListener)
-    {
+    public GeoLocationDelegate(Activity activity, GeoLocationListener geoLocationListener) {
         mActivity = activity;
         mGeoLocationListener = geoLocationListener;
         mLocationReceiver = new LocationBroadcastReceiver(geoLocationListener);
     }
 
-    public void onCreate()
-    {
+    public void onCreate() {
         mLocationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
         registerLocationBroadcastReceiver();
     }
 
-    public void onDestroy()
-    {
+    public void onDestroy() {
         unregisterLocationBroadcastReceiver();
         stopLocationUpdates();
     }
 
-    private void registerLocationBroadcastReceiver()
-    {
+    private void registerLocationBroadcastReceiver() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(GeoConstants.INTENT_LOCATION_RECEIVED);
         intentFilter.addAction(GeoConstants.INTENT_NO_LOCATION_RECEIVED);
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(mLocationReceiver, intentFilter);
     }
 
-    public void unregisterLocationBroadcastReceiver()
-    {
+    public void unregisterLocationBroadcastReceiver() {
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mLocationReceiver);
     }
 
-    private void startLocationBGService()
-    {
+    private void startLocationBGService() {
         if (!LocationManagerCompat.isLocationEnabled(mLocationManager))
             showLocationServicesRequireDialog();
         else {
@@ -74,15 +67,13 @@ public class GeoLocationDelegate
         }
     }
 
-    public void stopLocationUpdates()
-    {
+    public void stopLocationUpdates() {
         Intent intent = new Intent(mActivity, LocationBgService.class);
         intent.setAction(GeoConstants.ACTION_LOCATION_FETCH_STOP);
         mActivity.startService(intent);
     }
 
-    public void requestLocationUpdate(GeoLocationRequest geoLocationRequest)
-    {
+    public void requestLocationUpdate(GeoLocationRequest geoLocationRequest) {
         if (geoLocationRequest == null)
             throw new IllegalStateException("geoLocationRequest can't be null");
 
@@ -90,20 +81,17 @@ public class GeoLocationDelegate
         checkForPermissionAndRequestLocation();
     }
 
-    private void openLocationSettings()
-    {
+    private void openLocationSettings() {
         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         mActivity.startActivityForResult(intent, ENABLE_LOCATION_SERVICES_REQUEST);
     }
 
-    private boolean hasLocationPermission()
-    {
+    private boolean hasLocationPermission() {
         return ContextCompat.checkSelfPermission(mActivity,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
-    private void showPermissionRequireDialog()
-    {
+    private void showPermissionRequireDialog() {
         new AlertDialog.Builder(mActivity)
                 .setCancelable(true)
                 .setTitle(R.string.location_permission_dialog_title)
@@ -115,8 +103,7 @@ public class GeoLocationDelegate
                 .create().show();
     }
 
-    private void showLocationServicesRequireDialog()
-    {
+    private void showLocationServicesRequireDialog() {
         new AlertDialog.Builder(mActivity)
                 .setCancelable(true)
                 .setTitle(R.string.location_services_off)
@@ -128,14 +115,12 @@ public class GeoLocationDelegate
                 .create().show();
     }
 
-    private void requestPermission()
-    {
+    private void requestPermission() {
         ActivityCompat.requestPermissions(mActivity,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST);
     }
 
-    protected void checkForPermissionAndRequestLocation()
-    {
+    protected void checkForPermissionAndRequestLocation() {
         if (!hasLocationPermission()) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity, android.Manifest.permission.ACCESS_FINE_LOCATION))
                 showPermissionRequireDialog();
@@ -147,8 +132,7 @@ public class GeoLocationDelegate
         }
     }
 
-    public void onRequestPermissionsResult(int requestCode, int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 requestLocationUpdate(mGeoLocationRequest);
@@ -160,8 +144,7 @@ public class GeoLocationDelegate
         }
     }
 
-    public void onActivityResult(int requestCode)
-    {
+    public void onActivityResult(int requestCode) {
         if (requestCode == ENABLE_LOCATION_SERVICES_REQUEST) {
             if (LocationManagerCompat.isLocationEnabled(mLocationManager)) {
                 requestLocationUpdate(mGeoLocationRequest);
@@ -173,8 +156,7 @@ public class GeoLocationDelegate
         }
     }
 
-    public Location getLastKnownLocation()
-    {
+    public Location getLastKnownLocation() {
         return GeoPreferenceUtil.getInstance(mActivity).getLastKnownLocation();
     }
 }

@@ -29,9 +29,9 @@ import javax.crypto.spec.SecretKeySpec;
 import org.jivesoftware.smack.util.RandomUtil;
 
 /**
- * Utility code for XEP-XXXX: OMEMO Media Sharing.
+ * Utility code for XEP-0454: OMEMO Media Sharing.
  *
- * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
+ * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-0454: OMEMO Media Sharing</a>
  */
 public class OmemoMediaSharingUtils {
 

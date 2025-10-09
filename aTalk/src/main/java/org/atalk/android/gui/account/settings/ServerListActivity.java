@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.IntentCompat;
@@ -90,6 +91,7 @@ public class ServerListActivity extends BaseActivity {
                 .commit();
 
         findViewById(android.R.id.content).setOnClickListener(view -> showServerEditDialog(-1));
+        getOnBackPressedDispatcher().addCallback(backPressedCallback);
     }
 
     @Override
@@ -120,17 +122,15 @@ public class ServerListActivity extends BaseActivity {
         securityDialog.show(ft, "ServerItemDialogFragment");
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
             Intent result = new Intent();
             result.putExtra(JABBER_REGISTRATION_KEY, registration);
             setResult(Activity.RESULT_OK, result);
             finish();
-            return true;
         }
-        return super.onKeyUp(keyCode, event);
-    }
+    };
 
     /**
      * The server list fragment. Required to catch events.

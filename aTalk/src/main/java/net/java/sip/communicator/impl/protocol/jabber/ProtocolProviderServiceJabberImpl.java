@@ -1808,7 +1808,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 msg = aTalkApp.getResString(R.string.account_delete_on_server_failed, e.getMessage());
             }
         }
-        DialogActivity.showDialog(aTalkApp.getInstance(), aTalkApp.getResString(R.string.account_delete_on_server), msg);
+        Context ctx = aTalkApp.getInstance();
+        DialogActivity.showDialog(ctx, ctx.getString(R.string.account_delete_on_server), msg);
     }
 
     /**
@@ -1827,7 +1828,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 msg = aTalkApp.getResString(R.string.password_change_on_server_failed, e.getMessage());
                 passwordChange = false;
             }
-            DialogActivity.showDialog(aTalkApp.getInstance(), aTalkApp.getResString(R.string.password_), msg);
+            Context ctx = aTalkApp.getInstance();
+            DialogActivity.showDialog(ctx, ctx.getString(R.string.password_), msg);
         }
         return passwordChange;
     }
@@ -2712,8 +2714,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 || (failMode == SecurityAuthority.POLICY_VIOLATION)) {
             if (StringUtils.isEmpty(reason) && (ex.getCause() != null))
                 reason = ex.getCause().getMessage();
-            DialogActivity.showDialog(aTalkApp.getInstance(),
-                    aTalkApp.getResString(R.string.error), reason);
+            Context ctx = aTalkApp.getInstance();
+            DialogActivity.showDialog(ctx, ctx.getString(R.string.error), reason);
         }
         else {
             // Try re-register and ask user for new credentials giving detail reason description.
@@ -3177,8 +3179,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             }
         }
 
-        long listenerId = DialogActivity.showConfirmDialog(aTalkApp.getInstance(),
-                aTalkApp.getResString(R.string.http_authorization_request), instruction, aTalkApp.getResString(R.string.accept),
+        Context ctx = aTalkApp.getInstance();
+        long listenerId = DialogActivity.showConfirmDialog(ctx,
+                ctx.getString(R.string.http_authorization_request), instruction, ctx.getString(R.string.accept),
                 new DialogActivity.DialogListener() {
                     @Override
                     public boolean onConfirmClicked(DialogActivity dialog) {
@@ -3247,7 +3250,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      *
      * @return the socket which is used for this connection.
      *
-     * @see XMPPTCPConnection# socket
+     * @see XMPPTCPConnection#socket
      */
     public Socket getSocket() {
         Socket socket = null;

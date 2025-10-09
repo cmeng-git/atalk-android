@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -100,6 +101,7 @@ public class AccountPreferenceActivity extends BaseActivity
                 }
 
             }
+            getOnBackPressedDispatcher().addCallback(backPressedCallback);
         }
         else {
             aTalkApp.showToastMessage("No valid registered account found: " + userUniqueID);
@@ -132,23 +134,19 @@ public class AccountPreferenceActivity extends BaseActivity
 
     /**
      * Catches the back key and commits the changes if any.
-     * {@inheritDoc}
      */
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        // Catch the back key code and perform commit operation
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
             List<Fragment> fragments = getSupportFragmentManager().getFragments();
             if (!fragments.isEmpty()) {
                 Fragment fragment = fragments.get(fragments.size() - 1);
                 if (fragment instanceof JabberPreferenceFragment) {
                     preferencesFragment.commitChanges();
-                    return true;
                 }
             }
         }
-        return super.onKeyUp(keyCode, event);
-    }
+    };
 
     /**
      * Called when a preference in the tree rooted at the parent Preference has been clicked.

@@ -1,5 +1,15 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.5.3 (405030)
+Release Date:   10/09/2025
+Author:         cmeng
+- Last AccountInfoPresenceActivity$DetailsLoadWorker fix seems not effective. Move some tasks execution out of the UI thread;
+- Also change all its other tasks (~400mS) to run under ExecutorService thread; seems not required to runOnUiThread.
+- Reset hasChanges to false on first entry to AccountInfoPresenceActivity$DetailsLoadWorker.
+- Migrate more deprecated method onBackPressed to use OnBackPressedCallback.
+- Update aTalk.doap and README.md files.
+
+=========================================================================
 Version:        4.5.2 (405020)
 Release Date:   10/02/2025
 Author:         cmeng

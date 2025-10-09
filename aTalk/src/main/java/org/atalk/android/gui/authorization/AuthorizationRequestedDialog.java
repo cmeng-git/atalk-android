@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 
+import androidx.activity.OnBackPressedCallback;
+
 import net.java.sip.communicator.service.protocol.AuthorizationResponse;
 
 import org.atalk.android.BaseActivity;
@@ -74,6 +76,7 @@ public class AuthorizationRequestedDialog extends BaseActivity {
 
         // Prevents from closing the dialog on outside touch
         setFinishOnTouchOutside(false);
+        getOnBackPressedDispatcher().addCallback(backPressedCallback);
     }
 
     /**
@@ -87,14 +90,13 @@ public class AuthorizationRequestedDialog extends BaseActivity {
         updateAddToContactsStatus(ViewUtil.isCompoundChecked(getContentView(), R.id.addToContacts));
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        // Prevent Back Key from closing the dialog
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            return true;
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            // Prevent Back Key from closing the dialog
         }
-        return super.onKeyUp(keyCode, event);
-    }
+    };
+
 
     /**
      * Updates select group spinner status based on add to contact list checkbox state.

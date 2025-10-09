@@ -191,8 +191,10 @@ public class CryptoFragment extends BaseFragment
     @Override
     public void onStop() {
         ChatSessionManager.removeCurrentChatListener(this);
-        scOtrEngine.removeListener(scOtrEngineListener);
-        scOtrKeyManager.removeListener(scOtrKeyManagerListener);
+        if (scOtrEngine != null)
+            scOtrEngine.removeListener(scOtrEngineListener);
+        if (scOtrKeyManager != null)
+            scOtrKeyManager.removeListener(scOtrKeyManagerListener);
         super.onStop();
     }
 

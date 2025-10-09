@@ -82,17 +82,17 @@ public class ProvisioningSettings extends BaseActivity {
 
             // Load UUID
             // EditTextPreference uuidPref = findPreference(P_KEY_UUID);
-            // uuidPref.setText(mConfig.getString(ProvisioningServiceImpl.PROVISIONING_UUID_PROP));
+            // uuidPref.setText(mConfig.getString(P_KEY_UUID));
 
             // Initialize username and password fields
             prefUsername = findPreference(P_KEY_USERNAME);
             prefUsername.setEnabled(true);
-            // usernamePreference.setText(mConfig.getString(ProvisioningServiceImpl.PROVISIONING_USERNAME_PROP));
+            // prefUsername.setText(mConfig.getString(P_KEY_USERNAME));
 
-            String password = credentialsService.loadPassword(ProvisioningServiceImpl.PROVISIONING_PASSWORD_PROP);
+            String password = credentialsService.loadPassword(P_KEY_PASSWORD);
             prefPassword = findPreference(P_KEY_PASSWORD);
             summaryMapper.includePreference(prefPassword, "Not Set", new SummaryMapper.PasswordMask());
-            // passwordPreference.setText(password); // not necessary, get set when onCreatePreferences
+            // prefPassword.setText(password); // not necessary, get set when onCreatePreferences
             prefPassword.setEnabled(true);
 
             // Enable clear credentials button if password exists
@@ -138,7 +138,7 @@ public class ProvisioningSettings extends BaseActivity {
             askForget.setTitle(R.string.remove)
                     .setMessage(R.string.provisioning_remove_credentials_message)
                     .setPositiveButton(R.string.yes, (dialog, which) -> {
-                        credentialsService.removePassword(ProvisioningServiceImpl.PROVISIONING_PASSWORD_PROP);
+                        credentialsService.removePassword(P_KEY_PASSWORD);
                         prefUsername.setText(null);
                         prefPassword.setText(null);
                         prefForgetPass.setVisible(false);

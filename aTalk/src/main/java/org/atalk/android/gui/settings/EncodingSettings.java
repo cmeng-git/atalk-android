@@ -8,6 +8,8 @@ package org.atalk.android.gui.settings;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
+import androidx.activity.OnBackPressedCallback;
+
 import java.util.List;
 
 import org.atalk.android.BaseActivity;
@@ -60,22 +62,19 @@ public class EncodingSettings extends BaseActivity {
         else {
             mMediaEncodings = (MediaEncodingsFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
         }
+        getOnBackPressedDispatcher().addCallback(backPressedCallback);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        MediaServiceImpl mediaSrvc = NeomediaActivator.getMediaServiceImpl();
-
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && (mediaSrvc != null)) {
-            MediaEncodingActivity.commitPriorities(
-                    NeomediaActivator.getMediaServiceImpl().getCurrentEncodingConfiguration(),
-                    mMediaType, mMediaEncodings);
-            finish();
-            return true;
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            MediaServiceImpl mediaSrvc = NeomediaActivator.getMediaServiceImpl();
+            if (mediaSrvc != null) {
+                MediaEncodingActivity.commitPriorities(
+                        NeomediaActivator.getMediaServiceImpl().getCurrentEncodingConfiguration(),
+                        mMediaType, mMediaEncodings);
+                finish();
+            }
         }
-        return super.onKeyUp(keyCode, event);
-    }
+    };
 }

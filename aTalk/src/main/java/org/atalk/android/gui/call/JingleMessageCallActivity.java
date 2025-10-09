@@ -23,6 +23,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
+
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 
 import org.atalk.android.BaseActivity;
@@ -115,19 +117,17 @@ public class JingleMessageCallActivity extends BaseActivity implements JingleMes
                 callButton.setVisibility(View.GONE);
             }
         }
+        getOnBackPressedDispatcher().addCallback(backPressedCallback);
     }
 
     /**
-     * {@inheritDoc}
+     * Hangs up the call when back is pressed as this Activity will not be displayed again.
      */
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        // Hangs up the call when back is pressed as this Activity will not be displayed again.
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            return true;
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
         }
-        return super.onKeyUp(keyCode, event);
-    }
+    };
 
     /**
      * Bring aTalk to foreground, and end JingleMessageCallActivity UI; else user is prompted with

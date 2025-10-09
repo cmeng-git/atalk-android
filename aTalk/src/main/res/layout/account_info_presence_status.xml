@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:ignore="Autofill,TextFields,TooManyViews"
-    android:padding="5dp">
+    android:padding="5dp"
+    tools:ignore="Autofill,TextFields,TooManyViews">
 
     <RelativeLayout
         android:id="@+id/avatar"
@@ -630,6 +630,6 @@
             style="@style/ButtonTop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/apply"/>
+            android:text="@string/apply" />
     </LinearLayout>
 </LinearLayout>

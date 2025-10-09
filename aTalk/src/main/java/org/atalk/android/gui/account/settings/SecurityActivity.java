@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.IntentCompat;
 import androidx.core.os.BundleCompat;
 import androidx.fragment.app.FragmentTransaction;
@@ -110,23 +111,23 @@ public class SecurityActivity extends BaseActivity implements SecurityProtocolsD
         else {
             securityFragment = (SecurityPreferenceFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
         }
+        getOnBackPressedDispatcher().addCallback(backPressedCallback);
     }
 
     public void onDialogClosed(SecurityProtocolsDialogFragment dialog) {
         securityFragment.onDialogClosed(dialog);
     }
 
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
             Intent result = new Intent();
             result.putExtra(EXTR_KEY_SEC_REGISTRATION, securityFragment.securityReg);
             result.putExtra(EXTR_KEY_HAS_CHANGES, securityFragment.hasChanges);
             setResult(Activity.RESULT_OK, result);
             finish();
-            return true;
         }
-        return super.onKeyUp(keyCode, event);
-    }
+    };
 
     /**
      * Fragment handles {@link Preference}s used for manipulating security settings.

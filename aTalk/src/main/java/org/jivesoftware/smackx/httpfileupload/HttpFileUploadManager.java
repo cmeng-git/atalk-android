@@ -50,6 +50,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -66,13 +67,13 @@ import org.jxmpp.jid.DomainBareJid;
 
 /**
  * A manager for XEP-0363: HTTP File Upload.
- * This manager is also capable of XEP-XXXX: OMEMO Media Sharing.
+ * This manager is also capable of XEP-0454: OMEMO Media Sharing.
  *
  * @author Grigory Fedorov
  * @author Florian Schmaus
  * @author Paul Schaub
  * @see <a href="http://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
- * @see <a href="http://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
+ * @see <a href="http://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-0454: OMEMO Media Sharing</a>
  */
 public final class HttpFileUploadManager extends Manager {
 
@@ -343,7 +344,7 @@ public final class HttpFileUploadManager extends Manager {
      * @throws InvalidKeyException if the key is invalid.
      * @throws NoSuchPaddingException if the requested padding mechanism is not available.
      *
-     * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
+     * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-0454: OMEMO Media Sharing</a>
      */
     /**
     public AesgcmUrl uploadFileEncrypted(File file) throws InterruptedException, IOException,
@@ -377,7 +378,7 @@ public final class HttpFileUploadManager extends Manager {
      * @throws InvalidAlgorithmParameterException if the provided arguments are invalid.
      * @throws InvalidKeyException if the key is invalid.
      *
-     * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
+     * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-0454: OMEMO Media Sharing</a>
      */
     public AesgcmUrl uploadFileEncrypted(File file, UploadProgressListener listener) throws IOException,
             InterruptedException, XMPPException.XMPPErrorException, SmackException, NoSuchPaddingException,

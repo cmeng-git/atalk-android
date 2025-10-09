@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 
+import androidx.activity.OnBackPressedCallback;
+
 import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -58,16 +60,18 @@ public class RequestAuthorizationDialog extends BaseActivity {
 
         // Prevents from closing the dialog on outside touch
         setFinishOnTouchOutside(false);
+        getOnBackPressedDispatcher().addCallback(backPressedCallback);
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        // Prevent Back Key from closing the dialog
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            return true;
+    /*
+     * Do not allow backKey to terminate dialog.
+     */
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            // Block the back key action to end dialog.
         }
-        return super.onKeyUp(keyCode, event);
-    }
+    };
 
     /**
      * Method fired when the request button is clicked.

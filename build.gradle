@@ -9,7 +9,7 @@ buildscript {
         // gradle:4.2.2': [Build | Generate Sigbed Bundle / APL...], build has error i.e.
         // i.e. aTalk/build/jarjar (Is a directory); but resolved with gradle: >=7.4.2'
         // gradle-8.x requires JVM 17
-        classpath 'com.android.tools.build:gradle:8.11.1'
+        classpath 'com.android.tools.build:gradle:8.11.2'
 
         // Required by android-youtube-player
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21'

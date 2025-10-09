@@ -29,11 +29,11 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
 
 /**
- * This class represents a aesgcm URL as described in XEP-XXXX: OMEMO Media Sharing.
+ * This class represents a aesgcm URL as described in XEP-0454: OMEMO Media Sharing.
  * As the builtin {@link URL} class cannot handle the aesgcm protocol identifier, this class
  * is used as a utility class that bundles together a {@link URL}, key and IV.
  *
- * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
+ * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-0454: OMEMO Media Sharing</a>
  */
 public class AesgcmUrl {
 

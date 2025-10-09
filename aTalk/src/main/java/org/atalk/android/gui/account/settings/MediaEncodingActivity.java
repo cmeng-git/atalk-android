@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.IntentCompat;
 import androidx.core.os.BundleCompat;
 
@@ -126,6 +127,7 @@ public class MediaEncodingActivity extends BaseActivity
                     .add(toggleFragment, "action_bar_toggle")
                     .commit();
         }
+        getOnBackPressedDispatcher().addCallback(backPressedCallback);
     }
 
     /**
@@ -296,12 +298,10 @@ public class MediaEncodingActivity extends BaseActivity
 
     /**
      * Catches the back key and returns edited state in <code>Intent</code> extra. <br/>
-     * {@inheritDoc}
      */
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        // Catch the back key code and store results
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
             commitChanges();
 
             Intent result = new Intent();
@@ -313,10 +313,8 @@ public class MediaEncodingActivity extends BaseActivity
 
             setResult(Activity.RESULT_OK, result);
             finish();
-            return true;
         }
-        return super.onKeyUp(keyCode, event);
-    }
+    };
 
     /**
      * Commits priorities edited by the <code>EncodingsFragment</code> into given

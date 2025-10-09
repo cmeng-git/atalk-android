@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -221,6 +222,7 @@ public class DialogActivity extends BaseActivity {
                 displayedDialogs.notifyAll();
             }
         }
+        getOnBackPressedDispatcher().addCallback(backPressedCallback);
     }
 
     /**
@@ -232,14 +234,14 @@ public class DialogActivity extends BaseActivity {
         return getSupportFragmentManager().findFragmentById(R.id.alertContent);
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (!mCancelable &&
-                keyCode == KeyEvent.KEYCODE_BACK) {
-            return true;
+    // Block the back key action to close dialog if mCancelable == false.
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            if (mCancelable)
+                finish();
         }
-        return super.onKeyUp(keyCode, event);
-    }
+    };
 
     /**
      * Fired when the confirm button is clicked.

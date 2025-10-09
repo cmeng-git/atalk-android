@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.Layout;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -265,13 +266,15 @@ public class AccountInfoPresenceActivity extends BaseActivity
             }
 
             isRegistered = protocolProvider.isRegistered();
+            setFieldEditState(isRegistered);
             if (!isRegistered) {
-                setTextEditState(false);
                 Toast.makeText(this, R.string.accountinfo_not_registered_message, Toast.LENGTH_LONG).show();
             }
             else {
                 loadDetails();
             }
+            // Reset hasChanges to false on entry
+            hasChanges = false;
         }
         getOnBackPressedDispatcher().addCallback(backPressedCallback);
     }
@@ -532,6 +535,30 @@ public class AccountInfoPresenceActivity extends BaseActivity
     }
 
     /**
+     * Setup textFields' editable state and addTextChangedListener if enabled
+     */
+    private void setFieldEditState(boolean editState) {
+        // Setup textFields' editable state and addTextChangedListener if enabled
+        boolean isEditable;
+        for (Class<? extends GenericDetail> classDetail : detailToTextField.keySet()) {
+            EditText field = detailToTextField.get(classDetail);
+            isEditable = editState && accountInfoOpSet.isDetailClassEditable(classDetail);
+
+            if (classDetail.equals(BirthDateDetail.class))
+                mCalenderButton.setEnabled(isEditable);
+            else if (classDetail.equals(ImageDetail.class))
+                avatarView.setEnabled(isEditable);
+            else {
+                if (field != null) {
+                    field.setEnabled(isEditable);
+                    if (isEditable)
+                        field.addTextChangedListener(editTextWatcher);
+                }
+            }
+        }
+    }
+
+    /**
      * check for any unsaved changes and alert user
      */
     private void checkUnsavedChanges() {
@@ -585,88 +612,39 @@ public class AccountInfoPresenceActivity extends BaseActivity
         hasChanges = (datePicker != null);
     }
 
-    private void setTextEditState(boolean editState) {
-        boolean isEditable;
-        for (Class<? extends GenericDetail> editable : detailToTextField.keySet()) {
-            EditText field = detailToTextField.get(editable);
-
-            isEditable = editState && accountInfoOpSet.isDetailClassEditable(editable);
-            if (editable.equals(BirthDateDetail.class))
-                mCalenderButton.setEnabled(isEditable);
-            else if (editable.equals(ImageDetail.class))
-                avatarView.setEnabled(isEditable);
-            else if (field != null) {
-                field.setEnabled(isEditable);
-                if (isEditable)
-                    field.addTextChangedListener(editTextWatcher);
-            }
-        }
-    }
-
     /**
-     * Loads all <code>ServerStoredDetails</code> which are currently supported by
-     * this plugin. Note that some <code>OperationSetServerStoredAccountInfo</code>
-     * implementations may support details that are not supported by this plugin.
-     * In this case they will not be loaded.
+     * Loads all <code>ServerStoredDetails</code> which are currently supported by this plugin.
+     * Note that some <code>OperationSetServerStoredAccountInfo</code> implementations may support
+     * details that are not supported by this plugin. In this case they will not be loaded.
      */
     private void loadDetails() {
-        if (accountInfoOpSet != null) {
-            new DetailsLoadWorker().execute();
-        }
-    }
+        try (ExecutorService sThread = Executors.newSingleThreadExecutor()) {
+            sThread.execute(() -> {
+                final Iterator<GenericDetail> allDetails = accountInfoOpSet.getAllAvailableDetails();
 
-    /**
-     * Loads details in separate thread.
-     */
-    private class DetailsLoadWorker {
-        public void execute() {
-            /*
-             * Called on the event dispatching thread (not on the worker thread)
-             * after the {@code construct} method has returned.
-             */
-            try (ExecutorService sThread = Executors.newSingleThreadExecutor()) {
-                sThread.execute(() -> {
-                    Iterator<GenericDetail> allDetails = accountInfoOpSet.getAllAvailableDetails();
-                    runOnUiThread(() -> {
-                        if (allDetails != null) {
-                            while (allDetails.hasNext()) {
-                                GenericDetail detail = allDetails.next();
-                                loadDetail(detail);
-                            }
-
-                            // Setup textFields' editable state and addTextChangedListener if enabled
-                            boolean isEditable;
-                            for (Class<? extends GenericDetail> editable : detailToTextField.keySet()) {
-                                EditText field = detailToTextField.get(editable);
-                                isEditable = accountInfoOpSet.isDetailClassEditable(editable);
-
-                                if (editable.equals(BirthDateDetail.class))
-                                    mCalenderButton.setEnabled(isEditable);
-                                else if (editable.equals(ImageDetail.class))
-                                    avatarView.setEnabled(isEditable);
-                                else {
-                                    if (field != null) {
-                                        field.setEnabled(isEditable);
-                                        if (isEditable)
-                                            field.addTextChangedListener(editTextWatcher);
-                                    }
-                                }
-                            }
+                // ANR from FFR: Seems not need to run on UI Thread!
+                // runOnUiThread(() -> {
+                    if (allDetails != null) {
+                        while (allDetails.hasNext()) {
+                            GenericDetail detail = allDetails.next();
+                            loadDetail(detail);
                         }
-                        // get user avatar via XEP-0084
-                        getUserAvatarData();
-                    });
-                });
-                sThread.shutdown();
-                try {
-                    if (!sThread.awaitTermination(1500, TimeUnit.MILLISECONDS)) {
-                        Timber.w("DetailsLoadWorker shutDown on timeout!");
-                        sThread.shutdownNow();
                     }
-                } catch (InterruptedException ex) {
+                    // get user avatar via XEP-0084
+                    getUserAvatarData();
+                    // Logger.getLogger("LoadDetail").warn("Load Details done!!!");
+                });
+            // });
+
+            sThread.shutdown();
+            try {
+                if (!sThread.awaitTermination(1500, TimeUnit.MILLISECONDS)) {
+                    Timber.w("DetailsLoadWorker shutDown on timeout!");
                     sThread.shutdownNow();
-                    Thread.currentThread().interrupt();
                 }
+            } catch (InterruptedException ex) {
+                sThread.shutdownNow();
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -681,12 +659,6 @@ public class AccountInfoPresenceActivity extends BaseActivity
      * @param detail the loaded detail for extraction.
      */
     private void loadDetail(GenericDetail detail) {
-        if (detail.getClass().equals(AboutMeDetail.class)) {
-            aboutMeDetail = (AboutMeDetail) detail;
-            aboutMeArea.setText((String) detail.getDetailValue());
-            return;
-        }
-
         if (detail instanceof BirthDateDetail) {
             birthDateDetail = (BirthDateDetail) detail;
             Object objBirthDate = birthDateDetail.getDetailValue();
@@ -710,7 +682,14 @@ public class AccountInfoPresenceActivity extends BaseActivity
             return;
         }
 
-        EditText field = detailToTextField.get(detail.getClass());
+        Class<? extends GenericDetail> classDetail = detail.getClass();
+        if (classDetail.equals(AboutMeDetail.class)) {
+            aboutMeDetail = (AboutMeDetail) detail;
+            aboutMeArea.setText((String) detail.getDetailValue());
+            return;
+        }
+
+        EditText field = detailToTextField.get(classDetail);
         if (field != null) {
             if (detail instanceof ImageDetail) {
                 avatarDetail = (ImageDetail) detail;
@@ -729,45 +708,42 @@ public class AccountInfoPresenceActivity extends BaseActivity
                 else if (obj != null)
                     field.setText(obj.toString());
 
-                if (detail.getClass().equals(DisplayNameDetail.class))
+                if (classDetail.equals(DisplayNameDetail.class))
                     displayNameDetail = (DisplayNameDetail) detail;
-                else if (detail.getClass().equals(FirstNameDetail.class))
+                else if (classDetail.equals(FirstNameDetail.class))
                     firstNameDetail = (FirstNameDetail) detail;
-                else if (detail.getClass().equals(MiddleNameDetail.class))
+                else if (classDetail.equals(MiddleNameDetail.class))
                     middleNameDetail = (MiddleNameDetail) detail;
-                else if (detail.getClass().equals(LastNameDetail.class))
+                else if (classDetail.equals(LastNameDetail.class))
                     lastNameDetail = (LastNameDetail) detail;
-                else if (detail.getClass().equals(NicknameDetail.class))
+                else if (classDetail.equals(NicknameDetail.class))
                     nicknameDetail = (NicknameDetail) detail;
-                else if (detail.getClass().equals(GenderDetail.class))
+                else if (classDetail.equals(GenderDetail.class))
                     genderDetail = (GenderDetail) detail;
-                else if (detail.getClass().equals(AddressDetail.class))
+                else if (classDetail.equals(AddressDetail.class))
                     streetAddressDetail = (AddressDetail) detail;
-                else if (detail.getClass().equals(CityDetail.class))
+                else if (classDetail.equals(CityDetail.class))
                     cityDetail = (CityDetail) detail;
-                else if (detail.getClass().equals(ProvinceDetail.class))
+                else if (classDetail.equals(ProvinceDetail.class))
                     regionDetail = (ProvinceDetail) detail;
-                else if (detail.getClass().equals(PostalCodeDetail.class))
+                else if (classDetail.equals(PostalCodeDetail.class))
                     postalCodeDetail = (PostalCodeDetail) detail;
-                else if (detail.getClass().equals(CountryDetail.class))
+                else if (classDetail.equals(CountryDetail.class))
                     countryDetail = (CountryDetail) detail;
-                else if (detail.getClass().equals(PhoneNumberDetail.class))
+                else if (classDetail.equals(PhoneNumberDetail.class))
                     phoneDetail = (PhoneNumberDetail) detail;
-                else if (detail.getClass().equals(WorkPhoneDetail.class))
+                else if (classDetail.equals(WorkPhoneDetail.class))
                     workPhoneDetail = (WorkPhoneDetail) detail;
-                else if (detail.getClass().equals(MobilePhoneDetail.class))
+                else if (classDetail.equals(MobilePhoneDetail.class))
                     mobilePhoneDetail = (MobilePhoneDetail) detail;
-                else if (detail.getClass().equals(EmailAddressDetail.class))
+                else if (classDetail.equals(EmailAddressDetail.class))
                     emailDetail = (EmailAddressDetail) detail;
-                else if (detail.getClass().equals(WorkEmailAddressDetail.class))
+                else if (classDetail.equals(WorkEmailAddressDetail.class))
                     workEmailDetail = (WorkEmailAddressDetail) detail;
-                else if (detail.getClass().equals(
-                        WorkOrganizationNameDetail.class))
+                else if (classDetail.equals(WorkOrganizationNameDetail.class))
                     organizationDetail = (WorkOrganizationNameDetail) detail;
-                else if (detail.getClass().equals(JobTitleDetail.class))
+                else if (classDetail.equals(JobTitleDetail.class))
                     jobTitleDetail = (JobTitleDetail) detail;
-                else if (detail.getClass().equals(AboutMeDetail.class))
-                    aboutMeDetail = (AboutMeDetail) detail;
             }
         }
     }
@@ -1332,7 +1308,7 @@ public class AccountInfoPresenceActivity extends BaseActivity
                 hasChanges = false;
 
                 if (ProgressDialog.isShowing(pDialogId)) {
-                   ProgressDialog.setMessage(pDialogId, getString(R.string.accountinfo_discard_change));
+                    ProgressDialog.setMessage(pDialogId, getString(R.string.accountinfo_discard_change));
                 }
             }
             // Publish status in new thread

@@ -153,7 +153,7 @@ public class About extends BaseActivity implements View.OnClickListener {
             new String[]{"XEP-0384: OMEMO Encryption 0.8.3", "https://xmpp.org/extensions/xep-0384.html"},
             new String[]{"XEP-0391: Jingle Encrypted Transports 0.1.2", "https://xmpp.org/extensions/xep-0391.html"},
             new String[]{"XEP-0441: Message Archive Management Preferences 0.2.0", "https://xmpp.org/extensions/xep-0441.htmll"},
-            new String[]{"XEP-xxxx: OMEMO Media sharing 0.0.2", "https://xmpp.org/extensions/inbox/omemo-media-sharing.html"},
+            new String[]{"XEP-0454: OMEMO Media sharing 0.1.0", "https://xmpp.org/extensions/inbox/omemo-media-sharing.html"},
             // new String[]{"", ""},
     };
 
