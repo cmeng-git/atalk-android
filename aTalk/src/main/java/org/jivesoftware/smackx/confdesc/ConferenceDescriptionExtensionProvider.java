@@ -1,17 +1,19 @@
 package org.jivesoftware.smackx.confdesc;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jxmpp.JxmppContext;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * Parses elements with the {@value ConferenceDescriptionExtension#NAMESPACE} namespace.
  */
-public class ConferenceDescriptionExtensionProvider
-        extends ExtensionElementProvider<ConferenceDescriptionExtension>
+public class ConferenceDescriptionExtensionProvider extends ExtensionElementProvider<ConferenceDescriptionExtension>
 {
     /**
      * Creates a <code>ConferenceDescriptionExtension</code> by parsing an XML document.
@@ -20,10 +22,10 @@ public class ConferenceDescriptionExtensionProvider
      * @return the created <code>ConferenceDescriptionExtension</code>.
      * @throws IOException, XmlPullParserException if error
      */
+
     @Override
-    public ConferenceDescriptionExtension parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException
-    {
+    public ConferenceDescriptionExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         ConferenceDescriptionExtension packetExtension = new ConferenceDescriptionExtension();
 
         //first, set all attributes

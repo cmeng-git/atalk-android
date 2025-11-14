@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Layout;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -267,6 +266,7 @@ public class AccountInfoPresenceActivity extends BaseActivity
 
             isRegistered = protocolProvider.isRegistered();
             setFieldEditState(isRegistered);
+            mApplyButton.setVisibility(isRegistered ? View.VISIBLE: View.GONE);
             if (!isRegistered) {
                 Toast.makeText(this, R.string.accountinfo_not_registered_message, Toast.LENGTH_LONG).show();
             }

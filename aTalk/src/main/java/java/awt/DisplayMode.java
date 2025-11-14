@@ -2,9 +2,9 @@ package java.awt;
 
 public final class DisplayMode
 {
-	private Dimension size;
-	private int bitDepth;
-	private int refreshRate;
+	private final Dimension size;
+	private final int bitDepth;
+	private final int refreshRate;
 	public static final int BIT_DEPTH_MULTI = -1;
 	public static final int REFRESH_RATE_UNKNOWN = 0;
 

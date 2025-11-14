@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright © 2017 Grigory Fedorov
  *
@@ -54,6 +54,8 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.httpfileupload.AbstractHttpUploadException.HttpUploadErrorException;
+import org.jivesoftware.smackx.httpfileupload.AbstractHttpUploadException.HttpUploadIOException;
 import org.jivesoftware.smackx.httpfileupload.UploadService.Version;
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
 import org.jivesoftware.smackx.httpfileupload.element.SlotRequest;
@@ -72,6 +74,7 @@ import org.jxmpp.jid.DomainBareJid;
  * @author Grigory Fedorov
  * @author Florian Schmaus
  * @author Paul Schaub
+ * @author Eng Chong Meng
  * @see <a href="http://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
  * @see <a href="http://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-0454: OMEMO Media Sharing</a>
  */
@@ -320,7 +323,7 @@ public final class HttpFileUploadManager extends Manager {
         return slot.getGetUrl();
     }
 
-    /**
+    /*
      * Upload a file encrypted using the scheme described in OMEMO Media Sharing.
      * The file is being encrypted using a random 256 bit AES key in Galois Counter Mode using a random 16 byte IV and
      * then uploaded to the server.
@@ -345,13 +348,13 @@ public final class HttpFileUploadManager extends Manager {
      * @throws NoSuchPaddingException if the requested padding mechanism is not available.
      *
      * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-0454: OMEMO Media Sharing</a>
-     */
-    /**
+     *
     public AesgcmUrl uploadFileEncrypted(File file) throws InterruptedException, IOException,
             XMPPException.XMPPErrorException, SmackException, InvalidAlgorithmParameterException,
             NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException {
         return uploadFileEncrypted(file, null);
     }
+     **/
 
     /**
      * Upload a file encrypted using the scheme described in OMEMO Media Sharing.
@@ -426,7 +429,7 @@ public final class HttpFileUploadManager extends Manager {
 
     /**
      * Request a new upload slot with optional content type from default upload service (if discovered).
-     * <p>
+     *
      * When you get slot you should upload file to PUT URL and share GET URL.
      * Note that this is a synchronous call -- Smack must wait for the server response.
      *
@@ -449,7 +452,7 @@ public final class HttpFileUploadManager extends Manager {
 
     /**
      * Request a new upload slot with optional content type from custom upload service.
-     * <p>
+     *
      * When you get slot you should upload file to PUT URL and share GET URL.
      * Note that this is a synchronous call -- Smack must wait for the server response.
      *
@@ -499,17 +502,17 @@ public final class HttpFileUploadManager extends Manager {
 
         SlotRequest slotRequest;
         switch (uploadService.getVersion()) {
-            case v0_3:
-                slotRequest = new SlotRequest(uploadService.getAddress(), filename, fileSize, contentType);
-                break;
-            case v0_2:
-                slotRequest = new SlotRequest_V0_2(uploadService.getAddress(), filename, fileSize, contentType);
-                break;
-            default:
-                throw new AssertionError();
+        case v0_3:
+            slotRequest = new SlotRequest(uploadService.getAddress(), filename, fileSize, contentType);
+            break;
+        case v0_2:
+            slotRequest = new SlotRequest_V0_2(uploadService.getAddress(), filename, fileSize, contentType);
+            break;
+        default:
+            throw new AssertionError();
         }
 
-        return connection.createStanzaCollectorAndSend(slotRequest).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(slotRequest);
     }
 
     public void setTlsContext(SSLContext tlsContext) {
@@ -523,6 +526,23 @@ public final class HttpFileUploadManager extends Manager {
         final URL putUrl = slot.getPutUrl();
         final XMPPConnection connection = connection();
         final HttpURLConnection urlConnection = createURLConnection(connection, putUrl);
+        if (urlConnection instanceof HttpsURLConnection) {
+            var httpsUrlConnection = (HttpsURLConnection) urlConnection;
+            if (connection instanceof AbstractXMPPConnection) {
+                var abstractConnection = (AbstractXMPPConnection) connection;
+                var connectionConfiguration = abstractConnection.getConfiguration();
+
+                var sslSocketFactory = connectionConfiguration.getSSLSocketFactory();
+                if (sslSocketFactory != null) {
+                    httpsUrlConnection.setSSLSocketFactory(sslSocketFactory);
+                }
+
+                var hostnameVerifier = connectionConfiguration.getHostnameVerifier();
+                if (hostnameVerifier != null) {
+                    httpsUrlConnection.setHostnameVerifier(hostnameVerifier);
+                }
+            }
+        }
 
         urlConnection.setRequestMethod("PUT");
         urlConnection.setUseCaches(false);
@@ -562,7 +582,8 @@ public final class HttpFileUploadManager extends Manager {
                         listener.onUploadProgress(bytesSend, fileSize);
                     }
                 }
-            } finally {
+            }
+            finally {
                 try {
                     inputStream.close();
                 }
@@ -572,23 +593,26 @@ public final class HttpFileUploadManager extends Manager {
                 }
                 try {
                     outputStream.close();
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     LOGGER.log(Level.WARNING, "Exception while closing output stream", e);
                 }
             }
 
             int status = urlConnection.getResponseCode();
             switch (status) {
-                case HttpURLConnection.HTTP_OK:
-                case HttpURLConnection.HTTP_CREATED:
-                case HttpURLConnection.HTTP_NO_CONTENT:
-                    break;
-                default:
-                    throw new IOException("Error response " + status + " from server during file upload: "
-                            + urlConnection.getResponseMessage() + ", file size: " + fileSize + ", put URL: "
-                            + putUrl);
+            case HttpURLConnection.HTTP_OK:
+            case HttpURLConnection.HTTP_CREATED:
+            case HttpURLConnection.HTTP_NO_CONTENT:
+                break;
+            default:
+                throw new HttpUploadErrorException(status, urlConnection.getResponseMessage(), fileSize, slot);
             }
-        } finally {
+        }
+        catch (IOException e) {
+            throw new HttpUploadIOException(fileSize, slot, e);
+        }
+        finally {
             urlConnection.disconnect();
         }
     }
@@ -620,15 +644,15 @@ public final class HttpFileUploadManager extends Manager {
     public static UploadService.Version namespaceToVersion(String namespace) {
         UploadService.Version version;
         switch (namespace) {
-            case NAMESPACE:
-                version = Version.v0_3;
-                break;
-            case NAMESPACE_0_2:
-                version = Version.v0_2;
-                break;
-            default:
-                version = null;
-                break;
+        case NAMESPACE:
+            version = Version.v0_3;
+            break;
+        case NAMESPACE_0_2:
+            version = Version.v0_2;
+            break;
+        default:
+            version = null;
+            break;
         }
         return version;
     }

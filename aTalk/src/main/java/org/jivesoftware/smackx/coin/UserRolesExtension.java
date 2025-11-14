@@ -5,9 +5,9 @@
  */
 package org.jivesoftware.smackx.coin;
 
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.AbstractExtensionElement;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -93,7 +93,7 @@ public class UserRolesExtension extends AbstractExtensionElement
             xml.optElement(ELEMENT_ROLE, role);
         }
 
-        for (ExtensionElement ext : getChildExtensions()) {
+        for (XmlElement ext : getChildExtensions()) {
             xml.append(ext.toXML(XmlEnvironment.EMPTY));
         }
         xml.closeElement(getElementName());

@@ -44,12 +44,15 @@
 package org.jivesoftware.smackx.avatar.vcardavatar.provider;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
+import org.jxmpp.JxmppContext;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * An ExtensionElementProvider to parse the VcardTempXUpdate photo data.
@@ -61,10 +64,10 @@ import java.io.IOException;
  */
 public class VCardTempXUpdateProvider extends ExtensionElementProvider<VCardTempXUpdate>
 {
+
     @Override
-    public VCardTempXUpdate parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException
-    {
+    public VCardTempXUpdate parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String data = null;
 
         outerloop:

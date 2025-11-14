@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Paul Schaub
  *
@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 
 /**
  * Jingle security element.
@@ -24,7 +24,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public abstract class JingleContentSecurity implements ExtensionElement {
+public abstract class JingleContentSecurity implements XmlElement {
 
     public static final String ELEMENT = "security";
     private JingleContentSecurityInfo securityInfo;

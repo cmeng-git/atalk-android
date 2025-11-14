@@ -1181,7 +1181,7 @@ public abstract class ProtocolProviderFactory
      */
     public static ProtocolProviderFactory getProtocolProviderFactory(BundleContext bundleContext, String protocolName)
     {
-        ServiceReference[] serRefs;
+        ServiceReference<?>[] serRefs;
         String osgiFilter = "(PROTOCOL_NAME=" + protocolName + ")";
         try {
             serRefs = bundleContext.getServiceReferences(ProtocolProviderFactory.class.getName(), osgiFilter);

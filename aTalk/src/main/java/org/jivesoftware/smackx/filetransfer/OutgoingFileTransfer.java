@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2003-2006 Jive Software.
  *
@@ -31,7 +31,6 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
-
 import org.jxmpp.jid.Jid;
 
 /**
@@ -40,7 +39,7 @@ import org.jxmpp.jid.Jid;
  * steps differently.
  *
  * @author Alexander Wenckus
- *
+ * @author Eng Chong Meng
  */
 public class OutgoingFileTransfer extends FileTransfer {
     private static final Logger LOGGER = Logger.getLogger(OutgoingFileTransfer.class.getName());
@@ -100,8 +99,7 @@ public class OutgoingFileTransfer extends FileTransfer {
     protected OutputStream getOutputStream() {
         if (getStatus().equals(FileTransfer.Status.negotiated)) {
             return outputStream;
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -182,9 +180,11 @@ public class OutgoingFileTransfer extends FileTransfer {
                     OutgoingFileTransfer.this.outputStream
                             = negotiateStream(fileName, fileSize, description, thumbnail);
                     progress.outputStreamEstablished(OutgoingFileTransfer.this.outputStream);
-                } catch (XMPPErrorException e) {
+                }
+                catch (XMPPErrorException e) {
                     handleXMPPException(e);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     setException(e);
                 }
             }
@@ -212,6 +212,7 @@ public class OutgoingFileTransfer extends FileTransfer {
      *
      * @param file the file to transfer to the remote entity.
      * @param description a description for the file to transfer.
+     *
      * @throws SmackException if Smack detected an exceptional situation.
      *             If there is an error during the negotiation process or the
      *             sending of the file.
@@ -221,8 +222,7 @@ public class OutgoingFileTransfer extends FileTransfer {
         checkTransferThread();
         if (file == null || !file.exists() || !file.canRead()) {
             throw new IllegalArgumentException("Could not read file");
-        }
-        else {
+        } else {
             setFileInfo(file.getAbsolutePath(), file.getName(), file.length());
         }
 
@@ -234,7 +234,8 @@ public class OutgoingFileTransfer extends FileTransfer {
                 } catch (XMPPErrorException e) {
                     handleXMPPException(e);
                     return;
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     setException(e);
                 }
                 if (outputStream == null) {
@@ -296,7 +297,8 @@ public class OutgoingFileTransfer extends FileTransfer {
                 } catch (XMPPErrorException e) {
                     handleXMPPException(e);
                     return;
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     setException(e);
                 }
                 if (outputStream == null) {
@@ -330,15 +332,15 @@ public class OutgoingFileTransfer extends FileTransfer {
         StanzaError error = e.getStanzaError();
         if (error != null) {
             switch (error.getCondition()) {
-                case forbidden:
-                    setStatus(Status.refused);
-                    return;
-                case bad_request:
-                    setStatus(Status.error);
-                    setError(Error.not_acceptable);
-                    break;
-                default:
-                    setStatus(FileTransfer.Status.error);
+            case forbidden:
+                setStatus(Status.refused);
+                return;
+            case bad_request:
+                setStatus(Status.error);
+                setError(Error.not_acceptable);
+                break;
+            default:
+                setStatus(FileTransfer.Status.error);
             }
         }
 

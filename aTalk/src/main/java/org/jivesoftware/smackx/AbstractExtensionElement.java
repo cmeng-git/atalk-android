@@ -14,13 +14,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
- * A generic implementation of <code>ExtensionElement</code>. The purpose of this class is quite similar
- * to that of smack's {@link ExtensionElement} with the main difference being that this one is
+ * A generic implementation of <code>XmlElement</code>. The purpose of this class is quite similar
+ * to that of smack's {@link XmlElement} with the main difference being that this one is
  * meant primarily for extension rather than using as a fallback for unknown elements. We let for
  * example our descendants handle child elements and we automate attribute handling instead.
  *
@@ -54,7 +55,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement {
     /**
      * A list of extensions registered with this element.
      */
-    private final List<ExtensionElement> childExtensions = new ArrayList<>();
+    private final List<XmlElement> childExtensions = new ArrayList<>();
 
     /**
      * Creates an {@link AbstractExtensionElement} instance for the specified <code>namespace</code> and <code>elementName</code> .
@@ -198,7 +199,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement {
      *
      * @return the first instance of an extension of type T we find, or null if there is none
      */
-    public <T extends ExtensionElement> T getChildExtension(Class<T> type) {
+    public <T extends XmlElement> T getChildExtension(Class<T> type) {
         List<T> childExts = getChildExtensionsOfType(type);
         if (!childExts.isEmpty()) {
             return childExts.get(0);
@@ -215,23 +216,23 @@ public abstract class AbstractExtensionElement implements ExtensionElement {
      *
      * @return the {@link List} of elements that this stanza extension contains.
      */
-    public List<? extends ExtensionElement> getChildExtensions() {
+    public List<? extends XmlElement> getChildExtensions() {
         return childExtensions;
     }
 
     /**
      * Returns this stanza's first direct child extension that matches the specified <code>type</code>.
      *
-     * @param <T> the specific type of <code>ExtensionElement</code> to be returned
+     * @param <T> the specific type of <code>XmlElement</code> to be returned
      * @param type the <code>Class</code> of the extension we are looking for.
      *
      * @return this stanza's first direct child extension that matches specified <code>type</code> or
      * <code>null</code> if no such child extension was found.
      */
-    public <T extends ExtensionElement> T getFirstChildOfType(Class<T> type) {
-        List<? extends ExtensionElement> childExtensions = getChildExtensions();
+    public <T extends XmlElement> T getFirstChildOfType(Class<T> type) {
+        List<? extends XmlElement> childExtensions = getChildExtensions();
         synchronized (childExtensions) {
-            for (ExtensionElement extension : childExtensions) {
+            for (XmlElement extension : childExtensions) {
                 if (type.isInstance(extension)) {
                     @SuppressWarnings("unchecked")
                     T extensionAsType = (T) extension;
@@ -245,21 +246,21 @@ public abstract class AbstractExtensionElement implements ExtensionElement {
     /**
      * Returns this packet's direct child extensions that match the specified <code>type</code>.
      *
-     * @param <T> the specific <code>ExtensionElement</code> type of child extensions to be returned
+     * @param <T> the specific <code>XmlElement</code> type of child extensions to be returned
      * @param type the <code>Class</code> of the extension we are looking for.
      *
      * @return a (possibly empty) list containing all of this packet's direct child extensions that
      * match the specified <code>type</code>
      */
-    public <T extends ExtensionElement> List<T> getChildExtensionsOfType(Class<T> type) {
-        List<? extends ExtensionElement> childExtensions = getChildExtensions();
+    public <T extends XmlElement> List<T> getChildExtensionsOfType(Class<T> type) {
+        List<? extends XmlElement> childExtensions = getChildExtensions();
         List<T> result = new ArrayList<>();
 
         if (childExtensions == null)
             return result;
 
         synchronized (childExtensions) {
-            for (ExtensionElement extension : childExtensions) {
+            for (XmlElement extension : childExtensions) {
                 if (type.isInstance(extension)) {
                     @SuppressWarnings("unchecked")
                     T extensionAsType = (T) extension;
@@ -315,7 +316,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement {
         }
 
         // add child elements if any
-        List<? extends ExtensionElement> childElements = getChildExtensions();
+        List<? extends XmlElement> childElements = getChildExtensions();
         String text = getText();
         XmlStringBuilder childBuilder = new XmlStringBuilder();
 
@@ -334,7 +335,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement {
                 }
                 else {
                     xml.rightAngleBracket();
-                    for (ExtensionElement packExt : childElements)
+                    for (XmlElement packExt : childElements)
                         xml.optAppend(packExt);
                     xml.append(childBuilder);
                 }
@@ -401,7 +402,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement {
      *
      * @param childExtension the extension we'd like to add here.
      */
-    public void addChildExtension(ExtensionElement childExtension) {
+    public void addChildExtension(XmlElement childExtension) {
         childExtensions.add(childExtension);
     }
 
@@ -411,9 +412,9 @@ public abstract class AbstractExtensionElement implements ExtensionElement {
      *
      * @param childExtension the extension to add
      */
-    public void setChildExtension(ExtensionElement childExtension) {
-//        List<? extends ExtensionElement> extensionElements = getChildExtensionsOfType(childExtension.getClass());
-//        for (ExtensionElement xe : extensionElements) {
+    public void setChildExtension(XmlElement childExtension) {
+//        List<? extends XmlElement> xmlElements = getChildExtensionsOfType(childExtension.getClass());
+//        for (XmlElement xe :xmlElements) {
 //            removeChildExtension(xe);
 //        }
         getChildExtensionsOfType(childExtension.getClass())
@@ -428,7 +429,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement {
      *
      * @return {@code true} if any extensions were removed, and {@code false} otherwise.
      */
-    public boolean removeChildExtension(ExtensionElement childExtension) {
+    public boolean removeChildExtension(XmlElement childExtension) {
         boolean removed = false;
         if (childExtension != null) {
             while (childExtensions.remove(childExtension)) {

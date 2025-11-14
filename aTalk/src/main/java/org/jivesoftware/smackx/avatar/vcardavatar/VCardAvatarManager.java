@@ -82,16 +82,6 @@ public class VCardAvatarManager extends AvatarManager {
     // Currently in process of the contact#avatarId
     private String ipContactHash = null;
 
-    /*
-     * Disable processing of presence with phone value == null; due to ejabberd error i.e.:
-     * ejabberd sends presence's, 'photo' element with no hash value, after user publishes a new avatar.
-     * https://github.com/processone/ejabberd/issues/4182.
-     * Need to re-enable when most ejabberd server has updated with the fix from ejabberd.
-     *
-     * This seems do not happen if it is preceded with avatar publish via XEP-0084 User Avatar.
-     */
-    private final boolean noPhotoProcess = false;
-
     /**
      * Creates a filter to only listen to presence stanza with the element name "x" and the
      * namespace "vcard-temp:x:update".
@@ -308,12 +298,10 @@ public class VCardAvatarManager extends AvatarManager {
 
         // i.e. photo element without avatar id specified. null => not ready so not process
         else if (newAvatarId != null && newAvatarId.isEmpty() && getAvatarHashByJid(from) != null) {
-            if (noPhotoProcess) {
-                purgeAvatarImageByJid(from);
-                fireListeners(from, oldAvatarId, null);
-            }
-            LOGGER.log(Level.WARNING, "Disable process vcard-temp for photo without hash; send by ejabberd server"
-                    + "on vcard update.\nThis causes aTalk user/contact to purge and display no avatar");
+            purgeAvatarImageByJid(from);
+            fireListeners(from, oldAvatarId, null);
+            // LOGGER.log(Level.WARNING, "Disable process vcard-temp for photo without hash; send by ejabberd server"
+            //        + "on vcard update.\nThis causes aTalk user/contact to purge and display no avatar");
 
         }
     }

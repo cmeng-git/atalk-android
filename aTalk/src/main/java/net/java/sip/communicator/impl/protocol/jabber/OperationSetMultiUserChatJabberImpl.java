@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -515,7 +514,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 OperationFailedException.GENERAL_ERROR);
     }
 
-    /*
+    /**
      * Returns a reference to the chat room named <code>chatRoomName</code> or null if the room hasn't been cached yet.
      *
      * @param chatRoomName the name of the room we're looking for.

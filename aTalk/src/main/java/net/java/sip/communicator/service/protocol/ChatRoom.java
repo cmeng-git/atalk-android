@@ -21,8 +21,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 
 /**
@@ -609,7 +609,7 @@ public interface ChatRoom {
      *
      * @return the ids of the users that has the member role in the room.
      */
-    List<Jid> getMembersWhiteList();
+    List<BareJid> getMembersWhiteList();
 
     /**
      * Changes the list of users that has role member for this room. When the room is member only,
@@ -617,5 +617,5 @@ public interface ChatRoom {
      *
      * @param members the ids of user to have member role.
      */
-    void setMembersWhiteList(List<Jid> members);
+    void setMembersWhiteList(List<BareJid> members);
 }

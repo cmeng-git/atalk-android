@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright © 2014 Florian Schmaus
  *
@@ -14,16 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.iqregisterx.provider;
+package org.jivesoftware.smackx.iqregister.provider;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
-import org.jivesoftware.smackx.iqregisterx.packet.Registration;
+
+import org.jivesoftware.smackx.iqregister.packet.Registration;
+
+import org.jxmpp.JxmppContext;
 
 public class RegistrationStreamFeatureProvider extends ExtensionElementProvider<Registration.Feature> {
+
     @Override
-    public Registration.Feature parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public Registration.Feature parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         return Registration.Feature.INSTANCE;
     }
+
 }

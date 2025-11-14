@@ -5,9 +5,6 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,6 +86,8 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
         supportedTypes.add(MiddleNameDetail.class);
         supportedTypes.add(LastNameDetail.class);
         supportedTypes.add(NicknameDetail.class);
+        supportedTypes.add(URLDetail.class);
+        supportedTypes.add(BirthDateDetail.class);
         supportedTypes.add(AddressDetail.class);
         supportedTypes.add(CityDetail.class);
         supportedTypes.add(ProvinceDetail.class);
@@ -102,8 +101,6 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
         supportedTypes.add(VideoDetail.class);
         supportedTypes.add(WorkVideoDetail.class);
         supportedTypes.add(WorkOrganizationNameDetail.class);
-        supportedTypes.add(URLDetail.class);
-        supportedTypes.add(BirthDateDetail.class);
         supportedTypes.add(JobTitleDetail.class);
         supportedTypes.add(AboutMeDetail.class);
     }

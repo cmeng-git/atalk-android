@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.function.Consumer;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.gui.Chat;
@@ -80,7 +81,6 @@ import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Presence;
@@ -89,8 +89,8 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
-import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.confdesc.ConferenceDescriptionExtension;
 import org.jivesoftware.smackx.confdesc.TransportExtension;
@@ -135,9 +135,9 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
-import org.jxmpp.jid.EntityJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -259,7 +259,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Currently used from external components reusing the protocol provider
      * to permanently add extension to the outgoing stanzas.
      */
-    private final List<ExtensionElement> presencePacketExtensions = new ArrayList<>();
+    private final List<XmlElement> presencePacketExtensions = new ArrayList<>();
 
     /**
      * The last <code>Presence</code> packet we sent to the MUC.
@@ -1564,7 +1564,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param ext the extension we want to add.
      */
-    public void addPresencePacketExtensions(ExtensionElement ext) {
+    public void addPresencePacketExtensions(XmlElement ext) {
         synchronized (presencePacketExtensions) {
             if (!presencePacketExtensions.contains(ext))
                 presencePacketExtensions.add(ext);
@@ -1576,7 +1576,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param ext the extension we want to remove.
      */
-    public void removePresencePacketExtensions(ExtensionElement ext) {
+    public void removePresencePacketExtensions(XmlElement ext) {
         synchronized (presencePacketExtensions) {
             presencePacketExtensions.remove(ext);
         }
@@ -1659,7 +1659,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             throws OperationFailedException {
         try {
             Jid jid = ((ChatRoomMemberJabberImpl) member).getJabberId();
-            mMultiUserChat.banUser(jid, reason);
+            mMultiUserChat.banUser(jid.asBareJid(), reason);
         } catch (XMPPErrorException e) {
             Timber.e(e, "Failed to ban participant.");
 
@@ -1875,24 +1875,24 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Sets <code>ext</code> as the only <code>ExtensionElement</code> that belongs to given <code>namespace</code> of the <code>packet</code>.
+     * Sets <code>ext</code> as the only <code>XmlElement</code> that belongs to given <code>namespace</code> of the <code>packet</code>.
      *
      * @param stanza the <code>Packet<code> to be modified.
      * @param extension the <code>ConferenceDescriptionPacketExtension<code> to set, or <code>null</code> to not set one.
-     * @param namespace the namespace of <code>ExtensionElement</code>.
+     * @param namespace the namespace of <code>XmlElement</code>.
      * @param matchElementName if {@code true} only extensions matching both the element name and namespace will be matched
      * and removed. Otherwise, only the namespace will be matched.
      *
      * @return whether packet was modified.
      */
-    private static boolean setPacketExtension(Stanza stanza, ExtensionElement extension, String namespace, boolean matchElementName) {
+    private static boolean setPacketExtension(Stanza stanza, XmlElement extension, String namespace, boolean matchElementName) {
         boolean modified = false;
         if (StringUtils.isEmpty(namespace)) {
             return false;
         }
 
         // clear previous announcements
-        ExtensionElement pe;
+        XmlElement pe;
         if (matchElementName && extension != null) {
             String element = extension.getElementName();
             while (null != (stanza.getExtensionElement(element, namespace))) {
@@ -1916,14 +1916,14 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Sets <code>ext</code> as the only <code>ExtensionElement</code> that belongs to given <code>namespace</code>
+     * Sets <code>ext</code> as the only <code>XmlElement</code> that belongs to given <code>namespace</code>
      * of the <code>packet</code>.
      *
      * @param packet the <code>Packet<code> to be modified.
      * @param extension the <code>ConferenceDescriptionPacketExtension<code> to set, or <code>null</code> to not set one.
-     * @param namespace the namespace of <code>ExtensionElement</code>.
+     * @param namespace the namespace of <code>XmlElement</code>.
      */
-    private static boolean setPacketExtension(Stanza packet, ExtensionElement extension, String namespace) {
+    private static boolean setPacketExtension(Stanza packet, XmlElement extension, String namespace) {
         return setPacketExtension(packet, extension, namespace, false);
     }
 
@@ -1947,11 +1947,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Adds given <code>ExtensionElement</code> to the MUC presence and publishes it immediately.
+     * Adds given <code>XmlElement</code> to the MUC presence and publishes it immediately.
      *
-     * @param extension the <code>ExtensionElement</code> to be included in MUC presence.
+     * @param extension the <code>XmlElement</code> to be included in MUC presence.
      */
-    public void sendPresenceExtension(ExtensionElement extension) {
+    public void sendPresenceExtension(XmlElement extension) {
         if (lastPresenceSent != null && setPacketExtension(lastPresenceSent, extension, extension.getNamespace(), true)) {
             try {
                 sendLastPresence();
@@ -1966,7 +1966,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param extension the <code>PacketExtension</code> to be removed from the MUC presence.
      */
-    public void removePresenceExtension(ExtensionElement extension) {
+    public void removePresenceExtension(XmlElement extension) {
         if (lastPresenceSent != null && setPacketExtension(lastPresenceSent, null, extension.getNamespace())) {
             try {
                 sendLastPresence();
@@ -1982,11 +1982,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return the ids of the users that has the member mRole in the room.
      */
-    public List<Jid> getMembersWhiteList() {
-        List<Jid> res = new ArrayList<>();
+    @Override
+    public List<BareJid> getMembersWhiteList() {
+        List<BareJid> res = new ArrayList<>();
         try {
             for (Affiliate a : mMultiUserChat.getMembers()) {
-                res.add(a.getJid());
+                res.add(a.getJid().asBareJid());
             }
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException e) {
             Timber.e(e, "Cannot obtain members list");
@@ -2000,9 +2001,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param members the ids of user to have member mRole.
      */
-    public void setMembersWhiteList(List<Jid> members) {
+    @Override
+    public void setMembersWhiteList(List<BareJid> members) {
         try {
-            List<Jid> membersToRemove = getMembersWhiteList();
+            List<BareJid> membersToRemove = getMembersWhiteList();
             membersToRemove.removeAll(members);
 
             if (!membersToRemove.isEmpty())
@@ -2426,7 +2428,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * @param reason the reason why the room was destroyed, may be null.
          */
         @Override
-        public void roomDestroyed(MultiUserChat alternateMUC, String reason) {
+        public void roomDestroyed(MultiUserChat alternateMUC, String password, String reason) {
             Timber.d("CharRoom destroyed, alternate MUC: %s. Reason: %s", alternateMUC, reason);
         }
     }
@@ -2601,7 +2603,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public void grantAdmin(String jid) {
         try {
-            mMultiUserChat.grantAdmin(JidCreate.from(jid));
+            mMultiUserChat.grantAdmin(JidCreate.bareFrom(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
             Timber.e(ex, "An error occurs granting administrator privileges to a user.");
         } catch (XmppStringprepException e) {
@@ -2618,7 +2620,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public void grantMembership(String jid) {
         try {
-            mMultiUserChat.grantMembership(JidCreate.from(jid));
+            mMultiUserChat.grantMembership(JidCreate.bareFrom(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException |
                  XmppStringprepException ex) {
             Timber.e(ex, "An error occurs granting membership to a user");
@@ -2650,7 +2652,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public void grantOwnership(String jid) {
         try {
-            mMultiUserChat.grantOwnership(JidCreate.from(jid));
+            mMultiUserChat.grantOwnership(JidCreate.bareFrom(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException
                  | XmppStringprepException | IllegalArgumentException ex) {
             Timber.e(ex, "An error occurs granting ownership privileges to a user");
@@ -2687,7 +2689,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public void revokeAdmin(String jid) {
         try {
-            mMultiUserChat.revokeAdmin((EntityJid) JidCreate.from(jid));
+            mMultiUserChat.revokeAdmin(JidCreate.bareFrom(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException
                  | XmppStringprepException | IllegalArgumentException | InterruptedException ex) {
             Timber.e(ex, "n error occurs revoking administrator privileges to a user");
@@ -2704,7 +2706,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public void revokeMembership(String jid) {
         try {
-            mMultiUserChat.revokeMembership(JidCreate.from(jid));
+            mMultiUserChat.revokeMembership(JidCreate.bareFrom(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException
                  | InterruptedException | IllegalArgumentException | XmppStringprepException ex) {
             Timber.e(ex, "An error occurs revoking membership to a user");
@@ -2737,7 +2739,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public void revokeOwnership(String jid) {
         try {
-            mMultiUserChat.revokeOwnership(JidCreate.from(jid));
+            mMultiUserChat.revokeOwnership(JidCreate.bareFrom(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException
                  | InterruptedException | XmppStringprepException | IllegalArgumentException ex) {
             Timber.e(ex, "An error occurs revoking ownership privileges from a user");
@@ -2981,7 +2983,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             presenceBuilder.removeExtension(ConferenceDescriptionExtension.ELEMENT, ConferenceDescriptionExtension.NAMESPACE);
         }
 
-        for (ExtensionElement ext : presencePacketExtensions) {
+        for (XmlElement ext : presencePacketExtensions) {
             presenceBuilder.overrideExtension(ext);
         }
         lastPresenceSent = presenceBuilder.build();

@@ -263,6 +263,7 @@ public class CryptoFragment extends BaseFragment
                 doHandleOtrPressed(false);
                 doHandleOmemoPressed(true);
                 break;
+
             case R.id.encryption_otr:
                 if (!activeChat.isOTRChat())
                     mChatType = MSGTYPE_OTR;
@@ -348,7 +349,7 @@ public class CryptoFragment extends BaseFragment
             return;
 
         // Linked map between OmemoDevice and its fingerprint.
-        HashMap<OmemoDevice, OmemoFingerprint> fingerPrints = new HashMap<>();
+        Map<OmemoDevice, OmemoFingerprint> fingerPrints = new HashMap<>();
         OmemoDevice omemoDevice;
         OmemoFingerprint fingerPrint;
 

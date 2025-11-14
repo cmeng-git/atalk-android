@@ -16,22 +16,28 @@
  */
 package org.jivesoftware.smackx.httpauthorizationrequest.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
+import org.jxmpp.JxmppContext;
 
 /**
- * The ExtensionElement Provider for ConfirmExtension.
+ * The XmlElement Provider for ConfirmExtension.
  * XEP-0070: Verifying HTTP Requests via XMPP (1.0.1 (2016-12-09))
  *
  * @author Eng Chong Meng
  */
 public class ConfirmExtProvider extends ExtensionElementProvider<ConfirmExtension> {
     @Override
-    public ConfirmExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws SmackTextParseException {
+    public ConfirmExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String id = parser.getAttributeValue(null, ConfirmExtension.ATTR_ID);
         String method = parser.getAttributeValue(null, ConfirmExtension.ATTR_METHOD);
         String url = parser.getAttributeValue(null, ConfirmExtension.ATTR_URL);

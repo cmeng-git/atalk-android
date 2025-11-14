@@ -35,7 +35,6 @@ import org.ice4j.ice.harvest.TrickleCallback;
 import org.ice4j.stack.StunStack;
 import org.ice4j.stack.TransactionID;
 import org.ice4j.util.PeriodicRunnable;
-import org.threeten.bp.Duration;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -43,6 +42,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.BindException;
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;

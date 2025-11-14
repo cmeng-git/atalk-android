@@ -5,16 +5,18 @@
  */
 package org.jivesoftware.smackx.coin;
 
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.DefaultExtensionElementProvider;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jxmpp.JxmppContext;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * Parser for EndpointExtensionElement.
@@ -34,9 +36,8 @@ public class EndpointProvider extends ExtensionElementProvider<EndpointExtension
      * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
      */
     @Override
-    public EndpointExtension parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException
-    {
+    public EndpointExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         boolean done = false;
         XmlPullParser.Event eventType;
         String elementName = null;
@@ -71,13 +72,13 @@ public class EndpointProvider extends ExtensionElementProvider<EndpointExtension
                     case CallInfoExtension.ELEMENT: {
                         DefaultExtensionElementProvider<CallInfoExtension> provider
                                 = new DefaultExtensionElementProvider<>(CallInfoExtension.class);
-                        ExtensionElement childExtension = provider.parse(parser);
+                        XmlElement childExtension = provider.parse(parser);
                         ext.addChildExtension(childExtension);
                         break;
                     }
                     case MediaExtension.ELEMENT: {
                         MediaProvider provider = new MediaProvider();
-                        ExtensionElement childExtension = provider.parse(parser);
+                        XmlElement childExtension = provider.parse(parser);
                         ext.addChildExtension(childExtension);
                         break;
                     }

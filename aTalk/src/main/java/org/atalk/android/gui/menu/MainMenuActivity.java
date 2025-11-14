@@ -21,8 +21,6 @@ import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.Menu;
@@ -249,7 +247,8 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
             try {
                 initVideoBridge_task();
                 Thread.sleep(100);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 Timber.e("Init VideoBridge: %s ", ex.getMessage());
             }
             if (ProgressDialog.isShowing(pDialogId)) {
@@ -272,80 +271,80 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.search:
-                break;
-            case R.id.add_chat_room:
-                ChatRoomCreateDialog chatRoomCreateDialog = new ChatRoomCreateDialog(this);
-                chatRoomCreateDialog.show();
-                break;
-            case R.id.create_videobridge:
-                if (menuVbItem == null) {
-                    initVideoBridge();
-                }
-                else
-                    menuVbItem.actionPerformed();
-                break;
-            case R.id.show_location:
-                Intent intent = new Intent(this, GeoLocationActivity.class);
-                intent.putExtra(GeoLocationActivity.SHARE_ALLOW, false);
-                startActivity(intent);
-                break;
-            case R.id.telephony:
-                mTelephony = new TelephonyFragment();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, mTelephony, TelephonyFragment.TELEPHONY_TAG).commit();
-                break;
-            case R.id.muc_bookmarks:
-                ChatRoomBookmarksDialog chatRoomBookmarksDialog = new ChatRoomBookmarksDialog(this);
-                chatRoomBookmarksDialog.show();
-                break;
-            case R.id.add_contact:
-                startActivity(AddContactActivity.class);
-                break;
-            case R.id.block_list:
-                startActivity(ContactBlockListActivity.class);
-                break;
-            case R.id.main_settings:
-                startActivity(SettingsActivity.class);
-                break;
-            case R.id.account_settings:
-                startActivity(AccountsListActivity.class);
-                break;
-            case R.id.app_info:
-                PermissionsActivity.onAppInfoButtonClicked(this);
-                break;
-            case R.id.tts_settings:
-                Intent ttsIntent = new Intent(this, TTSActivity.class);
-                startActivity(ttsIntent);
-                break;
-            case R.id.show_hide_offline:
-                boolean isShowOffline = !ConfigurationUtils.isShowOffline(); // toggle
-                MetaContactListAdapter.presenceFilter.setShowOffline(isShowOffline);
-                Fragment clf = aTalk.getFragment(aTalk.CL_FRAGMENT);
-                if (clf instanceof ContactListFragment) {
-                    MetaContactListAdapter contactListAdapter = ((ContactListFragment) clf).getContactListAdapter();
-                    contactListAdapter.filterData("");
-                }
-                int itemId = isShowOffline
-                        ? R.string.contact_offline_hide
-                        : R.string.contact_offline_show;
-                mShowHideOffline.setTitle(itemId);
+        case R.id.search:
+            break;
+        case R.id.add_chat_room:
+            ChatRoomCreateDialog chatRoomCreateDialog = new ChatRoomCreateDialog(this);
+            chatRoomCreateDialog.show();
+            break;
+        case R.id.create_videobridge:
+            if (menuVbItem == null) {
+                initVideoBridge();
+            }
+            else
+                menuVbItem.actionPerformed();
+            break;
+        case R.id.show_location:
+            Intent intent = new Intent(this, GeoLocationActivity.class);
+            intent.putExtra(GeoLocationActivity.SHARE_ALLOW, false);
+            startActivity(intent);
+            break;
+        case R.id.telephony:
+            mTelephony = new TelephonyFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, mTelephony, TelephonyFragment.TELEPHONY_TAG).commit();
+            break;
+        case R.id.muc_bookmarks:
+            ChatRoomBookmarksDialog chatRoomBookmarksDialog = new ChatRoomBookmarksDialog(this);
+            chatRoomBookmarksDialog.show();
+            break;
+        case R.id.add_contact:
+            startActivity(AddContactActivity.class);
+            break;
+        case R.id.block_list:
+            startActivity(ContactBlockListActivity.class);
+            break;
+        case R.id.main_settings:
+            startActivity(SettingsActivity.class);
+            break;
+        case R.id.account_settings:
+            startActivity(AccountsListActivity.class);
+            break;
+        case R.id.app_info:
+            PermissionsActivity.onAppInfoButtonClicked(this);
+            break;
+        case R.id.tts_settings:
+            Intent ttsIntent = new Intent(this, TTSActivity.class);
+            startActivity(ttsIntent);
+            break;
+        case R.id.show_hide_offline:
+            boolean isShowOffline = !ConfigurationUtils.isShowOffline(); // toggle
+            MetaContactListAdapter.presenceFilter.setShowOffline(isShowOffline);
+            Fragment clf = aTalk.getFragment(aTalk.CL_FRAGMENT);
+            if (clf instanceof ContactListFragment) {
+                MetaContactListAdapter contactListAdapter = ((ContactListFragment) clf).getContactListAdapter();
+                contactListAdapter.filterData("");
+            }
+            int itemId = isShowOffline
+                    ? R.string.contact_offline_hide
+                    : R.string.contact_offline_show;
+            mShowHideOffline.setTitle(itemId);
 
-                break;
-            case R.id.notification_setting:
-                openNotificationSettings();
-                break;
-            case R.id.sign_in_off:
-                // Toggle current account presence status
-                boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(ActionBarUtil.getStatus(this));
-                GlobalStatusService globalStatusService = AppGUIActivator.getGlobalStatusService();
-                if (isOffline)
-                    globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
-                else
-                    globalStatusService.publishStatus(GlobalStatusEnum.OFFLINE);
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
+            break;
+        case R.id.notification_setting:
+            openNotificationSettings();
+            break;
+        case R.id.sign_in_off:
+            // Toggle current account presence status
+            boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(ActionBarUtil.getStatus(this));
+            GlobalStatusService globalStatusService = AppGUIActivator.getGlobalStatusService();
+            if (isOffline)
+                globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
+            else
+                globalStatusService.publishStatus(GlobalStatusEnum.OFFLINE);
+            break;
+        default:
+            return super.onOptionsItemSelected(item);
         }
         return true;
     }
@@ -354,16 +353,9 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
      * Start the application notification settings page
      */
     private void openNotificationSettings() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
-            intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
-            startActivity(intent);
-        }
-        else {
-            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            startActivity(intent);
-        }
+        Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+        startActivity(intent);
     }
 
     //========================================================
@@ -450,12 +442,12 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         }
 
         switch (event.getType()) {
-            case ServiceEvent.REGISTERED:
-            case ServiceEvent.UNREGISTERING:
-                if (videoBridgeMenuItem != null) {
-                    BaseActivity.uiHandler.post(this::initVideoBridge);
-                }
-                break;
+        case ServiceEvent.REGISTERED:
+        case ServiceEvent.UNREGISTERING:
+            if (videoBridgeMenuItem != null) {
+                BaseActivity.uiHandler.post(this::initVideoBridge);
+            }
+            break;
         }
     }
 

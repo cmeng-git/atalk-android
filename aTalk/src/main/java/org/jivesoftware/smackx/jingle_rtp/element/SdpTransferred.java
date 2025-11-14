@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Eng Chong Meng
  *
@@ -21,7 +21,7 @@ import javax.xml.namespace.QName;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
- * Implements <code>ExtensionElement</code> for the "transferred" element defined below.
+ * Implements <code>XmlElement</code> for the "transferred" element defined below.
  * XEP-0251: Jingle Session Transfer 0.2 (2009-10-05)
  * @see <a href="https://xmpp.org/extensions/xep-0251.html#unattended">XEP-0251 § 2. Unattended Transfer</a>
  * @see <a href="https://xmpp.org/extensions/xep-0251.html#attended">XEP-0251 § 3. Attended Transfer</a>

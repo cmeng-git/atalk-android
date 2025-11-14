@@ -6,11 +6,14 @@
 package org.jivesoftware.smackx.coin;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jxmpp.JxmppContext;
 
 /**
  * Parser for MediaExtensionElement.
@@ -30,9 +33,10 @@ public class MediaProvider extends ExtensionElementProvider<MediaExtension> {
      *
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
+
     @Override
-    public MediaExtension parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException {
+    public MediaExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         boolean done = false;
         XmlPullParser.Event eventType;
         String elementName = null;

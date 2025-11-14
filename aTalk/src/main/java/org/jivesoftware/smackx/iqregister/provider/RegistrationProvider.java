@@ -1,6 +1,6 @@
 /*
- * aTalk, android VoIP and Instant Messaging client
- * Copyright 2014 Eng Chong Meng
+ *
+ * Copyright 2003-2007 Jive Software.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,35 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.iqregisterx.provider;
+package org.jivesoftware.smackx.iqregister.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IqData;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.bob.element.BoBDataExtension;
-import org.jivesoftware.smackx.iqregisterx.packet.Registration;
+import org.jivesoftware.smackx.iqregister.packet.Registration;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jxmpp.JxmppContext;
 
 /**
  * XEP-0077: In-Band Registration Implementation with fields elements and DataForm
  * Represents registration packets.
  * The Registration can supported via DataForm with Captcha protection
  *
+ * @author Matt Tucker
  * @author Eng Chong Meng
  */
-public class RegistrationProvider extends IQProvider<Registration> {
+public class RegistrationProvider extends IqProvider<Registration> {
     @Override
-    public Registration parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException, SmackParsingException {
+    public Registration parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String instruction = null;
         Map<String, String> fields = new HashMap<>();
 
@@ -50,7 +55,7 @@ public class RegistrationProvider extends IQProvider<Registration> {
         boolean isRegistered = false;
         BoBDataExtension boBExt = null;
 
-        List<ExtensionElement> packetExtensions = new LinkedList<>();
+        List<XmlElement> packetExtensions = new ArrayList<>();
         outerloop:
         while (true) {
             XmlPullParser.Event eventType = parser.next();
@@ -83,15 +88,15 @@ public class RegistrationProvider extends IQProvider<Registration> {
                             break;
                         case DataForm.NAMESPACE:
                             dataForm = (DataForm) PacketParserUtils.parseExtensionElement(DataForm.ELEMENT,
-                                    DataForm.NAMESPACE, parser, xmlEnvironment);
+                                    DataForm.NAMESPACE, parser, xmlEnvironment, jxmppContext);
                             break;
                         case BoBDataExtension.NAMESPACE:
                             boBExt = (BoBDataExtension) PacketParserUtils.parseExtensionElement(BoBDataExtension.ELEMENT,
-                                    BoBDataExtension.NAMESPACE, parser, xmlEnvironment);
+                                    BoBDataExtension.NAMESPACE, parser, xmlEnvironment, jxmppContext);
                             break;
                         // In case there are more packet extension.
                         default:
-                            PacketParserUtils.addExtensionElement(packetExtensions, parser, name, nameSpace, xmlEnvironment);
+                            PacketParserUtils.addExtensionElement(packetExtensions, parser, name, nameSpace, xmlEnvironment, jxmppContext);
                             break;
                     }
                     break;

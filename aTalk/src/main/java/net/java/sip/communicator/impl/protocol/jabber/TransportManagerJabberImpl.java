@@ -21,8 +21,8 @@ import org.atalk.service.neomedia.MediaStreamTarget;
 import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
@@ -224,12 +224,12 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * a <code>transport-info</code> rather than in <code>ourContent</code>; otherwise, <code>null</code>
      * @param media the media of the <code>RtpDescriptionExtensionElement</code> child of <code>ourContent</code>
      *
-     * @return a <code>ExtensionElement</code> to be added as a child to <code>ourContent</code>; otherwise, <code>null</code>
+     * @return a <code>XmlElement</code> to be added as a child to <code>ourContent</code>; otherwise, <code>null</code>
      *
      * @throws OperationFailedException if anything goes wrong while starting transport candidate harvest for
      * the specified <code>ourContent</code>
      */
-    protected abstract ExtensionElement startCandidateHarvest(JingleContent theirContent,
+    protected abstract XmlElement startCandidateHarvest(JingleContent theirContent,
             JingleContent ourContent, TransportInfoSender transportInfoSender, String media)
             throws OperationFailedException;
 
@@ -346,7 +346,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
                 JingleContent theirContent = (theirOffer == null) ? null : findContentByName(theirOffer, contentName);
                 RtpDescription rtpDesc = ourContent.getFirstChildElement(RtpDescription.class);
                 String media = rtpDesc.getMedia();
-                ExtensionElement pe = startCandidateHarvest(theirContent, ourContent, transportInfoSender, media);
+                XmlElement pe = startCandidateHarvest(theirContent, ourContent, transportInfoSender, media);
 
                 // This will add the transport-info into the jingleContent for session-initiate
                 if (pe != null) {
@@ -601,12 +601,12 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
         return doCreateStreamConnector(mediaType);
     }
 
-    protected abstract ExtensionElement createTransport(String media)
+    protected abstract XmlElement createTransport(String media)
             throws OperationFailedException;
 
-    protected ExtensionElement createTransportForStartCandidateHarvest(String media)
+    protected XmlElement createTransportForStartCandidateHarvest(String media)
             throws OperationFailedException {
-        ExtensionElement pe = null;
+        XmlElement pe = null;
         if (getCallPeer().isJitsiVideobridge()) {
             MediaType mediaType = MediaType.parseString(media);
             ColibriConferenceIQ.Channel channel = getColibriChannel(mediaType, false /* remote */);
@@ -620,14 +620,14 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Initializes a new <code>ExtensionElement</code> instance appropriate to the type of Jingle
+     * Initializes a new <code>XmlElement</code> instance appropriate to the type of Jingle
      * transport represented by this <code>TransportManager</code>. The new instance is not initialized
      * with any attributes or child extensions.
      *
-     * @return a new <code>ExtensionElement</code> instance appropriate to the type of Jingle transport
+     * @return a new <code>XmlElement</code> instance appropriate to the type of Jingle transport
      * represented by this <code>TransportManager</code>
      */
-    protected abstract ExtensionElement createTransportPacketExtension();
+    protected abstract XmlElement createTransportPacketExtension();
 
     /**
      * Creates a media <code>StreamConnector</code> for a stream of a specific <code>MediaType</code>. The

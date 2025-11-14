@@ -22,9 +22,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jxmpp.JxmppContext;
 
 import timber.log.Timber;
 
@@ -85,7 +87,8 @@ public class EntityCapsCache implements EntityCapsPersistentCache {
         DiscoverInfo info = null;
         if (!TextUtils.isEmpty(content)) {
             try {
-                info = PacketParserUtils.parseStanza(content);
+                info = (DiscoverInfo) PacketParserUtils.parseStanza(PacketParserUtils.getParserFor(content),
+                        XmlEnvironment.EMPTY, JxmppContext.getDefaultContext());
             } catch (Exception e) {
                 Timber.w("Could not restore info from DB: %s", e.getMessage());
             }

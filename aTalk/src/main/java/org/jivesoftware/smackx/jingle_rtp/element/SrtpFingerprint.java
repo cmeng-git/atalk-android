@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Eng Chong Meng
  *
@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.jingle_rtp.element;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
- * Implements <code>ExtensionElement</code> for the <code>fingerprint</code> element.
+ * Implements <code>XmlElement</code> for the <code>fingerprint</code> element.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng

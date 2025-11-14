@@ -39,9 +39,9 @@ import org.ice4j.stack.NetAccessManager;
 import org.ice4j.stack.StunStack;
 import org.ice4j.stack.TransactionID;
 import org.ice4j.util.PeriodicRunnable;
-import org.threeten.bp.Duration;
 
 import java.net.NoRouteToHostException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Queue;
 import java.util.Vector;
@@ -875,11 +875,9 @@ class ConnectivityCheckClient implements ResponseCollector
         }
 
         /**
-         * Returns the number milliseconds to wait before we send the next
-         * check.
+         * Returns the number milliseconds to wait before we send the next check.
          *
-         * @return the number milliseconds to wait before we send the next
-         * check.
+         * @return the number milliseconds to wait before we send the next check.
          */
         protected Duration getDelayUntilNextRun()
         {

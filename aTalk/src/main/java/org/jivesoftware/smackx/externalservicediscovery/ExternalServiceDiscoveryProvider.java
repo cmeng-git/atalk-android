@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Eng Chong Meng
  *
@@ -17,21 +17,24 @@
 package org.jivesoftware.smackx.externalservicediscovery;
 
 import java.io.IOException;
+import java.text.ParseException;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jingle_rtp.DefaultXmlElementProvider;
+import org.jxmpp.JxmppContext;
 
 /**
- * The <code>IQProvider</code> for {@link ExternalServiceDiscovery}.
+ * The <code>IqProvider</code> for {@link ExternalServiceDiscovery}.
  *
  * @author Eng Chong Meng
  */
-public class ExternalServiceDiscoveryProvider extends IQProvider<ExternalServiceDiscovery> {
+public class ExternalServiceDiscoveryProvider extends IqProvider<ExternalServiceDiscovery> {
     public ExternalServiceDiscoveryProvider() {
         ProviderManager.addExtensionProvider(
                 ExternalServices.ELEMENT, ExternalServices.NAMESPACE,
@@ -44,12 +47,11 @@ public class ExternalServiceDiscoveryProvider extends IQProvider<ExternalService
 
     /**
      * Parses <code>ExternalServiceDiscovery</code>.
-     *
      * {@inheritDoc}
      */
     @Override
-    public ExternalServiceDiscovery parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException {
+    public ExternalServiceDiscovery parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         ExternalServiceDiscovery iqESD = null;
 
         if (ExternalServices.ELEMENT.equals(parser.getName()) && ExternalServices.NAMESPACE.equals(parser.getNamespace())) {

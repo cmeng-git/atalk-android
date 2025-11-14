@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Paul Schaub
  *
@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.jingle_filetransfer.component;
 import org.jivesoftware.smackx.jingle.JingleSession;
 
 /**
- * An abstract class extends JingleFileTransferImpl.
+ * An abstract class implementation for JingleFileOffer.
  *
  * @author Paul Schaub
  * @author Eng Chong Meng

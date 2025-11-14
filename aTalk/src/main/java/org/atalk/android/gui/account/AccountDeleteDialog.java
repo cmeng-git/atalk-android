@@ -82,14 +82,14 @@ public class AccountDeleteDialog {
                 // purge persistent storage must happen before removeAccount action
                 AccountsListActivity.removeAccountPersistentStore(accountId);
 
-                // Delete account on server
+                // Delete account on server; remove local registration record only on success.
                 if (serverAccountDelete) {
                     ProtocolProviderServiceJabberImpl pps = (ProtocolProviderServiceJabberImpl) account.getProtocolProvider();
-                    pps.deleteAccountOnServer();
+                    if (pps.deleteAccountOnServer())
+                        removeAccount(accountId);
+                } else {
+                    removeAccount(accountId);
                 }
-
-                // Update account status
-                removeAccount(accountId);
             }
         };
         removeAccountThread.start();

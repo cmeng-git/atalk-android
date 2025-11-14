@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2022 Eng Chong Meng
  *
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -31,6 +31,7 @@ import org.jivesoftware.smackx.AbstractExtensionElement;
 import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
+import org.jxmpp.JxmppContext;
 
 /**
  * Provider for IceUdpTransport elements.
@@ -49,8 +50,9 @@ public class JingleRTPTransportProvider extends JingleContentTransportProvider<I
      * @throws IOException if an error occurs in IO.
      * @throws XmlPullParserException if an error occurs pull parsing the XML.
      */
+
     @Override
-    public IceUdpTransport parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+    public IceUdpTransport parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws IOException, XmlPullParserException {
         IceUdpTransport.Builder mBuilder = IceUdpTransport.getBuilder();
 
@@ -75,7 +77,7 @@ public class JingleRTPTransportProvider extends JingleContentTransportProvider<I
                         LOGGER.log(Level.WARNING, "No provider for EE<", name + " " + namespace + "/>");
                     } else {
                         try {
-                            ExtensionElement childExtension = provider.parse(parser);
+                            XmlElement childExtension = provider.parse(parser);
                             if (childExtension instanceof AbstractXmlElement || childExtension instanceof AbstractExtensionElement) {
                                 mBuilder.addChildElement(childExtension);
                             } else

@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2003-2007 Jive Software.
  *
@@ -15,15 +15,17 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.iqregisterx.packet;
-
-import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smackx.bob.element.BoBDataExtension;
-import org.jivesoftware.smackx.xdata.packet.DataForm;
-
+package org.jivesoftware.smackx.iqregister.packet;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smackx.bob.element.BoBDataExtension;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 /**
  * XEP-0077: In-Band Registration Implementation with fields elements and DataForm
  * Represents registration packets. An empty GET query will cause the server to return information
@@ -150,7 +152,7 @@ public class Registration extends IQ {
         xml.optElement("instructions", instructions);
 
         // attributes and mDataForm are mutually exclusive in account registration
-        if (attributes != null && attributes.size() > 0) {
+        if (attributes != null && !attributes.isEmpty()) {
             for (String name : attributes.keySet()) {
                 String value = attributes.get(name);
                 xml.optElement(name, value);
@@ -162,7 +164,7 @@ public class Registration extends IQ {
         return xml;
     }
 
-    public static final class Feature implements ExtensionElement {
+    public static final class Feature implements XmlElement {
         public static final String ELEMENT = "register";
         public static final String NAMESPACE = "http://jabber.org/features/iq-register";
         public static final QName QNAME = new QName(NAMESPACE, ELEMENT);

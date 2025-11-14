@@ -15,20 +15,23 @@
  */
 package org.jivesoftware.smackx.jitsimeet;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import org.apache.commons.lang3.StringUtils;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Domainpart;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import java.io.IOException;
 
 /**
  * Provider handles parsing of {@link ConferenceIq} and {@link LoginUrlIq}
@@ -37,21 +40,18 @@ import java.io.IOException;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ConferenceIqProvider extends IQProvider<ConferenceIq>
-{
+public class ConferenceIqProvider extends IqProvider<ConferenceIq> {
     /**
      * Creates new instance of <code>ConferenceIqProvider</code>.
      */
-    public ConferenceIqProvider()
-    {
+    public ConferenceIqProvider() {
         // <conference>
         ProviderManager.addIQProvider(ConferenceIq.ELEMENT, ConferenceIq.NAMESPACE, this);
     }
 
     @Override
-    public ConferenceIq parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException, SmackParsingException
-    {
+    public ConferenceIq parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String namespace = parser.getNamespace();
 
         // Check the namespace
@@ -144,12 +144,13 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
      * part for allowed chars.
      *
      * @param unescapedValue the unescaped jid as received in the iq
+     *
      * @return a bare JID constructed from the given parts.
+     *
      * @throws XmppStringprepException if an error occurs.
      */
     private EntityBareJid getRoomJid(String unescapedValue)
-            throws XmppStringprepException
-    {
+            throws XmppStringprepException {
         // the node part of the jid may contain '@' which is not allowed
         // and passing the correct node value to Localpart.from will check
         // for all not allowed jid characters

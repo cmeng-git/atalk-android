@@ -33,11 +33,11 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.coin.CoinExtension;
 import org.jivesoftware.smackx.coin.CoinIQ;
@@ -286,7 +286,7 @@ public class OperationSetTelephonyConferencingJabberImpl
     protected CallPeer doInviteCalleeToCall(String calleeAddress, CallJabberImpl call)
             throws OperationFailedException {
         return getBasicTelephony().createOutgoingCall(call, calleeAddress,
-                Arrays.asList(new ExtensionElement[]{
+                Arrays.asList(new XmlElement[]{
                         CoinExtension.getBuilder()
                                 .setFocus(true)
                                 .build()

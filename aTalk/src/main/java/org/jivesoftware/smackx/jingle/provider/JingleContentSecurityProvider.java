@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.jingle.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
@@ -24,6 +25,7 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jingle.element.JingleContentSecurity;
+import org.jxmpp.JxmppContext;
 
 /**
  * Jingle Content Provider for Jingle Content Security component.
@@ -32,12 +34,10 @@ import org.jivesoftware.smackx.jingle.element.JingleContentSecurity;
  * @author Eng Chong Meng
  */
 public abstract class JingleContentSecurityProvider<T extends JingleContentSecurity> extends ExtensionElementProvider<T> {
-
     @Override
-    public abstract T parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException, SmackParsingException;
+    public abstract T parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException;
 
     public abstract String getNamespace();
-
 }
 

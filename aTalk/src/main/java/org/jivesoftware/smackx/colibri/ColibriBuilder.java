@@ -730,6 +730,7 @@ public class ColibriBuilder
      * combined requests it makes no sense to send it.
      * @deprecated Please refactor accordingly if/when this API starts to be used.
      */
+    @Deprecated
     public boolean addDirectionUpdateReq(Map<String, MediaDirection> mediaDirectionMap,
             ColibriConferenceIQ localChannelsInfo)
     {

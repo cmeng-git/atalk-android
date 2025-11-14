@@ -214,7 +214,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                         break;
                     }
                 } catch (XMPPException | SmackException | InterruptedException | IllegalArgumentException e) {
-                    // AbstractXMPPConnection.createStanzaCollectorAndSend() throws IllegalArgumentException
                     Timber.w("Check Delivery Receipt exception for %s: %s", fullJid, e.getMessage());
                 }
             }

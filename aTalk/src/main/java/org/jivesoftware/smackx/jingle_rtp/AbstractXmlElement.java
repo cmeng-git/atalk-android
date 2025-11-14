@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Jive Software
  *
@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.Objects;
@@ -36,7 +37,7 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
- * An {@link ExtensionElement} modeling the often required and used XML features when using XMPP.
+ * An {@link XmlElement} modeling the often required and used XML features when using XMPP.
  * It is therefore suitable for most use cases. Use
  * {@link AbstractXmlElement(Builder)} to build these elements.
  * <p>
@@ -59,7 +60,7 @@ public class AbstractXmlElement implements ExtensionElement {
     /**
      * A list of extensions registered with this element with QName as key.
      */
-    private final MultiMap<QName, ExtensionElement> elements;
+    private final MultiMap<QName, XmlElement> elements;
 
     private XmlStringBuilder xmlCache;
     protected final Builder<?, ?> mBuilder;
@@ -167,7 +168,7 @@ public class AbstractXmlElement implements ExtensionElement {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ExtensionElement> T getFirstChildElement(String element, String namespace) {
+    public <T extends XmlElement> T getFirstChildElement(String element, String namespace) {
         if (elements == null) {
             return null;
         }
@@ -175,20 +176,20 @@ public class AbstractXmlElement implements ExtensionElement {
         return (T) elements.getFirst(key);
     }
 
-    public <T extends ExtensionElement> T getFirstChildElement(String element) {
+    public <T extends XmlElement> T getFirstChildElement(String element) {
         return getFirstChildElement(element, namespace);
     }
 
     /**
      * Returns this stanza's first direct child extension that matches the specified class <code>type</code>.
      *
-     * @param <T> the specific type of <code>ExtensionElement</code> to be returned
+     * @param <T> the specific type of <code>XmlElement</code> to be returned
      * @param type the <code>Class</code> of the extension we are looking for.
      * @return this stanza's first direct child extension that matches specified <code>type</code> or
      * <code>null</code> if no such child extension was found.
      */
     @SuppressWarnings("unchecked")
-    public <T extends ExtensionElement> T getFirstChildElement(Class<T> type) {
+    public <T extends XmlElement> T getFirstChildElement(Class<T> type) {
         try {
             return (T) elements.getFirst(type.getDeclaredConstructor().newInstance().getQName());
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
@@ -198,7 +199,7 @@ public class AbstractXmlElement implements ExtensionElement {
         }
     }
 
-    public List<? extends ExtensionElement> getChildElements(String element, String namespace) {
+    public List<? extends XmlElement> getChildElements(String element, String namespace) {
         if (elements == null) {
             return null;
         }
@@ -206,7 +207,7 @@ public class AbstractXmlElement implements ExtensionElement {
         return elements.getAll(key);
     }
 
-    public List<? extends ExtensionElement> getChildElements(String element) {
+    public List<? extends XmlElement> getChildElements(String element) {
         return getChildElements(element, namespace);
     }
 
@@ -218,7 +219,7 @@ public class AbstractXmlElement implements ExtensionElement {
      *
      * @return the {@link List} of elements that this stanza extension contains.
      */
-    public List<? extends ExtensionElement> getChildElements() {
+    public List<? extends XmlElement> getChildElements() {
         if (elements == null) {
             return Collections.emptyList();
         }
@@ -228,13 +229,13 @@ public class AbstractXmlElement implements ExtensionElement {
     /**
      * Returns this packet's direct child extensions that match the specified <code>type</code>.
      *
-     * @param <T> the specific <code>ExtensionElement</code> type of child extensions to be returned
+     * @param <T> the specific <code>XmlElement</code> type of child extensions to be returned
      * @param type the <code>Class</code> of the extension we are looking for.
      * @return a (possibly empty) list containing all of this packet's direct child extensions that
      * match the specified <code>type</code>
      */
     @SuppressWarnings("unchecked")
-    public <T extends ExtensionElement> List<T> getChildElements(Class<T> type) {
+    public <T extends XmlElement> List<T> getChildElements(Class<T> type) {
         try {
             QName qName = type.getDeclaredConstructor().newInstance().getQName();
             return (elements == null) ? Collections.emptyList() : (List<T>) elements.getAll(qName);
@@ -249,7 +250,7 @@ public class AbstractXmlElement implements ExtensionElement {
      * Clones the attributes, elements and text of a specific <code>AbstractXmlElement</code>
      * into a new <code>AbstractXmlElement</code> instance of the same run-time type.
      *
-     * @param <T> the specific type of <code>ExtensionElement</code> to be returned
+     * @param <T> the specific type of <code>XmlElement</code> to be returned
      * @param src the <code>AbstractXmlElement</code> to be cloned
      * @return a new <code>AbstractXmlElement</code> instance of the run-time type of the specified
      * <code>src</code> which has the same attributes, elements and text
@@ -294,7 +295,7 @@ public class AbstractXmlElement implements ExtensionElement {
         attributes.remove(name);
     }
 
-    public void addChildElement(ExtensionElement element) {
+    public void addChildElement(XmlElement element) {
         QName key = element.getQName();
         if (elements != null) {
             elements.put(key, element);
@@ -303,7 +304,7 @@ public class AbstractXmlElement implements ExtensionElement {
         }
     }
 
-    public Boolean removeChildElement(ExtensionElement element) {
+    public Boolean removeChildElement(XmlElement element) {
         QName key = element.getQName();
         return (elements != null) && (elements.remove(key) != null);
     }
@@ -335,7 +336,7 @@ public class AbstractXmlElement implements ExtensionElement {
             }
 
             if (elements != null) {
-                for (Map.Entry<QName, ExtensionElement> entry : elements.entrySet()) {
+                for (Map.Entry<QName, XmlElement> entry : elements.entrySet()) {
                     xml.append(entry.getValue().toXML(getNamespace()));
                 }
             }
@@ -354,7 +355,7 @@ public class AbstractXmlElement implements ExtensionElement {
 
         private String text;
         private Map<String, String> attributes;
-        protected MultiMap<QName, ExtensionElement> elements = new MultiMap<>();
+        protected MultiMap<QName, XmlElement> elements = new MultiMap<>();
 
         protected Builder(String element, String namespace) {
             this.element = element;
@@ -405,7 +406,7 @@ public class AbstractXmlElement implements ExtensionElement {
             return getThis();
         }
 
-        public B addChildElement(ExtensionElement element) {
+        public B addChildElement(XmlElement element) {
             Objects.requireNonNull(element, "Element must not be null");
             if (elements == null) {
                 elements = new MultiMap<>();
@@ -416,7 +417,7 @@ public class AbstractXmlElement implements ExtensionElement {
             return getThis();
         }
 
-        public B addChildElements(List<? extends ExtensionElement> xElements) {
+        public B addChildElements(List<? extends XmlElement> xElements) {
             if (xElements == null) {
                 return getThis();
             }
@@ -425,14 +426,14 @@ public class AbstractXmlElement implements ExtensionElement {
                 elements = new MultiMap<>();
             }
 
-            for (ExtensionElement element : xElements) {
+            for (XmlElement element : xElements) {
                 QName key = element.getQName();
                 elements.put(key, element);
             }
             return getThis();
         }
 
-        public B removeChildElement(ExtensionElement element) {
+        public B removeChildElement(XmlElement element) {
             Objects.requireNonNull(element, "Element must not be null");
             if (elements == null) {
                 return getThis();

@@ -21,8 +21,10 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jxmpp.JxmppContext;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * The parser of {@link StartMutedExtension}
@@ -44,9 +46,8 @@ public class StartMutedProvider extends ExtensionElementProvider<StartMutedExten
     }
 
     @Override
-    public StartMutedExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException, SmackParsingException
-    {
+    public StartMutedExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         StartMutedExtension packetExtension = new StartMutedExtension();
 
         //now parse the sub elements
@@ -81,4 +82,5 @@ public class StartMutedProvider extends ExtensionElementProvider<StartMutedExten
         }
         return packetExtension;
     }
+
 }

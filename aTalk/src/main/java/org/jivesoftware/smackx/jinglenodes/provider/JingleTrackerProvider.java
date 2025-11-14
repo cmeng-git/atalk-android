@@ -5,22 +5,26 @@ import static org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ.ATTR_P
 import static org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ.ATTR_PROTOCOL;
 import static org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ.ATTR_VERIFIED;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ;
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
 
 import java.io.IOException;
+import java.text.ParseException;
 
-public class JingleTrackerProvider extends IQProvider<JingleTrackerIQ>
+public class JingleTrackerProvider extends IqProvider<JingleTrackerIQ>
 {
+
     @Override
-    public JingleTrackerIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws org.jivesoftware.smack.xml.XmlPullParserException, IOException, SmackParsingException
-    {
+    public JingleTrackerIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         JingleTrackerIQ iq = new JingleTrackerIQ();
 
         boolean done = false;

@@ -5,9 +5,9 @@
  */
 package org.jivesoftware.smackx.coin;
 
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.AbstractExtensionElement;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -166,7 +166,7 @@ public class ExecutionExtension extends AbstractExtensionElement
         xml.optElement(ELEMENT_WHEN, when);
         xml.optElement(ELEMENT_REASON, reason);
 
-        for (ExtensionElement ext : getChildExtensions()) {
+        for (XmlElement ext : getChildExtensions()) {
             xml.append(ext.toXML(XmlEnvironment.EMPTY));
         }
         xml.closeElement(getElementName());

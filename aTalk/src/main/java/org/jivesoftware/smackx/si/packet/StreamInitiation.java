@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2003-2006 Jive Software.
  *
@@ -18,13 +18,16 @@ package org.jivesoftware.smackx.si.packet;
 
 import java.util.Date;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jxmpp.util.XmppDateTime;
 
 /**
  * The process by which two entities initiate a stream.
@@ -200,7 +203,12 @@ public class StreamInitiation extends IQ {
      *
      * @author Alexander Wenckus
      */
-    public static class File implements ExtensionElement {
+    public static class File implements XmlElement {
+
+        public static final String ELEMENT = "file";
+        public static final String NAMESPACE = "http://jabber.org/protocol/si/profile/file-transfer";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
         private final String name;
 
         private final long size;
@@ -332,12 +340,12 @@ public class StreamInitiation extends IQ {
 
         @Override
         public String getElementName() {
-            return "file";
+            return QNAME.getLocalPart();
         }
 
         @Override
         public String getNamespace() {
-            return "http://jabber.org/protocol/si/profile/file-transfer";
+            return QNAME.getNamespaceURI();
         }
 
         @Override
@@ -346,7 +354,7 @@ public class StreamInitiation extends IQ {
 
             sb.optAttribute(ATTR_NAME, StringUtils.escapeForXmlAttribute(getName()));
             sb.optLongAttribute(ATTR_SIZE, getSize());
-            sb.optAttribute(ATTR_DATE, getDate());
+            sb.optAttribute(ATTR_DATE, (date == null) ? null : XmppDateTime.formatXEP0082Date(date));
             sb.optAttribute(ATTR_HASH, getHash());
 
             if (StringUtils.isNotEmpty(desc)
@@ -372,7 +380,9 @@ public class StreamInitiation extends IQ {
      * @author Alexander Wenckus
      *
      */
-    public static class Feature implements ExtensionElement {
+    public static class Feature implements XmlElement {
+
+        public static final QName QNAME = new QName("http://jabber.org/protocol/feature-neg", "feature");
 
         private final DataForm data;
 
@@ -395,13 +405,13 @@ public class StreamInitiation extends IQ {
         }
 
         @Override
-        public String getNamespace() {
-            return "http://jabber.org/protocol/feature-neg";
+        public String getElementName() {
+            return QNAME.getLocalPart();
         }
 
         @Override
-        public String getElementName() {
-            return "feature";
+        public String getNamespace() {
+            return QNAME.getNamespaceURI();
         }
 
         @Override

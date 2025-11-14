@@ -5,9 +5,9 @@
  */
 package org.jivesoftware.smackx.colibri;
 
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.AbstractExtensionElement;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -179,8 +179,8 @@ public class ColibriStatsExtension extends AbstractExtensionElement
 
     /**
      * The name of the RTP loss statistic.
-     * @deprecated
      */
+    @Deprecated
     public static final String RTP_LOSS = "rtp_loss";
 
     /**
@@ -508,7 +508,7 @@ public class ColibriStatsExtension extends AbstractExtensionElement
     }
 
     @Override
-    public List<? extends ExtensionElement> getChildExtensions()
+    public List<? extends XmlElement> getChildExtensions()
     {
         return Collections.unmodifiableList(super.getChildExtensions());
     }

@@ -211,7 +211,7 @@ public class AccountManager {
         ServiceReference[] factoryRefs;
 
         try {
-            factoryRefs = this.bundleContext.getServiceReferences(ProtocolProviderFactory.class.getName(), null);
+            factoryRefs = bundleContext.getServiceReferences(ProtocolProviderFactory.class.getName(), null);
         } catch (InvalidSyntaxException ex) {
             Timber.e(ex, "Failed to retrieve the registered ProtocolProviderFactories");
             return false;

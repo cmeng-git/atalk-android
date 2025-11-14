@@ -5,13 +5,16 @@
  */
 package org.jivesoftware.smackx.inputevt;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jxmpp.JxmppContext;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * This class parses incoming remote-control XML element and extracts input events such as keyboard
@@ -80,13 +83,13 @@ public class RemoteControlExtensionProvider extends ExtensionElementProvider<Rem
     }
 
     /**
-     * Parses the extension and returns a <code>ExtensionElement</code>.
+     * Parses the extension and returns a <code>XmlElement</code>.
      *
      * @param parser XML parser
-     * @return a <code>ExtensionElement</code> that represents a remote-control element.
+     * @return a <code>XmlElement</code> that represents a remote-control element.
      * @throws Exception if an error occurs during XML parsing
      */
-    public ExtensionElement parseExtension(XmlPullParser parser)
+    public XmlElement parseExtension(XmlPullParser parser)
     {
         RemoteControlExtension result = null;
         boolean done = false;
@@ -300,10 +303,10 @@ public class RemoteControlExtensionProvider extends ExtensionElementProvider<Rem
         return xml.toString();
     }
 
+
     @Override
-    public RemoteControlExtension parse(XmlPullParser paramXmlPullParser, int paramInt, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException
-    {
+    public RemoteControlExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         // TODO Auto-generated method stub
         return null;
     }

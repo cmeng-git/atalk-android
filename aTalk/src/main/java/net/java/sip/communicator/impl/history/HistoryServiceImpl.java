@@ -388,15 +388,15 @@ public class HistoryServiceImpl implements HistoryService {
         for (int i = 0; i < ids.length; i++) {
             String currId = ids[i];
 
-            for (int j = 0; j < ESCAPE_SEQUENCES.length; j++) {
-                currId = currId.replaceAll(ESCAPE_SEQUENCES[j][0], ESCAPE_SEQUENCES[j][1]);
+            for (String[] escapeSequence : ESCAPE_SEQUENCES) {
+                currId = currId.replaceAll(escapeSequence[0], escapeSequence[1]);
             }
             ids[i] = currId;
         }
     }
 
     private static ConfigurationService getConfigurationService(BundleContext bundleContext) {
-        ServiceReference serviceReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
+        ServiceReference<?> serviceReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
         return (serviceReference == null) ? null : (ConfigurationService) bundleContext.getService(serviceReference);
     }
 

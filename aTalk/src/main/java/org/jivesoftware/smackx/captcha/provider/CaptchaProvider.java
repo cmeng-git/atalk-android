@@ -24,8 +24,10 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
+import org.jxmpp.JxmppContext;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * The <code>CaptchaProvider</code> is an extension element provider that is meant to be used for
@@ -39,13 +41,10 @@ public class CaptchaProvider extends ExtensionElementProvider<CaptchaExtension>
      * Parses the given <code>XmlPullParser</code> into a DataForm packet and returns it.
      * Note: parse first XmlPullParser.OPEN_TAG is already consumed on first entry.
      * XEP-0158: CAPTCHA Forms
-     *
-     * @see ExtensionElementProvider#parse(XmlPullParser, int)
      */
     @Override
-    public CaptchaExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException
-    {
+    public CaptchaExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         // feature
         DataForm form = null;
         DataFormProvider dataFormProvider = new DataFormProvider();

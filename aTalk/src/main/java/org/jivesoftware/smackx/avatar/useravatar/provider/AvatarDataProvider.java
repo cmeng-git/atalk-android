@@ -44,12 +44,16 @@
 package org.jivesoftware.smackx.avatar.useravatar.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 
+import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarData;
+import org.jxmpp.JxmppContext;
 
 /**
  * A PacketExtensionProvider to parse the Avatar data.
@@ -57,9 +61,10 @@ import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarData;
  * <data xmlns='urn:xmpp:avatar:data'>qANQR1DBwU4DX7jmYZnncm...</data>
  */
 public class AvatarDataProvider extends ExtensionElementProvider {
+
     @Override
-    public AvatarData parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException {
+    public Element parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String data = null;
         if (AvatarData.ELEMENT.equals(parser.getName())) {
             data = parser.nextText();

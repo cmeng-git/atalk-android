@@ -17,13 +17,6 @@
  */
 package org.ice4j.ice.harvest;
 
-import org.ice4j.StackProperties;
-import org.ice4j.Transport;
-import org.ice4j.TransportAddress;
-import org.ice4j.ice.NetworkUtils;
-import org.ice4j.socket.IceSocketWrapper;
-import org.ice4j.socket.MuxServerSocketChannelFactory;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -48,6 +41,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.ice4j.StackProperties;
+import org.ice4j.Transport;
+import org.ice4j.TransportAddress;
+import org.ice4j.ice.NetworkUtils;
+import org.ice4j.socket.IceSocketWrapper;
+import org.ice4j.socket.MuxServerSocketChannelFactory;
+
 /**
  * An abstract class that binds on a set of sockets and accepts sessions that
  * start with a STUN Binding Request (preceded by an optional fake SSL
@@ -64,8 +64,7 @@ import java.util.logging.Logger;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class AbstractTcpListener
-{
+public abstract class AbstractTcpListener {
     /**
      * Our class logger.
      */
@@ -76,12 +75,13 @@ public abstract class AbstractTcpListener
      *
      * @param channel the {@code Channel} to close
      */
-    static void closeNoExceptions(Channel channel)
-    {
+    static void closeNoExceptions(Channel channel) {
         try {
             channel.close();
-        } catch (IOException ioe) {
-            // The whole idea of the method is to close a specific Channel without caring about any possible IOException.
+        }
+        catch (IOException ioe) {
+            // The whole idea of the method is to close a specific Channel
+            // without caring about any possible IOException.
         }
     }
 
@@ -92,8 +92,7 @@ public abstract class AbstractTcpListener
      * @param port the port to use.
      * @param interfaces the list of interfaces to use.
      */
-    private static List<TransportAddress> getLocalAddresses(int port, List<NetworkInterface> interfaces)
-    {
+    private static List<TransportAddress> getLocalAddresses(int port, List<NetworkInterface> interfaces) {
         List<TransportAddress> addresses = new LinkedList<>();
 
         for (NetworkInterface iface : interfaces) {
@@ -154,12 +153,12 @@ public abstract class AbstractTcpListener
      * listen on port number <tt>port</tt> on all IP addresses on all available interfaces.
      *
      * @param port the port to listen on.
+     *
      * @throws IOException when {@link StackProperties#ALLOWED_ADDRESSES} or
      * {@link StackProperties#BLOCKED_ADDRESSES} contains invalid values, or if an I/O error occurs.
      */
     public AbstractTcpListener(int port)
-            throws IOException
-    {
+            throws IOException {
         this(port, Collections.list(NetworkInterface.getNetworkInterfaces()));
     }
 
@@ -169,12 +168,12 @@ public abstract class AbstractTcpListener
      *
      * @param port the port to listen on.
      * @param interfaces the interfaces to listen on.
+     *
      * @throws IOException when {@link StackProperties#ALLOWED_ADDRESSES} or
      * {@link StackProperties#BLOCKED_ADDRESSES} contains invalid values, or if an I/O error occurs.
      */
     public AbstractTcpListener(int port, List<NetworkInterface> interfaces)
-            throws IOException
-    {
+            throws IOException {
         this(getLocalAddresses(port, interfaces));
     }
 
@@ -182,12 +181,12 @@ public abstract class AbstractTcpListener
      * Initializes a new <tt>TcpHarvester</tt>, which is to listen on the specified list of <tt>TransportAddress</tt>es.
      *
      * @param transportAddresses the transport addresses to listen on.
+     *
      * @throws IOException when {@link StackProperties#ALLOWED_ADDRESSES} or
      * {@link StackProperties#BLOCKED_ADDRESSES} contains invalid values, or if an I/O error occurs.
      */
     public AbstractTcpListener(List<TransportAddress> transportAddresses)
-            throws IOException
-    {
+            throws IOException {
         addLocalAddresses(transportAddresses);
         init();
     }
@@ -197,12 +196,12 @@ public abstract class AbstractTcpListener
      * <tt>transportAddresses</tt> which are found suitable for candidate allocation.
      *
      * @param transportAddresses the list of addresses to add.
+     *
      * @throws IOException when {@link StackProperties#ALLOWED_ADDRESSES} or
      * {@link StackProperties#BLOCKED_ADDRESSES} contains invalid values.
      */
     protected void addLocalAddresses(List<TransportAddress> transportAddresses)
-            throws IOException
-    {
+            throws IOException {
         boolean useIPv6 = !StackProperties.getBoolean(StackProperties.DISABLE_IPv6, false);
         boolean useLinkLocalAddresses = !StackProperties.getBoolean(StackProperties.DISABLE_LINK_LOCAL_ADDRESSES, false);
 
@@ -282,8 +281,7 @@ public abstract class AbstractTcpListener
     /**
      * Triggers the termination of the threads of this <tt>MultiplexingTcpHarvester</tt>.
      */
-    public void close()
-    {
+    public void close() {
         close = true;
     }
 
@@ -293,8 +291,7 @@ public abstract class AbstractTcpListener
      * @throws IOException if an I/O error occurs
      */
     protected void init()
-            throws IOException
-    {
+            throws IOException {
         boolean bindWildcard = StackProperties.getBoolean(StackProperties.BIND_WILDCARD, false);
 
         // Use a set to filter out any duplicates.
@@ -323,8 +320,7 @@ public abstract class AbstractTcpListener
      * @throws IOException if an I/O error occurs
      */
     private void addSocketChannel(InetSocketAddress address)
-            throws IOException
-    {
+            throws IOException {
         ServerSocketChannel channel
                 = MuxServerSocketChannelFactory.openAndBindServerSocketChannel(null, address, 0);
 
@@ -337,6 +333,7 @@ public abstract class AbstractTcpListener
      * @param socket the {@link Socket} for the session.
      * @param ufrag the local username fragment for the session.
      * @param pushback the first "datagram" (RFC4571-framed), already read from the socket's stream.
+     *
      * @throws IllegalStateException
      * @throws IOException
      */
@@ -349,8 +346,7 @@ public abstract class AbstractTcpListener
      * <tt>ServerSocketChannel</tt>s in {@link #serverSocketChannels}.
      */
     private class AcceptThread
-            extends Thread
-    {
+            extends Thread {
         /**
          * The <tt>Selector</tt> used to select a specific <tt>ServerSocketChannel</tt> which is ready to <tt>accept</tt>.
          */
@@ -360,8 +356,7 @@ public abstract class AbstractTcpListener
          * Initializes a new <tt>AcceptThread</tt>.
          */
         public AcceptThread()
-                throws IOException
-        {
+                throws IOException {
             setName("TcpHarvester AcceptThread");
             setDaemon(true);
 
@@ -375,8 +370,7 @@ public abstract class AbstractTcpListener
         /**
          * Notifies {@link #readThread} that new channels have been added.
          */
-        private void notifyReadThread()
-        {
+        private void notifyReadThread() {
             readSelector.wakeup();
         }
 
@@ -384,8 +378,7 @@ public abstract class AbstractTcpListener
          * {@inheritDoc}
          */
         @Override
-        public void run()
-        {
+        public void run() {
             do {
                 if (close) {
                     break;
@@ -403,7 +396,8 @@ public abstract class AbstractTcpListener
 
                         try {
                             channel = ((ServerSocketChannel) key.channel()).accept();
-                        } catch (IOException ioe) {
+                        }
+                        catch (IOException ioe) {
                             exception = ioe;
                             break;
                         }
@@ -439,7 +433,8 @@ public abstract class AbstractTcpListener
                 try {
                     // Allow to go on, so we can quit if closed.
                     selector.select(selectTimeout);
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     logger.info("Failed to select an accept-ready socket: " + ioe);
                     break;
                 }
@@ -452,7 +447,8 @@ public abstract class AbstractTcpListener
 
             try {
                 selector.close();
-            } catch (IOException ignore) {
+            }
+            catch (IOException ignore) {
             }
         }
     }
@@ -460,8 +456,7 @@ public abstract class AbstractTcpListener
     /**
      * Contains a <tt>SocketChannel</tt> that <tt>ReadThread</tt> is reading from.
      */
-    private static class ChannelDesc
-    {
+    private static class ChannelDesc {
         /**
          * The actual <tt>SocketChannel</tt>.
          */
@@ -494,8 +489,7 @@ public abstract class AbstractTcpListener
          *
          * @param channel the channel.
          */
-        public ChannelDesc(SocketChannel channel)
-        {
+        public ChannelDesc(SocketChannel channel) {
             this.channel = channel;
         }
     }
@@ -505,8 +499,7 @@ public abstract class AbstractTcpListener
      * and received on the first call to {@link #receive(DatagramPacket)}.
      */
     protected static class PushBackIceSocketWrapper
-            extends IceSocketWrapper
-    {
+            extends IceSocketWrapper {
         /**
          * The <tt>DatagramPacket</tt> which will be used on the first call to {@link #receive(DatagramPacket)}.
          */
@@ -526,8 +519,7 @@ public abstract class AbstractTcpListener
          * @param datagramPacket the <tt>DatagramPacket</tt> which will be used
          * on the first call to {@link #receive(DatagramPacket)}
          */
-        public PushBackIceSocketWrapper(IceSocketWrapper wrappedWrapper, DatagramPacket datagramPacket)
-        {
+        public PushBackIceSocketWrapper(IceSocketWrapper wrappedWrapper, DatagramPacket datagramPacket) {
             this.wrapped = wrappedWrapper;
             this.datagramPacket = datagramPacket;
         }
@@ -536,8 +528,7 @@ public abstract class AbstractTcpListener
          * {@inheritDoc}
          */
         @Override
-        public void close()
-        {
+        public void close() {
             wrapped.close();
         }
 
@@ -545,8 +536,7 @@ public abstract class AbstractTcpListener
          * {@inheritDoc}
          */
         @Override
-        public InetAddress getLocalAddress()
-        {
+        public InetAddress getLocalAddress() {
             return wrapped.getLocalAddress();
         }
 
@@ -554,8 +544,7 @@ public abstract class AbstractTcpListener
          * {@inheritDoc}
          */
         @Override
-        public int getLocalPort()
-        {
+        public int getLocalPort() {
             return wrapped.getLocalPort();
         }
 
@@ -563,8 +552,7 @@ public abstract class AbstractTcpListener
          * {@inheritDoc}
          */
         @Override
-        public SocketAddress getLocalSocketAddress()
-        {
+        public SocketAddress getLocalSocketAddress() {
             return wrapped.getLocalSocketAddress();
         }
 
@@ -572,8 +560,7 @@ public abstract class AbstractTcpListener
          * {@inheritDoc}
          */
         @Override
-        public Socket getTCPSocket()
-        {
+        public Socket getTCPSocket() {
             return wrapped.getTCPSocket();
         }
 
@@ -581,8 +568,7 @@ public abstract class AbstractTcpListener
          * {@inheritDoc}
          */
         @Override
-        public DatagramSocket getUDPSocket()
-        {
+        public DatagramSocket getUDPSocket() {
             return wrapped.getUDPSocket();
         }
 
@@ -593,8 +579,7 @@ public abstract class AbstractTcpListener
          * {@link #datagramPacket}, on subsequent calls delegates to {@link #wrapped}.
          */
         @Override
-        public void receive(DatagramPacket p) throws IOException
-        {
+        public void receive(DatagramPacket p) throws IOException {
             if (datagramPacket != null) {
                 int len = Math.min(p.getLength(), datagramPacket.getLength());
                 System.arraycopy(datagramPacket.getData(), 0,
@@ -613,20 +598,17 @@ public abstract class AbstractTcpListener
          * {@inheritDoc}
          */
         @Override
-        public void send(DatagramPacket p) throws IOException
-        {
+        public void send(DatagramPacket p) throws IOException {
             wrapped.send(p);
         }
     }
 
     private class ReadThread
-            extends Thread
-    {
+            extends Thread {
         /**
          * Initializes a new <tt>ReadThread</tt>.
          */
-        public ReadThread()
-        {
+        public ReadThread() {
             setName("TcpHarvester ReadThread");
             setDaemon(true);
         }
@@ -635,8 +617,7 @@ public abstract class AbstractTcpListener
          * Registers the channels from {@link #newChannels} in
          * {@link #readSelector}.
          */
-        private void checkForNewChannels()
-        {
+        private void checkForNewChannels() {
             synchronized (newChannels) {
                 for (SocketChannel channel : newChannels) {
                     try {
@@ -645,7 +626,8 @@ public abstract class AbstractTcpListener
                                 readSelector,
                                 SelectionKey.OP_READ,
                                 new ChannelDesc(channel));
-                    } catch (IOException ioe) {
+                    }
+                    catch (IOException ioe) {
                         logger.info("Failed to register channel: " + ioe);
                         closeNoExceptions(channel);
                     }
@@ -671,8 +653,7 @@ public abstract class AbstractTcpListener
          * @param key the <tt>SelectionKey</tt> associated with <tt>channel</tt>,
          * which is to be canceled in case no further reading is required from the channel.
          */
-        private void readFromChannel(ChannelDesc channel, SelectionKey key)
-        {
+        private void readFromChannel(ChannelDesc channel, SelectionKey key) {
             if (channel.buffer == null) {
                 // Set up a buffer with a pre-determined size
 
@@ -696,7 +677,7 @@ public abstract class AbstractTcpListener
                 if (!channel.buffer.hasRemaining()) {
                     // We've filled in the buffer.
                     if (!channel.checkedForSSLHandshake) {
-                        byte[] bytesRead= new byte[GoogleTurnSSLCandidateHarvester.SSL_CLIENT_HANDSHAKE.length];
+                        byte[] bytesRead = new byte[GoogleTurnSSLCandidateHarvester.SSL_CLIENT_HANDSHAKE.length];
 
                         channel.buffer.flip();
                         channel.buffer.get(bytesRead);
@@ -770,7 +751,8 @@ public abstract class AbstractTcpListener
                         processFirstDatagram(bytesRead, channel, key);
                     }
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 // The ReadThread should continue running no matter what
                 // exceptions occur in the code above (we've observed exceptions
                 // due to failures to allocate resources) because otherwise
@@ -793,6 +775,7 @@ public abstract class AbstractTcpListener
          * @param channel the <tt>SocketChannel</tt> to read from.
          * @param key the <tt>SelectionKey</tt> associated with
          * <tt>channel</tt>, which is to be canceled in case no further reading is required from the channel.
+         *
          * @throws IOException if the datagram does not contain s STUN Binding Request with a USERNAME attribute.
          * @throws IllegalStateException if the session for the extracted
          * username fragment cannot be accepted for implementation reasons
@@ -801,8 +784,7 @@ public abstract class AbstractTcpListener
         private void processFirstDatagram(
                 byte[] bytesRead,
                 ChannelDesc channel, SelectionKey key)
-                throws IOException, IllegalStateException
-        {
+                throws IOException, IllegalStateException {
             // Does this look like a STUN binding request? What's the username?
             String ufrag = AbstractUdpListener.getUfrag(bytesRead,
                     (char) 0,
@@ -832,8 +814,7 @@ public abstract class AbstractTcpListener
          * {@inheritDoc}
          */
         @Override
-        public void run()
-        {
+        public void run() {
             do {
                 synchronized (AbstractTcpListener.this) {
                     if (close)
@@ -853,7 +834,8 @@ public abstract class AbstractTcpListener
 
                 try {
                     readSelector.select(MuxServerSocketChannelFactory.SOCKET_CHANNEL_READ_TIMEOUT / 2);
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     logger.info("Failed to select a read-ready channel.");
                 }
             }
@@ -882,7 +864,8 @@ public abstract class AbstractTcpListener
 
             try {
                 readSelector.close();
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe) {
                 // ignore
             }
         }

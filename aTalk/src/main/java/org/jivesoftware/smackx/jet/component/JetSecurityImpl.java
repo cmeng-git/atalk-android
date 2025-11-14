@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Paul Schaub
  *
@@ -27,7 +27,7 @@ import javax.crypto.NoSuchPaddingException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 import org.jivesoftware.smackx.ciphers.AesGcmNoPadding;
 import org.jivesoftware.smackx.jet.JetManager;
@@ -55,7 +55,7 @@ public class JetSecurityImpl extends JingleSecurity<JetSecurity> {
     private final String envelopeNamespace;
 
     private AesGcmNoPadding aesKey;
-    private final ExtensionElement child;
+    private final XmlElement child;
     private final String cipherName;
     private final String contentName;
 

@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Eng Chong Meng
  *
@@ -21,19 +21,19 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 
 /**
- * Implements <code>ExtensionElement</code> for XEP-0353: Jingle Message Initiation 0.4.0 (2021-11-27).
+ * Implements <code>XmlElement</code> for XEP-0353: Jingle Message Initiation 0.4.0 (2021-11-27).
  * @see <a href="https://xmpp.org/extensions/xep-0353.html">XEP-0353: Jingle Message Initiation</a>
  *
  * @author Eng Chong Meng
  */
-public class JingleMessage implements ExtensionElement {
+public class JingleMessage implements XmlElement {
     public static String ELEMENT = "propose";
     public static final String NAMESPACE = "urn:xmpp:jingle-message:0";
 

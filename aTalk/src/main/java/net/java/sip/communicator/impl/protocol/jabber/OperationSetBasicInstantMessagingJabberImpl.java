@@ -66,13 +66,13 @@ import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -201,7 +201,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
     /**
      * Message filter to listen for message sent from DomianJid i.e. server with normal or
-     * has extensionElement i.e. XEP-0071: XHTML-IM
+     * has XmlElement i.e. XEP-0071: XHTML-IM
      */
     private static final StanzaFilter MESSAGE_FILTER = new AndFilter(
             MessageTypeFilter.NORMAL_OR_CHAT, new OrFilter(MessageWithBodiesFilter.INSTANCE,
@@ -410,7 +410,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * calling function can modify it if needed.
      */
     private MessageDeliveredEvent sendMessage(Contact to, ContactResource toResource,
-            IMessage message, Collection<ExtensionElement> extElements) {
+            IMessage message, Collection<XmlElement> extElements) {
         if (!(to instanceof ContactJabberImpl))
             throw new IllegalArgumentException("The specified contact is not a Jabber contact: " + to);
         try {
@@ -523,7 +523,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      */
     @Override
     public void sendInstantMessage(Contact to, ContactResource resource, IMessage message) {
-        List<ExtensionElement> extElements = message.isMessageOob() ?
+        List<XmlElement> extElements = message.isMessageOob() ?
                 Collections.singletonList(new OutOfBandData(message.getContent())) : Collections.emptyList();
 
         MessageDeliveredEvent msgDelivered = sendMessage(to, resource, message, extElements);
@@ -541,7 +541,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param correctedMessageUID The ID of the message being replaced.
      */
     public void correctMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID) {
-        Collection<ExtensionElement> extElements
+        Collection<XmlElement> extElements
                 = Collections.singletonList(new MessageCorrectExtension(correctedMessageUID));
 
         MessageDeliveredEvent msgDelivered = sendMessage(to, resource, message, extElements);

@@ -7,8 +7,25 @@
 -->
 
 <changelog>
-    <release version="4.5.3 (10/09/2025)" versioncode="405030">
+    <release version="4.6.0 (11/14/2025)" versioncode="406000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Port aTalk to use smack 4.5.0-rc1 release</change>
+        <change>Set aTalk to be compatible with smack 4.5.0 release i.e. minSdkVersion = 26 and sourceCompatibility JavaVersion.VERSION_11</change>
+        <change>Fix HashManager.getMessageDigest(SHA3-256) throws NoSuchAlgorithmException. OSGiService executes smack SecurityUtil.ensureProviderAtFirstPosition(BouncyCastleProvider.class)</change>
+        <change>Change aTalk smack classes to extends XmlElement in place of ExtensionElement where possible</change>
+        <change>Need to add configuration {all*.exclude group: 'xpp3', module: 'xpp3' and 'xpp3_min'} to resolve duplicate class during build</change>
+        <change>Do not crash aTalk app when creating account over insecure connection; show error message instead</change>
+        <change>Rename IBRCaptchaProcessDialog to IBRProcessDialog; must handle registration for both with/without Captcha Protection</change>
+        <change>Proceed to purge local user registration record only if serverAccountDeletion is successful</change>
+        <change>Optimize AccountInfoPresenceActivity implementation to minimize views settings changes programmatically</change>
+        <change>Upgrade libraries org.bouncycastle:xxx-jdk18on:1.79 and org.jitsi:zrtp4j-light:4.1.3 etc</change>
+        <change>Remove patch for ejabberd &lt;= 23.01; it sends presence's 'photo' element with no hash value, after user published a new avatar</change>
+        <change>aTalk v4.6.0 is the last version to support OTR. OTR will be removed in aTalk 5.0.0 or later releases</change>
+        <change>Cleanup and update aTalk.doap file</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="4.5.3 (10/09/2025)" versioncode="405030">
         <change>Last AccountInfoPresenceActivity$DetailsLoadWorker fix seems not effective. Move some tasks execution out of the UI thread.</change>
         <change>Also change all its other tasks to run under ExecutorService thread; seems not required to runOnUiThread</change>
         <change>Reset hasChanges to false on first entry to AccountInfoPresenceActivity$DetailsLoadWorker</change>

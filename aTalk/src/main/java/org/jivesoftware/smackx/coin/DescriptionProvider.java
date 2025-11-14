@@ -6,11 +6,14 @@
 package org.jivesoftware.smackx.coin;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jxmpp.JxmppContext;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * Parser for DescriptionExtensionElement.
@@ -30,11 +33,9 @@ public class DescriptionProvider extends ExtensionElementProvider<DescriptionExt
      * @return a new {@link DescriptionExtension} instance.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
-
     @Override
-    public DescriptionExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException
-    {
+    public DescriptionExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         boolean done = false;
         XmlPullParser.Event eventType;
         String elementName = null;

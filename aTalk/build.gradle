@@ -7,6 +7,8 @@ buildscript {
     dependencies {
         // gradle-1.0.1 not compatible with gradle 7.x; use master release instead
         classpath 'com.github.shevek.jarjar:jarjar-gradle:9a7eca7'
+        // classpath 'com.github.cmeng-git.jarjar:jarjar-gradle:9a7eca7'
+        // classpath files('jarjar-core-1.1.1.jar lib/jarjar-gradle-1.1.1.jar')
     }
 }
 
@@ -14,7 +16,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.anarres.jarjar'
 
 repositories {
-
     mavenCentral()
 //    maven {
 //        // May need manual cleanup for new SNAPSHOT update if same name with date change only:
@@ -33,17 +34,10 @@ configurations {
 
     // dependency libraries duplication conflict cause by smack-xmlparser-xpp3
     all*.exclude group: 'xpp3', module: 'xpp3_min'
+    all*.exclude group: 'xpp3', module: 'xpp3'
 }
 
 configurations.implementation {
-    // https://docs.gradle.org/current/userguide/resolution_rules.html
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == 'org.bouncycastle' && details.requested.name == 'bcprov-jdk15on' && details.requested.version == '1.66') {
-            details.useVersion '1.65'
-            details.because 'Fixes ASP bug: Failed to transform bcprov-jdk15on-1.66.jar -> Unsupported class file major version 59'
-        }
-    }
-
     exclude group: "org.igniterealtime.smack", module: "smack-extensions"
     exclude group: "org.igniterealtime.smack", module: "smack-experimental"
     exclude group: "org.igniterealtime.smack", module: "smack-omemo"
@@ -63,8 +57,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 405030
-        versionName "4.5.3"
+        versionCode 406000
+        versionName "4.6.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -99,8 +93,9 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        // same as smack Java Version
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     buildFeatures {
@@ -195,12 +190,14 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/core_release.kotlin_module'
         exclude 'META-INF/kotlin-stdlib-jdk7.kotlin_module'
+        exclude 'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
     }
 }
 
 ext {
     // for official maven release; smackVersion = '4.5.0-alpha1'
-    smackVersion = '4.4.8'
+    // smackVersion = '4.4.8'
+    smackVersion = '4.5.0-rc1'
 
     // May need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
@@ -231,8 +228,6 @@ dependencies {
     implementation 'androidx.media3:media3-ui:1.8.0'
     // implementation "androidx.webkit:webkit:1.14.0"
 
-    implementation 'com.jakewharton:butterknife:10.2.3'
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.4.9'
     implementation('com.jakewharton.timber:timber:5.0.1') {
         transitive = false
     }
@@ -246,9 +241,9 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.10'
     implementation 'com.google.android.material:material:1.13.0'
 
-    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.15'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.18'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta05'
-    implementation 'com.squareup.okhttp3:okhttp:5.1.0' // 4.12.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.3.0' // 4.12.0'
 
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
     // implementation 'com.github.cketti:ckchangelog-core:2.0.0-beta02'
@@ -258,7 +253,7 @@ dependencies {
 
     // commons-codec:1.16.x not compatible with Note10, crashes with No static method isEmpty([B)Z in class org/apache/commons/codec/binary/BinaryCodec;
     // or its super classes (declaration of 'org.apache.commons.codec.binary.BinaryCodec' appears in /system/framework/org.apache.http.legacy.jar)
-    implementation 'commons-codec:commons-codec:1.15'
+    implementation 'commons-codec:commons-codec:1.20.0'   // old = 1.15
     implementation 'org.apache.commons:commons-text:1.14.0'
     implementation 'org.apache.james:apache-mime4j-core:0.8.13'
     implementation 'org.bitlet:weupnp:0.1.4'
@@ -268,20 +263,20 @@ dependencies {
     // Duplicate class org.bouncycastle.x509.util.StreamParsingException found in modules jetified-bcprov-jdk15on-1.65
     // (org.bouncycastle:bcprov-jdk15on:1.65) and jetified-bcprov-jdk15to18-1.68 (org.bouncycastle:bcprov-jdk15to18:1.68)
 
-    //noinspection GradleDependency
-    implementation 'org.bouncycastle:bcpg-jdk15on:1.70'   // zrtp
-    //noinspection GradleDependency
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.70' // CertificateServiceImpl jcajce
-    //noinspection GradleDependency
-    implementation 'org.bouncycastle:bctls-jdk15on:1.70'  // dtls-srtp
+    implementation 'org.bouncycastle:bcpg-jdk18on:1.79'   // zrtp
+    implementation 'org.bouncycastle:bcpkix-jdk18on:1.79' // CertificateServiceImpl jcajce
+    // SHA3-256 - auto included.
+    // implementation 'org.bouncycastle:bcprov-jdk18on:1.79'
+    // 1.82 not compatible:  Unsupported class file major version 69
+    implementation 'org.bouncycastle:bctls-jdk18on:1.79'  // dtls-srtp
 
     // For debug and tracing for bouncycastle - AS allows direct copy and replacement of bc source for debug
 //    implementation jarjar.repackage {
-//        from('org.bouncycastle:bctls-jdk15on:1.70') {
+//        from('org.bouncycastle:bctls-jdk18on:1.79') {
 //            transitive = false
 //        }
 //        destinationDir new File("${projectDir}/libs")
-//        destinationName "bctls-jdk15on-1.70.jar"
+//        destinationName "bctls-jdk18on-1.79.jar"
 //
 //        classDelete 'org.bouncycastle.tls.DTLSServerProtocol**'
 //        classDelete 'org.bouncycastle.tls.DTLSClientProtocol**'
@@ -291,7 +286,8 @@ dependencies {
     // Fix ZRTP X25519 key exchange - https://github.com/jitsi/zrtp4j/commit/f7575bf6301927a997675726002d309b2acdd5d9
     // Truncate ZRTP KDF output as per RFC - https://github.com/jitsi/zrtp4j/commit/0baa502b9269d0d8a31247d032ee4896f945a344
     // note: 4.1.3 has duplicate class error: org.bouncycastle:bcprov-jdk15on:1.70 and bcprov-jdk18on-1.71.jar
-    implementation 'org.jitsi:zrtp4j-light:4.1.2'
+    // OK when using jdk18on:1.79
+    implementation 'org.jitsi:zrtp4j-light:4.1.3'
 
     // Required for provisioning discovery
     implementation 'org.jmdns:jmdns:3.6.2'
@@ -313,9 +309,10 @@ dependencies {
     // implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
     implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
 
-    // 1.1.0: Has only static method entityFullFrom(CharSequence) cannot accept String
-    implementation 'org.jxmpp:jxmpp-jid:1.0.3'
+    // 1.1.0: Method entityFullFrom(CharSequence) cannot accept String. Ok for 4.5.0
+    implementation 'org.jxmpp:jxmpp-jid:1.1.0'
     implementation 'org.osgi:osgi.core:8.0.0'
+    implementation 'org.whispersystems:signal-protocol-java:2.8.1'
 
     // playStore version use google map services
     playstoreImplementation "com.google.android.gms:play-services-maps:19.2.0"
@@ -369,30 +366,32 @@ dependencies {
         // Rename to use aTalk namespace to minimize changes
         classRename 'org.jitsi.utils.**', 'org.atalk.util.@1'
 
-        // Duration was added in API level-26; see https://github.com/JakeWharton/ThreeTenABP
-        classRename 'java.time.Duration', 'org.threeten.bp.Duration'
-
         // Clean up and optimize call to weupnp call - reduces threads avoid time race condition
         classDelete 'org.ice4j.ice.harvest.UPNPHarvester**'
 
+        // (#1) Remove dependency of jitsi config settings and use StackProperties predefined values instead.
         classDelete 'org.ice4j.StackProperties**'
 
-        classDelete 'org.ice4j.ice.Agent**'
+        classDelete 'org.ice4j.ice.Agent**' // (#1)
+        // (#1) and remove JMap dependency
         classDelete 'org.ice4j.ice.Component'
-        classDelete 'org.ice4j.ice.ConnectivityCheckServer'
+        // Implement compareUnsignedLong() in place of Long.compareUnsigned()
+        classDelete 'org.ice4j.ice.ConnectivityCheckServer' // may be removed
+        // Must allow startChecks to restart when previously terminated. Otherwise content-add in audio call not working
         classDelete 'org.ice4j.ice.ConnectivityCheckClient**'
-        classDelete 'org.ice4j.ice.IceMediaStream**'
+        classDelete 'org.ice4j.ice.IceMediaStream**' // (#1)
 
-        classDelete 'org.ice4j.ice.harvest.AbstractTcpListener**'
-        classDelete 'org.ice4j.ice.harvest.AbstractUdpListener**'
-        classDelete 'org.ice4j.ice.harvest.CandidateHarvesterSet'
+        classDelete 'org.ice4j.ice.harvest.AbstractTcpListener**' // (#1)
+        classDelete 'org.ice4j.ice.harvest.AbstractUdpListener**' // (#1)
+        classDelete 'org.ice4j.ice.harvest.CandidateHarvesterSet' // (#1)
         classDelete 'org.ice4j.ice.harvest.CandidateHarvesterSet$**'
-        classDelete 'org.ice4j.ice.harvest.HostCandidateHarvester**'
+        classDelete 'org.ice4j.ice.harvest.HostCandidateHarvester**' // (#1)
         classDelete 'org.ice4j.ice.harvest.MappingCandidateHarvester**' // may be removed (java/kotlin)
         classDelete 'org.ice4j.ice.harvest.MappingCandidateHarvesters**'
-        classDelete 'org.ice4j.ice.harvest.SingleMappingCandidateHarvester**'
+        classDelete 'org.ice4j.ice.harvest.SingleMappingCandidateHarvester**' // (#1)
 
-        classDelete 'org.ice4j.message.Message'
+        classDelete 'org.ice4j.message.Message' // (#1)
+        // throw SocketNotFoundException instead of IllegalArgumentException in sendMessage()
         classDelete 'org.ice4j.stack.NetAccessManager**'
     }
 
@@ -458,6 +457,10 @@ dependencies {
         classDelete 'org.jivesoftware.smackx.filetransfer.FileTransferNegotiator**'
         classDelete 'org.jivesoftware.smackx.filetransfer.FileTransferRequest**'
         classDelete 'org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer**'
+
+        // Custom smack classes that handle the XEP-0077 with Captcha Protection
+        classDelete 'org.jivesoftware.smackx.iqregister**'
+
         // Custom smack classes that handle the XEP-0264 <File/> element
         classDelete 'org.jivesoftware.smackx.si.packet.StreamInitiation**'
         classDelete 'org.jivesoftware.smackx.si.provider.StreamInitiationProvider**'
@@ -470,12 +473,8 @@ dependencies {
         classDelete 'org.jivesoftware.smackx.jingle.element.JingleAction**'
         classDelete 'org.jivesoftware.smackx.jingle.element.JingleContent'
         classDelete 'org.jivesoftware.smackx.jingle.element.JingleContent$**'
-        classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentDescriptionChildElement'
         classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentDescription'
         classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentTransport'
-        classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentTransportCandidate'
-        classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo'
-        classDelete 'org.jivesoftware.smackx.jingle.element.JingleReason**'
 
         classDelete 'org.jivesoftware.smackx.jingle.provider.JingleContentProviderManager**'
         classDelete 'org.jivesoftware.smackx.jingle.provider.JingleProvider**'
@@ -512,7 +511,7 @@ dependencies {
  * This task must be executed at least once prior to aTalk apk build process.
  * It is also being executed in buildJniStaticLibs(), and this task can be omitted.
  */
-task initJniLibs(type: Exec) {
+tasks.register('initJniLibs', Exec) {
     workingDir "${projectDir}/jni/"
     executable './init-jnilibs4atalk.sh'
 }
@@ -523,7 +522,7 @@ task initJniLibs(type: Exec) {
  * This task needs to be executed at least once before the actual aTalk apk build process.
  * Refer to all README files in .jni/static_library_built for more detail.
  */
-task buildJniStaticLibs(type: Exec) {
+tasks.register('buildJniStaticLibs' , Exec) {
     workingDir "${projectDir}/jni/static_library_built"
     executable './build-jnilibs4atalk.sh'
 }
@@ -532,7 +531,7 @@ task buildJniStaticLibs(type: Exec) {
  * Generate the version.properties file with the actual build versionName and versionCode.
  * The version.properties is retrieved during app update check to asses if there is a new update
  */
-task updateVersionFile(type: Copy) {
+tasks.register('updateVersionFile', Copy) {
     def description = '<!-- Generate version.properties file -->'
 
     def versionName = android.defaultConfig.versionName
@@ -555,7 +554,7 @@ task updateVersionFile(type: Copy) {
 }
 
 // Uncomment below lines if you want to show all deprecated warnings
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     // options.compilerArgs << '-Xlint:unchecked'
     // options.deprecation = true
 }

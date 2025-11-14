@@ -362,15 +362,13 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
         }
 
         Notification repliedNotification;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            repliedNotification = new Notification.Builder(mContext, group)
-                    .setSmallIcon(popup.getPopupIcon())
-                    .setContentText(replyText)
-                    .build();
+        repliedNotification = new Notification.Builder(mContext, group)
+                .setSmallIcon(popup.getPopupIcon())
+                .setContentText(replyText)
+                .build();
 
-            // Issue the new notification to acknowledge
-            aTalkApp.getNotificationManager().notify(notificationId, repliedNotification);
-        }
+        // Issue the new notification to acknowledge
+        aTalkApp.getNotificationManager().notify(notificationId, repliedNotification);
 
         if (!TextUtils.isEmpty(replyText) && AppNotifications.MESSAGE_GROUP.equals(group)) {
             ChatPanel chatPanel = null;

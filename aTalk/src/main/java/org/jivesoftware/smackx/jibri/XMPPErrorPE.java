@@ -26,7 +26,7 @@ import java.util.Objects;
  *
  * * @author Eng Chong Meng
  */
-public class XMPPErrorPE implements ExtensionElement
+public class XMPPErrorPE implements XmlElement
 {
     /**
      * <code>XMPPError</code> wrapped into this <code>XMPPErrorPE</code>.

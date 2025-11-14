@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Paul Schaub
  *
@@ -354,9 +354,8 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
             if (isProxy) {
                 LOGGER.log(Level.INFO, "Send candidate activated.");
                 Jingle candidateActivate = mTransportManager.createCandidateActivated((JingleS5BTransportImpl) nominated.getParent(), nominated);
-
                 try {
-                    mConnection.createStanzaCollectorAndSend(candidateActivate).nextResultOrThrow();
+                    mConnection.sendIqRequestAndWaitForResponse(candidateActivate);
                 } catch (InterruptedException | XMPPException.XMPPErrorException |
                          SmackException.NotConnectedException | SmackException.NoResponseException e) {
                     LOGGER.log(Level.WARNING, "Could not send candidate activated", e);

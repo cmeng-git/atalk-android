@@ -528,7 +528,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
         Object serv = services.get(name);
 
         if (serv == null) {
-            ServiceReference refHistory = bundleContext.getServiceReference(name);
+            ServiceReference<?> refHistory = bundleContext.getServiceReference(name);
             serv = bundleContext.getService(refHistory);
         }
         return serv;

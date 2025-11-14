@@ -47,8 +47,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class FileBackend
-{
+public class FileBackend {
     private static final String FILE_PROVIDER = ".files";
 
     public static final int MEDIA_TYPE_IMAGE = 1;
@@ -69,8 +68,7 @@ public class FileBackend
     public static String MEDIA_VOICE_SEND = "Media/Voice_Send";
     public static String TMP = "tmp";
 
-    public static boolean IsExternalStorageWritable()
-    {
+    public static boolean IsExternalStorageWritable() {
         // boolean mExternalStorageAvailable = false;
         boolean mExternalStorageWriteable;
         String state = Environment.getExternalStorageState();
@@ -101,6 +99,7 @@ public class FileBackend
      * @param srcPath the full path of the file or directory to be copied
      * @param targetPath the full path of the target directory to which the file or directory should be copied
      * @param subFolder the new name of the file or directory
+     *
      * @throws IllegalArgumentException if an invalid source or destination path is provided
      * @throws FileNotFoundException if the source path cannot be found on the file system
      * @throws SecurityException if unable to create the new file or directory specified by destination path
@@ -108,8 +107,7 @@ public class FileBackend
      * source and destination paths are identical, or if a general error occurs
      */
     public static void copyRecursive(File srcPath, File targetPath, String subFolder)
-            throws IllegalArgumentException, SecurityException, IOException
-    {
+            throws IllegalArgumentException, SecurityException, IOException {
         // ensure source exists
         if ((srcPath == null) || !srcPath.exists()) {
             throw new FileNotFoundException("Source Path not found: " + srcPath);
@@ -169,7 +167,8 @@ public class FileBackend
                 copy(inputStream, outputStream); // org.apache.commons.io
                 inputStream.close();
                 outputStream.close();
-            } catch (Exception e) { // IOException
+            }
+            catch (Exception e) { // IOException
                 e.printStackTrace();
             }
         }
@@ -180,11 +179,11 @@ public class FileBackend
      * directory, the deletion is recursive.
      *
      * @param filePath full path of file or directory to be deleted
+     *
      * @throws IOException throws exception if any
      */
     public static void deleteRecursive(File filePath)
-            throws IOException
-    {
+            throws IOException {
         if ((filePath != null) && filePath.exists()) {
             // If the file is a directory, we will recursively call deleteRecursive on it.
             if (filePath.isDirectory()) {
@@ -206,14 +205,15 @@ public class FileBackend
      *
      * @param input the <code>InputStream</code> to read from
      * @param output the <code>OutputStream</code> to write to
+     *
      * @return the number of bytes copied
+     *
      * @throws NullPointerException if the input or output is null
      * @throws IOException if an I/O error occurs
      * @since Commons IO 1.3
      */
     public static long copy(InputStream input, OutputStream output)
-            throws IOException
-    {
+            throws IOException {
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         long count = 0;
         int n;
@@ -228,10 +228,10 @@ public class FileBackend
      * Default aTalk downloadable directory i.e. Download/aTalk
      *
      * @param subFolder subFolder to be created under aTalk downloadable directory, null if root
+     *
      * @return aTalk default directory
      */
-    public static File getaTalkStore(String subFolder, boolean createNew)
-    {
+    public static File getaTalkStore(String subFolder, boolean createNew) {
         String filePath = FP_aTALK;
         if (!TextUtils.isEmpty(subFolder))
             filePath += File.separator + subFolder;
@@ -250,8 +250,7 @@ public class FileBackend
     /**
      * Create a new File for saving image or video captured with camera
      */
-    public static File getOutputMediaFile(int type)
-    {
+    public static File getOutputMediaFile(int type) {
         File aTalkMediaDir = getaTalkStore(MEDIA_CAMERA, true);
 
         // Create a media file name
@@ -271,14 +270,15 @@ public class FileBackend
      *
      * @param context context
      * @param file the specific file path
+     *
      * @return the actual Uri
      */
-    public static Uri getUriForFile(Context context, File file)
-    {
+    public static Uri getUriForFile(Context context, File file) {
         try {
             String packageId = context.getPackageName();
             return FileProvider.getUriForFile(context, packageId + FILE_PROVIDER, file);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             throw new SecurityException(e);
         }
     }
@@ -287,10 +287,10 @@ public class FileBackend
      * To make a best guess if a given link string is a file download link address
      *
      * @param link a string to be checked for file link
+     *
      * @return true if the string is likely to be a Http File Download link
      */
-    public static boolean isHttpFileDnLink(String link)
-    {
+    public static boolean isHttpFileDnLink(String link) {
         if (link != null) {
             if (link.matches("(?s)^aesgcm:.*")) {
                 return true;
@@ -320,10 +320,10 @@ public class FileBackend
      * @param ctx the reference Context
      * @param uri content:// or file:// or whatever suitable Uri you want.
      * @param mime a reference mime type (from attachment)
+     *
      * @return mime type of the given uri
      */
-    public static String getMimeType(final Context ctx, final Uri uri, final String mime)
-    {
+    public static String getMimeType(final Context ctx, final Uri uri, final String mime) {
         Timber.d("guessMimeTypeFromUriAndMime %s and mimeType = %s", uri, mime);
         if (mime == null || mime.equals("application/octet-stream")) {
             final String guess = getMimeType(ctx, uri);
@@ -346,11 +346,14 @@ public class FileBackend
      *
      * @param ctx the reference Context
      * @param uri content:// or file:// or whatever suitable Uri you want.
+     *
      * @return mime type of the given uri
      */
-    public static String getMimeType(Context ctx, Uri uri)
-    {
+    public static String getMimeType(Context ctx, Uri uri) {
         String mimeType = null;
+        if (uri == null)
+            return null;
+
         if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
             if (ctx != null) {
                 ContentResolver cr = ctx.getContentResolver();
@@ -366,7 +369,8 @@ public class FileBackend
                         .replaceAll("%2F", "/")
                         .replaceAll("\\+", "%20");
                 fileExtension = MimeTypeMap.getFileExtensionFromUrl(uriEncoded);
-            } catch (UnsupportedEncodingException e) {
+            }
+            catch (UnsupportedEncodingException e) {
                 Timber.w("urlEncode exception: %s", e.getMessage());
                 fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
             }
@@ -393,7 +397,8 @@ public class FileBackend
                         String tmp = guessContentTypeFromStream(is);
                         if (tmp != null)
                             mimeType = tmp;
-                    } catch (IOException ignore) {
+                    }
+                    catch (IOException ignore) {
                     }
                 }
             }
@@ -405,10 +410,10 @@ public class FileBackend
      * Check if the file has video or image media content
      *
      * @param file File to be check
+     *
      * @return true if the given file has media content
      */
-    public static boolean isMediaFile(File file)
-    {
+    public static boolean isMediaFile(File file) {
         Context ctx = aTalkApp.getInstance();
         Uri uri = getUriForFile(ctx, file);
         String mimeType = getMimeType(ctx, uri);
@@ -432,15 +437,16 @@ public class FileBackend
      * type is often more accurate than believing the content type claimed by the {@code http} server.
      *
      * @param is an input stream that supports marks.
+     *
      * @return a guess at the content type, or {@code null} if none can be determined.
+     *
      * @throws IOException if an I/O error occurs while reading the input stream.
      * @see InputStream#mark(int)
      * @see InputStream#markSupported()
      * @see java.net.URLConnection#getContentType()
      */
     private static String guessContentTypeFromStream(InputStream is)
-            throws IOException
-    {
+            throws IOException {
         int c1 = is.read();
         int c2 = is.read();
         int c3 = is.read();

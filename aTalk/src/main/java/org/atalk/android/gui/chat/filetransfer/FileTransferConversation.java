@@ -248,16 +248,6 @@ public abstract class FileTransferConversation extends BaseFragment
 
         hideProgressRelatedComponents();
 
-        // Note-5: playbackSeekBar is not visible and thumb partially clipped with xml default settings.
-        // So increase the playbackSeekBar height to 16dp
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            final float scale = mChatActivity.getResources().getDisplayMetrics().density;
-            int dp_padding = (int) (16 * scale + 0.5f);
-
-            messageViewHolder.playbackSeekBar.requestLayout();
-            messageViewHolder.playbackSeekBar.getLayoutParams().height = dp_padding;
-        }
-
         // set to viewHolder default state
         messageViewHolder.playerView.setVisibility(View.GONE);
         messageViewHolder.stickerView.setVisibility(View.GONE);

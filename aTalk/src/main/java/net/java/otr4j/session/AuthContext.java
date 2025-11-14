@@ -35,9 +35,11 @@ abstract class AuthContext
 	public static final byte M2_START = (byte) 0x03;
 	public static final byte M1P_START = (byte) 0x04;
 	/** @deprecated use {@link #M1P_START} instead */
+	@Deprecated
 	public static final byte M1p_START = M1P_START;
 	public static final byte M2P_START = (byte) 0x05;
 	/** @deprecated use {@link #M2P_START} instead */
+	@Deprecated
 	public static final byte M2p_START = M2P_START;
 
 	// These parameters are initialized when generating D-H Commit Messages.
@@ -49,7 +51,7 @@ abstract class AuthContext
 	byte[] localDHPublicKeyHash;
 	byte[] localDHPublicKeyEncrypted;
 
-	abstract class MessageFactory {
+	abstract static class MessageFactory {
 		abstract QueryMessage getQueryMessage();
 		abstract DHCommitMessage getDHCommitMessage() throws OtrException;
 		abstract DHKeyMessage getDHKeyMessage() throws OtrException;

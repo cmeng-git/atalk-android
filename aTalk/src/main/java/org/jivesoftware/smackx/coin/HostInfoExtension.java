@@ -5,9 +5,9 @@
  */
 package org.jivesoftware.smackx.coin;
 
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.AbstractExtensionElement;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -122,7 +122,7 @@ public class HostInfoExtension extends AbstractExtensionElement
         xml.optElement(ELEMENT_DISPLAY_TEXT, displayText);
         xml.optElement(ELEMENT_WEB_PAGE, webPage);
 
-        for (ExtensionElement ext : getChildExtensions()) {
+        for (XmlElement ext : getChildExtensions()) {
             xml.append(ext.toXML(XmlEnvironment.EMPTY));
         }
         xml.closeElement(ELEMENT);

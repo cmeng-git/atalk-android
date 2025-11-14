@@ -17,17 +17,13 @@
 
 package org.atalk.impl.appnotification;
 
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.os.Build;
 import android.provider.Settings;
-
-import androidx.annotation.RequiresApi;
 
 import java.util.List;
 
@@ -51,57 +47,55 @@ public class NotificationHelper extends ContextWrapper {
     public NotificationHelper(Context ctx) {
         super(ctx);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Init the system service NotificationManager
-            notificationManager = ctx.getSystemService(NotificationManager.class);
+        // Init the system service NotificationManager
+        notificationManager = ctx.getSystemService(NotificationManager.class);
 
-            // Delete any unused channel IDs or all if force is true.
-            deleteObsoletedChannelIds(false);
+        // Delete any unused channel IDs or all if force is true.
+        deleteObsoletedChannelIds(false);
 
-            final NotificationChannel nCall = new NotificationChannel(AppNotifications.CALL_GROUP,
-                    getString(R.string.noti_channel_call_group), NotificationManager.IMPORTANCE_HIGH);
-            nCall.setSound(null, null);
-            nCall.setShowBadge(false);
-            nCall.setLightColor(LED_COLOR);
-            nCall.enableLights(true);
-            nCall.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-            notificationManager.createNotificationChannel(nCall);
+        final NotificationChannel nCall = new NotificationChannel(AppNotifications.CALL_GROUP,
+                getString(R.string.noti_channel_call_group), NotificationManager.IMPORTANCE_HIGH);
+        nCall.setSound(null, null);
+        nCall.setShowBadge(false);
+        nCall.setLightColor(LED_COLOR);
+        nCall.enableLights(true);
+        nCall.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        notificationManager.createNotificationChannel(nCall);
 
-            final NotificationChannel nMessage = new NotificationChannel(AppNotifications.MESSAGE_GROUP,
-                    getString(R.string.noti_channel_message_group), NotificationManager.IMPORTANCE_HIGH);
-            nMessage.setSound(null, null);
-            nMessage.setShowBadge(true);
-            nMessage.setLightColor(LED_COLOR);
-            nMessage.enableLights(true);
-            // nMessage.setAllowBubbles(true);
-            nMessage.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            notificationManager.createNotificationChannel(nMessage);
+        final NotificationChannel nMessage = new NotificationChannel(AppNotifications.MESSAGE_GROUP,
+                getString(R.string.noti_channel_message_group), NotificationManager.IMPORTANCE_HIGH);
+        nMessage.setSound(null, null);
+        nMessage.setShowBadge(true);
+        nMessage.setLightColor(LED_COLOR);
+        nMessage.enableLights(true);
+        // nMessage.setAllowBubbles(true);
+        nMessage.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        notificationManager.createNotificationChannel(nMessage);
 
-            final NotificationChannel nFile = new NotificationChannel(AppNotifications.FILE_GROUP,
-                    getString(R.string.noti_channel_file_group), NotificationManager.IMPORTANCE_HIGH);
-            nFile.setSound(null, null);
-            nFile.setShowBadge(true);
-            nFile.setLightColor(LED_COLOR);
-            nFile.enableLights(true);
-            nFile.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            notificationManager.createNotificationChannel(nFile);
+        final NotificationChannel nFile = new NotificationChannel(AppNotifications.FILE_GROUP,
+                getString(R.string.noti_channel_file_group), NotificationManager.IMPORTANCE_HIGH);
+        nFile.setSound(null, null);
+        nFile.setShowBadge(true);
+        nFile.setLightColor(LED_COLOR);
+        nFile.enableLights(true);
+        nFile.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        notificationManager.createNotificationChannel(nFile);
 
-            final NotificationChannel nDefault = new NotificationChannel(AppNotifications.DEFAULT_GROUP,
-                    getString(R.string.noti_channel_default_group), NotificationManager.IMPORTANCE_LOW);
-            nDefault.setSound(null, null);
-            nDefault.setShowBadge(false);
-            // nDefault.setLightColor(Color.WHITE);
-            nDefault.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            notificationManager.createNotificationChannel(nDefault);
+        final NotificationChannel nDefault = new NotificationChannel(AppNotifications.DEFAULT_GROUP,
+                getString(R.string.noti_channel_default_group), NotificationManager.IMPORTANCE_LOW);
+        nDefault.setSound(null, null);
+        nDefault.setShowBadge(false);
+        // nDefault.setLightColor(Color.WHITE);
+        nDefault.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        notificationManager.createNotificationChannel(nDefault);
 
-            final NotificationChannel nQuietHours = new NotificationChannel(AppNotifications.SILENT_GROUP,
-                    getString(R.string.noti_channel_silent_group), NotificationManager.IMPORTANCE_LOW);
-            nQuietHours.setSound(null, null);
-            nQuietHours.setShowBadge(true);
-            nQuietHours.setLightColor(LED_COLOR);
-            nQuietHours.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            notificationManager.createNotificationChannel(nQuietHours);
-        }
+        final NotificationChannel nQuietHours = new NotificationChannel(AppNotifications.SILENT_GROUP,
+                getString(R.string.noti_channel_silent_group), NotificationManager.IMPORTANCE_LOW);
+        nQuietHours.setSound(null, null);
+        nQuietHours.setShowBadge(true);
+        nQuietHours.setLightColor(LED_COLOR);
+        nQuietHours.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        notificationManager.createNotificationChannel(nQuietHours);
     }
 
     /**
@@ -117,7 +111,6 @@ public class NotificationHelper extends ContextWrapper {
     /**
      * Send Intent to load system Notification Settings for this app.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void goToNotificationSettings() {
         Intent i = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
         i.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
@@ -129,7 +122,6 @@ public class NotificationHelper extends ContextWrapper {
      *
      * @param channel Name of notification channel.
      */
-    @androidx.annotation.RequiresApi(Build.VERSION_CODES.O)
     public void goToNotificationSettings(String channel) {
         Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
         intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
@@ -144,7 +136,6 @@ public class NotificationHelper extends ContextWrapper {
      *
      * @param force force delete the notification channel
      */
-    @androidx.annotation.RequiresApi(Build.VERSION_CODES.O)
     private void deleteObsoletedChannelIds(boolean force) {
         List<NotificationChannel> channelGroups = notificationManager.getNotificationChannels();
         for (NotificationChannel nc : channelGroups) {

@@ -11,7 +11,7 @@ import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetJitsiMeetTools;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -67,7 +67,7 @@ public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMe
      * {@inheritDoc}
      */
     @Override
-    public void sendPresenceExtension(ChatRoom chatRoom, ExtensionElement extension)
+    public void sendPresenceExtension(ChatRoom chatRoom, XmlElement extension)
     {
         ((ChatRoomJabberImpl) chatRoom).sendPresenceExtension(extension);
     }
@@ -76,7 +76,7 @@ public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMe
      * {@inheritDoc}
      */
     @Override
-    public void removePresenceExtension(ChatRoom chatRoom, ExtensionElement extension)
+    public void removePresenceExtension(ChatRoom chatRoom, XmlElement extension)
     {
         ((ChatRoomJabberImpl) chatRoom).removePresenceExtension(extension);
     }

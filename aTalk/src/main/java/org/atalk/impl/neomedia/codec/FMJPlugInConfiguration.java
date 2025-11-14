@@ -7,7 +7,6 @@ package org.atalk.impl.neomedia.codec;
 
 import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.MediaServiceImpl;
-import org.atalk.util.OSUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -223,13 +222,11 @@ public class FMJPlugInConfiguration
          */
         @SuppressWarnings("unchecked")
         Vector<String> codecs = PlugInManager.getPlugInList(null, null, PlugInManager.CODEC);
-
         if (codecs != null) {
             boolean setPlugInList = false;
             for (String className : customCodecs) {
                 if (className != null) {
                     int classNameIndex = codecs.indexOf(className);
-
                     if (classNameIndex != -1) {
                         codecs.remove(classNameIndex);
                         codecs.add(0, className);

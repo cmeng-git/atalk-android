@@ -1,6 +1,6 @@
-/**
+/*
  *
- * Copyright 2017 Florian Schmaus.
+ * Copyright 2017-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.jingle.element;
 import java.util.Collections;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
@@ -30,7 +30,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  */
 public class JingleContentDescription extends AbstractXmlElement {
     public static final String ELEMENT = "description";
-    private final List<ExtensionElement> payloads;
+    private final List<XmlElement> payloads;
 
     public JingleContentDescription() {
         this(getBuilder());
@@ -46,7 +46,7 @@ public class JingleContentDescription extends AbstractXmlElement {
         this.payloads = Collections.emptyList();
     }
 
-    protected JingleContentDescription(List<? extends ExtensionElement> payloads) {
+    protected JingleContentDescription(List<? extends XmlElement> payloads) {
         super(getBuilder());
         if (payloads != null) {
             this.payloads = Collections.unmodifiableList(payloads);
@@ -62,7 +62,7 @@ public class JingleContentDescription extends AbstractXmlElement {
         return ELEMENT;
     }
 
-    public List<ExtensionElement> getJingleContentDescriptionChildren() {
+    public List<XmlElement> getJingleContentDescriptionChildren() {
         return payloads;
     }
 
@@ -79,7 +79,7 @@ public class JingleContentDescription extends AbstractXmlElement {
             super(element, namespace);
         }
 
-        public Builder addPayload(List<? extends ExtensionElement> payloads) {
+        public Builder addPayload(List<? extends XmlElement> payloads) {
             return addChildElements(payloads);
         }
 

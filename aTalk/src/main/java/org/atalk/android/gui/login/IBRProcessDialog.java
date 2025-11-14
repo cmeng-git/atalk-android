@@ -63,8 +63,8 @@ import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smackx.bob.element.BoBDataExtension;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
-import org.jivesoftware.smackx.iqregisterx.AccountManager;
-import org.jivesoftware.smackx.iqregisterx.packet.Registration;
+import org.jivesoftware.smackx.iqregister.AccountManager;
+import org.jivesoftware.smackx.iqregister.packet.Registration;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.FormField.Type;
 import org.jivesoftware.smackx.xdata.TextSingleFormField;
@@ -82,7 +82,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class IBRCaptchaProcessDialog extends Dialog {
+public class IBRProcessDialog extends Dialog {
     /**
      * Listens for connection closes or errors.
      */
@@ -126,7 +126,7 @@ public class IBRCaptchaProcessDialog extends Dialog {
      * @param pps the protocol provider service that offers the service
      * @param accountId the AccountID of the login user request for IBRegistration
      */
-    public IBRCaptchaProcessDialog(Context context, ProtocolProviderServiceJabberImpl pps, AccountID accountId, String pwd) {
+    public IBRProcessDialog(Context context, ProtocolProviderServiceJabberImpl pps, AccountID accountId, String pwd) {
         super(context);
         mContext = context;
         mPPS = pps;
@@ -470,7 +470,8 @@ public class IBRCaptchaProcessDialog extends Dialog {
                 mAccountId.setIbRegistration(false);
                 mPPS.accountIBRegistered.reportSuccess();
             } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
-                     | SmackException.NotConnectedException | InterruptedException ex) {
+                     | SmackException.NotConnectedException | InterruptedException
+                     | IllegalStateException ex) {
                 StanzaError xmppError;
                 String errMsg = ex.getMessage();
                 String errDetails = "";
@@ -568,10 +569,13 @@ public class IBRCaptchaProcessDialog extends Dialog {
         mReason.setText(mReasonText);
         mPasswordField.setEnabled(false);
         mCaptchaText.setVisibility(View.GONE);
-        mSubmitButton.setEnabled(false);
-        mSubmitButton.setAlpha(0.5f);
-        mOKButton.setEnabled(false);
-        mOKButton.setAlpha(0.5f);
+
+        // Allow user to submit for IB registration with/without captcha protection
+        // mSubmitButton.setEnabled(false);
+        // mSubmitButton.setAlpha(0.5f);
+        // mOKButton.setEnabled(false);
+        // mOKButton.setAlpha(0.5f);
+
         initializeViewListeners();
     }
 
@@ -599,7 +603,7 @@ public class IBRCaptchaProcessDialog extends Dialog {
             StanzaError xmppError = StanzaError.from(Condition.remote_server_timeout, errMsg).build();
             mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
 
-            new Handler(Looper.getMainLooper()).post(IBRCaptchaProcessDialog.this::showResult);
+            new Handler(Looper.getMainLooper()).post(IBRProcessDialog.this::showResult);
         }
 
         @Override

@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Eng Chong Meng
  *
@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.jinglemessage.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
@@ -26,6 +27,7 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
+import org.jxmpp.JxmppContext;
 
 /**
  * The JingleMessageProvider parses Jingle Message extension.
@@ -35,8 +37,8 @@ import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
  */
 public class JingleMessageProvider extends ExtensionElementProvider<JingleMessage> {
     @Override
-    public JingleMessage parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException, SmackParsingException {
+    public JingleMessage parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         RtpDescription rtpDescription = null;
         String elementName = null;
         String id = null;
@@ -65,4 +67,5 @@ public class JingleMessageProvider extends ExtensionElementProvider<JingleMessag
 
         return jingleMessage;
     }
+
 }

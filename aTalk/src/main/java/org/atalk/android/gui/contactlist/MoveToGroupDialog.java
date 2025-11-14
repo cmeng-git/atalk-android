@@ -78,7 +78,7 @@ public class MoveToGroupDialog extends BaseDialogFragment implements DialogInter
         TextView accountOwner = contentView.findViewById(R.id.accountOwner);
         accountOwner.setText(getString(R.string.contact_owner, UserId));
 
-        final AdapterView groupListView = contentView.findViewById(R.id.selectGroupSpinner);
+        final AdapterView<MetaContactGroupAdapter> groupListView = contentView.findViewById(R.id.selectGroupSpinner);
         MetaContactGroupAdapter contactGroupAdapter
                 = new MetaContactGroupAdapter(getActivity(), groupListView, true, true);
         groupListView.setAdapter(contactGroupAdapter);

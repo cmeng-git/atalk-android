@@ -14,16 +14,16 @@ import org.jxmpp.jid.EntityJid;
  * The Jabber implementation of the <code>ChatRoomInvitation</code> interface.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
-public class ChatRoomInvitationJabberImpl implements ChatRoomInvitation
-{
-    private ChatRoom chatRoom;
+public class ChatRoomInvitationJabberImpl implements ChatRoomInvitation {
+    private final ChatRoom chatRoom;
 
-    private EntityJid inviter;
+    private final EntityJid inviter;
 
-    private String reason;
+    private final String reason;
 
-    private byte[] password;
+    private final byte[] password;
 
     /**
      * Creates an invitation for the given <code>targetChatRoom</code>, from the given <code>inviter</code>.
@@ -33,31 +33,26 @@ public class ChatRoomInvitationJabberImpl implements ChatRoomInvitation
      * @param reason the reason of the invitation
      * @param password the password
      */
-    public ChatRoomInvitationJabberImpl(ChatRoom targetChatRoom, EntityJid inviter, String reason, byte[] password)
-    {
+    public ChatRoomInvitationJabberImpl(ChatRoom targetChatRoom, EntityJid inviter, String reason, byte[] password) {
         this.chatRoom = targetChatRoom;
         this.inviter = inviter;
         this.reason = reason;
         this.password = password;
     }
 
-    public ChatRoom getTargetChatRoom()
-    {
+    public ChatRoom getTargetChatRoom() {
         return chatRoom;
     }
 
-    public EntityJid getInviter()
-    {
+    public EntityJid getInviter() {
         return inviter;
     }
 
-    public String getReason()
-    {
+    public String getReason() {
         return reason;
     }
 
-    public byte[] getChatRoomPassword()
-    {
+    public byte[] getChatRoomPassword() {
         return password;
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Eng Chong Meng
  *
@@ -20,7 +20,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.colibri.WebSocketExtension;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
@@ -90,7 +90,7 @@ public class IceUdpTransport extends JingleContentTransport {
      * @return <code>true</code> if this <code>IceUdpTransport</code> has a child with the 'rtcp-mux' name.
      */
     public boolean isRtcpMux() {
-        for (ExtensionElement packetExtension : getChildElements()) {
+        for (XmlElement packetExtension : getChildElements()) {
             if (RtcpMux.ELEMENT.equals(packetExtension.getElementName()))
                 return true;
         }

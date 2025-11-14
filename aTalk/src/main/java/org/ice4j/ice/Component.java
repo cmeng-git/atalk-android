@@ -19,14 +19,6 @@ package org.ice4j.ice;
 
 import androidx.annotation.NonNull;
 
-import org.atalk.util.logging2.Logger;
-import org.ice4j.StackProperties;
-import org.ice4j.Transport;
-import org.ice4j.TransportAddress;
-import org.ice4j.socket.IceSocketWrapper;
-import org.ice4j.socket.IceUdpSocketWrapper;
-import org.ice4j.socket.MultiplexingDatagramSocket;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.SocketException;
@@ -41,6 +33,14 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.atalk.util.logging2.Logger;
+import org.ice4j.StackProperties;
+import org.ice4j.Transport;
+import org.ice4j.TransportAddress;
+import org.ice4j.socket.IceSocketWrapper;
+import org.ice4j.socket.IceUdpSocketWrapper;
+import org.ice4j.socket.MultiplexingDatagramSocket;
+
 /**
  * A component is a piece of a media stream requiring a single transport address;
  * a media stream may require multiple components, each of which has to work for
@@ -52,8 +52,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class Component implements PropertyChangeListener
-{
+public class Component implements PropertyChangeListener {
     /**
      * The component ID to use with RTP streams.
      */
@@ -162,10 +161,9 @@ public class Component implements PropertyChangeListener
      *
      * @param componentID the id of this component.
      * @param mediaStream the {@link IceMediaStream} instance that would be the parent of this component.
-     * @deprecated
      */
-    protected Component(int componentID, IceMediaStream mediaStream, KeepAliveStrategy keepAliveStrategy, Logger parentLogger)
-    {
+    @Deprecated
+    protected Component(int componentID, IceMediaStream mediaStream, KeepAliveStrategy keepAliveStrategy, Logger parentLogger) {
         this(componentID, mediaStream, keepAliveStrategy, true, parentLogger);
     }
 
@@ -178,8 +176,7 @@ public class Component implements PropertyChangeListener
      * @param useComponentSocket whether the component socket should be used.
      */
     protected Component(int componentID, IceMediaStream mediaStream, KeepAliveStrategy keepAliveStrategy,
-            boolean useComponentSocket, Logger parentLogger)
-    {
+            boolean useComponentSocket, Logger parentLogger) {
         // the max value for componentID is 256
         this.componentID = componentID;
         this.parentStream = mediaStream;
@@ -212,11 +209,11 @@ public class Component implements PropertyChangeListener
      * local candidates added by the candidate harvesters registered with the agent.
      *
      * @param candidate the candidate object to be added
+     *
      * @return <tt>true</tt> if we actually added the new candidate or
      * <tt>false</tt> in case we didn't because it was redundant to an existing candidate.
      */
-    public boolean addLocalCandidate(LocalCandidate candidate)
-    {
+    public boolean addLocalCandidate(LocalCandidate candidate) {
         Agent agent = getParentStream().getParentAgent();
 
         // assign foundation.
@@ -257,8 +254,7 @@ public class Component implements PropertyChangeListener
      * @return Returns a copy of the list containing all local candidates
      * currently registered in this <tt>Component</tt>.
      */
-    public List<LocalCandidate> getLocalCandidates()
-    {
+    public List<LocalCandidate> getLocalCandidates() {
         synchronized (localCandidates) {
             return new ArrayList<>(localCandidates);
         }
@@ -269,8 +265,7 @@ public class Component implements PropertyChangeListener
      *
      * @return the number of local host candidates currently registered in this <tt>Component</tt>.
      */
-    public int countLocalHostCandidates()
-    {
+    public int countLocalHostCandidates() {
         synchronized (localCandidates) {
             int count = 0;
             for (Candidate<?> cand : localCandidates) {
@@ -287,8 +282,7 @@ public class Component implements PropertyChangeListener
      *
      * @return the number of all local candidates currently registered in this <tt>Component</tt>.
      */
-    public int getLocalCandidateCount()
-    {
+    public int getLocalCandidateCount() {
         synchronized (localCandidates) {
             return localCandidates.size();
         }
@@ -299,8 +293,7 @@ public class Component implements PropertyChangeListener
      *
      * @param candidate the <tt>Candidate</tt> instance to add.
      */
-    public void addRemoteCandidate(RemoteCandidate candidate)
-    {
+    public void addRemoteCandidate(RemoteCandidate candidate) {
         logger.info("Add remote candidate for " + toShortString() + ": " + candidate.toShortString());
 
         synchronized (remoteCandidates) {
@@ -314,8 +307,7 @@ public class Component implements PropertyChangeListener
      *
      * @param candidate new <tt>Candidate</tt> to add.
      */
-    public void addUpdateRemoteCandidates(RemoteCandidate candidate)
-    {
+    public void addUpdateRemoteCandidates(RemoteCandidate candidate) {
         logger.info("Update remote candidate for " + toShortString() + ": " + candidate.getTransportAddress());
 
         List<RemoteCandidate> existingCandidates;
@@ -343,8 +335,7 @@ public class Component implements PropertyChangeListener
     /**
      * Update ICE processing with new <tt>Candidate</tt>s.
      */
-    public void updateRemoteCandidates()
-    {
+    public void updateRemoteCandidates() {
         List<CandidatePair> checkList;
         List<RemoteCandidate> newRemoteCandidates;
 
@@ -436,8 +427,7 @@ public class Component implements PropertyChangeListener
      *
      * @return Returns a copy of the list containing all remote candidates currently registered in this <tt>Component</tt>.
      */
-    public List<RemoteCandidate> getRemoteCandidates()
-    {
+    public List<RemoteCandidate> getRemoteCandidates() {
         synchronized (remoteCandidates) {
             return new ArrayList<>(remoteCandidates);
         }
@@ -448,8 +438,7 @@ public class Component implements PropertyChangeListener
      *
      * @param candidates the <tt>List</tt> of <tt>Candidate</tt>s reported by the remote agent for this component.
      */
-    public void addRemoteCandidates(List<RemoteCandidate> candidates)
-    {
+    public void addRemoteCandidates(List<RemoteCandidate> candidates) {
         synchronized (remoteCandidates) {
             remoteCandidates.addAll(candidates);
         }
@@ -460,8 +449,7 @@ public class Component implements PropertyChangeListener
      *
      * @return the number of all remote candidates currently registered in this <tt>Component</tt>.
      */
-    public int getRemoteCandidateCount()
-    {
+    public int getRemoteCandidateCount() {
         synchronized (remoteCandidates) {
             return remoteCandidates.size();
         }
@@ -472,8 +460,7 @@ public class Component implements PropertyChangeListener
      *
      * @return a reference to the <tt>IceMediaStream</tt> that this <tt>Component</tt> belongs to.
      */
-    public IceMediaStream getParentStream()
-    {
+    public IceMediaStream getParentStream() {
         return parentStream;
     }
 
@@ -482,8 +469,7 @@ public class Component implements PropertyChangeListener
      *
      * @return the ID of this <tt>Component</tt>.
      */
-    public int getComponentID()
-    {
+    public int getComponentID() {
         return componentID;
     }
 
@@ -495,8 +481,7 @@ public class Component implements PropertyChangeListener
      * containing its ID, parent stream name and any existing candidates.
      */
     @NonNull
-    public String toString()
-    {
+    public String toString() {
         StringBuilder buff = new StringBuilder("Component id=").append(getComponentID());
         buff.append(" parent stream=").append(getParentStream().getName());
 
@@ -547,8 +532,7 @@ public class Component implements PropertyChangeListener
      *
      * @return a short <tt>String</tt> representation of this <tt>Component</tt>.
      */
-    public String toShortString()
-    {
+    public String toShortString() {
         return parentStream.getName() + "." + getName();
     }
 
@@ -558,8 +542,7 @@ public class Component implements PropertyChangeListener
      * @deprecated candidates are now being prioritized upon addition and calling this method is no longer necessary.
      */
     @Deprecated
-    protected void prioritizeCandidates()
-    {
+    protected void prioritizeCandidates() {
         synchronized (localCandidates) {
             LocalCandidate[] candidates = new LocalCandidate[localCandidates.size()];
 
@@ -583,19 +566,18 @@ public class Component implements PropertyChangeListener
      * A candidate is redundant if its transport address equals another candidate,
      * and its base equals the base of that other candidate.
      *
-     * Note that two candidates can have the same transport address yet have different bases,
-     * and these would not be considered redundant.
+     * Note that two candidates can have the same transport address
+	 * yet have different bases, and these would not be considered redundant.
      * Frequently, a server reflexive candidate and a host candidate will be
      * redundant when the agent is not behind a NAT. The agent SHOULD eliminate
      * the redundant candidate with the lower priority which is why we have to
      * run this method only after prioritizing candidates.
      *
-     * @deprecated redundancies are now being detected upon addition of candidates and calling
-     * this method is no longer necessary.
+     * @deprecated redundancies are now being detected upon addition of
+     * candidates and calling this method is no longer necessary.
      */
     @Deprecated
-    protected void eliminateRedundantCandidates()
-    {
+    protected void eliminateRedundantCandidates() {
         /*
          * Find and remove all candidates that have the same address and base as
          * cand and a lower priority. The algorithm implemented bellow does rely
@@ -638,11 +620,11 @@ public class Component implements PropertyChangeListener
      * is why we have to run this method only after prioritizing candidates.
      *
      * @param cand the {@link LocalCandidate} that we'd like to check for redundancies.
+     *
      * @return the first candidate that is redundant to <tt>cand</tt> or
      * <tt>null</tt> if there is no such candidate.
      */
-    private LocalCandidate findRedundant(LocalCandidate cand)
-    {
+    private LocalCandidate findRedundant(LocalCandidate cand) {
         synchronized (localCandidates) {
             for (LocalCandidate redundantCand : localCandidates) {
                 if ((cand != redundantCand)
@@ -663,8 +645,7 @@ public class Component implements PropertyChangeListener
      * @return the <tt>Candidate</tt> that has been selected as the default for this <tt>Component</tt>
      * or <tt>null</tt> if no such <tt>Candidate</tt> has been selected yet
      */
-    public LocalCandidate getDefaultCandidate()
-    {
+    public LocalCandidate getDefaultCandidate() {
         return defaultCandidate;
     }
 
@@ -677,8 +658,7 @@ public class Component implements PropertyChangeListener
      * @return the <tt>Candidate</tt> that the remote party has reported as default for this
      * <tt>Component</tt> or <tt>null</tt> if no such <tt>Candidate</tt> has reported yet.
      */
-    public Candidate<?> getDefaultRemoteCandidate()
-    {
+    public Candidate<?> getDefaultRemoteCandidate() {
         return defaultRemoteCandidate;
     }
 
@@ -689,8 +669,7 @@ public class Component implements PropertyChangeListener
      *
      * @param candidate the <tt>Candidate</tt> that the remote party has reported as default for this <tt>Component</tt>.
      */
-    public void setDefaultRemoteCandidate(Candidate<?> candidate)
-    {
+    public void setDefaultRemoteCandidate(Candidate<?> candidate) {
         this.defaultRemoteCandidate = candidate;
     }
 
@@ -705,8 +684,7 @@ public class Component implements PropertyChangeListener
      * reflexive candidates (if server reflexive candidates are available), and finally host candidates.
      * </p>
      */
-    protected void selectDefaultCandidate()
-    {
+    protected void selectDefaultCandidate() {
         synchronized (localCandidates) {
             for (LocalCandidate cand : localCandidates) {
                 if ((defaultCandidate == null)
@@ -720,8 +698,7 @@ public class Component implements PropertyChangeListener
     /**
      * Releases all resources allocated by this <tt>Component</tt> and its <tt>Candidate</tt>s like sockets for example.
      */
-    protected void free()
-    {
+    protected void free() {
         synchronized (localCandidates) {
             /*
              * Since the sockets of the non-HostCandidate LocalCandidates may
@@ -775,8 +752,7 @@ public class Component implements PropertyChangeListener
      *
      * @param localCandidate the <tt>LocalCandidate</tt> to be freed
      */
-    private void free(LocalCandidate localCandidate)
-    {
+    private void free(LocalCandidate localCandidate) {
         try {
             localCandidate.free();
         } catch (Throwable t) {
@@ -795,11 +771,11 @@ public class Component implements PropertyChangeListener
      * if it belongs to this component or <tt>null</tt> if it doesn't.
      *
      * @param localAddress the {@link TransportAddress} we are looking for.
+     *
      * @return the local <tt>LocalCandidate</tt> with the specified <tt>localAddress</tt>
      * if it belongs to this component or <tt>null</tt> if it doesn't.
      */
-    public LocalCandidate findLocalCandidate(TransportAddress localAddress)
-    {
+    public LocalCandidate findLocalCandidate(TransportAddress localAddress) {
         return findLocalCandidate(localAddress, null);
     }
 
@@ -811,11 +787,11 @@ public class Component implements PropertyChangeListener
      *
      * @param address the {@link TransportAddress} we are looking for.
      * @param base an optional base to match.
+     *
      * @return the local <tt>LocalCandidate</tt> with the specified <tt>address</tt>
      * if it belongs to this component or <tt>null</tt> if it doesn't.
      */
-    public LocalCandidate findLocalCandidate(TransportAddress address, LocalCandidate base)
-    {
+    public LocalCandidate findLocalCandidate(TransportAddress address, LocalCandidate base) {
         for (LocalCandidate localCandidate : localCandidates) {
             if (localCandidate.getTransportAddress().equals(address)) {
                 if (base == null || base.equals(localCandidate.getBase())) {
@@ -844,11 +820,11 @@ public class Component implements PropertyChangeListener
      * if it belongs to this {@link Component} or <tt>null</tt> if it doesn't.
      *
      * @param remoteAddress the {@link TransportAddress} we are looking for.
+     *
      * @return the remote <tt>RemoteCandidate</tt> with the specified <tt>remoteAddress</tt>
      * if it belongs to this component or <tt>null</tt> if it doesn't.
      */
-    public RemoteCandidate findRemoteCandidate(TransportAddress remoteAddress)
-    {
+    public RemoteCandidate findRemoteCandidate(TransportAddress remoteAddress) {
         for (RemoteCandidate remoteCnd : remoteCandidates) {
             if (remoteCnd.getTransportAddress().equals(remoteAddress)) {
                 return remoteCnd;
@@ -862,8 +838,7 @@ public class Component implements PropertyChangeListener
      *
      * @param pair the {@link CandidatePair} selected for use by ICE processing.
      */
-    protected void setSelectedPair(CandidatePair pair)
-    {
+    protected void setSelectedPair(CandidatePair pair) {
         if (keepAliveStrategy == KeepAliveStrategy.SELECTED_ONLY) {
             keepAlivePairs.clear();
         }
@@ -879,8 +854,7 @@ public class Component implements PropertyChangeListener
      * @return the {@link CandidatePair} selected for use by ICE processing or
      * <tt>null</tt> if no pair has been selected so far or if ICE processing has failed.
      */
-    public CandidatePair getSelectedPair()
-    {
+    public CandidatePair getSelectedPair() {
         return selectedPair;
     }
 
@@ -889,8 +863,7 @@ public class Component implements PropertyChangeListener
      *
      * @return "RTP" if the component ID is 1, "RTCP" if the component id is 2 and the component id itself otherwise.
      */
-    public String getName()
-    {
+    public String getName() {
         if (componentID == RTP) {
             return "RTP";
         }
@@ -907,10 +880,10 @@ public class Component implements PropertyChangeListener
      *
      * @param componentID the id of this component.
      * @param mediaStream the {@link IceMediaStream} instance that would be the parent of this component.
+     *
      * @return Component
      */
-    public static Component build(int componentID, IceMediaStream mediaStream, Logger parentLogger)
-    {
+    public static Component build(int componentID, IceMediaStream mediaStream, Logger parentLogger) {
         return new Component(
                 componentID,
                 mediaStream,
@@ -925,8 +898,7 @@ public class Component implements PropertyChangeListener
      * </p>
      * This is for ice4j internal use only! For reading/writing application data, use {@link #getSocket()}.
      */
-    public ComponentSocket getComponentSocket()
-    {
+    public ComponentSocket getComponentSocket() {
         return componentSocket;
     }
 
@@ -936,27 +908,26 @@ public class Component implements PropertyChangeListener
      * this returns {@code null} and users of the library should use the socket
      * instance from the desired candidate pair instead.
      */
-    public MultiplexingDatagramSocket getSocket()
-    {
+    public MultiplexingDatagramSocket getSocket() {
         return socket;
     }
 
     /**
      * @return an {@link IceSocketWrapper} instance wrapping the socket for this
      * candidate (see {@link #getSocket()}).
+     *
      * @deprecated Use {@link #getSocket()} directly. This is only introduced to ease the transition
      * of applications which are already written to use a {@link IceSocketWrapper} instance.
      */
-    public IceSocketWrapper getSocketWrapper()
-    {
+    @Deprecated
+    public IceSocketWrapper getSocketWrapper() {
         return socketWrapper;
     }
 
     /**
      * @return the set of candidate pairs which are to be kept alive.
      */
-    Set<CandidatePair> getKeepAlivePairs()
-    {
+    Set<CandidatePair> getKeepAlivePairs() {
         return keepAlivePairs;
     }
 
@@ -966,8 +937,7 @@ public class Component implements PropertyChangeListener
      * Handles events coming from candidate pairs.
      */
     @Override
-    public void propertyChange(PropertyChangeEvent event)
-    {
+    public void propertyChange(PropertyChangeEvent event) {
         String propertyName = event.getPropertyName();
         if (!(event.getSource() instanceof CandidatePair)) {
             return;
@@ -1013,8 +983,7 @@ public class Component implements PropertyChangeListener
         }
     }
 
-    public Logger getLogger()
-    {
+    public Logger getLogger() {
         return logger;
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Eng Chong Meng
  *
@@ -20,22 +20,25 @@ import static org.jivesoftware.smackx.jinglenodes.element.JingleEventIQ.ATTR_EVE
 import static org.jivesoftware.smackx.jinglenodes.element.JingleEventIQ.ATTR_ID;
 import static org.jivesoftware.smackx.jinglenodes.element.JingleEventIQ.ATTR_TIME;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jinglenodes.element.JingleEventIQ;
+import org.jxmpp.JxmppContext;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.IllegalFormatException;
 
-public class JingleEventProvider extends IQProvider<JingleEventIQ>
+public class JingleEventProvider extends IqProvider<JingleEventIQ>
 {
+
     @Override
-    public JingleEventIQ parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException
-    {
+    public JingleEventIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         boolean done = false;
         JingleEventIQ iq = null;
         XmlPullParser.Event eventType;

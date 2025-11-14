@@ -19,12 +19,15 @@ package org.jivesoftware.smackx.jitsimeet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jxmpp.JxmppContext;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import javax.xml.namespace.QName;
 
@@ -107,9 +110,8 @@ public class AvatarUrl implements ExtensionElement
     public static class Provider extends ExtensionElementProvider<AvatarUrl>
     {
         @Override
-        public AvatarUrl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-                throws IOException, XmlPullParserException
-        {
+        public AvatarUrl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+                throws XmlPullParserException, IOException, SmackParsingException, ParseException {
                 parser.next();
                 final String address = parser.getText();
 
@@ -119,5 +121,6 @@ public class AvatarUrl implements ExtensionElement
                 }
                 return new AvatarUrl(address);
         }
+
     }
 }

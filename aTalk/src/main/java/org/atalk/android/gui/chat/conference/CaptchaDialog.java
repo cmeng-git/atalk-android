@@ -35,10 +35,8 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.util.ViewUtil;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Body;
@@ -216,7 +214,7 @@ public class CaptchaDialog extends Dialog {
         iqCaptcha.setType(IQ.Type.set);
         iqCaptcha.setTo(mMessage.getFrom());
         try {
-            createStanzaCollectorAndSend(iqCaptcha).nextResultOrThrow();
+            mConnection.sendIqRequestAndWaitForResponse(iqCaptcha);
             callBack.onResult(validated);
 
             mReasonText = mContext.getString(R.string.captcha_verification_valid);
@@ -254,14 +252,6 @@ public class CaptchaDialog extends Dialog {
         TextSingleFormField.Builder field = FormField.builder(name);
         field.setValue(value);
         formBuilder.addField(field.build());
-    }
-
-    /*
-     * set Captcha IQ and receive reply
-     */
-    private StanzaCollector createStanzaCollectorAndSend(IQ req)
-            throws SmackException.NotConnectedException, InterruptedException {
-        return mConnection.createStanzaCollectorAndSend(new StanzaIdFilter(req.getStanzaId()), req);
     }
 
     /**

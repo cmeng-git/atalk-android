@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Eng Chong Meng
  *
@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.jingle_rtp.element;
 
 import java.net.URI;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
@@ -109,7 +109,7 @@ public class RtpHeader extends AbstractXmlElement {
      * @return "attributes" value
      */
     public String getExtAttributes() {
-        for (ExtensionElement ext : getChildElements()) {
+        for (XmlElement ext : getChildElements()) {
             if (ext instanceof ParameterElement) {
                 ParameterElement p = (ParameterElement) ext;
                 if (p.getName().equals(ATTR_ATTRIBUTES)) {

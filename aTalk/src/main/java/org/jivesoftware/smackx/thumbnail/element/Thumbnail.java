@@ -20,9 +20,9 @@ import java.io.File;
 
 import javax.xml.namespace.QName;
 
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.thumbnail.component.ThumbnailedFile;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.SHA1;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -34,7 +34,7 @@ import org.jivesoftware.smackx.bob.ContentId;
  *
  * @author Eng Chong Meng
  */
-public class Thumbnail implements ExtensionElement {
+public class Thumbnail implements XmlElement {
     /**
      * The name of the XML element used for transport of thumbnail parameters.
      */
@@ -145,7 +145,7 @@ public class Thumbnail implements ExtensionElement {
     }
 
     /**
-     * Returns the XML representation of this ExtensionElement.
+     * Returns the XML representation of this XmlElement.
      *
      * @return the extension element as XML.
      */

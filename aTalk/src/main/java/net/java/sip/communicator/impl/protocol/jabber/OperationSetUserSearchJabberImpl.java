@@ -4,15 +4,18 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
 package net.java.sip.communicator.impl.protocol.jabber;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import net.java.sip.communicator.service.protocol.OperationSetUserSearch;
 import net.java.sip.communicator.service.protocol.RegistrationState;
@@ -28,16 +31,12 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.search.ReportedData.Column;
 import org.jivesoftware.smackx.search.ReportedData.Row;
-import org.jivesoftware.smackx.search.UserSearch;
 import org.jivesoftware.smackx.search.UserSearchManager;
 import org.jivesoftware.smackx.xdata.FormField;
-import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jivesoftware.smackx.xdata.form.Form;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -47,8 +46,7 @@ import timber.log.Timber;
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch, RegistrationStateChangeListener
-{
+public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch, RegistrationStateChangeListener {
     /**
      * The <code>UserSearchManager</code> instance which actually implements the user search.
      */
@@ -57,7 +55,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     /**
      * The <code>ProtocolProviderService</code> instance.
      */
-    private ProtocolProviderServiceJabberImpl provider;
+    private final ProtocolProviderServiceJabberImpl provider;
 
     /**
      * The user search service name.
@@ -70,15 +68,10 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     private Boolean userSearchEnabled = false;
 
     /**
-     * Last received search form from the server.
-     */
-    private UserSearch userSearchForm = null;
-
-    /**
      * A list of <code>UserSearchProviderListener</code> listeners which will be notified when the
      * provider user search feature is enabled or disabled.
      */
-    private List<UserSearchProviderListener> listeners = new ArrayList<>();
+    private final List<UserSearchProviderListener> listeners = new ArrayList<>();
 
     /**
      * The property name of the user search service name.
@@ -90,14 +83,13 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
      *
      * @param provider the provider associated with the operation set.
      */
-    protected OperationSetUserSearchJabberImpl(ProtocolProviderServiceJabberImpl provider)
-    {
+    protected OperationSetUserSearchJabberImpl(ProtocolProviderServiceJabberImpl provider) {
         this.provider = provider;
         try {
             serviceName = JidCreate.domainBareFrom(provider.getAccountID()
                     .getAccountPropertyString(USER_SEARCH_SERVICE_NAME, ""));
         } catch (XmppStringprepException e) {
-            e.printStackTrace();
+            Timber.w("OperationSet UserSearch JabberImpl: %s", e.getMessage());
         }
         if (serviceName.equals("")) {
             provider.addRegistrationStateChangeListener(this);
@@ -112,8 +104,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
      *
      * @param isEnabled the value to be set.
      */
-    private void setUserSearchEnabled(boolean isEnabled)
-    {
+    private void setUserSearchEnabled(boolean isEnabled) {
         userSearchEnabled = isEnabled;
         int type = (isEnabled ? UserSearchProviderEvent.PROVIDER_ADDED
                 : UserSearchProviderEvent.PROVIDER_REMOVED);
@@ -125,8 +116,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
      *
      * @param event the event to be fired.
      */
-    private void fireUserSearchProviderEvent(UserSearchProviderEvent event)
-    {
+    private void fireUserSearchProviderEvent(UserSearchProviderEvent event) {
         List<UserSearchProviderListener> tmpListeners;
         synchronized (listeners) {
             tmpListeners = new ArrayList<>(listeners);
@@ -136,8 +126,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     }
 
     @Override
-    public void registrationStateChanged(RegistrationStateChangeEvent evt)
-    {
+    public void registrationStateChanged(RegistrationStateChangeEvent evt) {
         if (evt.getNewState().equals(RegistrationState.REGISTERED)) {
             discoverSearchService();
         }
@@ -153,25 +142,23 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     /**
      * Tries to discover the user search service name.
      */
-    private void discoverSearchService()
-    {
-        new Thread()
-        {
-            public void run()
-            {
+    private void discoverSearchService() {
+        new Thread() {
+            public void run() {
                 synchronized (userSearchEnabled) {
                     List<DomainBareJid> serviceNames = null;
                     try {
-                        serviceNames = searchManager.getSearchServices();
-                    } catch (NoResponseException | InterruptedException | NotConnectedException | XMPPErrorException e) {
+                        serviceNames = UserSearchManager.getSearchServices(provider.getConnection());
+                        if (!serviceNames.isEmpty()) {
+                            serviceName = serviceNames.iterator().next();
+                            setUserSearchEnabled(true);
+                        }
+                        else {
+                            setUserSearchEnabled(false);
+                        }
+                    } catch (NoResponseException | InterruptedException | NotConnectedException |
+                             XMPPErrorException e) {
                         Timber.e(e, "Failed to search for service names");
-                    }
-                    if (!serviceNames.isEmpty()) {
-                        serviceName = serviceNames.iterator().next();
-                        setUserSearchEnabled(true);
-                    }
-                    else {
-                        setUserSearchEnabled(false);
                     }
                 }
             }
@@ -181,18 +168,16 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     /**
      * Creates the <code>UserSearchManager</code> instance.
      */
-    public void createSearchManager()
-    {
+    public void createSearchManager() {
         if (searchManager == null) {
-            searchManager = new UserSearchManager(provider.getConnection());
+            searchManager = UserSearchManager.getInstanceFor(provider.getConnection());
         }
     }
 
     /**
      * Releases the <code>UserSearchManager</code> instance.
      */
-    public void removeSearchManager()
-    {
+    public void removeSearchManager() {
         searchManager = null;
     }
 
@@ -200,14 +185,14 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
      * Performs user search for the searched string and returns the JIDs of the found contacts.
      *
      * @param searchedString the text we want to query the server.
+     *
      * @return the list of found JIDs
      */
-    public List<CharSequence> search(String searchedString)
-    {
-        ReportedData data = null;
+    public List<CharSequence> search(String searchedString) {
+        ReportedData data;
         try {
-            DataForm form = searchManager.getSearchForm(serviceName);
-            data = searchManager.getSearchResults(form, serviceName);
+            Form form = searchManager.getSearchForm(serviceName);
+            data = searchManager.search(form.getFillableForm(), serviceName);
         } catch (XMPPException | NotConnectedException | InterruptedException | NoResponseException e) {
             Timber.e(e);
             return null;
@@ -248,8 +233,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
      *
      * @param l the listener to be added
      */
-    public void addUserSearchProviderListener(UserSearchProviderListener l)
-    {
+    public void addUserSearchProviderListener(UserSearchProviderListener l) {
         synchronized (listeners) {
             if (!listeners.contains(l))
                 listeners.add(l);
@@ -261,8 +245,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
      *
      * @param l the listener to be removed
      */
-    public void removeUserSearchProviderListener(UserSearchProviderListener l)
-    {
+    public void removeUserSearchProviderListener(UserSearchProviderListener l) {
         synchronized (listeners) {
             listeners.remove(l);
         }
@@ -273,8 +256,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
      *
      * @return <code>true</code> if the user search service is enabled.
      */
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         return userSearchEnabled;
     }
 }

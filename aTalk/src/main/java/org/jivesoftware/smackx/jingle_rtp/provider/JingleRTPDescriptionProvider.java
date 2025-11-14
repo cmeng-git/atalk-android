@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2022 Eng Chong Meng
  *
@@ -17,10 +17,11 @@
 package org.jivesoftware.smackx.jingle_rtp.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -31,6 +32,7 @@ import org.jivesoftware.smackx.AbstractExtensionElement;
 import org.jivesoftware.smackx.jingle.provider.JingleContentDescriptionProvider;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
+import org.jxmpp.JxmppContext;
 
 /**
  * Provider for RtpDescription elements.
@@ -50,8 +52,8 @@ public class JingleRTPDescriptionProvider extends JingleContentDescriptionProvid
      * @throws XmlPullParserException if an error occurs pull parsing the XML.
      */
     @Override
-    public RtpDescription parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException {
+    public RtpDescription parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         RtpDescription.Builder mBuilder = RtpDescription.getBuilder();
 
         // first, set all the attributes
@@ -75,7 +77,7 @@ public class JingleRTPDescriptionProvider extends JingleContentDescriptionProvid
                         LOGGER.log(Level.WARNING, "No provider for EE<", name + " " + namespace + "/>");
                     } else {
                         try {
-                            ExtensionElement childExtension = provider.parse(parser);
+                            XmlElement childExtension = provider.parse(parser);
                             if (childExtension instanceof AbstractXmlElement || childExtension instanceof AbstractExtensionElement) {
                                 mBuilder.addChildElement(childExtension);
                             } else
@@ -91,7 +93,7 @@ public class JingleRTPDescriptionProvider extends JingleContentDescriptionProvid
                     break;
 
                 case END_ELEMENT:
-                    if (depth == parser.getDepth()) {
+                    if (initialDepth == parser.getDepth()) {
                         break outerloop;
                     }
                     break;

@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Paul Schaub
  *
@@ -65,6 +65,7 @@ public class JingleFile extends JingleFileTransferChild {
 
         MessageDigest digest = HashManager.getMessageDigest(algorithm);
         if (digest == null) {
+		    // NoSuchAlgorithmException will never reach here.
             throw new NoSuchAlgorithmException("No algorithm for " + algorithm + " found.");
         }
 

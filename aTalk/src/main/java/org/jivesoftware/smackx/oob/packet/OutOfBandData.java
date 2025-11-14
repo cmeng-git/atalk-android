@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -31,7 +31,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Eng Chong Meng
  */
-public class OutOfBandData implements ExtensionElement {
+public class OutOfBandData implements XmlElement {
     /**
      * The <code>Logger</code> used by the <code>OutOfBandData</code> class and its
      * instances for logging output.
@@ -88,7 +88,7 @@ public class OutOfBandData implements ExtensionElement {
     }
 
     /**
-     * Returns the XML representation of the ExtensionElement.
+     * Returns the XML representation of the XmlElement.
      *
      * @see #mUrl defination
      */

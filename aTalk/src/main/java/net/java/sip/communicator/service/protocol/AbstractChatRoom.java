@@ -27,7 +27,7 @@ public abstract class AbstractChatRoom implements ChatRoom
     /**
      * The list of all <code>ConferenceDescription</code> that were announced and are not yet processed.
      */
-    protected final Map<Resourcepart, ConferenceDescription> cachedConferenceDescriptions = new HashMap();
+    protected final Map<Resourcepart, ConferenceDescription> cachedConferenceDescriptions = new HashMap<>();
 
     /**
      * {@inheritDoc}

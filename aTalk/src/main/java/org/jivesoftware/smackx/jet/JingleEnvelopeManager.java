@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017 Paul Schaub
  *
@@ -20,8 +20,8 @@ import java.security.NoSuchAlgorithmException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.ExtensionElement;
 
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jxmpp.jid.FullJid;
 
 /**
@@ -32,11 +32,11 @@ import org.jxmpp.jid.FullJid;
  */
 public interface JingleEnvelopeManager {
 
-    ExtensionElement encryptJingleTransfer(FullJid recipient, byte[] keyData)
+    XmlElement encryptJingleTransfer(FullJid recipient, byte[] keyData)
             throws JingleEncryptionException, InterruptedException, NoSuchAlgorithmException,
             SmackException.NotConnectedException, SmackException.NoResponseException;
 
-    byte[] decryptJingleTransfer(FullJid sender, ExtensionElement envelope)
+    byte[] decryptJingleTransfer(FullJid sender, XmlElement envelope)
             throws JingleEncryptionException, InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException;
 

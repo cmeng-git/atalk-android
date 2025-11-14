@@ -3,7 +3,7 @@ package org.jivesoftware.smackx.confdesc;
 import org.jivesoftware.smackx.AbstractExtensionElement;
 
 /**
- * A <code>ExtensionElement</code> that represents a "transport" child element.
+ * A <code>XmlElement</code> that represents a "transport" child element.
  */
 public class TransportExtension extends AbstractExtensionElement
 {

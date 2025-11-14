@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Eng Chong Meng
  *
@@ -63,7 +63,7 @@ public class ExternalServices extends AbstractXmlElement {
     /**
      * Get all the services of this Services.
      *
-     * @return the <code>ExtensionElement</code>s of this source
+     * @return the <code>XmlElement</code>s of this source
      */
     public List<ServiceElement> getServices() {
         return getChildElements(ServiceElement.class);

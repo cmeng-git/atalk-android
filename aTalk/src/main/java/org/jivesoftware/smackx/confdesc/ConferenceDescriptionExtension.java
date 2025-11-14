@@ -25,7 +25,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 /**
- * A <code>ExtensionElement</code> that represents a <code>ConferenceDescription</code> object in XML.
+ * A <code>XmlElement</code> that represents a <code>ConferenceDescription</code> object in XML.
  *
  * @author Boris Grozev
  * @author Eng Chong Meng

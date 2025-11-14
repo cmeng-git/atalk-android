@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Eng Chong Meng
  *
@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
@@ -133,7 +132,7 @@ public class RtpDescription extends JingleContentDescription {
         /**
          * Set the optional encryption element that contains encryption parameters for this session.
          *
-         * @param srtpEncryption the encryption {@link ExtensionElement} we'd like to add to this packet.
+         * @param srtpEncryption the encryption {@link XmlElement} we'd like to add to this packet.
          * @return builder instance
          */
         public Builder addEncryption(SrtpEncryption srtpEncryption) {
@@ -144,7 +143,7 @@ public class RtpDescription extends JingleContentDescription {
         /**
          * Set the optional rtcpmux element that contains rtcpmux parameters for this session.
          *
-         * @param rtcpmux the rtcpmux {@link ExtensionElement} we'd like to add to this packet.
+         * @param rtcpmux the rtcpmux {@link XmlElement} we'd like to add to this packet.
          * @return builder instance
          */
         public Builder addRtcpMux(RtcpMux rtcpmux) {

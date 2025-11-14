@@ -22,7 +22,7 @@ import org.jivesoftware.smackx.AbstractExtensionElement;
 import javax.xml.namespace.QName;
 
 /**
- * A <code>ExtensionElement</code> that represents a "callid" element within the
+ * A <code>XmlElement</code> that represents a "callid" element within the
  * <code>ConferenceDescriptionPacketExtension.NAMESPACE</code> namespace.
  *
  * @author Boris Grozev

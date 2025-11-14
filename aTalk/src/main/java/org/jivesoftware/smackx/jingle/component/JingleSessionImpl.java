@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Paul Schaub
  *
@@ -131,7 +131,7 @@ public class JingleSessionImpl extends JingleSession {
             throw new IllegalStateException("Session is not in fresh state.");
         }
 
-        connection.createStanzaCollectorAndSend(createSessionInitiate()).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(createSessionInitiate());
         updateSessionState(SessionState.pending);
     }
 
@@ -149,7 +149,7 @@ public class JingleSessionImpl extends JingleSession {
             content.start(connection);
         }
 
-        connection.createStanzaCollectorAndSend(createSessionAccept()).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(createSessionAccept());
         updateSessionState(SessionState.active);
     }
 
@@ -210,7 +210,7 @@ public class JingleSessionImpl extends JingleSession {
         // Session still has active contents to handle.
         /*
         try {
-            mConnection.createStanzaCollectorAndSend(Jingle.createSessionTerminateContentCancel(
+            mConnection.sendIqRequestAndWaitForResponse(Jingle.createSessionTerminateContentCancel(
                     getPeer(), getSessionId(), jingleContent.getCreator(), jingleContent.getName()));
         } catch (SmackException.NotConnectedException | InterruptedException e) {
             LOGGER.log(Level.SEVERE, "Could not send content-cancel: " + e, e);

@@ -943,7 +943,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
         // Retain a copy of the old device to purge data on server
         BareJid userJid = accountId.getEntityBareJid();
         SortedSet<Integer> deviceIds = localDeviceIdsOf(userJid);
-        if (deviceIds.size() == 0)
+        if (deviceIds.isEmpty())
             return;
 
         Integer deviceId = deviceIds.first();

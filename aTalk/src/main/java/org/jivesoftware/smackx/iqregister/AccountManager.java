@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2003-2007 Jive Software.
  *
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.iqregisterx;
+package org.jivesoftware.smackx.iqregister;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,20 +24,20 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.iqregisterx.packet.Registration;
+import org.jivesoftware.smackx.iqregister.packet.Registration;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import org.jxmpp.jid.parts.Localpart;
 
 /**
@@ -71,7 +71,7 @@ public final class AccountManager extends Manager {
     /**
      * The default value used by new account managers for <code>allowSensitiveOperationOverInsecureConnection</code>.
      *
-     * @param allow TODO javadoc me please
+     * @param allow Set to true to allow sensitive Operation Over InsecureConnection
      * @see #sensitiveOperationOverInsecureConnection(boolean)
      * @since 4.1
      */
@@ -88,7 +88,7 @@ public final class AccountManager extends Manager {
      * unencrypted) connections.
      * </p>
      *
-     * @param allow TODO javadoc me please
+     * @param allow Set to true to allow sensitive Operation Over InsecureConnection
      * @since 4.1
      */
     public void sensitiveOperationOverInsecureConnection(boolean allow) {
@@ -137,7 +137,8 @@ public final class AccountManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public boolean supportsAccountCreation() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public boolean supportsAccountCreation()
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // TODO: Replace this body with isSupported() and possible deprecate this method.
 
         // Check if we already know that the server supports creating new accounts
@@ -148,7 +149,7 @@ public final class AccountManager extends Manager {
         // indicating that it supports creating new accounts) so send an IQ packet as a way
         // to discover if this feature is supported
         if (info == null) {
-            _getRegistrationInfo();
+            getRegistrationInfo();
             accountCreationSupported = info.getType() != IQ.Type.error;
         }
         return accountCreationSupported;
@@ -182,9 +183,10 @@ public final class AccountManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public Set<String> getAccountAttributes() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public Set<String> getAccountAttributes()
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (info == null) {
-            _getRegistrationInfo();
+            getRegistrationInfo();
         }
         Map<String, String> attributes = info.getAttributes();
         if (attributes != null) {
@@ -207,9 +209,10 @@ public final class AccountManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public String getAccountAttribute(String name) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public String getAccountAttribute(String name)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (info == null) {
-            _getRegistrationInfo();
+            getRegistrationInfo();
         }
         return info.getAttributes().get(name);
     }
@@ -225,27 +228,12 @@ public final class AccountManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public String getAccountInstructions() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public String getAccountInstructions()
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (info == null) {
-            _getRegistrationInfo();
+            getRegistrationInfo();
         }
         return info.getInstructions();
-    }
-
-    /**
-     * Gets account registration process and requirements from the server.
-     * @throws XMPPErrorException if there was an XMPP error returned.
-     * @throws NoResponseException if there was no response from the remote entity.
-     * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws InterruptedException if the calling thread was interrupted.
-     */
-    public Registration getRegistrationInfo() throws NoResponseException,
-            XMPPErrorException,
-            NotConnectedException, InterruptedException {
-        if (info == null) {
-            _getRegistrationInfo();
-        }
-        return info;
     }
 
     /**
@@ -263,7 +251,8 @@ public final class AccountManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void createAccount(Localpart username, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void createAccount(Localpart username, String password)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Create a map for all the required attributes, but give them blank values.
         Map<String, String> attributes = new HashMap<>();
         for (String attributeName : getAccountAttributes()) {
@@ -341,7 +330,8 @@ public final class AccountManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void changePassword(String newPassword)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (!connection().isSecureConnection() && !allowSensitiveOperationOverInsecureConnection) {
             throw new IllegalStateException("Changing password over insecure connection.");
         }
@@ -352,6 +342,7 @@ public final class AccountManager extends Manager {
         reg.setType(IQ.Type.set);
         reg.setTo(connection().getXMPPServiceDomain());
         createStanzaCollectorAndSend(reg).nextResultOrThrow();
+
     }
 
     /**
@@ -365,7 +356,8 @@ public final class AccountManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void deleteAccount() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void deleteAccount()
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Map<String, String> attributes = new HashMap<>();
         // To delete an account, we add a single attribute, "remove", that is blank.
         attributes.put("remove", "");
@@ -379,8 +371,8 @@ public final class AccountManager extends Manager {
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         XMPPConnection connection = connection();
 
-        ExtensionElement extensionElement = connection.getFeature(Registration.Feature.class);
-        if (extensionElement != null) {
+        XmlElement xmlElement = connection.getFeature(Registration.Feature.class);
+        if (xmlElement != null) {
             return true;
         }
 
@@ -394,21 +386,31 @@ public final class AccountManager extends Manager {
 
     /**
      * Gets the account registration info from the server.
+     *
+     * @return Registration information
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     *
-     * @throws XMPPException if an error occurs.
-     * @throws SmackException if there was no response from the server.
      */
-    private synchronized void _getRegistrationInfo() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public synchronized Registration getRegistrationInfo()
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Registration reg = new Registration();
         reg.setTo(connection().getXMPPServiceDomain());
         info = createStanzaCollectorAndSend(reg).nextResultOrThrow();
+        return info;
     }
 
-    private StanzaCollector createStanzaCollectorAndSend(IQ req) throws NotConnectedException, InterruptedException {
+    /**
+     * Send the IQ reg; response filtered only with StanzaId during registration process.
+     *
+     * @param req Registration IQ
+     * @return the replied stanza
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     */
+    private StanzaCollector createStanzaCollectorAndSend(IQ req)
+            throws NotConnectedException, InterruptedException {
         return connection().createStanzaCollectorAndSend(new StanzaIdFilter(req.getStanzaId()), req);
     }
 }

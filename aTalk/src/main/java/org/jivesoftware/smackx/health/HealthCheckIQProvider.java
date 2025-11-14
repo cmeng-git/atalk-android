@@ -1,11 +1,11 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -14,60 +14,62 @@
 package org.jivesoftware.smackx.health;
 
 import java.io.IOException;
+import java.text.ParseException;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.*;
+import org.jivesoftware.smack.provider.IqProvider;
+import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jxmpp.JxmppContext;
 
 /**
- * The <code>IQProvider</code> for {@link HealthCheckIQ}.
+ * The <code>IqProvider</code> for {@link HealthCheckIQ}.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class HealthCheckIQProvider extends IQProvider<HealthCheckIQ>
-{
-	/**
-	 * Registers <code>HealthCheckIQProvider</code> as an <code>IQProvider</code>
-	 */
-	public static void registerIQProvider()
-	{
-		// ColibriStatsIQ
-		ProviderManager.addIQProvider(HealthCheckIQ.ELEMENT, HealthCheckIQ.NAMESPACE, new HealthCheckIQProvider());
-	}
+public class HealthCheckIQProvider extends IqProvider<HealthCheckIQ> {
+    /**
+     * Registers <code>HealthCheckIQProvider</code> as an <code>IqProvider</code>
+     */
+    public static void registerIQProvider() {
+        // ColibriStatsIQ
+        ProviderManager.addIQProvider(HealthCheckIQ.ELEMENT, HealthCheckIQ.NAMESPACE, new HealthCheckIQProvider());
+    }
 
-	/**
-	 * Parses <code>HealthCheckIQ</code>.
-	 *
-	 * {@inheritDoc}
-	 */
-	@Override
-	public HealthCheckIQ parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException
-	{
-		String namespace = parser.getNamespace();
-		HealthCheckIQ iq = null;
+    /**
+     * Parses <code>HealthCheckIQ</code>.
+     *
+     * {@inheritDoc}
+     */
 
-		if (HealthCheckIQ.ELEMENT.equals(parser.getName())
-			&& HealthCheckIQ.NAMESPACE.equals(namespace)) {
-			String rootElement = parser.getName();
+    @Override
+    public HealthCheckIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
+        String namespace = parser.getNamespace();
+        HealthCheckIQ iq = null;
 
-			iq = new HealthCheckIQ();
-			boolean done = false;
-			while (!done) {
-				switch (parser.next()) {
-					case END_ELEMENT: {
-						String name = parser.getName();
-						if (rootElement.equals(name)) {
-							done = true;
-						}
-						break;
-					}
-				}
-			}
-		}
-		return iq;
-	}
+        if (HealthCheckIQ.ELEMENT.equals(parser.getName())
+                && HealthCheckIQ.NAMESPACE.equals(namespace)) {
+            String rootElement = parser.getName();
+
+            iq = new HealthCheckIQ();
+            boolean done = false;
+            while (!done) {
+                switch (parser.next()) {
+                    case END_ELEMENT: {
+                        String name = parser.getName();
+                        if (rootElement.equals(name)) {
+                            done = true;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        return iq;
+    }
 }

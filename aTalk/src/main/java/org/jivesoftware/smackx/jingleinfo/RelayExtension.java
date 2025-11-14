@@ -5,9 +5,9 @@
  */
 package org.jivesoftware.smackx.jingleinfo;
 
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.AbstractExtensionElement;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -79,7 +79,7 @@ public class RelayExtension extends AbstractExtensionElement
         xml.openElement(ELEMENT);
         xml.optElement(token, token);
 
-        for (ExtensionElement ext : getChildExtensions()) {
+        for (XmlElement ext : getChildExtensions()) {
             xml.append(ext.toXML(XmlEnvironment.EMPTY));
         }
         xml.closeElement(ELEMENT);

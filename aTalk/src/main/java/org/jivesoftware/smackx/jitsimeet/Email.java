@@ -19,12 +19,15 @@ package org.jivesoftware.smackx.jitsimeet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jxmpp.JxmppContext;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import javax.xml.namespace.QName;
 
@@ -106,9 +109,9 @@ public class Email implements ExtensionElement
      */
     public static class EmailProvider extends ExtensionElementProvider<Email>
     {
-        public Email parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-                throws IOException, XmlPullParserException
-        {
+        @Override
+        public Email parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+                throws XmlPullParserException, IOException, SmackParsingException, ParseException {
             parser.next();
             final String address = parser.getText();
 
@@ -118,5 +121,6 @@ public class Email implements ExtensionElement
             }
             return new Email(address);
         }
+
     }
 }

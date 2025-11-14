@@ -5,9 +5,9 @@
  */
 package org.jivesoftware.smackx.coin;
 
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.AbstractExtensionElement;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -104,7 +104,7 @@ public class SIPDialogIDExtension extends AbstractExtensionElement
         xml.optElement(ELEMENT_FROMTAG, fromTag);
         xml.optElement(ELEMENT_TOTAG, toTag);
 
-        for (ExtensionElement ext : getChildExtensions()) {
+        for (XmlElement ext : getChildExtensions()) {
             xml.append(ext.toXML(XmlEnvironment.EMPTY));
         }
         xml.closeElement(ELEMENT);

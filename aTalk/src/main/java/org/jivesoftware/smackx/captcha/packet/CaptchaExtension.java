@@ -16,12 +16,12 @@
  */
 package org.jivesoftware.smackx.captcha.packet;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-
-import javax.xml.namespace.QName;
 
 /**
  * The <code>Captcha</code> implementing XEP-0158: CAPTCHA Forms is an extension element to
@@ -29,8 +29,7 @@ import javax.xml.namespace.QName;
  *
  * @author Eng Chong Meng
  */
-public class CaptchaExtension implements ExtensionElement
-{
+public class CaptchaExtension implements ExtensionElement {
     /**
      * The name of the "captcha" element.
      */
@@ -56,6 +55,7 @@ public class CaptchaExtension implements ExtensionElement
     public static final String PASSWORD = "password";
 
     /**
+     *
      */
     private DataForm mForm;
 
@@ -64,8 +64,7 @@ public class CaptchaExtension implements ExtensionElement
      *
      * @param form the DataForm
      */
-    public CaptchaExtension(DataForm form)
-    {
+    public CaptchaExtension(DataForm form) {
         this.mForm = form;
     }
 
@@ -74,8 +73,7 @@ public class CaptchaExtension implements ExtensionElement
      *
      * @return the data of the bob
      */
-    public DataForm getDataForm()
-    {
+    public DataForm getDataForm() {
         return mForm;
     }
 
@@ -84,8 +82,7 @@ public class CaptchaExtension implements ExtensionElement
      *
      * @return the element name.
      */
-    public String getElementName()
-    {
+    public String getElementName() {
         return ELEMENT;
     }
 
@@ -94,8 +91,7 @@ public class CaptchaExtension implements ExtensionElement
      *
      * @return the namespace.
      */
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return NAMESPACE;
     }
 
@@ -113,8 +109,7 @@ public class CaptchaExtension implements ExtensionElement
      * </captcha>
      */
     @Override
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
-    {
+    public CharSequence toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.append('>');
         if (mForm != null) {

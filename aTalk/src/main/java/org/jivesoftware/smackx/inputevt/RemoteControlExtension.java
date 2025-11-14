@@ -7,7 +7,7 @@ package org.jivesoftware.smackx.inputevt;
 
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -17,7 +17,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class RemoteControlExtension implements ExtensionElement
+public class RemoteControlExtension implements XmlElement
 {
     /**
      * AWT event that represents our <code>RemoteControlExtension</code>.
@@ -82,7 +82,7 @@ public class RemoteControlExtension implements ExtensionElement
     }
 
     /**
-     * Get the element name of the <code>ExtensionElement</code>.
+     * Get the element name of the <code>XmlElement</code>.
      *
      * @return "remote-control"
      */
@@ -93,7 +93,7 @@ public class RemoteControlExtension implements ExtensionElement
 
     /**
      * Returns the XML namespace of the extension sub-packet root element. The namespace is always
-     * "http://jitsi.org/protocol/inputevt".
+     * "<a href="http://jitsi.org/protocol/inputevt">...</a>".
      *
      * @return the XML namespace of the packet extension.
      */

@@ -39,12 +39,10 @@ import org.atalk.service.neomedia.StreamConnectorFactory;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.coin.CoinExtension;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -158,9 +156,11 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                 if (callPeer.getState() == CallPeerState.CONNECTED)
                     callPeer.sendCoinSessionInfo();
             }
-        } catch (NotConnectedException | InterruptedException e) {
+        }
+        catch (NotConnectedException | InterruptedException e) {
             e.printStackTrace();
-        } finally {
+        }
+        finally {
             super.conferenceFocusChanged(oldValue, newValue);
         }
     }
@@ -273,32 +273,24 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         conferenceRequest.setTo(mJitsiVideobridge);
         conferenceRequest.setType(IQ.Type.get);
         XMPPConnection connection = protocolProvider.getConnection();
-        Stanza response;
+        ColibriConferenceIQ conferenceResponse;
         try {
-            StanzaCollector stanzaCollector = connection.createStanzaCollectorAndSend(conferenceRequest);
-            try {
-                response = stanzaCollector.nextResultOrThrow();
-            } finally {
-                stanzaCollector.cancel();
-            }
-        } catch (NotConnectedException | InterruptedException e1) {
+            conferenceResponse = connection.sendIqRequestAndWaitForResponse(conferenceRequest);
+        }
+        catch (NotConnectedException | InterruptedException e1) {
             throw new OperationFailedException("Could not send the conference request",
                     OperationFailedException.REGISTRATION_REQUIRED, e1);
-        } catch (XMPPException.XMPPErrorException e) {
+        }
+        catch (XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
             Timber.e("Failed to allocate colibri channel: %s", e.getMessage());
             return null;
-        } catch (SmackException.NoResponseException e) {
-            Timber.e("Failed to allocate colibri channels: %s", e.getMessage());
-            return null;
         }
-
-        ColibriConferenceIQ conferenceResponse = (ColibriConferenceIQ) response;
-        String conferenceResponseID = conferenceResponse.getID();
 
         /*
          * Update the complete ColibriConferenceIQ representation maintained by this instance with
          * the information given by the (current) response.
          */
+        String conferenceResponseID = conferenceResponse.getID();
         if (colibri == null) {
             colibri = new ColibriConferenceIQ();
             /*
@@ -560,7 +552,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @param calleeJid the party that we would like to invite to this call.
      * @param discoverInfo any discovery information that we have for the jid we are trying to reach and
      * that we are passing in order to avoid having to ask for it again.
-     * @param sessionInitiateExtensions a collection of additional and optional <code>ExtensionElement</code>s to be
+     * @param sessionInitiateExtensions a collection of additional and optional <code>XmlElement</code>s to be
      * added to the <code>session-initiate</code> {@link Jingle} which is to init this <code>CallJabberImpl</code>
      * @param supportedTransports the XML namespaces of the jingle transports to use.
      *
@@ -570,7 +562,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @throws OperationFailedException with the corresponding code if we fail to create the call.
      */
     public CallPeerJabberImpl initiateSession(FullJid calleeJid, DiscoverInfo discoverInfo,
-            Iterable<ExtensionElement> sessionInitiateExtensions, Collection<String> supportedTransports)
+            Iterable<XmlElement> sessionInitiateExtensions, Collection<String> supportedTransports)
             throws OperationFailedException {
         // create the session-initiate IQ
         CallPeerJabberImpl callPeer = new CallPeerJabberImpl(calleeJid, this);
@@ -606,7 +598,8 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         try {
             callPeer.initiateSession(sessionInitiateExtensions, getCallId());
             sessionInitiated = true;
-        } finally {
+        }
+        finally {
             // if initialization throws an exception
             if (!sessionInitiated)
                 callPeer.setState(CallPeerState.FAILED);
@@ -635,7 +628,8 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                 // cmeng (2016/09/14): Never send 'sendModifyVideoContent' before it is connected => Smack Exception
                 if (peer.getState() == CallPeerState.CONNECTED)
                     change |= peer.sendModifyVideoContent();
-            } catch (SmackException.NotConnectedException | InterruptedException e) {
+            }
+            catch (SmackException.NotConnectedException | InterruptedException e) {
                 throw new OperationFailedException("Could send modify video content to " + peer.getAddress(), 0, e);
             }
         }
@@ -756,7 +750,8 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         // before notifying about this incoming call, make sure the session-initiate looks alright
         try {
             callPeer.processSessionInitiate(jingle);
-        } catch (SmackException.NotConnectedException | InterruptedException e) {
+        }
+        catch (SmackException.NotConnectedException | InterruptedException e) {
             callPeer.setState(CallPeerState.INCOMING_CALL);
             return;
         }
@@ -781,14 +776,16 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
             // hang up the call before answer, else may terminate as busy.
             try {
                 basicTelephony.hangupCallPeer(attendant);
-            } catch (OperationFailedException e) {
+            }
+            catch (OperationFailedException e) {
                 Timber.w("Failed to hang up on attendant as part of session transfer");
             }
 
             /* answer directly */
             try {
                 callPeer.answer();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Timber.w("Exception occurred while answer transferred call");
             }
             return;
@@ -968,7 +965,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
 
     private void setTransportOnChannel(CallPeerJabberImpl peer, String media, ColibriConferenceIQ.Channel channel)
             throws OperationFailedException {
-        ExtensionElement transport = peer.getMediaHandler().getTransportManager().createTransport(media);
+        XmlElement transport = peer.getMediaHandler().getTransportManager().createTransport(media);
         if (transport instanceof IceUdpTransport)
             channel.setTransport((IceUdpTransport) transport);
     }
@@ -986,7 +983,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * Makes an attempt to ensure that a specific <code>ColibriConferenceIQ.Channel</code> has a non-
      * <code>null</code> <code>transport</code> set. If the specified <code>channel</code> does not have a
      * <code>transport</code>, the method invokes the <code>TransportManager</code> of the specified
-     * <code>CallPeerJabberImpl</code> to initialize a new <code>ExtensionElement</code>.
+     * <code>CallPeerJabberImpl</code> to initialize a new <code>XmlElement</code>.
      *
      * @param channel the <code>ColibriConferenceIQ.Channel</code> to ensure the <code>transport</code> on
      * @param peer the <code>CallPeerJabberImpl</code> which is associated with the specified
@@ -999,7 +996,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         IceUdpTransport transport = channel.getTransport();
 
         if (transport == null) {
-            ExtensionElement pe = peer.getMediaHandler().getTransportManager().createTransportPacketExtension();
+            XmlElement pe = peer.getMediaHandler().getTransportManager().createTransportPacketExtension();
             if (pe instanceof IceUdpTransport) {
                 transport = (IceUdpTransport) pe;
                 channel.setTransport(transport);

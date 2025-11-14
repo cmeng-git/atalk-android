@@ -17,16 +17,19 @@
  */
 package org.jivesoftware.smackx.jitsimeet;
 
+import java.io.IOException;
+import java.text.ParseException;
+
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-
-import java.io.IOException;
-
-import javax.xml.namespace.QName;
+import org.jxmpp.JxmppContext;
 
 /**
  * An extension to the Presence used in jitsi-meet when deployed in an
@@ -50,8 +53,7 @@ import javax.xml.namespace.QName;
  * @author Nik Vaessen
  * @author Eng Chong Meng
  */
-public class IdentityExtension implements ExtensionElement
-{
+public class IdentityExtension implements ExtensionElement {
     /**
      * The namespace (xmlns attribute) of this identity presence element
      */
@@ -119,8 +121,7 @@ public class IdentityExtension implements ExtensionElement
      * @param userAvatarUrl the avatar-url of the user
      * @param groupId the group id of group the user belongs to
      */
-    public IdentityExtension(String userId, String userName, String userAvatarUrl, String groupId)
-    {
+    public IdentityExtension(String userId, String userName, String userAvatarUrl, String groupId) {
         this.userId = userId;
         this.userName = userName;
         this.userAvatarUrl = userAvatarUrl;
@@ -131,8 +132,7 @@ public class IdentityExtension implements ExtensionElement
      * {@inheritDoc}
      */
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return NAMESPACE;
     }
 
@@ -140,8 +140,7 @@ public class IdentityExtension implements ExtensionElement
      * {@inheritDoc}
      */
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return ELEMENT;
     }
 
@@ -149,8 +148,7 @@ public class IdentityExtension implements ExtensionElement
      * {@inheritDoc}
      */
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
-    {
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder();
 
         // begin identity
@@ -179,8 +177,7 @@ public class IdentityExtension implements ExtensionElement
      *
      * @return the user ID
      */
-    public String getUserId()
-    {
+    public String getUserId() {
         return userId;
     }
 
@@ -189,8 +186,7 @@ public class IdentityExtension implements ExtensionElement
      *
      * @return the user's name
      */
-    public String getUserName()
-    {
+    public String getUserName() {
         return userName;
     }
 
@@ -199,8 +195,7 @@ public class IdentityExtension implements ExtensionElement
      *
      * @return the avatar-url
      */
-    public String getUserAvatarUrl()
-    {
+    public String getUserAvatarUrl() {
         return userAvatarUrl;
     }
 
@@ -209,8 +204,7 @@ public class IdentityExtension implements ExtensionElement
      *
      * @return the group id
      */
-    public String getGroupId()
-    {
+    public String getGroupId() {
         return groupId;
     }
 
@@ -219,66 +213,65 @@ public class IdentityExtension implements ExtensionElement
      * {@link IdentityExtension} when given the
      * {@link XmlPullParser} of an identity element
      */
-    public static class Provider extends ExtensionElementProvider<IdentityExtension>
-    {
+    public static class Provider extends ExtensionElementProvider<IdentityExtension> {
         /**
          * {@inheritDoc}
          */
         @Override
-        public IdentityExtension parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-                throws IOException, XmlPullParserException
-        {
-            String currentTag = parser.getName();
-            if (!NAMESPACE.equals(parser.getNamespace())) {
-                return null;
-            }
-            else if (!ELEMENT.equals(currentTag)) {
-                return null;
-            }
-
-            String userId = null;
-            String userName = null;
-            String userAvatarUrl = null;
-            String groupId = null;
-
-            do {
-                parser.next();
-
-                if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT) {
-                    currentTag = parser.getName();
+        public IdentityExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+                throws XmlPullParserException, IOException, SmackParsingException, ParseException {
+            {
+                String currentTag = parser.getName();
+                if (!NAMESPACE.equals(parser.getNamespace())) {
+                    return null;
                 }
-                else if (parser.getEventType() == XmlPullParser.Event.TEXT_CHARACTERS) {
-                    switch (currentTag) {
-                        case USER_AVATAR_URL_ELEMENT:
-                            userAvatarUrl = parser.getText();
-                            break;
-                        case USER_ID_ELEMENT:
-                            userId = parser.getText();
-                            break;
-                        case USER_NAME_ELEMENT:
-                            userName = parser.getText();
-                            break;
-                        case GROUP_ELEMENT:
-                            groupId = parser.getText();
-                            break;
-                        default:
-                            break;
+                else if (!ELEMENT.equals(currentTag)) {
+                    return null;
+                }
+
+                String userId = null;
+                String userName = null;
+                String userAvatarUrl = null;
+                String groupId = null;
+
+                do {
+                    parser.next();
+
+                    if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT) {
+                        currentTag = parser.getName();
+                    }
+                    else if (parser.getEventType() == XmlPullParser.Event.TEXT_CHARACTERS) {
+                        switch (currentTag) {
+                            case USER_AVATAR_URL_ELEMENT:
+                                userAvatarUrl = parser.getText();
+                                break;
+                            case USER_ID_ELEMENT:
+                                userId = parser.getText();
+                                break;
+                            case USER_NAME_ELEMENT:
+                                userName = parser.getText();
+                                break;
+                            case GROUP_ELEMENT:
+                                groupId = parser.getText();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT) {
+                        currentTag = parser.getName();
                     }
                 }
-                else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT) {
-                    currentTag = parser.getName();
-                }
-            }
-            while (!ELEMENT.equals(currentTag));
+                while (!ELEMENT.equals(currentTag));
 
-            if (userAvatarUrl != null && userId != null && userName != null
-                    && groupId != null) {
-                return new IdentityExtension(userId, userName, userAvatarUrl, groupId);
-            }
-            else {
-                return null;
+                if (userAvatarUrl != null && userId != null && userName != null
+                        && groupId != null) {
+                    return new IdentityExtension(userId, userName, userAvatarUrl, groupId);
+                }
+                else {
+                    return null;
+                }
             }
         }
     }
 }
-

@@ -26,7 +26,7 @@ import net.java.sip.communicator.service.protocol.UserCredentials;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.login.IBRCaptchaProcessDialog;
+import org.atalk.android.gui.login.IBRProcessDialog;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
@@ -129,8 +129,8 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy {
         new Handler(Looper.getMainLooper()).post(() -> {
             Context context = aTalkApp.getCurrentActivity();
             if ((context != null) && (pps.getConnection() != null)) {
-                IBRCaptchaProcessDialog mCaptchaDialog = new IBRCaptchaProcessDialog(context, pps, accountId, password);
-                mCaptchaDialog.show();
+                IBRProcessDialog mIBRDialog = new IBRProcessDialog(context, pps, accountId, password);
+                mIBRDialog.show();
             }
         });
         return true;

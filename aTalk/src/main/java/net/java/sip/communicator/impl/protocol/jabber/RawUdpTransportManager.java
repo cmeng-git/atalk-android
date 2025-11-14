@@ -17,7 +17,7 @@ import net.java.sip.communicator.service.protocol.OperationFailedException;
 import org.atalk.service.neomedia.MediaStreamTarget;
 import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.util.MediaType;
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle_rtp.CandidateType;
@@ -61,7 +61,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl {
     /**
      * {@inheritDoc}
      */
-    protected ExtensionElement createTransport(String media)
+    protected XmlElement createTransport(String media)
             throws OperationFailedException {
         MediaType mediaType = MediaType.parseString(media);
         return createTransport(mediaType, getStreamConnector(mediaType));
@@ -109,7 +109,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl {
     /**
      * {@inheritDoc}
      */
-    protected ExtensionElement createTransportPacketExtension() {
+    protected XmlElement createTransportPacketExtension() {
         return new RawUdpTransport();
     }
 
@@ -227,7 +227,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl {
     /**
      * {@inheritDoc}
      */
-    protected ExtensionElement startCandidateHarvest(JingleContent theirContent,
+    protected XmlElement startCandidateHarvest(JingleContent theirContent,
             JingleContent ourContent, TransportInfoSender transportInfoSender, String media)
             throws OperationFailedException {
         return createTransportForStartCandidateHarvest(media);

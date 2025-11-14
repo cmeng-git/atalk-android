@@ -16,16 +16,19 @@
 package org.jivesoftware.smackx.jitsimeet;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * Provider handles parsing of {@link ConferenceIq} and {@link LoginUrlIq}
@@ -33,7 +36,7 @@ import java.io.IOException;
  *
  * @author Pawel Domas
  */
-public class LoginUrlIqProvider extends IQProvider<LoginUrlIq>
+public class LoginUrlIqProvider extends IqProvider<LoginUrlIq>
 {
     /**
      * Creates new instance of <code>ConferenceIqProvider</code>.
@@ -46,9 +49,8 @@ public class LoginUrlIqProvider extends IQProvider<LoginUrlIq>
     }
 
     @Override
-    public LoginUrlIq parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException, SmackParsingException
-    {
+    public LoginUrlIq parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String namespace = parser.getNamespace();
 
         // Check the namespace

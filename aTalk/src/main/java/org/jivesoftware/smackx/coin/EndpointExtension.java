@@ -9,7 +9,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.AbstractExtensionElement;
@@ -185,7 +185,7 @@ public class EndpointExtension extends AbstractExtensionElement {
         xml.optElement(ELEMENT_DISCONNECTION, disconnectionType);
         xml.optElement(ELEMENT_JOINING, joiningType);
 
-        for (ExtensionElement ext : getChildExtensions()) {
+        for (XmlElement ext : getChildExtensions()) {
             xml.append(ext.toXML(XmlEnvironment.EMPTY));
         }
         xml.closeElement(ELEMENT);

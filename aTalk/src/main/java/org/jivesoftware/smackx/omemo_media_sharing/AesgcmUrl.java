@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright © 2019 Paul Schaub
  *

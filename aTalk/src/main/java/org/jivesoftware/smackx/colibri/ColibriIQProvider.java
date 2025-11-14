@@ -24,21 +24,23 @@ import org.jivesoftware.smackx.jingle_rtp.element.SdpSource;
 import org.jivesoftware.smackx.jingle_rtp.element.SdpSourceGroup;
 import org.jivesoftware.smackx.jingle_rtp.element.SdpSourceRidGroup;
 import org.jivesoftware.smackx.jitsimeet.SSRCInfoExtension;
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.parts.Localpart;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import timber.log.Timber;
 
 /**
- * Implements an <code>org.jivesoftware.smack.provider.IQProvider</code> for the Jitsi Videobridge
+ * Implements an <code>org.jivesoftware.smack.provider.IqProvider</code> for the Jitsi Videobridge
  * extension <code>ColibriConferenceIQ</code>.
  *
  * @author Lyubomir Marinov
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
+public class ColibriIQProvider extends IqProvider<ColibriConferenceIQ>
 {
     /**
      * Initializes a new <code>ColibriIQProvider</code> instance; only for those no defined in JingleProvider.
@@ -101,7 +103,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                 new DefaultExtensionElementProvider<>(SSRCInfoExtension.class));
     }
 
-    private void addChildExtension(ColibriConferenceIQ.Channel channel, ExtensionElement childExtension)
+    private void addChildExtension(ColibriConferenceIQ.Channel channel, XmlElement childExtension)
     {
         if (childExtension instanceof PayloadType) {
             PayloadType payloadType = (PayloadType) childExtension;
@@ -138,7 +140,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
         }
     }
 
-    private void addChildExtension(ColibriConferenceIQ.ChannelBundle bundle, ExtensionElement childExtension)
+    private void addChildExtension(ColibriConferenceIQ.ChannelBundle bundle, XmlElement childExtension)
     {
         if (childExtension instanceof IceUdpTransport) {
             IceUdpTransport transport = (IceUdpTransport) childExtension;
@@ -146,8 +148,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
         }
     }
 
-    private void addChildExtension(ColibriConferenceIQ.SctpConnection sctpConnection,
-            ExtensionElement childExtension)
+    private void addChildExtension(ColibriConferenceIQ.SctpConnection sctpConnection, XmlElement childExtension)
     {
         if (childExtension instanceof IceUdpTransport) {
             IceUdpTransport transport = (IceUdpTransport) childExtension;
@@ -155,11 +156,11 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
         }
     }
 
-    private ExtensionElement parseExtension(XmlPullParser parser, String name, String namespace)
+    private XmlElement parseExtension(XmlPullParser parser, String name, String namespace)
             throws XmlPullParserException, IOException, SmackParsingException
     {
         ExtensionElementProvider<?> extensionProvider = ProviderManager.getExtensionProvider(name, namespace);
-        ExtensionElement extension;
+        XmlElement extension;
         if (extensionProvider == null) {
             /*
              * No PacketExtensionProvider for the specified name and namespace has been registered.
@@ -184,9 +185,8 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
     // Compatibility with legacy Jitsi and Jitsi Videobridge
     @SuppressWarnings("deprecation")
     @Override
-    public ColibriConferenceIQ parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException
-    {
+    public ColibriConferenceIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String namespace = parser.getNamespace();
         IQ iq;
 
@@ -194,15 +194,15 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                 && ColibriConferenceIQ.NAMESPACE.equals(namespace)) {
             ColibriConferenceIQ conferenceIQ = new ColibriConferenceIQ();
             String conferenceID = parser.getAttributeValue("", ColibriConferenceIQ.ID_ATTR_NAME);
-            if ((conferenceID != null) && (conferenceID.length() != 0))
+            if ((conferenceID != null) && (!conferenceID.isEmpty()))
                 conferenceIQ.setID(conferenceID);
 
             String conferenceGID = parser.getAttributeValue("", ColibriConferenceIQ.GID_ATTR_NAME);
-            if ((conferenceGID != null) && (conferenceGID.length() != 0))
+            if ((conferenceGID != null) && (!conferenceGID.isEmpty()))
                 conferenceIQ.setGID(conferenceGID);
 
             String conferenceName = parser.getAttributeValue("", ColibriConferenceIQ.NAME_ATTR_NAME);
-            if ((conferenceName != null) && (conferenceName.length() != 0))
+            if ((conferenceName != null) && (!conferenceName.isEmpty()))
                 if (StringUtils.isNotEmpty(conferenceName))
                     conferenceIQ.setName(Localpart.from(conferenceName));
             boolean done = false;
@@ -425,7 +425,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
 
                             String contentName = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Content.NAME_ATTR_NAME);
-                            if ((contentName != null) && (contentName.length() != 0))
+                            if ((contentName != null) && (!contentName.isEmpty()))
                                 content.setName(contentName);
                         }
                         else if (ColibriConferenceIQ.Recording.ELEMENT.equals(name)) {
@@ -556,7 +556,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                                 throwAway(parser, name);
                             }
                             else {
-                                ExtensionElement extension = parseExtension(parser, peName, peNamespace);
+                                XmlElement extension = parseExtension(parser, peName, peNamespace);
                                 if (extension != null) {
                                     if (channel != null) {
                                         addChildExtension(channel, extension);

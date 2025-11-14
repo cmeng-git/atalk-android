@@ -13,17 +13,20 @@
  */
 package org.jivesoftware.smackx.rayo;
 
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.DefaultExtensionElementProvider;
 
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * Provider handles parsing of Rayo IQ stanzas and converting objects back to their XML representation.
@@ -32,7 +35,7 @@ import java.io.IOException;
  *
  * @author Pawel Domas
  */
-public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
+public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
 {
     /**
      * Rayo namespace.
@@ -64,9 +67,8 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
      * {@inheritDoc}
      */
     @Override
-    public RayoIq parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException
-    {
+    public RayoIq parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String namespace = parser.getNamespace();
 
         // Check the namespace
@@ -207,7 +209,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
 
         private HeaderExtension findHeader(String name)
         {
-            for (ExtensionElement ext : getExtensions()) {
+            for (XmlElement ext : getExtensions()) {
                 if (ext instanceof HeaderExtension) {
                     HeaderExtension header = (HeaderExtension) ext;
 

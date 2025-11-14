@@ -6,9 +6,10 @@
 package org.jivesoftware.smackx;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.atalk.impl.timberlog.TimberLog;
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -16,6 +17,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
+import org.jxmpp.JxmppContext;
 
 import timber.log.Timber;
 
@@ -55,8 +57,8 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
      * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
      */
     @Override
-    public EE parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException {
+    public EE parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         EE stanzaExtension;
         try {
             stanzaExtension = stanzaClass.newInstance();
@@ -91,7 +93,7 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
                     Timber.w("No provider for <%s %s/>", elementName, namespace);
                 }
                 else {
-                    ExtensionElement childExtension = provider.parse(parser);
+                    XmlElement childExtension = provider.parse(parser);
                     if (namespace != null) {
                         if (childExtension instanceof AbstractExtensionElement) {
                             ((AbstractExtensionElement) childExtension).setNamespace(namespace);

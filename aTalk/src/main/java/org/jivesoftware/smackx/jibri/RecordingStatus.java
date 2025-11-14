@@ -19,8 +19,8 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.AbstractExtensionElement;
 import org.jxmpp.jid.Jid;
 
@@ -149,7 +149,7 @@ public class RecordingStatus extends AbstractExtensionElement {
      * @return {@link XMPPErrorPE} or <code>null</code> if not found.
      */
     private XMPPErrorPE getErrorPE() {
-        List<? extends ExtensionElement> errorPe = getChildExtensionsOfType(XMPPErrorPE.class);
+        List<? extends XmlElement> errorPe = getChildExtensionsOfType(XMPPErrorPE.class);
         return (XMPPErrorPE) (!errorPe.isEmpty() ? errorPe.get(0) : null);
     }
 

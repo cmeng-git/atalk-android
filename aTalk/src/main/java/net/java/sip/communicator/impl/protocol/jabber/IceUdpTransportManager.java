@@ -57,7 +57,7 @@ import org.ice4j.security.LongTermCredential;
 import org.ice4j.socket.DatagramPacketFilter;
 import org.ice4j.socket.MultiplexingDatagramSocket;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.externalservicediscovery.IceCandidateHarvester;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle_rtp.CandidateType;
@@ -77,7 +77,7 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  * @author MilanKral
- * @link https://github.com/MilanKral/atalk-android/commit/d61d5165dda4d290280ebb3e93075e8846e255ad
+ * @link <a href="https://github.com/MilanKral/atalk-android/commit/d61d5165dda4d290280ebb3e93075e8846e255ad">...</a>
  * Enhance TURN with TCP, TLS, DTLS transport
  */
 public class IceUdpTransportManager extends TransportManagerJabberImpl implements PropertyChangeListener {
@@ -345,7 +345,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @param port the port number
      * @param transport the transport to use with this address.
      *
-     * @see https://github.com/jitsi/ice4j/issues/255
+     * @see <a href="https://github.com/jitsi/ice4j/issues/255">...</a>
      */
     protected List<TransportAddress> getTransportAddress(String hostname, int port, Transport transport) {
         List<TransportAddress> transportAddress = new ArrayList<>();
@@ -569,7 +569,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Both the transport-info attributes i.e. ufrag and pwd must be set for IceUdpTransport by default;
      * In case there are child elements other than candidates e.g. DTLS fingerPrint
      */
-    protected ExtensionElement createTransportPacketExtension() {
+    protected XmlElement createTransportPacketExtension() {
         IceUdpTransport.Builder tpBuilder = IceUdpTransport.getBuilder()
                 .setUfrag(iceAgent.getLocalUfrag())
                 .setPassword(iceAgent.getLocalPassword());
@@ -580,10 +580,10 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     /**
      * {@inheritDoc}
      */
-    protected ExtensionElement startCandidateHarvest(JingleContent theirContent, JingleContent ourContent,
+    protected XmlElement startCandidateHarvest(JingleContent theirContent, JingleContent ourContent,
             TransportInfoSender transportInfoSender, String media)
             throws OperationFailedException {
-        ExtensionElement pe;
+        XmlElement pe;
 
         // Report the gathered candidate addresses.
         if (transportInfoSender == null) {
@@ -663,7 +663,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      *
      * @return the {@link IceUdpTransport} that we
      */
-    private ExtensionElement createTransport(IceMediaStream stream) {
+    private XmlElement createTransport(IceMediaStream stream) {
         Agent iceAgent = stream.getParentAgent();
         IceUdpTransport.Builder tpBuilder = IceUdpTransport.getBuilder()
                 .setUfrag(iceAgent.getLocalUfrag())
@@ -690,7 +690,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     /**
      * {@inheritDoc}
      */
-    protected ExtensionElement createTransport(String media)
+    protected XmlElement createTransport(String media)
             throws OperationFailedException {
         IceMediaStream iceStream = iceAgent.getStream(media);
         if (iceStream == null)

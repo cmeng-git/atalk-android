@@ -94,11 +94,11 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
      */
     private static double computeEWMA(long nbStepSinceLastUpdate, double lastValue, double newValue) {
         // For each new packet received the EWMA moves by a 0.1 coefficient.
-        double EWMACoeff = 0.01 * nbStepSinceLastUpdate;
+        double EWMACoeff = 0.01D * nbStepSinceLastUpdate;
         // EWMA must be <= 1.
-        if (EWMACoeff > 1)
-            EWMACoeff = 1.0;
-        return lastValue * (1.0 - EWMACoeff) + newValue * EWMACoeff;
+        if (EWMACoeff > 1.0D)
+            EWMACoeff = 1.0D;
+        return lastValue * (1.0D - EWMACoeff) + newValue * EWMACoeff;
     }
 
     /**
@@ -110,7 +110,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
      * @return The loss rate in percent.
      */
     private static double computePercentLoss(long nbLostAndRecv, long nbLost) {
-        return (nbLostAndRecv == 0) ? 0 : (((double) 100 * nbLost) / nbLostAndRecv);
+        return (nbLostAndRecv == 0L) ? 0.0D : (100.0D * nbLost / nbLostAndRecv);
     }
 
     /**
@@ -122,7 +122,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
      * @return the bitrate computed in kbps (1000 bits per second)
      */
     private static double computeRateKiloBitPerSec(long nbBytes, long intervalMs) {
-        return intervalMs == 0 ? 0 : (nbBytes * 8.0) / intervalMs;
+        return (intervalMs == 0L) ? 0.0D : (nbBytes * 8.0D / intervalMs);
     }
 
     /**
@@ -147,7 +147,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
     /**
      * The last jitter received/sent in a RTCP feedback (in RTP timestamp units).
      */
-    private final double[] jitterRTPTimestampUnits = {0, 0};
+    private final double[] jitterRTPTimestampUnits = {00D, 0.0D};
 
     /**
      * The source data stream to analyze in order to compute the stats.
@@ -157,47 +157,47 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
     /**
      * The last number of received/sent Bytes.
      */
-    private final long[] nbByte = {0, 0};
+    private final long[] nbByte = {0L, 0L};
 
     /**
      * The total number of discarded packets
      */
-    private long nbDiscarded = 0;
+    private long nbDiscarded = 0L;
 
     /**
      * The number of packets for which Forward Error Correction (FEC) data was decoded.
      */
-    private long nbFec = 0;
+    private long nbFec = 0L;
 
     /**
      * The last number of download/upload lost packets.
      */
-    private final long[] nbLost = {0, 0};
+    private final long[] nbLost = {0L, 0L};
 
     /**
      * The last number of received/sent packets.
      */
-    private final long[] nbPackets = {0, 0};
+    private final long[] nbPackets = {0L, 0L};
 
     /**
      * The last percent of discarded packets
      */
-    private double percentDiscarded = 0;
+    private double percentDiscarded = 0.0D;
 
     /**
      * The last download/upload loss rate computed (in %).
      */
-    private final double[] percentLoss = {0, 0};
+    private final double[] percentLoss = {0.0D, 0.0D};
 
     /**
      * The last used bandwidth computed in download/upload (in KBit/s).
      */
-    private final double[] rateKiloBitPerSec = {0, 0};
+    private final double[] rateKiloBitPerSec = {0.0D, 0.0D};
 
     /**
      * The number of packets lost, as reported by the remote side in the last received RTCP RR.
      */
-    private long nbPacketsLostUpload = 0;
+    private long nbPacketsLostUpload = 0L;
 
     /**
      * The <code>RTCPReportListener</code> which listens to {@link #rtcpReports}
@@ -239,7 +239,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
      * "Delay since Last Sender Record (DLSR): 32 bits"). -1 if the RTT has not been computed yet.
      * Otherwise the RTT in ms.
      */
-    private long rttMs = -1;
+    private long rttMs = -1L;
 
     /**
      * The last time these stats have been updated.
@@ -250,22 +250,22 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
      * The last number of sent packets when the last feedback has been received. This counter is
      * used to compute the upload loss rate.
      */
-    private long uploadFeedbackNbPackets = 0;
+    private long uploadFeedbackNbPackets = 0L;
 
     /**
      * The maximum inter arrival jitter value the other party has reported, in RTP time units.
      */
-    private long minRemoteInterArrivalJitter = -1;
+    private long minRemoteInterArrivalJitter = -1L;
 
     /**
      * The minimum inter arrival jitter value the other party has reported, in RTP time units.
      */
-    private long maxRemoteInterArrivalJitter = 0;
+    private long maxRemoteInterArrivalJitter = 0L;
 
     /**
      * The sum of all RTP jitter values reported by the remote side, in RTP time units.
      */
-    private long remoteJitterSum = 0;
+    private long remoteJitterSum = 0L;
 
     /**
      * The number of remote RTP jitter reports received.
@@ -306,7 +306,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
         int rtt = -1;
 
         // The RTCPFeedback may represents a Sender Report without any report blocks (and so without LSR and DLSR)
-        if (lsr > 0 && dlsr > 0) {
+        if (lsr > 0 && dlsr > 0L) {
             long arrivalMs = System.currentTimeMillis();
 
             // If we are translating, the NTP timestamps we include in outgoing
@@ -383,7 +383,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
      * @return the number of lost packets for the receive streams.
      */
     public long getDownloadNbPacketLost() {
-        long downloadLost = 0;
+        long downloadLost = 0L;
         for (ReceiveStream stream : mediaStreamImpl.getReceiveStreams()) {
             downloadLost += stream.getSourceReceptionStats().getPDUlost();
         }
@@ -550,12 +550,11 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
      * @return the RTP clock rate associated with the <code>MediaStream</code>.
      */
     private double getRtpClockRate() {
-        MediaFormat format = mediaStreamImpl.getFormat();
         double clockRate;
-
+        MediaFormat format = mediaStreamImpl.getFormat();
         if (format == null) {
             MediaType mediaType = mediaStreamImpl.getMediaType();
-            clockRate = MediaType.VIDEO.equals(mediaType) ? 90000 : 48000;
+            clockRate = MediaType.VIDEO.equals(mediaType) ? 90000.0D : 48000.0D;
         }
         else
             clockRate = format.getClockRate();
@@ -572,9 +571,9 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
      */
     private double rtpTimeToMs(double rtpTime) {
         double rtpClockRate = getRtpClockRate();
-        if (rtpClockRate <= 0)
+        if (rtpClockRate <= 0.0D)
             return -1D;
-        return (rtpTime / rtpClockRate) * 1000;
+        return (rtpTime / rtpClockRate) * 1000.0D;
     }
 
     /**
@@ -585,7 +584,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
         if (statisticsEngine != null) {
             return rtpTimeToMs(statisticsEngine.getMinInterArrivalJitter());
         }
-        return -1;
+        return -1.0D;
     }
 
     /**
@@ -596,7 +595,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
         if (statisticsEngine != null) {
             return rtpTimeToMs(statisticsEngine.getMaxInterArrivalJitter());
         }
-        return -1D;
+        return -1.0D;
     }
 
     /**
@@ -630,7 +629,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
     public double getAvgUploadJitterMs() {
         int count = remoteJitterCount;
         if (count == 0)
-            return -1;
+            return -1.0D;
         return rtpTimeToMs(((double) remoteJitterSum) / count);
     }
 
@@ -707,7 +706,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
     public long getNbDiscarded() {
         int nbDiscarded = 0;
         for (JitterBufferControl pqc : getJitterBufferControls())
-            nbDiscarded = +pqc.getDiscarded();
+            nbDiscarded = pqc.getDiscarded();
         return nbDiscarded;
     }
 
@@ -721,7 +720,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
     public int getNbDiscardedFull() {
         int nbDiscardedFull = 0;
         for (JitterBufferControl pqc : getJitterBufferControls())
-            nbDiscardedFull = +pqc.getDiscardedFull();
+            nbDiscardedFull = pqc.getDiscardedFull();
         return nbDiscardedFull;
     }
 
@@ -735,7 +734,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
     public int getNbDiscardedLate() {
         int nbDiscardedLate = 0;
         for (JitterBufferControl pqc : getJitterBufferControls())
-            nbDiscardedLate = +pqc.getDiscardedLate();
+            nbDiscardedLate = pqc.getDiscardedLate();
         return nbDiscardedLate;
     }
 
@@ -749,7 +748,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
     public int getNbDiscardedReset() {
         int nbDiscardedReset = 0;
         for (JitterBufferControl pqc : getJitterBufferControls())
-            nbDiscardedReset = +pqc.getDiscardedReset();
+            nbDiscardedReset = pqc.getDiscardedReset();
         return nbDiscardedReset;
     }
 
@@ -763,7 +762,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
     public int getNbDiscardedShrink() {
         int nbDiscardedShrink = 0;
         for (JitterBufferControl pqc : getJitterBufferControls())
-            nbDiscardedShrink = +pqc.getDiscardedShrink();
+            nbDiscardedShrink = pqc.getDiscardedShrink();
         return nbDiscardedShrink;
     }
 
@@ -831,30 +830,32 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
             RTPConnectorInputStream<?> stream;
             try {
                 stream = connector.getDataInputStream();
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 // We should not enter here because we are not creating stream.
                 stream = null;
             }
             if (stream != null)
                 return stream.getNumberOfReceivedBytes();
         }
-        return 0;
+        return 0L;
     }
 
     @Override
     public long getNbSentBytes() {
         AbstractRTPConnector connector = mediaStreamImpl.getRTPConnector();
         if (connector == null) {
-            return 0;
+            return 0L;
         }
         RTPConnectorOutputStream stream = null;
         try {
             stream = connector.getDataOutputStream(false);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             // We should not enter here because we are not creating output stream
         }
         if (stream == null) {
-            return 0;
+            return 0L;
         }
         return stream.getNumberOfBytesSent();
     }
@@ -1011,16 +1012,12 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
                 if (mediaStream instanceof VideoMediaStream) {
                     RemoteBitrateEstimator remoteBitrateEstimator = mediaStream.getRemoteBitrateEstimator();
 
-                    remoteBitrateEstimator.onRttUpdate(
-                            /* avgRttMs */ rttMs,
-                            /* maxRttMs */rttMs);
+                    remoteBitrateEstimator.onRttUpdate(rttMs, rttMs);
 
                     TransportCCEngine tccEngine = mediaStream.getTransportCCEngine();
 
                     if (tccEngine != null) {
-                        tccEngine.onRttUpdate(
-                                /* avgRttMs */ rttMs,
-                                /* maxRttMs*/ rttMs);
+                        tccEngine.onRttUpdate(rttMs, rttMs);
                     }
                 }
             }
@@ -1322,7 +1319,8 @@ public class MediaStreamStatsImpl implements MediaStreamStats {
                         sbr += rtcpStream.getOutputBitrate(now);
                     }
                 }
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe) {
                 Timber.w(ioe, "Failed to get sending bitrate.");
             }
         }

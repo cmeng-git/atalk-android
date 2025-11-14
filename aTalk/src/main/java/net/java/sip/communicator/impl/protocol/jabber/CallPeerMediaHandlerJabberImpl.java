@@ -55,6 +55,7 @@ import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -1373,7 +1374,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         harvestCandidates(offer, answer, contents -> {
             try {
                 mPeer.sendTransportInfo(contents);
-            } catch (SmackException.NotConnectedException | InterruptedException e) {
+            } catch (SmackException.NotConnectedException | InterruptedException
+                     | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
                 Timber.e(e, "Could not send transport info");
             }
         });

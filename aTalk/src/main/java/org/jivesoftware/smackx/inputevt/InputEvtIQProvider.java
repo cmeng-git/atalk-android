@@ -5,32 +5,36 @@
  */
 package org.jivesoftware.smackx.inputevt;
 
+import java.io.IOException;
+import java.text.ParseException;
+
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-
-import java.io.IOException;
+import org.jxmpp.JxmppContext;
 
 /**
- * Implements an <code>IQProvider</code> which parses incoming <code>InputEvtIQ</code>s.
+ * Implements an <code>IqProvider</code> which parses incoming <code>InputEvtIQ</code>s.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class InputEvtIQProvider extends IQProvider<InputEvtIQ>
-{
+public class InputEvtIQProvider extends IqProvider<InputEvtIQ> {
     /**
      * Parse the Input IQ sub-document and returns the corresponding <code>InputEvtIQ</code>.
      *
      * @param parser XML parser
+     *
      * @return <code>InputEvtIQ</code>
+     *
      * @throws IOException, XmlPullParserException if something goes wrong during parsing
      */
     @Override
-    public InputEvtIQ parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException
-    {
+    public InputEvtIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         InputEvtIQ inputEvtIQ = new InputEvtIQ();
         InputEvtAction action = InputEvtAction.fromString(parser.getAttributeValue("",
                 InputEvtIQ.ACTION_ATTR_NAME));
@@ -57,4 +61,5 @@ public class InputEvtIQProvider extends IQProvider<InputEvtIQ>
         }
         return inputEvtIQ;
     }
+
 }

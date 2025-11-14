@@ -23,7 +23,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
- * ExtensionElement <code>Conform</code> for HTTP Request.
+ * XmlElement <code>Conform</code> for HTTP Request.
  * XEP-0070: Verifying HTTP Requests via XMPP (1.0.1 (2016-12-09))
  */
 public class ConfirmExtension implements ExtensionElement {

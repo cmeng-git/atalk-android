@@ -5,13 +5,14 @@
  */
 package org.jivesoftware.smackx.jingleinfo;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jxmpp.JxmppContext;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -35,10 +36,10 @@ public class RelayProvider extends ExtensionElementProvider<RelayExtension>
      * @throws SmackParsingException, XmlPullParserException, IOException if an error occurs parsing the XML.
      */
 
+
     @Override
-    public RelayExtension parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException, SmackParsingException
-    {
+    public RelayExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         boolean done = false;
         XmlPullParser.Event eventType;
         String elementName = null;
@@ -52,7 +53,7 @@ public class RelayProvider extends ExtensionElementProvider<RelayExtension>
                 if (elementName.equals(ServerExtension.ELEMENT)) {
                     ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(
                             ServerExtension.ELEMENT, ServerExtension.NAMESPACE);
-                    ExtensionElement childExtension = (ExtensionElement) provider.parse(parser);
+                    XmlElement childExtension = provider.parse(parser);
                     ext.addChildExtension(childExtension);
                 }
                 else if (elementName.equals("token")) {

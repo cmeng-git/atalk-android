@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2003-2006 Jive Software.
  *
@@ -67,7 +67,7 @@ public final class FileTransferNegotiator extends Manager {
 
     private static final String STREAM_INIT_PREFIX = "jsi_";
 
-    protected static final String STREAM_DATA_FIELD_NAME = "stream-method";
+    static final String STREAM_DATA_FIELD_NAME = "stream-method";
     static {
         FormFieldRegistry.addLookasideFieldRegistryEntry(STREAM_DATA_FIELD_NAME, FormField.Type.list_single);
     }
@@ -321,7 +321,6 @@ public final class FileTransferNegotiator extends Manager {
         si.setType(IQ.Type.set);
 
         Stanza siResponse = connection().createStanzaCollectorAndSend(si).nextResultOrThrow(responseTimeout);
-
         if (siResponse instanceof IQ) {
             IQ iqResponse = (IQ) siResponse;
             if (iqResponse.getType().equals(IQ.Type.result)) {

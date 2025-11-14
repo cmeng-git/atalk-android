@@ -49,8 +49,7 @@ import java.util.logging.Logger;
  * @author Boris Grozev
  * @author Yura Yaroshevich
  */
-public
-class NetAccessManager implements ErrorHandler {
+public class NetAccessManager implements ErrorHandler {
     /**
      * Our class logger
      */
@@ -562,7 +561,7 @@ class NetAccessManager implements ErrorHandler {
         ap.sendMessage(bytes, remoteAddr);
     }
 
-    public class SocketNotFoundException extends IllegalArgumentException {
+    public static class SocketNotFoundException extends IllegalArgumentException {
         private SocketNotFoundException(String message) {
             super(message);
         }

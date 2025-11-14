@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright the original author or authors
  *
@@ -26,12 +26,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -107,7 +107,7 @@ public class Socks5Proxy {
     private final Map<String, Socket> connectionMap = new ConcurrentHashMap<>();
 
     /* list of digests connections should be stored */
-    private final List<String> allowedConnections = Collections.synchronizedList(new LinkedList<String>());
+    private final List<String> allowedConnections = Collections.synchronizedList(new ArrayList<String>());
 
     private final Set<InetAddress> localAddresses = new LinkedHashSet<>(4);
 
@@ -149,6 +149,7 @@ public class Socks5Proxy {
      *
      * @param serverSocket the server socket to use
      */
+    @SuppressWarnings("this-escape")
     protected Socks5Proxy(ServerSocket serverSocket) {
         this.serverProcess = new Socks5ServerProcess();
         this.serverSocket = serverSocket;
@@ -346,7 +347,7 @@ public class Socks5Proxy {
      */
     public List<InetAddress> getLocalAddresses() {
         synchronized (localAddresses) {
-            return new LinkedList<>(localAddresses);
+            return new ArrayList<>(localAddresses);
         }
     }
 
@@ -433,7 +434,7 @@ public class Socks5Proxy {
     /**
      * Implementation of a simplified SOCKS5 proxy server.
      */
-    private class Socks5ServerProcess implements Runnable {
+    private final class Socks5ServerProcess implements Runnable {
 
         @Override
         public void run() {

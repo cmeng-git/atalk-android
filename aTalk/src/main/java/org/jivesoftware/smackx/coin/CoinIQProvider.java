@@ -5,17 +5,19 @@
  */
 package org.jivesoftware.smackx.coin;
 
+import java.io.IOException;
+import java.text.ParseException;
+
+import org.jivesoftware.smack.packet.IqData;
+import org.jivesoftware.smack.packet.XmlElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.provider.IqProvider;
+import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.DefaultExtensionElementProvider;
-
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.provider.ProviderManager;
-
-import java.io.IOException;
+import org.jxmpp.JxmppContext;
 
 /**
  * An implementation of a Coin IQ provider that parses incoming Coin IQs.
@@ -23,8 +25,7 @@ import java.io.IOException;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class CoinIQProvider extends IQProvider<CoinIQ>
-{
+public class CoinIQProvider extends IqProvider<CoinIQ> {
     /**
      * Provider for description packet extension.
      */
@@ -55,8 +56,7 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
     /**
      * Constructor.
      */
-    public CoinIQProvider()
-    {
+    public CoinIQProvider() {
         ProviderManager.addExtensionProvider(
                 UserRolesExtension.ELEMENT, UserRolesExtension.NAMESPACE,
                 new DefaultExtensionElementProvider<>(UserRolesExtension.class));
@@ -86,14 +86,14 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
      * Parse the Coin IQ sub-document and returns the corresponding <code>CoinIQ</code>.
      *
      * @param parser XML parser
+     *
      * @return <code>CoinIQ</code>
+     *
      * @throws IOException, XmlPullParserException, ParseException if something goes wrong during parsing
      */
-
     @Override
-    public CoinIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException
-    {
+    public CoinIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         CoinIQ coinIQ = new CoinIQ();
 
         String entity = parser.getAttributeValue("", CoinIQ.ENTITY_ATTR_NAME);
@@ -123,27 +123,27 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 switch (elementName) {
                     case DescriptionExtension.ELEMENT: {
-                        ExtensionElement childExtension = descriptionProvider.parse(parser);
+                        XmlElement childExtension = descriptionProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
                     }
                     case UsersExtension.ELEMENT: {
-                        ExtensionElement childExtension = usersProvider.parse(parser);
+                        XmlElement childExtension = usersProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
                     }
                     case StateExtension.ELEMENT: {
-                        ExtensionElement childExtension = stateProvider.parse(parser);
+                        XmlElement childExtension = stateProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
                     }
                     case URIsExtension.ELEMENT: {
-                        ExtensionElement childExtension = urisProvider.parse(parser);
+                        XmlElement childExtension = urisProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
                     }
                     case SidebarsByValExtension.ELEMENT: {
-                        ExtensionElement childExtension = sidebarsByValProvider.parse(parser);
+                        XmlElement childExtension = sidebarsByValProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
                     }
@@ -163,13 +163,14 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
      * <code>parser</code>.
      *
      * @param parser the parse that we'll be probing for text.
+     *
      * @return the content of the next {@link XmlPullParser.Event#TEXT_CHARACTERS} element we come across or
      * <code>null</code> if we encounter a closing tag first.
+     *
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
     public static String parseText(XmlPullParser parser)
-            throws IOException, XmlPullParserException
-    {
+            throws IOException, XmlPullParserException {
         boolean done = false;
 
         XmlPullParser.Event eventType;

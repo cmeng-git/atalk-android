@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 public class Container extends Component {
 	private static final Component[] EMPTY_ARRAY = null;
-	private List<Component> component = new ArrayList();
+	private List<Component> component = new ArrayList<>();
 	LayoutManager layoutMgr;
 	private boolean focusCycleRoot = false;
 	private boolean focusTraversalPolicyProvider;

@@ -46,8 +46,6 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 
 import java.awt.Dimension;
 
-import com.jakewharton.threetenabp.AndroidThreeTen;
-
 import net.java.sip.communicator.service.protocol.AccountManager;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.ServiceUtils;
@@ -143,7 +141,6 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
         // Do this after WebView(this).destroy(); Set up contextWrapper to use aTalk user selected Language
         super.onCreate();
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-        AndroidThreeTen.init(this);
         getDisplaySize();
         EdgeToEdgeDisable();
     }

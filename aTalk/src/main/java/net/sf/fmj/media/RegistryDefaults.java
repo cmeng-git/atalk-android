@@ -179,8 +179,7 @@ public class RegistryDefaults
 				javax.media.PlugInManager.DEMULTIPLEXER));
 
 			// PlugInManager.CODEC:
-			result
-				.add(new PlugInInfo("com.sun.media.codec.audio.mpa.JavaDecoder",
+			result.add(new PlugInInfo("com.sun.media.codec.audio.mpa.JavaDecoder",
 					new Format[] {
 						new AudioFormat("mpegaudio", 16000.0, -1, -1, -1, 1, -1, -1.0,
 							Format.byteArray),
@@ -315,8 +314,7 @@ public class RegistryDefaults
 				new Format[] { new AudioFormat("ULAW/rtp", -1.0, -1, -1, -1, -1, -1, -1.0,
 					Format.byteArray), }, new Format[] { new AudioFormat("ULAW", -1.0, -1, -1, -1,
 					-1, -1, -1.0, Format.byteArray), }, javax.media.PlugInManager.CODEC));
-			result
-				.add(new PlugInInfo("com.sun.media.codec.audio.mpa.Packetizer",
+			result.add(new PlugInInfo("com.sun.media.codec.audio.mpa.Packetizer",
 					new Format[] {
 						new AudioFormat("mpeglayer3", 16000.0, -1, -1, -1, 1, -1, -1.0,
 							Format.byteArray),
@@ -344,8 +342,7 @@ public class RegistryDefaults
 							Format.byteArray), }, new Format[] { new AudioFormat("mpegaudio/rtp",
 						-1.0, -1, -1, -1, -1, -1, -1.0, Format.byteArray), },
 					javax.media.PlugInManager.CODEC));
-			result
-				.add(new PlugInInfo("com.sun.media.codec.audio.mpa.DePacketizer",
+			result.add(new PlugInInfo("com.sun.media.codec.audio.mpa.DePacketizer",
 					new Format[] { new AudioFormat("mpegaudio/rtp", -1.0, -1, -1, -1, -1, -1, -1.0,
 						Format.byteArray), }, new Format[] {
 						new AudioFormat("mpegaudio", 44100.0, 16, -1, 1, 1, -1, -1.0,

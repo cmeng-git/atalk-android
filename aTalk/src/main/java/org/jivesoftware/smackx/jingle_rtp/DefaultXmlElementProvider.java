@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Jive Software
  *
@@ -18,10 +18,11 @@ package org.jivesoftware.smackx.jingle_rtp;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -29,6 +30,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.AbstractExtensionElement;
+import org.jxmpp.JxmppContext;
 
 /**
  * A provider that parses incoming stanza extensions into instances of the {@link Class} that it has
@@ -75,10 +77,11 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
      * @throws XmlPullParserException if an error occurs pull parsing the XML.
      * @throws SmackParsingException if an error occurs parsing the XML.
      */
+
     @Override
-    public EE parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException {
-        EE stanzaExtension;
+    public EE parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
+       EE stanzaExtension;
         try {
             stanzaExtension = stanzaClass.getDeclaredConstructor().newInstance();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException ignore) {
@@ -107,7 +110,7 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
                     if (provider == null) { //  && !JingleFileTransfer.NAMESPACE_V5.equals(namespace)) {
                         LOGGER.log(Level.WARNING, "No provider for EE<" + name + " " + namespace + "/>");
                     } else {
-                        ExtensionElement childExtension = provider.parse(parser);
+                        XmlElement childExtension = provider.parse(parser);
                         if (childExtension instanceof AbstractXmlElement || childExtension instanceof AbstractExtensionElement) {
                             mBuilder.addChildElement(childExtension);
                         } else

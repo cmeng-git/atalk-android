@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2003-2007 Jive Software.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,15 +25,13 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
  *
  * @author Eng Chong Meng
  */
-public class CaptchaIQ extends IQ
-{
+public class CaptchaIQ extends IQ {
     public static final String ELEMENT = CaptchaExtension.ELEMENT;
     public static final String NAMESPACE = CaptchaExtension.NAMESPACE;
 
     private final DataForm mDataForm;
 
-    public CaptchaIQ(DataForm dataForm)
-    {
+    public CaptchaIQ(DataForm dataForm) {
         super(ELEMENT, NAMESPACE);
         this.mDataForm = dataForm;
     }
@@ -43,14 +41,12 @@ public class CaptchaIQ extends IQ
      *
      * @return the DataForm in the registration.
      */
-    public DataForm getDataForm()
-    {
+    public DataForm getDataForm() {
         return mDataForm;
     }
 
     @Override
-    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
-    {
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.rightAngleBracket();
         if (mDataForm != null) {
             xml.append(mDataForm.toXML(XmlEnvironment.EMPTY));

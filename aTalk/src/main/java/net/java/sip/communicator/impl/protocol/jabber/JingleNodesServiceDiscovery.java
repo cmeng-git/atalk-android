@@ -222,9 +222,9 @@ public class JingleNodesServiceDiscovery implements Runnable
 
         final DiscoverItems items = new DiscoverItems();
         items.setTo(startPoint);
-        StanzaCollector collector = xmppConnection.createStanzaCollectorAndSend(items);
 
         DiscoverItems result;
+        StanzaCollector collector = xmppConnection.createStanzaCollectorAndSend(items);
         try {
             result = collector.nextResult(Math.round(SmackConfiguration.getDefaultReplyTimeout() * 1.5));
         } finally {

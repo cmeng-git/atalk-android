@@ -5,6 +5,7 @@
  */
 package org.jivesoftware.smackx.jingleinfo;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.DefaultExtensionElementProvider;
@@ -12,8 +13,10 @@ import org.jivesoftware.smackx.DefaultExtensionElementProvider;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.*;
+import org.jxmpp.JxmppContext;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * Provider for the <code>JingleInfoQueryIQ</code>.
@@ -21,7 +24,7 @@ import java.io.IOException;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
+public class JingleInfoQueryIQProvider extends IqProvider<JingleInfoQueryIQ>
 {
     /**
      * STUN packet extension provider.
@@ -51,10 +54,10 @@ public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
      * @return a new {@link JingleInfoQueryIQ} instance.
      * @throws XmlPullParserException, IOException, SmackException if an error occurs parsing the XML.
      */
+
     @Override
-    public JingleInfoQueryIQ parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException, SmackParsingException
-    {
+    public JingleInfoQueryIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         boolean done = false;
         JingleInfoQueryIQ iq = new JingleInfoQueryIQ();
 

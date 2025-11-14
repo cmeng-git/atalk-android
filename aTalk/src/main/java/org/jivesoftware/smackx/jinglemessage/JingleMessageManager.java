@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Eng Chong Meng
  *
@@ -33,10 +33,10 @@ import org.jivesoftware.smack.filter.FromTypeFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
 
@@ -62,8 +62,8 @@ public final class JingleMessageManager extends Manager {
     }
 
     /**
-     * Message filter to listen for message sent from DomainJid i.e. server with normal or
-     * has extensionElement <code>JingleMessage</code>
+     * Message filter to listen for message sent from DomainJid i.e.
+     * server with normal or has xmlElement <code>JingleMessage</code>
      */
     private static final StanzaFilter MESSAGE_FILTER = new AndFilter(
             MessageTypeFilter.NORMAL_OR_CHAT, new StanzaExtensionFilter(JingleMessage.NAMESPACE));
@@ -87,7 +87,7 @@ public final class JingleMessageManager extends Manager {
                     return;
 
                 final Message message = (Message) stanza;
-                ExtensionElement extElement = message.getExtension(JingleMessage.NAMESPACE);
+                XmlElement extElement = message.getExtension(JingleMessage.NAMESPACE);
 
                 final JingleMessage jingleMessage = new JingleMessage((StandardExtensionElement) extElement);
                 final Jid from = message.getFrom();

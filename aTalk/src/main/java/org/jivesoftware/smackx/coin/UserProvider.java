@@ -5,14 +5,16 @@
  */
 package org.jivesoftware.smackx.coin;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jxmpp.JxmppContext;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * Parser for UserExtensionElement.
@@ -32,10 +34,10 @@ public class UserProvider extends ExtensionElementProvider<UserExtension>
      * @return a new {@link UserExtension} instance.
      * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
      */
+
     @Override
-    public UserExtension parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException
-    {
+    public UserExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         boolean done = false;
         XmlPullParser.Event eventType;
         String elementName = null;
@@ -67,7 +69,7 @@ public class UserProvider extends ExtensionElementProvider<UserExtension>
                 }
                 else if (elementName.equals(EndpointExtension.ELEMENT)) {
                     EndpointProvider provider = new EndpointProvider();
-                    ExtensionElement childExtension = provider.parse(parser);
+                    XmlElement childExtension = provider.parse(parser);
                     ext.addChildExtension(childExtension);
                 }
             }

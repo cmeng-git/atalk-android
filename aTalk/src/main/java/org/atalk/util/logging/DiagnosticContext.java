@@ -16,9 +16,12 @@
 package org.atalk.util.logging;
 
 import java.time.Clock;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.atalk.util.TimeUtils;
 
 /**
  * A {@link DiagnosticContext} implementation backed by a
@@ -27,29 +30,27 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author George Politis
  * @author Eng Chong Meng
  */
-public class DiagnosticContext extends ConcurrentHashMap<String, Object>
-{
+public class DiagnosticContext extends ConcurrentHashMap<String, Object> {
     Clock clock;
 
     /**
      * {@inheritDoc}
      */
     // @SuppressLint("NewApi") // Required API-26
-    public DiagnosticContext()
-    {
+    public DiagnosticContext() {
         super();
-        // this.clock = Clock.systemUTC();
+        this.clock = Clock.systemUTC();
     }
 
-//    /**
-//     * Creates a diagnostic context using the specified clock for timestamp values.
-//     * @param clock providing access to the current instant, date and time using a time-zone.
-//     */
-//    public DiagnosticContext(Clock clock)
-//    {
-//        super();
-//        this.clock = clock;
-//    }
+    /**
+     * Creates a diagnostic context using the specified clock for timestamp values.
+     *
+     * @param clock providing access to the current instant, date and time using a time-zone.
+     */
+    public DiagnosticContext(Clock clock) {
+        super();
+        this.clock = clock;
+    }
 
     /**
      * Makes a new time series point without a timestamp. This is recommended
@@ -58,10 +59,9 @@ public class DiagnosticContext extends ConcurrentHashMap<String, Object>
      *
      * @param timeSeriesName the name of the time series
      */
-    public TimeSeriesPoint makeTimeSeriesPoint(String timeSeriesName)
-    {
-        // return makeTimeSeriesPoint(timeSeriesName, clock.instant());
-        return makeTimeSeriesPoint(timeSeriesName, -1L);
+    public TimeSeriesPoint makeTimeSeriesPoint(String timeSeriesName) {
+        return makeTimeSeriesPoint(timeSeriesName, clock.instant());
+        // return makeTimeSeriesPoint(timeSeriesName, -1L);
     }
 
     /**
@@ -71,42 +71,36 @@ public class DiagnosticContext extends ConcurrentHashMap<String, Object>
      * @param timeSeriesName the name of the time series
      * @param tsMs the timestamp of the time series point (in millis)
      */
-    public TimeSeriesPoint makeTimeSeriesPoint(String timeSeriesName, long tsMs)
-    {
+    public TimeSeriesPoint makeTimeSeriesPoint(String timeSeriesName, long tsMs) {
         return new TimeSeriesPoint(this)
                 .addField("series", timeSeriesName)
                 .addField("time", tsMs);
     }
 
-//    /**
-//     * Makes a new time series point with an Instant. This is recommended for
-//     * time series where it's important to have the exact timestamp value,
-//     * when the process is working in Instant values.
-//     *
-//     * @param timeSeriesName the name of the time series
-//     * @param ts the timestamp of the time series point
-//     */
-//    @SuppressLint("NewApi") // Required API-26
-//    public TimeSeriesPoint makeTimeSeriesPoint(String timeSeriesName, Instant ts)
-//    {
-//        String time;
-//        return new TimeSeriesPoint(this)
-//            .addField("series", timeSeriesName)
-//            .addField("time", TimeUtils.formatTimeAsFullMillis(ts.getEpochSecond(), ts.getNano()));
-//    }
+    /**
+     * Makes a new time series point with an Instant. This is recommended for
+     * time series where it's important to have the exact timestamp value,
+     * when the process is working in Instant values.
+     *
+     * @param timeSeriesName the name of the time series
+     * @param ts the timestamp of the time series point
+     */
+    public TimeSeriesPoint makeTimeSeriesPoint(String timeSeriesName, Instant ts) {
+        String time;
+        return new TimeSeriesPoint(this)
+                .addField("series", timeSeriesName)
+                .addField("time", TimeUtils.formatTimeAsFullMillis(ts.getEpochSecond(), ts.getNano()));
+    }
 
-    public static class TimeSeriesPoint extends HashMap<String, Object>
-    {
-        public TimeSeriesPoint(Map<String, Object> m)
-        {
+    public static class TimeSeriesPoint extends HashMap<String, Object> {
+        public TimeSeriesPoint(Map<String, Object> m) {
             super(m);
         }
 
         /**
          * Adds a field to the time series point.
          */
-        public TimeSeriesPoint addField(String key, Object value)
-        {
+        public TimeSeriesPoint addField(String key, Object value) {
             put(key, value);
             return this;
         }

@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2017-2022 Eng Chong Meng
  *
@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.jinglemessage;
 
 /**
- * Implements <code>ExtensionElement</code> for XEP-0353: Jingle Message Initiation 0.4.0 (2021-11-27).
+ * Implements <code>XmlElement</code> for XEP-0353: Jingle Message Initiation 0.4.0 (2021-11-27).
  * @see <a href="https://xmpp.org/extensions/xep-0353.html">XEP-0353: Jingle Message Initiation</a>
  *
  * @author Eng Chong Meng

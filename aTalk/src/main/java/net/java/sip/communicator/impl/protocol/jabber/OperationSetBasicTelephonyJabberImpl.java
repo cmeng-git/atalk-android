@@ -54,10 +54,10 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.ToMatchesFilter;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.coin.CoinExtension;
 import org.jivesoftware.smackx.confdesc.CallIdExtension;
@@ -238,7 +238,7 @@ public class OperationSetBasicTelephonyJabberImpl
         } catch (XmppStringprepException e) {
             throw new OperationFailedException("Invalid remote JID", OperationFailedException.GENERAL_ERROR, e);
         }
-        List<ExtensionElement> sessionInitiateExtensions = new ArrayList<>(2);
+        List<XmlElement> sessionInitiateExtensions = new ArrayList<>(2);
 
         String callid = cd.getCallId();
         if (callid != null) {
@@ -274,7 +274,7 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param call the <code>CallJabberImpl</code> that will be used to initiate the call
      * @param calleeAddress the address of the callee that we'd like to connect with.
-     * @param siChildElement a collection of additional and optional <code>ExtensionElement</code>s to be
+     * @param siChildElement a collection of additional and optional <code>XmlElement</code>s to be
      * added to the <code>session-initiate</code> {@link Jingle} which is to init the specified <code>call</code>
      *
      * @return the <code>CallPeer</code> that represented by the specified uri. All following state
@@ -284,8 +284,7 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @throws OperationFailedException with the corresponding code if we fail to create the call.
      */
-    AbstractCallPeer<?, ?> createOutgoingCall(CallJabberImpl call, String calleeAddress,
-            Iterable<ExtensionElement> siChildElement)
+    AbstractCallPeer<?, ?> createOutgoingCall(CallJabberImpl call, String calleeAddress, Iterable<XmlElement> siChildElement)
             throws OperationFailedException {
         FullJid calleeJid = null;
         if (calleeAddress.contains("/")) {
@@ -298,8 +297,7 @@ public class OperationSetBasicTelephonyJabberImpl
         return createOutgoingCall(call, calleeAddress, calleeJid, siChildElement);
     }
 
-    AbstractCallPeer<?, ?> createOutgoingCall(CallJabberImpl call, FullJid calleeJid,
-            Iterable<ExtensionElement> siChildElement)
+    AbstractCallPeer<?, ?> createOutgoingCall(CallJabberImpl call, FullJid calleeJid, Iterable<XmlElement> siChildElement)
             throws OperationFailedException {
         return createOutgoingCall(call, calleeJid.toString(), calleeJid, siChildElement);
     }
@@ -310,7 +308,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * @param call the <code>CallJabberImpl</code> that will be used to initiate the call
      * @param calleeAddress the address of the callee that we'd like to connect with.
      * @param fullCalleeURI the full Jid address, which if specified would explicitly initiate a call to this full address
-     * @param sessionInitiateExtensions a collection of additional and optional <code>ExtensionElement</code>s to be
+     * @param sessionInitiateExtensions a collection of additional and optional <code>XmlElement</code>s to be
      * added to the <code>session-initiate</code> {@link Jingle} which is to init the specified <code>call</code>
      *
      * @return the <code>CallPeer</code> that represented by the specified uri. All following state
@@ -321,7 +319,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * @throws OperationFailedException with the corresponding code if we fail to create the call.
      */
     AbstractCallPeer<?, ?> createOutgoingCall(CallJabberImpl call, String calleeAddress,
-            FullJid fullCalleeURI, Iterable<ExtensionElement> sessionInitiateExtensions)
+            FullJid fullCalleeURI, Iterable<XmlElement> sessionInitiateExtensions)
             throws OperationFailedException {
         Timber.i("Creating outgoing call to %s", calleeAddress);
         if (mConnection == null || call == null) {
@@ -797,7 +795,7 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param jingleIQ the {@link Jingle} packet we need to be analyzing.
      */
-    private synchronized void processJingleSynchronize(final Jingle jingleIQ) {
+    protected synchronized void processJingleSynchronize(final Jingle jingleIQ) {
         CallPeerJabberImpl callPeer;
 
         JingleAction action = jingleIQ.getAction();
@@ -1008,7 +1006,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * For the following parameters usages:
      *
      * @see #processSessionAccept(CallPeerJabberImpl, Jingle)
-     * @see #processSessionInitiate(CallJabberImpl, CallPeerJabberImpl, Jingle)
+     * @see #processSessionInitiateInternal(CallJabberImpl, CallPeerJabberImpl, Jingle)
      * @see #processTransportInfo(CallPeerJabberImpl, Jingle)
      */
     private Jingle jingleSI = null;

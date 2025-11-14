@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2003-2007 Jive Software, 2018 Paul Schaub.
  *
@@ -41,11 +41,11 @@ import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.ToTypeFilter;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaBuilder;
+import org.jivesoftware.smack.packet.XmlElement;
 
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -129,9 +129,7 @@ public final class ChatStateManager extends Manager {
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
         MultiUserChatManager multiUserChatManager = MultiUserChatManager.getInstanceFor(connection);
 
-        connection.addMessageInterceptor(messageBuilder -> {
-            Message message = messageBuilder.build();
-
+        connection.addMessageInterceptor(message -> {
             // if message already has a chatStateExtension, then do nothing,
             if (message.hasExtension(ChatStateExtension.NAMESPACE)) {
                 return;
@@ -148,7 +146,7 @@ public final class ChatStateManager extends Manager {
 
             // otherwise add a chatState extension if necessary.
             if (updateChatState(chat, ChatState.active)) {
-                messageBuilder.addExtension(new ChatStateExtension(ChatState.active));
+                message.addExtension(new ChatStateExtension(ChatState.active));
             }
         }, OUTGOING_MESSAGE_FILTER::accept);
 
@@ -161,7 +159,7 @@ public final class ChatStateManager extends Manager {
                 EntityBareJid bareFrom = fullFrom.asEntityBareJid();
 
                 final Chat chat = ChatManager.getInstanceFor(connection()).chatWith(bareFrom);
-                ExtensionElement extension = message.getExtension(NAMESPACE);
+                XmlElement extension = message.getExtension(NAMESPACE);
                 String chatStateElementName = extension.getElementName();
 
                 ChatState state;
@@ -221,7 +219,7 @@ public final class ChatStateManager extends Manager {
 
     /**
      * Sets the current state of the provided chat. This method will send an empty bodied Message
-     * stanza with the state attached as a {@link org.jivesoftware.smack.packet.ExtensionElement}, if
+     * stanza with the state attached as a {@link org.jivesoftware.smack.packet.XmlElement}, if
      * and only if the new chat state is different than the last state.
      *
      * @param newState the new state of the chat
@@ -245,7 +243,7 @@ public final class ChatStateManager extends Manager {
 
     /**
      * Sets the current state of the provided mucChat. This method will send an empty bodied Message
-     * stanza with the state attached as a {@link org.jivesoftware.smack.packet.ExtensionElement},
+     * stanza with the state attached as a {@link org.jivesoftware.smack.packet.XmlElement},
      * if and only if the new chat state is different from the last state.
      *
      * @param newState  the new state of the chat
