@@ -486,10 +486,10 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
     /**
      * Publishes the given status to the given presence operation set.
      */
-    private class PublishPresenceStatusThread extends Thread {
-        private ProtocolProviderService protocolProvider;
-        private PresenceStatus status;
-        private OperationSetPresence presence;
+    private static class PublishPresenceStatusThread extends Thread {
+        private final ProtocolProviderService protocolProvider;
+        private final PresenceStatus status;
+        private final OperationSetPresence presence;
 
         /**
          * Publishes the given <code>status</code> through the given <code>presence</code> operation set.

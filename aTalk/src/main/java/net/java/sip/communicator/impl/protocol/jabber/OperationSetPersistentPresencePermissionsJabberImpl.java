@@ -5,24 +5,23 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
+
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ContactGroup;
 import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
 import net.java.sip.communicator.service.protocol.OperationSetPersistentPresencePermissions;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
-
 /**
  * Implements group edit permissions.
  *
  * @author Damian Minkov
  */
-public class OperationSetPersistentPresencePermissionsJabberImpl implements OperationSetPersistentPresencePermissions
-{
+public class OperationSetPersistentPresencePermissionsJabberImpl implements OperationSetPersistentPresencePermissions {
     /**
      * Will indicate everything is readonly.
      */
@@ -36,15 +35,14 @@ public class OperationSetPersistentPresencePermissionsJabberImpl implements Oper
     /**
      * List of group names to be considered as readonly.
      */
-    private List<String> readonlyGroups = new ArrayList<>();
+    private final List<String> readonlyGroups = new ArrayList<>();
 
     /**
      * The parent provider.
      */
     private final ProtocolProviderServiceJabberImpl provider;
 
-    OperationSetPersistentPresencePermissionsJabberImpl(ProtocolProviderServiceJabberImpl provider)
-    {
+    OperationSetPersistentPresencePermissionsJabberImpl(ProtocolProviderServiceJabberImpl provider) {
         this.provider = provider;
 
         String readOnlyGroupsStr
@@ -65,8 +63,7 @@ public class OperationSetPersistentPresencePermissionsJabberImpl implements Oper
      * @return <code>true</code> if the whole contact list is readonly, otherwise <code>false</code>.
      */
     @Override
-    public boolean isReadOnly()
-    {
+    public boolean isReadOnly() {
         if (readonlyGroups.contains(ALL_GROUPS_STR))
             return true;
 
@@ -89,11 +86,11 @@ public class OperationSetPersistentPresencePermissionsJabberImpl implements Oper
      * Checks whether the <code>contact</code> can be edited, removed, moved. If the parent group is readonly.
      *
      * @param contact the contact to check.
+     *
      * @return <code>true</code> if the contact is readonly, otherwise <code>false</code>.
      */
     @Override
-    public boolean isReadOnly(Contact contact)
-    {
+    public boolean isReadOnly(Contact contact) {
         return isReadOnly(contact.getParentContactGroup());
     }
 
@@ -101,11 +98,11 @@ public class OperationSetPersistentPresencePermissionsJabberImpl implements Oper
      * Checks whether the <code>group</code> is readonly.
      *
      * @param group the group to check.
+     *
      * @return <code>true</code> if the group is readonly, otherwise <code>false</code>.
      */
     @Override
-    public boolean isReadOnly(ContactGroup group)
-    {
+    public boolean isReadOnly(ContactGroup group) {
         if (isReadOnly())
             return true;
 

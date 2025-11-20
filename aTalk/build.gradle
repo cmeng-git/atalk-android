@@ -57,8 +57,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 406000
-        versionName "4.6.0"
+        versionCode 406010
+        versionName "4.6.1"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -189,14 +189,12 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/core_release.kotlin_module'
-        exclude 'META-INF/kotlin-stdlib-jdk7.kotlin_module'
+        exclude 'META-INF/kotlin-stdlib-jdk8.kotlin_module'
         exclude 'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
     }
 }
 
 ext {
-    // for official maven release; smackVersion = '4.5.0-alpha1'
-    // smackVersion = '4.4.8'
     smackVersion = '4.5.0-rc1'
 
     // May need manual cleanup for new SNAPSHOT update if same name with date change only:
@@ -216,7 +214,7 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.17.0'
 
-    implementation 'androidx.activity:activity-ktx:1.11.0'
+    implementation 'androidx.activity:activity-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.fragment:fragment-ktx:1.8.9'
@@ -243,8 +241,7 @@ dependencies {
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.18'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta05'
-    implementation 'com.squareup.okhttp3:okhttp:5.3.0' // 4.12.0'
-
+    implementation 'com.squareup.okhttp3:okhttp:5.3.2' // 4.12.0'
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
     // implementation 'com.github.cketti:ckchangelog-core:2.0.0-beta02'
 
@@ -253,7 +250,7 @@ dependencies {
 
     // commons-codec:1.16.x not compatible with Note10, crashes with No static method isEmpty([B)Z in class org/apache/commons/codec/binary/BinaryCodec;
     // or its super classes (declaration of 'org.apache.commons.codec.binary.BinaryCodec' appears in /system/framework/org.apache.http.legacy.jar)
-    implementation 'commons-codec:commons-codec:1.20.0'   // old = 1.15
+    implementation 'commons-codec:commons-codec:1.20.0'
     implementation 'org.apache.commons:commons-text:1.14.0'
     implementation 'org.apache.james:apache-mime4j-core:0.8.13'
     implementation 'org.bitlet:weupnp:0.1.4'
@@ -403,9 +400,6 @@ dependencies {
             transitive = false
         }
         // destinationDir new File("${projectDir}/libs")
-
-        // v1.1.5 uses java.util.Base64 was only added in API level 26
-        // classRename 'java.util.Base64', 'org.atalk.android.util.java.util.Base64'
 
         // v1.1.4 uses binary.Base64
         classRename 'org.apache.commons.codec.binary.Base64', 'org.apache.commons.codec.binary.ApacheBase64'

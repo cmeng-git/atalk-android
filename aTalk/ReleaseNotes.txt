@@ -1,5 +1,12 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.6.1 (406010)
+Release Date:   11/20/2025
+Author:         cmeng
+- Enable an important debug message i.e. 'The provider state changed...' to be printed in release version.
+- OperationSetBasicInstantMessagingJabberImpl#onCarbonCopyReceived: Skip handling of empty msgBody for all incoming message, in case Jid is null from FFR
+
+=========================================================================
 Version:        4.6.0 (406000)
 Release Date:   11/14/2025
 Author:         cmeng
@@ -23,6 +30,7 @@ Author:         cmeng
 - Upgrade libraries org.bouncycastle:xxx-jdk18on:1.79 and org.jitsi:zrtp4j-light:4.1.3 etc
 - Remove patch for ejabberd <= 23.01; it sends presence's 'photo' element with no hash value, after user published a new avatar.
 - aTalk v4.6.0 is the last version to support OTR. OTR will be removed in aTalk 5.0.0 or later releases.
+
 
 *** Observation with no solution implemented: ***
 - Some android devices seem unable to handle properly display info setup (TooManyViews) in AccountInfoPresenceActivity,

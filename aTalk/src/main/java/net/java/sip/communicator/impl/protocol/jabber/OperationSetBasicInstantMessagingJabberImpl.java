@@ -799,6 +799,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     @Override
     public void onCarbonCopyReceived(CarbonExtension.Direction direction,
             Message carbonCopy, Message wrappingMessage) {
+        // Skip handling of empty msgBody for all incoming message, in case Jid is null from FFR
+        if (carbonCopy.getBody() == null)
+            return;
+
         isForwardedSentMessage = CarbonExtension.Direction.sent.equals(direction);
         Jid userJId = isForwardedSentMessage ? carbonCopy.getTo() : carbonCopy.getFrom();
         isCarbon = wrappingMessage.hasExtension(CarbonExtension.NAMESPACE);

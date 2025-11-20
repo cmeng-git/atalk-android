@@ -139,9 +139,9 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
         // no change - throws exception to trace the root; otherwise too many unnecessary events
         if (newState == oldState) {
             String msg = "The provider state unchanged: " + newState + ". Reason: " + reason;
-            (new Exception(msg)).printStackTrace();
+            Timber.w(new Exception(msg));
         }
-        Timber.d("The provider state changed: %s => %s. Reason: %s", oldState, newState, reason);
+        Timber.i("The provider state changed: %s => %s. Reason: %s", oldState, newState, reason);
 
         RegistrationStateChangeEvent event
                 = new RegistrationStateChangeEvent(this, oldState, newState, reasonCode, reason);

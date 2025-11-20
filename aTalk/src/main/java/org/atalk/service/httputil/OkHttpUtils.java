@@ -155,13 +155,15 @@ public class OkHttpUtils {
         OkHttpClient httpClient = buildHttpClient(url, 10);
         Call call = httpClient.newCall(reqBuilder.build());
         // Must not use try close here as the data is yet to be processed by caller.
-        Response response = call.execute();
-        if (response.isSuccessful())
-            return response.body();
-        else if (response.isRedirect()) {
-            Timber.d("HttpPost is redirect: %s", response.code());
-        } else {
-            Timber.d("HttpPost response: %s", response.networkResponse());
+        try (Response response = call.execute()) {
+            if (response.isSuccessful())
+                return response.body();
+            else if (response.isRedirect()) {
+                Timber.d("HttpPost is redirect: %s", response.code());
+            }
+            else {
+                Timber.d("HttpPost response: %s", response.networkResponse());
+            }
         }
         return null;
     }

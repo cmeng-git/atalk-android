@@ -7,8 +7,14 @@
 -->
 
 <changelog>
-    <release version="4.6.0 (11/14/2025)" versioncode="406000">
+    <release version="4.6.1 (11/20/2025)" versioncode="406010">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>onCarbonCopyReceived: Skip handling of empty msgBody for all incoming message, in case Jid is null from FFR</change>
+        <change>Enable an important debug message i.e. 'The provider state changed...' to be printed in release version</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="4.6.0 (11/14/2025)" versioncode="406000">
         <change>Port aTalk to use smack 4.5.0-rc1 release</change>
         <change>Set aTalk to be compatible with smack 4.5.0 release i.e. minSdkVersion = 26 and sourceCompatibility JavaVersion.VERSION_11</change>
         <change>Fix HashManager.getMessageDigest(SHA3-256) throws NoSuchAlgorithmException. OSGiService executes smack SecurityUtil.ensureProviderAtFirstPosition(BouncyCastleProvider.class)</change>
