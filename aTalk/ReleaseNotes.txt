@@ -1,4 +1,19 @@
-Project aTalk-Android Release Notes
+Project aTalk-Android Release Notes:
+=========================================================================
+Version:        5.0.0 (500000)
+Release Date:   12/27/2025
+Author:         cmeng
+- Remove feature support for XEP-0364: Current Off-the-Record Messaging Usage partial implementation
+- Must set YT parameter 'origin' to other than YT site i.e.'https://www.youtube.com'; else embed video player has error
+- Incorrect extraction of youtube video Id e.g. https://youtu.be/qwlnX6YJrt8?si=sgdxTEb7kccLplx-
+- Support YT playback of playlist i.e. url contains 'list=' or playlist without 'PL' prefix
+- Display new changes since version installed on device to user in apk update dialog prompt.
+- Fix exception error MamVersion.fromNamespace(mamPrefsIq.getChildElementNamespace())
+- Fix AvatarData cannot be cast to org.jivesoftware.smack.packet.ExtensionElement
+- Revert to use AsyncTask from ExecutorService for AccountInfoPresenceActivity; unknown ANR from field:
+  AccountInfoPresenceActivity$$ExternalSyntheticThrowIAE2.m (D8$$SyntheticClass)
+- Change aTalk.doap file to reflect actual version i.e. 0.3 implemented for XEP-0384: OMEMO Encryption
+
 =========================================================================
 Version:        4.6.1 (406010)
 Release Date:   11/20/2025
@@ -30,7 +45,6 @@ Author:         cmeng
 - Upgrade libraries org.bouncycastle:xxx-jdk18on:1.79 and org.jitsi:zrtp4j-light:4.1.3 etc
 - Remove patch for ejabberd <= 23.01; it sends presence's 'photo' element with no hash value, after user published a new avatar.
 - aTalk v4.6.0 is the last version to support OTR. OTR will be removed in aTalk 5.0.0 or later releases.
-
 
 *** Observation with no solution implemented: ***
 - Some android devices seem unable to handle properly display info setup (TooManyViews) in AccountInfoPresenceActivity,

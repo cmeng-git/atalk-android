@@ -901,67 +901,6 @@
     <!-- DTLS-SRTP Securing -->
     <string name="media_security_encryption_ended">انتهى تشفير المكالمة: %1$s</string>
 
-    <!-- OTR plugin -->
-    <string name="otr_menu_authenticate_buddy">مصادقة الصديق</string>
-    <string name="plugin_otr_menu_CB_AUTO">بدء الرسائل الخاصة تلقائيًا</string>
-    <string name="plugin_otr_menu_CB_ENABLE">تفعيل الرسائل الخاصة</string>
-    <string name="plugin_otr_menu_CB_REQUIRE">طلب الرسائل الخاصة</string>
-    <string name="plugin_otr_menu_CB_RESET">إعادة تعيين</string>
-    <string name="plugin_otr_menu_CRYPTO_AUTHETICATED">التشفير موثق</string>
-    <string name="plugin_otr_menu_CRYPTO_Finish">التشفير انتهى</string>
-    <string name="plugin_otr_menu_CRYPTO_NON_AUTHETICATED">التشفير غير موثق</string>
-    <string name="plugin_otr_menu_END_OTR">إنهاء المحادثة الخاصة</string>
-    <string name="plugin_otr_menu_OTR_AUTHETICATED">OTR موثق</string>
-    <string name="plugin_otr_menu_OTR_Finish">OTR انتهى</string>
-    <string name="plugin_otr_menu_OTR_HANDSHAKE">مصافحة OTR</string>
-    <string name="plugin_otr_menu_OTR_NON_AUTHETICATED">OTR غير موثق</string>
-    <string name="plugin_otr_menu_OTR_PLAINTTEXT">نص عادي</string>
-    <string name="plugin_otr_menu_OTR_TIMEOUT">انتهت مهلة مصافحة OTR</string>
-    <string name="plugin_otr_menu_OTR_TOOLTIP">تشفير الدردشات بـ OTR</string>
-    <string name="plugin_otr_menu_REFRESH_OTR">تحديث المحادثة الخاصة</string>
-    <string name="plugin_otr_menu_START_OTR">بدء محادثة خاصة</string>
-    <string name="plugin_otr_menu_TITLE">دردشة آمنة</string>
-    <string name="plugin_otr_menu_WHATS_THIS">ما هذا</string>
-    <string name="plugin_otr_authbuddydialog_AUTHENTICATION_INFO">مصادقة صديق تساعد على ضمان أن الشخص الذي تتحدث إليه هو من يدعي أنه كذلك. للتحقق من البصمة، اتصل بصديقك عبر قناة موثقة أخرى، مثل الهاتف أو البريد الإلكتروني الموقّع بـ GPG. يجب على كل منكما إخبار الآخر ببصمته. إذا تطابقت الأمور، يجب أن تشير في الحوار التالي أنني *قد* تحققت من البصمة.</string>
-    <string name="plugin_otr_authbuddydialog_CANCEL">إلغاء</string>
-    <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">يرجى إدخال البصمة التي تلقيتها من %1$s.</string>
-    <string name="plugin_otr_authbuddydialog_HELP">مساعدة</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE">لقد قمت</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">لم أقم</string>
-    <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">بصمتي لـ %1$s: %2$s</string>
-    <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">البصمة البعيدة لـ %1$s: %2$s</string>
-    <string name="plugin_otr_authbuddydialog_TITLE">مصادقة الصديق</string>
-    <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">تحققت أن هذه هي بالفعل البصمة الصحيحة لـ %1$s.</string>
-    <string name="plugin_otr_configform_CB_AUTO">بدء الرسائل الخاصة تلقائيًا</string>
-    <string name="plugin_otr_configform_CB_ENABLE">تفعيل الرسائل الخاصة</string>
-    <string name="plugin_otr_configform_CB_REQUIRE">طلب الرسائل الخاصة</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_CONTACT">جهة الاتصال</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_VERIFIED_STATUS">تم التحقق</string>
-    <string name="plugin_otr_configform_FINGERPRINT">البصمة</string>
-    <string name="plugin_otr_configform_GENERATE">إنشاء</string>
-    <string name="plugin_otr_configform_KNOWN_FINGERPRINTS">البصمات المعروفة</string>
-    <string name="plugin_otr_configform_MY_PRIVATE_KEYS">مفاتيحي الخاصة</string>
-    <string name="plugin_otr_configform_REGENERATE">إعادة إنشاء</string>
-    <string name="plugin_otr_configform_VERIFY_STATUS">تم التحقق: %1$s</string>
-
-    <string name="plugin_otr_activator_fallbackmessage">&lt;span style=font-weight: bold;&gt;%1$s يحاول بدء محادثة مشفرة &lt;a href=https://en.wikipedia.org/wiki/Off-the-Record_Messaging&gt; Off-The-Record&lt;/a&gt; معك. لكن برنامجك لا يدعم الرسائل Off-The-Record. لمزيد من المعلومات، راجع &lt;a href=https://en.wikipedia.org/wiki/Off-the-Record_Messaging&gt; https://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a&gt;&lt;/span&gt;</string>
-    <string name="plugin_otr_activator_requireencryption">لم يتم إرسال رسالتك. الرسائل الخاصة مطلوبة.</string>
-    <string name="plugin_otr_activator_sessionfinished">%1$s أنهى/أنهت محادثته/محادثتها الخاصة OTR معك؛ يجب عليك فعل الشيء نفسه.</string>
-    <string name="plugin_otr_activator_sessionfinishederror">لم يتم إرسال رسالتك. يرجى إنهاء محادثتك الخاصة OTR مع %1$s.</string>
-    <string name="plugin_otr_activator_historyoff">%1$s لا يسجل هذه المحادثة. يمكنك <a href="atalk://%2$s/%3$s">تفعيل سجل الدردشة هنا</a>.</string>
-    <string name="plugin_otr_activator_historyon">%1$s يسجل هذه المحادثة على جهازك. يمكنك <a href="atalk://%2$s/%3$s">إيقاف سجل الدردشة هنا</a>.</string>
-    <string name="plugin_otr_activator_msgfromanotherinstance">تم استلام رسالة من حالة محادثة OTR أخرى مع %1$s تم اكتشافها.</string>
-    <string name="plugin_otr_activator_multipleinstancesdetected">تم اكتشاف حالات محادثة OTR خاصة متعددة مع %1$s.</string>
-    <string name="plugin_otr_activator_sessionlost">انتهت محادثة OTR الخاصة مع %1$s.</string>
-    <string name="plugin_otr_activator_sessionstared">بدأت محادثة OTR الخاصة مع %1$s.</string>
-    <string name="plugin_otr_activator_smpaborted">%1$s أجهض عملية مصادقة OTR.</string>
-    <string name="plugin_otr_activator_smperror">حدث خطأ في عملية مصادقة OTR.</string>
-    <string name="plugin_otr_activator_unencryptedmsgreceived">تم استلام الرسالة غير مشفرة.</string>
-    <string name="plugin_otr_activator_unreadablemsgreceived">%1$s أرسل لك رسالة مشفرة غير قابلة للقراءة.</string>
-    <string name="plugin_otr_activator_unreadablemsgreply">أرسلت إلى %1$s رسالة مشفرة غير قابلة للقراءة. يرجى إنهاء محادثتك الخاصة مع %2$s أو تحديثها.</string>
-    <string name="plugin_otr_activator_unverifiedsessionstared"><b>غير موثق</b> بدأت محادثة خاصة مع %1$s.</string>
-    <string name="plugin_otr_activator_unverifiedsessionwarning">لم يتم مصادقة %1$s بعد. يجب عليك <a href="atalk://%2$s/%3$s?%4$s"><b>مصادقة</b></a> هذا الصديق.</string>
-
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">نص عادي</string>
     <string name="omemo_authbuddy_authenticate_buddy">مصادقة الصديق</string>
@@ -1340,21 +1279,6 @@
     <string name="settings_messaging_security_summary">إعدادات أمان تشفير الرسائل</string>
     <string name="settings_messaging_security">أمان الرسائل</string>
 
-    <!-- Messaging security options -->
-    <string name="otr_messaging_security">أمان الرسائل OTR</string>
-    <!-- Crypto Messaging Enable -->
-    <string name="settings_CRYPTO_ENABLE_OFF">بدون تشفير الرسائل</string>
-    <string name="settings_CRYPTO_ENABLE_ON">تشفير الرسائل مفعل</string>
-    <string name="settings_CRYPTO_ENABLE_TITLE">الرسائل الخاصة</string>
-    <!-- Crypto Messaging Auto -->
-    <string name="settings_CRYPTO_AUTO_OFF">بدء جلسة تشفير الرسائل يدويًا</string>
-    <string name="settings_CRTOTI_AUTO_ON">بدء جلسة تشفير الرسائل تلقائيًا</string>
-    <string name="settings_CRYPTO_AUTO_TITLE">بدء الرسائل الخاصة تلقائيًا</string>
-    <!-- Crypto Messaging Required -->
-    <string name="settings_CRYPTO_REQUIRE_OFF">سيتم استخدام الرسائل الآمنة إذا كانت مدعومة</string>
-    <string name="settings_CRYPTO_REQUIRE_ON">سيتم قبول الجلسات الآمنة فقط</string>
-    <string name="settings_CRYPTO_REQUIRE_TITLE">طلب الرسائل الخاصة</string>
-
     <!-- OMEMO security category-->
     <string name="omemo_messaging_security">أمان الرسائل OMEMO</string>
     <!-- OMEMO device screen -->
@@ -1394,8 +1318,6 @@
     <string name="crypto_menu_fingerprint_distrust">عدم الثقة بالبصمة</string>
     <string name="crypto_menu_fingerprint_trust">الثقة بالبصمة</string>
 
-    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">تم رفض طلب جلسة OTR الخاص بك أثناء تقدم جلسة OMEMO!</string>
-    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">تم رفض طلب جلسة OTR من صديقك أثناء جلسة OMEMO. يمكنك تفعيل جلسة OTR يدويًا!</string>
     <string name="crypto_msg_omemo_session_setup_failed">فشل إعداد جلسة OMEMO! %1$s</string>
     <string name="crypto_msg_omemo_session_untrusted">لم يتم العثور على أي صديق موثوق لاستقبال رسائل OMEMO!</string>
     <string name="crypto_msg_omemo_session_unverified">إرسال رسائل OMEMO إلى بعض الأصدقاء المجهولين ذوي البصمات غير الموثقة!</string>
@@ -1433,13 +1355,6 @@
     <string name="silk_assume_pl">افتراض فقدان الحزم دائمًا</string>
     <string name="silk_fec_sat">عتبة نشاط الكلام (0–1)</string>
     <string name="silk_fec_advertise">الإعلان عن دعم FEC في SDP</string>
-
-    <!-- SIP config -->
-    <string name="plugin_generalconfig_SIP_CLIENT_PORT">منفذ عميل SIP</string>
-    <string name="plugin_generalconfig_SIP_CLIENT_SECURE_PORT">منفذ عميل SIP الآمن</string>
-    <string name="plugin_generalconfig_SIP_SSL_PROTOCOLS">بروتوكولات SSL/TLS المفعلة</string>
-    <string name="service_gui_settings_SIP">SIP</string>
-    <string name="service_gui_settings_SIP_SUMMARY">تكوين إعدادات بروتوكول SIP</string>
 
     <!-- Android Battery Usage Optimization -->
     <string name="battery_optimization_on">سيتم وضع aTalk في وضع السكون عندما يدخل الجهاز في وضع الاستعداد. أعد تشغيل aTalk يدويًا لاستقبال الرسائل الجديدة.</string>

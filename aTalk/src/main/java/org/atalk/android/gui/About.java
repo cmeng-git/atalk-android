@@ -70,7 +70,6 @@ public class About extends BaseActivity implements View.OnClickListener {
             new String[]{"miniDNS", "https://github.com/MiniDNS/minidns"},
             new String[]{"Noembed", "https://noembed.com/"},
             new String[]{"osmdroid", "https://github.com/osmdroid/osmdroid"},
-            new String[]{"otr4j", "https://github.com/jitsi/otr4j"},
             new String[]{"opensles", "https://github.com/openssl/openssl "},
             new String[]{"osgi.core", "http://grepcode.com/snapshot/repo1.maven.org/maven2/org.osgi/org.osgi.core/6.0.0"},
             new String[]{"sdes4j", "https://github.com/ibauersachs/sdes4j"},

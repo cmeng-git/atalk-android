@@ -2,14 +2,6 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Message settings -->
-    <PreferenceCategory android:title="@string/otr_messaging_security">
-        <CheckBoxPreference
-            android:key="pref.key.crypto.enable"
-            android:summaryOff="@string/settings_CRYPTO_ENABLE_OFF"
-            android:summaryOn="@string/settings_CRYPTO_ENABLE_ON"
-            android:title="@string/settings_CRYPTO_ENABLE_TITLE" />
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/omemo_messaging_security">
         <CheckBoxPreference
             android:key="pref.key.omemo.key.blind.trust"

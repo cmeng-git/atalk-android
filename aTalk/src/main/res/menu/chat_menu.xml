@@ -53,8 +53,4 @@
     <item
         android:id="@+id/show_chatroom_occupant"
         android:title="@string/chatroom_occupant" />
-    <item
-        android:id="@+id/otr_session"
-        android:icon="@drawable/crypto_otr_dark"
-        android:title="@string/otr_session" />
 </menu>

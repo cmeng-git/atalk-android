@@ -36,6 +36,7 @@ import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
 import androidx.core.content.IntentCompat;
@@ -47,16 +48,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.java.sip.communicator.service.update.UpdateService;
 
+import org.apache.commons.io.IOUtils;
 import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
+import org.atalk.android.gui.dialogs.CustomDialogWv;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.impl.appversion.VersionActivator;
 import org.atalk.persistance.FileBackend;
@@ -84,6 +90,8 @@ public class UpdateServiceImpl implements UpdateService {
 
     // github apk is in the release directory; for apk download
     private static final String urlApk = "https://github.com/cmeng-git/atalk-android/releases/download/%s/";
+
+    private static final String releaseNotes = "https://raw.githubusercontent.com/cmeng-git/atalk-android/refs/tags/%s/aTalk/ReleaseNotes.txt";
 
     /**
      * Apk mime type constant.
@@ -140,11 +148,39 @@ public class UpdateServiceImpl implements UpdateService {
                 if (checkLastDLFileAction() < DownloadManager.ERROR_UNKNOWN)
                     return;
 
-                DialogActivity.showConfirmDialog(aTalkApp.getInstance(),
-                        R.string.update_install_update,
-                        R.string.update_update_available,
-                        R.string.update_download,
-                        new DialogActivity.DialogListener() {
+                Context context = aTalkApp.getInstance();
+                String title = context.getString(R.string.update_install_update);
+                String message = context.getString(R.string.update_update_available, latestVersion,
+                        String.valueOf(latestVersionCode), fileNameApk, currentVersion, String.valueOf(currentVersionCode));
+                String btnText = context.getString(R.string.update_download);
+
+                String historyText = "&#9210; no change";
+                if (isValidateLink(releaseNotes.replace("%s", latestVersion))) {
+                    try {
+                        InputStream inputStream = mHttpConnection.getInputStream();
+                        String releaseNotes = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+
+                        Pattern pattern = Pattern.compile("(Project aTalk.+?Author:.+?)Version:\\s+" + currentVersion, Pattern.DOTALL);
+                        Matcher matcher = pattern.matcher(releaseNotes);
+                        if (matcher.find()) {
+                            historyText = matcher.group(1);
+                            if (historyText != null) {
+                                historyText = historyText.replaceAll("\n- ", "\n&#9210; " ).replaceAll("\n", "<br />");
+                            }
+                        }
+                    }
+                    catch (IOException e) {
+                        Timber.d("Invalid release Notes link: %s", e.getMessage());
+                        return;
+                    }
+                }
+
+                Bundle args = new Bundle();
+                args.putString(CustomDialogWv.ARG_MESSAGE, message);
+                args.putString(CustomDialogWv.ARG_HISTORY, historyText);
+
+                DialogActivity.showCustomDialog(aTalkApp.getInstance(), title, CustomDialogWv.class.getName(),
+                        args, btnText, new DialogActivity.DialogListener() {
                             @Override
                             public boolean onConfirmClicked(DialogActivity dialog) {
                                 downloadApk();
@@ -154,8 +190,7 @@ public class UpdateServiceImpl implements UpdateService {
                             @Override
                             public void onDialogCancelled(@NotNull DialogActivity dialog) {
                             }
-                        }, latestVersion, latestVersionCode, fileNameApk, currentVersion, currentVersionCode
-                );
+                        }, null);
             }
             else {
                 // Notify that running version is up to date
@@ -328,7 +363,8 @@ public class UpdateServiceImpl implements UpdateService {
             session.commit(statusReceiver.getIntentSender());
             // session.close();
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Timber.w("Package installation: %s", e.getMessage());
         }
 
@@ -343,23 +379,23 @@ public class UpdateServiceImpl implements UpdateService {
             Timber.d("Package Installer Callback: result= %s, packageName = %s", result, packageName);
 
             switch (result) {
-                case PackageInstaller.STATUS_PENDING_USER_ACTION:
-                    // this should not happen in M, but will happen in L and L-MR1
-                    Intent confirmationIntent = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_INTENT, Intent.class);
-                    if (confirmationIntent != null) {
-                        confirmationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(confirmationIntent);
-                    }
-                    break;
+            case PackageInstaller.STATUS_PENDING_USER_ACTION:
+                // this should not happen in M, but will happen in L and L-MR1
+                Intent confirmationIntent = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_INTENT, Intent.class);
+                if (confirmationIntent != null) {
+                    confirmationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(confirmationIntent);
+                }
+                break;
 
-                case PackageInstaller.STATUS_SUCCESS:
-                    Timber.d("Package %s installation complete", packageName);
-                    new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100).startTone(ToneGenerator.TONE_PROP_ACK);
-                    break;
+            case PackageInstaller.STATUS_SUCCESS:
+                Timber.d("Package %s installation complete", packageName);
+                new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100).startTone(ToneGenerator.TONE_PROP_ACK);
+                break;
 
-                default:
-                    String msg = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE);
-                    Timber.e("Package Installer received Status:(%s) %s", result, msg);
+            default:
+                String msg = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE);
+                Timber.e("Package Installer received Status:(%s) %s", result, msg);
             }
         }
     }
@@ -446,7 +482,8 @@ public class UpdateServiceImpl implements UpdateService {
             try {
                 if (!idStr.isEmpty())
                     apkIds.add(Long.parseLong(idStr));
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e) {
                 Timber.e("Error parsing apk id for string: %s [%s]", idStr, storeStr);
             }
         }
@@ -547,7 +584,8 @@ public class UpdateServiceImpl implements UpdateService {
                         downloadLink = null;
                     }
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Timber.w("Could not retrieve version.properties for checking: %s", e.getMessage());
             }
         }
@@ -578,7 +616,8 @@ public class UpdateServiceImpl implements UpdateService {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 return true;
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Timber.d("Invalid url: %s", e.getMessage());
             return false;
         }

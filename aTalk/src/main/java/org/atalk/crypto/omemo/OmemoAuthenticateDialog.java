@@ -75,9 +75,9 @@ public class OmemoAuthenticateDialog extends BaseActivity {
     /**
      * Creates parametrized <code>Intent</code> of buddy authenticate dialog.
      *
-     * @param omemoManager the UUID of OTR session.
+     * @param omemoManager the omemoManager to handle the session.
      *
-     * @return buddy authenticate dialog parametrized with given OTR session's UUID.
+     * @return buddy authenticate dialog parametrized for omemo.
      */
     public static Intent createIntent(Context context, OmemoManager omemoManager, Set<OmemoDevice> omemoDevices,
             AuthenticateListener listener) {

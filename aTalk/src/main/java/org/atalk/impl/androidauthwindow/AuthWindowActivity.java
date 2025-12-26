@@ -124,8 +124,10 @@ public class AuthWindowActivity extends BaseActivity {
      */
     @Override
     protected void onDestroy() {
-        mAuthWindow.setCanceled(cancelled);
-        mAuthWindow.windowClosed();
+        if (mAuthWindow != null) {
+            mAuthWindow.setCanceled(cancelled);
+            mAuthWindow.windowClosed();
+        }
         super.onDestroy();
     }
 }

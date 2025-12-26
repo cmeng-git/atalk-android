@@ -21,11 +21,7 @@
     <color name="chat_background_normal">#ffc2dbe2</color>
     <color name="chat_background_omemo">#fffcf8e9</color>
     <color name="chat_background_omemo_ua">#fffcf8e9</color>
-    <color name="chat_background_otr">#ffb5c2ca</color>
-    <color name="chat_background_otr_ua">#ffb5c2ca</color>
-
     <color name="chat_background_omemo_stealth">#e73c18</color>
-    <color name="chat_background_otr_stealth">#9218e7</color>
 
     <color name="msg_input_bar_bg">#2e5368</color>
     <color name="msg_input_correction_bg">#849aa6</color>

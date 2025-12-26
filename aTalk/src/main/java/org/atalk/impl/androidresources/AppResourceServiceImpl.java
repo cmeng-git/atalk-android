@@ -66,7 +66,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AndroidResourceServiceImpl extends AbstractResourcesService {
+public class AppResourceServiceImpl extends AbstractResourcesService {
     /**
      * Path to the .properties file containing image path's translations to android drawable resources
      */
@@ -112,7 +112,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService {
     /**
      * Initializes already registered default resource packs.
      */
-    AndroidResourceServiceImpl() {
+    AppResourceServiceImpl() {
         super(AndroidResourceManagementActivator.bundleContext);
 
         androidImagePathPack = ResourceBundle.getBundle(IMAGE_PATH_RESOURCE);

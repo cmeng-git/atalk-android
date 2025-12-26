@@ -8,7 +8,6 @@ package org.atalk.android.gui.account.settings;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;

@@ -38,8 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import net.java.sip.communicator.plugin.otr.OtrActivator;
-import net.java.sip.communicator.plugin.otr.ScOtrKeyManager;
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
@@ -67,10 +65,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class CryptoPrivateKeys extends BaseActivity {
-    private static final String OTR = "OTR:";
     private static final String OMEMO = "OMEMO:";
-
-    private ScOtrKeyManager keyManager = OtrActivator.scOtrKeyManager;
 
     /**
      * Adapter used to displays private keys for all accounts.
@@ -127,15 +122,6 @@ public class CryptoPrivateKeys extends BaseActivity {
                     fingerprint = omemoFingerprint.toString();
             } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException | IOException e) {
                 Timber.w("Get own fingerprint Exception: %s", e.getMessage());
-            }
-            deviceFingerprints.put(deviceJid, fingerprint);
-            accountList.put(deviceJid, accountId);
-
-            // Get OTRDevice fingerprint - can be null for new generation
-            deviceJid = OTR + bareJid;
-            fingerprint = keyManager.getLocalFingerprint(accountId);
-            if (StringUtils.isNotEmpty(fingerprint)) {
-                fingerprint = fingerprint.toLowerCase();
             }
             deviceFingerprints.put(deviceJid, fingerprint);
             accountList.put(deviceJid, accountId);
@@ -212,11 +198,8 @@ public class CryptoPrivateKeys extends BaseActivity {
         b.setTitle(R.string.crypto_key_generate_title)
                 .setMessage(message)
                 .setPositiveButton(R.string.proceed, (dialog, which) -> {
-                    if (accountId != null) {
-                        if (bareJid.startsWith(OMEMO))
-                            regenerate(accountId);
-                        else if (bareJid.startsWith(OTR))
-                            keyManager.generateKeyPair(accountId);
+                    if (accountId != null && bareJid.startsWith(OMEMO)) {
+                        regenerate(accountId);
                     }
                     accountsAdapter.notifyDataSetChanged();
                 })
@@ -246,7 +229,7 @@ public class CryptoPrivateKeys extends BaseActivity {
         /**
          * Creates new instance of <code>FingerprintListAdapter</code>.
          *
-         * @param fingerprintList list of <code>device</code> for which OMEMO/OTR fingerprints will be displayed.
+         * @param fingerprintList list of <code>device</code> for which OMEMO fingerprints will be displayed.
          */
         PrivateKeyListAdapter(Map<String, String> fingerprintList) {
             deviceJid = new ArrayList<>(fingerprintList.keySet());

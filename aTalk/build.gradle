@@ -57,8 +57,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 406010
-        versionName "4.6.1"
+        versionCode 500000
+        versionName "5.0.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -214,7 +214,7 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.17.0'
 
-    implementation 'androidx.activity:activity-ktx:1.12.0'
+    implementation 'androidx.activity:activity-ktx:1.12.2'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.fragment:fragment-ktx:1.8.9'
@@ -222,8 +222,8 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.media3:media3-exoplayer:1.8.0'
-    implementation 'androidx.media3:media3-ui:1.8.0'
+    implementation 'androidx.media3:media3-exoplayer:1.9.0'
+    implementation 'androidx.media3:media3-ui:1.9.0'
     // implementation "androidx.webkit:webkit:1.14.0"
 
     implementation('com.jakewharton.timber:timber:5.0.1') {
@@ -239,9 +239,9 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.10'
     implementation 'com.google.android.material:material:1.13.0'
 
-    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.18'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.21'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta05'
-    implementation 'com.squareup.okhttp3:okhttp:5.3.2' // 4.12.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
     // implementation 'com.github.cketti:ckchangelog-core:2.0.0-beta02'
 
@@ -251,7 +251,7 @@ dependencies {
     // commons-codec:1.16.x not compatible with Note10, crashes with No static method isEmpty([B)Z in class org/apache/commons/codec/binary/BinaryCodec;
     // or its super classes (declaration of 'org.apache.commons.codec.binary.BinaryCodec' appears in /system/framework/org.apache.http.legacy.jar)
     implementation 'commons-codec:commons-codec:1.20.0'
-    implementation 'org.apache.commons:commons-text:1.14.0'
+    implementation 'org.apache.commons:commons-text:1.15.0'
     implementation 'org.apache.james:apache-mime4j-core:0.8.13'
     implementation 'org.bitlet:weupnp:0.1.4'
 
@@ -260,12 +260,13 @@ dependencies {
     // Duplicate class org.bouncycastle.x509.util.StreamParsingException found in modules jetified-bcprov-jdk15on-1.65
     // (org.bouncycastle:bcprov-jdk15on:1.65) and jetified-bcprov-jdk15to18-1.68 (org.bouncycastle:bcprov-jdk15to18:1.68)
 
-    implementation 'org.bouncycastle:bcpg-jdk18on:1.79'   // zrtp
-    implementation 'org.bouncycastle:bcpkix-jdk18on:1.79' // CertificateServiceImpl jcajce
+    // jdk18on > 1.81 is not compatible with gradle 8.14.3 i.e. Unsupported class file major version 69
+    implementation 'org.bouncycastle:bcpg-jdk18on:1.81'   // zrtp
+    implementation 'org.bouncycastle:bcpkix-jdk18on:1.81' // CertificateServiceImpl jcajce
     // SHA3-256 - auto included.
-    // implementation 'org.bouncycastle:bcprov-jdk18on:1.79'
+    // implementation 'org.bouncycastle:bcprov-jdk18on:1.81'
     // 1.82 not compatible:  Unsupported class file major version 69
-    implementation 'org.bouncycastle:bctls-jdk18on:1.79'  // dtls-srtp
+    implementation 'org.bouncycastle:bctls-jdk18on:1.81'  // dtls-srtp
 
     // For debug and tracing for bouncycastle - AS allows direct copy and replacement of bc source for debug
 //    implementation jarjar.repackage {
@@ -430,6 +431,9 @@ dependencies {
 
         // Support Thumbnail parsing.
         classDelete 'org.jivesoftware.smackx.jingle_filetransfer.provider.JingleFileTransferProvider**'
+
+        // Fix MamVersion.fromNamespace(mamPrefsIq.getChildElementNamespace())
+        classDelete 'org.jivesoftware.smackx.mam.MamManager**'
     }
 
     // smack-extensions
@@ -506,6 +510,7 @@ dependencies {
  * It is also being executed in buildJniStaticLibs(), and this task can be omitted.
  */
 tasks.register('initJniLibs', Exec) {
+    group = 'Custom Tasks'
     workingDir "${projectDir}/jni/"
     executable './init-jnilibs4atalk.sh'
 }
@@ -517,6 +522,7 @@ tasks.register('initJniLibs', Exec) {
  * Refer to all README files in .jni/static_library_built for more detail.
  */
 tasks.register('buildJniStaticLibs' , Exec) {
+    group = 'Custom Tasks'
     workingDir "${projectDir}/jni/static_library_built"
     executable './build-jnilibs4atalk.sh'
 }
@@ -526,6 +532,7 @@ tasks.register('buildJniStaticLibs' , Exec) {
  * The version.properties is retrieved during app update check to asses if there is a new update
  */
 tasks.register('updateVersionFile', Copy) {
+    group = 'Custom Tasks'
     def description = '<!-- Generate version.properties file -->'
 
     def versionName = android.defaultConfig.versionName

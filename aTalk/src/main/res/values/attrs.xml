@@ -5,7 +5,6 @@
         <attr name="iconCertificate" format="reference" />
         <attr name="iconCryptoNone" format="reference" />
         <attr name="iconCryptoOmemo" format="reference" />
-        <attr name="iconCryptoOtr" format="reference" />
         <attr name="iconFolder" format="reference" />
 
         <attr name="iconActionDelete" format="reference" />

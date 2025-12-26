@@ -30,9 +30,6 @@
     <string name="xmpp_server_port">5222</string>
     <string name="chatroom_hint">chatroom@example.com</string>
     <string name="encryption_omemo">OMEMO</string>
-    <string name="encryption_otr">OTR</string>
-    <string name="otr_session">OTR Sessions</string>
-    <string name="encryption_pgp">OpenPGP</string>
     <string name="aTalk_account_type">org.atalk.android.account</string>
     <string name="url_media_share">&lt;html>&lt;a href=\'%3$s\'>&lt;img src=\'%1$s\' alt=\'url image\'/>&lt;/a>&lt;br/>%2$s&lt;br/>&lt;a href=\'%3$s\'>%3$s&lt;/a>&lt;/html></string>
 
@@ -52,20 +49,13 @@
     <string name="chat_dbZero">00.00dB</string>
     <string name="chat_timeZero">00:00</string>
 
-    <string name="im">IM</string>
-    <string name="instant_messaging">IMs</string>
-
     <!-- account info -->
     <string name="contact_url">URL:</string>
-    <string name="otr_authbuddydialog_help_uri">https://cmeng-git.github.io/atalk</string>
 
     <!-- Account proxy settings -->
     <string name="bosh_url_hint">https://example.org:4443/http-bind</string>
 
     <!-- Provisioning Plugin-->
-    <string name="provisioning_DHCP">DHCP</string>
-    <string name="provisioning_DNS">DNS</string>
-    <string name="provisioning_URI">URI</string>
     <string name="provisioning_UUID">UUID</string>
 
     <!-- STUN/Jingle Nodes list -->

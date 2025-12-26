@@ -50,7 +50,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -323,39 +322,6 @@ public final class HttpFileUploadManager extends Manager {
         return slot.getGetUrl();
     }
 
-    /*
-     * Upload a file encrypted using the scheme described in OMEMO Media Sharing.
-     * The file is being encrypted using a random 256 bit AES key in Galois Counter Mode using a random 16 byte IV and
-     * then uploaded to the server.
-     * The URL that is returned has a modified scheme (aesgcm:// instead of https://) and has the IV and key attached
-     * as ref part.
-     *
-     * Note: The URL contains the used key and IV in plain text. Keep in mind to only share this URL though a secured
-     * channel (i.e. end-to-end encrypted message), as anybody who can read the URL can also decrypt the file.
-     *
-     * Note: This method uses a IV of length 16 instead of 12. Although not specified in the ProtoXEP, 16 byte IVs are
-     * currently used by most implementations. This implementation also supports 12 byte IVs when decrypting.
-     *
-     * @param file file
-     * @return AESGCM URL which contains the key and IV of the encrypted file.
-     * @throws InterruptedException  If the calling thread was interrupted.
-     * @throws IOException If an I/O error occurred.
-     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
-     * @throws SmackException If Smack detected an exceptional situation.
-     * @throws InvalidAlgorithmParameterException if the provided arguments are invalid.
-     * @throws NoSuchAlgorithmException if no such algorithm is available.
-     * @throws InvalidKeyException if the key is invalid.
-     * @throws NoSuchPaddingException if the requested padding mechanism is not available.
-     *
-     * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-0454: OMEMO Media Sharing</a>
-     *
-    public AesgcmUrl uploadFileEncrypted(File file) throws InterruptedException, IOException,
-            XMPPException.XMPPErrorException, SmackException, InvalidAlgorithmParameterException,
-            NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException {
-        return uploadFileEncrypted(file, null);
-    }
-     **/
-
     /**
      * Upload a file encrypted using the scheme described in OMEMO Media Sharing.
      * The file is being encrypted using a random 256 bit AES key in Galois Counter Mode using a random 16 byte IV and
@@ -371,7 +337,7 @@ public final class HttpFileUploadManager extends Manager {
      *
      * @param file file
      * @param listener progress listener or null
-     * @return AESGCM URL which contains the key and IV of the encrypted file.
+     * @return AesgcmUrl which contains the key and IV of the encrypted file.
      * @throws IOException If an I/O error occurred.
      * @throws InterruptedException  If the calling thread was interrupted.
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.

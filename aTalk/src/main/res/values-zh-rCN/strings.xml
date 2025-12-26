@@ -947,75 +947,6 @@
     <!-- DTLS-SRTP Securing -->
     <string name="media_security_encryption_ended">通话加密结束：%1$s</string>
 
-    <!-- OTR plugin -->
-    <string name="otr_menu_authenticate_buddy">验证好友</string>
-    <string name="plugin_otr_menu_CB_AUTO">自动发起私信</string>
-    <string name="plugin_otr_menu_CB_ENABLE">启用私人短信</string>
-    <string name="plugin_otr_menu_CB_REQUIRE">需要私信</string>
-    <string name="plugin_otr_menu_CB_RESET">重置</string>
-    <string name="plugin_otr_menu_CRYPTO_AUTHETICATED">加密验证</string>
-    <string name="plugin_otr_menu_CRYPTO_Finish">加密完成</string>
-    <string name="plugin_otr_menu_CRYPTO_NON_AUTHETICATED">密码未认证</string>
-    <string name="plugin_otr_menu_END_OTR">结束私人对话</string>
-    <string name="plugin_otr_menu_OTR_AUTHETICATED">OTR 认证</string>
-    <string name="plugin_otr_menu_OTR_Finish">OTR 结束</string>
-    <string name="plugin_otr_menu_OTR_HANDSHAKE">OTR 握手</string>
-    <string name="plugin_otr_menu_OTR_NON_AUTHETICATED">OTR 未认证</string>
-    <string name="plugin_otr_menu_OTR_PLAINTTEXT">纯文本</string>
-    <string name="plugin_otr_menu_OTR_TIMEOUT">OTR 握手超时</string>
-    <string name="plugin_otr_menu_OTR_TOOLTIP">使用 OTR 加密聊天</string>
-    <string name="plugin_otr_menu_REFRESH_OTR">刷新私人对话</string>
-    <string name="plugin_otr_menu_START_OTR">开始私人对话</string>
-    <string name="plugin_otr_menu_TITLE">安全聊天</string>
-    <string name="plugin_otr_menu_WHATS_THIS">这是什么</string>
-
-    <string name="plugin_otr_authbuddydialog_AUTHENTICATION_INFO">验证好友有助于
-     确保与您交谈的人是他或她自称的人。要验证指纹，请通过以下方式联系您的好友
-     一些其他经过身份验证的渠道，例如电话或 GPG 签名的电子邮件。你们每个人都应该将指纹告诉
-     其他。如果一切都匹配，你应该在下面的对话框中指出*我已经*验证了指纹。</string>
-    <string name="plugin_otr_authbuddydialog_CANCEL">取消</string>
-    <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">请输入您从 %1$s 收到的指纹。</string>
-    <string name="plugin_otr_authbuddydialog_HELP">帮助</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE">我有</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">我没有</string>
-    <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">我的 %1$s 指纹：%2$s</string>
-    <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">%1$s 的远程指纹：%2$s</string>
-    <string name="plugin_otr_authbuddydialog_TITLE">验证好友</string>
-    <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">已验证这实际上是 %1$s 的正确指纹。</string>
-    <string name="plugin_otr_configform_CB_AUTO">自动发起私信</string>
-    <string name="plugin_otr_configform_CB_ENABLE">启用私人短信</string>
-    <string name="plugin_otr_configform_CB_REQUIRE">需要私信</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_CONTACT">联系人</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_VERIFIED_STATUS">已验证</string>
-    <string name="plugin_otr_configform_FINGERPRINT">指纹</string>
-    <string name="plugin_otr_configform_GENERATE">生成</string>
-    <string name="plugin_otr_configform_KNOWN_FINGERPRINTS">已知指纹</string>
-    <string name="plugin_otr_configform_MY_PRIVATE_KEYS">我的私钥</string>
-    <string name="plugin_otr_configform_REGENERATE">重新生成</string>
-    <string name="plugin_otr_configform_VERIFY_STATUS">已验证：%1$s</string>
-
-    <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;">%1$s 正在尝试启动加密
-         &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
-         与您的非公开对话&lt;/a>。但是你的软件不支持
-    不公开的短信传递。有关详细信息，请参阅 &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
-    https://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
-    <string name="plugin_otr_activator_historyoff">%1$s 没有记录这次对话。您可以&lt;a href=\"atalk://%2$s/%3$s\">在这里激活聊天记录&lt;/a>。</string>
-    <string name="plugin_otr_activator_historyon">%1$s 正在您的设备上录制此对话。你可以&lt;a href=\"atalk://%2$s/%3$s\">在这里关闭聊天记录&lt;/a>。</string>
-    <string name="plugin_otr_activator_msgfromanotherinstance">收到来自另一个检测到 %1$s 的 OTR 对话实例的短信。</string>
-    <string name="plugin_otr_activator_multipleinstancesdetected">检测到 %1$s 的多个私人 OTR 对话实例。</string>
-    <string name="plugin_otr_activator_requireencryption">您的短信未发送。需要私信。</string>
-    <string name="plugin_otr_activator_sessionfinished">%1$s 已经结束了他/她与你的私人 OTR 对话； 你也应该这样做。</string>
-    <string name="plugin_otr_activator_sessionfinishederror">您的短信未发送。请结束与 %1$s 的私人 OTR 对话。</string>
-    <string name="plugin_otr_activator_sessionlost">与 %1$s 的私人 OTR 对话已结束。</string>
-    <string name="plugin_otr_activator_sessionstared">与 %1$s 的私人 OTR 对话已经开始。</string>
-    <string name="plugin_otr_activator_smpaborted">%1$s 已中止 OTR 身份验证过程。</string>
-    <string name="plugin_otr_activator_smperror">OTR认证过程中发生错误</string>
-    <string name="plugin_otr_activator_unencryptedmsgreceived">收到的短信未加密。</string>
-    <string name="plugin_otr_activator_unreadablemsgreceived">%1$s 向您发送了一条无法读取的加密短信。</string>
-    <string name="plugin_otr_activator_unreadablemsgreply">您向 %1$s 发送了一条无法读取的加密短信。请结束与 %2$s 的私人对话或刷新它。</string>
-    <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>未验证&lt;/b>开始与 %1$s 的私人对话。</string>
-    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s 尚未通过身份验证。你应该&lt;a href=\"atalk://%2$s/%3$s?%4$s\">&lt;b>验证&lt;/b>&lt;/a>这个伙伴。</string>
-
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">纯文本</string>
     <string name="omemo_authbuddy_authenticate_buddy">验证好友</string>
@@ -1412,21 +1343,6 @@
     <string name="settings_messaging_security_summary">短信加密安全设置</string>
     <string name="settings_messaging_security">短信加密</string>
 
-    <!-- Messaging security options -->
-    <string name="otr_messaging_security">OTR 短信加密</string>
-    <!-- Crypto Messaging Enable -->
-    <string name="settings_CRYPTO_ENABLE_OFF">无短信加密</string>
-    <string name="settings_CRYPTO_ENABLE_ON">已启用短信加密</string>
-    <string name="settings_CRYPTO_ENABLE_TITLE">私人短信</string>
-    <!-- Crypto Messaging Auto -->
-    <string name="settings_CRYPTO_AUTO_OFF">手动启动短信加密会话</string>
-    <string name="settings_CRTOTI_AUTO_ON">自动启动短信加密会话</string>
-    <string name="settings_CRYPTO_AUTO_TITLE">自动启动私人短信</string>
-    <!-- Crypto Messaging Required -->
-    <string name="settings_CRYPTO_REQUIRE_OFF">如果支持，将使用加密短信</string>
-    <string name="settings_CRYPTO_REQUIRE_ON">仅接受安全会话</string>
-    <string name="settings_CRYPTO_REQUIRE_TITLE">需要私信</string>
-
     <!-- OMEMO security category-->
     <string name="omemo_messaging_security">OMEMO 短信加密</string>
     <!-- OMEMO device screen -->
@@ -1466,8 +1382,6 @@
     <string name="crypto_menu_fingerprint_distrust">不信任指纹</string>
     <string name="crypto_menu_fingerprint_trust">信任指纹</string>
 
-    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">在 OMEMO 会话中来自您好友的 OTR 会话请求已被拒绝。您可以手动启用 OTR 会话！</string>
-    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">OMEMO 会话正在进行时，您的 OTR 会话请求已被拒绝！</string>
     <string name="crypto_msg_omemo_session_setup_failed">OMEMO 会话设置不成功！ %1$s</string>
     <string name="crypto_msg_omemo_session_untrusted">找到零个可信任的好友来接收 OMEMO 短信！</string>
     <string name="crypto_msg_omemo_session_unverified">发送 OMEMO 短信给一些未验证指纹的未知好友！</string>
@@ -1507,13 +1421,6 @@
     <string name="silk_assume_pl">始终假定数据包丢失</string>
     <string name="silk_fec_sat">语音活动阈值 (0–1)</string>
     <string name="silk_fec_advertise">在 SDP 中通告 FEC 支持</string>
-
-    <!-- SIP config -->
-    <string name="plugin_generalconfig_SIP_CLIENT_PORT">SIP 客户端端口</string>
-    <string name="plugin_generalconfig_SIP_CLIENT_SECURE_PORT">SIP 客户端安全端口</string>
-    <string name="plugin_generalconfig_SIP_SSL_PROTOCOLS">启用 SSL/TLS 协议</string>
-    <string name="service_gui_settings_SIP">SIP</string>
-    <string name="service_gui_settings_SIP_SUMMARY">配置 SIP 协议设置</string>
 
     <!-- Android Battery Usage Optimization -->
     <string name="battery_optimizations">电池优化</string>

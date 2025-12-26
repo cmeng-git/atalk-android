@@ -20,6 +20,7 @@ import java.util.Map;
 
 import net.java.sip.communicator.impl.contactlist.MclStorageManager;
 import net.java.sip.communicator.impl.muc.MUCActivator;
+import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.gui.Chat;
@@ -442,18 +443,23 @@ public class ChatSessionManager {
                 }
             }
         }
+        // from FFR  MUCActivator.getMUCService() may be null!!!
         else if (chatMode == MUC_CC) {
-            ChatRoomWrapper chatRoomWrapper
-                    = MUCActivator.getMUCService().findChatRoomWrapperFromChatRoomID(chatId, null);
-            if (chatRoomWrapper != null) {
-                chatPanel = createChat(chatRoomWrapper);
+            MUCServiceImpl mucService = MUCActivator.getMUCService();
+            if (mucService != null) {
+                ChatRoomWrapper chatRoomWrapper = mucService.findChatRoomWrapperFromChatRoomID(chatId, null);
+                if (chatRoomWrapper != null) {
+                    chatPanel = createChat(chatRoomWrapper);
+                }
             }
         }
         else if (chatMode == MUC_ADHOC) {
-            ChatRoomWrapper chatRoomWrapper
-                    = MUCActivator.getMUCService().findChatRoomWrapperFromChatRoomID(chatId, null);
-            if (chatRoomWrapper != null) {
-                chatPanel = createChat((AdHocChatRoomWrapper) chatRoomWrapper);
+            MUCServiceImpl mucService = MUCActivator.getMUCService();
+            if (mucService != null) {
+                ChatRoomWrapper chatRoomWrapper = mucService.findChatRoomWrapperFromChatRoomID(chatId, null);
+                if (chatRoomWrapper != null) {
+                    chatPanel = createChat((AdHocChatRoomWrapper) chatRoomWrapper);
+                }
             }
         }
         return chatPanel;

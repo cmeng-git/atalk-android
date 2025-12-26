@@ -176,7 +176,6 @@ public class ChatActivity extends BaseActivity
     private MenuItem mChatRoomMember;
     private MenuItem mChatRoomConfig;
     private MenuItem mChatRoomNickSubject;
-    private MenuItem mOtr_Session;
     /**
      * Holds chatId that is currently handled by this Activity.
      */
@@ -225,7 +224,7 @@ public class ChatActivity extends BaseActivity
 //            return;
 //        }
 
-        // Add fragment for crypto padLock for OTR and OMEMO before start pager
+        // Add fragment for crypto padLock for OMEMO before start pager
         cryptoFragment = new CryptoFragment();
         getSupportFragmentManager().beginTransaction().add(cryptoFragment, CRYPTO_FRAGMENT).commit();
 
@@ -342,17 +341,6 @@ public class ChatActivity extends BaseActivity
         super.onPause();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(ChatSessionManager.CHAT_IDENTIFIER, currentChatId);
-        outState.putInt(ChatSessionManager.CHAT_MODE, currentChatMode);
-        outState.putInt(ChatSessionManager.CHAT_MSGTYPE, mCurrentChatType);
-        super.onSaveInstanceState(outState);
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -362,6 +350,17 @@ public class ChatActivity extends BaseActivity
 
         // Clear last chat intent
         AppUtils.clearGeneralNotification(aTalkApp.getInstance());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(ChatSessionManager.CHAT_IDENTIFIER, currentChatId);
+        outState.putInt(ChatSessionManager.CHAT_MODE, currentChatMode);
+        outState.putInt(ChatSessionManager.CHAT_MSGTYPE, mCurrentChatType);
+        super.onSaveInstanceState(outState);
     }
 
     /**
@@ -463,7 +462,6 @@ public class ChatActivity extends BaseActivity
         mChatRoomMember = mMenu.findItem(R.id.show_chatroom_occupant);
         mChatRoomConfig = mMenu.findItem(R.id.chatroom_config);
         mChatRoomNickSubject = mMenu.findItem(R.id.chatroom_info_change);
-        mOtr_Session = menu.findItem(R.id.otr_session);
         setOptionItem();
         return true;
     }
@@ -513,19 +511,12 @@ public class ChatActivity extends BaseActivity
                 mChatRoomMember.setVisible(false);
                 mChatRoomConfig.setVisible(false);
                 mChatRoomNickSubject.setVisible(false);
-                // Also let CryptoFragment handles this to take care Omemo and OTR
-                mOtr_Session.setVisible(!isDomainJid);
             }
             else {
                 setupChatRoomOptionItem();
             }
             // Show the TTS enable option only if global TTS option is enabled.
             mTtsEnable.setVisible(ConfigurationUtils.isTtsEnable());
-
-            MenuItem mPadlock = mMenu.findItem(R.id.otr_padlock);
-            if (mPadlock != null) {
-                mPadlock.setVisible(contactSession);
-            }
         }
     }
 
@@ -565,7 +556,6 @@ public class ChatActivity extends BaseActivity
             // not available in chatRoom
             mCallAudioContact.setVisible(false);
             mCallVideoContact.setVisible(false);
-            mOtr_Session.setVisible(false);
 
             ConferenceChatSession ccSession = (ConferenceChatSession) chatSession;
             ActionBarUtil.setStatusIcon(this, ccSession.getChatStatusIcon());

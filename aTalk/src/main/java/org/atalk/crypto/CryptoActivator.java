@@ -16,10 +16,7 @@
  */
 package org.atalk.crypto;
 
-import net.java.sip.communicator.plugin.otr.OtrActionHandler;
-
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
-import org.atalk.crypto.otr.AndroidOtrActionHandler;
 import org.jivesoftware.smackx.omemo.OmemoConfiguration;
 import org.jivesoftware.smackx.omemo.OmemoStore;
 import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
@@ -27,7 +24,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * Android OTR activator which registers <code>OtrActionHandler</code> specific to this system.
+ * Android Crypto Activator which registers <code>Omemo ActionHandler</code> specific to this system.
  *
  * @author Eng Chong Meng
  */
@@ -35,7 +32,6 @@ public class CryptoActivator implements BundleActivator {
     @Override
     public void start(BundleContext bundleContext)
             throws Exception {
-        bundleContext.registerService(OtrActionHandler.class.getName(), new AndroidOtrActionHandler(), null);
         setupOmemoConfigStore();
     }
 
@@ -70,6 +66,9 @@ public class CryptoActivator implements BundleActivator {
         // OmemoConfiguration.setFileBasedOmemoStoreDefaultPath(omemoStoreDirectory);
 
         // Alternatively initialize to use SQLiteOmemoStore backend database
+        // OmemoStore<IdentityKeyPair, IdentityKey, PreKeyRecord, SignedPreKeyRecord, SessionRecord, SignalProtocolAddress,
+        //        ECPublicKey, PreKeyBundle, SessionCipher> omemoStore = new SQLiteOmemoStore();
+        // OmemoStore<?, ?, ?, ?, ?, ?, ?, ?, ?> omemoStore = new SQLiteOmemoStore();
         OmemoStore omemoStore = new SQLiteOmemoStore();
         SignalOmemoService.getInstance().setOmemoStoreBackend(omemoStore);
     }

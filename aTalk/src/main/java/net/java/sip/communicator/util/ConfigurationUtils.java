@@ -947,7 +947,6 @@ public class ConfigurationUtils {
         mConfigService.setProperty(pAutoStart, Boolean.toString(autoStart));
     }
 
-
     /**
      * Return TRUE if "isTtsEnable" property is true, otherwise - return FALSE.
      * Indicates if TTS is enabled.

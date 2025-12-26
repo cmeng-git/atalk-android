@@ -1,30 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="history_purge_error">Virhe poistaessa paikallisesti talletettuja viestejä kohteelle %1$s.</string>
-    <string name="chatroom_alternate_address">Voit jatkaa keskustelua seuraavassa keskusteluhuoneessa: %1$s</string>
-    <string name="chatroom_history_erase_all">Pyyhi kaikkien keskusteluhuoneiden historia</string>
-    <string name="network_assert_error">Jabber-palveluntarjoajaan on kirjaututtava sisään ennen kuin kommunikointi voi tapahtua.</string>
-    <string name="user_login">Kirjaudu sisään</string>
-    <string name="remove_account_prompt">Oletko varma että haluat poistaa käyttäjätilin:\n%1$s?</string>
-    <string name="status_change_network_failure">Tilan muuttaminen epäonnistui tilille: Käyttäjänimi: %1$s, Palvelimen nimi: %2$s verkkovirheen vuoksi.</string>
-    <string name="contactinfo_title">Yhteystiedon tiedot</string>
-    <string name="presence_not_supported">%1$s ei tue läsnäolo-ominaisuutta</string>
-    <string name="remove_contact_not_connected">Sinun täytyy olla yhdistettynä poistaaksesi tämän yhteystiedon. Kirjaudu sisään ja yritä uudelleen.</string>
-    <string name="search">Etsi</string>
-    <string name="send_log_info">Allaolevat tiedot voivat auttaa kehittäjää ongelman korjauksessa:\n\n 1. Mikä oli viimeisin asia jonka teit ennen ongelman tapahtumista?\n\n\n 2. Mikä on ongelma jonka näit, liitätkö kuvankaappauksen jos mahdollista?\n\n\n 3. Voitko toistaa ongelman ja miten?</string>
-    <string name="select_avatar">Valitse uusi avatar-kuva</string>
-    <string name="send_log_prompt">aTalk palautui vakavasta kaatumisesta. Haluatko raportoida bukit kehittäjille?</string>
-    <string name="server_info_not_complete">Täydennä käyttäjätilisi palvelinosio.</string>
-    <string name="cert_dialog_peer_description"><html>%1$s ei voi varmistaa vertaisen identiteettiä %2$s.<br/><br/> Varmenne ei ole luotettu (itse allekirjoitettu varmenne), tarkoittaen että vertaisen identiteettiä ei voida automaattisesti varmistaa.<br/><br/> Jatketaanko yhdistämistä vain tämän kerran?<br/> Klikkaa Näytä Varmenne saadaksesi lisää vaihtoehtoja ja tietoa.</html></string>
-    <string name="cert_info_key_size">Avainkoko:</string>
-    <string name="certconfig_cert_list_description">Täällä hallinnoidut määrittelyt voidaan valita asiakasohjelman TLS-varmenteina tilin määrittelyissä (esim. varmenteen käyttämiseksi varmennuksessa SIP-palveluntarjoajaasi vastaan käyttäjätunnuksen ja salasanan sijaan).</string>
-    <string name="certconfig_invalid_keystore_type">Valittu Keystore-tyyppi näyttää olevan virheellinen (%1$s).</string>
-    <string name="username_change_warning">Varoitus: Käyttäjätilin muuttaminen nimeen \"%1$s\" puhdistaa olemassa olevan tilin \"%3$s\" %2$s-viestit. Jatketaanko?</string>
-    <string name="callinfo_codec">Koodekki/taajuus:</string>
-    <string name="update_version_invalid">Ladattu apk ei täsmää; todellinen: %1$s (%2$s)</string>
-    <string name="accountinfo_discard_change">Käyttäjä siirtyy offline-tilaan - Kaikki tilitietojen muutokset on hylätty.</string>
-    <string name="certconfig_revocation_check_enabled">CRL-tarkistus (varmenteen peruutusluettelo) käytössä</string>
-    <string name="contactinfo_contact_summary_description">Yhteenveto yhteystiedoista kohteelle</string>
+    <string name="accept_call_video">Vastaa puheluun videolla</string>
+    <string name="account_delete_on_server">Poista tili palvelimelta</string>
+    <string name="account_delete_on_server_unregistered">Tilin poisto palvelimelta epäonnistui, käyttäjää ei ole rekisteröity!</string>
+    <string name="account_delete_on_server_failed">Tilin poisto palvelimelta epäonnistui:\n%1$s</string>
+    <string name="account_delete_on_server_successful">Tilin poisto palvelimelta onnistui:\n%1$s</string>
+    <string name="account_show_password">Näytä salasana</string>
+    <string name="account_server_override">Ohita palvelinasetus</string>
+    <string name="account_ibr_on_server">Rekisteröi uusi tili palvelimelle</string>
+    <string name="account_server_ip">Yhdistettävän palvelimen IP</string>
+
+    <string name="ibr_registration">Kaistansisäinen rekisteröinti (IBR)</string>
     <string name="captcha_ibr_request">Rekisteröinnin Captcha-varmistus</string>
     <string name="captcha_ibr_failed">Rekisteröinnin Captcha-varmistus epäonnistui!\n%1$s</string>
     <string name="captcha_ibr_success">Rekisteröinnin Captcha-varmistus onnistui.\nVoit nyt jatkaa kirjautumalla sisään!</string>
@@ -32,12 +18,14 @@
     <string name="captcha_ibr_pwd_empty">Virhe: salasanakenttä on tyhjä!</string>
     <string name="captcha_ibr_hint">Syötä näkemäsi teksti</string>
     <string name="captcha_ibr_retry">Paina \'OK\' yrittääksesi uudelleen tai \'Peruuta\' lopettaaksesi</string>
+
     <string name="captcha_challenge">Captcha-varmistus</string>
     <string name="captcha_protected">Keskusteluhuone on salattu Captcha-varmennuksella</string>
     <string name="captcha_text_empty">Captcha-varmennuksen tekstikenttä ei voi olla tyhjä</string>
     <string name="captcha_verification_valid">CAPTCHA-varmennus on hyväksytty</string>
     <string name="captcha_verification_failed">CAPTCHA-varmennus epäonnistui</string>
     <string name="captcha_wait_timeout">%1$s chatRoom CAPTCHA-varmennuksen aikakatkaisu;\nliity uudelleen chatRoom ja yritä uudelleen.</string>
+
     <string name="choose_network">Valitse verkko</string>
     <string name="encrypt_tooltip">Salaa keskustelu</string>
     <string name="encrypt_choices">Salaa Valinnat</string>
@@ -47,21 +35,27 @@
     <string name="open_file_no_application">Sovellusta ei löytynyt tiedoston avaamiseen</string>
     <string name="password">salasana</string>
     <string name="password_change_on_server_failed">Salasanan vaihto palvelimella epäonnistui:\n%1$s</string>
+    <string name="password_change_on_server_successful">Salasanan vaihto palvelimella onnistui!</string>
     <string name="password_">Salasana:</string>
     <string name="send_process_signal">Lähetä Prosessisignaali</string>
     <string name="call_info">Puhelutiedot</string>
     <string name="call_info_zrtp">ZRTP-puhelutiedot</string>
+    <string name="osgi_framework_stop">Pysäytä OSGi-ohjelmistokehys</string>
     <string name="save_password">Tallenna salasana</string>
     <string name="system_settings">Asetukset…</string>
     <string name="username_hint">käyttäjänimi@esimerkki.fi</string>
     <string name="username_">Käyttäjänimi:</string>
+
+    <!-- Call Transfer -->
     <string name="call_hang_up">Lopeta puhelu</string>
     <string name="call_on_hold">Tauota puhelu</string>
+    <string name="call_max_transfer">Valvottuun puhelunsiirtoon sallitaan enintään 2 puhelua!</string>
     <string name="call_transfer_call">Siirrä puhelu</string>
     <string name="call_transfer">Siirto</string>
     <string name="call_transfer_failed">Puhelunsiirtoa ei voitu jatkaa: %1$s ⇢ %2$s\n%3$s</string>
     <string name="call_transfer_hint">Valitse siirrettävän yhteystiedon nimi ja paina \"Siirrä\".</string>
     <string name="call_transfer_msg">%1$s puhelua siirretään kohteeseen… %2$s</string>
+
     <string name="attach_picture">Kuva</string>
     <string name="attach_take_picture">Ota kuva</string>
     <string name="attach_video">Video</string>
@@ -77,6 +71,8 @@
     <string name="select_all">Valitse kaikki</string>
     <string name="subject">Aihe</string>
     <string name="settings">Asetukset</string>
+
+    <!-- Block Command -->
     <string name="contact_block_text">Haluatko estää \'%1$s\' lähettämästä sinulle viestejä?</string>
     <string name="contact_unblock_text">Haluatko poistaa eston \'%1$s\' ja sallia heidän lähettää sinulle viestejä?</string>
     <string name="domain_blocking">Käytä kaikkiin yhteystietoihin täältä: %1$s</string>
@@ -87,6 +83,8 @@
     <string name="unblock">Poista esto</string>
     <string name="block_list_title">Estolista</string>
     <string name="block_list_show">Näytä estolista</string>
+
+    <!-- General -->
     <string name="accept">Hyväksy</string>
     <string name="account">Tili</string>
     <string name="account_me">Minä</string>
@@ -113,36 +111,50 @@
     <string name="apply">Toteuta</string>
     <string name="apply_changes">Toteutetaan käyttäjätilin muutoksia (~60S) …</string>
     <string name="at">\@</string>
+    <string name="authentication_failed">Todentaminen epäonnistui kohteelle %1$s. Syöttämäsi salasana ei ole oikein.</string>
+    <string name="authentication_requested_by_server">Palvelin %1$s pyytää todennustasi.</string>
+    <string name="authentication_requested">Todentaminen pyydetty</string>
     <string name="authentication_title">%1$s todentaminen</string>
     <string name="authorize">Valtuuta</string>
     <string name="authorization_accepted">yhteystieto on hyväksynyt valtuutuspyyntösi.</string>
     <string name="authorization_rejected">yhteystieto on hylännyt valtuutuspyyntösi.</string>
     <string name="authorization_requested">Valtuutus pyydetty</string>
+    <string name="authorization_request_info">Yhteystieto %1$s pyytää valtuutustasi.</string>
     <string name="authorization_request">Valtuutuspyyntö</string>
     <string name="avatar_size_hint">Pikkukuva suositellaan olevan: 64*64 (96*96 pikselin neliö on maksimi)</string>
     <string name="away">Poissa</string>
     <string name="avatar_set_error">Avatarin asettaminen epäonnistui kohteelle %1$s</string>
     <string name="avatar_retrieving">Haetaan avataria kohteelle %1$s</string>
+
     <string name="busy">Kiireinen</string>
     <string name="call_audio">Äänipuhelu</string>
     <string name="call_answered">%1$s vastasi puheluun.</string>
+    <string name="call_disable_on_fault">aTalk:in alustus epäonnistui %1$s\nKaikki mediapuhelut/palvelut otetaan pois käytöstä.\n%2$s</string>
+    <string name="call_ended">Vastapuoli lopetti puhelun: %1$s</string>
     <string name="call_error">Vastapuoli palautti virheen: %1$s</string>
     <string name="call_failed">Puhelu epäonnistui</string>
     <string name="call_history_name">Puheluloki</string>
+    <string name="call_history_remove_before_date_warning">Oletko varma että haluat tyhjentää kaikki puhelutiedot ennen päivämäärää: %1$s?</string>
     <string name="call_history_remove_none">Yhtään tietuetta ei ole valittu poistettavaksi</string>
     <string name="call_history_remove_warning">Oletko varma että haluat tyhjentää kaikki valitut puhelutiedot?</string>
     <string name="call_incoming">Saapuva puhelu: %1$s</string>
     <string name="call_incoming_status">Saapuva puhelu</string>
     <string name="call_initiating">Puhelun aloitus</string>
     <string name="call_rejected">%1$s hylkäsi puhelun.</string>
+    <string name="call_retracted">%1$s on perunut puhelun.</string>
     <string name="call_missed">Vastaamattomia puheluita kohteelta:</string>
+    <string name="call_no_active_device">aTalk ei löytänyt aktiivisia ääni/videolaitteita, joten puhelua ei voitu luoda.</string>
     <string name="call_no_audio_device">Äänilaitetta ei ole määritetty.</string>
+    <string name="call_no_audio_codec">Mitään äänikoodekkia ei ole otettu käyttöön.</string>
     <string name="call_no_device_codec_H">Laite tai koodekki ei ole määritetty oikein kohdassa \'Asetukset…\'. %1$s</string>
+    <string name="call_no_device_codec_Q">Haluatko jatkaa puhelua?</string>
+    <string name="call_no_matching_format">Vastaavaa mediamuotoa ehdotetulle %1$s ei löytynyt puhelun vastaanottamiseksi. Tarkista laitteen ja koodekin määrittelyt kohdassa \'Asetukset…\'.</string>
     <string name="call_outgoing">Lähtevä puhelu</string>
     <string name="call_outgoing_with">Puhelun luonti %1$s kanssa…</string>
     <string name="call_via_">Puhelu %1$s:n yli</string>
     <string name="call_video">Videopuhelu</string>
     <string name="call_with">Puhelu kohteen kanssa:</string>
+
     <string name="cancel">Peruuta</string>
     <string name="contact_invalid">Valittu yhteystieto ei ole kelvollinen: %1$s</string>
     <string name="dismiss">Hylkää</string>
@@ -154,13 +166,20 @@
     <string name="share_text">Jaa tekstiä…</string>
     <string name="share_file">Jaa tiedosto…</string>
     <string name="snooze">Torkuta</string>
+
+    <!-- ExoPlayer -->
+    <string name="playback_error">Mediasisältöä ei löydetty toistettavaksi</string>
     <string name="playback_buffering">Puskuroidaan…</string>
     <string name="playback_completed">Median toisto loppui</string>
     <string name="playback_rate">Toistonopeus: %1$s</string>
+
+    <!-- Conference Chat -->
     <string name="auto_join">Automaattinen liittyminen</string>
+    <string name="change_nickname">Vaihda lempinimi</string>
     <string name="change_nickname_">Vaihda lempinimi…</string>
     <string name="change_nickname_error_conflict">Sama nimi on jo olemassa</string>
     <string name="change_nickname_error">Virhe nimeä vaihdettaessa kohteelle %1$s: %2$s</string>
+    <string name="change_nickname_label">Voit syöttää uuden lempinimesi allaolevaan kenttään.</string>
     <string name="change_nickname_null">Nimikenttä ei voi olla tyhjä</string>
     <string name="chatroom_change_info">Keskusteluhuoneen tietojen muuttaminen</string>
     <string name="chatroom_change_subject">Voit kirjoittaa uuden aiheen tälle huoneelle allaolevaan kenttään.</string>
@@ -168,7 +187,11 @@
     <string name="chatroom_conference_item">%1$s:n kokous</string>
     <string name="chatroom_conference">Kokoukset</string>
     <string name="chatroom">Keskusteluhuone</string>
+    <string name="chatroom_already_joined">Olet jo liittynyt keskusteluhuoneeseen %1$s .</string>
+    <string name="chatroom_configuration">Keskusteluhuoneen määritykset</string>
+    <string name="chatroom_configuration_failed">Keskusteluhuoneen %1$s määrittelylomakkeen saaminen epäonnistui.</string>
     <string name="chatroom_configuration_forbidden">Keskusteluhuoneen %1$s määrittelylomakkeen saanti epäonnistui. Vain keskusteluhuoneen omistajat voivat katsella ja muokata lomaketta.</string>
+    <string name="chatroom_configuration_members_edit_description">Oikeallaoleva lista sisältää käyttäjät joilla on jäsenrooli tässä keskusteluhuoneessa. Kun keskusteluhuone on \'Vain jäsenet\' tilassa, vain nämä käyttäjät voivat liittyä.</string>
     <string name="chatroom_configuration_members_edit_title">Muokkaa Jäsenlistaa</string>
     <string name="chatroom_configuration_submit_failed">Tapahtui virhe lähettäessä määrittelylomaketta keskusteluhuoneelle %1$s.</string>
     <string name="chatroom_remove_tooltip">Poistaa valitun huoneen tallennettujen huoneiden listalta</string>
@@ -179,6 +202,7 @@
     <string name="chatroom_user_left">on poistunut kohteesta %1$s</string>
     <string name="chatroom_user_quit">on lähtenyt kohteesta %1$s</string>
     <string name="chatroom_name">Keskusteluhuoneen nimi</string>
+    <string name="chatroom_name_info">Kirjoita allaolevaan kenttään keskusteluhuoneen nimi, jonka haluat luoda.</string>
     <string name="chatroom_not_exist">Huone %1$s ei löytynyt %2$s palvelimelta. Tarkista että kirjoittamasi nimi on oikein.</string>
     <string name="chatroom_not_connected">Sinun pitää olla online-tilassa jotta voit liittyä keskusteluhuoneeseen %1$s .</string>
     <string name="chatroom_leave_not_connected">Sinun täytyy olla online-tilassa jotta voit lähteä keskusteluhuoneesta.</string>
@@ -190,16 +214,20 @@
     <string name="chatroom_subject_changed">Huoneen aihe on muutettu: \'%1$s\' =&gt; \'%2$s\'</string>
     <string name="chatroom_nickname_changed">%1$s tunnetaan nyt nimellä %2$s</string>
     <string name="clear_custom_messages">Tyhjennä mukautetut viestit</string>
+    <string name="close">Sulje</string>
     <string name="close_all_active_chats">Sulje kaikki aktiiviset keskustelut</string>
+    <string name="close_current_chat">Sulje nykyinen keskusteluistunto</string>
     <string name="connected">Yhdistetty</string>
     <string name="connecting_">Yhdistetään %1$s</string>
     <string name="connecting_status">Yhdistetään…</string>
+    <string name="connection_failed_message">Tilin kirjautumisen yhteys epäonnistui: Käyttäjänimi: %1$s\n Palvelimen nimi: %2$s\nTarkista verkkoyhteys TAI ota yhteyttä verkon ylläpitäjään lisätietojen saamiseksi.</string>
     <string name="connecting">Yhdistetään</string>
     <string name="contact_active">** %1$s on aktiivinen keskusteluistunnossa</string>
     <string name="contact_composing">** %1$s kirjoittaa viestiä</string>
     <string name="contact_inactive">** %1$s on väliaikaisesti poissa</string>
     <string name="contact_gone">** %1$s on lähtenyt keskusteluistunnosta</string>
     <string name="contact_info">Yhteyshenkilön tiedot</string>
+    <string name="contact_name">Yhteyshenkilön JID tai Numero</string>
     <string name="contact_name_empty">Yhteystiedon displayName ei voi olla tyhjä.</string>
     <string name="contact_owner">Ota yhteyttä omistajaan: %1$s</string>
     <string name="contact_pause_typing">** %1$s on keskeyttänyt kirjoittamisen</string>
@@ -209,21 +237,41 @@
     <string name="contacts">Yhteystietoluettelo</string>
     <string name="contact_offline_hide">Piilota offline-tilassa olevat yhteystiedot</string>
     <string name="contact_offline_show">Näytä offline-tilassa olevat yhteystiedot</string>
+    <string name="copy_message_text">Kopioi viestin teksti</string>
+
     <string name="create">Luo</string>
     <string name="create_call_failed">Puhelua ei voitu luoda.</string>
+    <string name="create_conference_call">Luo kokouspuhelu…</string>
     <string name="create_conference_chat">Luo kokouskeskustelu…</string>
     <string name="create_group">Luo ryhmä…</string>
     <string name="create_group_name_invalid">Virheellinen ryhmän nimi: %1$s</string>
+    <string name="create_group_name">Syötä allaolevaan kenttään ryhmän nimi, jonka haluat luoda.</string>
     <string name="create_group_first_wizard">Yhteystietoluettelosi ei sisällä yhtään ryhmää. Luo ryhmä ensin (Tiedosto/Luo ryhmä).</string>
+
+    <!-- About Dialog -->
+    <string name="aboutDialog_help"><a href="https://cmeng-git.github.io/atalk">Verkkoapu</a></string>
     <string name="About">Tietoa</string>
     <string name="version_">Versio %1$s</string>
     <string name="help">Apua</string>
     <string name="check_new_version">Tarkista Päivitykset</string>
+    <string name="show_history_log">Historialokit</string>
+    <string name="online_help">Verkkoapu</string>
+
+    <!-- HTTP Authorization Request Dialog -->
+    <string name="http_authorization_request">HTTP-valtuutuspyyntö</string>
+    <string name="http_authorization_request_instruction">HTTP (%1$s) Valtuutus kohteelle %2$s\nVarmistuskoodi: %3$s\nHaluatko hyväksyä tämän pyynnön tilille:\n%4$s?\n\nTarkista että annettu ID vastaa sivustoa jos mahdollista</string>
+    <string name="app_authors_fmt">Tekijät: %1$s</string>
     <string name="app_libraries">aTalk käyttää seuraavia kolmannen osapuolen kirjastoja: %1$s</string>
     <string name="app_revision_fmt">Muutoksen Tiedot: %1$s</string>
+    <string name="app_xep">aTalk tukee seuraavia XEP-standardeja: %1$s</string>
     <string name="powered_by">Voimanlähteenä atalk.org</string>
+
+    <!-- PTT Chat -->
+    <string name="chat_audio_buddy_offline">Äänikeskustelu offline-tilassa olevan vastaanottajan kanssa ei ole sallittua.</string>
     <string name="chat_audio_cancel">&lt; liu\'uta vasemmalle\nperuuttaaksesi</string>
     <string name="chat_audio_start_record">Aloita Nauhoitus</string>
+
+    <!-- GPS Location -->
     <string name="latitude">Leveysaste:</string>
     <string name="location">Sijainti:</string>
     <string name="longitude">Pituusaste:</string>
@@ -237,13 +285,21 @@
     <string name="single_location_fix">Yhden sijainnin päivitys</string>
     <string name="follow_me_start">Seuraa minua (%1$dm) @%2$dS</string>
     <string name="follow_me_stop">Lopeta seuraamasta (%1$dm) @%2$dS</string>
+
+    <!-- Google Map -->
     <string name="google_map">GoogleKartta</string>
     <string name="legal_info">Lakitiedot</string>
     <string name="play_service_not_installed">Google Play-palveluita ei ole asennettu tälle laitteelle.</string>
     <string name="split_street_view_panorama_and_map_description">Osoittaa miten KatuNäkymän panoraama sekä kartta voidaan näyttää.</string>
     <string name="split_street_view_panorama_and_map_label">KatuNäkymän Panoraama sekä Kartta</string>
     <string name="map">Kartta</string>
+
+    <!-- Location Permissions -->
+    <string name="permission_location_rationale">Paikannuspalvelun käyttöoikeus vaaditaan \'oma sijainti\' -toiminnon havainnollistamiseen, joka näyttää nykyisen sijaintisi kartalla.</string>
+    <string name="permission_location_denied">Tämä esimerkki vaatii luvan sijaintitietoihin, jotta \'oma sijainti\' -taso voidaan ottaa käyttöön. Yritä uudelleen ja myönnä käyttöoikeus sijaintitietojen käyttöön.\nJos käyttöoikeus on pysyvästi evätty, se voidaan ottaa käyttöön kohdassa Järjestelmäasetukset &gt; Sovellukset &gt; \'Google Karttojen API Demot\'.</string>
     <string name="permission_location_required">Lupa sijaintitietoihin tarvitaan tätä demoa varten.</string>
+
+    <!-- Persistent Store -->
     <string name="export_sql_db">Vie aTalk SQL-Tietokanta</string>
     <string name="purge_debug_log">Tyhjennä aTalk Virheenkorjauksen Lokitiedosto</string>
     <string name="purge_sql_db">Tyhjennä aTalk SQL-TietoKanta - Vaara!</string>
@@ -252,8 +308,10 @@
     <string name="refresh_store_avatar">XEP-0084/XEP-0153: Avatari</string>
     <string name="refresh_store_caps">XEP-0115: Entiteetin kyvykkyydet</string>
     <string name="refresh_store_disc_info">XEP-0030: Palveluiden Löytäminen</string>
+    <string name="refresh_store_hint">Tarkista kohteen pysyvä tietuevarasto puhdistamista ja virkistämistä varten; Suorita vain tarvittaessa!\n</string>
     <string name="refresh_store_roster">XEP-0237: Luetteloiden versiointi</string>
     <string name="refresh_store_omemo">XEP-0384: OMEMO-Salaus</string>
+
     <string name="unregistered_message">Tilin kirjautumisen yhteys epäonnistui:\nKäyttäjän nimi: %1$s\nPalvelimen nimi: %2$s\nTämä tili on offline-tilassa.</string>
     <string name="create_videoBridge">Luo videosilta…</string>
     <string name="create_videoBridge_menu">Luo videosilta</string>
@@ -267,6 +325,8 @@
     <string name="contact_display_name">Yhteystiedon Näyttönimi</string>
     <string name="do_not_disturb">Älä häiritse</string>
     <string name="duration">kesto</string>
+
+    <string name="edit_status_message_tip">Aseta tilaviesti</string>
     <string name="edited">muokattu</string>
     <string name="enter_name_or_number">Syötä nimi tai numero</string>
     <string name="error">Virhe</string>
@@ -274,6 +334,9 @@
     <string name="exit">Poistu</string>
     <string name="extended_away">Pidennetysti Poissa</string>
     <string name="free_for_chat">Saatavilla keskusteluun</string>
+
+    <!-- File Transfer (xFile prefix with date) -->
+    <string name="file_byte_sent">%1$s lähetetty</string>
     <string name="file_receive_completed">Tiedosto vastaanotettu kohteelta %1$s</string>
     <string name="file_receive_failed">Virhe tapahtui tiedostoa siirrettäessä kohteelta %1$s</string>
     <string name="file_receive_from">Vastaanotetaan tiedostoa kohteelta %1$s</string>
@@ -282,43 +345,67 @@
     <string name="file_sending_to">Lähetetään tiedostoa kohteeseen %1$s</string>
     <string name="file_transfer_accepted">Tiedostonsiirto on hyväksytty</string>
     <string name="file_transfer_canceled">Tiedostonsiirto on peruttu</string>
+    <string name="file_transfer_preparing">Tiedostonsiirtoa valmistellaan kohteen %1$s kanssa. Odota…</string>
     <string name="file_transfer_declined">Tiedostonsiirrosta on kieltäydytty</string>
     <string name="file_transfer_request_received">%1$s jakaa tiedostoa kanssasi</string>
     <string name="file_transfer_send_error">Virhe tapahtui lähettäessä tiedostoa kohteeseen %1$s</string>
     <string name="file_transfer_waiting_acceptance">Odotetaan että %1$s hyväksyy tiedostosi</string>
+
     <string name="purge">Tyhjennä</string>
+    <string name="estimated_time_">Arvioitu aika: %1$s</string>
     <string name="file">Tiedosto</string>
     <string name="file_delivery_error">Valitun tiedoston lähetys epäonnistui. %1$s</string>
+    <string name="file_does_not_exist">Valittua tiedostoa ei löytynyt. Se voi olla joko poistettu tai siirretty muualle</string>
     <string name="file_open_failed">Tiedostoa ei voitu avata. Se voi olla poistettu tai siirretty muualle</string>
+    <string name="file_open_no_permission">Sinulla ei ole tarpeeksi oikeuksia avata tätä tiedostoa. Tarkista lukuoikeutesi ja yritä uudestaan</string>
     <string name="file_open_no_application">Emme löytäneet sovellusta joka olisi rekisteröity tälle tiedostotyypille</string>
+    <string name="file_open_not_supported">Tiedostonavaustoiminto ei ole tuettu laitteesi nykyisellä alustalla</string>
     <string name="file_send_client_error">Vastapuolen asiakassovelluksen virhe lähetetylle tiedostolle: %1$s</string>
     <string name="file_send_failed">Tiedoston lähetys epäonnistui: %1$s</string>
+    <string name="file_send_not_allow">Tiedostoa ei voi lähettää kokouspuhelun aikana!</string>
     <string name="file_attachment">Lähetä Liite</string>
+    <string name="file_size_too_big">Tiedostonkoko ylittää protokollan sallitun maksimikoon: %1$s</string>
     <string name="file_transfer_active">Käynnissäolevaa tiedostonsiirtoa keskeytettiin. Tilan seuranta @ %1$s menetetty!</string>
+    <string name="file_transfer_not_secure">XEP-0096: SI-tiedonsiirtoprotokolla ei voi tukea salattujen tiedostojen lähetystä!</string>
     <string name="file_transfer_not_supported">Yhteystiedon asiakassovellus (%1$s) tai palvelin ei tue tiedostonsiirtoa tai tarvittavia protokollia</string>
+
     <string name="finish">Valmista</string>
     <string name="folder_not_exist">Kansiota jonka sisällä tiedosto sijaitsee ei löytynyt. Se on joko poistettu tai siirretty muualle</string>
     <string name="folder_open_failed">Kansion avaaminen epäonnistui</string>
+    <string name="folder_open_no_permission">Sinulla ei ole tarpeeksi oikeuksia kansion avaamiseksi. Tarkista lukuoikeutesi ja yritä uudelleen</string>
     <string name="folder_open_no_application">Emme löytäneet sovellusta tämän kansion avaamiseen</string>
     <string name="group_chat">Ryhmäkeskustelu</string>
     <string name="hide">Piilota</string>
     <string name="history">Historia</string>
+    <string name="history_contact">Historia - %1$s</string>
     <string name="history_off_for_contact">Poista historia käytöstä tälle yhteystiedolle</string>
     <string name="history_off_all">Poista historia käytöstä kaikille keskusteluille ja yhteystiedoille</string>
     <string name="history_erase_for_contact">Pyyhi historia tälle yhteystiedolle</string>
     <string name="history_erase_all">Pyyhi keskusteluhistoria kaikille yhteystiedoille</string>
+    <string name="history_purge_for_contact_warning">Oletko varma että haluat tyhjentää kaikki valitut viestit kohteelle %1$s?</string>
+    <string name="history_purge_all_warning">Oletko varma että haluat tyhjentää kaikki viestit kaikille yksiköille?</string>
     <string name="history_purge_count">Poistettujen historiatietojen määrä: %1$s</string>
+    <string name="history_purge_error">Virhe poistaessa paikallisesti talletettuja viestejä kohteelle %1$s.</string>
     <string name="history_purge_media">Poista kaikki media puhelimestani</string>
+    <string name="history_offline_warning">Sulje ja avaa tämä keskusteluistunto nähdäksesi MAM sekä Offline-viestit ollessasi online-tilassa</string>
+
     <string name="chatroom_alternate_venue">Vaihtoehtoinen Tapahtumapaikka:</string>
+    <string name="chatroom_alternate_address">Voit jatkaa keskustelua seuraavassa keskusteluhuoneessa: %1$s</string>
     <string name="chatroom_bookmark_title">Keskusteluhuoneen Kirjanmerkki</string>
     <string name="chatroom_bookmark">Kirjanmerkki</string>
     <string name="chatroom_auto_join">Automaattinen Liittyminen</string>
     <string name="chatroom_bookmark_update_failed">Kirjanmerkkien päivitys epäonnistui kohteelle %1$s: %2$s</string>
+
     <string name="chatroom_occupant">Keskusteluhuoneen paikallaolevat</string>
     <string name="chatroom_history_erase_per">Pyyhi tämän keskusteluhuoneen historia</string>
+    <string name="chatroom_history_erase_all">Pyyhi kaikkien keskusteluhuoneiden historia</string>
+    <string name="chatroom_history_off_per">Ota historia pois käytöstä tälle keskusteluhuoneelle</string>
+    <string name="chatroom_info">Keskusteluhuoneen tiedot</string>
+    <string name="chatroom_info_name">Nimi</string>
     <string name="chatroom_info_subject">Aihe</string>
     <string name="chatroom_info_description">Kuvaus</string>
     <string name="chatroom_info_occupants">Paikallaolijat</string>
+    <string name="chatroom_info_member_only">Vain Jäsenet</string>
     <string name="chatroom_info_moderated">Moderoitu</string>
     <string name="chatroom_info_non_anonymous">Ei-Anonyymi</string>
     <string name="chatroom_info_password_protected">Salasanasuojattu</string>
@@ -328,39 +415,52 @@
     <string name="chatroom_info_subject_modifiable">Aihe Muokattavissa</string>
     <string name="chatroom_info_language">Kieli</string>
     <string name="chatroom_info_ldap_group">LDAP-ryhmä</string>
+
     <string name="chatroom_create">Luo keskusteluhuone…</string>
     <string name="chatroom_create_error">Keskusteluhuoneen luonti epäonnistui kohteelle:\n%1$s</string>
     <string name="chatroom_create_join">Luo/Liity keskusteluhuoneeseen</string>
     <string name="chatroom_create_wizard">Keskusteluhuoneen luontityökalu</string>
+
     <string name="chatroom_destroy">Tuhoa tämä keskusteluhuone</string>
+    <string name="chatroom_destroy_exception">Virhe tapahtui keskusteluhuonetta tuhotessa:\n%1$s</string>
     <string name="chatroom_destroy_error">Keskusteluhuoneen poisto palvelimelta epäonnistui:\n\'%1$s\'\n%2$s\n\nJatka paikallisen keskusteluhuoneen tyhjennyksellä.</string>
     <string name="chatroom_destroy_message">Tämä ryhmäkeskustelu on tuhottu!\nSyy: %1$s</string>
+    <string name="chatroom_destroy_note">Muille osallistujille tiedoksi, syötä syy sekä vaihtoehtoinen keskusteluhuoneen tapahtumapaikka liittymistä varten.</string>
     <string name="chatroom_destroy_prompt">Tilin omistaja: %1$s.\nHaluatko varmasti tuhota kohteen\n\'%2$s\'\nja koko sen keskusteluhistorian?</string>
     <string name="chatroom_destroy_reason">epäaktiivinen ryhmäkeskustelu</string>
     <string name="chatroom_destroy_successful">\'%1$s\' on poistettu Onnistuneesti!</string>
     <string name="chatroom_destroy_title">Poista keskusteluhuone</string>
+
     <string name="chatroom_join_failed">Huoneeseen liittyminen epäonnistui nimellä: %1$s\n%2$s.</string>
+    <string name="chatroom_join_failed_reason">Liittyminen epäonnistui keskusteluhuoneeseen %1$s:\n%2$s</string>
     <string name="chatroom_join_password">Keskusteluhuone pyytää salasanaa.</string>
     <string name="chatroom_join_failed_registration">Keskusteluhuone vaatii rekisteröitymistä.</string>
     <string name="chatroom_join_title">Liity keskusteluhuoneeseen</string>
     <string name="chatroom_join_name">Syötä keskusteluhuoneen nimi, johon haluat liittyä.</string>
     <string name="chatroom_join_subject_null">Syötä aihe keskusteluhuoneelle</string>
     <string name="chatroom_join_wizard">Keskusteluhuoneeseen liittymistyökalu</string>
+
     <string name="cr_member_start_conversation">Aloita keskustelu</string>
+    <string name="cr_member_grant_owner_privilege">Anna omistajan valtuudet</string>
     <string name="cr_member_revoke_owner_privilege">Poista omistajan valtuudet</string>
     <string name="cr_member_kick">Poista ryhmäkeskustelusta</string>
+
     <string name="invitation_message">Kutsun viesti:</string>
     <string name="invitation_received">Kutsu vastaanotettu</string>
-    <string name="invite">Kutsu</string>
+    <string name="invitation_received_message">%1$s kutsui sinut liittymään %2$s keskusteluhuoneeseen. Voit hyväksyä, hylätä, tai jättää huomiotta tämän kutsun.</string>
     <string name="invitation_rejected">%1$s hylkäsi kutsusi keskusteluhuoneeseen liittymisestä. Syy: %2$s.</string>
+    <string name="invite">Kutsu</string>
+    <string name="invite_contact_message">Valitse yhteystietojen nimet jotka haluat lisätä tähän keskusteluun ja paina Kutsu.</string>
     <string name="invite_contact_to_call">Kutsu yhteystietoja puheluun</string>
     <string name="invite_contact_to_chat">Kutsu yhteystietoja keskusteluun</string>
     <string name="invite_contact_to_videoBridge">Kutsu yhteystietoja (videosilta)</string>
     <string name="invite_group_chat">Ryhmäkeskustelun kutsu</string>
     <string name="invite_reason">Kutsun Syy:</string>
+    <string name="invite_reject_reason">Syy (hylättäessä):</string>
     <string name="invite_reject_busy">Kiireinen</string>
     <string name="ignore">Jätä huomiotta</string>
     <string name="info">Tiedot</string>
+
     <string name="address">Osoite</string>
     <string name="city">Kaupunki</string>
     <string name="country">Maa</string>
@@ -372,40 +472,56 @@
     <string name="invalid_address">Virheellinen osoite: %1$s</string>
     <string name="join">Liity</string>
     <string name="join_as">Liity käyttäjänä</string>
+    <string name="join_existing_video_conference">Liity olemassa olevaan videoneuvotteluun</string>
     <string name="join_video">Liity videolla</string>
     <string name="job_title">Työnimike</string>
+
     <string name="join_automatically">Liity automaattisesti</string>
     <string name="do_not_join_automatically">Älä liity automaattisesti</string>
     <string name="kick">Heitä ulos</string>
     <string name="kick_failed">Potkiminen epäonnistui</string>
+    <string name="kick_failed_not_enough_permission">Kohteen %1$s potkiminen epäonnistui. Sinulla ei ole tarpeeksi oikeuksia siihen.</string>
     <string name="kick_failed_not_allowed">Kohteen %1$s potkaiseminen epäonnistui. Huoneen omistajaa ja ylläpitäjää ei voida potkia.</string>
+    <string name="kick_failed_general_error">Kohteen %1$s potkaiseminen epäonnistui. Tapahtui yleinen palvelinvirhe.</string>
     <string name="last">Viimeinen</string>
     <string name="last_message_correction">Viimeisimmän viestin korjaus</string>
     <string name="last_name">Sukunimi</string>
     <string name="last_seen">Tänään: %s</string>
     <string name="leave">Lähde</string>
     <string name="leave_chat_room">Lähde keskusteluhuoneesta</string>
+    <string name="locally_on_hold">Paikallisesti pidossa</string>
     <string name="login_credential">Sisäänkirjautumisen Käyttäjätunnukset</string>
     <string name="login_failed">Sisäänkirjautuminen epäonnistui</string>
+    <string name="logoff_failed">Uloskirjautumisen yhteydessä ilmestyi virhe seuraavan tilin kanssa: Käyttäjänimi: %1$s, Palvelimen nimi: %2$s.</string>
     <string name="mobile">Mobiili</string>
     <string name="move">Siirrä</string>
     <string name="move_contact">Siirrä Yhteystieto</string>
     <string name="move_contact_error">Yhteystietoa ei voi siirtää</string>
     <string name="move_contact_message">Valitse yhteystieto tai ryhmä, johon haluat siirtää valitun yhteystiedon.</string>
+    <string name="move_contact_failed">Valitsemasi yhteystieto on sama kuin\nlähde. Valitse toinen yhteystieto!</string>
     <string name="move_contact_prompt">Oletko varma että haluat siirtää kohteen %1$s kohteeseen %2$s?</string>
     <string name="move_contact_to_group">Siirrä ryhmään</string>
+    <string name="nickname">Lempinimi</string>
     <string name="chatroom_open_automatically">Avaa tämä huone automaattisesti, kun</string>
     <string name="personal">Henkilökohtainen</string>
+
+    <string name="message_delivery_error">Viestin toimittaminen epäonnistui.</string>
     <string name="message_delivery_failed">Yllä olevaa viestiä ei voitu toimittaa</string>
-    <string name="callinfo_ice_remote_reflexive_address">(Etä) Heijastava IP-osoite/Portti:</string>
+    <string name="message_delivery_internal_error">Tapahtui sisäinen virhe. Tämä voi olla bugi. Raportoi se virheenkorjauslokin avulla.</string>
+    <string name="message_delivery_not_supported">Käyttämäsi protokolla ei tue offline-viestejä. Voit yrittää tavoittaa kohteen %1$s toisen protokollan kautta tai odottaa, kunnes hän tulee online-tilaan.</string>
     <string name="message_delivery_unknown_error">Tuntematon virhe tapahtui viestisi toimittamisen aikana.</string>
     <string name="message_delivery_unsupported_operation">Toimintoa ei tueta.</string>
     <string name="message_delivery_network_error">Verkkovirhe tapahtui. Tarkista verkkoasetukset ja yritä uudelleen.</string>
     <string name="message_received">%1$s kirjoitti</string>
+    <string name="message_delivery_not_registered">Sinun on ensin kirjauduttava sisään lähettääksesi viestin.</string>
+
     <string name="multiple_login">Useita kirjautumisia ei sallita. Seuraavalle tilille: Käyttäjänimi: %1$s, Palvelimen nimi: %2$s on katkaistu yhteys.</string>
     <string name="mutually_on_hole">Molemminpuolisesti pidossa</string>
     <string name="name">Nimi</string>
+    <string name="add_new_account">Lisää uusi käyttäjätili</string>
+    <string name="network_assert_error">Jabber-palveluntarjoajaan on kirjaututtava sisään ennen kuin kommunikointi voi tapahtua.</string>
     <string name="no">Ei</string>
+    <string name="no_online_telephony_account">Puheluun tarvitaan vähintään yksi verkkopuhelintili. Kirjaudu sisään yhdelle puhelintileistäsi ja yritä uudelleen.</string>
     <string name="not_authorized">Valtuuttamaton</string>
     <string name="not_authorized_hint">Sinulla ei ole oikeutta käyttää palvelinta. Tarkista tilin asetukset, salasana, tai koita kaistansisäistä rekisteröitymistä ja yritä uudelleen:\n%s</string>
     <string name="off">Pois</string>
@@ -426,39 +542,55 @@
     <string name="registration_required">Virhe tilin rekisteröinnissä palvelimella:\n%s</string>
     <string name="save">Tallenna</string>
     <string name="show_stack_trace">Näytä kutsupino (Stack trace)</string>
+    <string name="street">Katu</string>
     <string name="submit">Lähetä</string>
+    <string name="user_login">Kirjaudu sisään</string>
     <string name="work">Työ</string>
     <string name="xmpp_connection_error">Ongelma XMPP-Yhteyden aikana:\n%s</string>
+
+    <!-- Call -->
     <string name="btn_video_tooltip">Kytke video</string>
     <string name="mic_control_title">Mikrofonin vahvistustaso</string>
     <string name="btn_mute_tooltip">Säädä mikrofonin ääntä</string>
+    <string name="presence_not_supported">%1$s ei tue läsnäolo-ominaisuutta</string>
     <string name="proactive_notification">on kirjoittamassa viestiä (%1$s)</string>
     <string name="recent_messages">Viimeaikaiset keskustelut</string>
     <string name="received_">%1$s vastaanotettu</string>
     <string name="referred">Viitattu</string>
     <string name="restoring_">Palautetaan…</string>
+
     <string name="decline">Kieltäydy</string>
     <string name="remove">Poista</string>
     <string name="remove_account">Poista käyttäjätili</string>
+    <string name="remove_account_prompt">Oletko varma että haluat poistaa käyttäjätilin:\n%1$s?</string>
     <string name="remove_contact">Poista yhteystieto</string>
     <string name="remove_contact_prompt">Yhteystiedon omistaja: %1$s.\n\nOletko varma että haluat poistaa yhteystiedon: \'%2$s\' luettelostasi?</string>
+    <string name="remove_contact_not_connected">Sinun täytyy olla yhdistettynä poistaaksesi tämän yhteystiedon. Kirjaudu sisään ja yritä uudelleen.</string>
     <string name="remove_group">Poista ryhmä</string>
     <string name="remove_group_prompt">Haluatko varmasti poistaa ryhmän \'%1$s\' ja kaikki siihen liitetyt yhteystiedot luettelostasi?</string>
     <string name="remotely_on_hold">Vastapuolen pidossa</string>
     <string name="rename_contact">Vaihda Yhteystiedon Nimi</string>
+
     <string name="ringing">Soi</string>
     <string name="request">Pyyntö</string>
     <string name="request_authorization">Pyydä valtuutusta</string>
     <string name="request_authorization_prompt">Yhteystiedon omistaja: %1$s\n\nTarvitsee valtuutusta kohteelta \'%2$s\' lisätäkseen hänet yhteystietoluetteloosi. Syötä pyyntösi uudelleen.</string>
     <string name="retry">Yritä uudelleen</string>
+    <string name="search">Etsi</string>
     <string name="search_contact">Etsi yhteystietoa</string>&gt;
     <string name="phonebook">Puhelinluettelo</string>
     <string name="security">Turvallisuus</string>
+    <string name="select_account_owner">Valitse tilin omistaja</string>
     <string name="assign_group">Yhteystiedon määritetty ryhmä:</string>
     <string name="no_group">Ei ryhmää</string>
+
+    <!-- Logs -->
     <string name="send_log">Ilmoita Bukeja</string>
+    <string name="send_log_prompt">aTalk palautui vakavasta kaatumisesta. Haluatko raportoida bukit kehittäjille?</string>
     <string name="send_log_subject">aTalk bukiraportti</string>
     <string name="send_log_title">aTalk-bukit raportoi sähköpostitse</string>
+    <string name="send_log_info">Allaolevat tiedot voivat auttaa kehittäjää ongelman korjauksessa:\n\n 1. Mikä oli viimeisin asia jonka teit ennen ongelman tapahtumista?\n\n\n 2. Mikä on ongelma jonka näit, liitätkö kuvankaappauksen jos mahdollista?\n\n\n 3. Voitko toistaa ongelman ja miten?</string>
+
     <string name="send_message">Lähetä viesti</string>
     <string name="send_message_failed">Viestin lähettäminen epäonnistui: %1$s</string>
     <string name="send_message_not_supported">Valitsemasi kohde ei tue pikaviestejä keskustelussa: %1$s</string>
@@ -481,21 +613,28 @@
     <string name="warning">Varoitus</string>
     <string name="call_in_progress_warning">Tätä ei voi tehdä puhelun aikana</string>
     <string name="yes">Kyllä</string>
+
+    <!-- Sign in -->
     <string name="account_create_failed">Uuden tilin luominen epäonnistui virheen vuoksi: %1$s</string>
     <string name="create_account">Luo tili</string>
     <string name="general_error">Yleinen virhe</string>
     <string name="network_failure">Verkkovirhe</string>
+    <string name="select_avatar">Valitse uusi avatar-kuva</string>
     <string name="set_status">Muuta tilaa</string>
     <string name="sign_in">Sisäänkirjautuminen</string>
     <string name="sign_out">Kirjaudu ulos</string>
+    <string name="server_info_not_complete">Täydennä käyttäjätilisi palvelinosio.</string>
     <string name="speed_info">Nopeus: %1$s/s (%2$s)</string>
     <string name="status_change_general_error">Tilan muuttaminen epäonnistui tilille: Käyttäjänimi: %1$s, Palvelimen nimi: %2$s yleisen virheen vuoksi.</string>
     <string name="status_change_message">:sta on tullut %1$s</string>
+    <string name="status_change_network_failure">Tilan muuttaminen epäonnistui tilille: Käyttäjänimi: %1$s, Palvelimen nimi: %2$s verkkovirheen vuoksi.</string>
     <string name="security_error">Turvallisuusvirhe</string>
     <string name="security_info">Turvallisuustiedot</string>
     <string name="security_warning">Turvallisuusvaroitus</string>
     <string name="username_password_null">Syötä kelvollinen käyttäjätunnus ja/tai salasana.</string>
+    <string name="username_change_warning">Varoitus: Käyttäjätilin muuttaminen nimeen \"%1$s\" puhdistaa olemassa olevan tilin \"%3$s\" %2$s-viestit. Jatketaanko?</string>
     <string name="user_exist_error">Tämä käyttäjä on jo valitussa verkossa. Valitse toinen käyttäjä tai verkko.</string>
+
     <string name="jan">Tammi</string>
     <string name="feb">Helmi</string>
     <string name="mar">Maalis</string>
@@ -508,6 +647,8 @@
     <string name="oct">Loka</string>
     <string name="nov">Marras</string>
     <string name="dec">Joulu</string>
+
+    <!-- Call info -->
     <string name="protocol_ice_failed">Yhteyttä ei voitu muodostaa (ICE epäonnistui ja välittäjää ei löytynyt)</string>
     <string name="callinfo_audio_info">Äänen tiedot</string>
     <string name="callinfo_bandwidth">Kaistanleveys:</string>
@@ -515,12 +656,14 @@
     <string name="callinfo_call_identity">Identiteetti:</string>
     <string name="callinfo_call_information">Puhelun tiedot</string>
     <string name="callinfo_call_transport">Signaloivan puhelun kuljetus:</string>
+    <string name="callinfo_codec">Koodekki/taajuus:</string>
     <string name="callinfo_conference_focus">Kokouksen painopiste:</string>
     <string name="callinfo_default_encrypted">Salaus otettu käyttöön:</string>
     <string name="callinfo_jitter">Heilahtelu:</string>
     <string name="callinfo_key_exchange_protocol">Avaintenvaihtoprotokolla</string>
     <string name="callinfo_local_ip">Paikallinen IP-osoite/Portti:</string>
     <string name="callinfo_loss_rate">Hävikin määrä:</string>
+    <string name="callinfo_media_stream_rip">RTP:</string>
     <string name="callinfo_media_srtp">SRTP:</string>
     <string name="callinfo_media_stream_transport_protocol">Mediavirran siirtoprotokolla:</string>
     <string name="callinfo_na">Ei saatavilla.</string>
@@ -538,12 +681,16 @@
     <string name="callinfo_decoded_with_fec">FEC:llä puretut paketit:</string>
     <string name="callinfo_discarded_percent">Tällä hetkellä hylättävät paketit:</string>
     <string name="callinfo_discarded_total">Hävitettyjen pakettien määrä:</string>
+
+    <!-- ICE info -->
     <string name="callinfo_harvesting_data">%1$d ms (%2$d sadoille)</string>
     <string name="callinfo_harvesting_time">Sadonkorjuuaika:</string>
+    <string name="callinfo_candidate_extended_type">ICE-ehdokkaan laajennettu tyyppi:</string>
     <string name="callinfo_localhost_address">Paikallisen isännän IP-osoite/portti:</string>
     <string name="callinfo_ice_local_reflexive_address">Paikallinen heijastava IP-osoite/Portti:</string>
     <string name="callinfo_ice_local_relayed_address">Paikallinen välitetty IP-osoite/Portti:</string>
     <string name="callinfo_ice_remote_host_address">Etäisännän IP-osoite/Portti:</string>
+    <string name="callinfo_ice_remote_reflexive_address">(Etä) Heijastava IP-osoite/Portti:</string>
     <string name="callinfo_ice_remote_relayed_address">(Etä) Välitetty IP-osoite/Portti:</string>
     <string name="callinfo_ice_state">ICE-Käsittelyn Tila:</string>
     <string name="callinfo_ice_state_completed">Valmis</string>
@@ -552,15 +699,14 @@
     <string name="callinfo_ice_state_waiting">Kerää ehdokkaat</string>
     <string name="callinfo_ice_state_jitter_buffer_delay">Heilahtelun puskuri:</string>
     <string name="callinfo_total_harvesting_time">Sadonkorjuun kokonaisaika:</string>
+
+    <!-- Security certificates -->
     <string name="trust_always">Luota aina tähän varmenteeseen</string>
     <string name="cert_dialog_title">Varmenteen tarkistus</string>
+    <string name="cert_dialog_description"><html>%1$s ei voi tarkistaa palvelimen identiteettiä yhdistäessä kohteeseen <br/><b>%2$s</b><br/><br/>Varmenne ei ole luotettava (itse allekirjoitettu varmenne), tarkoittaen että palvelimen identiteettiä ei voida automaattisesti varmistaa.<br/><br/>Jatketaanko yhdistämistä vain tämän kerran?<br/>Saadaksesi lisävaihtoehtoja ja tietoja, klikkaa Näytä Varmenne.</html></string>
     <string name="cert_dialog_description_no_host"><html>%1$s ei voi varmistaa palvelimen varmenteen identiteettiä.<br/><br/> Varmenne ei ole luotettu (itse allekirjoitettu varmenne), tarkoittaen että palvelimen identiteettiä ei voida automaattisesti todentaa.<br/><br/> Jatketaanko yhdistämistä vain tämän kerran?<br/> Klikkaa Näytä Varmenne saadaksesi lisää vaihtoehtoja ja tietoa.</html></string>
-    <string name="omemo_authbuddy_authenticate_info">Sinulla on todentamattomia kavereita. Todentamattomat kaverit eivät voi saada OMEMO-viestejä. Tarkista todentaaksesi.</string>
-    <string name="omemo_menu_authenticated">OMEMO Todennettu</string>
-    <string name="bosh_proxy_host_port_null">Välityspalvelimen isäntä- ja porttikenttien sisältö ei voi olla tyhjä</string>
-    <string name="provisioning_restart_alert">Huomaa, että muutoksesi tulevat voimaan vasta seuraavalla kerralla, kun käynnistät aTalkin!</string>
-    <string name="provisioning_credentials">Viimeksi tallennetut provisiointitodistukset</string>
-    <string name="provisioning_summary">Määritä provisioinnin asetukset</string>
+    <string name="cert_dialog_client_description"><html>%1$s ei voi varmistaa yhdistävän asiakasohjelman identiteettiä.<br/><br/> Varmenne ei ole luotettu (itse allekirjoitettu varmenne), tarkoittaen että asiakasohjelman identiteettiä ei voida automaattisesti varmistaa.<br/><br/> Jatketaanko yhdistämistä vain tämän kerran?<br/> Klikkaa Näytä Varmenne saadaksesi lisää vaihtoehtoja ja tietoa.</html></string>
+    <string name="cert_dialog_peer_description"><html>%1$s ei voi varmistaa vertaisen identiteettiä %2$s.<br/><br/> Varmenne ei ole luotettu (itse allekirjoitettu varmenne), tarkoittaen että vertaisen identiteettiä ei voida automaattisesti varmistaa.<br/><br/> Jatketaanko yhdistämistä vain tämän kerran?<br/> Klikkaa Näytä Varmenne saadaksesi lisää vaihtoehtoja ja tietoa.</html></string>
     <string name="proceed">Jatka</string>
     <string name="cert_info_issued_to"><b>Myönnetty kohteelle</b></string>
     <string name="cert_info_chain">Varmenneketju:</string>
@@ -585,6 +731,7 @@
     <string name="cert_info_key_bytes">%1$s tavua: %2$s</string>
     <string name="cert_info_key_bits">%1$s bittiä</string>
     <string name="cert_info_exponent">Potenssi:</string>
+    <string name="cert_info_key_size">Avainkoko:</string>
     <string name="cert_info_signature">Allekirjoitus:</string>
     <string name="service_gui_CONTINUE">Jatka</string>
     <string name="certificate_show">Näytä Varmenne</string>
@@ -593,7 +740,11 @@
     <string name="unsaved_changes_title">Tallentamattomat muutokset</string>
     <string name="please_wait">Odota…</string>
     <string name="server_info_fetching">Noudetaan palvelimen mainostettuja ominaisuuksia/tietoja…</string>
+
+    <!-- Security info -->
+    <string name="security_audio_not_secure">Ääntä ei ole suojattu</string>
     <string name="security_call_not_secured_tooltip">Puhelu ei ole suojattu.</string>
+    <string name="security_call_secured_compare_tooltip">Paina tästä vertaillaksesi turvallisuusalaisuutta kumppanisi kanssa.</string>
     <string name="security_call_secured_tooltip">Turvallinen puhelu. Paina tästä saadaksesi lisätietoja.</string>
     <string name="security_cipher">Salausmenetelmä/algoritmi: %1$s</string>
     <string name="security_clear">Tyhjennä</string>
@@ -605,21 +756,29 @@
     <string name="security_secure_video">Turvallinen video</string>
     <string name="security_alert">Yritetään turvata puhelu. Yhteyden aikakatkaisu</string>
     <string name="security_string_compared">Merkkijonoa verrattu:</string>
+    <string name="security_verify_toast">Turvallinen puhelu otettu käyttöön! Napauta verrataksesi turvallisuusmerkkijonoa tai tarkista valikosta myöhemmin.</string>
     <string name="security_video_not_secured">Video ei ole turvallinen</string>
     <string name="avatar_chose_icon">Valitse kuva</string>
     <string name="avatar_remove_icon">Poista nykyinen kuva</string>
+
+    <!-- Update checker -->
     <string name="update_download">Lataa</string>
     <string name="update_install">Asenna</string>
     <string name="update_reInstall">Asenna uudelleen</string>
     <string name="update_download_completed">Lataus valmis</string>
     <string name="update_download_ready">Päivitys (%1$s) on ladattu ja valmis asennettavaksi.</string>
+    <string name="update_in_progress">Käynnissä</string>
     <string name="update_download_in_progress">Päivityksen lataaminen on käynnissä.</string>
+    <string name="update_update_available">Uusi julkaistu versio (%1$s-%2$s) on saatavilla kohteelle %3$s. Nykyinen asennettu versio: (%4$s-%5$s).</string>
     <string name="update_up_to_date">Nykyinen asennettu versiosi: (%1$s-%2$s) on ajan tasalla. Verkossa saatavilla oleva versio: (%3$s-%4$s).</string>
     <string name="update_new_version_none">Ei uutta versiota</string>
     <string name="update_install_update">Asenna päivitykset</string>
     <string name="update_download_failed">Uuden päivityksen lataaminen epäonnistui!</string>
     <string name="update_check_update">Tarkista päivitykset</string>
+    <string name="update_version_invalid">Ladattu apk ei täsmää; todellinen: %1$s (%2$s)</string>
     <string name="update_new_version_available">Uusi ohjelmistoversio (%1$s) on saatavilla.</string>
+
+    <!-- account info -->
     <string name="accountinfo_about_me">Tietoa minusta:</string>
     <string name="accountinfo_about_me_hint">Kirjoita lyhyt kuvaus itsestäsi tähän laatikkoon</string>
     <string name="accountinfo_age">Ikä:</string>
@@ -627,17 +786,20 @@
     <string name="accountinfo_change">Muuta</string>
     <string name="accountinfo_city">Kaupunki:</string>
     <string name="accountinfo_country">Maa:</string>
+    <string name="accountinfo_discard_change">Käyttäjä siirtyy offline-tilaan - Kaikki tilitietojen muutokset on hylätty.</string>
     <string name="accountinfo_display_name">Näyttönimi:</string>
     <string name="accountinfo_email">Sähköposti:</string>
     <string name="accountinfo_extended">Laajennettu</string>
     <string name="accountinfo_first_name">Etunimi:</string>
     <string name="accountinfo_gender">Sukupuoli:</string>
+    <string name="accountinfo_global_icon">Käytä globaalia kuvaketta</string>
     <string name="accountinfo_job_title">Työnimike:</string>
     <string name="accountinfo_last_name">Sukunimi:</string>
     <string name="accountinfo_local_icon">Käytä tätä kuvaketta:</string>
     <string name="accountinfo_middle_name">Toinen nimi:</string>
     <string name="accountinfo_mobile_phone">Matkapuhelin:</string>
     <string name="accountinfo_nickname">Lempinimi:</string>
+    <string name="accountinfo_not_registered_message">Tili on offline-tilassa - sen on oltava online-tilassa, jotta tilitietoja voidaan muuttaa.</string>
     <string name="accountinfo_not_supported">Tilitietoja ei ole saatavilla.</string>
     <string name="accountinfo_only_message">Vain viestit</string>
     <string name="accountinfo_organisation">Organisaation nimi:</string>
@@ -648,20 +810,43 @@
     <string name="accountinfo_street">Katuosoite:</string>
     <string name="accountinfo_title">Tilitiedot</string>
     <string name="accountinfo_user_picture">Käyttäjän kuvat</string>
+    <string name="accountinfo_work_email">Työsähköposti:</string>
     <string name="accountinfo_work_phone">Työpuhelin:</string>
+
+    <!-- Certificate configuration plugin -->
     <string name="certconfig_title">TLS-määrittelyt</string>
     <string name="certconfig_trusted_store">Luotettujen juurivarmenteiden lähde</string>
     <string name="certconfig_cert_list_title">TLS-asiakastodennuksen määrittelyt</string>
+    <string name="certconfig_cert_list_description">Täällä hallinnoidut määrittelyt voidaan valita asiakasohjelman TLS-varmenteina tilin määrittelyissä (esim. varmenteen käyttämiseksi varmennuksessa SIP-palveluntarjoajaasi vastaan käyttäjätunnuksen ja salasanan sijaan).</string>
+    <string name="certconfig_alias">Alias-nimi KeyStoressa</string>
     <string name="certconfig_keystore_type">Tyyppi</string>
     <string name="certconfig_cert_entry_title">TLS-asiakasohjelman varmenne</string>
     <string name="certconfig_keystore_file">﻿Tiedosto</string>
     <string name="certconfig_keystore_password">Salasana</string>
     <string name="certconfig_incomplete">Syötä arvo kaikille kentille</string>
+    <string name="certconfig_show_cert_exception">Varmennetta ei voida näyttää (%1$s).</string>
     <string name="certconfig_keystore_exception">Keystorea (%1$s) ei voida ladata.</string>
     <string name="certconfig_file_type_description">Varmennevarastot (PKCS#11-moduuli, PKCS#12-tiedostot, Java ks Keystore)</string>
     <string name="certconfig_alias_load_exception">Alias-nimiä ei saatu keystoresta (%1$s).</string>
+    <string name="certconfig_invalid_keystore_type">Valittu Keystore-tyyppi näyttää olevan virheellinen (%1$s).</string>
     <string name="certconfig_revocation_title">Varmenteen peruutusvaihtoehdot</string>
+    <string name="certconfig_revocation_check_enabled">CRL-tarkistus (varmenteen peruutusluettelo) käytössä</string>
+    <string name="certconfig_revocation_ocsp_enabled">OCSP (verkkovarmenteen tilaprotokolla) -tarkistus käytössä</string>
+
+    <!-- connection info -->
+    <string name="connectioninfo_title">Yhteyden tiedot</string>
+
+    <!-- contact info -->
+    <string name="contactinfo_title">Yhteystiedon tiedot</string>
+    <string name="contactinfo_contact_summary_description">Yhteenveto yhteystiedoista kohteelle</string>
+    <string name="contactinfo_contact_extended_description">Laajennetut yhteystiedot kohteelle</string>
+    <string name="contactinfo_not_specified">[Ei määritetty]</string>
     <string name="contactinfo_user_pictures">Käyttäjän kuvat</string>
+    <string name="contactinfo_status_message">Tilaviesti</string>
+
+    <!-- Notification strings (do not change; getI18NString(NotificationSettings.NOTICE_PREFIX + eventType))-->
+    <string name="notificationconfig_event_BusyCall">Varattu puhelu</string>
+    <string name="notificationconfig_event_BusyCall_description">Varattu puhelu kuvaus</string>
     <string name="notificationconfig_event_CallSaved">Puhelu tallennettu</string>
     <string name="notificationconfig_event_CallSecurityError">Puhelun turvallisuusvirhe</string>
     <string name="notificationconfig_event_CallSecurityOn">Turvallinen puhelu päällä</string>
@@ -692,74 +877,80 @@
     <string name="notificationconfig_popup_notification">Ponnahdusilmoitus</string>
     <string name="notificationconfig_vibration">Värinä</string>
     <string name="notificationconfig_sound_file">Äänitiedosto:</string>
+
+    <!-- call recording config -->
     <string name="callrecordingconfig_call_saved">Puhelu tallennettu onnistuneesti</string>
     <string name="callrecordingconfig_call_saved_to">Tallenna kohteeseen: %1$s</string>
+
+    <!-- ZRTP Securing -->
     <string name="media_configform_audio_device_config_changed">Äänilaitteiden määrittelyt muutettu</string>
     <string name="media_configform_audio_device_config_management_click">Klikkaa tästä päästäksesi laitehallintaan</string>
     <string name="media_configform_preview">Esikatselu</string>
+    <string name="media_security_checksum_mismatch"><html>Sisäisen ZRTP-paketin tarkistussumma ei täsmää.<br/>Jos näet tämän viestin usein, se voi tarkoittaa palvelunestohyökkäystä!</html></string>
+    <string name="media_security_data_send_failed"><html> Salaustietojen lähettäminen epäonnistui. Internet-datayhteys tai vertainen on alhaalla. <br/><b>Puhelusi ei ole turvallinen</b><br/>Virhekoodi: %1$s</html></string>
+    <string name="imedia_security_retry_rate_exceeded"><html>Liian monta uudelleenyritystä turvallisuuskättelyn aikana. Tämä voi tarkoittaa, että vastapuolella on internetyhteysongelmia. <br/><b>Puhelusi ei ole turvallinen</b><br/>Virhekoodi: %1$s</html></string>
+    <string name="media_security_internal_protocol_error"><html>Tapahtui sisäinen protokollavirhe.<br/><b>Puheluasi ei ole suojattu</b><br/>Virhekoodi: %1$s</html></string>
     <string name="media_security_off">Puhelun salauksen tuki pois päältä</string>
     <string name="media_security_on">Puhelun salauksen tuki päällä</string>
-    <string name="otr_menu_authenticate_buddy">Todenna kaveri</string>
-    <string name="plugin_otr_menu_CB_ENABLE">Ota yksityiset viestit käyttöön</string>
-    <string name="plugin_otr_menu_CB_REQUIRE">Vaadi yksityisviestien käyttö</string>
-    <string name="plugin_otr_menu_CB_RESET">Nollaa</string>
-    <string name="plugin_otr_menu_CRYPTO_AUTHETICATED">KRYPTO Todennettu</string>
-    <string name="plugin_otr_menu_CRYPTO_Finish">KRYPTO Valmis</string>
-    <string name="plugin_otr_menu_CRYPTO_NON_AUTHETICATED">KRYPTO Todentamaton</string>
-    <string name="plugin_otr_menu_END_OTR">Lopeta yksityinen keskustelu</string>
-    <string name="plugin_otr_menu_OTR_AUTHETICATED">OTR Todennettu</string>
-    <string name="plugin_otr_menu_OTR_Finish">OTR Päätetty</string>
-    <string name="plugin_otr_menu_OTR_HANDSHAKE">OTR Kättely</string>
-    <string name="plugin_otr_menu_OTR_NON_AUTHETICATED">OTR Todentamaton</string>
-    <string name="plugin_otr_menu_OTR_PLAINTTEXT">Pelkkä Teksti</string>
-    <string name="plugin_otr_menu_OTR_TIMEOUT">OTR Kättelyn_AikaKatkos</string>
-    <string name="plugin_otr_menu_OTR_TOOLTIP">Salaa keskustelut OTR:llä</string>
-    <string name="plugin_otr_menu_REFRESH_OTR">Virkistä yksityinen keskustelu</string>
-    <string name="plugin_otr_menu_START_OTR">Aloita yksityinen keskustelu</string>
-    <string name="plugin_otr_menu_TITLE">Turvallinen chat</string>
-    <string name="plugin_otr_menu_WHATS_THIS">Mikä tämä on</string>
-    <string name="plugin_otr_authbuddydialog_CANCEL">Peruuta</string>
-    <string name="plugin_otr_authbuddydialog_HELP">Apua</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE">Minulla on</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">Minulla ei ole</string>
-    <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Sormenjälkeni kohteelle %1$s: %2$s</string>
-    <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Vastapuolen sormenjälki kohteelle %1$s: %2$s</string>
-    <string name="plugin_otr_authbuddydialog_TITLE">Todenna Kaveri</string>
-    <string name="plugin_otr_configform_CB_AUTO">Käynnistä yksityiset viestit automaattisesti</string>
-    <string name="plugin_otr_configform_CB_ENABLE">Ota yksityiset viestit käyttöön</string>
-    <string name="plugin_otr_configform_CB_REQUIRE">Vaadi yksityisviestien käyttö</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_CONTACT">Yhteystieto</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_VERIFIED_STATUS">Vahvistettu</string>
-    <string name="plugin_otr_configform_FINGERPRINT">Sormenjälki</string>
-    <string name="plugin_otr_configform_GENERATE">Generoi</string>
-    <string name="plugin_otr_configform_KNOWN_FINGERPRINTS">Tunnetut Sormenjäljet</string>
-    <string name="plugin_otr_configform_MY_PRIVATE_KEYS">Omat yksityiset avaimet</string>
-    <string name="plugin_otr_configform_REGENERATE">Uudelleen generoi</string>
-    <string name="plugin_otr_configform_VERIFY_STATUS">Vahvistettu: %1$s</string>
+    <string name="media_security_severe_generic_message"><html>Havaittiin vakava turvallisuusongelma.<br/><b>Puheluasi ei ole suojattu</b><br/>Virhekoodi: %1$s</html></string>
+    <string name="media_security_warning_no_rs_match"><html>Säilytettyä jaettua salaisuutta ei ole saatavilla.<br/><b> SAS-vahvistusta suositellaan</b></html></string>
+    <string name="media_security_warning_no_expected_rs_match"><html>Odotettu säilytetty jaettu salaisuus puuttuu.<br/><b>SAS-vahvistus vaaditaan</b><br/>Jos SAS-koodit eivät täsmää, katkaise puhelu ja yritä uudelleen</html></string>
+    <string name="media_security_zrtp_generic_message"><html>Vakava ZRTP-ongelma havaittiin.<br/><b>Puheluasi ei ole suojattu</b><br/>Virhekoodi: %1$s</html></string>
+    <string name="media_security_zrtp_handshake_timeout">Puhelu ei ole suojattu; RTP-kättelyn aikakatkaisu: %s</string>
+
+    <!-- DTLS-SRTP Securing -->
+    <string name="media_security_encryption_ended">Puhelun salaus on päättynyt: %1$s</string>
+
+    <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">Pelkkä Teksti</string>
     <string name="omemo_authbuddy_authenticate_buddy">Todenna Kaveri</string>
+    <string name="omemo_authbuddy_authenticate_info">Sinulla on todentamattomia kavereita. Todentamattomat kaverit eivät voi saada OMEMO-viestejä. Tarkista todentaaksesi.</string>
+    <string name="omemo_authbuddy_local_fingerprint">Sormenjälkeni %1$s:\n%2$s</string>
+    <string name="omemo_authbuddy_verify_buddy">Vahvista Kaveri</string>
+    <string name="omemo_identity_keypairs_missing">Luo OMEMO IdentiteettiAvainParit kohteelle: %1$s</string>
+    <string name="omemo_identity_key_invalid">Virheellinen IdentiteettiAvain omemoLaitteelle: %1$s.\nPoikkeus: %2$s.</string>
+    <string name="omemo_identity_key_missing">OMEMO IdentiteettiAvain kohteelle %1$s puuttuu.\nJatka lataukseen palvelimelta.</string>
+    <string name="omemo_identity_keypairs_invalid">Virheellinen IdentiteettiAvainParit omemoLaitteelle: %1$s.\nPoikkeus: %2$s.</string>
+    <string name="omemo_init_failed_corrupted_omemoKey_exception">OmemoHallinnan alustus epäonnistui ja omemo-viestintä ei ole toiminnassa. Jos ongelma jatkuu uudelleenkäynnistyksen jälkeen, jatka Uudelleengeneroimalla OMEMO-identiteetit epäonnistuneelle omemoLaitteelle: %1$s.\n\nPoikkeus: %2$s.</string>
+    <string name="omemo_init_failed_no_response">OmemoHallinnan alustaminen on epäonnistunut ja omemo-viestintä ei välttämättä toimi oikein: %1$s</string>
+    <string name="omemo_init_failed_title">OmemoHallinnan alustus epäonnistui</string>
+    <string name="omemo_menu_authenticated">OMEMO Todennettu</string>
+    <string name="omemo_send_error">Viestin lähettäminen epäonnistui. Yritä uudelleen, kun kaikki virheet on korjattu: %1$s</string>
     <string name="omemo_menu_unauthenticated">OMEMO Todentamaton</string>
     <string name="omemo_menu_untrusted">OMEMO Luottamaton</string>
+    <string name="omemo_rebuild_session">Luo uusi istunto puuttuvalle: %1$s</string>
+    <string name="omemo_purge_inactive_device_error">Epäaktiivisen omemo-laitteen poistaminen epäonnistui kohteelle: %1$s.</string>
+
+    <!-- Account proxy settings -->
     <string name="settings_bosh_proxy">BOSH-välityspalvelimen määritys</string>
     <string name="settings_bosh_proxy_summary">Määritä yhteys BOSH/välityspalvelimen kautta tilille</string>
     <string name="bosh_proxy_url_null">BOSH URL-kentän sisältö ei voi olla tyhjä</string>
+    <string name="bosh_proxy_host_port_null">Välityspalvelimen isäntä- ja porttikenttien sisältö ei voi olla tyhjä</string>
     <string name="bosh_proxy_type">Tyyppi:</string>
     <string name="bosh_proxy_url">BOSH URL-osoite:</string>
     <string name="bosh_proxy_use_http">Käytä HTTP-välityspalvelinta</string>
     <string name="bosh_proxy_host">Välityspalvelimen isäntä:</string>
     <string name="bosh_proxy_port">Välityspalvelimen portti:</string>
+
+    <!-- Provisioning Plugin-->
     <string name="provisioning_auto">Etsi provisiointi URI automaattisesti</string>
     <string name="provisioning_bonjour">Bonjour</string>
     <string name="provisioning_clipboard_failed">UUID:n kopiointi leikepöydälle epäonnistui</string>
     <string name="provisioning_copy_to_clipboard">Kopioi UUID leikepöydälle</string>
+    <string name="provisioning_credentials">Viimeksi tallennetut provisiointitodistukset</string>
     <string name="provisioning_enable">Ota provisiointi käyttöön</string>
     <string name="provisioning_exit_on_failed">Poistu sovelluksesta, jos provisiointi epäonnistuu</string>
     <string name="provisioning_forget_password">Unohda salasana</string>
     <string name="provisioning_manual">Määritä provisioinnin URI manuaalisesti</string>
     <string name="provisioning_method">Provisiointimenetelmä</string>
     <string name="provisioning_failed">Provisiointi epäonnistui</string>
+    <string name="provisioning_failed_message">Provisiointi epäonnistui. %1$s/nYritä uudelleen myöhemmin tai ota yhteyttä järjestelmänvalvojaan.</string>
     <string name="provisioning">Provisiointi</string>
+    <string name="provisioning_summary">Määritä provisioinnin asetukset</string>
     <string name="provisioning_remove_credentials_message">Haluatko varmasti poistaa provisiointisalasanan?</string>
+    <string name="provisioning_restart_alert">Huomaa, että muutoksesi tulevat voimaan vasta seuraavalla kerralla, kun käynnistät aTalkin!</string>
+
+    <!-- DNS config -->
     <string name="settings_dnssec_dane">SSL/DNSSEC/DANE-turvallisuus</string>
     <string name="settings_dns">DNS</string>
     <string name="settings_dns_summary">Määritä DNS-asetukset</string>
@@ -768,42 +959,74 @@
     <string name="dnsconfig_dnssec_enable_failed">Tilan muutos epäonnistui</string>
     <string name="dnsconfig_dnssec_enable_failed_message">DNSSEC päälle-tilan muutos epäonnistui.</string>
     <string name="dnsconfig_dnssec_mode">Käytös</string>
+    <string name="dnsconfig_dnssec_restart_alert"><html>Huomaa, että DNSSEC:n ottaminen käyttöön tai poistaminen käytöstä poistaa rinnakkaisratkaisijan käytöstä ja se tulee voimaan vasta seuraavalla kerralla, kun käynnistät aTalkin. </html></string>
+    <string name="dnsconfig_dnssec_title">Vara-ratkaisija</string>
+    <string name="dnsconfig_dnssec_check_absolute">Käsittele kaikkia verkkotunnuksia absoluuttisina</string>
     <string name="dnsconfig_dnssec_check_enable">Ota DNSSEC-ratkaisija käyttöön</string>
     <string name="dnsconfig_dnssec_label_default">Oletuskäyttäytyminen</string>
     <string name="dnsconfig_dnssec_label_name_servers">Mukautetut nimipalvelimet</string>
+    <string name="dnsconfig_dnssec_label_name_servers_hint"><html>Useat palvelimet voidaan erotella pilkulla, esim. 149.20.64.20, 149.20.64.21 (OARC:n Avoin DNSSEC-tarkistava Ratkaisija)</html></string>
+
     <string name="dns_insecure_answer_title">DNSSEC-virhe</string>
     <string name="dns_insecure_answer_message_insecure">DNS-vastaus %1$s on epäturvallinen.</string>
     <string name="dns_insecure_answer_message_reason">DNS-vastaus %1$s on epäturvallinen.\nSyy: %2$s</string>
     <string name="dns_dnssec_advanced_options">Näytä lisäasetukset</string>
+    <string name="dns_dnssec_advanced_reason_invalid"><html>DNSSEC allekirjoitettu vyöhyke %1$s palautti virheellisiä tietoja. <br/>%2$s</html></string>
+    <string name="dns_dnssec_advanced_reason_unsigned">%1$s kysely kohteelle %2$s on allekirjoittamaton.</string>
+    <string name="dns_dnssec_warning">&lt;html&gt;&lt;div width=600&gt;%1$s on yrittänyt muodostaa yhteyden palvelimeen osoitteessa &lt;b&gt;%2$s&lt;&lt;/b&gt;, joka on verkkotunnus, jolla on vahva suojaus nimeltä DNSSEC. Tiedot, jotka %1$s on saanut DNS-palvelimelta, eivät ole DNSSEC:n tarjoaman tietojen mukaisia tälle verkkotunnukselle. Tämä ei saisi tapahtua, ellei erittäin vakavia virheitä ole tehty kohteessa %2$s. Siksi se on erittäin vahva merkki siitä, että jokin on vakavasti vialla verkkoyhteytesi luotettavuudessa.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt; Jos käytät jonkun toisen Internet-yhteyttä (kuten WiFi-hotspot) tai jos on erityiset olosuhteet, joiden vuoksi et luota tavalliseen Internet-palveluntarjoajaasi, suosittelemme, että lopetat sen käytön välittömästi ja etsit vaihtoehtoisen Internet-yhteyspisteen. Kun olet turvallisesti yhteydessä toiseen verkkoon, ongelma pitäisi ratketa automaattisesti. Jos näin ei ole, ota yhteyttä palveluntarjoajaan ja ilmoita heille ongelmasta. &lt;/div&gt;&lt;/html&gt;</string>
+
+
+    <!-- SSL Certificates -->
     <string name="settings_ssl_certificate">SSL-varmenne</string>
     <string name="settings_ssl_certificate_purge">Puhdista käyttäjän hyväksymät varmenteet: %1$s</string>
     <string name="settings_ssl_certificate_remove">Poista varmenne</string>
     <string name="settings_ssl_certificate_summary">Hallinnoi SSL-varmenteita</string>
+
+    <!-- Client TLS Certificates -->
     <string name="tls_cert">TLS-asiakasohjelman varmenne</string>
     <string name="tls_cert_prompt">Valitse TLS-varmenne</string>
     <string name="tls_cert_summary">Varmenteen käyttö käyttäjän todentamisessa palvelimen kanssa</string>
+
+    <!-- Reset ZID -->
+    <string name="zid_reset_summary">Nollaa pitkäikäinen ZRTP-tunniste</string>
     <string name="zid_reset_title">Nollaa ZID</string>
     <string name="zid_reset_done">ZID on nollattu</string>
+
+    <!-- Settings -->
     <string name="commit_progress_message">Tallennetaan tilimuutoksia, odota…</string>
     <string name="commit_progress_title">Sitoutetaan…</string>
     <string name="settings_not_set">(Ei asetettu)</string>
+
+    <!-- Encoding settings -->
     <string name="enc_audio_title">Äänen koodaus</string>
     <string name="enc_override_global">Ohita globaali</string>
     <string name="enc_video_title">Videon koodaus</string>
+
+    <!-- Security protocols dialog -->
     <string name="none">Ei mitään</string>
     <string name="sec_encryption">Salaus</string>
     <string name="sec_protocols_title">Turvallisuusprotokollat</string>
     <string name="sec_protocols_message">Valitse haluamiesi protokollien järjestys</string>
     <string name="discard">Hylkää</string>
+    <string name="sec_zrtp_signalling_on">ZRTP:tä mainostetaan signalointiprotokollan kautta</string>
+    <string name="sec_zrtp_signalling_off">ZRTP-mainosta ei tule</string>
+
+    <!-- STUN/Jingle Nodes list -->
     <string name="service_gui_SERVERS_LIST_ADD_SERVER">Lisää palvelin</string>
     <string name="service_gui_SERVERS_LIST_EMPTY">Luettelo on tyhjä. Klikkaa lisätäksesi uuden merkinnän…</string>
+
+    <!-- Jingle Nodes edit -->
     <string name="service_gui_JINGLE_EDIT_JID">JID-osoite</string>
     <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Tukivälittäjä</string>
+
+    <!-- STUN edit -->
     <string name="stun_turn_server">STUN/TURN Palvelin</string>
     <string name="ip_address">IP-osoite</string>
     <string name="server_port">Palvelimen portti</string>
     <string name="turn_supported">TURN-tuki</string>
     <string name="username">Käyttäjätunnus</string>
+
+    <!-- Security preferences -->
     <string name="security_dtls_srtp">DTLS_SRTP-asetukset</string>
     <string name="security_dtls_title">TLS-varmenteen allekirjoitusalgoritmi</string>
     <string name="security_encryption_enable">Ota puhelun salaus käyttöön</string>
@@ -811,178 +1034,19 @@
     <string name="security_rtp_savp">RTP/SAVP-merkki</string>
     <string name="security_rtp_savp_title">RTP/SAVP-ilmoitusmenetelmä</string>
     <string name="security_sdes">SDES-asetukset</string>
-    <string name="security_call_secured_compare_tooltip">Paina tästä vertaillaksesi turvallisuusalaisuutta kumppanisi kanssa.</string>
-    <string name="certconfig_show_cert_exception">Varmennetta ei voida näyttää (%1$s).</string>
-    <string name="certconfig_revocation_ocsp_enabled">OCSP (verkkovarmenteen tilaprotokolla) -tarkistus käytössä</string>
-    <string name="password_change_on_server_successful">Salasanan vaihto palvelimella onnistui!</string>
-    <string name="folder_open_no_permission">Sinulla ei ole tarpeeksi oikeuksia kansion avaamiseksi. Tarkista lukuoikeutesi ja yritä uudelleen</string>
-    <string name="chatroom_destroy_exception">Virhe tapahtui keskusteluhuonetta tuhotessa:\n%1$s</string>
-    <string name="chatroom_join_failed_reason">Liittyminen epäonnistui keskusteluhuoneeseen %1$s:\n%2$s</string>
-    <string name="invitation_received_message">%1$s kutsui sinut liittymään %2$s keskusteluhuoneeseen. Voit hyväksyä, hylätä, tai jättää huomiotta tämän kutsun.</string>
-    <string name="invite_contact_message">Valitse yhteystietojen nimet jotka haluat lisätä tähän keskusteluun ja paina Kutsu.</string>
-    <string name="invite_reject_reason">Syy (hylättäessä):</string>
-    <string name="join_existing_video_conference">Liity olemassa olevaan videoneuvotteluun</string>
-    <string name="security_verify_toast">Turvallinen puhelu otettu käyttöön! Napauta verrataksesi turvallisuusmerkkijonoa tai tarkista valikosta myöhemmin.</string>
-    <string name="osgi_framework_stop">Pysäytä OSGi-ohjelmistokehys</string>
-    <string name="call_max_transfer">Valvottuun puhelunsiirtoon sallitaan enintään 2 puhelua!</string>
-    <string name="call_disable_on_fault">aTalk:in alustus epäonnistui %1$s\nKaikki mediapuhelut/palvelut otetaan pois käytöstä.\n%2$s</string>
-    <string name="call_no_active_device">aTalk ei löytänyt aktiivisia ääni/videolaitteita, joten puhelua ei voitu luoda.</string>
-    <string name="change_nickname">Vaihda lempinimi</string>
-    <string name="close">Sulje</string>
-    <string name="aboutDialog_help"><a href="https://cmeng-git.github.io/atalk">Verkkoapu</a></string>
-    <string name="history_offline_warning">Sulje ja avaa tämä keskusteluistunto nähdäksesi MAM sekä Offline-viestit ollessasi online-tilassa</string>
-    <string name="chatroom_info_member_only">Vain Jäsenet</string>
-    <string name="cr_member_grant_owner_privilege">Anna omistajan valtuudet</string>
-    <string name="nickname">Lempinimi</string>
-    <string name="message_delivery_not_registered">Sinun on ensin kirjauduttava sisään lähettääksesi viestin.</string>
-    <string name="add_new_account">Lisää uusi käyttäjätili</string>
-    <string name="no_online_telephony_account">Puheluun tarvitaan vähintään yksi verkkopuhelintili. Kirjaudu sisään yhdelle puhelintileistäsi ja yritä uudelleen.</string>
-    <string name="select_account_owner">Valitse tilin omistaja</string>
-    <string name="authentication_failed">Todentaminen epäonnistui kohteelle %1$s. Syöttämäsi salasana ei ole oikein.</string>
-    <string name="authentication_requested_by_server">Palvelin %1$s pyytää todennustasi.</string>
-    <string name="authorization_request_info">Yhteystieto %1$s pyytää valtuutustasi.</string>
-    <string name="call_no_audio_codec">Mitään äänikoodekkia ei ole otettu käyttöön.</string>
-    <string name="call_no_device_codec_Q">Haluatko jatkaa puhelua?</string>
-    <string name="call_no_matching_format">Vastaavaa mediamuotoa ehdotetulle %1$s ei löytynyt puhelun vastaanottamiseksi. Tarkista laitteen ja koodekin määrittelyt kohdassa \'Asetukset…\'.</string>
-    <string name="playback_error">Mediasisältöä ei löydetty toistettavaksi</string>
-    <string name="change_nickname_label">Voit syöttää uuden lempinimesi allaolevaan kenttään.</string>
-    <string name="chatroom_already_joined">Olet jo liittynyt keskusteluhuoneeseen %1$s .</string>
-    <string name="chatroom_configuration_failed">Keskusteluhuoneen %1$s määrittelylomakkeen saaminen epäonnistui.</string>
-    <string name="chatroom_configuration_members_edit_description">Oikeallaoleva lista sisältää käyttäjät joilla on jäsenrooli tässä keskusteluhuoneessa. Kun keskusteluhuone on \'Vain jäsenet\' tilassa, vain nämä käyttäjät voivat liittyä.</string>
-    <string name="chatroom_name_info">Kirjoita allaolevaan kenttään keskusteluhuoneen nimi, jonka haluat luoda.</string>
-    <string name="contact_name">Yhteyshenkilön JID tai Numero</string>
-    <string name="create_conference_call">Luo kokouspuhelu…</string>
-    <string name="online_help">Verkkoapu</string>
-    <string name="chatroom_history_off_per">Ota historia pois käytöstä tälle keskusteluhuoneelle</string>
-    <string name="chatroom_info">Keskusteluhuoneen tiedot</string>
-    <string name="chatroom_info_name">Nimi</string>
-    <string name="chatroom_destroy_note">Muille osallistujille tiedoksi, syötä syy sekä vaihtoehtoinen keskusteluhuoneen tapahtumapaikka liittymistä varten.</string>
-    <string name="kick_failed_general_error">Kohteen %1$s potkaiseminen epäonnistui. Tapahtui yleinen palvelinvirhe.</string>
-    <string name="locally_on_hold">Paikallisesti pidossa</string>
-    <string name="authentication_requested">Todentaminen pyydetty</string>
-    <string name="call_history_remove_before_date_warning">Oletko varma että haluat tyhjentää kaikki puhelutiedot ennen päivämäärää: %1$s?</string>
-    <string name="chatroom_configuration">Keskusteluhuoneen määritykset</string>
-    <string name="create_group_name">Syötä allaolevaan kenttään ryhmän nimi, jonka haluat luoda.</string>
-    <string name="http_authorization_request_instruction">HTTP (%1$s) Valtuutus kohteelle %2$s\nVarmistuskoodi: %3$s\nHaluatko hyväksyä tämän pyynnön tilille:\n%4$s?\n\nTarkista että annettu ID vastaa sivustoa jos mahdollista</string>
-    <string name="app_authors_fmt">Tekijät: %1$s</string>
-    <string name="kick_failed_not_enough_permission">Kohteen %1$s potkiminen epäonnistui. Sinulla ei ole tarpeeksi oikeuksia siihen.</string>
-    <string name="message_delivery_internal_error">Tapahtui sisäinen virhe. Tämä voi olla bugi. Raportoi se virheenkorjauslokin avulla.</string>
-    <string name="callinfo_media_stream_rip">RTP:</string>
-    <string name="callinfo_candidate_extended_type">ICE-ehdokkaan laajennettu tyyppi:</string>
-    <string name="cert_dialog_description"><html>%1$s ei voi tarkistaa palvelimen identiteettiä yhdistäessä kohteeseen <br/><b>%2$s</b><br/><br/>Varmenne ei ole luotettava (itse allekirjoitettu varmenne), tarkoittaen että palvelimen identiteettiä ei voida automaattisesti varmistaa.<br/><br/>Jatketaanko yhdistämistä vain tämän kerran?<br/>Saadaksesi lisävaihtoehtoja ja tietoja, klikkaa Näytä Varmenne.</html></string>
-    <string name="update_in_progress">Käynnissä</string>
-    <string name="update_update_available">Uusi julkaistu versio (%1$s-%2$s) on saatavilla kohteelle %3$s. Nykyinen asennettu versio: (%4$s-%5$s).</string>
-    <string name="accountinfo_global_icon">Käytä globaalia kuvaketta</string>
-    <string name="accountinfo_not_registered_message">Tili on offline-tilassa - sen on oltava online-tilassa, jotta tilitietoja voidaan muuttaa.</string>
-    <string name="call_ended">Vastapuoli lopetti puhelun: %1$s</string>
-    <string name="call_retracted">%1$s on perunut puhelun.</string>
-    <string name="connection_failed_message">Tilin kirjautumisen yhteys epäonnistui: Käyttäjänimi: %1$s\n Palvelimen nimi: %2$s\nTarkista verkkoyhteys TAI ota yhteyttä verkon ylläpitäjään lisätietojen saamiseksi.</string>
-    <string name="copy_message_text">Kopioi viestin teksti</string>
-    <string name="logoff_failed">Uloskirjautumisen yhteydessä ilmestyi virhe seuraavan tilin kanssa: Käyttäjänimi: %1$s, Palvelimen nimi: %2$s.</string>
-    <string name="message_delivery_error">Viestin toimittaminen epäonnistui.</string>
-    <string name="security_audio_not_secure">Ääntä ei ole suojattu</string>
-    <string name="accountinfo_work_email">Työsähköposti:</string>
-    <string name="contactinfo_not_specified">[Ei määritetty]</string>
-    <string name="notificationconfig_event_BusyCall">Varattu puhelu</string>
-    <string name="notificationconfig_event_BusyCall_description">Varattu puhelu kuvaus</string>
-    <string name="close_current_chat">Sulje nykyinen keskusteluistunto</string>
-    <string name="show_history_log">Historialokit</string>
-    <string name="http_authorization_request">HTTP-valtuutuspyyntö</string>
-    <string name="chat_audio_buddy_offline">Äänikeskustelu offline-tilassa olevan vastaanottajan kanssa ei ole sallittua.</string>
-    <string name="move_contact_failed">Valitsemasi yhteystieto on sama kuin\nlähde. Valitse toinen yhteystieto!</string>
-    <string name="message_delivery_not_supported">Käyttämäsi protokolla ei tue offline-viestejä. Voit yrittää tavoittaa kohteen %1$s toisen protokollan kautta tai odottaa, kunnes hän tulee online-tilaan.</string>
-    <string name="street">Katu</string>
-    <string name="cert_dialog_client_description"><html>%1$s ei voi varmistaa yhdistävän asiakasohjelman identiteettiä.<br/><br/> Varmenne ei ole luotettu (itse allekirjoitettu varmenne), tarkoittaen että asiakasohjelman identiteettiä ei voida automaattisesti varmistaa.<br/><br/> Jatketaanko yhdistämistä vain tämän kerran?<br/> Klikkaa Näytä Varmenne saadaksesi lisää vaihtoehtoja ja tietoa.</html></string>
-    <string name="certconfig_alias">Alias-nimi KeyStoressa</string>
-    <string name="connectioninfo_title">Yhteyden tiedot</string>
-    <string name="contactinfo_contact_extended_description">Laajennetut yhteystiedot kohteelle</string>
-    <string name="app_xep">aTalk tukee seuraavia XEP-standardeja: %1$s</string>
-    <string name="refresh_store_hint">Tarkista kohteen pysyvä tietuevarasto puhdistamista ja virkistämistä varten; Suorita vain tarvittaessa!\n</string>
-    <string name="edit_status_message_tip">Aseta tilaviesti</string>
-    <string name="contactinfo_status_message">Tilaviesti</string>
-    <string name="plugin_otr_activator_requireencryption">Viestiäsi ei ole lähetetty. Yksityisviesti vaaditaan.</string>
-    <string name="omemo_authbuddy_local_fingerprint">Sormenjälkeni %1$s:\n%2$s</string>
-    <string name="omemo_authbuddy_verify_buddy">Vahvista Kaveri</string>
-    <string name="accept_call_video">Vastaa puheluun videolla</string>
-    <string name="account_delete_on_server">Poista tili palvelimelta</string>
-    <string name="account_delete_on_server_unregistered">Tilin poisto palvelimelta epäonnistui, käyttäjää ei ole rekisteröity!</string>
-    <string name="account_delete_on_server_failed">Tilin poisto palvelimelta epäonnistui:\n%1$s</string>
-    <string name="account_delete_on_server_successful">Tilin poisto palvelimelta onnistui:\n%1$s</string>
-    <string name="account_show_password">Näytä salasana</string>
-    <string name="account_server_override">Ohita palvelinasetus</string>
-    <string name="account_ibr_on_server">Rekisteröi uusi tili palvelimelle</string>
-    <string name="account_server_ip">Yhdistettävän palvelimen IP</string>
-    <string name="ibr_registration">Kaistansisäinen rekisteröinti (IBR)</string>
-    <string name="permission_location_rationale">Paikannuspalvelun käyttöoikeus vaaditaan \'oma sijainti\' -toiminnon havainnollistamiseen, joka näyttää nykyisen sijaintisi kartalla.</string>
-    <string name="permission_location_denied">Tämä esimerkki vaatii luvan sijaintitietoihin, jotta \'oma sijainti\' -taso voidaan ottaa käyttöön. Yritä uudelleen ja myönnä käyttöoikeus sijaintitietojen käyttöön.\nJos käyttöoikeus on pysyvästi evätty, se voidaan ottaa käyttöön kohdassa Järjestelmäasetukset &gt; Sovellukset &gt; \'Google Karttojen API Demot\'.</string>
-    <string name="file_byte_sent">%1$s lähetetty</string>
-    <string name="estimated_time_">Arvioitu aika: %1$s</string>
-    <string name="file_open_no_permission">Sinulla ei ole tarpeeksi oikeuksia avata tätä tiedostoa. Tarkista lukuoikeutesi ja yritä uudestaan</string>
-    <string name="file_open_not_supported">Tiedostonavaustoiminto ei ole tuettu laitteesi nykyisellä alustalla</string>
-    <string name="file_transfer_preparing">Tiedostonsiirtoa valmistellaan kohteen %1$s kanssa. Odota…</string>
-    <string name="file_does_not_exist">Valittua tiedostoa ei löytynyt. Se voi olla joko poistettu tai siirretty muualle</string>
-    <string name="file_send_not_allow">Tiedostoa ei voi lähettää kokouspuhelun aikana!</string>
-    <string name="file_size_too_big">Tiedostonkoko ylittää protokollan sallitun maksimikoon: %1$s</string>
-    <string name="file_transfer_not_secure">XEP-0096: SI-tiedonsiirtoprotokolla ei voi tukea salattujen tiedostojen lähetystä!</string>
-    <string name="history_contact">Historia - %1$s</string>
-    <string name="history_purge_for_contact_warning">Oletko varma että haluat tyhjentää kaikki valitut viestit kohteelle %1$s?</string>
-    <string name="history_purge_all_warning">Oletko varma että haluat tyhjentää kaikki viestit kaikille yksiköille?</string>
-    <string name="media_security_checksum_mismatch"><html>Sisäisen ZRTP-paketin tarkistussumma ei täsmää.<br/>Jos näet tämän viestin usein, se voi tarkoittaa palvelunestohyökkäystä!</html></string>
-    <string name="media_security_data_send_failed"><html> Salaustietojen lähettäminen epäonnistui. Internet-datayhteys tai vertainen on alhaalla. <br/><b>Puhelusi ei ole turvallinen</b><br/>Virhekoodi: %1$s</html></string>
-    <string name="imedia_security_retry_rate_exceeded"><html>Liian monta uudelleenyritystä turvallisuuskättelyn aikana. Tämä voi tarkoittaa, että vastapuolella on internetyhteysongelmia. <br/><b>Puhelusi ei ole turvallinen</b><br/>Virhekoodi: %1$s</html></string>
-    <string name="media_security_internal_protocol_error"><html>Tapahtui sisäinen protokollavirhe.<br/><b>Puheluasi ei ole suojattu</b><br/>Virhekoodi: %1$s</html></string>
-    <string name="media_security_severe_generic_message"><html>Havaittiin vakava turvallisuusongelma.<br/><b>Puheluasi ei ole suojattu</b><br/>Virhekoodi: %1$s</html></string>
-    <string name="media_security_warning_no_rs_match"><html>Säilytettyä jaettua salaisuutta ei ole saatavilla.<br/><b> SAS-vahvistusta suositellaan</b></html></string>
-    <string name="media_security_warning_no_expected_rs_match"><html>Odotettu säilytetty jaettu salaisuus puuttuu.<br/><b>SAS-vahvistus vaaditaan</b><br/>Jos SAS-koodit eivät täsmää, katkaise puhelu ja yritä uudelleen</html></string>
-    <string name="media_security_zrtp_generic_message"><html>Vakava ZRTP-ongelma havaittiin.<br/><b>Puheluasi ei ole suojattu</b><br/>Virhekoodi: %1$s</html></string>
-    <string name="media_security_zrtp_handshake_timeout">Puhelu ei ole suojattu; RTP-kättelyn aikakatkaisu: %s</string>
-    <string name="media_security_encryption_ended">Puhelun salaus on päättynyt: %1$s</string>
-    <string name="plugin_otr_menu_CB_AUTO">Aloita yksityinen viestintä automaattisesti</string>
-    <string name="plugin_otr_authbuddydialog_AUTHENTICATION_INFO">Kaverin todentaminen auttaa varmistamaan, että henkilö, jolle puhut, on se, joka hän väittää olevansa. Sormenjälkien varmistamiseksi ota yhteyttä kaveriin jonkin muun todennetun kanavan kautta, kuten puhelin tai GPG-allekirjoitettu sähköposti. Kummankin tulee kertoa sormenjäljet toisilleen. Jos molemmat niistä täsmäävät, voit ilmoittaa seuraavassa valintaikkunassa, että *Olen* vahvistanut sormenjäljen.</string>
-    <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Anna sormenjälki, jonka sait käyttäjältä %1$s.</string>
-    <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">todensi, että tämä on itse asiassa oikea sormenjälki henkilölle %1$s.</string>
-    <string name="plugin_otr_activator_historyoff">%1$s EI tallenna tätä keskustelua. Voit <a href="atalk://%2$s/%3$s">aktivoida keskusteluhistorian täältä</a>.</string>
-    <string name="plugin_otr_activator_historyon">%1$s tallentaa tämän keskustelun laitteellesi. Voit <a href="atalk://%2$s/%3$s">poistaa keskusteluhistorian käytöstä täältä</a>.</string>
-    <string name="plugin_otr_activator_msgfromanotherinstance">Viesti vastaanotettu jostain toisesta OTR-keskustelun instanssista, jossa %1$s havaittiin.</string>
-    <string name="plugin_otr_activator_multipleinstancesdetected">Useita yksityisiä OTR-keskustelun instansseja, joissa %1$s havaittiin.</string>
-    <string name="plugin_otr_activator_sessionfinished">%1$s on lopettanut yksityisen OTR-keskustelun kanssasi; sinun tulisi tehdä sama.</string>
-    <string name="plugin_otr_activator_sessionfinishederror">Viestiäsi ei lähetetty. Lopeta yksityinen OTR keskustelu henkilön %1$s kanssa.</string>
-    <string name="plugin_otr_activator_sessionlost">Yksityinen OTR-keskustelu henkilön %1$s kanssa on päättynyt.</string>
-    <string name="plugin_otr_activator_sessionstared">Yksityinen OTR-keskustelu henkilön %1$s kanssa on aloitettu.</string>
-    <string name="plugin_otr_activator_smpaborted">%1$s on keskeyttänyt OTR-todennusprosessin.</string>
-    <string name="plugin_otr_activator_smperror">OTR-todennusprosessissa tapahtui virhe.</string>
-    <string name="plugin_otr_activator_unencryptedmsgreceived">Viesti vastaanotettiin salaamattomana.</string>
-    <string name="plugin_otr_activator_unreadablemsgreceived">%1$s lähetti sinulle salatun viestin, jota ei voida purkaa.</string>
-    <string name="plugin_otr_activator_unverifiedsessionstared"><b>Vahvistamaton</b> yksityiskeskustelu henkilön %1$s kanssa aloitettu.</string>
-    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s ei ole vielä todennettu. Sinun pitäisi <a href="atalk://%2$s/%3$s?%4$s"><b>todentaa</b></a> tämä kaveri.</string>
-    <string name="omemo_identity_keypairs_missing">Luo OMEMO IdentiteettiAvainParit kohteelle: %1$s</string>
-    <string name="omemo_identity_key_invalid">Virheellinen IdentiteettiAvain omemoLaitteelle: %1$s.\nPoikkeus: %2$s.</string>
-    <string name="omemo_identity_key_missing">OMEMO IdentiteettiAvain kohteelle %1$s puuttuu.\nJatka lataukseen palvelimelta.</string>
-    <string name="omemo_init_failed_no_response">OmemoHallinnan alustaminen on epäonnistunut ja omemo-viestintä ei välttämättä toimi oikein: %1$s</string>
-    <string name="omemo_init_failed_title">OmemoHallinnan alustus epäonnistui</string>
-    <string name="omemo_send_error">Viestin lähettäminen epäonnistui. Yritä uudelleen, kun kaikki virheet on korjattu: %1$s</string>
-    <string name="omemo_rebuild_session">Luo uusi istunto puuttuvalle: %1$s</string>
-    <string name="omemo_purge_inactive_device_error">Epäaktiivisen omemo-laitteen poistaminen epäonnistui kohteelle: %1$s.</string>
-    <string name="provisioning_failed_message">Provisiointi epäonnistui. %1$s/nYritä uudelleen myöhemmin tai ota yhteyttä järjestelmänvalvojaan.</string>
-    <string name="dnsconfig_dnssec_restart_alert"><html>Huomaa, että DNSSEC:n ottaminen käyttöön tai poistaminen käytöstä poistaa rinnakkaisratkaisijan käytöstä ja se tulee voimaan vasta seuraavalla kerralla, kun käynnistät aTalkin. </html></string>
-    <string name="dnsconfig_dnssec_title">Vara-ratkaisija</string>
-    <string name="dnsconfig_dnssec_check_absolute">Käsittele kaikkia verkkotunnuksia absoluuttisina</string>
-    <string name="dnsconfig_dnssec_label_name_servers_hint"><html>Useat palvelimet voidaan erotella pilkulla, esim. 149.20.64.20, 149.20.64.21 (OARC:n Avoin DNSSEC-tarkistava Ratkaisija)</html></string>
-    <string name="dns_dnssec_advanced_reason_invalid"><html>DNSSEC allekirjoitettu vyöhyke %1$s palautti virheellisiä tietoja. <br/>%2$s</html></string>
-    <string name="dns_dnssec_advanced_reason_unsigned">%1$s kysely kohteelle %2$s on allekirjoittamaton.</string>
-    <string name="dns_dnssec_warning">&lt;html&gt;&lt;div width=600&gt;%1$s on yrittänyt muodostaa yhteyden palvelimeen osoitteessa &lt;b&gt;%2$s&lt;&lt;/b&gt;, joka on verkkotunnus, jolla on vahva suojaus nimeltä DNSSEC. Tiedot, jotka %1$s on saanut DNS-palvelimelta, eivät ole DNSSEC:n tarjoaman tietojen mukaisia tälle verkkotunnukselle. Tämä ei saisi tapahtua, ellei erittäin vakavia virheitä ole tehty kohteessa %2$s. Siksi se on erittäin vahva merkki siitä, että jokin on vakavasti vialla verkkoyhteytesi luotettavuudessa.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt; Jos käytät jonkun toisen Internet-yhteyttä (kuten WiFi-hotspot) tai jos on erityiset olosuhteet, joiden vuoksi et luota tavalliseen Internet-palveluntarjoajaasi, suosittelemme, että lopetat sen käytön välittömästi ja etsit vaihtoehtoisen Internet-yhteyspisteen. Kun olet turvallisesti yhteydessä toiseen verkkoon, ongelma pitäisi ratketa automaattisesti. Jos näin ei ole, ota yhteyttä palveluntarjoajaan ja ilmoita heille ongelmasta. &lt;/div&gt;&lt;/html&gt;</string>
-    <string name="zid_reset_summary">Nollaa pitkäikäinen ZRTP-tunniste</string>
-    <string name="sec_zrtp_signalling_on">ZRTP:tä mainostetaan signalointiprotokollan kautta</string>
-    <string name="sec_zrtp_signalling_off">ZRTP-mainosta ei tule</string>
     <string name="security_sdes_dlg_title">Valitse halutut salausalgoritmit</string>
     <string name="security_sdes_title">SDES-salausalgoritmit</string>
     <string name="security_zrtp_options">ZRTP-asetukset</string>
     <string name="security_zrtp_signalling">ZRTP-signalointi</string>
+
+    <!-- Common preferences -->
     <string name="audio_encoding">Äänen koodaus</string>
     <string name="audio_enc_global_override_summary">Ohita tämän tilin globaalisti määritetyt äänimuodot</string>
     <string name="call_encryption">Puhelun salausasetukset</string>
     <string name="video_encoding">Videon koodaus</string>
     <string name="video_enc_global_override_summary">Ohita tämän tilin globaalisti määritetyt videomuodot</string>
+
+    <!-- Jabber preferences -->
     <string name="jbr_auto_sign_in">Yhdistä automaattisesti käynnistettäessä</string>
     <string name="jbr_auto_stun_discovery">Etsi automaattisesti STUN/TURN-palvelimet</string>
     <string name="jbr_connection_summary">Aseta yhteden tiedot…</string>
@@ -1016,10 +1080,12 @@
     <string name="jbr_server_port">Palvelimen Portti</string>
     <string name="jbr_priority">Prioriteetti (-128~127 välillä)</string>
     <string name="jbr_resource_auto_gen">Generoi resurssi automaattisesti</string>
+    <string name="jbr_resource_id">Jabber ID-Resurssi</string>
     <string name="jbr_resource_name">Resurssin nimi</string>
     <string name="jbr_server_ip">Yhdistettävän Palvelimen IP</string>
     <string name="jbr_server_options">Palvelinasetukset</string>
     <string name="jbr_store_password">Muista salasana</string>
+    <string name="jbr_store_password_summary">Tallenna salasana automaattiseen kirjautumiseen sovelluksen käynnistyessä</string>
     <string name="jbr_stun_list">Ylimääräiset STUN/TURN-palvelimet…</string>
     <string name="jbr_stun_list_summary">Käyttäjän määrittelemät ylimääräiset STUN/TURN-palvelimet käyttöä varten</string>
     <string name="jbr_telephony_domain">Puhelinverkkotunnus</string>
@@ -1027,9 +1093,12 @@
     <string name="jbr_telephony_summary">Määritä puhelinasetukset…</string>
     <string name="jbr_use_default_stun">Käytä Jitsi STUN-palvelinta (varalla)</string>
     <string name="jbr_use_ice">Käytä ICE:ä</string>
+    <string name="jbr_use_google_ice">Käytä Googlen Jingle/ICE:ä (kokeellinen)</string>
     <string name="jbr_use_upnp">Käytä UPnP:tä</string>
     <string name="jbr_user_id">KÄYTTÄJÄTUNNUS</string>
     <string name="jbr_user_name_password">Käyttäjätunnus ja salasana</string>
+
+    <!-- Telephony -->
     <string name="contact_phone">Yhteystiedon Nimi/Puhelin/Jid:</string>
     <string name="call_via">Soita käyttäen:</string>
     <string name="contact_phone_empty">Yhteystiedon puhelinnumero ei voi olla tyhjä!</string>
@@ -1039,61 +1108,108 @@
     <string name="jingle_not_supported">%1$s\nei tue Jingle-protokollaa</string>
     <string name="recipient_error_parse_failed">Virhe jäsennettäessä osoitetta!</string>
     <string name="unknown_recipient"><![CDATA[<Tuntematon Vastaanottaja>]]></string>
+
+    <!-- General settings -->
     <string name="disabled">Pois käytöstä</string>
     <string name="enabled">Käytössä</string>
     <string name="general">Yleinen</string>
+
+    <!-- WebView default Page -->
     <string name="settings_webview_dlg_title">Syötä webView oletuspääsysivu:</string>
     <string name="settings_webview_page">Verkkopääsysivu</string>
+
+    <!-- Messaging settings -->
     <string name="settings_messaging">Viestintä</string>
+
+    <!-- Group messages in one window -->
+    <string name="settings_multichat_off">Erillinen ikkuna joka keskustelulle</string>
     <string name="settings_multichat_on">Ryhmäkeskustelun viestit yhdessä ikkunassa</string>
     <string name="settings_multichat_window">Useampi keskustelu samassa ikkunassa</string>
+
+    <!-- Log chat history -->
     <string name="settings_history_log_off">Keskusteluhistoria poistettu käytöstä</string>
     <string name="settings_history_log_on">Kirjaa keskusteluhistorian loki</string>
     <string name="settings_history_logging">Keskusteluhistorian lokiin kirjaaminen</string>
+    <string name="settings_history_mam_warning">Virhe MAM-asetuksen asettamisessa offline-käyttäjälle: %1$s</string>
+
+    <!-- Show x recent messages in new chats -->
     <string name="settings_history_dlg_title">Kuinka monta viimeisintä viestiä näytetään?</string>
     <string name="settings_history_size">Näytä viimeisimmät viestit</string>
     <string name="settings_history_summary">%d viimeaikaista viestiä uusissa keskusteluissa</string>
     <string name="settings_history_show">Näytä historia</string>
-    <string name="plugin_otr_activator_fallbackmessage">&lt;span style=font-weight: lihava; &gt;%1$s yrittää aloittaa salatun &lt;a href=https://fi.wikipedia.org/wiki/OTR&gt;OTR keskustelun&lt;/a&gt;kanssasi. Ohjelmasi ei kuitenkaan tue OTR-viestintää. Saadaksesi lisätietoja, katso &lt;a href=https://fi.wikipedia.org/wiki/OTR&gt;https://fi.wikipedia.org/wiki/OTR&lt;/a&gt;&lt;/span&gt;</string>
-    <string name="plugin_otr_activator_unreadablemsgreply">Lähetit henkilölle %1$s salatun viestin jota ei voida purkaa. Lopeta yksityinen keskustelu henkilön %2$s kanssa tai virkistä se.</string>
-    <string name="omemo_identity_keypairs_invalid">Virheellinen IdentiteettiAvainParit omemoLaitteelle: %1$s.\nPoikkeus: %2$s.</string>
-    <string name="omemo_init_failed_corrupted_omemoKey_exception">OmemoHallinnan alustus epäonnistui ja omemo-viestintä ei ole toiminnassa. Jos ongelma jatkuu uudelleenkäynnistyksen jälkeen, jatka Uudelleengeneroimalla OMEMO-identiteetit epäonnistuneelle omemoLaitteelle: %1$s.\n\nPoikkeus: %2$s.</string>
-    <string name="jbr_resource_id">Jabber ID-Resurssi</string>
-    <string name="jbr_store_password_summary">Tallenna salasana automaattiseen kirjautumiseen sovelluksen käynnistyessä</string>
-    <string name="jbr_use_google_ice">Käytä Googlen Jingle/ICE:ä (kokeellinen)</string>
-    <string name="settings_multichat_off">Erillinen ikkuna joka keskustelulle</string>
-    <string name="settings_history_mam_warning">Virhe MAM-asetuksen asettamisessa offline-käyttäjälle: %1$s</string>
+
+    <!-- Tell others when we have received and read the messages -->
     <string name="settings_message_delivery_receipt">Viestin toimituksen kuittaukset</string>
     <string name="settings_message_delivery_receipt_summary">Kerro yhteystiedoillesi, kun olet saanut ja lukenut heidän viestinsä</string>
+
+    <!-- Tell others when we are writing to them -->
     <string name="settings_typing_notifications">Lähetä keskustelun tilailmoitukset</string>
+
+    <!-- Enable option to send thumbnail preview for image file sending -->
     <string name="settings_thumbnail_option">Lähetä/Vastaanota esikatselukuvia</string>
+
+    <!-- Auto accept downloadable max file size -->
     <string name="settings_file_max_auto_accept">Hyväksy tiedoston enimmäiskoko automaattisesti</string>
+
+    <!-- Setup subscription Mode: auto or manual approval -->
     <string name="settings_presence_subscribe_approval_mode">Läsnäolon tilauksen hyväksyntä</string>
     <string name="settings_presence_subscribe_approval_auto">Tilauksen hyväksyntä - hyväksy kaikki automaattisesti</string>
     <string name="settings_presence_subscribe_approval_manual">Tilauksen hyväksyntä - manuaalinen</string>
+
+    <!-- Bring chat window to front(not sure if this makes sense on Android, so omitted) -->
+    <!-- Use task bar/dock alerts on incoming calls and chats -->
+    <string name="settings_chat_notifications">Näytä tilapalkin ilmoitukset</string>
+
+    <!-- Leave chat rooms when closing window(omitted on Android for now) -->
+
+    <!-- Auto away -->
+    <!-- Not sure how to implement it on android - leave for now -->
+
+    <!-- Notifications -->
     <string name="settings_notifications">Ilmoitukset</string>
+
+    <!-- Popup notifications type -->
     <string name="settings_auto_update_check_enable">Ota automaattinen ohjelmistopäivityksen tarkistus käyttöön</string>
     <string name="settings_popup_handler">Ponnahdusilmoitusten tyyppi</string>
+
     <string name="pref_heads_up_notifications">Heads-up ilmoitukset</string>
     <string name="pref_heads_up_notifications_summary">Näytä heads-up ilmoitukset</string>
+
+    <!-- Status bar notifications handler -->
     <string name="popup_auto">Automaattinen</string>
     <string name="popup_status_bar">Tilapalkin ilmoitukset</string>
+
+    <!-- Events -->
+    <string name="settings_event_summary">Määritä yksittäiset ilmoitukset</string>
     <string name="settings_event_title">Tapahtumat</string>
+
+    <!-- Quite hour settings -->
     <string name="quiet_hours">Hiljaiset tunnit</string>
     <string name="quiet_hours_start_time">Aloitusaika</string>
     <string name="quiet_hours_end_time">Päättymisaika</string>
     <string name="quiet_hours_enable">Ota hiljaiset tunnit käyttöön</string>
     <string name="quiet_hours_summary">Ilmoitukset hiljennetään hiljaisten tuntien aikana</string>
+
+    <!-- aTalk icon -->
     <string name="settings_show_icon">Näytä aTalk-kuvake</string>
+    <string name="settings_show_icon_summary_off">Piilota aTalkin aktiivinen ilmaisin ilmoituksessa</string>
     <string name="settings_show_icon_summary_on">Näytä aTalkin aktiivinen ilmaisin ilmoituksessa</string>
+
+    <!-- aTalk auto start -->
     <string name="settings_auto_start">Käynnistä aTalk automaattisesti uudelleenkäynnistyksen yhteydessä</string>
     <string name="settings_auto_start_summary_disable">Poista aTalkin automaattinen käynnistyminen seuraavalle uudelleenkäynnistymiselle</string>
     <string name="settings_auto_start_summary_enable">Ota aTalkin automaattinen käynnistyminen käyttöön seuraavalle uudelleenkäynnistykselle</string>
+
+    <!-- Locale -->
     <string name="settings_locale">Kieli</string>
     <string name="settings_locale_system">Järjestelmän oletus</string>
+
+    <!-- Theme -->
     <string name="settings_theme_dark">Tumma</string>
     <string name="settings_theme_light">Vaalea</string>
     <string name="settings_theme">Teema</string>
+
+    <!-- TTS Language -->
     <string name="tts_delay">Viestin tekstistä puheeksi-viive (ms)</string>
     <string name="tts_settings">Yleiset tekstistä puheeksi (TTS)-asetukset…</string>
     <string name="tts_disable">Poista tekstistä ➡ puheeksi käytöstä</string>
@@ -1101,109 +1217,163 @@
     <string name="tts_synthesis">Syötä puhuttava teksti tai synteesi ja tallenna tiedostoon:</string>
     <string name="tts_voice">Oletus tekstistä puheeksi-ääni:</string>
     <string name="loading_wait">Ladataan, odota…</string>
+
+    <!-- Remove special characters from phone number -->
     <string name="settings_normalize_off">Ei puhelinnumeron muutoksia</string>
     <string name="settings_normalize_on">Erikoismerkit poistetaan numerosta</string>
     <string name="settings_normalize_number">Erikoismerkit puhelinnumeroissa</string>
+    <!-- Convert letters in phone numbers -->
     <string name="settings_phone_alpha_no_allow">Ei puhelinnumeron muutoksia</string>
     <string name="settings_phone_alpha_allow">Kirjaimet puhelinnumeroissa</string>
+
+    <!-- Call settings -->
     <string name="call">Puhelu</string>
     <string name="media_call">Mediapuhelu</string>
+
+    <!-- Audio settings -->
     <string name="audio">Ääni</string>
+    <!-- Echo cancellation -->
     <string name="settings_echo_cancel">Kaiunesto</string>
     <string name="settings_echo_cancel_off">Pois käytöstä</string>
     <string name="settings_echo_cancel_on">Käytössä</string>
+    <!-- Auto gain control -->
     <string name="settings_agc">Automaattinen vahvistuksen säätö</string>
     <string name="settings_agc_off">Pois käytöstä</string>
+    <string name="settings_agc_on">Käytössä</string>
+    <!-- Denoise -->
+    <string name="settings_denoise">Melunvaimennus</string>
     <string name="settings_denoise_off">Pois käytöstä</string>
     <string name="settings_denoise_on">Käytössä</string>
+    <!-- Audio encodings -->
     <string name="settings_audio_codecs_summary">Valitse ja määritä äänikoodekkien prioriteetti</string>
     <string name="settings_audio_codecs">Äänikoodekit</string>
+
+    <!-- Video settings -->
     <string name="video">Video</string>
+
+    <!-- Video system -->
     <string name="settings_system_android_camera">AndroidinKamera</string>
     <string name="settings_system_media_recorder">MedianNauhoittaja</string>
+
+    <!-- Camera used -->
     <string name="settings_camera">Kamera</string>
+    <string name="settings_no_camera">Yhteensopivaa kameralaitetta ei löytynyt</string>
     <string name="settings_use_back_camera">Käytä takakameraa</string>
     <string name="settings_use_front_camera">Käytä etukameraa</string>
     <string name="settings_use_match_camera_resolution">Käytä lähintä vastaavaa kameran resoluutiota: %1$s</string>
+
+    <!-- Video codecs -->
+    <string name="settings_direct_surface_decode">Käytä suoraa pinnan dekoodausta</string>
     <string name="settings_direct_surface_encode">Käytä suoraa pinnan koodausta</string>
     <string name="settings_hw_decode">Käytä laitteistokiihdytettyä dekoodausta</string>
     <string name="settings_hw_encode">Käytä laitteistokiihdytettyä koodausta</string>
     <string name="settings_media_codec_list">MediaKoodekit</string>
     <string name="settings_media_codec_list_summary">Luettelo sisäänrakennetuista mediakoodereista/dekoodereista</string>
+    <string name="settings_restart_require">Vaadi aTalkin uudelleenkäynnistys</string>
     <string name="settings_video_codec_summary">Valitse ja määritä videokoodekkien prioriteetti</string>
     <string name="settings_video_codec">Videokoodekit</string>
+    <!-- Video resolution -->
     <string name="settings_video_resolution">Videon tarkkuus</string>
+    <!-- Frame rate -->
     <string name="settings_fps_limit_off">Rajoittamaton</string>
     <string name="settings_fps_limit_on">Säädetty kuvataajuus</string>
     <string name="settings_video_bitrate">Videon bittinopeus (kilobittejä/s)</string>
     <string name="settings_video_frame_rate">Videon kuvataajuus</string>
+    <string name="settings_video_fps_description">Hyväksytyt arvot välillä 5 ja 30 kuvaa sekunnissa (FPS)</string>
     <string name="settings_video_max_bw">RTP-tahdistuskynnys (kiloTavua/s)</string>
     <string name="settings_video_fps_target">Tavoitekuvataajuus (sekunnissa)</string>
+
+    <!-- Chat Security settings -->
     <string name="settings_messaging_security_summary">Viestien salauksen suojausasetukset</string>
     <string name="settings_messaging_security">Viestien suojaus</string>
-    <string name="otr_messaging_security">OTR-viestien suojaus</string>
-    <string name="settings_CRYPTO_ENABLE_TITLE">Yksityinen viestintä</string>
-    <string name="settings_CRYPTO_ENABLE_ON">Viestinnän salaus käytössä</string>
-    <string name="settings_CRTOTI_AUTO_ON">Aloita viestien salausistunto automaattisesti</string>
-    <string name="settings_CRYPTO_REQUIRE_OFF">Turvallista viestintää käytetään, jos sitä tuetaan</string>
-    <string name="settings_CRYPTO_REQUIRE_ON">Vain turvalliset istunnot hyväksytään</string>
-    <string name="settings_CRYPTO_REQUIRE_TITLE">Vaadi yksityisviestien käyttö</string>
-    <string name="settings_CRYPTO_AUTO_TITLE">Yksityisen viestinnän automaattinen aloitus</string>
+
+    <!-- OMEMO security category-->
+    <string name="omemo_messaging_security">OMEMO-viestien suojaus</string>
+    <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">Sokea luottamus ennen vahvistusta</string>
+    <string name="omemo_blind_trust_before_verification_summary">Luota automaattisesti kaikkiin uusiin yhteystietojen laitteisiin, joita ei ole tarkistettu aiemmin; näytä manuaalisen vahvistuksen kehote, kun vahvistettu yhteystieto lisää uusia laitteita.</string>
+    <!-- OMEMO regenerate screen -->
     <string name="omemo_regenerate_identities_summary">Kun OMEMO-identiteettisi on luotu uudelleen, kaikki yhteystietosi saavat uuden sormenjäljen ja niiden on vahvistettava sinut uudelleen. Tee tämä vain jos omemo-istunnon määrittelemisessä on ongelmia.</string>
     <string name="omemo_regenerate_identities">Luo OMEMO-identiteetit uudelleen</string>
     <string name="omemo_regenerate_title">OMEMO-identiteettien virkistys</string>
+    <!-- OMEMO purge device screen -->
+    <string name="omemo_purge_devices_summary">Poista kaikki epäaktiiviset laitteet; julkaise vain nykyinen käyttämäsi aktiivinen laite.</string>
     <string name="omemo_purge_device_unused">Puhdista käyttämättömät identiteetit</string>
     <string name="omemo_purge_device">OMEMO-laitteiden Poisto</string>
+
+    <!-- Key & FingerPrint security category -->
     <string name="key_fingerprint_security">Avainten ja sormenjälkien turvallisuus</string>
+    <!-- Crypto private Keys screen -->
     <string name="settings_crypto_priv_key_empty">Nolla rekisteröitynyttä käyttäjää löydetty</string>
     <string name="settings_crypto_priv_key_summary">Hallinnoi salauksen yksityisiä sormenjälkiä</string>
     <string name="settings_crypto_priv_key">Salauksen yksityiset avaimet</string>
+    <!-- Crypto fingerprints screen -->
+    <string name="settings_fingerprint_summary">Hallinnoi kaikkien tunnettujen laitteiden sormenjälkiä\nväri: syaani=omaLaite; harmaa=epäaktiivinen</string>
     <string name="settings_fingerprint_title">Salauslaitteiden sormenjäljet</string>
+
+    <!-- Crypto contextMenu, dialog, message and toast -->
     <string name="crypto_key_generate_prompt">Haluatko luoda uuden avaimen kohteelle %1$s%2$s</string>
     <string name="crypto_key_generate_title">Yksityisen avaimen generointi</string>
     <string name="crypto_key_regenerate_prompt">Haluatko luoda avaimen uudelleen kohteelle %1$s\n\n%2$s</string>
+
     <string name="delete_selected">Poista valitut</string>
     <string name="regenerate_selected">Luo valitut uudelleen</string>
+
     <string name="crypto_menu_key_generate">Luo uusi avain</string>
     <string name="crypto_menu_key_regenerate">Luo avain uudelleen</string>
+
     <string name="crypto_menu_fingerprint_copy">Kopioi sormenjälki</string>
     <string name="crypto_menu_fingerprint_distrust">Älä luota sormenjälkeen</string>
     <string name="crypto_menu_fingerprint_trust">Luota sormenjälkeen</string>
-    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">OTR-istuntopyyntösi on hylätty omemo-istunnon ollessa jo käynnissä!</string>
+
     <string name="crypto_msg_omemo_session_setup_failed">OMEMO-istunnon määritys epäonnistui! %1$s</string>
     <string name="crypto_msg_omemo_session_untrusted">Löytyi NOLLA luotettua kaveria vastaanottamaan OMEMO-viestejä!</string>
     <string name="crypto_msg_omemo_session_unverified">OMEMO-viestien lähettäminen tuntemattomille kavereille, joilla on vahvistamattomat sormenjäljet!</string>
+    <string name="crypto_msg_omemo_session_unverified_untrusted">MoniKäyttäjäKeskustelu joidenkin epäluotettavien kavereiden tai vahvistamattomien sormenjälkien kanssa!</string>
     <string name="crypto_msg_omemo_session_verified">*** Kaikki kaverit on todennettu! ***</string>
+
     <string name="crypto_fingerprint_status">Vahvistettu: %1$s</string>
     <string name="crypto_no_key_present">Ei avainta olemassa</string>
     <string name="crypto_fingerprint_copy">Sormenjälki kopioitu leikepöydälle!</string>
     <string name="crypto_omemo_distrust_messaging_stop">Lopeta OMEMO-viestien lähettäminen kaverille jatkossa: %1$s</string>
     <string name="crypto_omemo_trust_messaging_resume">Jatka OMEMO-viestien lähettämistä kaverille: %1$s</string>
+
+    <!-- Advanced settings category -->
     <string name="advanced">Edistyneet</string>
+    <string name="settings_expert">Asiantuntija-asetukset</string>
+    <string name="settings_expert_summary">Ole varovainen näiden kanssa</string>
+
+    <!-- Protocol category -->
     <string name="port">Portti</string>
     <string name="protocol">Protokolla</string>
+
+    <!-- Opus -->
     <string name="opus">Opus</string>
     <string name="opus_sampling_rate">Näytteenottotaajuus</string>
     <string name="opus_bitrate">Koodaajan keskimääräinen bittinopeus (kbps)</string>
     <string name="opus_complexity">Koodaajan kompleksisuus</string>
     <string name="opus_min_expected_packet_loss">Pienin odotettu pakettihäviö(%)</string>
+    <string name="opus_encoder_settings">Määritä Opus-koodaajan asetukset</string>
     <string name="opus_use_dtx">Käytä DTX:ää</string>
     <string name="opus_use_fec">Käytä kaistan sisäistä FEC:tä</string>
+
+    <!-- Silk -->
     <string name="silk">Silk</string>
     <string name="silk_encoder_settings">Määritä Silk-koodaajan asetukset</string>
     <string name="silk_use_fec">Käytä kaistan sisäistä FEC:tä</string>
     <string name="silk_assume_pl">Oleta aina pakettihäviön olemassaolo</string>
+    <string name="silk_fec_sat">Puheenaktiivisuuden kynnys (0–1)</string>
     <string name="silk_fec_advertise">Mainosta FEC-tukea SDP:ssä</string>
-    <string name="plugin_generalconfig_SIP_CLIENT_PORT">SIP-asiakasporti</string>
-    <string name="plugin_generalconfig_SIP_CLIENT_SECURE_PORT">SIP-asiakkaan suojattu portti</string>
-    <string name="plugin_generalconfig_SIP_SSL_PROTOCOLS">Käytössä olevat SSL/TLS-protokollat</string>
-    <string name="service_gui_settings_SIP">SIP</string>
+
+    <!-- Android Battery Usage Optimization -->
     <string name="battery_optimizations">Akunkäytön optimointi</string>
+    <string name="battery_optimizations_dialog">Laitteellasi on akunkäytön optimointi käytössä aTalk sovellukselle, mikä voi johtaa viivästyneisiin ilmoituksiin tai viestien katoamiseen.\n\nOn suositeltavaa, että poistat tämän optimoinnin käytöstä aTalkille.</string>
     <string name="battery_optimization_on">aTalk laitetaan lepotilaan, kun laite menee torkkuvalmiustilaan. Manuaalisesti käynnistä aTalk uudelleen uusien viestien saamiseksi.</string>
     <string name="device_does_not_support_battery_op">Laitteesi ei tue akunkäytön optimoinnin pois jättämistä</string>
     <string name="disable">Poista käytöstä</string>
     <string name="next">Seuraava</string>
+
+    <!-- Android Permissions -->
     <string name="app_info">Sovelluksen tiedot…</string>
     <string name="permission_app_info">Sovelluksen tiedot</string>
     <string name="permission_request_all">Pyydä kaikki</string>
@@ -1216,60 +1386,50 @@
     <string name="permission_phone">Puhelin</string>
     <string name="permission_video">Kuva ja video</string>
     <string name="permission_storage">Tallennustila</string>
+    <string name="permission_hint">Sovelluksen maksimaalisen suorituskyvyn ja täyden ominaisuustuen saamiseksi aTalk edellyttää, että myönnät käyttöoikeudet seuraaville palveluille. Ilman niitä, aTalk ei saata toimia tai voi käyttäytyä kummallisesti!</string>
     <string name="permission_denied">EVÄTTY</string>
     <string name="permission_granted">MYÖNNETTY</string>
     <string name="permission_denied_permanently">PYSYVÄSTI EVÄTTY</string>
     <string name="permission_unknown">TUNTEMATON</string>
+
     <string name="mic_permission_denied_dialog_title">Lupapyyntö äänen nauhoittamiseen</string>
     <string name="mic_permission_denied_feedback">Äänipuhelu ei ole käytettävissä, ennen kuin hyväksyt lupapyynnön</string>
+
     <string name="camera_permission_denied_dialog_title">Kameran käyttöoikeuden pyyntö</string>
     <string name="camera_permission_denied_feedback">Kaikki kameraan liittyvät toiminnot eivät ole käytettävissä ennen kuin hyväksyt lupapyynnön</string>
+
     <string name="contacts_permission_denied_dialog_title">Lupapyyntö yhteystietoihin</string>
     <string name="contacts_permission_denied_feedback">Lupa yhteystietoihin vaaditaan puhelimen tilan hallintaan ja puheluiden määrittämiseen</string>
+
     <string name="music_permission_denied_dialog_title">Musiikin ja äänen käytön lupapyyntö</string>
     <string name="music_permission_denied_feedback">Mediaäänitiedostot eivät ole käytettävissä, ennen kuin hyväksyt lupapyynnön</string>
+
     <string name="location_permission_denied_dialog_title">Lupapyyntö sijainnille</string>
+    <string name="location_permission_denied_feedback">GPS-sijaintiominaisuudet eivät ole käytettävissä, ennen kuin hyväksyt lupapyynnön</string>
+
     <string name="notifications_permission_denied_dialog_title">Lupapyyntö ilmoituksille</string>
     <string name="notifications_permission_denied_feedback">aTalkin ilmoitukset poistetaan käytöstä, kunnes hyväksyt lupapyynnön</string>
+
     <string name="phone_permission_denied_dialog_title">Lupapyyntö puhelimen tilan lukemiseen</string>
     <string name="phone_permission_denied_feedback">Puhelinominaisuudet eivät ole saatavilla, ennen kuin hyväksyt lupapyynnön</string>
+
     <string name="video_permission_denied_dialog_title">Lupapyyntö kuville ja videoille</string>
+    <string name="video_permission_denied_feedback">Mediakuvat ja videotiedostot eivät ole saatavilla, ennen kuin hyväksyt lupapyynnön</string>
+
     <string name="storage_permission_denied_dialog_title">Lupapyyntö tallennustilalle</string>
     <string name="storage_permission_denied_feedback">Lähetetyn ja vastaanotetun sisällön tallennus muistiin ei ole sallittua, ennen kuin hyväksyt lupapyynnön</string>
+
     <string name="all_permission_denied_dialog_title">Lupapyyntö kaikille oikeuksille</string>
+    <string name="all_permissions_denied_feedback">aTalk ei ehkä toimi oikein tai se voi käyttäytyä odottamattomasti, koska jotkin palvelut on evätty!\nJos olet valinnut \'Älä kysy uudelleen\'-vaihtoehdon, sinun on siirryttävä Androidin-asetuksiin -&gt; aTalk SOVELLUKSEN TIEDOT josta voi ottaa resurssien käyttöluvan käyttöön</string>
     <string name="permission_denied_all_alert">aTalk ei toimi oikein. Olet evännyt kaikki oikeudet aTalkilta!\nSinun on siirryttävä Androidin-asetuksiin -&gt; aTalk SOVELLUKSEN TIEDOT josta voi ottaa resurssien käyttöluvan käyttöön.</string>
+
     <string name="permission_rationale_message">Sinulle näytetään jokainen palvelu jonka aTalk vaatii; hyväksy aTalkille käyttölupa näille palveluille jotta kaikkia ominaisuuksia tuetaan</string>
     <string name="permission_rationale_settings_button_text">ASETUKSET</string>
     <string name="permission_rationale_title">aTalk tarvitsee käyttöoikeuksia</string>
+
+    <!--Location string constant -->
     <string name="location_permission_dialog_title">Sijaintilupa tarvitaan</string>
     <string name="location_permission_dialog_message">Sallitaanko sijaintilupa nyt?</string>
     <string name="location_services_off">Sijaintipalvelut POIS PÄÄLTÄ</string>
-    <string name="settings_chat_notifications">Näytä tilapalkin ilmoitukset</string>
-    <string name="settings_event_summary">Määritä yksittäiset ilmoitukset</string>
-    <string name="settings_agc_on">Käytössä</string>
-    <string name="settings_denoise">Melunvaimennus</string>
-    <string name="settings_no_camera">Yhteensopivaa kameralaitetta ei löytynyt</string>
-    <string name="settings_video_fps_description">Hyväksytyt arvot välillä 5 ja 30 kuvaa sekunnissa (FPS)</string>
-    <string name="settings_CRYPTO_ENABLE_OFF">Ei viestinnän salausta</string>
-    <string name="settings_CRYPTO_AUTO_OFF">Aloita viestien salausistunto manuaalisesti</string>
-    <string name="omemo_messaging_security">OMEMO-viestien suojaus</string>
-    <string name="omemo_blind_trust_before_verification_summary">Luota automaattisesti kaikkiin uusiin yhteystietojen laitteisiin, joita ei ole tarkistettu aiemmin; näytä manuaalisen vahvistuksen kehote, kun vahvistettu yhteystieto lisää uusia laitteita.</string>
-    <string name="omemo_purge_devices_summary">Poista kaikki epäaktiiviset laitteet; julkaise vain nykyinen käyttämäsi aktiivinen laite.</string>
-    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">Kaverisi OTR-istuntopyyntö on hylätty OMEMO-istunnon aikana. Voit ottaa OTR-istunnon käyttöön manuaalisesti!</string>
-    <string name="settings_expert">Asiantuntija-asetukset</string>
-    <string name="silk_fec_sat">Puheenaktiivisuuden kynnys (0–1)</string>
-    <string name="battery_optimizations_dialog">Laitteellasi on akunkäytön optimointi käytössä aTalk sovellukselle, mikä voi johtaa viivästyneisiin ilmoituksiin tai viestien katoamiseen.\n\nOn suositeltavaa, että poistat tämän optimoinnin käytöstä aTalkille.</string>
-    <string name="video_permission_denied_feedback">Mediakuvat ja videotiedostot eivät ole saatavilla, ennen kuin hyväksyt lupapyynnön</string>
-    <string name="settings_show_icon_summary_off">Piilota aTalkin aktiivinen ilmaisin ilmoituksessa</string>
-    <string name="settings_direct_surface_decode">Käytä suoraa pinnan dekoodausta</string>
-    <string name="settings_restart_require">Vaadi aTalkin uudelleenkäynnistys</string>
-    <string name="settings_fingerprint_summary">Hallinnoi kaikkien tunnettujen laitteiden sormenjälkiä\nväri: syaani=omaLaite; harmaa=epäaktiivinen</string>
-    <string name="crypto_msg_omemo_session_unverified_untrusted">MoniKäyttäjäKeskustelu joidenkin epäluotettavien kavereiden tai vahvistamattomien sormenjälkien kanssa!</string>
-    <string name="settings_expert_summary">Ole varovainen näiden kanssa</string>
-    <string name="opus_encoder_settings">Määritä Opus-koodaajan asetukset</string>
-    <string name="service_gui_settings_SIP_SUMMARY">Määritä SIP-protokollan asetukset</string>
-    <string name="location_permission_denied_feedback">GPS-sijaintiominaisuudet eivät ole käytettävissä, ennen kuin hyväksyt lupapyynnön</string>
-    <string name="all_permissions_denied_feedback">aTalk ei ehkä toimi oikein tai se voi käyttäytyä odottamattomasti, koska jotkin palvelut on evätty!\nJos olet valinnut \'Älä kysy uudelleen\'-vaihtoehdon, sinun on siirryttävä Androidin-asetuksiin -&gt; aTalk SOVELLUKSEN TIEDOT josta voi ottaa resurssien käyttöluvan käyttöön</string>
-    <string name="permission_hint">Sovelluksen maksimaalisen suorituskyvyn ja täyden ominaisuustuen saamiseksi aTalk edellyttää, että myönnät käyttöoikeudet seuraaville palveluille. Ilman niitä, aTalk ei saata toimia tai voi käyttäytyä kummallisesti!</string>
     <string name="open_location_settings">Otetaanko sijaintipalvelut käyttöön nyt?</string>
 </resources>

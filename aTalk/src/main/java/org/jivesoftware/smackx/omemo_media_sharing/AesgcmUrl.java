@@ -33,6 +33,8 @@ import org.jivesoftware.smackx.httpfileupload.element.Slot;
  * As the builtin {@link URL} class cannot handle the aesgcm protocol identifier, this class
  * is used as a utility class that bundles together a {@link URL}, key and IV.
  *
+ * @author Paul Schaub
+ * @author Eng Chong Meng
  * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-0454: OMEMO Media Sharing</a>
  */
 public class AesgcmUrl {

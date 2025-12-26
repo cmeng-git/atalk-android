@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/crypto_choice"
-        android:icon="@drawable/crypto_otr_unsecure"
+        android:icon="@drawable/crypto_unsecure"
         android:title="@string/encrypt_choices"
         android:enabled="true"
         app:showAsAction="always">
@@ -18,10 +18,6 @@
                     android:id="@+id/encryption_omemo"
                     android:icon="?attr/iconCryptoOmemo"
                     android:title="@string/encryption_omemo"/>
-                <item
-                    android:id="@+id/encryption_otr"
-                    android:icon="?attr/iconCryptoOtr"
-                    android:title="@string/encryption_otr"/>
             </group>
         </menu>
     </item>

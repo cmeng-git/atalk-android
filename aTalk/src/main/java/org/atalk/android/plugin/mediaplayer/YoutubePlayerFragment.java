@@ -61,10 +61,15 @@ public class YoutubePlayerFragment extends BaseFragment {
     private static final List<String> mVideoIds = new ArrayList<>();
 
     // Youtube playlist ids for testing; set usePlayList to true
-    private static final String[] playLists = {"RDMQTvg5EUgWU", "PLUh4W61bt_K5jmi1qbVACvLAPkudEmLKO"};
-    private static final String PLAYLIST = "PL";
-    private static final String SEPARATOR = ",";
     private final boolean usePlayList = false;
+    // Playlist array with different format; for testing only. old playlist may not start with PL
+    private static final String[] playLists = {"RDMQTvg5EUgWU", "PLUh4W61bt_K5jmi1qbVACvLAPkudEmLKO"};
+
+    // Standard youtube Vid length is 11.
+    private static final int VID_LENGTH = 11;
+    // Youtube playlist id start with PL...
+    private static final String PL = "PL";
+    private static final String SEPARATOR = ",";
 
     // Will attempt to playback the given videoId as playlist if onError first encountered
     private boolean onErrorOnce = true;
@@ -98,7 +103,7 @@ public class YoutubePlayerFragment extends BaseFragment {
         if (args != null) {
             mediaUrl = args.getString(MediaExoPlayerFragment.ATTR_MEDIA_URL);
 
-            // Comment out the following to test loadPlaylist_videoIds()
+            // Comment out the following line to test loadPlaylistVideoIds()
             mediaUrls = args.getStringArrayList(MediaExoPlayerFragment.ATTR_MEDIA_URLS);
             if (mediaUrls != null && !mediaUrls.isEmpty()) {
                 mVideoIds.clear();
@@ -126,21 +131,24 @@ public class YoutubePlayerFragment extends BaseFragment {
         youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                // for testing of array index 0 or 1 playlist
                 if (usePlayList) {
                     startPlaylist(youTubePlayer, playLists[0]);
                 }
+                // comma separated strings for playlist array conversation: i.e ['vCKCkc8llaM','LvetJ9U_tVY','S0Q4gqBUs7c','9HPiBJBCOq8'];
                 else if (mediaUrls != null) {
                     // comma separated strings for playlist array conversation: i.e ['vCKCkc8llaM','LvetJ9U_tVY','S0Q4gqBUs7c','9HPiBJBCOq8'];
                     startPlaylist(youTubePlayer, TextUtils.join(SEPARATOR, mVideoIds));
                 }
+                // support both single of playlist playback i.e playlist with/without 'PL' prefix
                 else if (mediaUrl != null) {
                     mVideoId = getVideoId(mediaUrl);
-                    if (mVideoId.toUpperCase().startsWith(PLAYLIST)) {
+                    if (mVideoId.toUpperCase().startsWith(PL) || mVideoId.length() > VID_LENGTH) {
                         startPlaylist(youTubePlayer, mVideoId);
                     }
                     else {
                         onErrorOnce = true;
-                        YouTubePlayerUtils.loadOrCueVideo(youTubePlayer, getLifecycle(), mVideoId, 0f);
+                        YouTubePlayerUtils.loadOrCueVideo(youTubePlayer, getLifecycle(), mVideoId, 0.0f);
                     }
                 }
                 addActionsToPlayer(youTubePlayer);
@@ -203,20 +211,38 @@ public class YoutubePlayerFragment extends BaseFragment {
 
     /**
      * Extract the youtube videoId from the following string formats:
-     * a. vCKCkc8llaM
-     * b. <a href="https://youtu.be/vCKCkc8llaM">...</a>
-     * c. <a href="https://youtube.com/watch?v=14VrDQSnfzI&feature=share">...</a>
-     * d. <a href="https://www.youtube.com/playlist?list=PL0KROm2A3S8HaMLBxYPF5kuEEtTYvUJox">...</a>\
+     * The 'vCKCkc8llaM' is the video ID (11 char), which is the unique identifier for the video.
+     * Take note that on youtube.com, the video ID is provided as a query parameter, and on youtu.be, it’s just provided as the path of the URL.
+     * a. <a href="https://youtu.be/vCKCkc8llaM">...</a>
+     * b. <a href="https://youtube.com/watch?v=vCKCkc8llaM&feature=share">...</a>
+     * <p>
+     * Youtube Playlists:
+     * c. https://www.youtube.com/watch?v=47dtFZ8CFo8&list=PLwxnUUM01nt2nMh9DPq09e6fIDbumybgt
+     * d. https://youtu.be/47dtFZ8CFo8?list=PLwxnUUM01nt2nMh9DPq09e6fIDbumybgt
+     * e. <a href="https://www.youtube.com/playlist?list=PL0KROm2A3S8HaMLBxYPF5kuEEtTYvUJox">...</a>
      *
-     * @param url Any of the above url string
+     * @param url Any of the above url strings
      *
-     * @return the youtube videoId
+     * @return the youtube videoId (or playlist)
      */
     private String getVideoId(String url) {
         String mVideoId = url.substring(mediaUrl.lastIndexOf('/') + 1);
-        if (mVideoId.contains("=")) {
-            mVideoId = mVideoId.substring(mVideoId.indexOf("=") + 1).split("&")[0];
+        if (url.startsWith("https://www.youtube.com")) {
+            mVideoId = mVideoId.substring(mVideoId.indexOf("v=") + 2);
         }
+
+        String[] videoIds = mVideoId.split("[&|?]");
+        if (videoIds.length > 1) {
+            mVideoId = videoIds[0]; // first will be video Id
+            for (String videoId: videoIds) {
+                // Extra playlist if specified.
+                if (videoId.startsWith("list=")) {
+                    mVideoId = videoId.substring(5);
+                    break;
+                }
+            }
+        }
+        Timber.i("Youtube video Id = %s (%s)", mVideoId, url);
         return mVideoId;
     }
 

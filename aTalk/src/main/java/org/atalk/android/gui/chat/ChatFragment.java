@@ -111,7 +111,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.aTalk;
-import org.atalk.android.gui.account.AndroidLoginRenderer;
+import org.atalk.android.gui.account.AppLoginRenderer;
 import org.atalk.android.gui.chat.chatsession.ChatSessionFragment;
 import org.atalk.android.gui.chat.filetransfer.FileHistoryConversation;
 import org.atalk.android.gui.chat.filetransfer.FileHttpDownloadConversation;
@@ -224,10 +224,6 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
     public final static int MSGTYPE_OMEMO = 0x02;
     public final static int MSGTYPE_OMEMO_UT = 0x12;
     public final static int MSGTYPE_OMEMO_UA = 0x22;
-
-    public final static int MSGTYPE_OTR = 0x03;
-    public final static int MSGTYPE_OTR_UA = 0x23;
-
     public final static int MSGTYPE_MUC_NORMAL = 0x04;
 
     /**
@@ -1816,7 +1812,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             }
             else if (viewHolder.viewType == OUTGOING_MESSAGE_VIEW
                     || viewHolder.viewType == CORRECTED_MESSAGE_VIEW) {
-                AndroidLoginRenderer loginRenderer = AppGUIActivator.getLoginRenderer();
+                AppLoginRenderer loginRenderer = AppGUIActivator.getLoginRenderer();
                 avatar = loginRenderer.getLocalAvatarDrawable(mProvider);
                 status = loginRenderer.getLocalStatusDrawable();
             }
@@ -1883,7 +1879,6 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             Timber.d("Contact presence status changed: %s", sourceContact.getAddress());
 
             if ((chatPanel.getMetaContact() != null) && chatPanel.getMetaContact().containsContact(sourceContact)) {
-                mCryptoFragment.onContactPresenceStatusChanged();
                 updateStatusTask();
             }
         }
@@ -2426,9 +2421,6 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 case IMessage.ENCRYPTION_OMEMO:
                     encStateView.setImageResource(R.drawable.encryption_omemo);
                     break;
-                case IMessage.ENCRYPTION_OTR:
-                    encStateView.setImageResource(R.drawable.encryption_otr);
-                    break;
             }
         });
     }
@@ -2731,9 +2723,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
      * - User launches a chatSession
      * - User scroll the chatFragment pages
      * - User changes cryptoMode for the current chatSession
-     * - Change requests from OTR Listener due to OTR state changes
      */
-
     @Override
     public void onCryptoModeChange(int chatType) {
         chatPanel.setChatType(chatType);
@@ -2742,7 +2732,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
 
     /**
      * Change chatFragment background in response to initial chat session launch or event
-     * triggered from omemoAuthentication and OTR mode changes in cryptoChatFragment
+     * triggered from omemoAuthentication changes in cryptoChatFragment
      *
      * @param chatType Change chat fragment view background color based on chatType
      */
@@ -2760,12 +2750,6 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 case MSGTYPE_OMEMO_UA:
                 case MSGTYPE_OMEMO_UT:
                     focusView.setBackgroundResource(R.color.chat_background_omemo_ua);
-                    break;
-                case MSGTYPE_OTR:
-                    focusView.setBackgroundResource(R.color.chat_background_otr);
-                    break;
-                case MSGTYPE_OTR_UA:
-                    focusView.setBackgroundResource(R.color.chat_background_otr_ua);
                     break;
                 case MSGTYPE_MUC_NORMAL:
                     focusView.setBackgroundResource(R.color.chat_background_muc);

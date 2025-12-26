@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 
 import net.iharder.Base64;
 
-import org.jivesoftware.smack.packet.XmlElement;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -33,7 +33,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Eng Chong Meng
  */
-public class AvatarData implements XmlElement {
+public class AvatarData implements ExtensionElement {
     /**
      * The logger.
      */

@@ -43,13 +43,13 @@ import org.atalk.android.util.AppImageUtil;
 import org.atalk.service.osgi.OSGiService;
 
 /**
- * The <code>AndroidLoginRenderer</code> is the Android renderer for login events.
+ * The <code>AppLoginRenderer</code> is the Android renderer for login events.
  *
  * @author Yana Stamcheva
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AndroidLoginRenderer implements LoginRenderer {
+public class AppLoginRenderer implements LoginRenderer {
     /**
      * The <code>CallListener</code>.
      */
@@ -101,11 +101,11 @@ public class AndroidLoginRenderer implements LoginRenderer {
     private Drawable localStatusDrawable;
 
     /**
-     * Creates an instance of <code>AndroidLoginRenderer</code> by specifying the current <code>Context</code>.
+     * Creates an instance of <code>AppLoginRenderer</code> by specifying the current <code>Context</code>.
      *
      * @param defaultSecurityAuthority the security authority that will be used by this login renderer
      */
-    public AndroidLoginRenderer(SecurityAuthority defaultSecurityAuthority) {
+    public AppLoginRenderer(SecurityAuthority defaultSecurityAuthority) {
         androidCallListener = new AppCallListener();
         mSecurityAuthority = defaultSecurityAuthority;
         authorizationHandler = new AuthorizationHandlerImpl();

@@ -24,7 +24,6 @@
         <schema:screenshot rdf:resource='https://cmeng-git.github.io/atalk/img/02.conference_room.png' />
         <schema:screenshot rdf:resource='https://cmeng-git.github.io/atalk/img/03.chat_file_plain.png' />
         <schema:screenshot rdf:resource='https://cmeng-git.github.io/atalk/img/04.chat_omemo.png' />
-        <schema:screenshot rdf:resource='https://cmeng-git.github.io/atalk/img/05.chat_otr.png' />
         <schema:screenshot rdf:resource='https://cmeng-git.github.io/atalk/img/06.video_call_zrtp.png' />
         <schema:screenshot rdf:resource='https://cmeng-git.github.io/atalk/img/07.gps_location.png' />
         <schema:screenshot rdf:resource='https://cmeng-git.github.io/atalk/img/08.gps_map.png' />
@@ -637,9 +636,9 @@
         <implements>
             <xmpp:SupportedXep>
                 <xmpp:xep rdf:resource='https://xmpp.org/extensions/xep-0364.html'/>
-                <xmpp:status>partial</xmpp:status>
+                <xmpp:status>removed</xmpp:status>
                 <xmpp:version>0.3.2</xmpp:version>
-                <xmpp:since>0.1.1</xmpp:since>
+                <xmpp:since>5.0.0</xmpp:since>
             </xmpp:SupportedXep>
         </implements>
 
@@ -658,7 +657,7 @@
             <xmpp:SupportedXep>
                 <xmpp:xep rdf:resource='https://xmpp.org/extensions/xep-0384.html'/>
                 <xmpp:status>complete</xmpp:status>
-                <xmpp:version>0.9.0</xmpp:version>
+                <xmpp:version>0.3.0</xmpp:version>
                 <xmpp:since>0.7.9</xmpp:since>
             </xmpp:SupportedXep>
         </implements>

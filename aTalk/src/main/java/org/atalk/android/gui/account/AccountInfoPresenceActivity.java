@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -44,9 +45,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import com.yalantis.ucrop.UCrop;
 
@@ -258,7 +256,8 @@ public class AccountInfoPresenceActivity extends BaseActivity
             if (!protocolProvider.isRegistered()) {
                 try {
                     Thread.sleep(3000);
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     Timber.e("Account Registration State wait error: %s", protocolProvider.getRegistrationState());
                 }
                 Timber.d("Account Registration State: %s", protocolProvider.getRegistrationState());
@@ -266,7 +265,7 @@ public class AccountInfoPresenceActivity extends BaseActivity
 
             isRegistered = protocolProvider.isRegistered();
             setFieldEditState(isRegistered);
-            mApplyButton.setVisibility(isRegistered ? View.VISIBLE: View.GONE);
+            mApplyButton.setVisibility(isRegistered ? View.VISIBLE : View.GONE);
             if (!isRegistered) {
                 Toast.makeText(this, R.string.accountinfo_not_registered_message, Toast.LENGTH_LONG).show();
             }
@@ -618,34 +617,29 @@ public class AccountInfoPresenceActivity extends BaseActivity
      * details that are not supported by this plugin. In this case they will not be loaded.
      */
     private void loadDetails() {
-        try (ExecutorService sThread = Executors.newSingleThreadExecutor()) {
-            sThread.execute(() -> {
-                final Iterator<GenericDetail> allDetails = accountInfoOpSet.getAllAvailableDetails();
+        if (accountInfoOpSet != null) {
+            new DetailsLoadWorker().execute();
+        }
+    }
 
-                // ANR from FFR: Seems not need to run on UI Thread!
-                // runOnUiThread(() -> {
-                    if (allDetails != null) {
-                        while (allDetails.hasNext()) {
-                            GenericDetail detail = allDetails.next();
-                            loadDetail(detail);
-                        }
-                    }
-                    // get user avatar via XEP-0084
-                    getUserAvatarData();
-                    // Logger.getLogger("LoadDetail").warn("Load Details done!!!");
-                });
-            // });
+    /**
+     * Loads details in separate thread.
+     */
+    private class DetailsLoadWorker extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            Iterator<GenericDetail> allDetails = accountInfoOpSet.getAllAvailableDetails();
 
-            sThread.shutdown();
-            try {
-                if (!sThread.awaitTermination(1500, TimeUnit.MILLISECONDS)) {
-                    Timber.w("DetailsLoadWorker shutDown on timeout!");
-                    sThread.shutdownNow();
+            // ANR from FFR: Seems not required to run on UI Thread!
+            if (allDetails != null) {
+                while (allDetails.hasNext()) {
+                    GenericDetail detail = allDetails.next();
+                    loadDetail(detail);
                 }
-            } catch (InterruptedException ex) {
-                sThread.shutdownNow();
-                Thread.currentThread().interrupt();
             }
+            // get user avatar via XEP-0084
+            getUserAvatarData();
+            return null;
         }
     }
 
@@ -798,7 +792,8 @@ public class AccountInfoPresenceActivity extends BaseActivity
                         }
                         else
                             showAvatarChangeError();
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e) {
                         Timber.e(e, "%s", e.getMessage());
                         showAvatarChangeError();
                     }
@@ -871,7 +866,8 @@ public class AccountInfoPresenceActivity extends BaseActivity
                 try {
                     url = new URL(text);
                     newDetail = new URLDetail("URL", url);
-                } catch (MalformedURLException e1) {
+                }
+                catch (MalformedURLException e1) {
                     Timber.d("URL field has malformed URL; save as text instead.");
                     newDetail = new URLDetail("URL", text);
                 }
@@ -901,7 +897,8 @@ public class AccountInfoPresenceActivity extends BaseActivity
                     Date mDate = dateFormat.parse(text);
                     birthDate.setTime(mDate);
                     newDetail = new BirthDateDetail(birthDate);
-                } catch (ParseException e) {
+                }
+                catch (ParseException e) {
                     // Save as String value
                     newDetail = new BirthDateDetail(text);
                 }
@@ -1056,7 +1053,8 @@ public class AccountInfoPresenceActivity extends BaseActivity
         try {
             //mainScrollPane.getVerticalScrollBar().setValue(0);
             accountInfoOpSet.save();
-        } catch (OperationFailedException e1) {
+        }
+        catch (OperationFailedException e1) {
             showAvatarChangeError();
         }
     }
@@ -1091,7 +1089,8 @@ public class AccountInfoPresenceActivity extends BaseActivity
             else {
                 accountInfoOpSet.replaceDetail(oldDetail, newDetail);
             }
-        } catch (ArrayIndexOutOfBoundsException | OperationFailedException e1) {
+        }
+        catch (ArrayIndexOutOfBoundsException | OperationFailedException e1) {
             Timber.d("Failed to update account details.%s %s", mAccount.getAccountName(), e1.getMessage());
         }
     }
@@ -1140,21 +1139,21 @@ public class AccountInfoPresenceActivity extends BaseActivity
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.avatar_ChoosePicture:
-                onAvatarClicked(avatarView);
-                return true;
+        case R.id.avatar_ChoosePicture:
+            onAvatarClicked(avatarView);
+            return true;
 
-            case R.id.avatar_RemovePicture:
-                imageUrlField.setText(AVATAR_ICON_REMOVE);
-                avatarView.setImageResource(R.drawable.person_photo);
-                hasChanges = true;
-                return true;
+        case R.id.avatar_RemovePicture:
+            imageUrlField.setText(AVATAR_ICON_REMOVE);
+            avatarView.setImageResource(R.drawable.person_photo);
+            hasChanges = true;
+            return true;
 
-            case R.id.avatar_Cancel:
-                return true;
+        case R.id.avatar_Cancel:
+            return true;
 
-            default:
-                return super.onContextItemSelected(item);
+        default:
+            return super.onContextItemSelected(item);
         }
     }
 
@@ -1212,36 +1211,37 @@ public class AccountInfoPresenceActivity extends BaseActivity
             return;
 
         switch (requestCode) {
-            case UCrop.REQUEST_CROP:
-                final Uri resultUri = UCrop.getOutput(data);
-                if (resultUri == null)
-                    break;
-                try {
-                    Bitmap bmp = AppImageUtil.scaledBitmapFromContentUri(this, resultUri,
-                            AVATAR_PREFERRED_SIZE, AVATAR_PREFERRED_SIZE);
-                    if (bmp == null) {
-                        Timber.e("Failed to obtain bitmap from: %s", data);
-                        showAvatarChangeError();
-                    }
-                    else {
-                        avatarView.setImageBitmap(bmp);
-                        imageUrlField.setText(resultUri.toString());
-                        hasChanges = true;
-                    }
-                } catch (IOException e) {
-                    Timber.e(e, "%s", e.getMessage());
+        case UCrop.REQUEST_CROP:
+            final Uri resultUri = UCrop.getOutput(data);
+            if (resultUri == null)
+                break;
+            try {
+                Bitmap bmp = AppImageUtil.scaledBitmapFromContentUri(this, resultUri,
+                        AVATAR_PREFERRED_SIZE, AVATAR_PREFERRED_SIZE);
+                if (bmp == null) {
+                    Timber.e("Failed to obtain bitmap from: %s", data);
                     showAvatarChangeError();
                 }
-                break;
-
-            case UCrop.RESULT_ERROR:
-                final Throwable cropError = UCrop.getError(data);
-                String errMsg = "Image crop error: ";
-                if (cropError != null)
-                    errMsg += cropError.getMessage();
-                Timber.e("%s", errMsg);
+                else {
+                    avatarView.setImageBitmap(bmp);
+                    imageUrlField.setText(resultUri.toString());
+                    hasChanges = true;
+                }
+            }
+            catch (IOException e) {
+                Timber.e(e, "%s", e.getMessage());
                 showAvatarChangeError();
-                break;
+            }
+            break;
+
+        case UCrop.RESULT_ERROR:
+            final Throwable cropError = UCrop.getError(data);
+            String errMsg = "Image crop error: ";
+            if (cropError != null)
+                errMsg += cropError.getMessage();
+            Timber.e("%s", errMsg);
+            showAvatarChangeError();
+            break;
         }
     }
 
@@ -1270,7 +1270,8 @@ public class AccountInfoPresenceActivity extends BaseActivity
                     globalStatus.publishStatus(pps, status, false);
                 if (pps.isRegistered())
                     accountPresence.publishPresenceStatus(status, text);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Timber.e(e);
             }
         }).start();
@@ -1329,7 +1330,8 @@ public class AccountInfoPresenceActivity extends BaseActivity
                 SubmitChangesAction();
                 // too fast to be viewed by user at times - so pause for 2.0 seconds
                 Thread.sleep(2000);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 Timber.w("Progress Dialog: %s", ex.getMessage());
             }
             ProgressDialog.dismiss(pDialogId);

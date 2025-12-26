@@ -47,7 +47,6 @@
         <item name="iconCertificate">@drawable/ic_certificate_dark</item>
         <item name="iconCryptoNone">@drawable/crypto_none_dark</item>
         <item name="iconCryptoOmemo">@drawable/crypto_omemo_dark</item>
-        <item name="iconCryptoOtr">@drawable/crypto_otr_dark</item>
         <item name="iconFolder">@drawable/ic_folder_dark</item>
 
         <!--item name="android:textColor">@color/color_text_white_std</item>
@@ -114,7 +113,6 @@
         <item name="iconCertificate">@drawable/ic_certificate_light</item>
         <item name="iconCryptoNone">@drawable/crypto_none_light</item>
         <item name="iconCryptoOmemo">@drawable/crypto_omemo_light</item>
-        <item name="iconCryptoOtr">@drawable/crypto_otr_light</item>
         <item name="iconFolder">@drawable/ic_folder_light</item>
 
         <!--item name="MainGroup">@style/RosterGroupName.Light</item>

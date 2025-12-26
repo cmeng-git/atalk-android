@@ -93,10 +93,7 @@ public class AccountID {
     private static final String KEY_PGP_ID = "pgp_id";
 
     public static final String DEFAULT_PORT = "5222";
-
-    protected String avatarHash;
     protected String rosterVersion;
-    protected String otrFingerprint;
 
     protected String statusMessage = "status_Message";
     protected JSONObject mKeys = new JSONObject();
@@ -1195,14 +1192,14 @@ public class AccountID {
      * selected. Depending on the value of the <code>exactPrefixMatch</code> parameter the method will
      * (when false) or will not (when exactPrefixMatch is true) include property names that have
      * prefixes longer than the specified <code>prefix</code> param.
-     *
+     * <p>
      * Example:
      * Imagine a configuration service instance containing 2 properties only:<br>
      * <code>
      * net.java.sip.communicator.PROP1=value1<br>
      * net.java.sip.communicator.service.protocol.PROP1=value2
      * </code>
-     *
+     * <p>
      * A call to this method with a prefix="net.java.sip.communicator" and exactPrefixMatch=true
      * would only return the first property - net.java.sip.communicator.PROP1, whereas the same
      * call with exactPrefixMatch=false would return both properties as the second prefix includes
@@ -1235,14 +1232,14 @@ public class AccountID {
      * selected. Depending on the value of the <code>exactPrefixMatch</code> parameter the method will
      * (when false) or will not (when exactPrefixMatch is true) include property names that have
      * prefixes longer than the specified <code>prefix</code> param.
-     *
+     * <p>
      * Example:
      * Imagine a configuration service instance containing 2 properties only:<br>
      * <code>
      * net.java.sip.communicator.PROP1=value1<br>
      * net.java.sip.communicator.service.protocol.PROP1=value2
      * </code>
-     *
+     * <p>
      * A call to this method with a prefix="net.java.sip.communicator" and exactPrefixMatch=true
      * would only return the first property - net.java.sip.communicator.PROP1, whereas the same
      * call with exactPrefixMatch=false would return both properties as the second prefix includes
@@ -1272,14 +1269,14 @@ public class AccountID {
      * have the specified prefix. Depending on the value of the <code>exactPrefixMatch</code> parameter
      * the method will (when false) or will not (when exactPrefixMatch is true) include property
      * names that have prefixes longer than the specified <code>prefix</code> param.
-     *
+     * <p>
      * Example:
      * Imagine a configuration service instance containing 2 properties only:<br>
      * <code>
      * net.java.sip.communicator.PROP1=value1<br>
      * net.java.sip.communicator.service.protocol.PROP1=value2
      * </code>
-     *
+     * <p>
      * A call to this method with a prefix="net.java.sip.communicator" and exactPrefixMatch=true
      * would only return the first property - net.java.sip.communicator.PROP1, whereas the same call
      * with exactPrefixMatch=false would return both properties as the second prefix includes the
@@ -1490,28 +1487,6 @@ public class AccountID {
             } catch (final JSONException e) {
                 return false;
             }
-        }
-    }
-
-    public String getOtrFingerprint() {
-        if (this.otrFingerprint == null) {
-            //			try {
-            //				if (this.mOtrService == null) {
-            //					return null;
-            //				}
-            //				final PublicKey publicKey = this.mOtrService.getPublicKey();
-            //				if (publicKey == null || !(publicKey instanceof DSAPublicKey)) {
-            return null;
-            //				}
-            //				this.otrFingerprint = new OtrCryptoEngineImpl().getFingerprint(publicKey)
-            //						.toLowerCase(Locale.US);
-            //				return this.otrFingerprint;
-            //			} catch (final OtrCryptoException ignored) {
-            //				return null;
-            //			}
-        }
-        else {
-            return this.otrFingerprint;
         }
     }
 

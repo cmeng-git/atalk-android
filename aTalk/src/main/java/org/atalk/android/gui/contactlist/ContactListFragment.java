@@ -49,7 +49,7 @@ import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.Account;
 import org.atalk.android.gui.account.AccountInfoPresenceActivity;
-import org.atalk.android.gui.account.AndroidLoginRenderer;
+import org.atalk.android.gui.account.AppLoginRenderer;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chat.chatsession.ChatSessionFragment;
@@ -571,7 +571,7 @@ public class ContactListFragment extends BaseFragment
         new Thread() {
             @Override
             public void run() {
-                AndroidLoginRenderer loginRenderer = AppGUIActivator.getLoginRenderer();
+                AppLoginRenderer loginRenderer = AppGUIActivator.getLoginRenderer();
                 AuthorizationRequest request = (loginRenderer == null) ?
                         null : loginRenderer.getAuthorizationHandler().createAuthorizationRequest(contact);
                 if (request == null)

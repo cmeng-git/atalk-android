@@ -38,12 +38,14 @@ class IFramePlayerOptions private constructor(private val playerOptions: JSONObj
 
         private val builderOptions = JSONObject()
 
+        // origin must have site other than YT; else embed playback will fail
+        // addString(ORIGIN, "https://www.youtube.com")
         init {
             addInt(AUTO_PLAY, 0)
             addInt(CONTROLS, 0)
             addInt(ENABLE_JS_API, 1)
             addInt(FS, 0)
-            addString(ORIGIN, "https://www.youtube.com")
+            addString(ORIGIN, "https://atalk.sytes.net")
             addInt(REL, 0)
             addInt(SHOW_INFO, 0)
             addInt(IV_LOAD_POLICY, 3)

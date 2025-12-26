@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 
 import org.atalk.android.aTalkApp;
-import org.atalk.impl.androidresources.AndroidResourceServiceImpl;
+import org.atalk.impl.androidresources.AppResourceServiceImpl;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -211,7 +211,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                                 if (!equals(command))
                                     return;
                             }
-                            if (uri.startsWith(AndroidResourceServiceImpl.PROTOCOL)) {
+                            if (uri.startsWith(AppResourceServiceImpl.PROTOCOL)) {
                                 // setNotificationVolume();
                                 runInPlayThread(loopCondition);
                             }
@@ -532,7 +532,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
 
     private void ringToneStop()
     {
-        if (!uri.startsWith(AndroidResourceServiceImpl.PROTOCOL)) {
+        if (!uri.startsWith(AppResourceServiceImpl.PROTOCOL)) {
             if (ringtone != null) {
                 // Timber.d("Ring tone playback stopping: %s = %s", ringtone.getTitle(aTalkApp.getInstance()), uri);
                 try {

@@ -41,8 +41,6 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class ContactJabberImpl extends AbstractContact {
-    public static final String OTR_FP = "otr_fingerprints";
-    public static final String OTR_POLICY = "otr_policy";
     private static final String PGP_KEY_ID = "pgp_keyid";
 
     private static final String TTS_ENABLE = "tts_enable";
@@ -570,49 +568,6 @@ public class ContactJabberImpl extends AbstractContact {
         }
     }
 
-    public ArrayList<String> getOtrFingerprints() {
-        synchronized (this.keys) {
-            final ArrayList<String> fingerprints = new ArrayList<>();
-            try {
-                if (this.keys.has(OTR_FP)) {
-                    final JSONArray prints = this.keys.getJSONArray(OTR_FP);
-                    for (int i = 0; i < prints.length(); ++i) {
-                        final String print = prints.isNull(i) ? null : prints.getString(i);
-                        if (print != null && !print.isEmpty()) {
-                            fingerprints.add(prints.getString(i).toLowerCase(Locale.US));
-                        }
-                    }
-                }
-            } catch (final JSONException ex) {
-                ex.printStackTrace();
-            }
-            return fingerprints;
-        }
-    }
-
-    public boolean addOtrFingerprint(String print) {
-        synchronized (this.keys) {
-            if (getOtrFingerprints().contains(print)) {
-                return false;
-            }
-            try {
-                JSONArray fingerprints;
-                if (!this.keys.has(OTR_FP)) {
-                    fingerprints = new JSONArray();
-                }
-                else {
-                    fingerprints = this.keys.getJSONArray(OTR_FP);
-                }
-                fingerprints.put(print);
-                this.keys.put(OTR_FP, fingerprints);
-                return true;
-            } catch (final JSONException ex) {
-                ex.printStackTrace();
-                return false;
-            }
-        }
-    }
-
     public long getPgpKeyId() {
         synchronized (this.keys) {
             if (this.keys.has(PGP_KEY_ID)) {
@@ -700,30 +655,6 @@ public class ContactJabberImpl extends AbstractContact {
 
     public boolean getOption(int option) {
         return ((this.subscription & (1 << option)) != 0);
-    }
-
-    public boolean deleteOtrFingerprint(String fingerprint) {
-        synchronized (this.keys) {
-            boolean success = false;
-            try {
-                if (this.keys.has("otr_fingerprints")) {
-                    JSONArray newPrints = new JSONArray();
-                    JSONArray oldPrints = this.keys.getJSONArray("otr_fingerprints");
-                    for (int i = 0; i < oldPrints.length(); ++i) {
-                        if (!oldPrints.getString(i).equals(fingerprint)) {
-                            newPrints.put(oldPrints.getString(i));
-                        }
-                        else {
-                            success = true;
-                        }
-                    }
-                    this.keys.put("otr_fingerprints", newPrints);
-                }
-                return success;
-            } catch (JSONException e) {
-                return false;
-            }
-        }
     }
 
     public final class Options {

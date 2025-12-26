@@ -37,7 +37,7 @@ import org.atalk.android.R;
 import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.actionbar.ActionBarToggleFragment;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
-import org.atalk.impl.androidresources.AndroidResourceServiceImpl;
+import org.atalk.impl.androidresources.AppResourceServiceImpl;
 import org.atalk.service.resources.ResourceManagementService;
 
 /**
@@ -160,7 +160,7 @@ public class NotificationDetails extends BaseActivity
             soundDefaultUri = Uri.parse(soundFile);
 
             String descriptor = soundHandler.getDescriptor();
-            if (descriptor.startsWith(AndroidResourceServiceImpl.PROTOCOL)) {
+            if (descriptor.startsWith(AppResourceServiceImpl.PROTOCOL)) {
                 soundDescriptorUri = soundDefaultUri;
                 ringToneTitle = eventTitle;
             }

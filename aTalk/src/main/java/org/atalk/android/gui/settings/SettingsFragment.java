@@ -242,6 +242,7 @@ public class SettingsFragment extends BasePreferenceFragment
         CharSequence[] EMPTY_CHAR_SEQUENCE_ARRAY = new CharSequence[0];
         final ListPreference pLocale = findPreference(P_KEY_LOCALE);
 
+        assert pLocale != null;
         List<CharSequence> entryVector = new ArrayList<>(Arrays.asList(pLocale.getEntries()));
         List<CharSequence> entryValueVector = new ArrayList<>(Arrays.asList(pLocale.getEntryValues()));
         String[] supportedLanguages = getResources().getStringArray(R.array.supported_languages);

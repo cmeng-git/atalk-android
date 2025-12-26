@@ -7,8 +7,21 @@
 -->
 
 <changelog>
-    <release version="4.6.1 (11/20/2025)" versioncode="406010">
+    <release version="5.0.0 (12/27/2025)" versioncode="500000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Remove feature support for XEP-0364: Current Off-the-Record Messaging Usage partial implementation</change>
+        <change>Set YT parameter 'origin' to other than YT site i.e.'https://www.youtube.com'; else embed video player has error</change>
+        <change>Fix incorrect extraction of youtube video Id</change>
+        <change>Support YT playback of playlist</change>
+        <change>Display new changes since version installed on device to user in apk update dialog prompt</change>
+        <change>Fix exception error in MamVersion extraction</change>
+        <change>Fix AvatarData incorrect cast exception</change>
+        <change>Revert to use AsyncTask from ExecutorService for AccountInfoPresenceActivity; unknown ANR from field: AccountInfoPresenceActivity$$ExternalSyntheticThrowIAE2.m (D8$$SyntheticClass)</change>
+        <change>Change aTalk.doap file to reflect actual version i.e. 0.3 implemented for XEP-0384: OMEMO Encryption</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="4.6.1 (11/20/2025)" versioncode="406010">
         <change>onCarbonCopyReceived: Skip handling of empty msgBody for all incoming message, in case Jid is null from FFR</change>
         <change>Enable an important debug message i.e. 'The provider state changed...' to be printed in release version</change>
         <change>Bug fixes and enhancements</change>

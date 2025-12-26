@@ -424,10 +424,6 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
             case ChatFragment.MSGTYPE_OMEMO:
                 iconId = R.drawable.encryption_omemo;
                 break;
-            case ChatFragment.MSGTYPE_OTR:
-            case ChatFragment.MSGTYPE_OTR_UA:
-                iconId = R.drawable.encryption_otr;
-                break;
             case ChatFragment.MSGTYPE_NORMAL:
             case ChatFragment.MSGTYPE_MUC_NORMAL:
             default:
@@ -493,7 +489,7 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt) {
-        BaseActivity.uiHandler.post(() -> chatSessionAdapter.notifyDataSetChanged());
+        runOnUiThread(() -> chatSessionAdapter.notifyDataSetChanged());
     }
 
     /**
@@ -501,7 +497,7 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
      */
     @Override
     public void contentChanged(ChatRoomListChangeEvent evt) {
-        BaseActivity.uiHandler.post(() -> chatSessionAdapter.notifyDataSetChanged());
+        runOnUiThread(() -> chatSessionAdapter.notifyDataSetChanged());
     }
 
     @Override

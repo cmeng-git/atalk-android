@@ -265,10 +265,6 @@
             </intent-filter>
         </activity>
 
-        <!-- OTR activities -->
-        <activity
-            android:name="org.atalk.crypto.otr.OtrAuthenticateDialog" />
-
         <activity
             android:name="org.atalk.android.gui.chat.aTalkProtocolReceiver"
             android:exported="true"

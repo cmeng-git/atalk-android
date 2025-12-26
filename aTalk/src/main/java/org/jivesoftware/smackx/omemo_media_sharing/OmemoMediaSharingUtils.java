@@ -31,6 +31,8 @@ import org.jivesoftware.smack.util.RandomUtil;
 /**
  * Utility code for XEP-0454: OMEMO Media Sharing.
  *
+ * @author Paul Schaub
+ * @author Eng Chong Meng
  * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-0454: OMEMO Media Sharing</a>
  */
 public class OmemoMediaSharingUtils {

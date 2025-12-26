@@ -15,7 +15,7 @@ import org.osgi.framework.BundleContext;
  *
  * @author Pawel Domas
  */
-public class AndroidResourceManagementActivator extends SimpleServiceActivator<AndroidResourceServiceImpl> {
+public class AndroidResourceManagementActivator extends SimpleServiceActivator<AppResourceServiceImpl> {
     /**
      * The osgi bundle context.
      */
@@ -55,7 +55,7 @@ public class AndroidResourceManagementActivator extends SimpleServiceActivator<A
      * {@inheritDoc}
      */
     @Override
-    protected AndroidResourceServiceImpl createServiceImpl() {
-        return new AndroidResourceServiceImpl();
+    protected AppResourceServiceImpl createServiceImpl() {
+        return new AppResourceServiceImpl();
     }
 }

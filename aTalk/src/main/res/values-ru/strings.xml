@@ -932,70 +932,6 @@
     <!-- DTLS-SRTP Securing -->
     <string name="media_security_encryption_ended">Шифрование звонка закончилось: %1$s</string>
 
-    <!-- OTR plugin -->
-    <string name="otr_menu_authenticate_buddy">Аутентификация приятеля</string>
-    <string name="plugin_otr_menu_CB_AUTO">Автоматически запускать личные сообщения</string>
-    <string name="plugin_otr_menu_CB_ENABLE">Включить личный обмен сообщениями</string>
-    <string name="plugin_otr_menu_CB_REQUIRE">Требовать личные сообщения</string>
-    <string name="plugin_otr_menu_CB_RESET">Сброс</string>
-    <string name="plugin_otr_menu_CRYPTO_AUTHETICATED">Криптография: Аутентифицировано</string>
-    <string name="plugin_otr_menu_CRYPTO_Finish">Криптография: Закончено</string>
-    <string name="plugin_otr_menu_CRYPTO_NON_AUTHETICATED">Криптография: Неаутентифицировано</string>
-    <string name="plugin_otr_menu_END_OTR">Завершить приватный разговор</string>
-    <string name="plugin_otr_menu_OTR_AUTHETICATED">OTR: Аутентифицировано</string>
-    <string name="plugin_otr_menu_OTR_Finish">OTR: Завершено</string>
-    <string name="plugin_otr_menu_OTR_HANDSHAKE">OTR: Согласование</string>
-    <string name="plugin_otr_menu_OTR_NON_AUTHETICATED">OTR: Неаутентифицированно</string>
-    <string name="plugin_otr_menu_OTR_PLAINTTEXT">Обычный текст</string>
-    <string name="plugin_otr_menu_OTR_TIMEOUT">OTR: Таймаут согласования</string>
-    <string name="plugin_otr_menu_OTR_TOOLTIP">Шифровать чаты с OTR</string>
-    <string name="plugin_otr_menu_REFRESH_OTR">Обновить приватный разговор</string>
-    <string name="plugin_otr_menu_START_OTR">Начать приватный разговор</string>
-    <string name="plugin_otr_menu_TITLE">Защищённый чат</string>
-    <string name="plugin_otr_menu_WHATS_THIS">Что это такое</string>
-    <string name="plugin_otr_authbuddydialog_AUTHENTICATION_INFO">Аутентификация контакта помогает убедитесь, что человек, с которым вы разговариваете, является тем, кем он или она является. Чтобы проверить отпечаток ключа, обратитесь к своему собеседнику через какой-либо другой аутентифицированный канал, например, телефон или адрес электронной почты, подписанный GPG. Каждый из вас должен указать ваш отпечаток на Другие. Если все соответствует, вы должны указать в следующем диалоговом окне, что *Я* проверил отпечаток.</string>
-    <string name="plugin_otr_authbuddydialog_CANCEL">Отменить</string>
-    <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Введите отпечаток, полученный от %1$s.</string>
-    <string name="plugin_otr_authbuddydialog_HELP">Справка</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE">У меня есть</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">У меня нет</string>
-    <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Мой отпечаток для %1$s: %2$s</string>
-    <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Отдалённый отпечаток для %1$s: %2$s</string>
-    <string name="plugin_otr_authbuddydialog_TITLE">Аутентификация друзей</string>
-    <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">подтвердил, что это действительно правильный отпечаток для %1$s.</string>
-    <string name="plugin_otr_configform_CB_AUTO">Автоматически запускать личные сообщения</string>
-    <string name="plugin_otr_configform_CB_ENABLE">Включить личный обмен сообщениями</string>
-    <string name="plugin_otr_configform_CB_REQUIRE">Требовать личные сообщения</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_CONTACT">Контакт</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_VERIFIED_STATUS">Подтверждён</string>
-    <string name="plugin_otr_configform_FINGERPRINT">Отпечаток</string>
-    <string name="plugin_otr_configform_GENERATE">Сгенерировать</string>
-    <string name="plugin_otr_configform_KNOWN_FINGERPRINTS">Известные отпечатки</string>
-    <string name="plugin_otr_configform_MY_PRIVATE_KEYS">Мои личные ключи</string>
-    <string name="plugin_otr_configform_REGENERATE">Сгенерировать</string>
-    <string name="plugin_otr_configform_VERIFY_STATUS">Проверено: %1$s</string>
-    <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight:bold;"&gt;%1$s пытается инициировать зашифрованный
-        &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging"&gt;
-        Отключить запись и&lt;/a&gt;с вами. Однако ваше программное обеспечение не поддерживает
-        Off-The-Record. Для получения дополнительной информации см.&lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging"&gt;
-        https://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a&gt;&lt;/span&gt;</string>
-    <string name="plugin_otr_activator_historyoff">%1$s НЕ записывает этот разговор. Вы можете &lt;a href=\"atalk://%2$s/%3$s\"&gt;активировать историю чатов здесь &lt;/a&gt;.</string>
-    <string name="plugin_otr_activator_historyon">%1$s записывает этот разговор на вашем устройстве. Вы можете &lt;a href=\"atalk://%2$s/%3$s\"&gt;отключить историю чата здесь &lt;/a&gt;.</string>
-    <string name="plugin_otr_activator_msgfromanotherinstance">Получено сообщение из других экземпляров разговора OTR с обнаруженными %1$s.</string>
-    <string name="plugin_otr_activator_multipleinstancesdetected">Обнаружено несколько частных экземпляров разговора OTR с обнаруженными %1$s.</string>
-    <string name="plugin_otr_activator_requireencryption">Ваше сообщение не отправлено. Частная передача сообщений требуется.</string>
-    <string name="plugin_otr_activator_sessionfinished">%1$s закончил вашу личную беседу OTR с вами; вы должны сделать то же самое.</string>
-    <string name="plugin_otr_activator_sessionfinishederror">Ваше сообщение не отправлено. Завершите свой приватный разговор OTR с помощью %1$s.</string>
-    <string name="plugin_otr_activator_sessionlost">Закрыт закрытый сеанс OTR с %1$s.</string>
-    <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b&gt;Неверный &lt;/b&gt;закрытый разговор с %1$s.</string>
-    <string name="plugin_otr_activator_sessionstared">Запущен частный сеанс OTR с %1$s.</string>
-    <string name="plugin_otr_activator_smpaborted">%1$s прервал процесс аутентификации OTR.</string>
-    <string name="plugin_otr_activator_smperror">Произошла ошибка в процессе аутентификации OTR.</string>
-    <string name="plugin_otr_activator_unencryptedmsgreceived">Сообщение было получено незашифрованным.</string>
-    <string name="plugin_otr_activator_unreadablemsgreceived">%1$s отправил вам нечитаемое зашифрованное сообщение.</string>
-    <string name="plugin_otr_activator_unreadablemsgreply">Вы отправили %1$s нечитаемое зашифрованное сообщение. Завершите свой приватный разговор %2$s или обновите его.</string>
-    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s ещё не завершена. Вы должны <a href="atalk://%2$s/%3$s?%4$s"><b>authenticate </b></a>этот приятель.</string>
-
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">Обычный текст</string>
     <string name="omemo_authbuddy_authenticate_buddy">Аутентифицировать друзей</string>
@@ -1148,6 +1084,7 @@
     <string name="call_encryption">Настройки шифрования вызовов</string>
     <string name="video_encoding">Кодирование видео</string>
     <string name="video_enc_global_override_summary">Переопределить глобальные определённые видеоформаты для этой учётной записи</string>
+
     <!-- Jabber preferences -->
     <string name="jbr_auto_sign_in">Подключиться при запуске</string>
     <string name="jbr_auto_stun_discovery">Автоматическое открытие серверов STUN/TURN</string>
@@ -1389,21 +1326,6 @@
     <string name="settings_messaging_security_summary">Настройки безопасности шифрования сообщений</string>
     <string name="settings_messaging_security">Безопасность сообщений</string>
 
-    <!-- Messaging security options -->
-    <string name="otr_messaging_security">Безопасность обмена сообщениями OTR</string>
-    <!-- Crypto Messaging Enable -->
-    <string name="settings_CRYPTO_ENABLE_OFF">Нет шифрования сообщений</string>
-    <string name="settings_CRYPTO_ENABLE_ON">Включено шифрование сообщений</string>
-    <string name="settings_CRYPTO_ENABLE_TITLE">Частные сообщения</string>
-    <!-- Crypto Messaging Auto -->
-    <string name="settings_CRYPTO_AUTO_OFF">Запустить сеанс шифрования сообщений вручную</string>
-    <string name="settings_CRTOTI_AUTO_ON">Автоматически запускать сессию шифрования сообщений</string>
-    <string name="settings_CRYPTO_AUTO_TITLE">Автоматическое инициирование личных сообщений</string>
-    <!-- Crypto Messaging Required -->
-    <string name="settings_CRYPTO_REQUIRE_OFF">Защищённый обмен сообщениями будет использоваться, если поддерживается</string>
-    <string name="settings_CRYPTO_REQUIRE_ON">Принимаются только защищённые сессии</string>
-    <string name="settings_CRYPTO_REQUIRE_TITLE">Требовать личные сообщения</string>
-
     <!-- OMEMO security category-->
     <string name="omemo_messaging_security">Безопасность сообщений OMEMO</string>
     <!-- OMEMO device screen -->
@@ -1427,6 +1349,7 @@
     <!-- Crypto fingerprints screen -->
     <string name="settings_fingerprint_summary">Управление всеми известными отпечатками устройств\nвет: бирюзовый=собственное устройство; серый=неактивный</string>
     <string name="settings_fingerprint_title">Отпечаток криптографических устройств</string>
+
     <!-- Crypto contextMenu, dialog, message and toast -->
     <string name="crypto_key_generate_prompt">Вы хотите создать новый ключ для %1$s%2$s</string>
     <string name="crypto_key_generate_title">Генерация секретного ключа</string>
@@ -1442,8 +1365,6 @@
     <string name="crypto_menu_fingerprint_distrust">Недопустимый отпечаток</string>
     <string name="crypto_menu_fingerprint_trust">Доверять отпечатку</string>
 
-    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">Запрос сеанса OTR от вашего собеседника был отклонён во время сеанса OMEMO. Вы можете включить сеанс OTR вручную!</string>
-    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">Ваш запрос сеанса OTR был отклонён во время сеанса OMEMO!</string>
     <string name="crypto_msg_omemo_session_setup_failed">Настройка сеанса OMEMO не удалась! %1$s</string>
     <string name="crypto_msg_omemo_session_untrusted">Найден доверенный приятель ZERO для получения сообщений OMEMO!</string>
     <string name="crypto_msg_omemo_session_unverified">Отправка сообщений OMEMO некоторым неизвестным друзьям с непроверенными отпечатками ключей!</string>
@@ -1481,13 +1402,6 @@
     <string name="silk_assume_pl">Всегда предполагать потерю пакетов</string>
     <string name="silk_fec_sat">Порог активности речи (0–1)</string>
     <string name="silk_fec_advertise">Рекламировать поддержку FEC в SDP</string>
-
-    <!-- SIP config -->
-    <string name="plugin_generalconfig_SIP_CLIENT_PORT">Порт клиента SIP</string>
-    <string name="plugin_generalconfig_SIP_CLIENT_SECURE_PORT">безопасный порт клиента SIP</string>
-    <string name="plugin_generalconfig_SIP_SSL_PROTOCOLS">Включённые протоколы TLS</string>
-    <string name="service_gui_settings_SIP">SIP</string>
-    <string name="service_gui_settings_SIP_SUMMARY">Настройка параметров протокола SIP</string>
 
     <!-- Android Battery Usage Optimization -->
     <string name="battery_optimizations">Оптимизация аккумулятора</string>

@@ -22,7 +22,7 @@ public class EncAPI {
     /**
      * Read control structure from encoder.
      *
-     * @param encState State Vecotr.
+     * @param encState State Vector.
      * @param encStatus Control Structure.
      *
      * @return
@@ -37,11 +37,8 @@ public class EncAPI {
 
         encStatus.API_sampleRate = psEnc.sCmn.API_fs_Hz;
         encStatus.maxInternalSampleRate = SKP_SMULBB(psEnc.sCmn.maxInternal_fs_kHz, 1000);
-        encStatus.packetSize = (psEnc.sCmn.API_fs_Hz * psEnc.sCmn.PacketSize_ms / 1000); /*
-         * convert
-         * samples
-         * -> ms
-         */
+        // convert samples -> ms
+        encStatus.packetSize = (psEnc.sCmn.API_fs_Hz * psEnc.sCmn.PacketSize_ms / 1000);
         encStatus.bitRate = psEnc.sCmn.TargetRate_bps;
         encStatus.packetLossPercentage = psEnc.sCmn.PacketLoss_perc;
         encStatus.complexity = psEnc.sCmn.Complexity;

@@ -35,7 +35,7 @@ import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.aTalk;
-import org.atalk.android.gui.account.AndroidLoginRenderer;
+import org.atalk.android.gui.account.AppLoginRenderer;
 import org.atalk.android.gui.menu.GlobalStatusMenu;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.gui.widgets.ActionMenuItem;
@@ -89,7 +89,7 @@ public class ActionBarStatusFragment extends BaseFragment
     private AppCompatActivity mActivity;
 
     private static GlobalDisplayDetailsService displayDetailsService;
-    private static AndroidLoginRenderer loginRenderer;
+    private static AppLoginRenderer loginRenderer;
 
     /**
      * {@inheritDoc}

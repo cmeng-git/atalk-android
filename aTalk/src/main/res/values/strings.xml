@@ -945,75 +945,6 @@
     <!-- DTLS-SRTP Securing -->
     <string name="media_security_encryption_ended">The call encryption has ended: %1$s</string>
 
-    <!-- OTR plugin -->
-    <string name="otr_menu_authenticate_buddy">Authenticate buddy</string>
-    <string name="plugin_otr_menu_CB_AUTO">Automatically initiate private messaging</string>
-    <string name="plugin_otr_menu_CB_ENABLE">Enable private messaging</string>
-    <string name="plugin_otr_menu_CB_REQUIRE">Require private messaging</string>
-    <string name="plugin_otr_menu_CB_RESET">Reset</string>
-    <string name="plugin_otr_menu_CRYPTO_AUTHETICATED">CRYPTO Authenticated</string>
-    <string name="plugin_otr_menu_CRYPTO_Finish">CRYPTO Finished</string>
-    <string name="plugin_otr_menu_CRYPTO_NON_AUTHETICATED">CRYPTO Non-Authenticated</string>
-    <string name="plugin_otr_menu_END_OTR">End private conversation</string>
-    <string name="plugin_otr_menu_OTR_AUTHETICATED">OTR Authenticated</string>
-    <string name="plugin_otr_menu_OTR_Finish">OTR Ended</string>
-    <string name="plugin_otr_menu_OTR_HANDSHAKE">OTR Handshake</string>
-    <string name="plugin_otr_menu_OTR_NON_AUTHETICATED">OTR Non-Authenticated</string>
-    <string name="plugin_otr_menu_OTR_PLAINTTEXT">Plain Text</string>
-    <string name="plugin_otr_menu_OTR_TIMEOUT">OTR Handshake_TimeOut</string>
-    <string name="plugin_otr_menu_OTR_TOOLTIP">Encrypt chats with OTR</string>
-    <string name="plugin_otr_menu_REFRESH_OTR">Refresh private conversation</string>
-    <string name="plugin_otr_menu_START_OTR">Start private conversation</string>
-    <string name="plugin_otr_menu_TITLE">Secure chat</string>
-    <string name="plugin_otr_menu_WHATS_THIS">What\'s this</string>
-
-    <string name="plugin_otr_authbuddydialog_AUTHENTICATION_INFO">Authenticating a buddy helps to
-    ensure that the person you are talking to is who he or she claims to be. To verify the fingerprint, contact your buddy via
-    some other authenticated channel, such as the telephone or GPG-signed email. Each of you should tell your fingerprint to the
-    other. If everything matches up, you should indicate in the following dialog that *I have* verified the fingerprint.</string>
-    <string name="plugin_otr_authbuddydialog_CANCEL">Cancel</string>
-    <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Please enter the fingerprint you received from %1$s.</string>
-    <string name="plugin_otr_authbuddydialog_HELP">Help</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE">I have</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">I have not</string>
-    <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint for %1$s: %2$s</string>
-    <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Remote fingerprint for %1$s: %2$s</string>
-    <string name="plugin_otr_authbuddydialog_TITLE">Authenticate Buddy</string>
-    <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">verified that this is in fact the correct fingerprint for %1$s.</string>
-    <string name="plugin_otr_configform_CB_AUTO">Automatically initiate private messaging</string>
-    <string name="plugin_otr_configform_CB_ENABLE">Enable private messaging</string>
-    <string name="plugin_otr_configform_CB_REQUIRE">Require private messaging</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_CONTACT">Contact</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_VERIFIED_STATUS">Verified</string>
-    <string name="plugin_otr_configform_FINGERPRINT">Fingerprint</string>
-    <string name="plugin_otr_configform_GENERATE">Generate</string>
-    <string name="plugin_otr_configform_KNOWN_FINGERPRINTS">Known Fingerprints</string>
-    <string name="plugin_otr_configform_MY_PRIVATE_KEYS">My Private Keys</string>
-    <string name="plugin_otr_configform_REGENERATE">Re-generate</string>
-    <string name="plugin_otr_configform_VERIFY_STATUS">Verified: %1$s</string>
-
-    <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;">%1$s is trying to initiate an encrypted
-        &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
-        Off-The-Record conversation&lt;/a>with you. However your software does not support
-        Off-The-Record messaging. For more information see &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
-        https://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
-    <string name="plugin_otr_activator_historyoff">%1$s is NOT recording this conversation. You can &lt;a href=\"atalk://%2$s/%3$s\">activate chat history here&lt;/a>.</string>
-    <string name="plugin_otr_activator_historyon">%1$s is recording this conversation on your device. You can &lt;a href=\"atalk://%2$s/%3$s\">turn off chat history here&lt;/a>.</string>
-    <string name="plugin_otr_activator_msgfromanotherinstance">Received message from another OTR conversation instances with %1$s detected.</string>
-    <string name="plugin_otr_activator_multipleinstancesdetected">Multiple private OTR conversation instances with %1$s detected.</string>
-    <string name="plugin_otr_activator_requireencryption">Your message was not sent. Private messaging is required.</string>
-    <string name="plugin_otr_activator_sessionfinished">%1$s has ended his/her private OTR conversation with you; you should do the same.</string>
-    <string name="plugin_otr_activator_sessionfinishederror">Your message was not sent. Please end your private OTR conversation with %1$s.</string>
-    <string name="plugin_otr_activator_sessionlost">Private OTR conversation with %1$s has ended.</string>
-    <string name="plugin_otr_activator_sessionstared">Private OTR conversation with %1$s has started.</string>
-    <string name="plugin_otr_activator_smpaborted">%1$s has aborted the OTR authentication process.</string>
-    <string name="plugin_otr_activator_smperror">An error occurred in the OTR authentication process.</string>
-    <string name="plugin_otr_activator_unencryptedmsgreceived">The message was received unencrypted.</string>
-    <string name="plugin_otr_activator_unreadablemsgreceived">%1$s sent you an unreadable encrypted message.</string>
-    <string name="plugin_otr_activator_unreadablemsgreply">You sent %1$s an unreadable encrypted message. Please end your private conversation with %2$s or refresh it.</string>
-    <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>Unverified&lt;/b> private conversation with %1$s started.</string>
-    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s has not been authenticated yet. You should &lt;a href=\"atalk://%2$s/%3$s?%4$s\">&lt;b>authenticate&lt;/b>&lt;/a> this buddy.</string>
-
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">Plain Text</string>
     <string name="omemo_authbuddy_authenticate_buddy">Authenticate Buddy</string>
@@ -1408,21 +1339,6 @@
     <string name="settings_messaging_security_summary">Message encryption security settings</string>
     <string name="settings_messaging_security">Messaging Security</string>
 
-    <!-- Messaging security options -->
-    <string name="otr_messaging_security">OTR Messaging Security</string>
-    <!-- Crypto Messaging Enable -->
-    <string name="settings_CRYPTO_ENABLE_OFF">No messaging encryption</string>
-    <string name="settings_CRYPTO_ENABLE_ON">Messaging encryption enabled</string>
-    <string name="settings_CRYPTO_ENABLE_TITLE">Private messaging</string>
-    <!-- Crypto Messaging Auto -->
-    <string name="settings_CRYPTO_AUTO_OFF">Start message  encryption session manually</string>
-    <string name="settings_CRTOTI_AUTO_ON">Start message encryption session automatically</string>
-    <string name="settings_CRYPTO_AUTO_TITLE">Auto initiate private messaging</string>
-    <!-- Crypto Messaging Required -->
-    <string name="settings_CRYPTO_REQUIRE_OFF">Secure messaging will be used if supported</string>
-    <string name="settings_CRYPTO_REQUIRE_ON">Only secure sessions will be accepted</string>
-    <string name="settings_CRYPTO_REQUIRE_TITLE">Require private messaging</string>
-
     <!-- OMEMO security category-->
     <string name="omemo_messaging_security">OMEMO Messaging Security</string>
     <!-- OMEMO device screen -->
@@ -1462,13 +1378,12 @@
     <string name="crypto_menu_fingerprint_distrust">Distrust Fingerprint</string>
     <string name="crypto_menu_fingerprint_trust">Trust Fingerprint</string>
 
-    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">OTR session request from your buddy has been denied while in OMEMO session. You may enable OTR session manually!</string>
-    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">Your OTR session request has been denied while omemo session is in progress!</string>
     <string name="crypto_msg_omemo_session_setup_failed">OMEMO session setup not successful! %1$s</string>
     <string name="crypto_msg_omemo_session_untrusted">Found ZERO trusted buddy to receive OMEMO messages!</string>
     <string name="crypto_msg_omemo_session_unverified">Sending OMEMO messages to some unknown buddies with unverified fingerprints!</string>
     <string name="crypto_msg_omemo_session_unverified_untrusted">MultiUserChat with some buddies untrusted or with unverified fingerprints!</string>
     <string name="crypto_msg_omemo_session_verified">*** All buddies have been authenticated! ***</string>
+
     <string name="crypto_fingerprint_status">Verified: %1$s</string>
     <string name="crypto_no_key_present">No key present</string>
     <string name="crypto_fingerprint_copy">Fingerprint copied to clipboard!</string>
@@ -1501,13 +1416,6 @@
     <string name="silk_assume_pl">Always assume packet loss</string>
     <string name="silk_fec_sat">Speech activity threshold (0–1)</string>
     <string name="silk_fec_advertise">Advertise FEC support in SDP</string>
-
-    <!-- SIP config -->
-    <string name="plugin_generalconfig_SIP_CLIENT_PORT">SIP client port</string>
-    <string name="plugin_generalconfig_SIP_CLIENT_SECURE_PORT">SIP client secure port</string>
-    <string name="plugin_generalconfig_SIP_SSL_PROTOCOLS">Enabled SSL/TLS protocols</string>
-    <string name="service_gui_settings_SIP">SIP</string>
-    <string name="service_gui_settings_SIP_SUMMARY">Configure SIP protocol settings</string>
 
     <!-- Android Battery Usage Optimization -->
     <string name="battery_optimizations">Battery Optimization</string>

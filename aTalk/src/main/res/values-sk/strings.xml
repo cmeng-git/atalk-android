@@ -945,75 +945,6 @@
     <!-- DTLS-SRTP Securing -->
     <string name="media_security_encryption_ended">Šifrovanie hovorov skončilo: %1$s</string>
 
-    <!-- OTR plugin -->
-    <string name="otr_menu_authenticate_buddy">Autentifikácia kamaráta</string>
-    <string name="plugin_otr_menu_CB_AUTO">Automaticky iniciovať súkromné správy</string>
-    <string name="plugin_otr_menu_CB_ENABLE">Povoliť súkromné správy</string>
-    <string name="plugin_otr_menu_CB_REQUIRE">Vyžadovať súkromné správy</string>
-    <string name="plugin_otr_menu_CB_RESET">Reset</string>
-    <string name="plugin_otr_menu_CRYPTO_AUTHETICATED">CRYPTO overené</string>
-    <string name="plugin_otr_menu_CRYPTO_Finish">CRYPTO je hotové</string>
-    <string name="plugin_otr_menu_CRYPTO_NON_AUTHETICATED">CRYPTO neautentizované</string>
-    <string name="plugin_otr_menu_END_OTR">Ukončenie súkromnej konverzácie</string>
-    <string name="plugin_otr_menu_OTR_AUTHETICATED">OTR Overené</string>
-    <string name="plugin_otr_menu_OTR_Finish">OTR skončilo</string>
-    <string name="plugin_otr_menu_OTR_HANDSHAKE">OTR Handshake</string>
-    <string name="plugin_otr_menu_OTR_NON_AUTHETICATED">OTR neautentizované</string>
-    <string name="plugin_otr_menu_OTR_PLAINTTEXT">Obyčajný text</string>
-    <string name="plugin_otr_menu_OTR_TIMEOUT">OTR Handshake_TimeOut</string>
-    <string name="plugin_otr_menu_OTR_TOOLTIP">Zašifrujte chaty pomocou OTR</string>
-    <string name="plugin_otr_menu_REFRESH_OTR">Obnovte súkromnú konverzáciu</string>
-    <string name="plugin_otr_menu_START_OTR">Začať súkromnú konverzáciu</string>
-    <string name="plugin_otr_menu_TITLE">Zabezpečený chat</string>
-    <string name="plugin_otr_menu_WHATS_THIS">Čo je toto</string>
-
-    <string name="plugin_otr_authbuddydialog_AUTHENTICATION_INFO">Overenie kamaráta pomáha
-    uistite sa, že osoba, s ktorou hovoríte, je tým, s kým prehlasuje. Ak chcete overiť odtlačok prsta, kontaktujte svojho priateľa prostredníctvom
-    nejaký iný overený kanál, napríklad telefón alebo e-mail podpísaný GPG. Každý z vás by mal oznámiť svoj odtlačok prsta
-    ostatní. Ak sa všetko zhoduje, v nasledujúcom dialógovom okne by ste mali uviesť, že * overil som odtlačok prsta.</string>
-    <string name="plugin_otr_authbuddydialog_CANCEL">Zrušiť</string>
-    <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Zadajte odtlačok prsta, ktorý ste dostali od %1$s.</string>
-    <string name="plugin_otr_authbuddydialog_HELP">Pomoc</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE">mám</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">nemám</string>
-    <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Môj odtlačok prsta za %1$s:%2$s</string>
-    <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Vzdialený odtlačok prsta pre %1$s:%2$s</string>
-    <string name="plugin_otr_authbuddydialog_TITLE">Autentifikácia Buddy</string>
-    <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">overil, že toto je v skutočnosti správny odtlačok prsta pre %1$s.</string>
-    <string name="plugin_otr_configform_CB_AUTO">Automaticky iniciovať súkromné správy</string>
-    <string name="plugin_otr_configform_CB_ENABLE">Povoliť súkromné správy</string>
-    <string name="plugin_otr_configform_CB_REQUIRE">Vyžadovať súkromné správy</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_CONTACT">Kontakt</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_VERIFIED_STATUS">Verified</string>
-    <string name="plugin_otr_configform_FINGERPRINT">odtlačok</string>
-    <string name="plugin_otr_configform_GENERATE">generovať</string>
-    <string name="plugin_otr_configform_KNOWN_FINGERPRINTS">Známe odtlačky prstov</string>
-    <string name="plugin_otr_configform_MY_PRIVATE_KEYS">Moje súkromné kľúče</string>
-    <string name="plugin_otr_configform_REGENERATE">znovu generovať</string>
-    <string name="plugin_otr_configform_VERIFY_STATUS">Overené: %1$s</string>
-
-    <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;">%1$s is trying to initiate an encrypted
-        &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
-        Off-The-Record conversation&lt;/a>with you. However your software does not support
-        Off-The-Record messaging. For more information see &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
-        https://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
-    <string name="plugin_otr_activator_historyoff">%1$s is NOT recording this conversation. You can &lt;a href=\"atalk://%2$s/%3$s\">activate chat history here&lt;/a>.</string>
-    <string name="plugin_otr_activator_historyon">%1$s is recording this conversation on your device. You can &lt;a href=\"atalk://%2$s/%3$s\">turn off chat history here&lt;/a>.</string>
-    <string name="plugin_otr_activator_msgfromanotherinstance">Prijatá správa z iných prípadov konverzácie OTR s detekovaným %1$s.</string>
-    <string name="plugin_otr_activator_multipleinstancesdetected">Viaceré súkromné prípady konverzácie OTR s detekovaným %1$s.</string>
-    <string name="plugin_otr_activator_requireencryption">Vaša správa nebola odoslaná. Vyžaduje sa súkromné zasielanie správ.</string>
-    <string name="plugin_otr_activator_sessionfinished">%1$s ukončil svoju súkromnú konverzáciu OTR s vami; mali by ste urobiť to isté.</string>
-    <string name="plugin_otr_activator_sessionfinishederror">Vaša správa nebola odoslaná. Ukončite svoju súkromnú konverzáciu OTR s %1$s.</string>
-    <string name="plugin_otr_activator_sessionlost">Súkromná konverzácia OTR s používateľom %1$s sa skončila.</string>
-    <string name="plugin_otr_activator_sessionstared">Začala sa súkromná konverzácia OTR s používateľom %1$s.</string>
-    <string name="plugin_otr_activator_smpaborted">%1$s prerušil proces autentifikácie OTR.</string>
-    <string name="plugin_otr_activator_smperror">V procese autentifikácie OTR sa vyskytla chyba.</string>
-    <string name="plugin_otr_activator_unencryptedmsgreceived">Správa bola prijatá nezašifrovaná.</string>
-    <string name="plugin_otr_activator_unreadablemsgreceived">Používateľ %1$s vám poslal nečitateľnú šifrovanú správu.</string>
-    <string name="plugin_otr_activator_unreadablemsgreply">Odoslali ste %1$s nečitateľnú šifrovanú správu. Ukončite svoju súkromnú konverzáciu pomocou aplikácie %2$s alebo ju obnovte.</string>
-    <string name="plugin_otr_activator_unverifiedsessionstared">Začala sa neoverená súkromná konverzácia s používateľom %1$s.</string>
-    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s has not been authenticated yet. You should &lt;a href=\"atalk://%2$s/%3$s?%4$s\">&lt;b>authenticate&lt;/b>&lt;/a> this buddy.</string>
-
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">Nešifrovaný text</string>
     <string name="omemo_authbuddy_authenticate_buddy">Autentifikácia Buddy</string>
@@ -1408,21 +1339,6 @@
     <string name="settings_messaging_security_summary">Nastavenia zabezpečenia šifrovania správ</string>
     <string name="settings_messaging_security">Zabezpečenie správ</string>
 
-    <!-- Messaging security options -->
-    <string name="otr_messaging_security">Zabezpečenie správ OTR</string>
-    <!-- Crypto Messaging Enable -->
-    <string name="settings_CRYPTO_ENABLE_OFF">Žiadne šifrovanie správ</string>
-    <string name="settings_CRYPTO_ENABLE_ON">Šifrovanie správ povolené</string>
-    <string name="settings_CRYPTO_ENABLE_TITLE">Súkromné správy</string>
-    <!-- Crypto Messaging Auto -->
-    <string name="settings_CRYPTO_AUTO_OFF">Ručné spustenie šifrovacej relácie správy</string>
-    <string name="settings_CRTOTI_AUTO_ON">Automaticky spustiť reláciu šifrovania správ</string>
-    <string name="settings_CRYPTO_AUTO_TITLE">Automaticky iniciovať súkromné správy</string>
-    <!-- Crypto Messaging Required -->
-    <string name="settings_CRYPTO_REQUIRE_OFF">Ak to bude podporované, použije sa zabezpečené zasielanie správ</string>
-    <string name="settings_CRYPTO_REQUIRE_ON">Prijímajú sa iba bezpečné relácie</string>
-    <string name="settings_CRYPTO_REQUIRE_TITLE">Vyžadovať súkromné správy</string>
-
     <!-- OMEMO security category-->
     <string name="omemo_messaging_security">Bezpečnosť správ OMEMO</string>
     <!-- OMEMO device screen -->
@@ -1462,8 +1378,6 @@
     <string name="crypto_menu_fingerprint_distrust">Nedôverovať odtlačku klúča</string>
     <string name="crypto_menu_fingerprint_trust">Dôverovať odtlačku klúča</string>
 
-    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">Žiadosť o reláciu OTR od vášho priateľa bola počas relácie OMEMO zamietnutá. Reláciu OTR môžete povoliť manuálne!</string>
-    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">Vaša žiadosť o reláciu OTR bola počas prebiehajúcej relácie Omemo zamietnutá!</string>
     <string name="crypto_msg_omemo_session_setup_failed">Nastavenie relácie OMEMO nebolo úspešné! %1$s</string>
     <string name="crypto_msg_omemo_session_untrusted">Našlo sa nula dôveryhodných kamarátov na prijímanie OMEMO správ!</string>
     <string name="crypto_msg_omemo_session_unverified">Posielajte správy OMEMO niektorým neznámym kamarátom s neoverenými odtlačkami prstov!</string>
@@ -1503,13 +1417,6 @@
     <string name="silk_assume_pl">Vždy predpokladajte stratu paketu</string>
     <string name="silk_fec_sat">Prahová hodnota reči (0–1)</string>
     <string name="silk_fec_advertise">Propagujte podporu FEC v SDP</string>
-
-    <!-- SIP config -->
-    <string name="plugin_generalconfig_SIP_CLIENT_PORT">Port klienta SIP</string>
-    <string name="plugin_generalconfig_SIP_CLIENT_SECURE_PORT">Zabezpečený port klienta SIP</string>
-    <string name="plugin_generalconfig_SIP_SSL_PROTOCOLS">Povolené protokoly SSL/TLS</string>
-    <string name="service_gui_settings_SIP">SIP</string>
-    <string name="service_gui_settings_SIP_SUMMARY">Konfigurácia nastavení protokolu SIP</string>
 
     <!-- Android Battery Usage Optimization -->
     <string name="battery_optimizations">Optimalizácia batérie</string>

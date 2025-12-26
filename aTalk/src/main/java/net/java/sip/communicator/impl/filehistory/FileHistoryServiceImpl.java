@@ -350,7 +350,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      * @param msgUuid message UUID
      * @param status New status for update
      * @param fileName local fileName path for http downloaded file; null => no change and keep the link in MSG_BODY
-     * @param encType IMessage.ENCRYPTION_NONE, ENCRYPTION_OMEMO, ENCRYPTION_OTR
+     * @param encType IMessage.ENCRYPTION_NONE, ENCRYPTION_OMEMO
      * @param msgType File Transfer message type
      *
      * @return the number of records being updated; zero means there is no record to update historyLog disabled
