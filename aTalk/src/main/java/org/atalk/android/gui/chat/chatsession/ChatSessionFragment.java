@@ -68,7 +68,6 @@ import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusLis
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.atalk.android.BaseActivity;
 import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -348,6 +347,7 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
                             setTitle();
                         });
                     });
+                    eService.shutdown();
                 }
             }
 
@@ -521,6 +521,7 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
                     runOnUiThread(() -> {
                     });
                 });
+                eService.shutdown();
             }
         }
 

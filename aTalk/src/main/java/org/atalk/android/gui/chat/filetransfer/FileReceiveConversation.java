@@ -251,6 +251,7 @@ public class FileReceiveConversation extends FileTransferConversation
                         }
                     });
                 });
+                eService.shutdown();
             }
         }
 

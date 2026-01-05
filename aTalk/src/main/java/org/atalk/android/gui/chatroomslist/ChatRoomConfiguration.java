@@ -468,6 +468,7 @@ public class ChatRoomConfiguration extends BaseFragment {
                             configListAdapter.notifyDataSetChanged();
                         });
                     });
+                    eService.shutdown();
                 }
             }
 

@@ -744,6 +744,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                         onPostExecute(result);
                     });
                 });
+                eService.shutdown();
             }
         }
 

@@ -93,6 +93,7 @@ public class ChatRoomInfoDialog extends BaseDialogFragment {
                         onPostExecute(roomInfo);
                     });
                 });
+                eService.shutdown();
             }
         }
 

@@ -630,15 +630,17 @@ public class AccountInfoPresenceActivity extends BaseActivity
         protected Void doInBackground(Void... params) {
             Iterator<GenericDetail> allDetails = accountInfoOpSet.getAllAvailableDetails();
 
-            // ANR from FFR: Seems not required to run on UI Thread!
-            if (allDetails != null) {
-                while (allDetails.hasNext()) {
-                    GenericDetail detail = allDetails.next();
-                    loadDetail(detail);
+            // Must run this on UI thread
+            runOnUiThread(() -> {
+                if (allDetails != null) {
+                    while (allDetails.hasNext()) {
+                        GenericDetail detail = allDetails.next();
+                        loadDetail(detail);
+                    }
                 }
-            }
-            // get user avatar via XEP-0084
-            getUserAvatarData();
+                // get user avatar via XEP-0084
+                getUserAvatarData();
+            });
             return null;
         }
     }

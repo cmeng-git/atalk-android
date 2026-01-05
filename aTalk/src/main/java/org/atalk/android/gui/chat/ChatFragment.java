@@ -2324,6 +2324,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                         chatListView.setSelectionFromTop(scrollTo, scrollTopOffset);
                     });
                 });
+                eService.shutdown();
             }
         }
     }
@@ -2654,6 +2655,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                         }
                     });
                 });
+                eService.shutdown();
             }
         }
 

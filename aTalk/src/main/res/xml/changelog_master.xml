@@ -7,8 +7,12 @@
 -->
 
 <changelog>
-    <release version="5.0.0 (12/27/2025)" versioncode="500000">
+    <release version="5.1.0 (01/05/2026)" versioncode="501000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Implement shutdown for all Executor.Service after the assigned task is completed</change>
+    </release>
+
+    <release version="5.0.0 (12/27/2025)" versioncode="500000">
         <change>Remove feature support for XEP-0364: Current Off-the-Record Messaging Usage partial implementation</change>
         <change>Set YT parameter 'origin' to other than YT site i.e.'https://www.youtube.com'; else embed video player has error</change>
         <change>Fix incorrect extraction of youtube video Id</change>

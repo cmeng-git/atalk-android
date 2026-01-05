@@ -221,6 +221,7 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
                         }
                     });
                 });
+                eService.shutdown();
             }
         }
 

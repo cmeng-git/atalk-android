@@ -169,7 +169,6 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
      */
     private class InitComboBox {
         public void execute() {
-
             try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
                 eService.execute(() -> {
                     final List<String> chatRoomList = doInBackground();
@@ -186,6 +185,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                         if (!chatRoomWrapperList.isEmpty())
                             onItemClick(null, chatRoomComboBox, 0, 0);
                     });
+                    eService.shutdown();
                 });
             }
         }

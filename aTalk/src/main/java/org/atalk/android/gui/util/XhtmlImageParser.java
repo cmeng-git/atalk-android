@@ -82,6 +82,7 @@ public class XhtmlImageParser implements Html.ImageGetter {
                         mTextView.setMovementMethod(LinkMovementMethod.getInstance());
                     });
                 });
+                eService.shutdown();
             }
         }
 

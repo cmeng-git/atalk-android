@@ -1,5 +1,11 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        5.1.0 (501000)
+Release Date:   01/05/2026
+Author:         cmeng
+- Implement shutdown for all Executor.Service after the assigned task is completed.
+
+=========================================================================
 Version:        5.0.0 (500000)
 Release Date:   12/27/2025
 Author:         cmeng

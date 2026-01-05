@@ -267,8 +267,8 @@ public class CallHistoryFragment extends BaseFragment
             }
 
             public void execute() {
-                try (ExecutorService sThread = Executors.newSingleThreadExecutor()) {
-                    sThread.execute(() -> {
+                try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
+                    eService.execute(() -> {
                         doInBackground();
 
                         BaseActivity.uiHandler.post(() -> {
@@ -278,6 +278,7 @@ public class CallHistoryFragment extends BaseFragment
                             setTitle();
                         });
                     });
+                    eService.shutdown();
                 }
             }
 

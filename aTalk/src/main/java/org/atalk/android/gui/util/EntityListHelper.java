@@ -312,6 +312,7 @@ public class EntityListHelper {
                         mCallback.onTaskComplete(msgCount, msgUUIDs);
                     });
                 });
+                eService.shutdown();
             }
         }
 
@@ -403,6 +404,7 @@ public class EntityListHelper {
                         mCallback.onTaskComplete(msgCount, null);
                     });
                 });
+                eService.shutdown();
             }
         }
 
@@ -486,6 +488,7 @@ public class EntityListHelper {
                         mCallback.onTaskComplete(msgCount, callUUIDs);
                     });
                 });
+                eService.shutdown();
             }
         }
 
