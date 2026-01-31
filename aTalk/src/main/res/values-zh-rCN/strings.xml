@@ -225,7 +225,7 @@
     <string name="chatroom_status_enable">启用聊天室状态</string>
     <string name="chatroom_subject_changed">聊天室主题已更改：\'%1$s\' =&gt; \'%2$s\'</string>
     <string name="chatroom_nickname_changed">%1$s 现在称为 %2$s</string>
-    <string name="clear_custom_messages">删除自定义短信</string>
+    <string name="clear_custom_messages">删除自定义消息</string>
     <string name="close">关闭</string>
     <string name="close_all_active_chats">关闭所有在线的的聊天</string>
     <string name="close_current_chat">关闭当前聊天会话</string>
@@ -236,7 +236,7 @@
          服务器名称：%2$s\n请检查您的网络连接或联系您的网络管理员以获取更多信息。</string>
     <string name="connecting">正在连接</string>
     <string name="contact_active">** %1$s 在聊天会话中处于在线状态</string>
-    <string name="contact_composing">** %1$s 正在撰写短信</string>
+    <string name="contact_composing">** %1$s 正在撰写消息</string>
     <string name="contact_inactive">** %1$s 暂时离开</string>
     <string name="contact_gone">** %1$s 已离开聊天会话</string>
     <string name="contact_info">联系方式</string>
@@ -250,7 +250,7 @@
     <string name="contacts">联系人</string>
     <string name="contact_offline_hide">隐藏离线联系人</string>
     <string name="contact_offline_show">显示离线联系人</string>
-    <string name="copy_message_text">复制短信文本</string>
+    <string name="copy_message_text">复制消息文本</string>
     <string name="create">创建</string>
     <string name="create_call_failed">创建通话失败。</string>
     <string name="create_conference_call">创建电话会议…</string>
@@ -382,12 +382,12 @@
     <string name="history_off_all">关闭所有聊天和联系人的历史记录</string>
     <string name="history_erase_for_contact">删除此联系历史</string>
     <string name="history_erase_all">删除所有联系人聊天记录</string>
-    <string name="history_purge_for_contact_warning">您确定要删除 %1$s 的所有选定短信吗？</string>
-    <string name="history_purge_all_warning">您确定要删除所有实体的所有短信吗？</string>
+    <string name="history_purge_for_contact_warning">您确定要删除 %1$s 的所有选定消息吗？</string>
+    <string name="history_purge_all_warning">您确定要删除所有实体的所有消息吗？</string>
     <string name="history_purge_count">删除历史记录条数：%1$s</string>
-    <string name="history_purge_error">删除 %1$s 的本地存储短信时出错。</string>
+    <string name="history_purge_error">删除 %1$s 的本地存储消息时出错。</string>
     <string name="history_purge_media">从我的手机中删除媒体</string>
-    <string name="history_offline_warning">在线时关闭并打开此聊天会话以查看 MAM 和离线短信</string>
+    <string name="history_offline_warning">在线时关闭并打开此聊天会话以查看 MAM 和离线消息</string>
     <string name="chatroom_alternate_venue">备用地点：</string>
     <string name="chatroom_alternate_address">您可以在以下聊天室继续对话：%1$s</string>
     <string name="chatroom_bookmark_title">聊天室书签</string>
@@ -475,7 +475,7 @@
     <string name="kick_failed_not_allowed">驱逐 %1$s 失败。不能踢房间的主人和管理员。</string>
     <string name="kick_failed_not_enough_permission">驱逐 %1$s 失败。您没有足够的权限执行此操作。</string>
     <string name="last">姓氏</string>
-    <string name="last_message_correction">最后一条短信更正</string>
+    <string name="last_message_correction">最后一条消息更正</string>
     <string name="last_name">姓氏</string>
     <string name="last_seen">今天：%s</string>
     <string name="leave">离开</string>
@@ -496,14 +496,14 @@
     <string name="chatroom_open_automatically">自动打开房间</string>
     <string name="personal">个人</string>
     <string name="message_delivery_error">发送消息失败。</string>
-    <string name="message_delivery_failed">以上短信无法送达</string>
+    <string name="message_delivery_failed">以上消息无法送达</string>
     <string name="message_delivery_internal_error">发生内部错误。这很可能是一个错误。请通过调试日志报告。</string>
-    <string name="message_delivery_not_supported">您使用的协议不支持离线短信。您可以尝试通过其他协议联系 %1$s 或等到他/她上线。</string>
-    <string name="message_delivery_unknown_error">传递您的短信时发生未知错误。</string>
+    <string name="message_delivery_not_supported">您使用的协议不支持离线消息。您可以尝试通过其他协议联系 %1$s 或等到他/她上线。</string>
+    <string name="message_delivery_unknown_error">传递您的消息时发生未知错误。</string>
     <string name="message_delivery_unsupported_operation">不支持的操作。</string>
     <string name="message_delivery_network_error">出现网络问题。请检查您的网络配置并重试。</string>
     <string name="message_received">%1$s 写了</string>
-    <string name="message_delivery_not_registered">您必须先登录才能发送短信。</string>
+    <string name="message_delivery_not_registered">您必须先登录才能发送消息。</string>
     <string name="multiple_login">不允许多次登录。以下帐户：用户名：%1$s，服务器名称：%2$s 已断开连接。</string>
     <string name="mutually_on_hole">相互搁置</string>
     <string name="name">名称</string>
@@ -541,7 +541,7 @@
     <string name="mic_control_title">麦克风增益级别</string>
     <string name="btn_mute_tooltip">调整麦克风声音</string>
     <string name="presence_not_supported">%1$s 不支持在线状态</string>
-    <string name="proactive_notification">正在写短信 (%1$s)</string>
+    <string name="proactive_notification">正在写消息 (%1$s)</string>
     <string name="recent_messages">最近对话</string>
     <string name="received_">%1$s 已收到</string>
     <string name="referred">推荐</string>
@@ -578,10 +578,10 @@
          1. 问题发生前你做的最后一件事是什么？\n\n\n
          2. 您看到的问题是什么，包括显示的快照（如果有）？\n\n\n
          3. 能否或如何重现问题？</string>
-    <string name="send_message">发送短信</string>
-    <string name="send_message_failed">发送短信失败：%1$s</string>
-    <string name="send_message_not_supported">您选择的实体不支持即时聊天短信：%1$s</string>
-    <string name="send_message_as_sms">以短信形式发送</string>
+    <string name="send_message">发送消息</string>
+    <string name="send_message_failed">发送消息失败：%1$s</string>
+    <string name="send_message_not_supported">您选择的实体不支持即时聊天消息：%1$s</string>
+    <string name="send_message_as_sms">以消息形式发送</string>
     <string name="send_message_private">发送私信</string>
     <string name="send_via">发送方式</string>
     <string name="sent">已发送</string>
@@ -618,7 +618,7 @@
     <string name="security_info">安全信息</string>
     <string name="security_warning">安全警告</string>
     <string name="username_password_null">请输入正确的用户名或/和密码。</string>
-    <string name="username_change_warning">警告：将帐户用户名更改为 \'%1$s\' 也会删除现有帐户 \'%3$s\' 的 %2$s 短信。继续吗？</string>
+    <string name="username_change_warning">警告：将帐户用户名更改为 \'%1$s\' 也会删除现有帐户 \'%3$s\' 的 %2$s 消息。继续吗？</string>
     <string name="user_exist_error">该用户已存在于所选网络中。请选择其他用户或网络。</string>
     <string name="jan">一月</string>
     <string name="feb">二月</string>
@@ -795,7 +795,7 @@
     <string name="accountinfo_nickname">昵称：</string>
     <string name="accountinfo_not_registered_message">帐户离线 - 必须在线才能更改帐户信息。</string>
     <string name="accountinfo_not_supported">帐户信息不可用。</string>
-    <string name="accountinfo_only_message">仅短信</string>
+    <string name="accountinfo_only_message">仅消息</string>
     <string name="accountinfo_organisation">组织名称：</string>
     <string name="accountinfo_phone">电话：</string>
     <string name="accountinfo_postcode">邮政编码：</string>
@@ -833,7 +833,7 @@
     <string name="contactinfo_contact_extended_description">扩展联系信息</string>
     <string name="contactinfo_not_specified">[未指定]</string>
     <string name="contactinfo_user_pictures">用户图片</string>
-    <string name="contactinfo_status_message">状态短信</string>
+    <string name="contactinfo_status_message">状态消息</string>
     <!-- Notification strings (do not change; getI18NString(NotificationSettings.NOTICE_PREFIX + eventType))-->
     <string name="notificationconfig_event_BusyCall">通话忙</string>
     <string name="notificationconfig_event_BusyCall_description">忙线说明</string>
@@ -850,8 +850,8 @@
     <string name="notificationconfig_event_IncomingCall_description">来电说明。</string>
     <string name="notificationconfig_event_IncomingFile">传入文件</string>
     <string name="notificationconfig_event_IncomingInvitation">传入邀请</string>
-    <string name="notificationconfig_event_IncomingMessage">传入短信</string>
-    <string name="notificationconfig_event_IncomingMessage_description">传入短信描述</string>
+    <string name="notificationconfig_event_IncomingMessage">传入消息</string>
+    <string name="notificationconfig_event_IncomingMessage_description">传入消息描述</string>
     <string name="notificationconfig_event_LogFilesArchived">存档的日志文件</string>
     <string name="notificationconfig_event_MissedCall">未接来电</string>
     <string name="notificationconfig_event_NetworkNotifications">网络通知</string>
@@ -860,8 +860,8 @@
     <string name="notificationconfig_event_ProactiveNotification_description">主动聊天状态通知描述</string>
     <string name="notificationconfig_event_OutgoingCall">去电</string>
     <string name="notificationconfig_event_OutgoingCall_description">去电说明</string>
-    <string name="notificationconfig_event_SecurityMessage">安全短信</string>
-    <string name="notificationconfig_event_SecurityMessage_description">安全短信描述</string>
+    <string name="notificationconfig_event_SecurityMessage">安全消息</string>
+    <string name="notificationconfig_event_SecurityMessage_description">安全消息描述</string>
     <string name="notificationconfig_notification_sound">通知设备上的声音</string>
     <string name="notificationconfig_playback_sound">播放设备上的声音</string>
     <string name="notificationconfig_popup_notification">弹出通知</string>
@@ -874,7 +874,7 @@
     <string name="media_configform_audio_device_config_changed">音频设备配置已更改</string>
     <string name="media_configform_audio_device_config_management_click">点击此处进行设备管理</string>
     <string name="media_configform_preview">预览</string>
-    <string name="media_security_checksum_mismatch">&lt;html&gt;内部 ZRTP 数据包校验和不匹配。&lt;br /&gt;如果您经常看到此短信，这可能意味着拒绝服务攻击！&lt;/html&gt;</string>
+    <string name="media_security_checksum_mismatch"><html>内部 ZRTP 数据包校验和不匹配。<br/>如果您经常看到此消息，这可能意味着拒绝服务攻击！</html></string>
     <string name="media_security_data_send_failed"><html>发送加密数据失败。互联网数据连接或对等端已关闭。<br/><b>您的通话不安全</b><br/>错误代码：%1$s</html></string>
     <string name="imedia_security_retry_rate_exceeded"><html>安全协商期间重试次数过多。这可能意味着对方有网络连接问题。<br/><b>您的通话不安全</b><br/>错误代码：%1$s</html></string>
     <string name="media_security_internal_protocol_error">&lt;html&gt;出现内部协议错误。&lt;br/&gt;&lt;b&gt;你的调用不安全&lt;/b&gt;&lt;br/&gt;错误代码：%1$s&lt;/html &gt;</string>
@@ -890,19 +890,18 @@
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">纯文本</string>
     <string name="omemo_authbuddy_authenticate_buddy">验证好友</string>
-    <string name="omemo_authbuddy_authenticate_info">您有未经身份验证的好友。未经验证的好友无法收到 OMEMO 短信。检查以进行身份验证。</string>
+    <string name="omemo_authbuddy_authenticate_info">您有未经身份验证的好友。未经验证的好友无法收到 OMEMO 消息。检查以进行身份验证。</string>
     <string name="omemo_authbuddy_local_fingerprint">我的指纹 %1$s:\n%2$s</string>
     <string name="omemo_authbuddy_verify_buddy">验证好友</string>
     <string name="omemo_identity_keypairs_missing">为 %1$s 创建 OMEMO IdentityKeyPairs</string>
     <string name="omemo_identity_key_invalid">omemoDevice 的 IdentityKey 无效：%1$s。\n异常：%2$s。</string>
     <string name="omemo_identity_key_missing">%1$s 的 OMEMO IdentityKey 丢失。\n继续从服务器下载。</string>
     <string name="omemo_identity_keypairs_invalid">omemoDevice 的 IdentityKeyPairs 无效：%1$s。\n异常：%2$s。</string>
-    <string name="omemo_init_failed_corrupted_omemoKey_exception">初始化 OmemoManager 失败，omemo 短信传递不工作。如果问题仍然存在
-         重新启动后，请继续为失败的 omomoDevice 执行“重新生成 OMEMO 身份”：%1$s。\n\n异常：%2$s。</string>
-    <string name="omemo_init_failed_no_response">初始化 OmemoManager 失败，omemo 短信可能无法正常工作：%1$s</string>
+    <string name="omemo_init_failed_corrupted_omemoKey_exception">初始化 OmemoManager 失败，omemo 消息传递不工作。如果问题仍然存在 重新启动后，请继续为失败的 omomoDevice 执行“重新生成 OMEMO 身份”：%1$s。\n\n异常：%2$s。</string>
+    <string name="omemo_init_failed_no_response">初始化 OmemoManager 失败，omemo 消息可能无法正常工作：%1$s</string>
     <string name="omemo_init_failed_title">OmemoManager 初始化失败</string>
     <string name="omemo_menu_authenticated">OMEMO 认证</string>
-    <string name="omemo_send_error">短信发送失败。请在更正所有错误后重试：%1$s</string>
+    <string name="omemo_send_error">消息发送失败。请在更正所有错误后重试：%1$s</string>
     <string name="omemo_menu_unauthenticated">OMEMO 未认证</string>
     <string name="omemo_menu_untrusted">OMEMO 不受信任</string>
     <string name="omemo_rebuild_session">重建丢失的新会话：%1$s</string>
@@ -956,7 +955,7 @@
     <string name="dns_dnssec_advanced_options">显示高级选项</string>
     <string name="dns_dnssec_advanced_reason_invalid">&lt;html&gt;DNSSEC 签名区域 %1$s 返回了无效数据。&lt;br/&gt;%2$s&lt;/html&gt;</string>
     <string name="dns_dnssec_advanced_reason_unsigned">%1$s 对 %2$s 的查询未签名。</string>
-    <string name="dns_dnssec_warning">&lt;html&gt;&lt;div width=600&gt; %1$s 已尝试连接到位于的 &lt;b&gt;%2$s&lt;&lt;/b&gt;服务器， 这是一个具有称为 DNSSEC 的强大保护的域。%1$s 获取自DNS 服务器的信息与 DNSSEC 提供的有关此域的信息不一致。&lt;br/&gt;&lt;br/&gt;&lt;b&gt;除非在 %2$s 处犯了非常严重的错误，否则这不应该发生。因此，这是一个非常强烈的迹象，表明某事是 您的网络连接的可信度严重错误。&lt;/b&gt;&amp;lt;br/&amp;gt;&amp;lt;br/&amp;gt; 如果您使用的是其他人的互联网连接（如 WiFi 热点），或者如果有特殊情况让您不信任 您的常规互联网提供商，我们强烈建议您立即停止使用它并寻找替代的互联网接入点。 当您安全地连接到另一个网络时，问题应该会自动解决。如果不是这种情况，请联系您的 服务提供商通知他们有关该问题。&lt;/div&gt;&lt;/html&gt;</string>
+    <string name="dns_dnssec_warning">&lt;html&gt;&lt;div width=600&gt; %1$s 已尝试连接到位于的 &lt;b&gt;%2$s&lt;&lt;/b&gt;服务器， 这是一个具有被称为 DNSSEC 强大保护的域。%1$s 获取自DNS 服务器的信息与 DNSSEC 提供的有关此域的信息不一致。&lt;br/&gt;&lt;br/&gt;&lt;b&gt;除非在 %2$s 犯了非常严重的错误，否则这不应该发生。因此，这是一个非常强烈的迹象，表明您网络连接的可信度有严重问题。&lt;/b&gt;&lt;br/&gt;&lt;br/&gt; 如果您使用的是其他人的互联网连接（如 WiFi 热点），或者如果有特殊情况让您不信任 您的常规互联网提供商，我们强烈建议您立即停止使用它并寻找替代的互联网接入点。 当您安全地连接到另一个网络时，问题应该会自动解决。如果不是这种情况，请联系您的 服务提供商告知该问题。&lt;/div&gt;&lt;/html&gt;</string>
     <!-- SSL Certificates -->
     <string name="settings_ssl_certificate">SSL 证书</string>
     <string name="settings_ssl_certificate_purge">删除用户批准的证书：%1$s</string>
@@ -1085,10 +1084,10 @@
     <string name="settings_webview_dlg_title">进入网站链接默认访问页面：</string>
     <string name="settings_webview_page">网站链接访问页面</string>
     <!-- Messaging settings -->
-    <string name="settings_messaging">短信</string>
+    <string name="settings_messaging">消息</string>
     <!-- Group messages in one window -->
     <string name="settings_multichat_off">每个对话的单独窗口</string>
-    <string name="settings_multichat_on">一窗群聊短信</string>
+    <string name="settings_multichat_on">一窗群聊消息</string>
     <string name="settings_multichat_window">多聊天窗口</string>
     <!-- Log chat history -->
     <string name="settings_history_log_off">禁用聊天记录</string>
@@ -1096,13 +1095,13 @@
     <string name="settings_history_logging">永久保存聊天记录</string>
     <string name="settings_history_mam_warning">为离线用户设置 MAM 选项时出错：%1$s</string>
     <!-- Show x recent messages in new chats -->
-    <string name="settings_history_dlg_title">应显示多少条最近的短信？</string>
-    <string name="settings_history_size">显示最近的短信</string>
-    <string name="settings_history_summary">新聊天中有 %d 条最近短信</string>
+    <string name="settings_history_dlg_title">应显示多少条最近的消息？</string>
+    <string name="settings_history_size">显示最近的消息</string>
+    <string name="settings_history_summary">新聊天中有 %d 条最近消息</string>
     <string name="settings_history_show">显示历史</string>
     <!-- Tell others when we have received and read the messages -->
-    <string name="settings_message_delivery_receipt">短信发送回执</string>
-    <string name="settings_message_delivery_receipt_summary">让您的联系人知道您何时收到并阅读他们的短信</string>
+    <string name="settings_message_delivery_receipt">消息发送回执</string>
+    <string name="settings_message_delivery_receipt_summary">让您的联系人知道您何时收到并阅读他们的消息</string>
     <!-- Tell others when we are writing to them -->
     <string name="settings_typing_notifications">发送聊天状态通知</string>
     <!-- Enable option to send thumbnail preview for image file sending -->
@@ -1156,7 +1155,7 @@
     <string name="settings_theme_light">浅色</string>
     <string name="settings_theme">主题</string>
     <!-- TTS Language -->
-    <string name="tts_delay">短信文本到语音延迟（毫秒）</string>
+    <string name="tts_delay">消息文本到语音延迟（毫秒）</string>
     <string name="tts_settings">常规 TTS 设置…</string>
     <string name="tts_disable">禁用文本 ➡ 言语</string>
     <string name="tts_enable">启用文本 ➡ 言语</string>
@@ -1222,10 +1221,10 @@
     <string name="settings_video_max_bw">RTP 步调阈值（kBytes/s）</string>
     <string name="settings_video_fps_target">目标帧率（每秒）</string>
     <!-- Chat Security settings -->
-    <string name="settings_messaging_security_summary">短信加密安全设置</string>
-    <string name="settings_messaging_security">短信加密</string>
+    <string name="settings_messaging_security_summary">消息加密安全设置</string>
+    <string name="settings_messaging_security">消息加密</string>
     <!-- OMEMO security category-->
-    <string name="omemo_messaging_security">OMEMO 短信加密</string>
+    <string name="omemo_messaging_security">OMEMO 消息加密</string>
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">验证前盲目信任</string>
     <string name="omemo_blind_trust_before_verification_summary">自动信任之前未验证过的联系人的所有新设备； 当已验证的联系人添加新设备时提示手动确认。</string>
@@ -1258,15 +1257,15 @@
     <string name="crypto_menu_fingerprint_distrust">不信任指纹</string>
     <string name="crypto_menu_fingerprint_trust">信任指纹</string>
     <string name="crypto_msg_omemo_session_setup_failed">OMEMO 会话设置不成功！ %1$s</string>
-    <string name="crypto_msg_omemo_session_untrusted">找到零个可信任的好友来接收 OMEMO 短信！</string>
-    <string name="crypto_msg_omemo_session_unverified">发送 OMEMO 短信给一些未验证指纹的未知好友！</string>
+    <string name="crypto_msg_omemo_session_untrusted">找到零个可信任的好友来接收 OMEMO 消息！</string>
+    <string name="crypto_msg_omemo_session_unverified">发送 OMEMO 消息给一些未验证指纹的未知好友！</string>
     <string name="crypto_msg_omemo_session_unverified_untrusted">与一些不信任或未经验证指纹的好友进行多用户聊天！</string>
     <string name="crypto_msg_omemo_session_verified">*** 所有好友都已通过身份验证！ ***</string>
     <string name="crypto_fingerprint_status">已验证：%1$s</string>
     <string name="crypto_no_key_present">没有密钥存在</string>
     <string name="crypto_fingerprint_copy">指纹已复制到剪贴板！</string>
-    <string name="crypto_omemo_distrust_messaging_stop">停止向好友发送 OMEMO 短信：%1$s</string>
-    <string name="crypto_omemo_trust_messaging_resume">继续向好友发送 OMEMO 短信：%1$s</string>
+    <string name="crypto_omemo_distrust_messaging_stop">停止向好友发送 OMEMO 消息：%1$s</string>
+    <string name="crypto_omemo_trust_messaging_resume">继续向好友发送 OMEMO 消息：%1$s</string>
     <!-- Advanced settings category -->
     <string name="advanced">高级</string>
     <string name="settings_expert">专家设置</string>
@@ -1292,8 +1291,8 @@
     <string name="silk_fec_advertise">在 SDP 中通告 FEC 支持</string>
     <!-- Android Battery Usage Optimization -->
     <string name="battery_optimizations">电池优化</string>
-    <string name="battery_optimizations_dialog">您的设备在 aTalk 上有电池使用优化； 这可能会导致通知延迟或短信丢失。\n\n建议您为 aTalk 禁用此优化。</string>
-    <string name="battery_optimization_on">当设备进入休眠待机时，aTalk 将进入睡眠状态。手动重启 aTalk 以接收新短信。</string>
+    <string name="battery_optimizations_dialog">您的设备在 aTalk 上有电池使用优化； 这可能会导致通知延迟或消息丢失。\n\n建议您为 aTalk 禁用此优化。</string>
+    <string name="battery_optimization_on">当设备进入休眠待机时，aTalk 将进入睡眠状态。手动重启 aTalk 以接收新消息。</string>
     <string name="device_does_not_support_battery_op">您的设备不支持选择退出电池优化</string>
     <string name="disable">禁用</string>
     <string name="next">下一步</string>
