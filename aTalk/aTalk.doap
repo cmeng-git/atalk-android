@@ -657,8 +657,9 @@
             <xmpp:SupportedXep>
                 <xmpp:xep rdf:resource='https://xmpp.org/extensions/xep-0384.html'/>
                 <xmpp:status>complete</xmpp:status>
-                <xmpp:version>0.3.0</xmpp:version>
-                <xmpp:since>0.7.9</xmpp:since>
+                <xmpp:version>0.9.0</xmpp:version>
+                <xmpp:since>5.2.0</xmpp:since>
+                <xmpp:note xml:lang='en'>Support both 'eu.siacs.conversations.axolotl' (since 0.7.9) and 'urn:xmpp:omemo:2' namespaces encrypted message decryption.</xmpp:note>
             </xmpp:SupportedXep>
         </implements>
 
@@ -679,6 +680,17 @@
                 <xmpp:status>complete</xmpp:status>
                 <xmpp:version>0.2.0</xmpp:version>
                 <xmpp:since>0.7.9</xmpp:since>
+                <xmpp:note xml:lang='en'>Support files receive for both 'eu.siacs.conversations.axolotl' and 'urn:xmpp:omemo:2' namespaces.</xmpp:note>
+            </xmpp:SupportedXep>
+        </implements>
+
+        <!-- XEP-0420: Stanza Content Encryption -->
+        <implements>
+            <xmpp:SupportedXep>
+                <xmpp:xep rdf:resource='https://xmpp.org/extensions/xep-0420.html'/>
+                <xmpp:status>complete</xmpp:status>
+                <xmpp:version>0.4.1</xmpp:version>
+                <xmpp:since>5.2.0</xmpp:since>
             </xmpp:SupportedXep>
         </implements>
 

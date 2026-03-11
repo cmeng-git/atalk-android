@@ -64,11 +64,13 @@ public class ChatSecuritySettings extends BaseActivity {
 
             mConfig = UtilActivator.getConfigurationService();
             PreferenceScreen screen = getPreferenceScreen();
+
             PreferenceUtil.setCheckboxVal(screen, P_KEY_OMEMO_KEY_BLIND_TRUST,
-                    mConfig.getBoolean(mConfig.PNAME_OMEMO_KEY_BLIND_TRUST, true));
+                    mConfig.getBoolean(ConfigurationService.PNAME_OMEMO_KEY_BLIND_TRUST, true));
 
             SharedPreferences shPrefs = getPreferenceManager().getSharedPreferences();
-            shPrefs.registerOnSharedPreferenceChangeListener(this);
+            if (shPrefs != null)
+                shPrefs.registerOnSharedPreferenceChangeListener(this);
         }
 
         /**
@@ -77,7 +79,8 @@ public class ChatSecuritySettings extends BaseActivity {
         @Override
         public void onStop() {
             SharedPreferences shPrefs = getPreferenceManager().getSharedPreferences();
-            shPrefs.unregisterOnSharedPreferenceChangeListener(this);
+            if (shPrefs != null)
+                shPrefs.unregisterOnSharedPreferenceChangeListener(this);
             super.onStop();
         }
 
@@ -85,8 +88,11 @@ public class ChatSecuritySettings extends BaseActivity {
          * {@inheritDoc}
          */
         public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key) {
-            if (key.equals(P_KEY_OMEMO_KEY_BLIND_TRUST)) {
-                mConfig.setProperty(mConfig.PNAME_OMEMO_KEY_BLIND_TRUST,
+            if (key == null)
+                return;
+
+        if (key.equals(P_KEY_OMEMO_KEY_BLIND_TRUST)) {
+                mConfig.setProperty(ConfigurationService.PNAME_OMEMO_KEY_BLIND_TRUST,
                         shPreferences.getBoolean(P_KEY_OMEMO_KEY_BLIND_TRUST, true));
             }
         }

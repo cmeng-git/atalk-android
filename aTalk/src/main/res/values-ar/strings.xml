@@ -1281,6 +1281,12 @@
 
     <!-- OMEMO security category-->
     <string name="omemo_messaging_security">أمان الرسائل OMEMO</string>
+    <!-- OMEMO:2 Enable screen -->
+    <string name="omemo2_access_mode">omemo:2 نموذج الوصول</string>
+    <string name="omemo2_enable">تفعيل دعم omemo:2</string>
+    <string name="omemo2_optout">إلغاء الاشتراك في دردشة OMEMO</string>
+    <string name="omemo2_optout_reason">إلغاء الاشتراك في دردشة OMEMO.\n عذرًا، لأسباب تتعلق بالامتثال، أحتاج إلى سجل دائم لمحادثتنا على الخادم.</string>
+    <string name="omemo2_summary">دعم مساحة اسم عنصر OMEMO XEP-0384: urn:xmpp:omemo:2</string>
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">الثقة العمياء قبل التحقق</string>
     <string name="omemo_blind_trust_before_verification_summary">الثقة التلقائية في جميع الأجهزة الجديدة لجهات الاتصال التي لم يتم التحقق منها مسبقًا؛ طلب تأكيد يدوي عند إضافة جهات اتصال موثقة أجهزة جديدة.</string>

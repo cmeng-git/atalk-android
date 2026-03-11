@@ -1099,7 +1099,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             OmemoMessage.Sent encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
 
             MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
-            Message sendMessage = encryptedMessage.buildMessage(messageBuilder, entityBareJid);
+            Message sendMessage = encryptedMessage.buildMessage(messageBuilder, entityBareJid, omemoManager.isOmemo2Enable());
 
             if (IMessage.ENCODE_HTML == message.getMimeType()) {
                 String xhtmlBody = encryptedMessage.getElement().toXML().toString();
@@ -1114,7 +1114,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 messageBuilder = StanzaBuilder.buildMessage();
                 // Add the XHTML text to the message
                 XHTMLManager.addBody(messageBuilder, xhtmlText);
-                sendMessage = encryptedMessage.buildMessage(messageBuilder, entityBareJid);
+                sendMessage = encryptedMessage.buildMessage(messageBuilder, entityBareJid, omemoManager.isOmemo2Enable());
             }
 
             // proceed to send message if no exceptions.
@@ -2062,7 +2062,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         @Override
         public void processMessage(Message message) {
             // Leave handling of omemo messages to onOmemoMessageReceived()
-            if ((message == null) || message.hasExtension(OmemoElement.NAME_ENCRYPTED, OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL))
+            if (OmemoManager.isOmemoMessage(message))
                 return;
 
             // Captcha challenge body is in body extension.

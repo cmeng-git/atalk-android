@@ -1289,6 +1289,12 @@
 
     <!-- OMEMO security category-->
     <string name="omemo_messaging_security">OMEMO-viestien suojaus</string>
+    <!-- OMEMO:2 Enable screen -->
+    <string name="omemo2_access_mode">omemo:2-käyttömalli</string>
+    <string name="omemo2_enable">Ota käyttöön omemo:2-tuki</string>
+    <string name="omemo2_optout">OMEMO-chatin peruuttaminen</string>
+    <string name="omemo2_optout_reason">OMEMO-keskustelun peruutus.\n Pahoittelen, vaatimustenmukaisuussyistä tarvitsen keskustelustamme pysyvän, palvelinpuolen tallenteen.</string>
+    <string name="omemo2_summary">Tuki XEP-0384 OMEMO -elementin nimiavaruudelle: \'urn:xmpp:omemo:2\'</string>
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">Sokea luottamus ennen vahvistusta</string>
     <string name="omemo_blind_trust_before_verification_summary">Luota automaattisesti kaikkiin uusiin yhteystietojen laitteisiin, joita ei ole tarkistettu aiemmin; näytä manuaalisen vahvistuksen kehote, kun vahvistettu yhteystieto lisää uusia laitteita.</string>

@@ -1344,6 +1344,12 @@
 
     <!-- OMEMO security category-->
     <string name="omemo_messaging_security">Segurança de mensagens OMEMO</string>
+    <!-- OMEMO:2 Enable screen -->
+    <string name="omemo2_access_mode">omemo:2 Modelo de Acesso</string>
+    <string name="omemo2_enable">Ativar suporte para omemo:2</string>
+    <string name="omemo2_optout">Opção de desativação do chat OMEMO</string>
+    <string name="omemo2_optout_reason">Opção de desativação do chat OMEMO.\nDesculpe, por motivos de conformidade, preciso de um registro permanente, no servidor, da nossa conversa.</string>
+    <string name="omemo2_summary">Suporte ao namespace do elemento OMEMO XEP-0384: \'urn:xmpp:omemo:2\'</string>
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">Confiança cega antes da verificação</string>
     <string name="omemo_blind_trust_before_verification_summary">Confiar automaticamente todos os novos contatos que ainda não tenham sido verificados; solicitar confirmação manual quando um contato verificado adicionar novo aparelho.</string>

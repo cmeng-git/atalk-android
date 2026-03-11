@@ -1328,6 +1328,12 @@
 
     <!-- OMEMO security category-->
     <string name="omemo_messaging_security">Безопасность сообщений OMEMO</string>
+    <!-- OMEMO:2 Enable screen -->
+    <string name="omemo2_access_mode">omemo:2 Модель доступа</string>
+    <string name="omemo2_enable">Включить поддержку omemo:2</string>
+    <string name="omemo2_optout">Cancelar la suscripción al chat de OMEMO</string>
+    <string name="omemo2_optout_reason">Отказ от участия в чате OMEMO. Извините, по соображениям соответствия требованиям мне необходима постоянная запись нашего разговора на стороне сервера.</string>
+    <string name="omemo2_summary">Поддержка пространства имен элементов OMEMO в XEP-0384: \'urn:xmpp:omemo:2\'</string>
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">Слепое доверие перед проверкой</string>
     <string name="omemo_blind_trust_before_verification_summary">Автоматическое доверие ко всем новым устройствам контактов, которые ранее не были проверены; запрос на подтверждение вручную, когда подтверждённый контакт добавляет новые устройства.</string>

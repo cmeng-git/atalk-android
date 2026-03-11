@@ -505,7 +505,7 @@ public class AccountManager {
         }
 
         // Save all the account configurationProperties into the database
-        if (configurationProperties.size() > 0)
+        if (!configurationProperties.isEmpty())
             configurationService.setProperties(configurationProperties);
 
         Timber.d("Stored account for id %s", accountUid);

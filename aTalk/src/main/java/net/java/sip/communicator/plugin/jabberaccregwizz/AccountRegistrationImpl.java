@@ -9,6 +9,10 @@ package net.java.sip.communicator.plugin.jabberaccregwizz;
 import android.text.TextUtils;
 import android.util.Patterns;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
@@ -20,10 +24,6 @@ import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistrati
 import org.atalk.impl.timberlog.TimberLog;
 import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.ServiceReference;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import timber.log.Timber;
 
@@ -38,8 +38,7 @@ import timber.log.Timber;
  * @author Grigorii Balutsel
  * @author Eng Chong Meng
  */
-public class AccountRegistrationImpl extends AccountRegistrationWizard
-{
+public class AccountRegistrationImpl extends AccountRegistrationWizard {
     /*
      * The protocol provider.
      */
@@ -47,8 +46,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
 
     private JabberAccountRegistration registration = new JabberAccountRegistration();
 
-    public String getProtocolName()
-    {
+    public String getProtocolName() {
         return ProtocolNames.JABBER;
     }
 
@@ -59,12 +57,13 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
      * @param userName the account user name
      * @param password the password
      * @param accountProperties additional account parameters for setting up new account/modify e.g. server and port
+     *
      * @return the <code>ProtocolProviderService</code> corresponding to the newly created account.
+     *
      * @throws OperationFailedException problem signing in.
      */
     public ProtocolProviderService signin(String userName, String password, Map<String, String> accountProperties)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         ProtocolProviderFactory factory = JabberAccountRegistrationActivator.getJabberProtocolProviderFactory();
         ProtocolProviderService pps = null;
         if (factory != null)
@@ -79,13 +78,14 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
      * @param userName the user identifier
      * @param password the password
      * @param accountProperties additional account parameters for setting up new account/modify e.g. server and port
+     *
      * @return the <code>ProtocolProviderService</code> for the new account.
+     *
      * @throws OperationFailedException if the operation didn't succeed
      */
     protected ProtocolProviderService installAccount(ProtocolProviderFactory providerFactory,
             String userName, String password, Map<String, String> accountProperties)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         // check for valid user account; will request password in actual login process if password is null
         if (TextUtils.isEmpty(userName) || !Patterns.EMAIL_ADDRESS.matcher(userName).matches()) {
             throw new OperationFailedException("Should specify a valid user name and password "
@@ -103,9 +103,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
                         + userName + ".", OperationFailedException.SERVER_NOT_SPECIFIED);
         }
         // if server port is null, we will set default value
-        if (accountProperties.get(ProtocolProviderFactory.SERVER_PORT) == null) {
-            accountProperties.put(ProtocolProviderFactory.SERVER_PORT, "5222");
-        }
+        accountProperties.putIfAbsent(ProtocolProviderFactory.SERVER_PORT, "5222");
 
         // Add additional parameters to accountProperties
         accountProperties.put(ProtocolProviderFactory.IS_PREFERRED_PROTOCOL, Boolean.toString(isPreferredProtocol()));
@@ -129,17 +127,20 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
             Timber.i("Installing new account created for user %s", userName);
 
             AccountID accountID = providerFactory.installAccount(userName, accountProperties);
-            ServiceReference serRef = providerFactory.getProviderForAccount(accountID);
+            ServiceReference<?> serRef = providerFactory.getProviderForAccount(accountID);
             protocolProvider = (ProtocolProviderService) JabberAccountRegistrationActivator.bundleContext.getService(serRef);
-        } catch (IllegalArgumentException exc) {
+        }
+        catch (IllegalArgumentException exc) {
             Timber.w("%s", exc.getMessage());
             throw new OperationFailedException("Username, password or server is null.",
                     OperationFailedException.ILLEGAL_ARGUMENT);
-        } catch (IllegalStateException exc) {
+        }
+        catch (IllegalStateException exc) {
             Timber.w("%s", exc.getMessage());
             throw new OperationFailedException("Account already exists.",
                     OperationFailedException.IDENTIFICATION_CONFLICT);
-        } catch (Throwable exc) {
+        }
+        catch (Throwable exc) {
             Timber.w("%s", exc.getMessage());
             throw new OperationFailedException("Failed to add account.", OperationFailedException.GENERAL_ERROR);
         }
@@ -151,8 +152,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
      *
      * @return the protocol name
      */
-    public String getProtocol()
-    {
+    public String getProtocol() {
         return ProtocolNames.JABBER;
     }
 
@@ -161,8 +161,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
      *
      * @return <code>true</code> if this wizard corresponds to the preferred protocol, otherwise returns <code>false</code>
      */
-    public boolean isPreferredProtocol()
-    {
+    public boolean isPreferredProtocol() {
         // Check for preferred account through the PREFERRED_ACCOUNT_WIZARD property.
         //        String prefWName = JabberAccountRegistrationActivator.getResources().
         //            getSettingsString("gui.PREFERRED_ACCOUNT_WIZARD");
@@ -178,8 +177,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
      *
      * @return the protocol icon path
      */
-    public String getProtocolIconPath()
-    {
+    public String getProtocolIconPath() {
         return null;
     }
 
@@ -188,45 +186,38 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
      *
      * @return the account icon path
      */
-    public String getAccountIconPath()
-    {
+    public String getAccountIconPath() {
         return null;
     }
 
     @Override
     public ProtocolProviderService signin()
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         return null;
     }
 
     @Override
-    public byte[] getIcon()
-    {
+    public byte[] getIcon() {
         return null;
     }
 
     @Override
-    public byte[] getPageImage()
-    {
+    public byte[] getPageImage() {
         return null;
     }
 
     @Override
-    public String getProtocolDescription()
-    {
+    public String getProtocolDescription() {
         return null;
     }
 
     @Override
-    public String getUserNameExample()
-    {
+    public String getUserNameExample() {
         return null;
     }
 
     @Override
-    public void loadAccount(ProtocolProviderService protocolProvider)
-    {
+    public void loadAccount(ProtocolProviderService protocolProvider) {
         setModification(true);
         this.protocolProvider = protocolProvider;
         registration = new JabberAccountRegistration();
@@ -237,37 +228,31 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
     }
 
     @Override
-    public Object getFirstPageIdentifier()
-    {
+    public Object getFirstPageIdentifier() {
         return null;
     }
 
     @Override
-    public Object getLastPageIdentifier()
-    {
+    public Object getLastPageIdentifier() {
         return null;
     }
 
     @Override
-    public Iterator<Entry<String, String>> getSummary()
-    {
+    public Iterator<Entry<String, String>> getSummary() {
         return null;
     }
 
     @Override
-    public Object getSimpleForm(boolean isCreateAccount)
-    {
+    public Object getSimpleForm(boolean isCreateAccount) {
         return null;
     }
 
-    public JabberAccountRegistration getAccountRegistration()
-    {
+    public JabberAccountRegistration getAccountRegistration() {
         return registration;
     }
 
     @Override
-    public boolean isInBandRegistrationSupported()
-    {
+    public boolean isInBandRegistrationSupported() {
         return true;
     }
 }

@@ -131,6 +131,7 @@ import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.persistance.FileBackend;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.chatstates.ChatState;
+import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo_media_sharing.AesgcmUrl;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
@@ -511,7 +512,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
      */
     private void initChatController(boolean inFocus) {
         // chatController => NPE from field && FFR indicates chatPanel may be null???
-        if ((mChatController != null  && chatPanel != null)) {
+        if ((mChatController != null && chatPanel != null)) {
             if (!inFocus) {
                 mChatController.onHide();
                 // Also remove global status listener
@@ -693,174 +694,174 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             ArrayList<Uri> imageUris = new ArrayList<>();
 
             switch (item.getItemId()) {
-                case R.id.chat_message_edit:
-                    if ((mChatController != null) && (chatMsg != null)) {
-                        mChatController.editText(chatListView, chatMsg, cPos);
+            case R.id.chat_message_edit:
+                if ((mChatController != null) && (chatMsg != null)) {
+                    mChatController.editText(chatListView, chatMsg, cPos);
 
-                        // Clear the selected Item highlight
-                        // chatListView.clearChoices();
-                    }
+                    // Clear the selected Item highlight
+                    // chatListView.clearChoices();
+                }
+                return true;
+
+            case R.id.select_all:
+                int size = chatListAdapter.getCount();
+                if (size < 2)
                     return true;
 
-                case R.id.select_all:
-                    int size = chatListAdapter.getCount();
-                    if (size < 2)
-                        return true;
+                for (int i = 0; i < size; i++) {
+                    cPos = i + headerCount;
+                    checkedList.put(cPos, true);
+                    chatListView.setSelection(cPos);
+                }
+                checkListSize = size;
+                mode.invalidate();
+                mode.setTitle(String.valueOf(size));
+                return true;
 
-                    for (int i = 0; i < size; i++) {
-                        cPos = i + headerCount;
-                        checkedList.put(cPos, true);
-                        chatListView.setSelection(cPos);
+            case R.id.chat_message_copy:
+                // Get clicked message text and copy it to ClipBoard
+                for (int i = 0; i < checkListSize; i++) {
+                    if (checkedList.valueAt(i)) {
+                        cPos = checkedList.keyAt(i) - headerCount;
+                        chatMsg = chatListAdapter.getMessage(cPos);
+                        if (chatMsg != null) {
+                            if (i > 0)
+                                sBuilder.append("\n").append(chatMsg.getContentForClipboard());
+                            else
+                                sBuilder.append(chatMsg.getContentForClipboard());
+                        }
                     }
-                    checkListSize = size;
-                    mode.invalidate();
-                    mode.setTitle(String.valueOf(size));
-                    return true;
+                }
+                ClipboardManager cmgr = (ClipboardManager) mChatActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+                if (cmgr != null)
+                    cmgr.setPrimaryClip(ClipData.newPlainText(null, sBuilder));
+                mode.finish();
+                return true;
 
-                case R.id.chat_message_copy:
-                    // Get clicked message text and copy it to ClipBoard
-                    for (int i = 0; i < checkListSize; i++) {
-                        if (checkedList.valueAt(i)) {
-                            cPos = checkedList.keyAt(i) - headerCount;
-                            chatMsg = chatListAdapter.getMessage(cPos);
-                            if (chatMsg != null) {
-                                if (i > 0)
+            case R.id.chat_message_quote:
+                if (chatMsg != null)
+                    mChatController.setQuoteMessage(chatMsg);
+                mode.finish();
+                return true;
+
+            case R.id.chat_message_forward:
+            case R.id.chat_message_share:
+                for (int i = 0; i < checkListSize; i++) {
+                    if (checkedList.valueAt(i)) {
+                        cPos = checkedList.keyAt(i) - headerCount;
+                        cType = chatListAdapter.getItemViewType(cPos);
+                        chatMsg = chatListAdapter.getMessage(cPos);
+                        if (chatMsg != null) {
+                            if ((cType == ChatListAdapter.INCOMING_MESSAGE_VIEW)
+                                    || (cType == ChatListAdapter.OUTGOING_MESSAGE_VIEW)) {
+                                if (sBuilder.length() > 0)
                                     sBuilder.append("\n").append(chatMsg.getContentForClipboard());
                                 else
                                     sBuilder.append(chatMsg.getContentForClipboard());
                             }
-                        }
-                    }
-                    ClipboardManager cmgr = (ClipboardManager) mChatActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-                    if (cmgr != null)
-                        cmgr.setPrimaryClip(ClipData.newPlainText(null, sBuilder));
-                    mode.finish();
-                    return true;
-
-                case R.id.chat_message_quote:
-                    if (chatMsg != null)
-                        mChatController.setQuoteMessage(chatMsg);
-                    mode.finish();
-                    return true;
-
-                case R.id.chat_message_forward:
-                case R.id.chat_message_share:
-                    for (int i = 0; i < checkListSize; i++) {
-                        if (checkedList.valueAt(i)) {
-                            cPos = checkedList.keyAt(i) - headerCount;
-                            cType = chatListAdapter.getItemViewType(cPos);
-                            chatMsg = chatListAdapter.getMessage(cPos);
-                            if (chatMsg != null) {
-                                if ((cType == ChatListAdapter.INCOMING_MESSAGE_VIEW)
-                                        || (cType == ChatListAdapter.OUTGOING_MESSAGE_VIEW)) {
-                                    if (sBuilder.length() > 0)
-                                        sBuilder.append("\n").append(chatMsg.getContentForClipboard());
-                                    else
-                                        sBuilder.append(chatMsg.getContentForClipboard());
-                                }
-                                else if ((cType == ChatListAdapter.FILE_TRANSFER_IN_MESSAGE_VIEW)
-                                        || (cType == ChatListAdapter.FILE_TRANSFER_OUT_MESSAGE_VIEW)) {
-                                    if (chatMsg.getFileRecord() != null) {
-                                        file = chatMsg.getFileRecord().getFile();
-                                        if ((file != null) && file.exists()) {
-                                            imageUris.add(FileBackend.getUriForFile(mChatActivity, file));
-                                        }
+                            else if ((cType == ChatListAdapter.FILE_TRANSFER_IN_MESSAGE_VIEW)
+                                    || (cType == ChatListAdapter.FILE_TRANSFER_OUT_MESSAGE_VIEW)) {
+                                if (chatMsg.getFileRecord() != null) {
+                                    file = chatMsg.getFileRecord().getFile();
+                                    if ((file != null) && file.exists()) {
+                                        imageUris.add(FileBackend.getUriForFile(mChatActivity, file));
                                     }
                                 }
                             }
                         }
                     }
+                }
 
-                    if (R.id.chat_message_forward == item.getItemId()) {
-                        Intent shareIntent = new Intent(mChatActivity, ShareActivity.class);
-                        shareIntent = ShareUtil.shareLocal(mContext, shareIntent, sBuilder.toString(), imageUris);
-                        startActivity(shareIntent);
-                        mode.finish();
-                        // close current chat and show contact/chatRoom list view for content forward
-                        mChatActivity.finish();
-                    }
-                    else {
-                        ShareUtil.share(mChatActivity, sBuilder.toString(), imageUris);
-                        mode.finish();
-                    }
-                    return true;
+                if (R.id.chat_message_forward == item.getItemId()) {
+                    Intent shareIntent = new Intent(mChatActivity, ShareActivity.class);
+                    shareIntent = ShareUtil.shareLocal(mContext, shareIntent, sBuilder.toString(), imageUris);
+                    startActivity(shareIntent);
+                    mode.finish();
+                    // close current chat and show contact/chatRoom list view for content forward
+                    mChatActivity.finish();
+                }
+                else {
+                    ShareUtil.share(mChatActivity, sBuilder.toString(), imageUris);
+                    mode.finish();
+                }
+                return true;
 
-                case R.id.chat_message_del:
-                    List<String> msgUidDel = new ArrayList<>();
-                    List<File> msgFilesDel = new ArrayList<>();
+            case R.id.chat_message_del:
+                List<String> msgUidDel = new ArrayList<>();
+                List<File> msgFilesDel = new ArrayList<>();
 
-                    for (int i = 0; i < checkListSize; i++) {
-                        if (checkedList.valueAt(i)) {
-                            cPos = checkedList.keyAt(i) - headerCount;
-                            cType = chatListAdapter.getItemViewType(cPos);
-                            if ((cType == ChatListAdapter.INCOMING_MESSAGE_VIEW)
-                                    || (cType == ChatListAdapter.OUTGOING_MESSAGE_VIEW)
-                                    || (cType == ChatListAdapter.SYSTEM_MESSAGE_VIEW) // allow delete of system message if any
-                                    || (cType == ChatListAdapter.FILE_TRANSFER_IN_MESSAGE_VIEW)
-                                    || (cType == ChatListAdapter.FILE_TRANSFER_OUT_MESSAGE_VIEW)) {
-                                chatMsg = chatListAdapter.getMessage(cPos);
-                                if (chatMsg != null) {
-                                    if (i == 0) {
-                                        // keep a reference for return to the top of last deleted messages group
-                                        lastDeletedMessageDate = chatMsg.getDate();
-                                    }
+                for (int i = 0; i < checkListSize; i++) {
+                    if (checkedList.valueAt(i)) {
+                        cPos = checkedList.keyAt(i) - headerCount;
+                        cType = chatListAdapter.getItemViewType(cPos);
+                        if ((cType == ChatListAdapter.INCOMING_MESSAGE_VIEW)
+                                || (cType == ChatListAdapter.OUTGOING_MESSAGE_VIEW)
+                                || (cType == ChatListAdapter.SYSTEM_MESSAGE_VIEW) // allow delete of system message if any
+                                || (cType == ChatListAdapter.FILE_TRANSFER_IN_MESSAGE_VIEW)
+                                || (cType == ChatListAdapter.FILE_TRANSFER_OUT_MESSAGE_VIEW)) {
+                            chatMsg = chatListAdapter.getMessage(cPos);
+                            if (chatMsg != null) {
+                                if (i == 0) {
+                                    // keep a reference for return to the top of last deleted messages group
+                                    lastDeletedMessageDate = chatMsg.getDate();
+                                }
 
-                                    // merged messages do not have file contents
-                                    if (chatMsg instanceof MergedMessage) {
-                                        msgUidDel.addAll(((MergedMessage) chatMsg).getMessageUIDs());
-                                    }
-                                    else {
-                                        String msgId = chatMsg.getMessageUID();
-                                        // Cannot delete system messages or room status message which has null msgUuid
-                                        if (StringUtils.isEmpty(msgId))
-                                            continue;
+                                // merged messages do not have file contents
+                                if (chatMsg instanceof MergedMessage) {
+                                    msgUidDel.addAll(((MergedMessage) chatMsg).getMessageUIDs());
+                                }
+                                else {
+                                    String msgId = chatMsg.getMessageUID();
+                                    // Cannot delete system messages or room status message which has null msgUuid
+                                    if (StringUtils.isEmpty(msgId))
+                                        continue;
 
-                                        msgUidDel.add(msgId);
-                                        /*
-                                         * Include only the incoming received media or aTalk created outgoing tmp files
-                                         * OR all voice file for deletion
-                                         */
-                                        if ((cType == ChatListAdapter.FILE_TRANSFER_IN_MESSAGE_VIEW)
-                                                || (cType == ChatListAdapter.FILE_TRANSFER_OUT_MESSAGE_VIEW)) {
-                                            int chatMsgType = chatMsg.getMessageType();
-                                            boolean isSafeDel = (ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE == chatMsgType);
+                                    msgUidDel.add(msgId);
+                                    /*
+                                     * Include only the incoming received media or aTalk created outgoing tmp files
+                                     * OR all voice file for deletion
+                                     */
+                                    if ((cType == ChatListAdapter.FILE_TRANSFER_IN_MESSAGE_VIEW)
+                                            || (cType == ChatListAdapter.FILE_TRANSFER_OUT_MESSAGE_VIEW)) {
+                                        int chatMsgType = chatMsg.getMessageType();
+                                        boolean isSafeDel = (ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE == chatMsgType);
 
-                                            // Received or Sent file is in chatHistory fileRecord
+                                        // Received or Sent file is in chatHistory fileRecord
                                             /*
                                              * Last received file does not get updated into the FileRecord if delete performed immediately after received.
                                             // if (isSafeDel)
                                             //    file = ((FileHttpDownloadConversation) chatListAdapter.getFileXfer(cPos)).getXferFile();
                                             */
-                                            if (chatMsg.getFileRecord() != null) {
-                                                file = chatMsg.getFileRecord().getFile();
-                                                isSafeDel = FileRecord.IN.equals(chatMsg.getFileRecord().getDirection());
-                                                // Not safe, the tmp file may be used for multiple send instances
-                                                // (file.getPath().contains("/tmp/"):
-                                            }
-                                            // OR in chatMsg if yet to be received
-                                            else if ((file = chatListAdapter.getFileName(cPos)) == null) {
-                                                file = new File(chatMsg.getMessage());
-                                            }
+                                        if (chatMsg.getFileRecord() != null) {
+                                            file = chatMsg.getFileRecord().getFile();
+                                            isSafeDel = FileRecord.IN.equals(chatMsg.getFileRecord().getDirection());
+                                            // Not safe, the tmp file may be used for multiple send instances
+                                            // (file.getPath().contains("/tmp/"):
+                                        }
+                                        // OR in chatMsg if yet to be received
+                                        else if ((file = chatListAdapter.getFileName(cPos)) == null) {
+                                            file = new File(chatMsg.getMessage());
+                                        }
 
-                                            // always include any in/out "voice-" file to be deleted
-                                            if (file.exists() && (isSafeDel || file.getName().startsWith("voice-"))) {
-                                                msgFilesDel.add(file);
-                                            }
+                                        // always include any in/out "voice-" file to be deleted
+                                        if (file.exists() && (isSafeDel || file.getName().startsWith("voice-"))) {
+                                            msgFilesDel.add(file);
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                    // Timber.d("Transfer file message delete msgUid: %s; files: %s", msgUidDel, msgFilesDel);
-                    mChatActivity.setEraseMode(EntityListHelper.SINGLE_ENTITY);
-                    EntityListHelper.eraseEntityChatHistory(mChatActivity,
-                            chatPanel.getChatSession().getDescriptor(), msgUidDel, msgFilesDel);
-                    mode.finish();
-                    return true;
+                }
+                // Timber.d("Transfer file message delete msgUid: %s; files: %s", msgUidDel, msgFilesDel);
+                mChatActivity.setEraseMode(EntityListHelper.SINGLE_ENTITY);
+                EntityListHelper.eraseEntityChatHistory(mChatActivity,
+                        chatPanel.getChatSession().getDescriptor(), msgUidDel, msgFilesDel);
+                mode.finish();
+                return true;
 
-                default:
-                    return false;
+            default:
+                return false;
             }
         }
 
@@ -1356,49 +1357,49 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             int messageType = chatMessage.getMessageType();
 
             switch (messageType) {
-                case ChatMessage.MESSAGE_IN:
-                case ChatMessage.MESSAGE_MUC_IN:
-                case ChatMessage.MESSAGE_LOCATION_IN:
-                case ChatMessage.MESSAGE_STATUS:
-                    return INCOMING_MESSAGE_VIEW;
+            case ChatMessage.MESSAGE_IN:
+            case ChatMessage.MESSAGE_MUC_IN:
+            case ChatMessage.MESSAGE_LOCATION_IN:
+            case ChatMessage.MESSAGE_STATUS:
+                return INCOMING_MESSAGE_VIEW;
 
-                case ChatMessage.MESSAGE_OUT:
-                case ChatMessage.MESSAGE_LOCATION_OUT:
-                case ChatMessage.MESSAGE_MUC_OUT:
-                    String sessionCorrUID = chatPanel.getCorrectionUID();
-                    String msgCorrUID = chatMessage.getUidForCorrection();
-                    if (sessionCorrUID != null && sessionCorrUID.equals(msgCorrUID)) {
-                        return CORRECTED_MESSAGE_VIEW;
-                    }
-                    else {
-                        return OUTGOING_MESSAGE_VIEW;
-                    }
+            case ChatMessage.MESSAGE_OUT:
+            case ChatMessage.MESSAGE_LOCATION_OUT:
+            case ChatMessage.MESSAGE_MUC_OUT:
+                String sessionCorrUID = chatPanel.getCorrectionUID();
+                String msgCorrUID = chatMessage.getUidForCorrection();
+                if (sessionCorrUID != null && sessionCorrUID.equals(msgCorrUID)) {
+                    return CORRECTED_MESSAGE_VIEW;
+                }
+                else {
+                    return OUTGOING_MESSAGE_VIEW;
+                }
 
-                case ChatMessage.MESSAGE_SYSTEM:
-                    return SYSTEM_MESSAGE_VIEW;
+            case ChatMessage.MESSAGE_SYSTEM:
+                return SYSTEM_MESSAGE_VIEW;
 
-                case ChatMessage.MESSAGE_ERROR:
-                    return ERROR_MESSAGE_VIEW;
+            case ChatMessage.MESSAGE_ERROR:
+                return ERROR_MESSAGE_VIEW;
 
-                case ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE:
-                case ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD:
+            case ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE:
+            case ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD:
+                return FILE_TRANSFER_IN_MESSAGE_VIEW;
+
+            case ChatMessage.MESSAGE_FILE_TRANSFER_SEND:
+            case ChatMessage.MESSAGE_STICKER_SEND:
+                return FILE_TRANSFER_OUT_MESSAGE_VIEW;
+
+            case ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY:
+                FileRecord fileRecord = chatMessage.getFileRecord();
+                if ((fileRecord == null) || FileRecord.IN.equals(fileRecord.getDirection())) {
                     return FILE_TRANSFER_IN_MESSAGE_VIEW;
-
-                case ChatMessage.MESSAGE_FILE_TRANSFER_SEND:
-                case ChatMessage.MESSAGE_STICKER_SEND:
+                }
+                else {
                     return FILE_TRANSFER_OUT_MESSAGE_VIEW;
+                }
 
-                case ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY:
-                    FileRecord fileRecord = chatMessage.getFileRecord();
-                    if ((fileRecord == null) || FileRecord.IN.equals(fileRecord.getDirection())) {
-                        return FILE_TRANSFER_IN_MESSAGE_VIEW;
-                    }
-                    else {
-                        return FILE_TRANSFER_OUT_MESSAGE_VIEW;
-                    }
-
-                default: // Default others to INCOMING_MESSAGE_VIEW
-                    return INCOMING_MESSAGE_VIEW;
+            default: // Default others to INCOMING_MESSAGE_VIEW
+                return INCOMING_MESSAGE_VIEW;
             }
         }
 
@@ -1486,68 +1487,68 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 LayoutInflater inflater = mChatActivity.getLayoutInflater();
                 int msgType = chatMessage.getMessageType();
                 switch (msgType) {
-                    case ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE:
-                        opSet = chatMessage.getOpSet();
-                        request = chatMessage.getFTRequest();
-                        sendFrom = chatMessage.getSender();
-                        date = chatMessage.getDate();
+                case ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE:
+                    opSet = chatMessage.getOpSet();
+                    request = chatMessage.getFTRequest();
+                    sendFrom = chatMessage.getSender();
+                    date = chatMessage.getDate();
 
-                        FileReceiveConversation fileXferR = (FileReceiveConversation) getFileXfer(position);
-                        if (fileXferR == null) {
-                            fileXferR = FileReceiveConversation.newInstance(currentChatFragment, sendFrom,
-                                    opSet, request, date);
-                            setFileXfer(position, fileXferR);
+                    FileReceiveConversation fileXferR = (FileReceiveConversation) getFileXfer(position);
+                    if (fileXferR == null) {
+                        fileXferR = FileReceiveConversation.newInstance(currentChatFragment, sendFrom,
+                                opSet, request, date);
+                        setFileXfer(position, fileXferR);
+                    }
+                    viewTemp = fileXferR.ReceiveFileConversationForm(inflater, messageViewHolder, parent, position, init);
+                    break;
+
+                case ChatMessage.MESSAGE_FILE_TRANSFER_SEND:
+                case ChatMessage.MESSAGE_STICKER_SEND:
+                    fileName = chatMessage.getMessage();
+                    sendTo = chatMessage.getSender();
+
+                    FileSendConversation fileXferS = (FileSendConversation) getFileXfer(position);
+                    if (fileXferS == null) {
+                        fileXferS = FileSendConversation.newInstance(currentChatFragment, msgUuid, sendTo, fileName,
+                                mChatType, (msgType == ChatMessage.MESSAGE_STICKER_SEND));
+                        setFileXfer(position, fileXferS);
+                    }
+                    viewTemp = fileXferS.SendFileConversationForm(inflater, messageViewHolder, parent, position, init);
+                    break;
+
+                case ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY:
+                    fileRecord = msgDisplay.getFileRecord();
+                    FileHistoryConversation fileXferH
+                            = FileHistoryConversation.newInstance(currentChatFragment, fileRecord, chatMessage);
+                    viewTemp = fileXferH.FileHistoryConversationForm(inflater, messageViewHolder, parent, init);
+                    break;
+
+                case ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD:
+                    sendFrom = chatMessage.getSender();
+                    date = chatMessage.getDate();
+                    HttpFileDownloadJabberImpl httpFileTransfer = chatMessage.getHttpFileTransfer();
+                    if (httpFileTransfer == null) {
+                        String dnLink = chatMessage.getMessage();
+                        if (FileBackend.isHttpFileDnLink(dnLink)) {
+                            Contact contact = getContact(sendFrom);
+                            httpFileTransfer = new HttpFileDownloadJabberImpl(contact, msgUuid, dnLink);
+
+                            // Save a copy into the chatMessage for later retrieval
+                            ((ChatMessageImpl) chatMessage).setHttpFileTransfer(httpFileTransfer);
                         }
-                        viewTemp = fileXferR.ReceiveFileConversationForm(inflater, messageViewHolder, parent, position, init);
-                        break;
+                    }
 
-                    case ChatMessage.MESSAGE_FILE_TRANSFER_SEND:
-                    case ChatMessage.MESSAGE_STICKER_SEND:
-                        fileName = chatMessage.getMessage();
-                        sendTo = chatMessage.getSender();
-
-                        FileSendConversation fileXferS = (FileSendConversation) getFileXfer(position);
-                        if (fileXferS == null) {
-                            fileXferS = FileSendConversation.newInstance(currentChatFragment, msgUuid, sendTo, fileName,
-                                    mChatType, (msgType == ChatMessage.MESSAGE_STICKER_SEND));
-                            setFileXfer(position, fileXferS);
-                        }
-                        viewTemp = fileXferS.SendFileConversationForm(inflater, messageViewHolder, parent, position, init);
-                        break;
-
-                    case ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY:
-                        fileRecord = msgDisplay.getFileRecord();
-                        FileHistoryConversation fileXferH
-                                = FileHistoryConversation.newInstance(currentChatFragment, fileRecord, chatMessage);
-                        viewTemp = fileXferH.FileHistoryConversationForm(inflater, messageViewHolder, parent, init);
-                        break;
-
-                    case ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD:
-                        sendFrom = chatMessage.getSender();
-                        date = chatMessage.getDate();
-                        HttpFileDownloadJabberImpl httpFileTransfer = chatMessage.getHttpFileTransfer();
-                        if (httpFileTransfer == null) {
-                            String dnLink = chatMessage.getMessage();
-                            if (FileBackend.isHttpFileDnLink(dnLink)) {
-                                Contact contact = getContact(sendFrom);
-                                httpFileTransfer = new HttpFileDownloadJabberImpl(contact, msgUuid, dnLink);
-
-                                // Save a copy into the chatMessage for later retrieval
-                                ((ChatMessageImpl) chatMessage).setHttpFileTransfer(httpFileTransfer);
-                            }
-                        }
-
-                        FileHttpDownloadConversation fileDownloadForm = (FileHttpDownloadConversation) getFileXfer(position);
-                        if (fileDownloadForm == null && httpFileTransfer != null) {
-                            fileDownloadForm = FileHttpDownloadConversation.newInstance(currentChatFragment,
-                                    sendFrom, httpFileTransfer, date);
-                        }
-                        if (fileDownloadForm != null) {
-                            setFileXfer(position, fileDownloadForm);
-                            viewTemp = fileDownloadForm.HttpFileDownloadConversionForm(inflater, messageViewHolder,
-                                    parent, position, init);
-                        }
-                        break;
+                    FileHttpDownloadConversation fileDownloadForm = (FileHttpDownloadConversation) getFileXfer(position);
+                    if (fileDownloadForm == null && httpFileTransfer != null) {
+                        fileDownloadForm = FileHttpDownloadConversation.newInstance(currentChatFragment,
+                                sendFrom, httpFileTransfer, date);
+                    }
+                    if (fileDownloadForm != null) {
+                        setFileXfer(position, fileDownloadForm);
+                        viewTemp = fileDownloadForm.HttpFileDownloadConversionForm(inflater, messageViewHolder,
+                                parent, position, init);
+                    }
+                    break;
                 }
                 if (init) {
                     convertView = viewTemp;
@@ -1739,39 +1740,40 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             ChatRoomMember finalOccupant = mOccupant;
             popup.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
-                    case R.id.chatroom_start_im:
-                        Contact contact = getContact(contactJid);
-                        Intent chatIntent = ChatSessionManager.getChatIntent(contact);
-                        if (chatIntent != null) {
-                            startActivity(chatIntent);
-                        }
-                        else {
-                            aTalkApp.showToastMessage(R.string.send_message_not_supported, contactJid);
-                            // Show ContactList UI for user selection if groupChat contact is anonymous.
-                            Intent intent = new Intent(mContext, aTalk.class);
-                            intent.setAction(Intent.ACTION_SENDTO);
-                            startActivity(intent);
-                        }
-                        break;
+                case R.id.chatroom_start_im:
+                    Contact contact = getContact(contactJid);
+                    Intent chatIntent = ChatSessionManager.getChatIntent(contact);
+                    if (chatIntent != null) {
+                        startActivity(chatIntent);
+                    }
+                    else {
+                        aTalkApp.showToastMessage(R.string.send_message_not_supported, contactJid);
+                        // Show ContactList UI for user selection if groupChat contact is anonymous.
+                        Intent intent = new Intent(mContext, aTalk.class);
+                        intent.setAction(Intent.ACTION_SENDTO);
+                        startActivity(intent);
+                    }
+                    break;
 
-                    case R.id.chatroom_manage_privilege:
-                        if (ChatRoomMemberRole.OWNER == finalOccupant.getRole()) {
-                            chatRoom.revokeAdmin(contactJid);
+                case R.id.chatroom_manage_privilege:
+                    if (ChatRoomMemberRole.OWNER == finalOccupant.getRole()) {
+                        chatRoom.revokeAdmin(contactJid);
 
-                        }
-                        else {
-                            chatRoom.grantOwnership(contactJid);
-                        }
-                        break;
+                    }
+                    else {
+                        chatRoom.grantOwnership(contactJid);
+                    }
+                    break;
 
-                    case R.id.chatroom_kick:
-                        try {
-                            chatRoom.kickParticipant(finalOccupant, "");
-                        } catch (OperationFailedException e) {
-                            // throw new RuntimeException(e);
-                            aTalkApp.showToastMessage(e.getMessage());
-                        }
-                        break;
+                case R.id.chatroom_kick:
+                    try {
+                        chatRoom.kickParticipant(finalOccupant, "");
+                    }
+                    catch (OperationFailedException e) {
+                        // throw new RuntimeException(e);
+                        aTalkApp.showToastMessage(e.getMessage());
+                    }
+                    break;
                 }
                 return true;
             });
@@ -2032,7 +2034,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
 
                             hasLatLng = true;
                             mLocation = new double[]{Double.parseDouble(sLat), Double.parseDouble(sLng), Double.parseDouble(sAlt)};
-                        } catch (NumberFormatException ex) {
+                        }
+                        catch (NumberFormatException ex) {
                             Timber.w("GeoLocationActivity Number Format Exception %s: ", ex.getMessage());
                         }
                     }
@@ -2152,7 +2155,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                             if (!msgBody.toString().matches("(?s)^aesgcm:.*")) {
                                 Linkify.addLinks((Spannable) msgBody, Linkify.ALL);
                             }
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex) {
                             Timber.w("Error in Linkify process: %s", msgBody);
                         }
                     }
@@ -2308,24 +2312,23 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
         }
 
         public void execute() {
-            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                eService.execute(() -> {
-                    List<ChatMessage> chatMessages = chatPanel.getHistory(init);
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            eService.execute(() -> {
+                List<ChatMessage> chatMessages = chatPanel.getHistory(init);
 
-                    runOnUiThread(() -> {
-                        chatListAdapter.prependMessages(chatMessages);
+                runOnUiThread(() -> {
+                    chatListAdapter.prependMessages(chatMessages);
 
-                        header.setVisibility(View.GONE);
-                        chatListAdapter.notifyDataSetChanged();
-                        loadHistoryTask = null;
+                    header.setVisibility(View.GONE);
+                    chatListAdapter.notifyDataSetChanged();
+                    loadHistoryTask = null;
 
-                        int loaded = chatListAdapter.getCount() - preSize;
-                        int scrollTo = loaded + scrollFirstVisible;
-                        chatListView.setSelectionFromTop(scrollTo, scrollTopOffset);
-                    });
+                    int loaded = chatListAdapter.getCount() - preSize;
+                    int scrollTo = loaded + scrollFirstVisible;
+                    chatListView.setSelectionFromTop(scrollTo, scrollTopOffset);
                 });
-                eService.shutdown();
-            }
+            });
+            eService.shutdown();
         }
     }
 
@@ -2390,18 +2393,18 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
         runOnUiThread(() -> {
             if (receiptStatusView != null) {
                 switch (deliveryStatus) {
-                    case ChatMessage.MESSAGE_DELIVERY_NONE:
-                        receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_queued);
-                        break;
-                    case ChatMessage.MESSAGE_DELIVERY_RECEIPT:
-                        receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_read);
-                        break;
-                    case ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT:
-                        receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_sent_client);
-                        break;
-                    case ChatMessage.MESSAGE_DELIVERY_SERVER_SENT:
-                        receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_sent_server);
-                        break;
+                case ChatMessage.MESSAGE_DELIVERY_NONE:
+                    receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_queued);
+                    break;
+                case ChatMessage.MESSAGE_DELIVERY_RECEIPT:
+                    receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_read);
+                    break;
+                case ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT:
+                    receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_sent_client);
+                    break;
+                case ChatMessage.MESSAGE_DELIVERY_SERVER_SENT:
+                    receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_sent_server);
+                    break;
                 }
             }
         });
@@ -2416,12 +2419,12 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
     private void setEncState(ImageView encStateView, int encType) {
         runOnUiThread(() -> {
             switch (encType) {
-                case IMessage.ENCRYPTION_NONE:
-                    encStateView.setImageResource(R.drawable.encryption_none);
-                    break;
-                case IMessage.ENCRYPTION_OMEMO:
-                    encStateView.setImageResource(R.drawable.encryption_omemo);
-                    break;
+            case IMessage.ENCRYPTION_NONE:
+                encStateView.setImageResource(R.drawable.encryption_none);
+                break;
+            case IMessage.ENCRYPTION_OMEMO:
+                encStateView.setImageResource(R.drawable.encryption_omemo);
+                break;
             }
         });
     }
@@ -2442,36 +2445,36 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 ImageView chatStateImgView = chatStateView.findViewById(R.id.chatStateImageView);
 
                 switch (chatState) {
-                    case composing:
-                        Drawable chatStateDrawable = chatStateImgView.getDrawable();
-                        if (!(chatStateDrawable instanceof AnimationDrawable)) {
-                            chatStateImgView.setImageResource(R.drawable.chat_state_anim);
-                            chatStateDrawable = chatStateImgView.getDrawable();
-                        }
+                case composing:
+                    Drawable chatStateDrawable = chatStateImgView.getDrawable();
+                    if (!(chatStateDrawable instanceof AnimationDrawable)) {
+                        chatStateImgView.setImageResource(R.drawable.chat_state_anim);
+                        chatStateDrawable = chatStateImgView.getDrawable();
+                    }
 
-                        if (!((AnimationDrawable) chatStateDrawable).isRunning()) {
-                            AnimationDrawable animatedDrawable = (AnimationDrawable) chatStateDrawable;
-                            animatedDrawable.setOneShot(false);
-                            animatedDrawable.start();
-                        }
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.contact_composing, sender));
-                        break;
-                    case paused:
-                        chatStateImgView.setImageResource(R.drawable.typing1);
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.contact_pause_typing, sender));
-                        break;
-                    case active:
-                        chatStateImgView.setImageResource(R.drawable.global_ffc);
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.contact_active, sender));
-                        break;
-                    case inactive:
-                        chatStateImgView.setImageResource(R.drawable.global_away);
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.contact_inactive, sender));
-                        break;
-                    case gone:
-                        chatStateImgView.setImageResource(R.drawable.global_extended_away);
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.contact_gone, sender));
-                        break;
+                    if (!((AnimationDrawable) chatStateDrawable).isRunning()) {
+                        AnimationDrawable animatedDrawable = (AnimationDrawable) chatStateDrawable;
+                        animatedDrawable.setOneShot(false);
+                        animatedDrawable.start();
+                    }
+                    chatStateTextView.setText(aTalkApp.getResString(R.string.contact_composing, sender));
+                    break;
+                case paused:
+                    chatStateImgView.setImageResource(R.drawable.typing1);
+                    chatStateTextView.setText(aTalkApp.getResString(R.string.contact_pause_typing, sender));
+                    break;
+                case active:
+                    chatStateImgView.setImageResource(R.drawable.global_ffc);
+                    chatStateTextView.setText(aTalkApp.getResString(R.string.contact_active, sender));
+                    break;
+                case inactive:
+                    chatStateImgView.setImageResource(R.drawable.global_away);
+                    chatStateTextView.setText(aTalkApp.getResString(R.string.contact_inactive, sender));
+                    break;
+                case gone:
+                    chatStateImgView.setImageResource(R.drawable.global_extended_away);
+                    chatStateTextView.setText(aTalkApp.getResString(R.string.contact_gone, sender));
+                    break;
                 }
                 chatStateImgView.getLayoutParams().height = LayoutParams.WRAP_CONTENT;
                 chatStateImgView.setPadding(7, 0, 7, 7);
@@ -2483,8 +2486,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
         });
     }
 
-    // ********************************************************************************************//
-    // Routines supporting File Transfer
+// ********************************************************************************************//
+// Routines supporting File Transfer
 
     /**
      * Cancels all active file transfers.
@@ -2505,7 +2508,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 else if (descriptor instanceof FileTransfer) {
                     ((FileTransfer) descriptor).cancel();
                 }
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 Timber.e(t, "Error in cancel active file transfer: %s", key);
             }
         }
@@ -2580,7 +2584,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 try {
                     chatPanel.getChatSession().getCurrentChatTransport().sendInstantMessage(msg,
                             IMessage.ENCRYPTION_NONE | IMessage.ENCODE_PLAIN);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     aTalkApp.showToastMessage(e.getMessage());
                 }
             }
@@ -2643,20 +2648,19 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
         }
 
         public void execute() {
-            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                eService.execute(() -> {
-                    final Exception ex = doInBackground();
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            eService.execute(() -> {
+                final Exception ex = doInBackground();
 
-                    runOnUiThread(() -> {
-                        if (ex != null) {
-                            Timber.e("Failed to send file: %s", ex.getMessage());
-                            chatPanel.addMessage(currentChatTransport.getName(), new Date(), ChatMessage.MESSAGE_ERROR,
-                                    IMessage.ENCODE_PLAIN, aTalkApp.getResString(R.string.file_delivery_error, ex.getMessage()));
-                        }
-                    });
+                runOnUiThread(() -> {
+                    if (ex != null) {
+                        Timber.e("Failed to send file: %s", ex.getMessage());
+                        chatPanel.addMessage(currentChatTransport.getName(), new Date(), ChatMessage.MESSAGE_ERROR,
+                                IMessage.ENCODE_PLAIN, aTalkApp.getResString(R.string.file_delivery_error, ex.getMessage()));
+                    }
                 });
-                eService.shutdown();
-            }
+            });
+            eService.shutdown();
         }
 
         private Exception doInBackground() {
@@ -2706,7 +2710,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                         mChatController.sendMessage(urlLink, encType, msgUuid);
                     }
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 result = e;
                 sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED, entityJid, mEncryption, e.getMessage());
             }
@@ -2727,9 +2732,10 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
      * - User changes cryptoMode for the current chatSession
      */
     @Override
-    public void onCryptoModeChange(int chatType) {
+    public void onCryptoModeChange(OmemoManager manager, int chatType) {
         chatPanel.setChatType(chatType);
         changeBackground(mCFView, chatType);
+        mChatActivity.onChatSessionChange(manager.isOmemo2Enable() && chatPanel.isOmemoChat(), mChatMetaContact);
     }
 
     /**
@@ -2746,19 +2752,19 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
 
         runOnUiThread(() -> {
             switch (chatType) {
-                case MSGTYPE_OMEMO:
-                    focusView.setBackgroundResource(R.color.chat_background_omemo);
-                    break;
-                case MSGTYPE_OMEMO_UA:
-                case MSGTYPE_OMEMO_UT:
-                    focusView.setBackgroundResource(R.color.chat_background_omemo_ua);
-                    break;
-                case MSGTYPE_MUC_NORMAL:
-                    focusView.setBackgroundResource(R.color.chat_background_muc);
-                    break;
-                case MSGTYPE_NORMAL:
-                default:
-                    focusView.setBackgroundResource(R.color.chat_background_normal);
+            case MSGTYPE_OMEMO:
+                focusView.setBackgroundResource(R.color.chat_background_omemo);
+                break;
+            case MSGTYPE_OMEMO_UA:
+            case MSGTYPE_OMEMO_UT:
+                focusView.setBackgroundResource(R.color.chat_background_omemo_ua);
+                break;
+            case MSGTYPE_MUC_NORMAL:
+                focusView.setBackgroundResource(R.color.chat_background_muc);
+                break;
+            case MSGTYPE_NORMAL:
+            default:
+                focusView.setBackgroundResource(R.color.chat_background_normal);
             }
         });
     }

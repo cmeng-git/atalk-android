@@ -1341,6 +1341,12 @@
 
     <!-- OMEMO security category-->
     <string name="omemo_messaging_security">Bezpečnosť správ OMEMO</string>
+    <!-- OMEMO:2 Enable screen -->
+    <string name="omemo2_access_mode">omemo:2 Model dostopa</string>
+    <string name="omemo2_enable">Omogoči podporo za omemo:2</string>
+    <string name="omemo2_optout">Odjava od klepeta OMEMO</string>
+    <string name="omemo2_optout_reason">Odjava od klepeta OMEMO.\n Žal mi je, zaradi skladnosti s predpisi potrebujem trajen zapis našega pogovora na strani strežnika.</string>
+    <string name="omemo2_summary">Podpora za imenski prostor elementov XEP-0384 OMEMO: \'urn:xmpp:omemo:2\'</string>
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">Slepá dôvera pred overením</string>
     <string name="omemo_blind_trust_before_verification_summary">Automaticky veriť všetkým novým zariadeniam kontaktov, ktoré ešte neboli overené; výzva na manuálne potvrdenie, keď overený kontakt pridá nové zariadenia.</string>

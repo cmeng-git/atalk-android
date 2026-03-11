@@ -31,6 +31,19 @@
     <PreferenceCategory
         android:key="pref.cat.jbr.advanced"
         android:title="@string/advanced">
+
+        <CheckBoxPreference
+            android:key="pref_key_omemo2_enable"
+            android:summary="@string/omemo2_summary"
+            android:title="@string/omemo2_enable" />
+
+        <ListPreference
+            android:dependency="pref_key_omemo2_enable"
+            android:entries="@array/omemo2_access_model"
+            android:entryValues="@array/omemo2_access_model_value"
+            android:key="pref_key_omemo2_access_model"
+            android:title="@string/omemo2_access_mode" />
+
         <Preference
             android:key="pref_key_enable_encryption"
             android:title="@string/call_encryption" />

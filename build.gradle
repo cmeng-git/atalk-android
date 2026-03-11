@@ -6,9 +6,8 @@ buildscript {
     }
 
     dependencies {
-        // gradle:4.2.2': [Build | Generate Sigbed Bundle / APL...], build has error i.e.
-        // i.e. aTalk/build/jarjar (Is a directory); but resolved with gradle: >=7.4.2'
-        // gradle-8.x requires JVM 17
+        // Otter | 2025.2.1	only compatible with 8.13
+        // Narwhal | 2025.1.1 only compatible with gradle-8.11.x
         classpath 'com.android.tools.build:gradle:8.11.2'
 
         // Required by android-youtube-player

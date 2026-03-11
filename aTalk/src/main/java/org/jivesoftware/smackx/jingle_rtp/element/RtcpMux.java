@@ -33,7 +33,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  */
 public class RtcpMux extends AbstractXmlElement {
     /**
-     * The name of the "encryption" element.
+     * The name of the "rtcp-mux" element.
      */
     public static final String ELEMENT = "rtcp-mux";
 

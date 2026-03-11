@@ -232,6 +232,16 @@ import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.nick.packet.Nick;
 import org.jivesoftware.smackx.nick.provider.NickProvider;
+import org.jivesoftware.smackx.omemo.element.OmemoBundleElement;
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement_VOmemo;
+import org.jivesoftware.smackx.omemo.element.OmemoElement;
+import org.jivesoftware.smackx.omemo.element.OmemoElement_VOmemo;
+import org.jivesoftware.smackx.omemo.element.OmemoOptOutElement;
+import org.jivesoftware.smackx.omemo.provider.OmemoBundleVOmemoProvider;
+import org.jivesoftware.smackx.omemo.provider.OmemoDeviceListVOmemoProvider;
+import org.jivesoftware.smackx.omemo.provider.OmemoOptOutProvider;
+import org.jivesoftware.smackx.omemo.provider.OmemoVOmemoProvider;
+import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.oob.packet.OutOfBandData;
 import org.jivesoftware.smackx.oob.provider.OutOfBandDataProvider;
 import org.jivesoftware.smackx.ping.PingFailedListener;
@@ -240,6 +250,8 @@ import org.jivesoftware.smackx.receipts.DeliveryReceipt;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager.AutoReceiptMode;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
+import org.jivesoftware.smackx.stanza_content_encryption.element.EnvelopeElement;
+import org.jivesoftware.smackx.stanza_content_encryption.provider.EnvelopeElementProvider;
 import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
@@ -706,7 +718,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      *
      * @param authority the security authority that will be used for resolving any security challenges that
      * may be returned during the registration or at any moment while we're registered.
-     *
      * @throws OperationFailedException with the corresponding code it the registration fails for some reason
      * (e.g. a networking error or an implementation problem).
      */
@@ -840,7 +851,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      *
      * @param authority SecurityAuthority
      * @param reasonCode the authentication reason code. Indicates the reason of this authentication.
-     *
      * @throws XMPPException if we cannot connect to the server - network problem
      * @throws OperationFailedException if login parameters as server port are not correct
      */
@@ -999,7 +1009,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      *
      * @param userName the username to use
      * @param loginStrategy the login strategy to use
-     *
      * @return return the state how to continue the connect process.
      *
      * @throws XMPPException & SmackException if we cannot connect for some reason
@@ -1716,7 +1725,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      *
      * @param serviceName the service name
      * @param cvs The CertificateVerificationService to retrieve the trust manager
-     *
      * @return the trust manager
      */
 
@@ -2260,7 +2268,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      *
      * @param screenName the account id/uin/screenName of the account that we're about to create
      * @param accountID the identifier of the account that this protocol provider represents.
-     *
      * @see net.java.sip.communicator.service.protocol.AccountID
      */
     protected void initialize(EntityBareJid screenName, JabberAccountID accountID) {
@@ -2363,6 +2370,15 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             // XEP-0158: CAPTCHA Forms
             ProviderManager.addExtensionProvider(CaptchaExtension.ELEMENT, CaptchaExtension.NAMESPACE, new CaptchaProvider());
+
+            // XEP-0384 v0.9.0: OMEMO Encryption
+            ProviderManager.addExtensionProvider(OmemoElement.NAME_ENCRYPTED, OmemoElement_VOmemo.NAMESPACE, new OmemoVOmemoProvider());
+            ProviderManager.addExtensionProvider(OmemoDeviceListElement_VOmemo.DEVICES, OmemoConstants.OMEMO_NAMESPACE_V_OMEMO, new OmemoDeviceListVOmemoProvider());
+            ProviderManager.addExtensionProvider(OmemoBundleElement.BUNDLE, OmemoConstants.OMEMO_NAMESPACE_V_OMEMO, new OmemoBundleVOmemoProvider());
+
+            // XEP-0420 v4.1.0 Stanza Content Encryption
+            ProviderManager.addExtensionProvider(EnvelopeElement.ELEMENT, EnvelopeElement.NAMESPACE, new EnvelopeElementProvider());
+            ProviderManager.addExtensionProvider(OmemoOptOutElement.ELEMENT, OmemoOptOutElement.NAMESPACE, new OmemoOptOutProvider());
 
             // in case of modified account, we clear list of supported features and all state
             // change listeners, otherwise we can have two OperationSet for same feature and it
@@ -2565,7 +2581,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * <li>is the error message if applicable</li>
      * <li>a suggested correction. Index 1 is optional and can only be present if there was a validation failure.</li>
      * </ol>
-     *
      * @return true if the contact id is valid, false otherwise
      */
     @Override
@@ -2640,7 +2655,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      *
      * @param ex the <code>Exception</code> which is to be determined whether it signals
      * that attempted authentication has failed
-     *
      * @return if the specified <code>ex</code> signals that attempted authentication is
      * known' otherwise <code>SecurityAuthority.REASON_UNKNOWN</code> is returned.
      *
@@ -2787,7 +2801,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * @param jid the jabber id for which to check;
      * Jid must be FullJid unless it is for service e.g. proxy.atalk.org, conference.atalk.org
      * @param features the list of features to check for
-     *
      * @return <code>true</code> if the list of features is supported; otherwise, <code>false</code>
      */
     public boolean isFeatureListSupported(Jid jid, String... features) {
@@ -2809,7 +2822,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      *
      * @param jid the jabber id that we'd like to get information about
      * @param feature the feature to check for
-     *
      * @return <code>true</code> if the list of features is supported, otherwise returns <code>false</code>
      */
     public boolean isFeatureSupported(Jid jid, String feature) {
@@ -2821,7 +2833,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * connected then just returns the given jid (BareJid).
      *
      * @param contact the contact, for which we're looking for a full jid
-     *
      * @return the jid of the specified contact or bareJid if the provider is not yet connected;
      */
     public Jid getFullJidIfPossible(Contact contact) {
@@ -2833,7 +2844,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * connected then just returns the given jid (BareJid).
      *
      * @param jid the contact jid (i.e. usually without resource) whose full jid we are looking for.
-     *
      * @return the jid of the specified contact or bareJid if the provider is not yet connected;
      */
     public Jid getFullJidIfPossible(Jid jid) {
@@ -2880,7 +2890,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
          *
          * @param chain the cert chain.
          * @param authType authentication type like: RSA.
-         *
          * @throws CertificateException never
          * @throws UnsupportedOperationException always
          */
@@ -2919,7 +2928,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
          *
          * @param chain the certificate chain.
          * @param authType authentication type like: RSA.
-         *
          * @throws CertificateException not trusted.
          */
         public void checkServerTrusted(X509Certificate[] chain, String authType)
@@ -3069,7 +3077,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * @param errorCode the error code to be assigned to the new <code>OperationFailedException</code>
      * @param cause the <code>Throwable</code> that has caused the necessity to log an error and have a new
      * <code>OperationFailedException</code> thrown
-     *
      * @throws OperationFailedException the exception that we wanted this method to throw.
      */
     public static void throwOperationFailedException(String message, int errorCode, Throwable cause)
@@ -3111,7 +3118,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Returns true if our account is a Gmail or a Google Apps ones.
      *
      * @param domain domain to check
-     *
      * @return true if our account is a Gmail or a Google Apps ones.
      */
     public static boolean isGmailOrGoogleAppsAccount(String domain) {

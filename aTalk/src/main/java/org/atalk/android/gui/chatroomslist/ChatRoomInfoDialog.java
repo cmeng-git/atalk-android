@@ -85,16 +85,15 @@ public class ChatRoomInfoDialog extends BaseDialogFragment {
         String errMsg;
 
         public void execute() {
-            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                eService.execute(() -> {
-                    final RoomInfo roomInfo = doInBackground();
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            eService.execute(() -> {
+                final RoomInfo roomInfo = doInBackground();
 
-                    runOnUiThread(() -> {
-                        onPostExecute(roomInfo);
-                    });
+                runOnUiThread(() -> {
+                    onPostExecute(roomInfo);
                 });
-                eService.shutdown();
-            }
+            });
+            eService.shutdown();
         }
 
         private RoomInfo doInBackground() {
@@ -106,10 +105,12 @@ public class ChatRoomInfoDialog extends BaseDialogFragment {
                 MultiUserChatManager mucManager = MultiUserChatManager.getInstanceFor(pps.getConnection());
                 try {
                     return mucManager.getRoomInfo(entityBareJid);
-                } catch (SmackException.NoResponseException | SmackException.NotConnectedException
-                         | InterruptedException e) {
+                }
+                catch (SmackException.NoResponseException | SmackException.NotConnectedException
+                       | InterruptedException e) {
                     errMsg = e.getMessage();
-                } catch (XMPPException.XMPPErrorException e) {
+                }
+                catch (XMPPException.XMPPErrorException e) {
                     String descriptiveText = e.getStanzaError().getDescriptiveText() + "\n";
                     errMsg = descriptiveText + e.getMessage();
                 }
@@ -147,7 +148,8 @@ public class ChatRoomInfoDialog extends BaseDialogFragment {
                     List<EntityBareJid> contactJids = chatRoomInfo.getContactJids();
                     if (!contactJids.isEmpty())
                         textView.setText(contactJids.get(0));
-                } catch (NullPointerException e) {
+                }
+                catch (NullPointerException e) {
                     Timber.e("Contact Jids exception: %s", e.getMessage());
                 }
 

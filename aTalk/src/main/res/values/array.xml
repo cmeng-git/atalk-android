@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string-array name="pref_sip_preferred_transport">
         <item>UDP</item>
@@ -87,6 +87,23 @@
         <item>HTTP</item>
         <item>SOCKS4</item>
         <item>SOCKS5</item>
+    </string-array>
+
+    <string-array name="omemo2_access_model">
+        <item>NONE - unsupported by server</item>
+        <item>Open</item>
+        <item>Presence</item>
+        <item>Roster</item>
+        <item>Authorize</item>
+        <item>Whitelist</item>
+    </string-array>
+    <string-array name="omemo2_access_model_value">
+        <item>none</item>
+        <item>open</item>
+        <item>presence</item>
+        <item>roster</item>
+        <item>authorize</item>
+        <item>whitelist</item>
     </string-array>
 
     <string-array name="dnssec_Mode_name">
@@ -407,7 +424,7 @@
         <item>TLSv1.3</item>
         <item>TLSv1.2</item>
         <item>TLSv1.1</item>
-        <item>TLSv1</item>
+        <item tools:ignore="Typos">TLSv1</item>
     </string-array>
 
     <string-array name="TURN_protocol">

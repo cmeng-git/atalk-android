@@ -134,7 +134,8 @@ public class FileReceiveConversation extends FileTransferConversation
 
             try {
                 fileTransferRequest.declineFile();
-            } catch (OperationFailedException e) {
+            }
+            catch (OperationFailedException e) {
                 Timber.e("Decline file exception: %s", e.getMessage());
             }
             // need to update status here as chatFragment statusListener is enabled for
@@ -169,48 +170,48 @@ public class FileReceiveConversation extends FileTransferConversation
         String statusText = null;
 
         switch (status) {
-            case FileTransferStatusChangeEvent.PREPARING:
-                // hideProgressRelatedComponents();
-                statusText = aTalkApp.getResString(R.string.file_transfer_preparing, mSender);
-                break;
+        case FileTransferStatusChangeEvent.PREPARING:
+            // hideProgressRelatedComponents();
+            statusText = aTalkApp.getResString(R.string.file_transfer_preparing, mSender);
+            break;
 
-            case FileTransferStatusChangeEvent.WAITING:
-                statusText = aTalkApp.getResString(R.string.file_transfer_request_received, mSender);
-                break;
+        case FileTransferStatusChangeEvent.WAITING:
+            statusText = aTalkApp.getResString(R.string.file_transfer_request_received, mSender);
+            break;
 
-            case FileTransferStatusChangeEvent.ACCEPT:
-                statusText = aTalkApp.getResString(R.string.file_transfer_accepted);
-                break;
+        case FileTransferStatusChangeEvent.ACCEPT:
+            statusText = aTalkApp.getResString(R.string.file_transfer_accepted);
+            break;
 
-            // Briefly visible for legacy Si file transfer; as transfer takes ~200ms to send 1.1 MB.
-            // JFT encrypted takes ~7s to send/receive 1.1 MB.
-            case FileTransferStatusChangeEvent.IN_PROGRESS:
-                statusText = aTalkApp.getResString(R.string.file_receive_from, mSender);
-                break;
+        // Briefly visible for legacy Si file transfer; as transfer takes ~200ms to send 1.1 MB.
+        // JFT encrypted takes ~7s to send/receive 1.1 MB.
+        case FileTransferStatusChangeEvent.IN_PROGRESS:
+            statusText = aTalkApp.getResString(R.string.file_receive_from, mSender);
+            break;
 
-            case FileTransferStatusChangeEvent.COMPLETED:
-                statusText = aTalkApp.getResString(R.string.file_receive_completed, mSender);
-                if (mXferFile == null) { // Android view redraw happen
-                    mXferFile = mChatFragment.getChatListAdapter().getFileName(msgViewId);
-                }
-                break;
+        case FileTransferStatusChangeEvent.COMPLETED:
+            statusText = aTalkApp.getResString(R.string.file_receive_completed, mSender);
+            if (mXferFile == null) { // Android view redraw happen
+                mXferFile = mChatFragment.getChatListAdapter().getFileName(msgViewId);
+            }
+            break;
 
-            case FileTransferStatusChangeEvent.FAILED:
-                // hideProgressRelatedComponents(); keep the status info for user view
-                statusText = aTalkApp.getResString(R.string.file_receive_failed, mSender);
-                if (!TextUtils.isEmpty(reason)) {
-                    statusText += "\n" + reason;
-                }
-                break;
+        case FileTransferStatusChangeEvent.FAILED:
+            // hideProgressRelatedComponents(); keep the status info for user view
+            statusText = aTalkApp.getResString(R.string.file_receive_failed, mSender);
+            if (!TextUtils.isEmpty(reason)) {
+                statusText += "\n" + reason;
+            }
+            break;
 
-            case FileTransferStatusChangeEvent.CANCELED:
-                statusText = aTalkApp.getResString(R.string.file_transfer_canceled);
-                break;
+        case FileTransferStatusChangeEvent.CANCELED:
+            statusText = aTalkApp.getResString(R.string.file_transfer_canceled);
+            break;
 
-            case FileTransferStatusChangeEvent.DECLINED:
-                // hideProgressRelatedComponents();
-                statusText = aTalkApp.getResString(R.string.file_transfer_declined);
-                break;
+        case FileTransferStatusChangeEvent.DECLINED:
+            // hideProgressRelatedComponents();
+            statusText = aTalkApp.getResString(R.string.file_transfer_declined);
+            break;
         }
         updateFTStatus(msgUuid, status);
         updateXferFileViewState(status, statusText);
@@ -241,18 +242,17 @@ public class FileReceiveConversation extends FileTransferConversation
      */
     private class AcceptFile {
         public void execute() {
-            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                eService.execute(() -> {
-                    doInBackground();
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            eService.execute(() -> {
+                doInBackground();
 
-                    runOnUiThread(() -> {
-                        if (mFileTransfer != null) {
-                            setFileTransfer(mFileTransfer, fileTransferRequest.getFileSize());
-                        }
-                    });
+                runOnUiThread(() -> {
+                    if (mFileTransfer != null) {
+                        setFileTransfer(mFileTransfer, fileTransferRequest.getFileSize());
+                    }
                 });
-                eService.shutdown();
-            }
+            });
+            eService.shutdown();
         }
 
         protected void doInBackground() {

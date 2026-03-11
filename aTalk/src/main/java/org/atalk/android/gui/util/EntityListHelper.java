@@ -113,7 +113,8 @@ public class EntityListHelper {
                             else {
                                 blockManager.unblockContacts(Collections.singletonList(entityJid));
                             }
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             Timber.w("Block Entity %s failed: %s", contactJid, e.getMessage());
                         }
                         return true;
@@ -184,7 +185,8 @@ public class EntityListHelper {
                 new doEraseEntityChatHistory(caller, null, null, true).execute(metaContact);
                 CHS.eraseLocallyStoredCallHistory(metaContact);
                 metaContactListService.removeMetaContact(metaContact);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 DialogActivity.showDialog(aTalkApp.getInstance(),
                         aTalkApp.getResString(R.string.remove_contact), ex.getMessage());
             }
@@ -225,7 +227,8 @@ public class EntityListHelper {
             Context ctx = aTalkApp.getInstance();
             try {
                 AppGUIActivator.getContactListService().removeMetaContactGroup(group);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 DialogActivity.showDialog(ctx, ctx.getString(R.string.remove_group), ex.getMessage());
             }
         }).start();
@@ -304,16 +307,15 @@ public class EntityListHelper {
         }
 
         public void execute(Object... mDescriptor) {
-            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                eService.execute(() -> {
-                    final int msgCount = doInBackground(mDescriptor);
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            eService.execute(() -> {
+                final int msgCount = doInBackground(mDescriptor);
 
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        mCallback.onTaskComplete(msgCount, msgUUIDs);
-                    });
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    mCallback.onTaskComplete(msgCount, msgUUIDs);
                 });
-                eService.shutdown();
-            }
+            });
+            eService.shutdown();
         }
 
         private Integer doInBackground(Object... mDescriptor) {
@@ -396,16 +398,15 @@ public class EntityListHelper {
         }
 
         public void execute() {
-            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                eService.execute(() -> {
-                    int msgCount = doInBackground();
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            eService.execute(() -> {
+                int msgCount = doInBackground();
 
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        mCallback.onTaskComplete(msgCount, null);
-                    });
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    mCallback.onTaskComplete(msgCount, null);
                 });
-                eService.shutdown();
-            }
+            });
+            eService.shutdown();
         }
 
         private int doInBackground() {
@@ -480,16 +481,15 @@ public class EntityListHelper {
         }
 
         public void execute() {
-            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                eService.execute(() -> {
-                    int msgCount = doInBackground();
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            eService.execute(() -> {
+                int msgCount = doInBackground();
 
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        mCallback.onTaskComplete(msgCount, callUUIDs);
-                    });
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    mCallback.onTaskComplete(msgCount, callUUIDs);
                 });
-                eService.shutdown();
-            }
+            });
+            eService.shutdown();
         }
 
         private Integer doInBackground() {

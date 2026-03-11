@@ -1,0 +1,139 @@
+/*
+ *
+ * Copyright 2020 Paul Schaub
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jivesoftware.smackx.stanza_content_encryption.provider;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.Date;
+
+import org.jivesoftware.smack.packet.XmlElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
+import org.jivesoftware.smackx.stanza_content_encryption.element.AffixElement;
+import org.jivesoftware.smackx.stanza_content_encryption.element.ContentElement;
+import org.jivesoftware.smackx.stanza_content_encryption.element.EnvelopeElement;
+import org.jivesoftware.smackx.stanza_content_encryption.element.FromAffixElement;
+import org.jivesoftware.smackx.stanza_content_encryption.element.RandomPaddingAffixElement;
+import org.jivesoftware.smackx.stanza_content_encryption.element.TimestampAffixElement;
+import org.jivesoftware.smackx.stanza_content_encryption.element.ToAffixElement;
+
+import org.jxmpp.JxmppContext;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
+
+public class EnvelopeElementProvider extends ExtensionElementProvider<EnvelopeElement> {
+    @Override
+    public EnvelopeElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, ParseException, SmackParsingException {
+        EnvelopeElement.Builder builder = EnvelopeElement.builder();
+
+        while (true) {
+            XmlPullParser.Event tag = parser.next();
+            if (tag == XmlPullParser.Event.START_ELEMENT) {
+                String name = parser.getName();
+                switch (name) {
+                    case ToAffixElement.ELEMENT:
+                        parseToAffix(parser, builder);
+                        break;
+
+                    case FromAffixElement.ELEMENT:
+                        parseFromAffix(parser, builder);
+                        break;
+
+                    case TimestampAffixElement.ELEMENT:
+                        parseTimestampAffix(parser, builder);
+                        break;
+
+                    case RandomPaddingAffixElement.ELEMENT:
+                        parseRPadAffix(parser, builder);
+                        break;
+
+                    case ContentElement.ELEMENT:
+                        parseContent(parser, xmlEnvironment, jxmppContext, builder);
+                        break;
+
+                    default:
+                        parseCustomAffix(parser, xmlEnvironment, jxmppContext, builder);
+                        break;
+                }
+            } else if (tag == XmlPullParser.Event.END_ELEMENT) {
+                if (parser.getDepth() == initialDepth) {
+                    break;
+                }
+            }
+        }
+        return builder.build();
+    }
+
+    private static void parseCustomAffix(XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext, EnvelopeElement.Builder builder)
+            throws XmlPullParserException, IOException, SmackParsingException {
+        String name = parser.getName();
+        String namespace = parser.getNamespace();
+
+        AffixElement element = (AffixElement) PacketParserUtils.parseExtensionElement(name, namespace, parser, outerXmlEnvironment, jxmppContext);
+        builder.addFurtherAffixElement(element);
+    }
+
+    private static void parseContent(XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext, EnvelopeElement.Builder builder)
+            throws IOException, XmlPullParserException, SmackParsingException {
+        final int initialDepth = parser.getDepth();
+        while (true) {
+            XmlPullParser.Event tag = parser.next();
+
+            if (tag == XmlPullParser.Event.START_ELEMENT) {
+                String name = parser.getName();
+                String namespace = parser.getNamespace();
+                XmlElement element = PacketParserUtils.parseExtensionElement(name, namespace, parser, outerXmlEnvironment, jxmppContext);
+                builder.addContentItem(element);
+            }
+
+            if (tag == XmlPullParser.Event.END_ELEMENT && parser.getDepth() == initialDepth) {
+                return;
+            }
+        }
+    }
+
+    private static void parseRPadAffix(XmlPullParser parser, EnvelopeElement.Builder builder)
+            throws IOException, XmlPullParserException {
+        builder.setRandomPadding(parser.nextText());
+    }
+
+    private static void parseTimestampAffix(XmlPullParser parser, EnvelopeElement.Builder builder)
+            throws ParseException {
+        Date timestamp = ParserUtils.getDateFromXep82String(
+                parser.getAttributeValue("", TimestampAffixElement.ATTR_STAMP));
+        builder.setTimestamp(timestamp);
+    }
+
+    private static void parseFromAffix(XmlPullParser parser, EnvelopeElement.Builder builder)
+            throws XmppStringprepException {
+        String jidString = parser.getAttributeValue("", FromAffixElement.ATTR_JID);
+        builder.setFrom(JidCreate.from(jidString));
+    }
+
+    private static void parseToAffix(XmlPullParser parser, EnvelopeElement.Builder builder)
+            throws XmppStringprepException {
+        String jidString = parser.getAttributeValue("", ToAffixElement.ATTR_JID);
+        builder.addTo(JidCreate.from(jidString));
+    }
+}

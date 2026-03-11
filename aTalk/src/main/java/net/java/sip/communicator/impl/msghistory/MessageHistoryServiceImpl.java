@@ -850,19 +850,19 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             if (msgCount == 0) {
                 IMessage iMessage = null;
 
-                if (msg.hasExtension(OmemoElement.NAME_ENCRYPTED, OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL)) {
-                    OmemoElement omemoElement =
-                            (OmemoElement) msg.getExtensionElement(OmemoElement.NAME_ENCRYPTED, OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL);
+                OmemoElement omemoElement;
+                // Allow to receive all omemo messages from either nameSpace i.e. v0.3.0 and v0.9.0
+                if ((omemoElement = OmemoManager.getOmemoMessage(msg)) != null) {
                     try {
                         OmemoMessage.Received oReceive = omemoManager.decrypt(sender.asBareJid(), omemoElement);
-                        iMessage = new MessageJabberImpl(oReceive.getBody(), iMessage.ENCRYPTION_OMEMO, null, msgId);
+                        iMessage = new MessageJabberImpl(oReceive.getBody(), IMessage.ENCRYPTION_OMEMO, null, msgId);
                     } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException | NoRawSessionException
                              | CryptoFailedException | IOException | IllegalArgumentException e) {
                         Timber.e("Omemo decrypt message (%s): %s", msgId, e.getMessage());
                     }
                 }
                 else {
-                    iMessage = new MessageJabberImpl(msg.getBody(), iMessage.ENCRYPTION_NONE, null, msgId);
+                    iMessage = new MessageJabberImpl(msg.getBody(), IMessage.ENCRYPTION_NONE, null, msgId);
                 }
 
                 if (iMessage != null) {

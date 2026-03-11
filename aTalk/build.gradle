@@ -57,8 +57,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 501000
-        versionName "5.1.0"
+        versionCode 502000
+        versionName "5.2.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -191,6 +191,7 @@ android {
         exclude 'META-INF/core_release.kotlin_module'
         exclude 'META-INF/kotlin-stdlib-jdk8.kotlin_module'
         exclude 'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
+        exclude 'META-INF/versions/25/OSGI-INF/MANIFEST.MF'
     }
 }
 
@@ -210,11 +211,11 @@ dependencies {
 
     // Java compilation dependency: ndkBuild & jarRepackage (avoid class conflict)
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'androidx.core:core-ktx:1.17.0'
 
-    implementation 'androidx.activity:activity-ktx:1.12.2'
+    implementation 'androidx.activity:activity-ktx:1.12.4'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.fragment:fragment-ktx:1.8.9'
@@ -222,8 +223,8 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.media3:media3-exoplayer:1.9.0'
-    implementation 'androidx.media3:media3-ui:1.9.0'
+    implementation 'androidx.media3:media3-exoplayer:1.9.2'
+    implementation 'androidx.media3:media3-ui:1.9.2'
     // implementation "androidx.webkit:webkit:1.14.0"
 
     implementation('com.jakewharton.timber:timber:5.0.1') {
@@ -233,13 +234,13 @@ dependencies {
 
     annotationProcessor 'com.github.bumptech.glide:compiler:5.0.5'
     implementation 'com.github.bumptech.glide:glide:5.0.5'
-    implementation 'com.github.seancfoley:ipaddress:5.5.1'
+    implementation 'com.github.seancfoley:ipaddress:5.6.1'
     implementation 'com.github.evgenyneu:js-evaluator-for-android:v6.0.0'
 
     implementation 'com.github.yalantis:ucrop:2.2.10'
     implementation 'com.google.android.material:material:1.13.0'
 
-    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.21'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.25'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta05'
     implementation 'com.squareup.okhttp3:okhttp:5.3.2'
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
@@ -250,7 +251,7 @@ dependencies {
 
     // commons-codec:1.16.x not compatible with Note10, crashes with No static method isEmpty([B)Z in class org/apache/commons/codec/binary/BinaryCodec;
     // or its super classes (declaration of 'org.apache.commons.codec.binary.BinaryCodec' appears in /system/framework/org.apache.http.legacy.jar)
-    implementation 'commons-codec:commons-codec:1.20.0'
+    implementation 'commons-codec:commons-codec:1.21.0'
     implementation 'org.apache.commons:commons-text:1.15.0'
     implementation 'org.apache.james:apache-mime4j-core:0.8.13'
     implementation 'org.bitlet:weupnp:0.1.4'
@@ -260,13 +261,12 @@ dependencies {
     // Duplicate class org.bouncycastle.x509.util.StreamParsingException found in modules jetified-bcprov-jdk15on-1.65
     // (org.bouncycastle:bcprov-jdk15on:1.65) and jetified-bcprov-jdk15to18-1.68 (org.bouncycastle:bcprov-jdk15to18:1.68)
 
-    // jdk18on > 1.81 is not compatible with gradle 8.14.3 i.e. Unsupported class file major version 69
-    implementation 'org.bouncycastle:bcpg-jdk18on:1.81'   // zrtp
-    implementation 'org.bouncycastle:bcpkix-jdk18on:1.81' // CertificateServiceImpl jcajce
-    // SHA3-256 - auto included.
-    // implementation 'org.bouncycastle:bcprov-jdk18on:1.81'
-    // 1.82 not compatible:  Unsupported class file major version 69
-    implementation 'org.bouncycastle:bctls-jdk18on:1.81'  // dtls-srtp
+    // Need to add android.jetifier.ignorelist in gradle.properties when using 1.83
+    // see https://issuetracker.google.com/issues/294342862
+    implementation 'org.bouncycastle:bcpg-jdk18on:1.83'   // zrtp
+    implementation 'org.bouncycastle:bcpkix-jdk18on:1.83' // CertificateServiceImpl jcajce
+    // implementation 'org.bouncycastle:bcprov-jdk18on:1.81' // SHA3-256 - auto included.
+    implementation 'org.bouncycastle:bctls-jdk18on:1.83'  // dtls-srtp
 
     // For debug and tracing for bouncycastle - AS allows direct copy and replacement of bc source for debug
 //    implementation jarjar.repackage {
@@ -313,7 +313,7 @@ dependencies {
     implementation 'org.whispersystems:signal-protocol-java:2.8.1'
 
     // playStore version use google map services
-    playstoreImplementation "com.google.android.gms:play-services-maps:19.2.0"
+    playstoreImplementation "com.google.android.gms:play-services-maps:20.0.0"
     playstoreImplementation "com.google.android.gms:play-services-panorama:17.1.0"
     // playstoreImplementation "com.google.android.gms:play-services-location:21.3.0"
 
@@ -434,6 +434,10 @@ dependencies {
 
         // Fix MamVersion.fromNamespace(mamPrefsIq.getChildElementNamespace())
         classDelete 'org.jivesoftware.smackx.mam.MamManager**'
+
+        // Change namespace to to urn:xmpp:sce:1
+        classDelete 'org.jivesoftware.smackx.stanza_content_encryption.element.ContentElement**'
+        classDelete 'org.jivesoftware.smackx.stanza_content_encryption.element.ContentElementProvider**'
     }
 
     // smack-extensions
@@ -459,10 +463,6 @@ dependencies {
         // Custom smack classes that handle the XEP-0077 with Captcha Protection
         classDelete 'org.jivesoftware.smackx.iqregister**'
 
-        // Custom smack classes that handle the XEP-0264 <File/> element
-        classDelete 'org.jivesoftware.smackx.si.packet.StreamInitiation**'
-        classDelete 'org.jivesoftware.smackx.si.provider.StreamInitiationProvider**'
-
         classDelete 'org.jivesoftware.smackx.jingle.JingleManager**'
         classDelete 'org.jivesoftware.smackx.jingle.JingleUtil**'
 
@@ -478,8 +478,8 @@ dependencies {
         classDelete 'org.jivesoftware.smackx.jingle.provider.JingleProvider**'
 
         classDelete 'org.jivesoftware.smackx.jingle.transports.JingleTransportManager**'
-        classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_ibb.element.JingleIBBTransport**'
         classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_ibb.JingleIBBTransportManager**'
+        classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_ibb.element.JingleIBBTransport**'
 
         classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.JingleS5BTransportManager**'
         classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport'
@@ -487,6 +487,15 @@ dependencies {
 
         // Fix AbstractMethodError: source in aTalk local directory and with in file QNAME defined
         classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo**'
+
+        // Support XEP-0384 v0.3.0 and v0.9.0
+        classDelete 'org.jivesoftware.smackx.pep.PepManager**'
+        classDelete 'org.jivesoftware.smackx.pubsub.LeafNode**'
+        classDelete 'org.jivesoftware.smackx.pubsub.PubSubManager**'
+
+        // Custom smack classes that handle the XEP-0264 <File/> element
+        classDelete 'org.jivesoftware.smackx.si.packet.StreamInitiation**'
+        classDelete 'org.jivesoftware.smackx.si.provider.StreamInitiationProvider**'
     }
 
     // smack-omemo
@@ -496,10 +505,49 @@ dependencies {
         }
         // Add JingleEnvelopeManager support and Custom smack reply timer for:
         // initializeAsync() and PepEventListener<OmemoDeviceListElement>; setReplyTimeout to 15s
-        // Introduce publishedDeviceList to resolve endless loop response to pubsub#event's
+        // Add options for isOmemo2Enable and omemoAccessModel for omemo:2 support
+        // Support message decrypt for both omemo namespaces
         classDelete 'org.jivesoftware.smackx.omemo.OmemoManager**'
+        // chnage buildMessage to support both omemo namespaces
+        classDelete 'org.jivesoftware.smackx.omemo.OmemoMessage**'
+
         // Must setReplyTimeout here to be effective
+        // Add support to include publish-options child extends
         classDelete 'org.jivesoftware.smackx.omemo.OmemoService**'
+        // Support OmemoBundleElement_V... and OmemoDeviceElement classes
+        classDelete 'org.jivesoftware.smackx.omemo.OmemoStore**'
+
+        // OmemoBundleElement base class for omemo2 extensions
+        classDelete 'org.jivesoftware.smackx.omemo.element.OmemoBundleElement'
+        classDelete 'org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VAxolotl'
+
+        // Rename and create new classes XEP-0384 v0.9.0 implementation
+        classDelete 'org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement'
+        classDelete 'org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement_VAxolotl'
+
+        // OmemoElement base class for omemo2 extensions
+        classDelete 'org.jivesoftware.smackx.omemo.element.OmemoElement'
+        classDelete 'org.jivesoftware.smackx.omemo.element.OmemoElement_VAxolotl'
+
+        // OmemoHeaderElement base class for omemo2 extensions
+        classDelete 'org.jivesoftware.smackx.omemo.element.OmemoHeaderElement'
+        classDelete 'org.jivesoftware.smackx.omemo.element.OmemoHeaderElement_VAxolotl'
+
+        // new OmemoKeyElement classes for omemo2 extensions
+        classDelete 'org.jivesoftware.smackx.omemo.element.OmemoKeyElement'
+
+        // To support OmemoDeviceElement class for omemo2 extensions
+        classDelete 'org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList'
+        classDelete 'org.jivesoftware.smackx.omemo.internal.OmemoDevice'
+
+        // Support OmemoBundleElement_VAxolotl
+        classDelete 'org.jivesoftware.smackx.omemo.provider.OmemoBundleVAxolotlProvider**'
+        classDelete 'org.jivesoftware.smackx.omemo.provider.OmemoDeviceListVAxolotlProvider**'
+        classDelete 'org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider**'
+
+        // Support build message for either omemo classes
+        classDelete 'org.jivesoftware.smackx.omemo.util.OmemoConstants**'
+        classDelete 'org.jivesoftware.smackx.omemo.util.OmemoMessageBuilder**'
     }
 }
 

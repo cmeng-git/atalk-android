@@ -16,6 +16,8 @@
  */
 package org.atalk.crypto.listener;
 
+import org.jivesoftware.smackx.omemo.OmemoManager;
+
 /**
  * Listener interface that allows implementations to receive crypto mode change event.
  *
@@ -26,5 +28,5 @@ public interface CryptoModeChangeListener
     /**
      * Get called, whenever an there is a change in the cryptoMode.
      */
-    void onCryptoModeChange(int cryptoMode);
+    void onCryptoModeChange(OmemoManager manager, int cryptoMode);
 }

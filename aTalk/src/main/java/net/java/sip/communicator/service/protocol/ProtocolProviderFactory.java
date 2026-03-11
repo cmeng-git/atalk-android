@@ -56,6 +56,13 @@ public abstract class ProtocolProviderFactory
     public static final String DNSSEC_MODE = "DNSSEC_MODE";
 
     /**
+     * The name of the property that users may enable to support Omemo element namespace 'urn:xmpp:omemo:2'.
+     */
+    public static String PNAME_OMEMO2_ENABLE = "omemo.OMEMO2_ENABLE";
+
+    public static String PNAME_OMEMO2_ACCESS_MODEL = "omemo.OMEMO2_ACCESS_MODEL";
+
+    /**
      * The name of a property representing the name of the protocol for an ProtocolProviderFactory.
      */
     public static final String PROTOCOL = "PROTOCOL_NAME";

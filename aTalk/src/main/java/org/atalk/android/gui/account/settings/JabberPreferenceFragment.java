@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.core.content.IntentCompat;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
@@ -30,6 +31,7 @@ import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.util.MediaType;
+import org.jivesoftware.smackx.pubsub.AccessModel;
 
 import timber.log.Timber;
 
@@ -56,6 +58,8 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
     private static final String P_KEY_PASSWORD = "pref_key_password";
     private static final String P_KEY_STORE_PASSWORD = "pref_key_store_password";
     private static final String P_KEY_DNSSEC_MODE = "dns.DNSSEC_MODE";
+    static private final String P_KEY_OMEMO2_ENABLE = "pref_key_omemo2_enable";
+    static private final String P_KEY_OMEMO2_ACCESS_MODEL = "pref_key_omemo2_access_model";
 
     // Proxy
     private static final String P_KEY_PROXY_CONFIG = "Bosh_Configuration";
@@ -65,6 +69,8 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
      * Defined as static, otherwise it may get clear onActivityResult - on some android devices
      */
     public static JabberAccountRegistration jbrReg;
+
+    private ListPreference accessModels;
 
     /**
      * Current user userName which is being edited.
@@ -123,6 +129,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
         mEditor.putString(P_KEY_PASSWORD, jbrReg.getPassword());
         mEditor.putBoolean(P_KEY_STORE_PASSWORD, jbrReg.isRememberPassword());
         mEditor.putString(P_KEY_DNSSEC_MODE, jbrReg.getDnssMode());
+        mEditor.putBoolean(P_KEY_OMEMO2_ENABLE, jbrReg.isOmemo2Enable());
         mEditor.apply();
     }
 
@@ -132,6 +139,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
     @Override
     protected void onPreferencesCreated() {
         dnssecModeLP = findPreference(P_KEY_DNSSEC_MODE);
+        initOmemoAccessModel();
 
         if (aTalk.disableMediaServiceOnFault) {
             findPreference(P_KEY_CALL_ENCRYPT).setEnabled(false);
@@ -172,25 +180,21 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
             boshProxy.show();
             return true;
         });
-
-//        findPreference(P_KEY_USER_ID).setOnPreferenceClickListener(preference -> {
-//            startAccountEditor();
-//            return true;
-//        });
     }
 
-//    private void startAccountEditor()
-//    {
-//        // Create AccountLoginFragment fragment
-//        String login = "swordfish@atalk.sytes.net";
-//        String password = "1234";
-//
-//        Intent intent = new Intent(mActivity, AccountLoginActivity.class);
-//        intent.putExtra(AccountLoginFragment.ARG_USERNAME, login);
-//        intent.putExtra(AccountLoginFragment.ARG_PASSWORD, password);
-//        startActivity(intent);
-//    }
-
+    /**
+     * Initialize omemo2 access model
+     */
+    private void initOmemoAccessModel() {
+        accessModels = findPreference(P_KEY_OMEMO2_ACCESS_MODEL);
+        accessModels.setEntries(R.array.omemo2_access_model);
+        accessModels.setEntryValues(R.array.omemo2_access_model_value);
+        String accessModel = "none";
+        if (jbrReg.getOmemoAccessModel() != null)
+            accessModel = jbrReg.getOmemoAccessModel().name();
+        accessModels.setValue(accessModel);
+        accessModels.setSummary(accessModel);
+    }
 
     /**
      * Starts the {@link SecurityActivity} to edit account's security preferences
@@ -303,39 +307,49 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
 
         super.onSharedPreferenceChanged(shPrefs, key);
         switch (key) {
-            case P_KEY_USER_ID:
-                getUserConfirmation(shPrefs);
-                break;
+        case P_KEY_USER_ID:
+            getUserConfirmation(shPrefs);
+            break;
 
-            case P_KEY_PASSWORD:
-                String password = shPrefs.getString(P_KEY_PASSWORD, null);
-                // Timber.d("Change password: %s <= %s", password, jbrReg.getPassword());
-                if (password.equals(jbrReg.getPassword())) {
-                    return;
-                }
+        case P_KEY_PASSWORD:
+            String password = shPrefs.getString(P_KEY_PASSWORD, null);
+            // Timber.d("Change password: %s <= %s", password, jbrReg.getPassword());
+            if (password.equals(jbrReg.getPassword())) {
+                return;
+            }
 
-                // Change password if user is registered.
-                ProtocolProviderServiceJabberImpl pps = (ProtocolProviderServiceJabberImpl) getAccountID().getProtocolProvider();
-                if (pps.changePasswordOnServer(password)) {
-                    jbrReg.setPassword(password);
-                }
-                // Reset to old valid password if online change password failed;
-                // so actual valid login password is shown in next 'Account setting...' edit.
-                else {
-                    mEditor.putString(P_KEY_PASSWORD, jbrReg.getPassword());
-                    mEditor.apply();
-                }
-                break;
+            // Change password if user is registered.
+            ProtocolProviderServiceJabberImpl pps = (ProtocolProviderServiceJabberImpl) getAccountID().getProtocolProvider();
+            if (pps.changePasswordOnServer(password)) {
+                jbrReg.setPassword(password);
+            }
+            // Reset to old valid password if online change password failed;
+            // so actual valid login password is shown in next 'Account setting...' edit.
+            else {
+                mEditor.putString(P_KEY_PASSWORD, jbrReg.getPassword());
+                mEditor.apply();
+            }
+            break;
 
-            case P_KEY_STORE_PASSWORD:
-                jbrReg.setRememberPassword(shPrefs.getBoolean(P_KEY_STORE_PASSWORD, false));
-                break;
+        case P_KEY_STORE_PASSWORD:
+            jbrReg.setRememberPassword(shPrefs.getBoolean(P_KEY_STORE_PASSWORD, false));
+            break;
 
-            case P_KEY_DNSSEC_MODE:
-                String dnssecMode = shPrefs.getString(P_KEY_DNSSEC_MODE,
-                        getResources().getStringArray(R.array.dnssec_Mode_value)[0]);
-                jbrReg.setDnssMode(dnssecMode);
-                break;
+        case P_KEY_DNSSEC_MODE:
+            String dnssecMode = shPrefs.getString(P_KEY_DNSSEC_MODE,
+                    getResources().getStringArray(R.array.dnssec_Mode_value)[0]);
+            jbrReg.setDnssMode(dnssecMode);
+            break;
+
+        case P_KEY_OMEMO2_ENABLE:
+            jbrReg.setOmemo2Enable(shPrefs.getBoolean(P_KEY_OMEMO2_ENABLE, false));
+            break;
+
+        case P_KEY_OMEMO2_ACCESS_MODEL:
+            String accessModel = shPrefs.getString(P_KEY_OMEMO2_ACCESS_MODEL, "none");
+            accessModels.setValue(accessModel);
+            accessModels.setSummary(accessModel);
+            jbrReg.setOmemo2AccessModel(shPrefs.getString(P_KEY_OMEMO2_ACCESS_MODEL, accessModel));            break;
         }
     }
 
@@ -401,7 +415,8 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
             AccountRegistrationImpl accWizard = getJbrWizard();
             accWizard.setModification(true);
             accWizard.signin(jbrReg.getUserID(), jbrReg.getPassword(), jbrReg.getAccountProperties());
-        } catch (OperationFailedException e) {
+        }
+        catch (OperationFailedException e) {
             Timber.e("Failed to store account modifications: %s", e.getLocalizedMessage());
         }
     }

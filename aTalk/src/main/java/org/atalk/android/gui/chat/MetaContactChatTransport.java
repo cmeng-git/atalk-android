@@ -61,6 +61,7 @@ import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider;
+import org.jivesoftware.smackx.omemo.provider.OmemoVOmemoProvider;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.jxmpp.jid.DomainBareJid;
@@ -179,10 +180,15 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                     // For unencrypted file transfer
                     jingleFTManager = JingleFileTransferManager.getInstanceFor(connection);
 
-                    // For encrypted file transfer using Jet and OMEMO encryption
+                    // For encrypted file transfer using Jet and OMEMO encryption for both namespaces.
+                    JetManager.registerEnvelopeProvider(OmemoConstants.OMEMO_NAMESPACE_V_OMEMO, new OmemoVOmemoProvider());
                     JetManager.registerEnvelopeProvider(OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL, new OmemoVAxolotlProvider());
+
+                    // Allow OmemoManager to handle both both namespaces.
+                    OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
                     jetManager = JetManager.getInstanceFor(connection);
-                    jetManager.registerEnvelopeManager(OmemoManager.getInstanceFor(connection));
+                    jetManager.registerEnvelopeManager(OmemoConstants.OMEMO_NAMESPACE_V_OMEMO, omemoManager);
+                    jetManager.registerEnvelopeManager(OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL, omemoManager);
 
                     // For HttpFileUpload service
                     httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);

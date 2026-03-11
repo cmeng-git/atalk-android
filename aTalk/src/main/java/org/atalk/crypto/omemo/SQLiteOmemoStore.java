@@ -39,8 +39,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceElement;
 import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement;
-import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement_VAxolotl;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
@@ -81,6 +81,8 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
     public static final String OMEMO_DEVICES_TABLE_NAME = "omemo_devices";
     public static final String OMEMO_JID = "omemoJid"; // account user
     public static final String OMEMO_REG_ID = "omemoRegId"; // defaultDeviceId
+    public static final String OMEMO_LABEL = "label"; // defaultDevice label
+    public static final String OMEMO_LABELSIG = "labelsig"; // defaultDevice labelsig
     public static final String CURRENT_SIGNED_PREKEY_ID = "currentSignedPreKeyId";
     public static final String LAST_PREKEY_ID = "lastPreKeyId";
 
@@ -784,11 +786,12 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
         Timber.d("Purge server bundle and deviceList for old omemo device: %s", omemoDevice);
         PubSubManager pubsubManager = PubSubManager.getInstanceFor(connection, userJid);
         PepManager pepManager = PepManager.getInstanceFor(connection);
+        OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
 
         // First refresh omemo devicelist on the server i.e. removed old id
-        Set<Integer> deviceIds = Collections.emptySet();
+        Set<OmemoDeviceElement> devices = Collections.emptySet();
         try {
-            String nodeName = OmemoConstants.PEP_NODE_DEVICE_LIST;
+            String nodeName = omemoManager.isOmemo2Enable()? OmemoConstants.PEP_NODE_DEVICES_V_OMEMO : OmemoConstants.PEP_NODE_DEVICES_V_AXOLOTL;
             LeafNode leafNode = pubsubManager.getLeafNode(nodeName);
             if (leafNode != null) {
                 List<PayloadItem<OmemoDeviceListElement>> items = leafNode.getItems();
@@ -798,12 +801,12 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
                     // pubsubManager.deleteNode(nodeName);
 
                     OmemoDeviceListElement publishedList = items.get(items.size() - 1).getPayload();
-                    deviceIds = publishedList.copyDeviceIds();  // need a copy of the unmodifiable list
-                    deviceIds.remove(omemoDevice.getDeviceId());
+                    devices = publishedList.copyDevices();  // need a copy of the unmodifiable list
+                    devices.remove(new OmemoDeviceElement(omemoDevice.getDeviceId()));
                 }
             }
-            OmemoDeviceListElement deviceList = new OmemoDeviceListElement_VAxolotl(deviceIds);
-            pepManager.publish(nodeName, new PayloadItem<>(deviceList));
+            OmemoDeviceListElement devicesElement = omemoManager.getOmemoDeviceList(devices);
+            pepManager.publish(nodeName, new PayloadItem<>(String.valueOf(omemoDevice.getDeviceId()), devicesElement));
 
         } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
             aTalkApp.showToastMessage(R.string.omemo_purge_inactive_device_error, omemoDevice);
@@ -811,7 +814,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
 
         // Only then purge omemo preKeys table/bundles on server
         try {
-            String nodeName = omemoDevice.getBundleNodeName();
+            String nodeName = omemoDevice.getBundleNodeName(omemoManager.isOmemo2Enable());
             LeafNode leafNode = pubsubManager.getLeafNode(nodeName);
             if (leafNode != null) {
                 leafNode.deleteAllItems();
@@ -883,10 +886,10 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
 
                 // remove the local inactive devices from identities table and all their associated data if any;
                 // add deviceId -1 to the list, found this on swan during testing???
-                Set<Integer> inactiveDevices = deviceList.getInactiveDevices();
-                inactiveDevices.add(-1);
-                for (int deviceId : inactiveDevices) {
-                    userDevice = new OmemoDevice(userJid, deviceId);
+                Set<OmemoDeviceElement> inactiveDevices = deviceList.getInactiveDevices();
+                inactiveDevices.add(new OmemoDeviceElement(-1));
+                for (OmemoDeviceElement deviceElement : inactiveDevices) {
+                    userDevice = new OmemoDevice(userJid, deviceElement.getId());
                     purgeOwnDeviceKeys(userDevice);
                 }
 

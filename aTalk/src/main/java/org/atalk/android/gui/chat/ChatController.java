@@ -862,7 +862,6 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             else {
                 nickName = editText + " " + nickName;
             }
-
             msgEdit.setText(nickName);
         }
     }
@@ -973,6 +972,16 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     public void onChatCloseAction() {
         setNewChatState(ChatState.gone);
+    }
+
+    /**
+     * Get the current msgEdit content.
+     * @return the msgEdit current content.
+     */
+    public String getEditTextAndClear() {
+        String editText = ViewUtil.toString(msgEdit);
+        msgEdit.setText("");
+        return editText;
     }
 
     /**

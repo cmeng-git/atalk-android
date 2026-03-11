@@ -267,19 +267,18 @@ public class CallHistoryFragment extends BaseFragment
             }
 
             public void execute() {
-                try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                    eService.execute(() -> {
-                        doInBackground();
+                ExecutorService eService = Executors.newSingleThreadExecutor();
+                eService.execute(() -> {
+                    doInBackground();
 
-                        BaseActivity.uiHandler.post(() -> {
-                            if (!callRecords.isEmpty()) {
-                                callHistoryAdapter.notifyDataSetChanged();
-                            }
-                            setTitle();
-                        });
+                    BaseActivity.uiHandler.post(() -> {
+                        if (!callRecords.isEmpty()) {
+                            callHistoryAdapter.notifyDataSetChanged();
+                        }
+                        setTitle();
                     });
-                    eService.shutdown();
-                }
+                });
+                eService.shutdown();
             }
 
             private void doInBackground() {
@@ -433,24 +432,24 @@ public class CallHistoryFragment extends BaseFragment
                 Jid jid = contact.getJid();
 
                 switch (view.getId()) {
-                    case R.id.callButton:
-                        if (jid instanceof DomainBareJid) {
-                            TelephonyFragment extPhone = TelephonyFragment.newInstance(contact.getAddress());
-                            ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
-                                    .replace(android.R.id.content, extPhone, TelephonyFragment.TELEPHONY_TAG).commit();
-                            break;
-                        }
-
-                    case R.id.callVideoButton:
-                        if (viewHolder != null) {
-                            boolean isVideoCall = viewHolder.callVideoButton.isPressed();
-                            AppCallUtil.createAndroidCall(aTalkApp.getInstance(), jid,
-                                    viewHolder.callVideoButton, isVideoCall);
-                        }
+                case R.id.callButton:
+                    if (jid instanceof DomainBareJid) {
+                        TelephonyFragment extPhone = TelephonyFragment.newInstance(contact.getAddress());
+                        ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
+                                .replace(android.R.id.content, extPhone, TelephonyFragment.TELEPHONY_TAG).commit();
                         break;
+                    }
 
-                    default:
-                        break;
+                case R.id.callVideoButton:
+                    if (viewHolder != null) {
+                        boolean isVideoCall = viewHolder.callVideoButton.isPressed();
+                        AppCallUtil.createAndroidCall(aTalkApp.getInstance(), jid,
+                                viewHolder.callVideoButton, isVideoCall);
+                    }
+                    break;
+
+                default:
+                    break;
                 }
             }
         }
@@ -490,60 +489,60 @@ public class CallHistoryFragment extends BaseFragment
             CallRecord callRecord;
 
             switch (item.getItemId()) {
-                case R.id.cr_delete_older:
-                    if (checkedList.size() > 0 && checkedList.valueAt(0)) {
-                        cPos = checkedList.keyAt(0) - headerCount;
+            case R.id.cr_delete_older:
+                if (checkedList.size() > 0 && checkedList.valueAt(0)) {
+                    cPos = checkedList.keyAt(0) - headerCount;
+                    cType = callHistoryAdapter.getItemViewType(cPos);
+                    if (cType == callHistoryAdapter.CALL_RECORD) {
+                        callRecord = (CallRecord) callHistoryAdapter.getItem(cPos);
+                        if (callRecord != null) {
+                            eraseCallHistory(callRecord);
+                            mode.finish();
+                        }
+                    }
+                }
+                return true;
+
+            case R.id.cr_select_all:
+                int size = callHistoryAdapter.getCount();
+                if (size < 2)
+                    return true;
+
+                for (int i = 0; i < size; i++) {
+                    cPos = i + headerCount;
+                    checkedList.put(cPos, true);
+                    callListView.setSelection(cPos);
+                }
+                checkListSize = size;
+                mode.invalidate();
+                mode.setTitle(String.valueOf(size));
+                return true;
+
+            case R.id.cr_delete:
+                if (checkedList.size() == 0) {
+                    aTalkApp.showToastMessage(R.string.call_history_remove_none);
+                    return true;
+                }
+
+                List<String> callUuidDel = new ArrayList<>();
+                for (int i = 0; i < checkListSize; i++) {
+                    if (checkedList.valueAt(i)) {
+                        cPos = checkedList.keyAt(i) - headerCount;
                         cType = callHistoryAdapter.getItemViewType(cPos);
                         if (cType == callHistoryAdapter.CALL_RECORD) {
                             callRecord = (CallRecord) callHistoryAdapter.getItem(cPos);
                             if (callRecord != null) {
-                                eraseCallHistory(callRecord);
-                                mode.finish();
+                                callUuidDel.add(callRecord.getCallUuid());
                             }
                         }
                     }
-                    return true;
+                }
+                EntityListHelper.eraseEntityCallHistory(CallHistoryFragment.this, callUuidDel);
+                mode.finish();
+                return true;
 
-                case R.id.cr_select_all:
-                    int size = callHistoryAdapter.getCount();
-                    if (size < 2)
-                        return true;
-
-                    for (int i = 0; i < size; i++) {
-                        cPos = i + headerCount;
-                        checkedList.put(cPos, true);
-                        callListView.setSelection(cPos);
-                    }
-                    checkListSize = size;
-                    mode.invalidate();
-                    mode.setTitle(String.valueOf(size));
-                    return true;
-
-                case R.id.cr_delete:
-                    if (checkedList.size() == 0) {
-                        aTalkApp.showToastMessage(R.string.call_history_remove_none);
-                        return true;
-                    }
-
-                    List<String> callUuidDel = new ArrayList<>();
-                    for (int i = 0; i < checkListSize; i++) {
-                        if (checkedList.valueAt(i)) {
-                            cPos = checkedList.keyAt(i) - headerCount;
-                            cType = callHistoryAdapter.getItemViewType(cPos);
-                            if (cType == callHistoryAdapter.CALL_RECORD) {
-                                callRecord = (CallRecord) callHistoryAdapter.getItem(cPos);
-                                if (callRecord != null) {
-                                    callUuidDel.add(callRecord.getCallUuid());
-                                }
-                            }
-                        }
-                    }
-                    EntityListHelper.eraseEntityCallHistory(CallHistoryFragment.this, callUuidDel);
-                    mode.finish();
-                    return true;
-
-                default:
-                    return false;
+            default:
+                return false;
             }
         }
 

@@ -58,6 +58,7 @@ import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.persistance.migrations.Migrations;
 import org.atalk.persistance.migrations.MigrationsHelper;
 import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceElement;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
@@ -85,7 +86,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
      * Increment DATABASE_VERSION when there is a change in database records
      */
     public static final String DATABASE_NAME = "dbRecords.db";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
     private static DatabaseBackend instance = null;
     private ProtocolProviderService mProvider;
 
@@ -94,6 +95,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
             + SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME + "("
             + SQLiteOmemoStore.OMEMO_JID + " TEXT, "
             + SQLiteOmemoStore.OMEMO_REG_ID + " INTEGER, "
+            + SQLiteOmemoStore.OMEMO_LABEL + " TEXT, "
+            + SQLiteOmemoStore.OMEMO_LABELSIG + " TEXT, "
             + SQLiteOmemoStore.CURRENT_SIGNED_PREKEY_ID + " INTEGER, "
             + SQLiteOmemoStore.LAST_PREKEY_ID + " INTEGER, UNIQUE("
             + SQLiteOmemoStore.OMEMO_JID
@@ -127,6 +130,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
             + SQLiteOmemoStore.IDENTITIES_TABLE_NAME + "("
             + SQLiteOmemoStore.BARE_JID + " TEXT, "
             + SQLiteOmemoStore.DEVICE_ID + " INTEGER, "
+            + SQLiteOmemoStore.OMEMO_LABEL + " TEXT, "
+            + SQLiteOmemoStore.OMEMO_LABELSIG + " TEXT, "
             + SQLiteOmemoStore.FINGERPRINT + " TEXT, "
             + SQLiteOmemoStore.CERTIFICATE + " BLOB, "
             + SQLiteOmemoStore.TRUST + " TEXT, "
@@ -972,15 +977,15 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         Cursor cursor = db.query(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, columns,
                 SQLiteOmemoStore.BARE_JID + "=?", selectionArgs, null, null, null);
 
-        Set<Integer> activeDevices = cachedDeviceList.getActiveDevices();
-        Set<Integer> inActiveDevices = cachedDeviceList.getInactiveDevices();
+        Set<OmemoDeviceElement> activeDevices = cachedDeviceList.getActiveDevices();
+        Set<OmemoDeviceElement> inActiveDevices = cachedDeviceList.getInactiveDevices();
         while (cursor.moveToNext()) {
             int deviceId = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.DEVICE_ID));
             if (cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.ACTIVE)) == 1) {
-                activeDevices.add(deviceId);
+                activeDevices.add(new OmemoDeviceElement(deviceId));
             }
             else {
-                inActiveDevices.add(deviceId);
+                inActiveDevices.add(new OmemoDeviceElement(deviceId));
             }
         }
         cursor.close();
@@ -997,10 +1002,10 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
         // Active devices
         values.put(SQLiteOmemoStore.ACTIVE, 1);
-        Set<Integer> activeDevices = deviceList.getActiveDevices();
+        Set<OmemoDeviceElement> activeDevices = deviceList.getActiveDevices();
         // Timber.d("Identities table - updating for activeDevice: %s:%s", contact, activeDevices);
-        for (int deviceId : activeDevices) {
-            String[] selectionArgs = {contact.toString(), Integer.toString(deviceId)};
+        for (OmemoDeviceElement deviceElement : activeDevices) {
+            String[] selectionArgs = {contact.toString(), Integer.toString(deviceElement.getId())};
 
             int row = db.update(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, values,
                     SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", selectionArgs);
@@ -1010,9 +1015,9 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                  * Just logged the error. Any missing buddy identityKey will be handled by
                  * AndroidOmemoService#buddyDeviceListUpdateListener()
                  */
-                Timber.d("Identities table - create new activeDevice: %s:%s ", contact, deviceId);
+                Timber.d("Identities table - create new activeDevice: %s:%s ", contact, deviceElement);
                 values.put(SQLiteOmemoStore.BARE_JID, contact.toString());
-                values.put(SQLiteOmemoStore.DEVICE_ID, deviceId);
+                values.put(SQLiteOmemoStore.DEVICE_ID, deviceElement.getId());
                 db.insert(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, null, values);
             }
         }
@@ -1025,17 +1030,17 @@ public class DatabaseBackend extends SQLiteOpenHelper {
          */
         values.clear();
         values.put(SQLiteOmemoStore.ACTIVE, 0);
-        Set<Integer> inActiveDevices = deviceList.getInactiveDevices();
+        Set<OmemoDeviceElement> inActiveDevices = deviceList.getInactiveDevices();
         // Timber.i("Identities table updated for inactiveDevice: %s:%s", contact, inActiveDevices);
-        for (int deviceId : inActiveDevices) {
-            String[] selectionArgs = {contact.toString(), Integer.toString(deviceId)};
+        for (OmemoDeviceElement deviceElement : inActiveDevices) {
+            String[] selectionArgs = {contact.toString(), Integer.toString(deviceElement.getId())};
 
             int row = db.update(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, values,
                     SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", selectionArgs);
             if (row == 0) {
-                Timber.w("Identities table contains no inactiveDevice (create new): %s:%s", contact, deviceId);
+                Timber.w("Identities table contains no inactiveDevice (create new): %s:%s", contact, deviceElement);
                 values.put(SQLiteOmemoStore.BARE_JID, contact.toString());
-                values.put(SQLiteOmemoStore.DEVICE_ID, deviceId);
+                values.put(SQLiteOmemoStore.DEVICE_ID, deviceElement.getId());
                 db.insert(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, null, values);
             }
         }

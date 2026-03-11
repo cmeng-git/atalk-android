@@ -31,7 +31,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -336,19 +335,18 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
             }
 
             public void execute() {
-                try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                    eService.execute(() -> {
-                        doInBackground();
+                ExecutorService eService = Executors.newSingleThreadExecutor();
+                eService.execute(() -> {
+                    doInBackground();
 
-                        runOnUiThread(() -> {
-                            if (!sessionRecords.isEmpty()) {
-                                chatSessionAdapter.notifyDataSetChanged();
-                            }
-                            setTitle();
-                        });
+                    runOnUiThread(() -> {
+                        if (!sessionRecords.isEmpty()) {
+                            chatSessionAdapter.notifyDataSetChanged();
+                        }
+                        setTitle();
                     });
-                    eService.shutdown();
-                }
+                });
+                eService.shutdown();
             }
 
             private void doInBackground() {
@@ -421,14 +419,14 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
         int iconId;
 
         switch (chatType) {
-            case ChatFragment.MSGTYPE_OMEMO:
-                iconId = R.drawable.encryption_omemo;
-                break;
-            case ChatFragment.MSGTYPE_NORMAL:
-            case ChatFragment.MSGTYPE_MUC_NORMAL:
-            default:
-                iconId = R.drawable.encryption_none;
-                break;
+        case ChatFragment.MSGTYPE_OMEMO:
+            iconId = R.drawable.encryption_omemo;
+            break;
+        case ChatFragment.MSGTYPE_NORMAL:
+        case ChatFragment.MSGTYPE_MUC_NORMAL:
+        default:
+            iconId = R.drawable.encryption_none;
+            break;
         }
         chatTypeView.setImageResource(iconId);
     }
@@ -514,15 +512,14 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
      */
     private class InitChatRoomWrapper {
         public void execute() {
-            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                eService.execute(() -> {
-                    doInBackground();
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            eService.execute(() -> {
+                doInBackground();
 
-                    runOnUiThread(() -> {
-                    });
+                runOnUiThread(() -> {
                 });
-                eService.shutdown();
-            }
+            });
+            eService.shutdown();
         }
 
         private void doInBackground() {
@@ -589,26 +586,26 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
                 Jid jid = chatSessionRecord.getEntityBareJid();
 
                 switch (view.getId()) {
-                    case R.id.chatSessionView:
-                        startChat(metaContact);
-                        break;
+                case R.id.chatSessionView:
+                    startChat(metaContact);
+                    break;
 
-                    case R.id.callButton:
-                        if (jid instanceof DomainBareJid) {
-                            TelephonyFragment extPhone = TelephonyFragment.newInstance(contact.getAddress());
-                             mFragmentActivity.getSupportFragmentManager().beginTransaction()
-                                    .replace(android.R.id.content, extPhone, TelephonyFragment.TELEPHONY_TAG).commit();
-                            break;
-                        }
-
-                    case R.id.callVideoButton:
-                        boolean isVideoCall = viewHolder.callVideoButton.isPressed();
-                        AppCallUtil.createAndroidCall(aTalkApp.getInstance(), jid,
-                                viewHolder.callVideoButton, isVideoCall);
+                case R.id.callButton:
+                    if (jid instanceof DomainBareJid) {
+                        TelephonyFragment extPhone = TelephonyFragment.newInstance(contact.getAddress());
+                        mFragmentActivity.getSupportFragmentManager().beginTransaction()
+                                .replace(android.R.id.content, extPhone, TelephonyFragment.TELEPHONY_TAG).commit();
                         break;
+                    }
 
-                    default:
-                        break;
+                case R.id.callVideoButton:
+                    boolean isVideoCall = viewHolder.callVideoButton.isPressed();
+                    AppCallUtil.createAndroidCall(aTalkApp.getInstance(), jid,
+                            viewHolder.callVideoButton, isVideoCall);
+                    break;
+
+                default:
+                    break;
                 }
             }
         }
@@ -675,16 +672,16 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.erase_contact_chat_history:
-                case R.id.erase_chatroom_history:
-                    EntityListHelper.eraseEntityChatHistory(ChatSessionFragment.this, mSessionRecord, null, null);
-                    return true;
+            case R.id.erase_contact_chat_history:
+            case R.id.erase_chatroom_history:
+                EntityListHelper.eraseEntityChatHistory(ChatSessionFragment.this, mSessionRecord, null, null);
+                return true;
 
-                case R.id.ctx_menu_exit:
-                    return true;
+            case R.id.ctx_menu_exit:
+                return true;
 
-                default:
-                    return false;
+            default:
+                return false;
             }
         }
     }
@@ -719,7 +716,8 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
         Intent chatIntent = ChatSessionManager.getChatIntent(sessionRecords);
         try {
             startActivity(chatIntent);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             Timber.w("Failed to start chat with %s: %s", sessionRecords, ex.getMessage());
         }
     }

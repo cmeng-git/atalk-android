@@ -1335,6 +1335,12 @@
 
     <!-- OMEMO security category-->
     <string name="omemo_messaging_security">Keamanan Pemesejan OMEMO</string>
+    <!-- OMEMO:2 Enable screen -->
+    <string name="omemo2_access_mode">Model Akses omemo:2</string>
+    <string name="omemo2_enable">Aktifkan dukungan omemo:2</string>
+    <string name="omemo2_optout">Nonaktifkan obrolan OMEMO</string>
+    <string name="omemo2_optout_reason">Opsi untuk berhenti berlangganan obrolan OMEMO.\n Maaf, karena alasan kepatuhan, saya memerlukan catatan permanen percakapan kita di sisi server.</string>
+    <string name="omemo2_summary">Mendukung namespace elemen XEP-0384 OMEMO: \'urn:xmpp:omemo:2\'</string>
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">Kepercayaan buta sebelum verifikasi</string>
     <string name="omemo_blind_trust_before_verification_summary">Memercayai otomatis semua perangkat kontak baru yang belum diverifikasi sebelumnya;meminta konfirmasi manual ketika kontak terverifikasi menambahkan perangkat baru.</string>

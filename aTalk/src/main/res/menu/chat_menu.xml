@@ -18,6 +18,10 @@
         android:title="@string/geo_send"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/send_optout"
+        android:title="@string/omemo2_optout">
+    </item>
+    <item
         android:id="@+id/chat_tts_enable"
         android:title="@string/tts_enable">
     </item>

@@ -5,8 +5,6 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
-
 import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
@@ -95,8 +93,11 @@ import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.listener.OmemoMessageListener;
 import org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider;
+import org.jivesoftware.smackx.omemo.provider.OmemoVOmemoProvider;
+import org.jivesoftware.smackx.omemo.util.OmemoOptOutUtil;
 import org.jivesoftware.smackx.oob.packet.OutOfBandData;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
+import org.jivesoftware.smackx.stanza_content_encryption.element.EnvelopeElement;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
@@ -182,8 +183,6 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     private String mUserJid;
 
     private OmemoManager mOmemoManager;
-
-    private final OmemoVAxolotlProvider omemoVAxolotlProvider = new OmemoVAxolotlProvider();
 
     /**
      * A reference to the persistent presence operation set that we use to match incoming messages
@@ -415,7 +414,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             throw new IllegalArgumentException("The specified contact is not a Jabber contact: " + to);
         try {
             assertConnected();
-        } catch (IllegalStateException ex) {
+        }
+        catch (IllegalStateException ex) {
             MessageDeliveryFailedEvent msgDeliveryFailed
                     = new MessageDeliveryFailedEvent(message, to, MessageDeliveryFailedEvent.PROVIDER_NOT_REGISTERED);
             fireMessageEvent(msgDeliveryFailed);
@@ -489,7 +489,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
             try {
                 mChat.send(messageBuilder.build());
-            } catch (NotConnectedException | InterruptedException e) {
+            }
+            catch (NotConnectedException | InterruptedException e) {
                 e.printStackTrace();
             }
             putJidForAddress(toJid, threadID);
@@ -563,7 +564,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             MessageBuilder messageBuilder = StanzaBuilder.buildMessage(message.getMessageUID());
             if (correctedMessageUID != null)
                 messageBuilder.addExtension(new MessageCorrectExtension(correctedMessageUID));
-            Message sendMessage = encryptedMessage.buildMessage(messageBuilder, bareJid);
+            Message sendMessage = encryptedMessage.buildMessage(messageBuilder, bareJid, omemoManager.isOmemo2Enable());
 
             if (IMessage.ENCODE_HTML == message.getMimeType()) {
                 // Make this into encrypted xhtmlText for inclusion
@@ -582,7 +583,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
                 // Add the XHTML text to the message builder
                 XHTMLManager.addBody(messageBuilder, xhtmlText);
-                sendMessage = encryptedMessage.buildMessage(messageBuilder, bareJid);
+                sendMessage = encryptedMessage.buildMessage(messageBuilder, bareJid, omemoManager.isOmemo2Enable());
             }
 
             // proceed to send the message if there is no exception.
@@ -595,16 +596,19 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             msgDelivered = new MessageDeliveredEvent(message, to, resource, mUserJid, correctedMessageUID);
 
             fireMessageEvent(msgDelivered);
-        } catch (UndecidedOmemoIdentityException e) {
+        }
+        catch (UndecidedOmemoIdentityException e) {
             OmemoAuthenticateListener omemoAuthListener
                     = new OmemoAuthenticateListener(to, resource, message, correctedMessageUID, omemoManager);
             Context ctx = aTalkApp.getInstance();
             ctx.startActivity(OmemoAuthenticateDialog.createIntent(ctx, omemoManager, e.getUndecidedDevices(), omemoAuthListener));
             return;
-        } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException |
-                 IOException e) {
+        }
+        catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException |
+               IOException e) {
             errMessage = aTalkApp.getResString(R.string.crypto_msg_omemo_session_setup_failed, e.getMessage());
-        } catch (SmackException.NotLoggedInException e) {
+        }
+        catch (SmackException.NotLoggedInException e) {
             errMessage = aTalkApp.getResString(R.string.message_delivery_not_registered);
         }
 
@@ -785,8 +789,9 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 mCarbonManager = null;
             }
             Timber.i("Successfully setting carbon new state for: %s to %s", userJid, isCarbonEnabled);
-        } catch (NoResponseException | InterruptedException | NotConnectedException
-                 | XMPPException.XMPPErrorException e) {
+        }
+        catch (NoResponseException | InterruptedException | NotConnectedException
+               | XMPPException.XMPPErrorException e) {
             Timber.e("Failed to set carbon state for: %s to %S\n%s", userJid, enableCarbon, e.getMessage());
         }
     }
@@ -818,7 +823,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     @Override
     public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
         // Leave handling of omemo messages to onOmemoMessageReceived()
-        if ((message == null) || message.hasExtension(OmemoElement.NAME_ENCRYPTED, OMEMO_NAMESPACE_V_AXOLOTL))
+        if (OmemoManager.isOmemoMessage(message))
             return;
 
         // Return if it is for group chat
@@ -1081,8 +1086,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         // if (msgBody != null && msgBody.contains("JingleOutgoingFileOffer"))
         //    return;
 
+        if (msgBody.contains(EnvelopeElement.NAMESPACE)) {
+            msgBody = OmemoOptOutUtil.parseEnvelopElement(decryptedMessage, timeStamp);
+        }
         // aTalk OMEMO msgBody may contains markup text then set as ENCODE_HTML mode
-        if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
+        else if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
             encType |= IMessage.ENCODE_HTML;
         }
         IMessage newMessage = createMessageWithUID(msgBody, encType, msgId);
@@ -1092,14 +1100,20 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         if (xhtmString != null) {
             try {
                 XmlPullParser xpp = PacketParserUtils.getParserFor(xhtmString);
-                OmemoElement omemoElement = omemoVAxolotlProvider.parse(xpp);
+                OmemoElement omemoElement = mOmemoManager.isOmemo2Enable() ?
+                        new OmemoVOmemoProvider().parse(xpp) : new OmemoVAxolotlProvider().parse(xpp);
+                if (omemoElement == null) {
+                    omemoElement = !mOmemoManager.isOmemo2Enable() ?
+                            new OmemoVOmemoProvider().parse(xpp) : new OmemoVAxolotlProvider().parse(xpp);
+                }
 
                 OmemoMessage.Received xhtmlMessage = mOmemoManager.decrypt(userBareJid, omemoElement);
                 encType |= IMessage.ENCODE_HTML;
                 newMessage = createMessageWithUID(xhtmlMessage.getBody(), encType, msgId);
-            } catch (SmackException.NotLoggedInException | IOException | CorruptedOmemoKeyException
-                     | NoRawSessionException | CryptoFailedException
-                     | XmlPullParserException | SmackParsingException e) {
+            }
+            catch (SmackException.NotLoggedInException | IOException | CorruptedOmemoKeyException
+                   | NoRawSessionException | CryptoFailedException
+                   | XmlPullParserException | SmackParsingException e) {
                 Timber.e("Error decrypting xhtmlExtension message %s:", e.getMessage());
             }
         }

@@ -1,0 +1,98 @@
+/*
+ *
+ * Copyright 2017 Paul Schaub
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jivesoftware.smackx.omemo.provider;
+
+import java.io.IOException;
+import java.util.HashMap;
+
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
+import org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VAxolotl;
+
+import org.jxmpp.JxmppContext;
+
+/**
+ * Smack ExtensionProvider that parses OMEMO bundle element into OmemoBundleElement objects for Axolotl namespace.
+ *
+ * @author Paul Schaub
+ * @author Eng Chong Meng
+ */
+public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoBundleElement_VAxolotl> {
+    @Override
+    public OmemoBundleElement_VAxolotl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
+        boolean inPreKeys = false;
+
+        int signedPreKeyId = -1;
+        String signedPreKey = null;
+        String signedPreKeySignature = null;
+        String identityKey = null;
+        HashMap<Integer, String> preKeys = new HashMap<>();
+
+        outerloop: while (true) {
+            XmlPullParser.Event tag = parser.next();
+            switch (tag) {
+                case START_ELEMENT:
+                    String name = parser.getName();
+                    final int attributeCount = parser.getAttributeCount();
+                    // <signedPreKeyPublic>
+                    if (name.equals(OmemoBundleElement_VAxolotl.SIGNED_PRE_KEY_PUB)) {
+                        for (int i = 0; i < attributeCount; i++) {
+                            if (parser.getAttributeName(i).equals(OmemoBundleElement_VAxolotl.SIGNED_PRE_KEY_ID)) {
+                                int id = Integer.parseInt(parser.getAttributeValue(i));
+                                signedPreKey = parser.nextText();
+                                signedPreKeyId = id;
+                            }
+                        }
+                    }
+                    // <bundleGetSignedPreKeySignature>
+                    else if (name.equals(OmemoBundleElement_VAxolotl.SIGNED_PRE_KEY_SIG)) {
+                        signedPreKeySignature = parser.nextText();
+                    }
+                    // <deserializeIdentityKey>
+                    else if (name.equals(OmemoBundleElement_VAxolotl.IDENTITY_KEY)) {
+                        identityKey = parser.nextText();
+                    }
+                    // <deserializeECPublicKeys>
+                    else if (name.equals(OmemoBundleElement_VAxolotl.PRE_KEYS)) {
+                        inPreKeys = true;
+                    }
+                    // <preKeyPublic preKeyId='424242'>
+                    else if (inPreKeys && name.equals(OmemoBundleElement_VAxolotl.PRE_KEY_PUB)) {
+                        for (int i = 0; i < attributeCount; i++) {
+                            if (parser.getAttributeName(i).equals(OmemoBundleElement_VAxolotl.PRE_KEY_ID)) {
+                                preKeys.put(Integer.parseInt(parser.getAttributeValue(i)),
+                                        parser.nextText());
+                            }
+                        }
+                    }
+                    break;
+                case END_ELEMENT:
+                    if (parser.getDepth() == initialDepth) {
+                        break outerloop;
+                    }
+                    break;
+                default:
+                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                    break;
+            }
+        }
+        return new OmemoBundleElement_VAxolotl(signedPreKeyId, signedPreKey, signedPreKeySignature, identityKey, preKeys);
+    }
+}

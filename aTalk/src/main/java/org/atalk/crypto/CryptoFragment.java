@@ -71,6 +71,7 @@ import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.OmemoStore;
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceElement;
 import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
@@ -402,8 +403,8 @@ public class CryptoFragment extends BaseFragment
             recipient = multiUserChat.getOccupant(e).getJid().asBareJid();
             try {
                 OmemoCachedDeviceList theirDevices = mOmemoStore.loadCachedDeviceList(mOmemoManager.getOwnDevice(), recipient);
-                for (int id : theirDevices.getActiveDevices()) {
-                    OmemoDevice recipientDevice = new OmemoDevice(recipient, id);
+                for (OmemoDeviceElement deviceElement : theirDevices.getActiveDevices()) {
+                    OmemoDevice recipientDevice = new OmemoDevice(recipient, deviceElement.getId());
                     try {
                         fingerPrint = mOmemoManager.getFingerprint(recipientDevice);
                         allTrusted = mOmemoManager.isTrustedOmemoIdentity(recipientDevice, fingerPrint)
@@ -532,7 +533,7 @@ public class CryptoFragment extends BaseFragment
 
     /**
      * Reset the encryption choice for the specified chatSessionId.
-     * Mainly use by ChatSessionFragement; to re-enable the chat Session for UI when it is selected again
+     * Mainly use by ChatSessionFragment; to re-enable the chat Session for UI when it is selected again
      *
      * @param chatSessionId chat session Uuid
      */
@@ -739,7 +740,7 @@ public class CryptoFragment extends BaseFragment
 
         if (listener != null) {
             // Timber.w("CryptMode Listener changed: %s => %s", listener, chatType);
-            listener.onCryptoModeChange(chatType);
+            listener.onCryptoModeChange(mOmemoManager, chatType);
         }
     }
 

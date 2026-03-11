@@ -1341,6 +1341,12 @@
 
     <!-- OMEMO security category-->
     <string name="omemo_messaging_security">OMEMO Messaging Security</string>
+    <!-- OMEMO:2 Enable screen -->
+    <string name="omemo2_access_mode">omemo:2 Access Model</string>
+    <string name="omemo2_enable">Enable omemo:2 support</string>
+    <string name="omemo2_optout">OMEMO chat opt-out</string>
+    <string name="omemo2_optout_reason">OMEMO chat opt-out.\n Sorry, for compliance reasons I need a permanent, server-side, record of our conversation.</string>
+    <string name="omemo2_summary">Support XEP-0384 OMEMO element namespace: \'urn:xmpp:omemo:2\'</string>
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">Blind trust before verification</string>
     <string name="omemo_blind_trust_before_verification_summary">Auto-trust all new devices of contacts that haven’t been verified before; prompt for manual confirmation when a verified contact adds new devices.</string>

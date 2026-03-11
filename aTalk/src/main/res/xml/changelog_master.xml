@@ -7,9 +7,23 @@
 -->
 
 <changelog>
+    <release version="5.2.0 (03/12/2026)" versioncode="502000">
+        <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Implement XEP-0384: OMEMO Encryption to support both 'eu.siacs.conversations.axolotl' and 'urn:xmpp:omemo:2' namespaces;
+            mutually exclusive and specified per user account</change>
+        <change>aTalk supports decryption of OMEMO messages, and Jet files receive with either namespace</change>
+        <change>aTalk currently does not support device label, labelsig options</change>
+        <change>Support OMEMO opt-out with reason from user or use the aTalk default message</change>
+        <change>Omemo publish-options is supported in devices and bundles publish. Set to "NONE" if xmpp server does not support the option.
+            Otherwise OMEMO will not work, as when enabled in ejabberd 25.10 has errors i.e. precondition-not-met and conflict</change>
+        <change>Upgrade smack to support XEP-0420: Stanza Content Encryption 0.4.1 (2021-11-18)</change>
+        <change>Remove try-with-resource for all ExecutorService implementation; ANR reported by field units in Android Console</change>
+        <change>Need to add android.jetifier.ignorelist in gradle.properties when using bouncycastle libraries 1.83</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="5.1.0 (01/05/2026)" versioncode="501000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
-        <change>Implement shutdown for all Executor.Service after the assigned task is completed</change>
     </release>
 
     <release version="5.0.0 (12/27/2025)" versioncode="500000">

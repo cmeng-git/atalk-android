@@ -97,6 +97,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
+import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jxmpp.jid.DomainBareJid;
@@ -167,6 +168,7 @@ public class ChatActivity extends BaseActivity
     private MenuItem mCallVideoContact;
     private MenuItem mSendFile;
     private MenuItem mSendLocation;
+    private MenuItem mSendOptOut;
     private MenuItem mTtsEnable;
     private MenuItem mStatusEnable;
     private MenuItem mRoomInvite;
@@ -374,6 +376,20 @@ public class ChatActivity extends BaseActivity
     }
 
     /**
+     * Get the current msgEdit content.
+     *
+     * @return the msgEdit current content.
+     */
+    private String getEditText() {
+        ChatFragment chatFragment;
+        String editText = null;
+        if ((chatFragment = chatPagerAdapter.getCurrentChatFragment()) != null) {
+            editText = chatFragment.getChatController().getEditTextAndClear();
+        }
+        return editText;
+    }
+
+    /**
      * Set current chat id handled for this instance.
      *
      * @param chatId the id of the chat to set.
@@ -452,6 +468,7 @@ public class ChatActivity extends BaseActivity
         mCallVideoContact = mMenu.findItem(R.id.call_contact_video);
         mSendFile = mMenu.findItem(R.id.send_file);
         mSendLocation = mMenu.findItem(R.id.share_location);
+        mSendOptOut = mMenu.findItem(R.id.send_optout);
         mTtsEnable = mMenu.findItem(R.id.chat_tts_enable);
         mStatusEnable = mMenu.findItem(R.id.room_status_enable);
         mHistoryErase = mMenu.findItem(R.id.erase_chat_history);
@@ -563,6 +580,22 @@ public class ChatActivity extends BaseActivity
         }
     }
 
+    /**
+     * Update omemo opt-out option on chat session change.
+     *
+     * @param isOmemo2Chat true if it is omemo chat.
+     */
+    public void onChatSessionChange(boolean isOmemo2Chat, MetaContact contact) {
+        // ChatSession chatSession = selectedChatPanel.getChatSession();
+        if (contact != null) {
+            mSendOptOut.setVisible(isOmemo2Chat);
+        }
+        else {
+            mSendOptOut.setVisible(false);
+        }
+        // Timber.d("onChatSessionChange: %s", mSendOptOut.isVisible());
+    }
+
     @Override
     public void localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent evt) {
         runOnUiThread(this::setupChatRoomOptionItem);
@@ -602,6 +635,20 @@ public class ChatActivity extends BaseActivity
             Intent intent = new Intent(this, GeoLocationActivity.class);
             intent.putExtra(GeoLocationActivity.SHARE_ALLOW, true);
             startActivity(intent);
+            return true;
+
+        case R.id.send_optout:
+            XMPPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
+            boolean isDomainJid = (mRecipient == null) || (mRecipient.getJid() instanceof DomainBareJid);
+
+            if (connection != null && !isDomainJid) {
+                OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
+                String reason;
+                if((reason = getEditText()) == null) {
+                    reason = getString(R.string.omemo2_optout_reason);
+                }
+                omemoManager.sendOmemoOptOut(mRecipient.getJid().asBareJid(), reason);
+            }
             return true;
         }
 
@@ -1002,7 +1049,7 @@ public class ChatActivity extends BaseActivity
                 Timber.d("Share Intent with: REQUEST_CODE_SHARE_WITH");
                 selectedChatPanel.setEditedText(null);
                 if ("text/plain".equals(intent.getType())) {
-                    String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+                    String text = intent.getStringExtra(android.content.Intent.EXTRA_TEXT);
                     if (!TextUtils.isEmpty(text)) {
                         if (FileBackend.isHttpFileDnLink(text)) {
                             MediaShareTask msTask = new MediaShareTask();
@@ -1199,38 +1246,37 @@ public class ChatActivity extends BaseActivity
         private String mUrl;
 
         public void execute(String... params) {
-            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                eService.execute(() -> {
-                    // mUrl = "https://vimeo.com/45196609";  // invalid link
-                    mUrl = params[0];
-                    final String result = getUrlInfo(mUrl);
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            eService.execute(() -> {
+                // mUrl = "https://vimeo.com/45196609";  // invalid link
+                mUrl = params[0];
+                final String result = getUrlInfo(mUrl);
 
-                    runOnUiThread(() -> {
-                                String urlInfo = null;
-                                if (!TextUtils.isEmpty(result)) {
-                                    try {
-                                        final JSONObject attributes = new JSONObject(result);
-                                        String title = attributes.getString("title");
-                                        String imageUrl = attributes.getString("thumbnail_url");
+                runOnUiThread(() -> {
+                            String urlInfo = null;
+                            if (!TextUtils.isEmpty(result)) {
+                                try {
+                                    final JSONObject attributes = new JSONObject(result);
+                                    String title = attributes.getString("title");
+                                    String imageUrl = attributes.getString("thumbnail_url");
 
-                                        urlInfo = getString(R.string.url_media_share, imageUrl, title, mUrl);
-                                        selectedChatPanel.sendMessage(urlInfo, IMessage.ENCODE_HTML);
-                                    }
-                                    catch (JSONException e) {
-                                        Timber.w("Exception in JSONObject access: %s", result);
-                                    }
+                                    urlInfo = getString(R.string.url_media_share, imageUrl, title, mUrl);
+                                    selectedChatPanel.sendMessage(urlInfo, IMessage.ENCODE_HTML);
                                 }
-
-                                // send mUrl instead fetch urlInfo failed
-                                if (urlInfo == null) {
-                                    // selectedChatPanel.setEditedText(mUrl); too late as controller msgEdit is already initialized
-                                    selectedChatPanel.sendMessage(mUrl, IMessage.ENCODE_PLAIN);
+                                catch (JSONException e) {
+                                    Timber.w("Exception in JSONObject access: %s", result);
                                 }
                             }
-                    );
-                });
-                eService.shutdown();
-            }
+
+                            // send mUrl instead fetch urlInfo failed
+                            if (urlInfo == null) {
+                                // selectedChatPanel.setEditedText(mUrl); too late as controller msgEdit is already initialized
+                                selectedChatPanel.sendMessage(mUrl, IMessage.ENCODE_PLAIN);
+                            }
+                        }
+                );
+            });
+            eService.shutdown();
         }
 
         /***

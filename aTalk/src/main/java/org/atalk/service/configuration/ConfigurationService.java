@@ -139,7 +139,6 @@ public interface ConfigurationService
      * property names that have prefixes longer than the specified <code>prefix</code> param.
      *
      * Example:
-     *
      * Imagine a configuration service instance containing 2 properties only:<br>
      * <code>
      * net.java.sip.communicator.PROP1=value1<br>

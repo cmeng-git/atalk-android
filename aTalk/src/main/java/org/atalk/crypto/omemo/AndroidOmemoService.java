@@ -23,6 +23,7 @@ import net.java.sip.communicator.impl.protocol.jabber.OperationSetMultiUserChatJ
 import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
 import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -56,6 +57,10 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
 
         OperationSetMultiUserChat mucOpSet = pps.getOperationSet(OperationSetMultiUserChat.class);
         ((OperationSetMultiUserChatJabberImpl) mucOpSet).registerOmemoMucListener(mOmemoManager);
+
+        JabberAccountID jabberAccountID = (JabberAccountID) pps.getAccountID();
+        mOmemoManager.setOmemo2Enable(jabberAccountID.isOmemo2Enable());
+        mOmemoManager.setOmemo2AccessModel(jabberAccountID.getOmemoAccessModel());
     }
 
     /**
@@ -66,7 +71,7 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
      * @return instance of OMEMO Manager
      */
     private OmemoManager initOmemoManager(ProtocolProviderService pps) {
-        OmemoStore mOmemoStore = OmemoService.getInstance().getOmemoStoreBackend();
+        OmemoStore<?, ?, ?, ?, ?, ?, ?, ?, ?> mOmemoStore = OmemoService.getInstance().getOmemoStoreBackend();
 
         BareJid userJid;
         if (mConnection.getUser() != null) {

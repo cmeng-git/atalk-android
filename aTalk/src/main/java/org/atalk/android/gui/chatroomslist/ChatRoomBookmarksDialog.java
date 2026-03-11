@@ -206,23 +206,22 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         BookmarkConference bookmarkConference;
 
         public void execute() {
-            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                eService.execute(() -> {
-                    doInBackground();
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            eService.execute(() -> {
+                doInBackground();
 
-                    mParent.runOnUiThread(() -> {
-                        if (!mAccountBookmarkConferencesList.isEmpty()) {
-                            Object[] keySet = mAccountBookmarkConferencesList.keySet().toArray();
-                            if (keySet.length > 0) {
-                                String accountId = (String) keySet[0];
-                                if (StringUtils.isNotEmpty(accountId))
-                                    initChatRoomSpinner(accountId);
-                            }
+                mParent.runOnUiThread(() -> {
+                    if (!mAccountBookmarkConferencesList.isEmpty()) {
+                        Object[] keySet = mAccountBookmarkConferencesList.keySet().toArray();
+                        if (keySet.length > 0) {
+                            String accountId = (String) keySet[0];
+                            if (StringUtils.isNotEmpty(accountId))
+                                initChatRoomSpinner(accountId);
                         }
-                    });
+                    }
                 });
-                eService.shutdown();
-            }
+            });
+            eService.shutdown();
         }
 
         private void doInBackground() {
@@ -256,8 +255,9 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
                             bookmarkList.add(bookmarkConference);
                         }
 
-                    } catch (SmackException.NoResponseException | SmackException.NotConnectedException
-                             | XMPPException.XMPPErrorException | InterruptedException e) {
+                    }
+                    catch (SmackException.NoResponseException | SmackException.NotConnectedException
+                           | XMPPException.XMPPErrorException | InterruptedException e) {
                         Timber.w("Failed to fetch Bookmarks: %s", e.getMessage());
                     }
 
@@ -276,7 +276,8 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
                                         Resourcepart.from(nickName), "");
                                 bookmarkConference.setBookmark(false);
                                 bookmarkList.add(bookmarkConference);
-                            } catch (XmppStringprepException e) {
+                            }
+                            catch (XmppStringprepException e) {
                                 Timber.w("Failed to add Bookmark for %s: %s", chatRoom, e.getMessage());
                             }
                         }
@@ -324,24 +325,24 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
     @Override
     public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
         switch (adapter.getId()) {
-            case R.id.jid_Accounts_Spinner:
-                String userId = (String) adapter.getItemAtPosition(pos);
-                ChatRoomProviderWrapper protocol = mucRoomWrapperList.get(userId);
+        case R.id.jid_Accounts_Spinner:
+            String userId = (String) adapter.getItemAtPosition(pos);
+            ChatRoomProviderWrapper protocol = mucRoomWrapperList.get(userId);
 
-                ProtocolProviderService pps = (protocol == null) ? null : protocol.getProtocolProvider();
-                if (pps != null) {
-                    mBookmarkFocus = null;
-                    String accountId = pps.getAccountID().getAccountJid();
-                    initChatRoomSpinner(accountId);
-                }
-                break;
+            ProtocolProviderService pps = (protocol == null) ? null : protocol.getProtocolProvider();
+            if (pps != null) {
+                mBookmarkFocus = null;
+                String accountId = pps.getAccountID().getAccountJid();
+                initChatRoomSpinner(accountId);
+            }
+            break;
 
-            case R.id.chatRoom_Spinner:
-                String oldChatRoom = (mBookmarkFocus != null) ? mBookmarkFocus.getJid().toString() : "";
-                String chatRoom = (String) adapter.getItemAtPosition(pos);
-                if (!initBookMarkForm(chatRoom)) {
-                    chatRoomSpinner.setSelection(mChatRoomList.indexOf(oldChatRoom));
-                }
+        case R.id.chatRoom_Spinner:
+            String oldChatRoom = (mBookmarkFocus != null) ? mBookmarkFocus.getJid().toString() : "";
+            String chatRoom = (String) adapter.getItemAtPosition(pos);
+            if (!initBookMarkForm(chatRoom)) {
+                chatRoomSpinner.setSelection(mChatRoomList.indexOf(oldChatRoom));
+            }
         }
     }
 
@@ -402,7 +403,8 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
                 try {
                     // nickName cannot be null => exception
                     mBookmarkFocus.setNickname(Resourcepart.from(ViewUtil.toString(nicknameField)));
-                } catch (XmppStringprepException e) {
+                }
+                catch (XmppStringprepException e) {
                     aTalkApp.showToastMessage(R.string.change_nickname_error,
                             mBookmarkFocus.getJid(), e.getMessage());
                     return false;
@@ -498,8 +500,9 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
                             }
                         }
                     }
-                } catch (SmackException.NoResponseException | SmackException.NotConnectedException
-                         | XMPPException.XMPPErrorException | InterruptedException e) {
+                }
+                catch (SmackException.NoResponseException | SmackException.NotConnectedException
+                       | XMPPException.XMPPErrorException | InterruptedException e) {
                     String errMag = aTalkApp.getResString(R.string.chatroom_bookmark_update_failed,
                             chatRoomWrapper, e.getMessage());
                     Timber.w(errMag);

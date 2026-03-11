@@ -5,6 +5,11 @@
  */
 package net.java.sip.communicator.service.protocol.jabber;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.JingleNodeDescriptor;
 import net.java.sip.communicator.service.protocol.ProtocolNames;
@@ -14,14 +19,10 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import org.atalk.android.gui.account.settings.BoshProxyDialog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.jivesoftware.smack.util.TLSUtils;
+import org.jivesoftware.smackx.pubsub.AccessModel;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -33,8 +34,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class JabberAccountID extends AccountID
-{
+public class JabberAccountID extends AccountID {
     /**
      * Default properties prefix used in atalk-defaults.properties file for Jabber protocol.
      */
@@ -95,15 +95,15 @@ public class JabberAccountID extends AccountID
      * @param accountProperties any other properties necessary for the account.
      */
     public JabberAccountID(String userId, Map<String, String> accountProperties)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         super(userId, accountProperties, ProtocolNames.JABBER, getServiceName(accountProperties));
 
         // id can be null on initial startup
         if (userId != null) {
             try {
                 userBareJid = JidCreate.entityBareFrom(userId);
-            } catch (XmppStringprepException e) {
+            }
+            catch (XmppStringprepException e) {
                 Timber.e("Unable to create BareJid for user account: %s", userId);
                 throw new IllegalArgumentException("User ID is not a valid xmpp BareJid");
             }
@@ -113,8 +113,7 @@ public class JabberAccountID extends AccountID
     /**
      * Default constructor for serialization purposes. Do not removed - required by serialization
      */
-    public JabberAccountID()
-    {
+    public JabberAccountID() {
         this(null, new HashMap<>());
     }
 
@@ -124,15 +123,15 @@ public class JabberAccountID extends AccountID
      *
      * @param userId new userId
      */
-    public void updateJabberAccountID(String userId)
-    {
+    public void updateJabberAccountID(String userId) {
         if (userId != null) {
             this.mUserID = userId;
             this.accountUid = getProtocolName() + ":" + mUserID;
             mAccountProperties.put(USER_ID, userId);
             try {
                 userBareJid = JidCreate.entityBareFrom(userId);
-            } catch (XmppStringprepException e) {
+            }
+            catch (XmppStringprepException e) {
                 Timber.e("Unable to create BareJid for user account: %s", userId);
             }
         }
@@ -144,8 +143,7 @@ public class JabberAccountID extends AccountID
      *
      * @return a <code>String</code> with the URL which should be used for BOSH transport
      */
-    public String getBoshUrl()
-    {
+    public String getBoshUrl() {
         return getAccountPropertyString(ProtocolProviderFactory.BOSH_URL);
     }
 
@@ -154,8 +152,7 @@ public class JabberAccountID extends AccountID
      *
      * @param boshPath a <code>String</code> with the new BOSH URL
      */
-    public void setBoshUrl(String boshPath)
-    {
+    public void setBoshUrl(String boshPath) {
         putAccountProperty(ProtocolProviderFactory.BOSH_URL, boshPath);
     }
 
@@ -164,8 +161,7 @@ public class JabberAccountID extends AccountID
      *
      * @return <code>true</code> if (Type == BOSH) else false
      */
-    public boolean isBOSHEnable()
-    {
+    public boolean isBOSHEnable() {
         return BoshProxyDialog.BOSH.equals(getAccountPropertyString(ProtocolProviderFactory.PROXY_TYPE));
     }
 
@@ -174,8 +170,7 @@ public class JabberAccountID extends AccountID
      *
      * @return <code>true</code> if Bosh Http Proxy should be used, otherwise returns <code>false</code>
      */
-    public boolean isBoshHttpProxyEnabled()
-    {
+    public boolean isBoshHttpProxyEnabled() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.BOSH_PROXY_HTTP_ENABLED, false);
     }
 
@@ -184,8 +179,7 @@ public class JabberAccountID extends AccountID
      *
      * @param isBoshHttp <code>true to enable HTTP proxy for BOSH</code>
      */
-    public void setBoshHttpProxyEnabled(boolean isBoshHttp)
-    {
+    public void setBoshHttpProxyEnabled(boolean isBoshHttp) {
         putAccountProperty(ProtocolProviderFactory.BOSH_PROXY_HTTP_ENABLED, isBoshHttp);
     }
 
@@ -194,8 +188,7 @@ public class JabberAccountID extends AccountID
      *
      * @return the phone suffix
      */
-    public String getOverridePhoneSuffix()
-    {
+    public String getOverridePhoneSuffix() {
         return getAccountPropertyString(OVERRIDE_PHONE_SUFFIX);
     }
 
@@ -204,8 +197,7 @@ public class JabberAccountID extends AccountID
      *
      * @return Jabber: the name of this protocol.
      */
-    public String getSystemProtocolName()
-    {
+    public String getSystemProtocolName() {
         return ProtocolNames.JABBER;
     }
 
@@ -214,8 +206,7 @@ public class JabberAccountID extends AccountID
      *
      * @return the alwaysCallWithGtalk value
      */
-    public boolean getBypassGtalkCaps()
-    {
+    public boolean getBypassGtalkCaps() {
         return getAccountPropertyBoolean(BYPASS_GTALK_CAPABILITIES, false);
     }
 
@@ -224,8 +215,7 @@ public class JabberAccountID extends AccountID
      *
      * @return telephony domain
      */
-    public String getTelephonyDomainBypassCaps()
-    {
+    public String getTelephonyDomainBypassCaps() {
         return getAccountPropertyString(TELEPHONY_BYPASS_GTALK_CAPS);
     }
 
@@ -234,8 +224,7 @@ public class JabberAccountID extends AccountID
      *
      * @return <code>true</code> if anonymous login is enabled on this account.
      */
-    public boolean isAnonymousAuthUsed()
-    {
+    public boolean isAnonymousAuthUsed() {
         return getAccountPropertyBoolean(ANONYMOUS_AUTH, false);
     }
 
@@ -244,8 +233,7 @@ public class JabberAccountID extends AccountID
      *
      * @return True if jingle is disabled for this account. False otherwise.
      */
-    public boolean isJingleDisabled()
-    {
+    public boolean isJingleDisabled() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.IS_CALLING_DISABLED_FOR_ACCOUNT, false);
     }
 
@@ -254,8 +242,7 @@ public class JabberAccountID extends AccountID
      *
      * @return <code>true</code> if we are to enable Gmail notifications and <code>false</code> otherwise.
      */
-    public boolean isGmailNotificationEnabled()
-    {
+    public boolean isGmailNotificationEnabled() {
         return getAccountPropertyBoolean(GMAIL_NOTIFICATIONS_ENABLED, false);
     }
 
@@ -264,8 +251,7 @@ public class JabberAccountID extends AccountID
      *
      * @return <code>true</code> if we are to enable Google Contacts and <code>false</code> otherwise.
      */
-    public boolean isGoogleContactsEnabled()
-    {
+    public boolean isGoogleContactsEnabled() {
         return getAccountPropertyBoolean(GOOGLE_CONTACTS_ENABLED, true);
     }
 
@@ -274,8 +260,7 @@ public class JabberAccountID extends AccountID
      *
      * @param useAnonymousAuth <code>true</code> to use anonymous login.
      */
-    public void setUseAnonymousAuth(boolean useAnonymousAuth)
-    {
+    public void setUseAnonymousAuth(boolean useAnonymousAuth) {
         putAccountProperty(ANONYMOUS_AUTH, useAnonymousAuth);
     }
 
@@ -284,8 +269,7 @@ public class JabberAccountID extends AccountID
      *
      * @param phoneSuffix the phone name suffix (the domain name after the @ sign)
      */
-    public void setOverridePhoneSuffix(String phoneSuffix)
-    {
+    public void setOverridePhoneSuffix(String phoneSuffix) {
         setOrRemoveIfEmpty(OVERRIDE_PHONE_SUFFIX, phoneSuffix);
     }
 
@@ -294,8 +278,7 @@ public class JabberAccountID extends AccountID
      *
      * @param bypassGtalkCaps true to enable, false otherwise
      */
-    public void setBypassGtalkCaps(boolean bypassGtalkCaps)
-    {
+    public void setBypassGtalkCaps(boolean bypassGtalkCaps) {
         putAccountProperty(BYPASS_GTALK_CAPABILITIES, bypassGtalkCaps);
     }
 
@@ -304,8 +287,7 @@ public class JabberAccountID extends AccountID
      *
      * @param text telephony domain to set
      */
-    public void setTelephonyDomainBypassCaps(String text)
-    {
+    public void setTelephonyDomainBypassCaps(String text) {
         setOrRemoveIfEmpty(TELEPHONY_BYPASS_GTALK_CAPS, text);
     }
 
@@ -314,8 +296,7 @@ public class JabberAccountID extends AccountID
      *
      * @param disabled True if jingle is disabled for this account. False otherwise.
      */
-    public void setDisableJingle(boolean disabled)
-    {
+    public void setDisableJingle(boolean disabled) {
         putAccountProperty(ProtocolProviderFactory.IS_CALLING_DISABLED_FOR_ACCOUNT, disabled);
     }
 
@@ -324,8 +305,7 @@ public class JabberAccountID extends AccountID
      *
      * @param enabled <code>true</code> if we are to enable Gmail notification and <code>false</code> otherwise.
      */
-    public void setGmailNotificationEnabled(boolean enabled)
-    {
+    public void setGmailNotificationEnabled(boolean enabled) {
         putAccountProperty(GMAIL_NOTIFICATIONS_ENABLED, enabled);
     }
 
@@ -334,8 +314,7 @@ public class JabberAccountID extends AccountID
      *
      * @param enabled <code>true</code> if we are to enable Google Contacts and <code>false</code> otherwise.
      */
-    public void setGoogleContactsEnabled(boolean enabled)
-    {
+    public void setGoogleContactsEnabled(boolean enabled) {
         putAccountProperty(GOOGLE_CONTACTS_ENABLED, enabled);
     }
 
@@ -344,8 +323,7 @@ public class JabberAccountID extends AccountID
      *
      * @return the resource
      */
-    public String getResource()
-    {
+    public String getResource() {
         return getAccountPropertyString(ProtocolProviderFactory.RESOURCE);
     }
 
@@ -354,8 +332,7 @@ public class JabberAccountID extends AccountID
      *
      * @param resource the resource for the jabber account
      */
-    public void setResource(String resource)
-    {
+    public void setResource(String resource) {
         putAccountProperty(ProtocolProviderFactory.RESOURCE, resource);
     }
 
@@ -364,8 +341,7 @@ public class JabberAccountID extends AccountID
      *
      * @return priority
      */
-    public int getPriority()
-    {
+    public int getPriority() {
         return getAccountPropertyInt(ProtocolProviderFactory.RESOURCE_PRIORITY, 30);
     }
 
@@ -374,8 +350,7 @@ public class JabberAccountID extends AccountID
      *
      * @param priority the priority to set
      */
-    public void setPriority(int priority)
-    {
+    public void setPriority(int priority) {
         putAccountProperty(ProtocolProviderFactory.RESOURCE_PRIORITY, priority);
     }
 
@@ -384,8 +359,7 @@ public class JabberAccountID extends AccountID
      *
      * @return <code>true</code> if ICE should be used for this account, otherwise returns <code>false</code>
      */
-    public boolean isUseIce()
-    {
+    public boolean isUseIce() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.IS_USE_ICE, true);
     }
 
@@ -395,8 +369,7 @@ public class JabberAccountID extends AccountID
      * @param isUseIce <code>true</code> to indicate that ICE should be used for this account, <code>false</code> -
      * otherwise.
      */
-    public void setUseIce(boolean isUseIce)
-    {
+    public void setUseIce(boolean isUseIce) {
         putAccountProperty(ProtocolProviderFactory.IS_USE_ICE, isUseIce);
     }
 
@@ -406,8 +379,7 @@ public class JabberAccountID extends AccountID
      * @return <code>true</code> if the stun server should be automatically discovered,
      * otherwise false if serverOverride is enabled; serviceDomain is likely not reachable.
      */
-    public boolean isAutoDiscoverStun()
-    {
+    public boolean isAutoDiscoverStun() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.AUTO_DISCOVER_STUN, !isServerOverridden());
     }
 
@@ -417,8 +389,7 @@ public class JabberAccountID extends AccountID
      * @param isAutoDiscover <code>true</code> to indicate that stun server should be auto-discovered, <code>false</code> -
      * otherwise.
      */
-    public void setAutoDiscoverStun(boolean isAutoDiscover)
-    {
+    public void setAutoDiscoverStun(boolean isAutoDiscover) {
         putAccountProperty(ProtocolProviderFactory.AUTO_DISCOVER_STUN, isAutoDiscover);
     }
 
@@ -428,8 +399,7 @@ public class JabberAccountID extends AccountID
      * @param isUseDefaultStunServer <code>true</code> to indicate that default stun server should be used if no others are
      * available, <code>false</code> otherwise.
      */
-    public void setUseDefaultStunServer(boolean isUseDefaultStunServer)
-    {
+    public void setUseDefaultStunServer(boolean isUseDefaultStunServer) {
         putAccountProperty(ProtocolProviderFactory.USE_DEFAULT_STUN_SERVER, isUseDefaultStunServer);
     }
 
@@ -439,8 +409,7 @@ public class JabberAccountID extends AccountID
      * @param isAutoDiscoverJingleNodes <code>true</code> to indicate that relay server should be auto-discovered,
      * <code>false</code> - otherwise.
      */
-    public void setAutoDiscoverJingleNodes(boolean isAutoDiscoverJingleNodes)
-    {
+    public void setAutoDiscoverJingleNodes(boolean isAutoDiscoverJingleNodes) {
         putAccountProperty(ProtocolProviderFactory.AUTO_DISCOVER_JINGLE_NODES, isAutoDiscoverJingleNodes);
     }
 
@@ -449,8 +418,7 @@ public class JabberAccountID extends AccountID
      *
      * @return <code>true</code> if the relay server should be automatically discovered, otherwise returns <code>false</code>.
      */
-    public boolean isAutoDiscoverJingleNodes()
-    {
+    public boolean isAutoDiscoverJingleNodes() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.AUTO_DISCOVER_JINGLE_NODES, true);
     }
 
@@ -460,8 +428,7 @@ public class JabberAccountID extends AccountID
      * @param isUseJingleNodes <code>true</code> to indicate that Jingle Nodes should be used for this account,
      * <code>false</code> - otherwise.
      */
-    public void setUseJingleNodes(boolean isUseJingleNodes)
-    {
+    public void setUseJingleNodes(boolean isUseJingleNodes) {
         putAccountProperty(ProtocolProviderFactory.IS_USE_JINGLE_NODES, isUseJingleNodes);
     }
 
@@ -470,8 +437,7 @@ public class JabberAccountID extends AccountID
      *
      * @return <code>true</code> if JingleNodes should be used, <code>false</code> otherwise
      */
-    public boolean isUseJingleNodes()
-    {
+    public boolean isUseJingleNodes() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.IS_USE_JINGLE_NODES, true);
     }
 
@@ -480,8 +446,7 @@ public class JabberAccountID extends AccountID
      *
      * @return <code>true</code> if UPnP should be used for this account, otherwise returns <code>false</code>
      */
-    public boolean isUseUPNP()
-    {
+    public boolean isUseUPNP() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.IS_USE_UPNP, true);
     }
 
@@ -490,8 +455,7 @@ public class JabberAccountID extends AccountID
      *
      * @param isUseUPNP <code>true</code> to indicate that UPnP should be used for this account, <code>false</code> - otherwise.
      */
-    public void setUseUPNP(boolean isUseUPNP)
-    {
+    public void setUseUPNP(boolean isUseUPNP) {
         putAccountProperty(ProtocolProviderFactory.IS_USE_UPNP, isUseUPNP);
     }
 
@@ -500,8 +464,7 @@ public class JabberAccountID extends AccountID
      *
      * @return minimum TLS protocol version. Default TLS 1.2
      */
-    public String getMinimumTLSversion()
-    {
+    public String getMinimumTLSversion() {
         return getAccountPropertyString(ProtocolProviderFactory.MINUMUM_TLS_VERSION, TLSUtils.PROTO_TLSV1_2);
     }
 
@@ -510,8 +473,7 @@ public class JabberAccountID extends AccountID
      *
      * @param minimumTLSversion minimum TLS protocol version
      */
-    public void setMinimumTLSversion(String minimumTLSversion)
-    {
+    public void setMinimumTLSversion(String minimumTLSversion) {
         putAccountProperty(ProtocolProviderFactory.MINUMUM_TLS_VERSION, minimumTLSversion);
     }
 
@@ -520,8 +482,7 @@ public class JabberAccountID extends AccountID
      *
      * @return <code>true</code> if non-TLS is allowed for this account, otherwise returns <code>false</code>
      */
-    public boolean isAllowNonSecure()
-    {
+    public boolean isAllowNonSecure() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.IS_ALLOW_NON_SECURE, false);
     }
 
@@ -530,8 +491,7 @@ public class JabberAccountID extends AccountID
      *
      * @param isAllowNonSecure <code>true</code> to indicate that non-TLS is allowed for this account, <code>false</code> otherwise.
      */
-    public void setAllowNonSecure(boolean isAllowNonSecure)
-    {
+    public void setAllowNonSecure(boolean isAllowNonSecure) {
         putAccountProperty(ProtocolProviderFactory.IS_ALLOW_NON_SECURE, isAllowNonSecure);
     }
 
@@ -540,8 +500,7 @@ public class JabberAccountID extends AccountID
      *
      * @return <code>true</code> if message carbons are allowed for this account, otherwise returns <code>false</code>
      */
-    public boolean isCarbonDisabled()
-    {
+    public boolean isCarbonDisabled() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.IS_CARBON_DISABLED, false);
     }
 
@@ -551,8 +510,7 @@ public class JabberAccountID extends AccountID
      * @param isCarbonEnabled <code>true</code> to indicate that message carbons are allowed for this account,
      * <code>false</code> otherwise.
      */
-    public void setDisableCarbon(boolean isCarbonEnabled)
-    {
+    public void setDisableCarbon(boolean isCarbonEnabled) {
         putAccountProperty(ProtocolProviderFactory.IS_CARBON_DISABLED, isCarbonEnabled);
     }
 
@@ -561,8 +519,7 @@ public class JabberAccountID extends AccountID
      *
      * @return true if resource is auto generated
      */
-    public boolean isResourceAutoGenerated()
-    {
+    public boolean isResourceAutoGenerated() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.AUTO_GENERATE_RESOURCE, true);
     }
 
@@ -572,8 +529,7 @@ public class JabberAccountID extends AccountID
      * @param resourceAutoGenerated <code>true</code> to indicate that the resource is to be auto generated,
      * <code>false</code> otherwise.
      */
-    public void setResourceAutoGenerated(boolean resourceAutoGenerated)
-    {
+    public void setResourceAutoGenerated(boolean resourceAutoGenerated) {
         putAccountProperty(ProtocolProviderFactory.AUTO_GENERATE_RESOURCE, resourceAutoGenerated);
     }
 
@@ -582,8 +538,7 @@ public class JabberAccountID extends AccountID
      *
      * @return the account default sms server
      */
-    public String getSmsServerAddress()
-    {
+    public String getSmsServerAddress() {
         return getAccountPropertyString(ProtocolProviderFactory.SMS_SERVER_ADDRESS);
     }
 
@@ -592,8 +547,7 @@ public class JabberAccountID extends AccountID
      *
      * @param serverAddress the sms server to set as default
      */
-    public void setSmsServerAddress(String serverAddress)
-    {
+    public void setSmsServerAddress(String serverAddress) {
         setOrRemoveIfEmpty(ProtocolProviderFactory.SMS_SERVER_ADDRESS, serverAddress);
     }
 
@@ -603,10 +557,10 @@ public class JabberAccountID extends AccountID
      * creating AccountID (Using this string is wrong, but used for compatibility for now)
      *
      * @param accountProperties Map
+     *
      * @return String
      */
-    private static String getServiceName(Map<String, String> accountProperties)
-    {
+    private static String getServiceName(Map<String, String> accountProperties) {
         // return accountProperties.get(ProtocolProviderFactory.SERVER_ADDRESS);
         String jid = accountProperties.get(ProtocolProviderFactory.USER_ID);
         if (jid != null)
@@ -620,8 +574,7 @@ public class JabberAccountID extends AccountID
      *
      * @return the list of JingleNodes trackers/relays that this account is currently configured to use.
      */
-    public List<JingleNodeDescriptor> getJingleNodes()
-    {
+    public List<JingleNodeDescriptor> getJingleNodes() {
         Map<String, String> accountProperties = getAccountProperties();
         List<JingleNodeDescriptor> serList = new ArrayList<>();
 
@@ -644,8 +597,7 @@ public class JabberAccountID extends AccountID
      * @return <code>true</code> if this provider would need to discover JingleNodes relay,
      * <code>false</code> otherwise
      */
-    public boolean isJingleNodesAutoDiscoveryEnabled()
-    {
+    public boolean isJingleNodesAutoDiscoveryEnabled() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.AUTO_DISCOVER_JINGLE_NODES, true);
     }
 
@@ -656,8 +608,7 @@ public class JabberAccountID extends AccountID
      * @return <code>true</code> if this provider would need to discover JingleNodes relay by searching
      * buddies, <code>false</code> otherwise
      */
-    public boolean isJingleNodesSearchBuddiesEnabled()
-    {
+    public boolean isJingleNodesSearchBuddiesEnabled() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.JINGLE_NODES_SEARCH_BUDDIES, false);
     }
 
@@ -667,16 +618,41 @@ public class JabberAccountID extends AccountID
      * @return <code>true</code> if this provider would use JingleNodes relay (if available),
      * <code>false</code> otherwise
      */
-    public boolean isJingleNodesRelayEnabled()
-    {
+    public boolean isJingleNodesRelayEnabled() {
         return getAccountPropertyBoolean(ProtocolProviderFactory.IS_USE_JINGLE_NODES, true);
+    }
+
+    /**
+     * Sets the PNAME_OMEMO2_ENABLE value of this jabber account registration.
+     *
+     * @param vOmemo TRUE if omemo2 support is required, FALSE otherwise
+     */
+    public void setOmemo2Enable(boolean vOmemo) {
+        putAccountProperty(ProtocolProviderFactory.PNAME_OMEMO2_ENABLE, vOmemo);
+    }
+
+    /**
+     * Returns TRUE if PNAME_OMEMO2_ENABLE is enabled, FALSE otherwise.
+     *
+     * @return TRUE if PNAME_OMEMO2_ENABLE is enabled, FALSE otherwise
+     */
+    public boolean isOmemo2Enable() {
+        return getAccountPropertyBoolean(ProtocolProviderFactory.PNAME_OMEMO2_ENABLE, false);
+    }
+
+    public void setOmemo2AccessModel(String accessModel) {
+        putAccountProperty(ProtocolProviderFactory.PNAME_OMEMO2_ACCESS_MODEL, accessModel);
+    }
+
+    public AccessModel getOmemoAccessModel() {
+        String asModel = getAccountPropertyString(ProtocolProviderFactory.PNAME_OMEMO2_ACCESS_MODEL, "none");
+        return asModel.equals("none") ? null : AccessModel.valueOf(asModel);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected String getDefaultString(String key)
-    {
+    protected String getDefaultString(String key) {
         return JabberAccountID.getDefaultStr(key);
     }
 
@@ -684,10 +660,10 @@ public class JabberAccountID extends AccountID
      * Gets default property value for given <code>key</code>.
      *
      * @param key the property key
+     *
      * @return default property value for given<code>key</code>
      */
-    public static String getDefaultStr(String key)
-    {
+    public static String getDefaultStr(String key) {
         String value = null;
         ConfigurationService configService = ProtocolProviderActivator.getConfigurationService();
         if (configService != null)
@@ -700,10 +676,10 @@ public class JabberAccountID extends AccountID
      * Gets default boolean property value for given <code>key</code>.
      *
      * @param key the property key
+     *
      * @return default property value for given<code>key</code>
      */
-    public static boolean getDefaultBool(String key)
-    {
+    public static boolean getDefaultBool(String key) {
         return Boolean.parseBoolean(getDefaultStr(key));
     }
 }

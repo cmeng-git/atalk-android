@@ -174,6 +174,11 @@ public final class JetManager extends Manager implements JingleDescriptionManage
         envelopeManagers.put(method.getJingleEnvelopeNamespace(), method);
     }
 
+    // Allow caller to specify the namespace supported e.g. OmemoManager supports 2 namespaces.
+    public void registerEnvelopeManager(String namespace, JingleEnvelopeManager method) {
+        envelopeManagers.put(namespace, method);
+    }
+
     public void unregisterEnvelopeManager(String namespace) {
         envelopeManagers.remove(namespace);
     }

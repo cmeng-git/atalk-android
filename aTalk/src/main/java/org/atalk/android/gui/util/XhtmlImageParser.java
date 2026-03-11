@@ -67,23 +67,22 @@ public class XhtmlImageParser implements Html.ImageGetter {
      */
     public class HttpGetDrawableTask {
         public void execute(String... params) {
-            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                eService.execute(() -> {
-                    String urlString = params[0];
-                    final Drawable urlDrawable = getDrawable(urlString);
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            eService.execute(() -> {
+                String urlString = params[0];
+                final Drawable urlDrawable = getDrawable(urlString);
 
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        if (urlDrawable != null) {
-                            mTextView.setText(Html.fromHtml(XhtmlString, Html.FROM_HTML_MODE_LEGACY, source -> urlDrawable, null));
-                        }
-                        else {
-                            mTextView.setText(Html.fromHtml(XhtmlString, Html.FROM_HTML_MODE_LEGACY, null, null));
-                        }
-                        mTextView.setMovementMethod(LinkMovementMethod.getInstance());
-                    });
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (urlDrawable != null) {
+                        mTextView.setText(Html.fromHtml(XhtmlString, Html.FROM_HTML_MODE_LEGACY, source -> urlDrawable, null));
+                    }
+                    else {
+                        mTextView.setText(Html.fromHtml(XhtmlString, Html.FROM_HTML_MODE_LEGACY, null, null));
+                    }
+                    mTextView.setMovementMethod(LinkMovementMethod.getInstance());
                 });
-                eService.shutdown();
-            }
+            });
+            eService.shutdown();
         }
 
         /***
@@ -108,7 +107,8 @@ public class XhtmlImageParser implements Html.ImageGetter {
                     drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 
                 return drawable;
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 return null;
             }
         }

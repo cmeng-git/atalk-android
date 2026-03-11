@@ -169,25 +169,24 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
      */
     private class InitComboBox {
         public void execute() {
-            try (ExecutorService eService = Executors.newSingleThreadExecutor()) {
-                eService.execute(() -> {
-                    final List<String> chatRoomList = doInBackground();
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            eService.execute(() -> {
+                final List<String> chatRoomList = doInBackground();
 
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        if (chatRoomList.isEmpty())
-                            chatRoomList.add(CHATROOM);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (chatRoomList.isEmpty())
+                        chatRoomList.add(CHATROOM);
 
-                        chatRoomComboBox.setText(chatRoomList.get(0));
-                        // Must do this after setText as it clear the list; otherwise only one item in the list
-                        chatRoomComboBox.setSuggestionSource(chatRoomList);
+                    chatRoomComboBox.setText(chatRoomList.get(0));
+                    // Must do this after setText as it clear the list; otherwise only one item in the list
+                    chatRoomComboBox.setSuggestionSource(chatRoomList);
 
-                        // Update the dialog form fields with all the relevant values, for first chatRoomWrapperList entry if available.
-                        if (!chatRoomWrapperList.isEmpty())
-                            onItemClick(null, chatRoomComboBox, 0, 0);
-                    });
-                    eService.shutdown();
+                    // Update the dialog form fields with all the relevant values, for first chatRoomWrapperList entry if available.
+                    if (!chatRoomWrapperList.isEmpty())
+                        onItemClick(null, chatRoomComboBox, 0, 0);
                 });
-            }
+            });
+            eService.shutdown();
         }
 
         private List<String> doInBackground() {
@@ -386,8 +385,9 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                 try {
                     bookmarkManager.addBookmarkedConference(name, entityBareJid, false,
                             chatRoomWrapper.getNickResource(), password);
-                } catch (SmackException.NoResponseException | SmackException.NotConnectedException
-                         | XMPPException.XMPPErrorException | InterruptedException e) {
+                }
+                catch (SmackException.NoResponseException | SmackException.NotConnectedException
+                       | XMPPException.XMPPErrorException | InterruptedException e) {
                     Timber.w("Failed to add new Bookmarks: %s", e.getMessage());
                 }
 
