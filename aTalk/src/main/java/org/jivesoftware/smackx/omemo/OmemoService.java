@@ -583,13 +583,12 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         PubSubManager pm = PubSubManager.getInstanceFor(connection, contactsDevice.getJid());
         OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
 
-        String nodeId = OmemoConstants.getOmemoNS(omemoManager.isOmemo2Enable());
-        LeafNode node = pm.getLeafNode(nodeId);
+        String bundleNodeName = contactsDevice.getBundleNodeName(omemoManager.isOmemo2Enable());
+        LeafNode node = pm.getLeafNode(bundleNodeName);
         List<PayloadItem<OmemoBundleElement>> bundleItems = node.getItems();
         if (bundleItems.isEmpty()) {
             return null;
         }
-
         return bundleItems.get(bundleItems.size() - 1).getPayload();
     }
 
@@ -623,9 +622,9 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
             publishOptions.setAccessModel(manager.getOmemo2AccessModel());
         }
 
-        String nodeId = userDevice.getBundleNodeName(vOmemo2);
+        String bundleNodeName = userDevice.getBundleNodeName(vOmemo2);
         String itemId = String.valueOf(userDevice.getDeviceId());
-        pm.publish(nodeId, new PayloadItem<>(itemId, bundle), publishOptions);
+        pm.publish(bundleNodeName, new PayloadItem<>(itemId, bundle), publishOptions);
         // pepManager.publish(userDevice.getBundleNodeName(), new PayloadItem<>(bundle));
     }
 
@@ -652,8 +651,8 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
 
         PubSubManager pm = PubSubManager.getInstanceFor(connection, contact);
 
-        String nodeId = OmemoConstants.getOmemoNS(vOmemo2);
-        LeafNode node = pm.getLeafNode(nodeId);
+        String nodeName = OmemoConstants.getOmemoNS(vOmemo2);
+        LeafNode node = pm.getLeafNode(nodeName);
         List<PayloadItem<OmemoDeviceListElement>> items = node.getItems();
         if (items.isEmpty()) {
             return null;
@@ -687,9 +686,9 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
             publishOptions.setAccessModel(omemoManager.getOmemo2AccessModel());
         }
 
-        String nodeId = OmemoConstants.getOmemoNS(vOmemo2);
+        String nodeName = OmemoConstants.getOmemoNS(vOmemo2);
         String id = String.valueOf(omemoManager.getDeviceId());
-        pm.publish(nodeId, new PayloadItem<>(id, devicesElement), publishOptions);
+        pm.publish(nodeName, new PayloadItem<>(id, devicesElement), publishOptions);
     }
 
     /**
@@ -709,8 +708,8 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
             throws InterruptedException, PubSubException.NotALeafNodeException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException, IOException {
 
-        OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
         OmemoDeviceListElement publishedList;
+        OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
 
         try {
             publishedList = fetchDeviceList(connection, userDevice.getJid(), omemoManager.isOmemo2Enable());

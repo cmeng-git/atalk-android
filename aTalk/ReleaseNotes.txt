@@ -1,5 +1,11 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        5.2.1 (502010)
+Release Date:   03/13/2026
+Author:         cmeng
+- Fix incorrect fetching of bundle from server in OmemoService#fetchBundle.
+
+=========================================================================
 Version:        5.2.0 (502000)
 Release Date:   03/12/2026
 Author:         cmeng

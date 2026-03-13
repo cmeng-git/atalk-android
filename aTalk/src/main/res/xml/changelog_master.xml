@@ -7,8 +7,12 @@
 -->
 
 <changelog>
-    <release version="5.2.0 (03/12/2026)" versioncode="502000">
+    <release version="5.2.1 (03/13/2026)" versioncode="502000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Fix incorrect fetching of bundle from server in OmemoService#fetchBundle</change>
+    </release>
+
+    <release version="5.2.0 (03/12/2026)" versioncode="502000">
         <change>Implement XEP-0384: OMEMO Encryption to support both 'eu.siacs.conversations.axolotl' and 'urn:xmpp:omemo:2' namespaces;
             mutually exclusive and specified per user account</change>
         <change>aTalk supports decryption of OMEMO messages, and Jet files receive with either namespace</change>
