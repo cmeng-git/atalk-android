@@ -7,7 +7,7 @@
 -->
 
 <changelog>
-    <release version="5.2.1 (03/13/2026)" versioncode="502000">
+    <release version="5.2.1 (03/13/2026)" versioncode="502010">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
         <change>Fix incorrect fetching of bundle from server in OmemoService#fetchBundle</change>
     </release>
