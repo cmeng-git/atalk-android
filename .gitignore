@@ -67,3 +67,8 @@ freeline_project_description.json
 reference/
 
 aTalk/release/version.properties
+/aTalk/jni/g729/
+/aTalk/jni/opus/opus/
+/aTalk/jni/speex/libogg
+/aTalk/jni/speex/libspeex
+/aTalk/jni/static_library_built/libvpx/libvpx/
