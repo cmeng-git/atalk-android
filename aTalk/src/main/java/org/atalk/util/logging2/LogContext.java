@@ -18,7 +18,6 @@ package org.atalk.util.logging2;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.atalk.util.collections.JMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
@@ -95,7 +94,7 @@ public class LogContext {
     }
 
     public void addContext(String key, String value) {
-        addContext(JMap.of(key, value));
+        addContext(Map.of(key, value));
     }
 
     public synchronized void addContext(Map<String, String> addedContext) {
