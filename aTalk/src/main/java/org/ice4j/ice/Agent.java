@@ -17,7 +17,6 @@
  */
 package org.ice4j.ice;
 
-import org.atalk.util.collections.JMap;
 import org.atalk.util.concurrent.CustomizableThreadFactory;
 import org.atalk.util.concurrent.ExecutorFactory;
 import org.atalk.util.logging2.LogContext;
@@ -360,7 +359,7 @@ public class Agent
             logger = parentLogger.createChildLogger(this.getClass().getName(), Collections.singletonMap("ufrag", this.ufrag));
         }
         else {
-            logger = new LoggerImpl(Agent.class.getName(), new LogContext(JMap.of("ufrag", this.ufrag)));
+            logger = new LoggerImpl(Agent.class.getName(), new LogContext(Map.of("ufrag", this.ufrag)));
         }
 
         connCheckServer = new ConnectivityCheckServer(this);

@@ -18,13 +18,11 @@ package org.atalk.util.logging2;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.atalk.util.collections.JMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +93,7 @@ public class LogContext {
     }
 
     public void addContext(String key, String value) {
-        addContext(JMap.of(key, value));
+        addContext(Map.of(key, value));
     }
 
     public synchronized void addContext(Map<String, String> addedContext) {
@@ -145,11 +143,11 @@ public class LogContext {
     @SafeVarargs
     @NotNull
     protected static ImmutableMap<String, String> combineMaps(@NotNull Map<String, String>... maps) {
-        Map<String, String> combinedMap = new HashMap<>();
+        var combinedMap = ImmutableMap.<String, String>builder();
         for (Map<String, String> map : maps) {
             combinedMap.putAll(map);
         }
-        return ImmutableMap.copyOf(combinedMap);
+        return combinedMap.build();
     }
 
     protected static String formatContext(Map<String, String> context) {
