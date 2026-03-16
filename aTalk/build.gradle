@@ -585,10 +585,10 @@ tasks.register('updateVersionFile', Copy) {
 
     def versionName = android.defaultConfig.versionName
     def versionCode = android.defaultConfig.versionCode
-    def date = new Date()
+    def date = LocalDate.now()
     // ******************************************
     println "*** " + description
-    println "# Date: " + date
+    println "# last_version_date = " + date
     println "# last_version = " + versionName
     println "# last_version_code = " + versionCode
 
