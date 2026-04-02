@@ -66,6 +66,7 @@ public class TelephonySettingFragment extends BasePreferenceFragment
         shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
 
         mapSummaries(summaryMapper);
+        exitOnBackKey();
     }
 
     /**

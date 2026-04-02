@@ -84,7 +84,7 @@ public class SctpMap extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the SctpMap.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, SctpMap> {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

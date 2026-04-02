@@ -22,7 +22,9 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.omemo.element.OmemoOptOutElement;
+
 import org.jxmpp.JxmppContext;
 
 /**

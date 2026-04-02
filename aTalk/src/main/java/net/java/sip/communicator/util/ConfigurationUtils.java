@@ -51,16 +51,19 @@ import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.util.MediaType;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.osgi.framework.ServiceReference;
+
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
+
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceipt;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
-import org.json.JSONException;
-import org.json.JSONObject;
+
 import org.jxmpp.jid.Jid;
-import org.osgi.framework.ServiceReference;
 
 import timber.log.Timber;
 
@@ -944,7 +947,8 @@ public class ConfigurationUtils {
      */
     public static void setAutoStart(boolean autoStart) {
         isAutoStartOnBoot = autoStart;
-        mConfigService.setProperty(pAutoStart, Boolean.toString(autoStart));
+        if (mConfigService != null)
+            mConfigService.setProperty(pAutoStart, Boolean.toString(autoStart));
     }
 
     /**
@@ -2104,7 +2108,8 @@ public class ConfigurationUtils {
                 options.remove(property);
             else
                 options.put(property, value);
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             Timber.w("Contact property update failed: %s: %s", contactJid, property);
         }
 
@@ -2127,7 +2132,8 @@ public class ConfigurationUtils {
         JSONObject options = getContactOptions(contactJid);
         try {
             return options.getString(property);
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             // Timber.w("ChatRoom property not found for: " + chatRoomId + ": " + property);
         }
         return null;
@@ -2156,7 +2162,8 @@ public class ConfigurationUtils {
             String value = cursor.getString(0);
             try {
                 options = new JSONObject(value == null ? "" : value);
-            } catch (JSONException e) {
+            }
+            catch (JSONException e) {
                 options = new JSONObject();
             }
         }
@@ -2183,7 +2190,7 @@ public class ConfigurationUtils {
         if (cursor.getCount() > 0) {
             if (!oldChatRoomId.equals(newChatRoomId)) {
                 cursor.moveToNext();
-                args = new String[]{cursor.getString(0)};
+                args = new String[] {cursor.getString(0)};
                 contentValues.put(ChatSession.ENTITY_JID, newChatRoomId);
                 mDB.update(ChatSession.TABLE_NAME, contentValues, ChatSession.SESSION_UUID + "=?", args);
             }
@@ -2262,7 +2269,8 @@ public class ConfigurationUtils {
                 attributes.remove(property);
             else
                 attributes.put(property, value);
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             Timber.w("ChatRoom property update failed: %s: %s", chatRoomId, property);
         }
 
@@ -2289,7 +2297,8 @@ public class ConfigurationUtils {
         JSONObject attributes = getChatRoomAttributes(protocolProvider, chatRoomId);
         try {
             return attributes.getString(property);
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             // Timber.w("ChatRoom property not found for: " + chatRoomId + ": " + property);
         }
         return null;
@@ -2321,7 +2330,8 @@ public class ConfigurationUtils {
             String value = cursor.getString(0);
             try {
                 attributes = new JSONObject(value == null ? "" : value);
-            } catch (JSONException e) {
+            }
+            catch (JSONException e) {
                 attributes = new JSONObject();
             }
         }
@@ -2564,7 +2574,8 @@ public class ConfigurationUtils {
             try {
                 temp = (SSLSocket) SSLSocketFactory.getDefault().createSocket();
                 return temp.getEnabledProtocols();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Timber.e(e);
                 return getAvailableSslProtocols();
             }
@@ -2582,9 +2593,10 @@ public class ConfigurationUtils {
         try {
             temp = (SSLSocket) SSLSocketFactory.getDefault().createSocket();
             return temp.getSupportedProtocols();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Timber.e(e);
-            return new String[]{};
+            return new String[] {};
         }
     }
 

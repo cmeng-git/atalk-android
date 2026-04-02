@@ -93,7 +93,7 @@ public class ExternalServices extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the ExternalServices.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, ExternalServices> {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

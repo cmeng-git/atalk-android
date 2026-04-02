@@ -30,8 +30,8 @@ import org.jivesoftware.smackx.omemo.element.OmemoElement_VAxolotl;
 import org.jivesoftware.smackx.omemo.element.OmemoHeaderElement;
 import org.jivesoftware.smackx.omemo.element.OmemoHeaderElement_VAxolotl;
 import org.jivesoftware.smackx.omemo.element.OmemoKeyElement;
-
 import org.jivesoftware.smackx.omemo.element.OmemoKeyElement_VAxolotl;
+
 import org.jxmpp.JxmppContext;
 
 /**
@@ -49,47 +49,49 @@ public class OmemoVAxolotlProvider extends ExtensionElementProvider<OmemoElement
         byte[] iv = null;
         byte[] payload = null;
 
-        outerloop: while (true) {
+        outerloop:
+        while (true) {
             XmlPullParser.Event tag = parser.next();
             switch (tag) {
-                case START_ELEMENT:
-                    String name = parser.getName();
-                    switch (name) {
-                        case OmemoHeaderElement.ELEMENT:
-                            for (int i = 0; i < parser.getAttributeCount(); i++) {
-                                if (parser.getAttributeName(i).equals(OmemoHeaderElement.ATTR_SID)) {
-                                    sid = Integer.parseInt(parser.getAttributeValue(i));
-                                }
-                            }
-                            break;
-                        case OmemoKeyElement_VAxolotl.ELEMENT:
-                            boolean prekey = false;
-                            int rid = -1;
-                            for (int i = 0; i < parser.getAttributeCount(); i++) {
-                                if (parser.getAttributeName(i).equals(OmemoKeyElement_VAxolotl.ATTR_PREKEY)) {
-                                    prekey = Boolean.parseBoolean(parser.getAttributeValue(i));
-                                } else if (parser.getAttributeName(i).equals(OmemoKeyElement.ATTR_RID)) {
-                                    rid = Integer.parseInt(parser.getAttributeValue(i));
-                                }
-                            }
-                            keys.add(new OmemoKeyElement_VAxolotl(Base64.decode(parser.nextText()), rid, prekey));
-                            break;
-                        case OmemoHeaderElement.ATTR_IV:
-                            iv = Base64.decode(parser.nextText());
-                            break;
-                        case OmemoElement.ATTR_PAYLOAD:
-                            payload = Base64.decode(parser.nextText());
-                            break;
+            case START_ELEMENT:
+                String name = parser.getName();
+                switch (name) {
+                case OmemoHeaderElement.ELEMENT:
+                    for (int i = 0; i < parser.getAttributeCount(); i++) {
+                        if (parser.getAttributeName(i).equals(OmemoHeaderElement.ATTR_SID)) {
+                            sid = Integer.parseInt(parser.getAttributeValue(i));
+                        }
                     }
                     break;
-                case END_ELEMENT:
-                    if (parser.getDepth() == initialDepth) {
-                        break outerloop;
+                case OmemoKeyElement_VAxolotl.ELEMENT:
+                    boolean prekey = false;
+                    int rid = -1;
+                    for (int i = 0; i < parser.getAttributeCount(); i++) {
+                        if (parser.getAttributeName(i).equals(OmemoKeyElement_VAxolotl.ATTR_PREKEY)) {
+                            prekey = Boolean.parseBoolean(parser.getAttributeValue(i));
+                        }
+                        else if (parser.getAttributeName(i).equals(OmemoKeyElement.ATTR_RID)) {
+                            rid = Integer.parseInt(parser.getAttributeValue(i));
+                        }
                     }
+                    keys.add(new OmemoKeyElement_VAxolotl(Base64.decode(parser.nextText()), rid, prekey));
                     break;
-                default:
-                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                case OmemoHeaderElement.ATTR_IV:
+                    iv = Base64.decode(parser.nextText());
                     break;
+                case OmemoElement.ATTR_PAYLOAD:
+                    payload = Base64.decode(parser.nextText());
+                    break;
+                }
+                break;
+            case END_ELEMENT:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
+                }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                break;
             }
         }
         OmemoHeaderElement_VAxolotl header = new OmemoHeaderElement_VAxolotl(sid, keys, iv);

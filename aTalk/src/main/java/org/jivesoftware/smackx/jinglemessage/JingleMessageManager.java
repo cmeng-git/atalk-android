@@ -37,6 +37,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XmlElement;
+
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
 
@@ -100,25 +101,25 @@ public final class JingleMessageManager extends Manager {
                     public void run() {
                         for (JingleMessageListener listener : jingleMessageListeners) {
                             switch (jingleMessage.getAction()) {
-                                case JingleMessage.ACTION_PROPOSE:
-                                    listener.onJingleMessagePropose(connection, jingleMessage, message);
-                                    break;
+                            case JingleMessage.ACTION_PROPOSE:
+                                listener.onJingleMessagePropose(connection, jingleMessage, message);
+                                break;
 
-                                case JingleMessage.ACTION_RETRACT:
-                                    listener.onJingleMessageRetract(connection, jingleMessage, message);
-                                    break;
+                            case JingleMessage.ACTION_RETRACT:
+                                listener.onJingleMessageRetract(connection, jingleMessage, message);
+                                break;
 
-                                case JingleMessage.ACTION_ACCEPT:
-                                    listener.onJingleMessageAccept(connection, jingleMessage, message);
-                                    break;
+                            case JingleMessage.ACTION_ACCEPT:
+                                listener.onJingleMessageAccept(connection, jingleMessage, message);
+                                break;
 
-                                case JingleMessage.ACTION_PROCEED:
-                                    listener.onJingleMessageProceed(connection, jingleMessage, message);
-                                    break;
+                            case JingleMessage.ACTION_PROCEED:
+                                listener.onJingleMessageProceed(connection, jingleMessage, message);
+                                break;
 
-                                case JingleMessage.ACTION_REJECT:
-                                    listener.onJingleMessageReject(connection, jingleMessage, message);
-                                    break;
+                            case JingleMessage.ACTION_REJECT:
+                                listener.onJingleMessageReject(connection, jingleMessage, message);
+                                break;
                             }
                         }
                     }
@@ -132,6 +133,7 @@ public final class JingleMessageManager extends Manager {
      * Add a new listener for incoming jingle messages.
      *
      * @param listener the listener to add.
+     *
      * @return <code>true</code> if the listener was not already added.
      */
     public boolean addIncomingListener(JingleMessageListener listener) {
@@ -142,6 +144,7 @@ public final class JingleMessageManager extends Manager {
      * Remove an incoming jingle message listener.
      *
      * @param listener the listener to remove.
+     *
      * @return <code>true</code> if the listener was active and got removed.
      */
     public boolean removeIncomingListener(JingleMessageListener listener) {
@@ -153,6 +156,7 @@ public final class JingleMessageManager extends Manager {
      *
      * @param connection xmppConnection
      * @param jid the XMPP address of the other entity to chat with.
+     *
      * @return the Chat API for the given XMPP address.
      */
     public Chat chatWith(XMPPConnection connection, EntityBareJid jid) {

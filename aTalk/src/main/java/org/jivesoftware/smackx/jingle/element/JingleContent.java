@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.jingle.element;
 
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**

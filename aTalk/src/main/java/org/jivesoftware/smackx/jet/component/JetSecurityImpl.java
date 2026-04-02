@@ -22,12 +22,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.crypto.NoSuchPaddingException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.XmlElement;
+
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 import org.jivesoftware.smackx.ciphers.AesGcmNoPadding;
 import org.jivesoftware.smackx.jet.JetManager;
@@ -134,7 +136,11 @@ public class JetSecurityImpl extends JingleSecurity<JetSecurity> {
         }
         try {
             decryptEncryptionKey(method, sender);
-        } catch (InterruptedException | NoSuchPaddingException | InvalidKeyException | NoSuchProviderException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | SmackException.NoResponseException | SmackException.NotConnectedException | XMPPException.XMPPErrorException | JingleEnvelopeManager.JingleEncryptionException e) {
+        }
+        catch (InterruptedException | NoSuchPaddingException | InvalidKeyException | NoSuchProviderException |
+               InvalidAlgorithmParameterException | NoSuchAlgorithmException | SmackException.NoResponseException |
+               SmackException.NotConnectedException | XMPPException.XMPPErrorException |
+               JingleEnvelopeManager.JingleEncryptionException e) {
             LOGGER.log(Level.SEVERE, "Could not decrypt security key: " + e, e);
         }
     }

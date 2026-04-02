@@ -31,7 +31,6 @@ import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.util.MediaType;
-import org.jivesoftware.smackx.pubsub.AccessModel;
 
 import timber.log.Timber;
 

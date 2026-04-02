@@ -21,6 +21,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
@@ -65,19 +66,22 @@ public abstract class AesGcmNoPadding {
             InvalidAlgorithmParameterException {
 
         switch (cipherName) {
-            case Aes128GcmNoPadding.NAMESPACE:
-                return new Aes128GcmNoPadding(Cipher.ENCRYPT_MODE);
-            case Aes256GcmNoPadding.NAMESPACE:
-                return new Aes256GcmNoPadding(Cipher.ENCRYPT_MODE);
-            default: throw new NoSuchAlgorithmException("Invalid cipher.");
+        case Aes128GcmNoPadding.NAMESPACE:
+            return new Aes128GcmNoPadding(Cipher.ENCRYPT_MODE);
+        case Aes256GcmNoPadding.NAMESPACE:
+            return new Aes256GcmNoPadding(Cipher.ENCRYPT_MODE);
+        default:
+            throw new NoSuchAlgorithmException("Invalid cipher.");
         }
     }
 
     /**
      * Create a new AES key.
+     *
      * @param key key
      * @param iv iv
      * @param MODE cipher mode (Cipher.ENCRYPT_MODE / Cipher.DECRYPT_MODE)
+     *
      * @throws NoSuchPaddingException if the requested padding mechanism is not available.
      * @throws NoSuchAlgorithmException in case there is no {@link java.security.Provider} registered for the used
      * @throws NoSuchProviderException in case there is no suitable {@link java.security.Provider} registered.
@@ -106,11 +110,12 @@ public abstract class AesGcmNoPadding {
             InvalidKeyException, NoSuchPaddingException {
 
         switch (namespace) {
-            case Aes128GcmNoPadding.NAMESPACE:
-                return new Aes128GcmNoPadding(serialized, Cipher.DECRYPT_MODE);
-            case Aes256GcmNoPadding.NAMESPACE:
-                return new Aes256GcmNoPadding(serialized, Cipher.DECRYPT_MODE);
-            default: throw new NoSuchAlgorithmException("Invalid cipher.");
+        case Aes128GcmNoPadding.NAMESPACE:
+            return new Aes128GcmNoPadding(serialized, Cipher.DECRYPT_MODE);
+        case Aes256GcmNoPadding.NAMESPACE:
+            return new Aes256GcmNoPadding(serialized, Cipher.DECRYPT_MODE);
+        default:
+            throw new NoSuchAlgorithmException("Invalid cipher.");
         }
     }
 

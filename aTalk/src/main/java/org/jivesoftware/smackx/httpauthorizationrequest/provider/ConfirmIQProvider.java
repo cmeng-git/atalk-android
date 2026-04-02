@@ -1,4 +1,4 @@
-/**
+/*
  *
  *  Copyright 2019-2023 Eng Chong Meng
  *
@@ -26,13 +26,15 @@ import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
+
+import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmElement;
 import org.jivesoftware.smackx.httpauthorizationrequest.packet.ConfirmIQ;
+
 import org.jxmpp.JxmppContext;
 
 /**
- * The IQ Provider for ConfirmIQ <code>ConfirmExtension</code>.
- * XEP-0070: Verifying HTTP Requests via XMPP (1.0.1 (2016-12-09))
+ * The IQ Provider for ConfirmIQ <code>ConfirmElement</code>.
+ * XEP-0070: Verifying HTTP Requests via XMPP (1.0.2 (2025-09-30))
  *
  * @author Eng Chong Meng
  */
@@ -41,8 +43,8 @@ public class ConfirmIQProvider extends IqProvider<ConfirmIQ> {
     @Override
     public ConfirmIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws XmlPullParserException, IOException, SmackParsingException, ParseException {
-        ConfirmExtension confirmExtension = (ConfirmExtension) PacketParserUtils
-                .parseExtensionElement(ConfirmExtension.ELEMENT, ConfirmExtension.NAMESPACE, parser, xmlEnvironment, jxmppContext);
-        return new ConfirmIQ(confirmExtension);
+        ConfirmElement confirmElement = (ConfirmElement) PacketParserUtils
+                .parseExtensionElement(ConfirmElement.ELEMENT, ConfirmElement.NAMESPACE, parser, xmlEnvironment, jxmppContext);
+        return new ConfirmIQ(confirmElement);
     }
 }

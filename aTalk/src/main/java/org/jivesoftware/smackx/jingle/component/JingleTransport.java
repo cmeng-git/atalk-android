@@ -22,6 +22,7 @@ import java.util.List;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 import org.jivesoftware.smackx.jingle.callbacks.JingleTransportCallback;
 import org.jivesoftware.smackx.jingle.element.Jingle;

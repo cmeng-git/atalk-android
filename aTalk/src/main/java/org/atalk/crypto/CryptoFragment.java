@@ -288,11 +288,11 @@ public class CryptoFragment extends BaseFragment
             BareJid bareJid = ((Contact) mDescriptor).getJid().asBareJid();
             mEntity = bareJid.toString();
             try {
+                // mOmemoManager.requestDeviceListUpdateFor(bareJid);
                 fingerPrints = mOmemoManager.getActiveFingerprints(bareJid);
-            } catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException
-                     | SmackException.NotConnectedException | SmackException.NotLoggedInException
-                     | InterruptedException | SmackException.NoResponseException
-                     | IllegalArgumentException | IOException e) {
+            } catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException |
+                     SmackException.NotConnectedException | SmackException.NotLoggedInException | InterruptedException |
+                     SmackException.NoResponseException | IllegalArgumentException | IOException e) {
                 // IllegalArgumentException is throw when IdentityKeyPair is null
                 Timber.w("Fetching active fingerPrints has failed: %s", e.getMessage());
             }

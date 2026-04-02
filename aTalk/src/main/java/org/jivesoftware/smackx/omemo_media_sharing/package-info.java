@@ -1,6 +1,6 @@
 /*
  *
- * Copyright © 2017 Grigory Fedorov
+ * Copyright © 2017 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 
 /**
  * Smack's API for XEP-0454: OMEMO Media sharing.
+ * @see <a href="https://xmpp.org/extensions/xep-0454.html">XEP-0454: OMEMO Media sharing</a>
  *
  * @author Paul Schaub
- * @see <a href="https://xmpp.org/extensions/xep-0454.html">XEP-0454: OMEMO Media sharing</a>
  */
 package org.jivesoftware.smackx.omemo_media_sharing;

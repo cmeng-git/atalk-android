@@ -26,7 +26,9 @@ import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.jingle_rtp.DefaultXmlElementProvider;
+
 import org.jxmpp.JxmppContext;
 
 /**

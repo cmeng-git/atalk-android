@@ -49,7 +49,8 @@ import org.jivesoftware.smackx.jet.component.JetSecurityImpl;
 import org.jivesoftware.smackx.jingle.component.JingleContentImpl;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFile;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.IncomingFileOfferController;
-import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
+import org.jivesoftware.smackx.thumbnails.element.ThumbnailElement;
+
 import org.jxmpp.jid.Jid;
 
 import timber.log.Timber;
@@ -76,8 +77,8 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest 
 
     private final JingleFile mJingleFile;
     private File mFile;
-    private final Thumbnail thumbnailElement;
-    private byte[] thumbnail = null;
+    private final ThumbnailElement thumbnailElement;
+    private byte[] thumbnailByte = null;
     FileReceiveConversation mCallback = null;
 
     /*
@@ -214,23 +215,23 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest 
     }
 
     /**
-     * Returns the thumbnail contained in this request.
-     * Proceed to request for the available thumbnail if auto accept file not permitted
+     * Returns the thumbnailElement contained in this request.
+     * Proceed to request for the available thumbnailElement if auto accept file not permitted
      *
-     * @param callback the caller requesting the thumbnail
+     * @param callback the caller requesting the thumbnailElement
      *
-     * @return the thumbnail contained in this request
+     * @return the thumbnailElement contained in this request
      */
     @Override
     public byte[] getThumbnail(FileReceiveConversation callback) {
-        if (thumbnail == null && thumbnailElement != null) {
+        if (thumbnailByte == null && thumbnailElement != null) {
             mCallback = callback;
             boolean isAutoAccept = ConfigurationUtils.isAutoAcceptFile(mJingleFile.getSize());
             if (!isAutoAccept && ConfigurationUtils.isSendThumbnail()) {
-                fetchThumbnailAndNotify(thumbnailElement.getCid());
+                fetchThumbnailAndNotify(thumbnailElement.getUri());
             }
         }
-        return thumbnail;
+        return thumbnailByte;
     }
 
     /**
@@ -270,29 +271,30 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest 
     }
 
     /**
-     * Request the thumbnail from the peer, allow extended smack timeout on thumbnail request.
+     * Request the thumbnailElement from the peer, allow extended smack timeout on thumbnailElement request.
      * Then fire the incoming transfer request event to start the actual incoming file transfer.
      *
-     * @param cid the thumbnail content-Id
+     * @param uri the thumbnailElement uri.
      */
-    private void fetchThumbnailAndNotify(final ContentId cid) {
+    private void fetchThumbnailAndNotify(final String uri) {
+        ContentId cid = ContentId.fromSrc(uri);
         final BoBManager bobManager = BoBManager.getInstanceFor(mConnection);
         thumbnailCollector.submit(() -> {
             try {
-                // Current BobData response time is ~16s (jpeg=14784) and 39s (png=31326) with thumbnail size = 128 x 96.
-                // Thumbnail size 64x64 => jpeg 5303 and takes ~7s; use this as default
+                // Current BobData response time is ~16s (jpeg=14784) and 39s (png=31326) with thumbnailElement size = 128 x 96.
+                // ThumbnailElement size 64x64 => jpeg 5303 and takes ~7s; use this as default
                 // mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_20);
-                thumbnail = bobManager.requestBoB(remoteJid, cid).getContent();
+                thumbnailByte = bobManager.requestBoB(remoteJid, cid).getContent();
             } catch (SmackException.NotLoggedInException
                      | SmackException.NoResponseException
                      | XMPPException.XMPPErrorException
                      | NotConnectedException
                      | InterruptedException e) {
-                Timber.e("Error in requesting for thumbnail: %s", e.getMessage());
+                Timber.e("Error in requesting for thumbnailElement: %s", e.getMessage());
             } finally {
                 // mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_DEFAULT_REPLY_TIMEOUT);
                 if (mCallback != null)
-                    mCallback.showThumbnail(thumbnail);
+                    mCallback.showThumbnail(thumbnailByte);
             }
         });
     }

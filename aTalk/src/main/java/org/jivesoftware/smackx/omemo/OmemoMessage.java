@@ -30,6 +30,7 @@ import org.jivesoftware.smackx.omemo.element.OmemoElement;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
+
 import org.jxmpp.jid.Jid;
 
 public class OmemoMessage {
@@ -84,7 +85,7 @@ public class OmemoMessage {
          * @param iv initialization vector belonging to key
          * @param intendedDevices devices the client intended to encrypt the message for
          * @param skippedDevices devices which were skipped during encryption process because encryption
-         *                       failed for some reason
+         * failed for some reason
          */
         Sent(OmemoElement element, byte[] key, byte[] iv, Set<OmemoDevice> intendedDevices, Map<OmemoDevice, Throwable> skippedDevices) {
             super(element, key, iv);
@@ -119,6 +120,10 @@ public class OmemoMessage {
             return !getSkippedDevices().isEmpty();
         }
 
+        public Message buildMessage(MessageBuilder messageBuilder, Jid recipient) {
+            return buildMessage(messageBuilder, recipient, false);
+        }
+
         /**
          * Return the OmemoElement wrapped in a Message ready to be sent.
          * The message is addressed to recipient, contains the OmemoElement
@@ -127,6 +132,8 @@ public class OmemoMessage {
          *
          * @param messageBuilder a message builder which will be used to build the message.
          * @param recipient recipient for the to-field of the message.
+         * @param vOmemo2 omemo:2 option state.
+         *
          * @return the build message.
          */
         public Message buildMessage(MessageBuilder messageBuilder, Jid recipient, boolean vOmemo2) {

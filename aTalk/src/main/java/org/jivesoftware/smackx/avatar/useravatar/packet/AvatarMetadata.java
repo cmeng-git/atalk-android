@@ -19,10 +19,8 @@ package org.jivesoftware.smackx.avatar.useravatar.packet;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -36,21 +34,17 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  */
 public class AvatarMetadata implements ExtensionElement {
     /**
-     * The logger.
-     */
-    private static final Logger LOGGER = Logger.getLogger(AvatarMetadata.class.getName());
-
-    /**
      * This userAvatar metadata extension namespace.
      */
     public static final String NAMESPACE = "urn:xmpp:avatar:metadata";
 
-    /*
+    /**
      * Subscribe to Receive Metadata Notification
      * The user's virtual pubsub service would then send the metadata notification to entities that
      * have subscribed to the user's metadata node or contacts who have advertised an interest in
      * receiving avatar metadata by including a Entity Capabilities (XEP-0115) [8] feature of
      * "urn:xmpp:avatar:metadata+notify".
+     * @see <a href="https://xmpp.org/extensions/xep-0084.html#process-subnotify">3.3 Subscribers Receive Metadata Notification</a>
      */
     public static final String NAMESPACE_NOTIFY = "urn:xmpp:avatar:metadata+notify";
 

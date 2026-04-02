@@ -55,7 +55,7 @@ public class SdpSourceRidGroup extends SdpSourceGroup {
      * to obtain a new instance and {@link #build} to build the SdpSourceRidGroup.
      */
     public static final class Builder extends SdpSourceGroup.Builder {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

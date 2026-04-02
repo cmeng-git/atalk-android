@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.XmlElement;
+
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**

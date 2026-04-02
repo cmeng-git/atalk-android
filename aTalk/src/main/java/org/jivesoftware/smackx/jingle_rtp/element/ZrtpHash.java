@@ -84,7 +84,7 @@ public class ZrtpHash extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the ZrtpHash.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, ZrtpHash> {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

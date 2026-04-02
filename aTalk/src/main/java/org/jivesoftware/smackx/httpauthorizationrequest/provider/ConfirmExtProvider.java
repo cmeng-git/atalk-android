@@ -1,4 +1,4 @@
-/**
+/*
  *
  *  Copyright 2019-2023 Eng Chong Meng
  *
@@ -21,27 +21,28 @@ import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
+
+import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmElement;
+
 import org.jxmpp.JxmppContext;
 
 /**
- * The XmlElement Provider for ConfirmExtension.
- * XEP-0070: Verifying HTTP Requests via XMPP (1.0.1 (2016-12-09))
+ * The XmlElement Provider for ConfirmElement.
+ * XEP-0070: Verifying HTTP Requests via XMPP (1.0.2 (2025-09-30))
  *
  * @author Eng Chong Meng
  */
-public class ConfirmExtProvider extends ExtensionElementProvider<ConfirmExtension> {
+public class ConfirmExtProvider extends ExtensionElementProvider<ConfirmElement> {
     @Override
-    public ConfirmExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+    public ConfirmElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws XmlPullParserException, IOException, SmackParsingException, ParseException {
-        String id = parser.getAttributeValue(null, ConfirmExtension.ATTR_ID);
-        String method = parser.getAttributeValue(null, ConfirmExtension.ATTR_METHOD);
-        String url = parser.getAttributeValue(null, ConfirmExtension.ATTR_URL);
+        String id = parser.getAttributeValue(null, ConfirmElement.ATTR_ID);
+        String method = parser.getAttributeValue(null, ConfirmElement.ATTR_METHOD);
+        String url = parser.getAttributeValue(null, ConfirmElement.ATTR_URL);
 
-        return new ConfirmExtension(id, method, url);
+        return new ConfirmElement(id, method, url);
     }
 }

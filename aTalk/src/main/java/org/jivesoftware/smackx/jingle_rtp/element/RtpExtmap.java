@@ -56,7 +56,7 @@ public class RtpExtmap extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the RtpExtmap.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, RtpExtmap> {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

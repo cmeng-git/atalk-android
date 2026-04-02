@@ -47,7 +47,7 @@ public class OperationSetVideoBridgeImpl extends AbstractIqRequestHandler
     private final ProtocolProviderServiceJabberImpl protocolProvider;
 
     /*
-     * Thumbnail request StanzaFilter for handling the request
+     * ColibriConferenceIQ request StanzaFilter for handling the request
      */
     // private static final StanzaFilter COLIBRI_EXT = new AndFilter(new StanzaTypeFilter(IQ.class),
     //    IQTypeFilter.GET, new StanzaExtensionFilter(ColibriConferenceIQ.ELEMENT, ColibriConferenceIQ.NAMESPACE));

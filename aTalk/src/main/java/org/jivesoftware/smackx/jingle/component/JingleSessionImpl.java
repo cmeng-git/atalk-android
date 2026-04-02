@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +31,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.Async;
+
 import org.jivesoftware.smackx.jingle.JingleDescriptionManager;
 import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jivesoftware.smackx.jingle.JingleSession;
@@ -434,8 +436,8 @@ public class JingleSessionImpl extends JingleSession {
         */
     }
 
-    protected HashMap<JingleContent, JingleContentImpl> getAffectedContents(Jingle request) {
-        HashMap<JingleContent, JingleContentImpl> map = new HashMap<>();
+    protected Map<JingleContent, JingleContentImpl> getAffectedContents(Jingle request) {
+        Map<JingleContent, JingleContentImpl> map = new HashMap<>();
         for (org.jivesoftware.smackx.jingle.element.JingleContent e : request.getContents()) {
             JingleContentImpl c = contentImpls.get(e.getName());
             if (c == null) {

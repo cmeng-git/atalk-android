@@ -23,6 +23,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.Async;
+
 import org.jivesoftware.smackx.DefaultExtensionElementProvider;
 import org.jivesoftware.smackx.coin.CoinExtension;
 import org.jivesoftware.smackx.colibri.WebSocketExtension;

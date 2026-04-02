@@ -1346,7 +1346,9 @@
     <string name="omemo2_enable">Enable omemo:2 support</string>
     <string name="omemo2_optout">OMEMO chat opt-out</string>
     <string name="omemo2_optout_reason">OMEMO chat opt-out.\n Sorry, for compliance reasons I need a permanent, server-side, record of our conversation.</string>
+    <string name="omemo2_subscription_failed">Failed to subscribe to OMEMO bundles and devices publish nodes!</string>
     <string name="omemo2_summary">Support XEP-0384 OMEMO element namespace: \'urn:xmpp:omemo:2\'</string>
+
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">Blind trust before verification</string>
     <string name="omemo_blind_trust_before_verification_summary">Auto-trust all new devices of contacts that haven’t been verified before; prompt for manual confirmation when a verified contact adds new devices.</string>

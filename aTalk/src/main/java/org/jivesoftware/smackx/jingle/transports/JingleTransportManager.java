@@ -67,8 +67,9 @@ public abstract class JingleTransportManager<D extends JingleContentTransport> i
      */
     public abstract int getPriority();
 
+    @SuppressWarnings("MissingImplementsComparable")
     public int compareTo(JingleTransportManager<?> other) {
-        return getPriority() > other.getPriority() ? 1 : -1;
+        return Integer.compare(getPriority(), other.getPriority());
     }
 
     public abstract JingleTransport<?> createTransportForInitiator(JingleContentImpl content);

@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.jingle_filetransfer.component;
 
 import org.jivesoftware.smackx.jingle.JingleSession;
-import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
 
 /**
  * An abstract class implementation for JingleFileRequest.

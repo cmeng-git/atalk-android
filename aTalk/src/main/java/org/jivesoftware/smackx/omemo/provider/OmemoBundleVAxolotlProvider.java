@@ -17,7 +17,8 @@
 package org.jivesoftware.smackx.omemo.provider;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -43,7 +44,8 @@ public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoB
         String signedPreKey = null;
         String signedPreKeySignature = null;
         String identityKey = null;
-        HashMap<Integer, String> preKeys = new HashMap<>();
+        // Preserve the order of the received preKeyPublic's in prekeys.
+        Map<Integer, String> preKeys = new LinkedHashMap<>();
 
         outerloop: while (true) {
             XmlPullParser.Event tag = parser.next();

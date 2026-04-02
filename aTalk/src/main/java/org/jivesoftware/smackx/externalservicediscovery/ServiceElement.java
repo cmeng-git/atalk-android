@@ -138,7 +138,7 @@ public class ServiceElement extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the ServiceElement.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, ServiceElement> {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 /**

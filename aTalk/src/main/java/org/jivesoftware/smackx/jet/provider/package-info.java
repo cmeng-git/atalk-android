@@ -16,7 +16,7 @@
  */
 
 /**
- * Smack's API for XEP-0391: Jingle Encrypted Transfers.
- * Providers.
+ * Element provider classes for XEP-0391: Jingle Encrypted Transports.
  */
 package org.jivesoftware.smackx.jet.provider;
+

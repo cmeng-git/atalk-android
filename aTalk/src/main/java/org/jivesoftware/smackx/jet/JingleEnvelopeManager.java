@@ -20,8 +20,8 @@ import java.security.NoSuchAlgorithmException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-
 import org.jivesoftware.smack.packet.XmlElement;
+
 import org.jxmpp.jid.FullJid;
 
 /**

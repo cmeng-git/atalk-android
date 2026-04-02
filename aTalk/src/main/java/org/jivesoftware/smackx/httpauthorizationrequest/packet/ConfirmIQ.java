@@ -1,4 +1,4 @@
-/**
+/*
  *
  *  Copyright 2019-2023 Eng Chong Meng
  *
@@ -19,28 +19,29 @@ package org.jivesoftware.smackx.httpauthorizationrequest.packet;
 import org.jivesoftware.smack.packet.AbstractIqBuilder;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqData;
-import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
+
+import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmElement;
 
 /**
  * An HTTP Requests IQ implementation for retrieving information about an HTTP Authorization request via IQ.
- * XEP-0070: Verifying HTTP Requests via XMPP (1.0.1 (2016-12-09))
+ * XEP-0070: Verifying HTTP Requests via XMPP (1.0.2 (2025-09-30))
  *
  * @author Eng Chong Meng
  */
 public class ConfirmIQ extends IQ {
-    public static final String ELEMENT = ConfirmExtension.ELEMENT;
-    public static final String NAMESPACE = ConfirmExtension.NAMESPACE;
+    public static final String ELEMENT = ConfirmElement.ELEMENT;
+    public static final String NAMESPACE = ConfirmElement.NAMESPACE;
 
-    private final ConfirmExtension mConfirmExtension;
+    private final ConfirmElement mConfirmElement;
 
-    public ConfirmIQ(ConfirmExtension confirmExtension) {
+    public ConfirmIQ(ConfirmElement confirmElement) {
         super(ELEMENT, NAMESPACE);
-        mConfirmExtension = confirmExtension;
+        mConfirmElement = confirmElement;
     }
 
-    public ConfirmIQ(final IqData iqData, ConfirmExtension confirmExtension) {
+    public ConfirmIQ(final IqData iqData, ConfirmElement confirmElement) {
         super(iqData, ELEMENT, NAMESPACE);
-        mConfirmExtension = confirmExtension;
+        mConfirmElement = confirmElement;
     }
 
     public static IQ createAuthRequestAccept(final ConfirmIQ iqAuthRequest) {
@@ -48,16 +49,16 @@ public class ConfirmIQ extends IQ {
         return new ConfirmIQ(iqData, iqAuthRequest.getConfirmExtension());
     }
 
-    public ConfirmExtension getConfirmExtension() {
-        return mConfirmExtension;
+    public ConfirmElement getConfirmExtension() {
+        return mConfirmElement;
     }
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        if (mConfirmExtension != null) {
-            xml.attribute(ConfirmExtension.ATTR_ID, mConfirmExtension.getId());
-            xml.attribute(ConfirmExtension.ATTR_METHOD, mConfirmExtension.getMethod());
-            xml.attribute(ConfirmExtension.ATTR_URL, mConfirmExtension.getUrl());
+        if (mConfirmElement != null) {
+            xml.attribute(ConfirmElement.ATTR_ID, mConfirmElement.getId());
+            xml.attribute(ConfirmElement.ATTR_METHOD, mConfirmElement.getMethod());
+            xml.attribute(ConfirmElement.ATTR_URL, mConfirmElement.getUrl());
         }
         xml.setEmptyElement();
         return xml;

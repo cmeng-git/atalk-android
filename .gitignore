@@ -62,8 +62,8 @@ freeline_project_description.json
 # Local reference
 reference/
 
-aTalk/release/version.properties
-/aTalk/jni/g729/
+/aTalk/jni/g722/g722
+/aTalk/jni/g729/bcg729
 /aTalk/jni/opus/opus/
 /aTalk/jni/speex/libogg
 /aTalk/jni/speex/libspeex

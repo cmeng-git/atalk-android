@@ -16,6 +16,6 @@
  */
 
 /**
- * Stanzas and Extension Elements for <a href="https://xmpp.org/extensions/xep-0166.html">XEP-0166: Jingle</a>.
+ * Stanzas and Extension Elements for <a href="https://xmpp.org/extensions/xep-0167.html">XEP-0167: Jingle RTP Sessions</a>.
  */
 package org.jivesoftware.smackx.jingle_rtp.element;

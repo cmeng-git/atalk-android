@@ -25,6 +25,7 @@ import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 
 /**
@@ -34,8 +35,9 @@ import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
  * @author Eng Chong Meng
  */
 public class JingleMessage implements XmlElement {
-    public static String ELEMENT = "propose";
     public static final String NAMESPACE = "urn:xmpp:jingle-message:0";
+    public final String ELEMENT;
+    public final QName QNAME;
 
     public static final String ACTION_PROPOSE = "propose";
     public static final String ACTION_RETRACT = "retract";
@@ -45,7 +47,6 @@ public class JingleMessage implements XmlElement {
 
     public static final String ATTR_ID = "id";
 
-    public static QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private List<RtpDescription> rtpDescriptions = null;
 
@@ -138,7 +139,8 @@ public class JingleMessage implements XmlElement {
         xml.attribute(ATTR_ID, id);
         if (rtpDescriptions == null) {
             xml.closeEmptyElement();
-        } else {
+        }
+        else {
             xml.rightAngleBracket();
             for (RtpDescription extension : rtpDescriptions) {
                 xml.append(extension);

@@ -49,7 +49,7 @@ public class InputEvent extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the InputEvent.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, InputEvent> {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

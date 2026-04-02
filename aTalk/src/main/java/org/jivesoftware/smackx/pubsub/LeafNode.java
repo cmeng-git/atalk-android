@@ -151,7 +151,8 @@ public class LeafNode extends Node {
      * @param subscriptionId The subscription which the retrieval is based
      * on.
      *
-     * @return List of {@link Item} where <T> type of the items.
+     * @return List of {@link Item}
+     * @param <T> type of the items.
      *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
@@ -261,11 +262,11 @@ public class LeafNode extends Node {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
-     * @deprecated use {@link #publish(Collection, Collection)} instead.
+     * @deprecated use {@link #publish(Collection)} instead.
      */
     @Deprecated
     public <T extends Item> void send(Collection<T> items) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
-        publish(items, null);
+        publish(items);
     }
 
     /**
@@ -313,6 +314,7 @@ public class LeafNode extends Node {
         publish(items);
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends Item> void publish(T item, NodeExtension nodeExtensions) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Collection<T> items = new ArrayList<>(1);
         items.add(item == null ? (T) new Item() : item);

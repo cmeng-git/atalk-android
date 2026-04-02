@@ -18,6 +18,7 @@ package org.atalk.android.gui.settings;
 
 import android.content.Context;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,17 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
+    }
+
+    // Close the PreferenceFragment when user press the backKey
+    public void exitOnBackKey() {
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                onStop();
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
     }
 
     /**

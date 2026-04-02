@@ -154,7 +154,7 @@
             <xmpp:SupportedXep>
                 <xmpp:xep rdf:resource='https://xmpp.org/extensions/xep-0070.html'/>
                 <xmpp:status>complete</xmpp:status>
-                <xmpp:version>1.0.1</xmpp:version>
+                <xmpp:version>1.0.2</xmpp:version>
                 <xmpp:since>1.8.8</xmpp:since>
             </xmpp:SupportedXep>
         </implements>

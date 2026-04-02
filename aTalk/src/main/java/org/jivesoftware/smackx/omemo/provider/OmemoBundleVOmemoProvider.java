@@ -17,13 +17,16 @@
 package org.jivesoftware.smackx.omemo.provider;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VOmemo;
+
 import org.jxmpp.JxmppContext;
 
 /**
@@ -41,54 +44,56 @@ public class OmemoBundleVOmemoProvider extends ExtensionElementProvider<OmemoBun
         String signedPreKey = null;
         String signedPreKeySignature = null;
         String identityKey = null;
-        HashMap<Integer, String> preKeys = new HashMap<>();
+        // Preserve the order of the received pk's in prekeys.
+        Map<Integer, String> preKeys = new LinkedHashMap<>();
 
-        outerloop: while (true) {
+        outerloop:
+        while (true) {
             XmlPullParser.Event tag = parser.next();
             switch (tag) {
-                case START_ELEMENT:
-                    String name = parser.getName();
-                    final int attributeCount = parser.getAttributeCount();
-                    // <signedPreKeyPublic>
-                    if (name.equals(OmemoBundleElement_VOmemo.SIGNED_PRE_KEY)) {
-                        for (int i = 0; i < attributeCount; i++) {
-                            if (parser.getAttributeName(i).equals(OmemoBundleElement_VOmemo.KEY_ID)) {
-                                int id = Integer.parseInt(parser.getAttributeValue(i));
-                                signedPreKey = parser.nextText();
-                                signedPreKeyId = id;
-                            }
+            case START_ELEMENT:
+                String name = parser.getName();
+                final int attributeCount = parser.getAttributeCount();
+                // <signedPreKeyPublic>
+                if (name.equals(OmemoBundleElement_VOmemo.SIGNED_PRE_KEY)) {
+                    for (int i = 0; i < attributeCount; i++) {
+                        if (parser.getAttributeName(i).equals(OmemoBundleElement_VOmemo.KEY_ID)) {
+                            int id = Integer.parseInt(parser.getAttributeValue(i));
+                            signedPreKey = parser.nextText();
+                            signedPreKeyId = id;
                         }
                     }
-                    // <bundleGetSignedPreKeySignature>
-                    else if (name.equals(OmemoBundleElement_VOmemo.SIGNED_PRE_KEY_SIG)) {
-                        signedPreKeySignature = parser.nextText();
-                    }
-                    // <deserializeIdentityKey>
-                    else if (name.equals(OmemoBundleElement_VOmemo.IDENTITY_KEY)) {
-                        identityKey = parser.nextText();
-                    }
-                    // <deserializeECPublicKeys>
-                    else if (name.equals(OmemoBundleElement_VOmemo.PRE_KEYS)) {
-                        inPreKeys = true;
-                    }
-                    // <spk id='0'>b64/encoded/data</spk>
-                    else if (inPreKeys && name.equals(OmemoBundleElement_VOmemo.PRE_KEY)) {
-                        for (int i = 0; i < attributeCount; i++) {
-                            if (parser.getAttributeName(i).equals(OmemoBundleElement_VOmemo.KEY_ID)) {
-                                preKeys.put(Integer.parseInt(parser.getAttributeValue(i)),
-                                        parser.nextText());
-                            }
+                }
+                // <bundleGetSignedPreKeySignature>
+                else if (name.equals(OmemoBundleElement_VOmemo.SIGNED_PRE_KEY_SIG)) {
+                    signedPreKeySignature = parser.nextText();
+                }
+                // <deserializeIdentityKey>
+                else if (name.equals(OmemoBundleElement_VOmemo.IDENTITY_KEY)) {
+                    identityKey = parser.nextText();
+                }
+                // <deserializeECPublicKeys>
+                else if (name.equals(OmemoBundleElement_VOmemo.PRE_KEYS)) {
+                    inPreKeys = true;
+                }
+                // <spk id='0'>b64/encoded/data</spk>
+                else if (inPreKeys && name.equals(OmemoBundleElement_VOmemo.PRE_KEY)) {
+                    for (int i = 0; i < attributeCount; i++) {
+                        if (parser.getAttributeName(i).equals(OmemoBundleElement_VOmemo.KEY_ID)) {
+                            preKeys.put(Integer.parseInt(parser.getAttributeValue(i)),
+                                    parser.nextText());
                         }
                     }
-                    break;
-                case END_ELEMENT:
-                    if (parser.getDepth() == initialDepth) {
-                        break outerloop;
-                    }
-                    break;
-                default:
-                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
-                    break;
+                }
+                break;
+            case END_ELEMENT:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
+                }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                break;
             }
         }
         return new OmemoBundleElement_VOmemo(signedPreKeyId, signedPreKey, signedPreKeySignature, identityKey, preKeys);

@@ -42,7 +42,7 @@ import org.jivesoftware.smackx.filetransfer.FileTransferException.NoAcceptableTr
 import org.jivesoftware.smackx.filetransfer.FileTransferException.NoStreamMethodsOfferedException;
 import org.jivesoftware.smackx.formtypes.FormFieldRegistry;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
-import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
+import org.jivesoftware.smackx.thumbnails.element.ThumbnailElement;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.ListSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -61,13 +61,14 @@ public final class FileTransferNegotiator extends Manager {
 
     public static final String SI_NAMESPACE = "http://jabber.org/protocol/si";
     public static final String SI_PROFILE_FILE_TRANSFER_NAMESPACE = "http://jabber.org/protocol/si/profile/file-transfer";
-    private static final String[] NAMESPACE = { SI_NAMESPACE, SI_PROFILE_FILE_TRANSFER_NAMESPACE };
+    private static final String[] NAMESPACE = {SI_NAMESPACE, SI_PROFILE_FILE_TRANSFER_NAMESPACE};
 
     private static final Map<XMPPConnection, FileTransferNegotiator> INSTANCES = new WeakHashMap<>();
 
     private static final String STREAM_INIT_PREFIX = "jsi_";
 
     static final String STREAM_DATA_FIELD_NAME = "stream-method";
+
     static {
         FormFieldRegistry.addLookasideFieldRegistryEntry(STREAM_DATA_FIELD_NAME, FormField.Type.list_single);
     }
@@ -87,6 +88,7 @@ public final class FileTransferNegotiator extends Manager {
      * service is automatically enabled.
      *
      * @param connection The connection for which the transfer manager is desired
+     *
      * @return The FileTransferNegotiator
      */
     public static synchronized FileTransferNegotiator getInstanceFor(
@@ -104,7 +106,7 @@ public final class FileTransferNegotiator extends Manager {
      * connection.
      *
      * @param connection The connection on which to enable or disable the services.
-     * @param isEnabled  True to enable, false to disable.
+     * @param isEnabled True to enable, false to disable.
      */
     private static void setServiceEnabled(final XMPPConnection connection,
             final boolean isEnabled) {
@@ -121,7 +123,8 @@ public final class FileTransferNegotiator extends Manager {
         for (String namespace : namespaces) {
             if (isEnabled) {
                 manager.addFeature(namespace);
-            } else {
+            }
+            else {
                 manager.removeFeature(namespace);
             }
         }
@@ -132,6 +135,7 @@ public final class FileTransferNegotiator extends Manager {
      * connection.
      *
      * @param connection The connection to check
+     *
      * @return True if all related services are enabled, false if they are not.
      */
     public static boolean isServiceEnabled(final XMPPConnection connection) {
@@ -185,9 +189,11 @@ public final class FileTransferNegotiator extends Manager {
      * Selects an appropriate stream negotiator after examining the incoming file transfer request.
      *
      * @param request The related file transfer request.
+     *
      * @return The file transfer object that handles the transfer
+     *
      * @throws NoStreamMethodsOfferedException If there are either no stream methods contained in the packet, or
-     *                       there is not an appropriate stream method.
+     * there is not an appropriate stream method.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws NoAcceptableTransferMechanisms if no acceptable transfer mechanisms are available
      * @throws InterruptedException if the calling thread was interrupted.
@@ -266,6 +272,12 @@ public final class FileTransferNegotiator extends Manager {
         return buffer.toString();
     }
 
+    public StreamNegotiator negotiateOutgoingTransfer(final Jid userID,
+            final String streamID, final String fileName, final long size, final String desc,
+            int responseTimeout) throws XMPPErrorException, NotConnectedException, NoResponseException, NoAcceptableTransferMechanisms, InterruptedException {
+        return negotiateOutgoingTransfer(userID, streamID, fileName, size, desc, null, responseTimeout);
+    }
+
     /**
      * Send a request to another user to send them a file. The other user has
      * the option of, accepting, rejecting, or not responding to a received file
@@ -287,15 +299,18 @@ public final class FileTransferNegotiator extends Manager {
      * Finally, if the other user does not respond this method will return null
      * after the specified timeout.
      *
-     * @param userID          The userID of the user to whom the file will be sent.
-     * @param streamID        The unique identifier for this file transfer.
-     * @param fileName        The name of this file. Preferably it should include an
-     *                        extension as it is used to determine what type of file it is.
-     * @param size            The size, in bytes, of the file.
-     * @param desc            A description of the file.
+     * @param userID The userID of the user to whom the file will be sent.
+     * @param streamID The unique identifier for this file transfer.
+     * @param fileName The name of this file. Preferably it should include an
+     * extension as it is used to determine what type of file it is.
+     * @param size The size, in bytes, of the file.
+     * @param desc A description of the file.
+     * @param thumbnailElement ThumbNail element.
      * @param responseTimeout The amount of time, in milliseconds, to wait for the remote
-     *                        user to respond. If they do not respond in time, this
+     * user to respond. If they do not respond in time, this
+     *
      * @return Returns the stream negotiator selected by the peer.
+     *
      * @throws XMPPErrorException Thrown if there is an error negotiating the file transfer.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws NoResponseException if there was no response from the remote entity.
@@ -304,14 +319,14 @@ public final class FileTransferNegotiator extends Manager {
      */
     public StreamNegotiator negotiateOutgoingTransfer(final Jid userID,
             final String streamID, final String fileName, final long size, final String desc,
-            final Thumbnail thumbnail, int responseTimeout) throws XMPPErrorException, NotConnectedException, NoResponseException, NoAcceptableTransferMechanisms, InterruptedException {
+            final ThumbnailElement thumbnailElement, int responseTimeout) throws XMPPErrorException, NotConnectedException, NoResponseException, NoAcceptableTransferMechanisms, InterruptedException {
         StreamInitiation si = new StreamInitiation();
         si.setSessionID(streamID);
         si.setMimeType(URLConnection.guessContentTypeFromName(fileName));
 
         StreamInitiation.File siFile = new StreamInitiation.File(fileName, size);
         siFile.setDesc(desc);
-        siFile.setThumbnail(thumbnail);
+        siFile.setThumbnail(thumbnailElement);
         si.setFile(siFile);
 
         si.setFeatureNegotiationForm(createDefaultInitiationForm());

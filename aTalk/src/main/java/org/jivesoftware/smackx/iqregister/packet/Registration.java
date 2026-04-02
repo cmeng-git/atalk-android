@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+
 import org.jivesoftware.smackx.bob.element.BoBDataExtension;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 

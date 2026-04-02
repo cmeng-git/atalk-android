@@ -185,7 +185,7 @@ import org.jivesoftware.smackx.externalservicediscovery.ExternalServices;
 import org.jivesoftware.smackx.filetransfer.FileTransferNegotiator;
 import org.jivesoftware.smackx.httpauthorizationrequest.HttpAuthorizationRequestListener;
 import org.jivesoftware.smackx.httpauthorizationrequest.HttpAuthorizationRequestManager;
-import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
+import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmElement;
 import org.jivesoftware.smackx.httpauthorizationrequest.provider.ConfirmExtProvider;
 import org.jivesoftware.smackx.httpauthorizationrequest.provider.ConfirmIQProvider;
 import org.jivesoftware.smackx.inputevt.InputEvtIQ;
@@ -252,7 +252,7 @@ import org.jivesoftware.smackx.receipts.DeliveryReceiptManager.AutoReceiptMode;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.stanza_content_encryption.element.EnvelopeElement;
 import org.jivesoftware.smackx.stanza_content_encryption.provider.EnvelopeElementProvider;
-import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
+import org.jivesoftware.smackx.thumbnails.element.ThumbnailElement;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
@@ -2129,7 +2129,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         supportedFeatures.add(BoBIQ.NAMESPACE);
 
         // XEP-0264: File Transfer Thumbnails
-        supportedFeatures.add(Thumbnail.NAMESPACE);
+        supportedFeatures.add(ThumbnailElement.NAMESPACE);
 
         // XEP-0084: User Avatar
         supportedFeatures.add(AvatarMetadata.NAMESPACE_NOTIFY);
@@ -2301,7 +2301,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             ProviderManager.addIQProvider(Registration.ELEMENT, Registration.NAMESPACE, new RegistrationProvider());
 
-            ProviderManager.addIQProvider(ConfirmExtension.ELEMENT, ConfirmExtension.NAMESPACE, new ConfirmIQProvider());
+            ProviderManager.addIQProvider(ConfirmElement.ELEMENT, ConfirmElement.NAMESPACE, new ConfirmIQProvider());
 
             // XEP-0215: External Service Discovery to process IQ
             ProviderManager.addIQProvider(ExternalServices.ELEMENT, ExternalServices.NAMESPACE,
@@ -2342,7 +2342,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     TranscriptionRequestExtension.ELEMENT, TranscriptionRequestExtension.NAMESPACE,
                     new DefaultExtensionElementProvider<>(TranscriptionRequestExtension.class));
 
-            ProviderManager.addExtensionProvider(ConfirmExtension.ELEMENT, ConfirmExtension.NAMESPACE, new ConfirmExtProvider());
+            ProviderManager.addExtensionProvider(ConfirmElement.ELEMENT, ConfirmElement.NAMESPACE, new ConfirmExtProvider());
 
             /*
              * Tell Smack what are the additional StreamFeatureProvider and ExtensionProviders that aTalk can support
@@ -3215,7 +3215,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * @param instruction the instruction send from the server
      */
     @Override
-    public void onHttpAuthorizationRequest(DomainBareJid from, ConfirmExtension confirmExt, String instruction) {
+    public void onHttpAuthorizationRequest(DomainBareJid from, ConfirmElement confirmExt, String instruction) {
         String authId = confirmExt.getId();
 
         if (StringUtils.isEmpty(instruction)) {

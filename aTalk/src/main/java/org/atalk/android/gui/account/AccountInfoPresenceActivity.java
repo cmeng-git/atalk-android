@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -45,6 +44,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.yalantis.ucrop.UCrop;
 
@@ -93,6 +94,7 @@ import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.util.AppImageUtil;
 import org.atalk.util.SoftKeyboard;
+
 import org.jivesoftware.smackx.avatar.AvatarManager;
 
 import timber.log.Timber;
@@ -617,18 +619,12 @@ public class AccountInfoPresenceActivity extends BaseActivity
      * details that are not supported by this plugin. In this case they will not be loaded.
      */
     private void loadDetails() {
-        if (accountInfoOpSet != null) {
-            new DetailsLoadWorker().execute();
-        }
-    }
+        if (accountInfoOpSet == null)
+            return;
 
-    /**
-     * Loads details in separate thread.
-     */
-    private class DetailsLoadWorker extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            Iterator<GenericDetail> allDetails = accountInfoOpSet.getAllAvailableDetails();
+        ExecutorService eService = Executors.newSingleThreadExecutor();
+        eService.execute(() -> {
+            final Iterator<GenericDetail> allDetails = accountInfoOpSet.getAllAvailableDetails();
 
             // Must run this on UI thread
             runOnUiThread(() -> {
@@ -640,9 +636,10 @@ public class AccountInfoPresenceActivity extends BaseActivity
                 }
                 // get user avatar via XEP-0084
                 getUserAvatarData();
+                // Logger.getLogger("LoadDetail").warn("Load Details done!!!");
             });
-            return null;
-        }
+        });
+        eService.shutdown();
     }
 
     /**

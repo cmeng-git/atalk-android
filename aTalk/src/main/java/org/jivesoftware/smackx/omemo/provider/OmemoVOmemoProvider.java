@@ -25,6 +25,7 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
 import org.jivesoftware.smackx.omemo.element.OmemoElement_VOmemo;
 import org.jivesoftware.smackx.omemo.element.OmemoHeaderElement;
@@ -32,6 +33,7 @@ import org.jivesoftware.smackx.omemo.element.OmemoHeaderElement_VOmemo;
 import org.jivesoftware.smackx.omemo.element.OmemoKeyElement;
 import org.jivesoftware.smackx.omemo.element.OmemoKeyElement_VOmemo;
 import org.jivesoftware.smackx.omemo.element.OmemoKeysElement_VOmemo;
+
 import org.jxmpp.JxmppContext;
 
 /**
@@ -46,7 +48,7 @@ public class OmemoVOmemoProvider extends ExtensionElementProvider<OmemoElement_V
     public OmemoElement_VOmemo parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         int sid = -1;
 
-        List<OmemoKeysElement_VOmemo> keys = new ArrayList<>();
+        List<OmemoKeysElement_VOmemo> omemoKeys = new ArrayList<>();
         byte[] iv = null;
         byte[] payload = null;
 
@@ -65,8 +67,10 @@ public class OmemoVOmemoProvider extends ExtensionElementProvider<OmemoElement_V
                     }
                     break;
                 case OmemoKeysElement_VOmemo.ELEMENT:
-                    OmemoKeysElement_VOmemo key = parseKeyChildElement(parser, parser.getDepth());
-                    keys.add(key);
+                    String jid = parser.getAttributeValue(OmemoKeysElement_VOmemo.ATTR_JID);
+                    List<OmemoKeyElement_VOmemo> keys = parseKeyChildElement(parser, parser.getDepth());
+                    OmemoKeysElement_VOmemo keysElement = new OmemoKeysElement_VOmemo(jid, keys);
+                    omemoKeys.add(keysElement);
                     break;
                 case OmemoHeaderElement.ATTR_IV:
                     iv = Base64.decode(parser.nextText());
@@ -86,14 +90,14 @@ public class OmemoVOmemoProvider extends ExtensionElementProvider<OmemoElement_V
                 break;
             }
         }
-        OmemoHeaderElement_VOmemo header = new OmemoHeaderElement_VOmemo(sid, keys, iv);
+
+        OmemoHeaderElement_VOmemo header = new OmemoHeaderElement_VOmemo(sid, omemoKeys, iv);
         return new OmemoElement_VOmemo(header, payload);
     }
 
-    public static OmemoKeysElement_VOmemo parseKeyChildElement(XmlPullParser parser, int initialDepth)
+    public static List<OmemoKeyElement_VOmemo> parseKeyChildElement(XmlPullParser parser, int initialDepth)
             throws XmlPullParserException, IOException {
-        String jid = "";
-        List<OmemoKeyElement_VOmemo> keys = new ArrayList<>();
+        List<OmemoKeyElement_VOmemo> keyElements = new ArrayList<>();
 
         outerloop:
         while (true) {
@@ -101,16 +105,7 @@ public class OmemoVOmemoProvider extends ExtensionElementProvider<OmemoElement_V
             switch (tag) {
             case START_ELEMENT:
                 String name = parser.getName();
-                switch (name) {
-                case OmemoKeysElement_VOmemo.ELEMENT:
-                    for (int i = 0; i < parser.getAttributeCount(); i++) {
-                        if (parser.getAttributeName(i).equals(OmemoKeysElement_VOmemo.ATTR_JID)) {
-                            jid = parser.getAttributeValue(i);
-                        }
-                    }
-                    break;
-
-                case OmemoKeyElement.ELEMENT:
+                if (name.equals(OmemoKeyElement.ELEMENT)) {
                     boolean prekey = false;
                     int rid = -1;
                     for (int i = 0; i < parser.getAttributeCount(); i++) {
@@ -121,8 +116,7 @@ public class OmemoVOmemoProvider extends ExtensionElementProvider<OmemoElement_V
                             rid = Integer.parseInt(parser.getAttributeValue(i));
                         }
                     }
-                    keys.add(new OmemoKeyElement_VOmemo(Base64.decode(parser.nextText()), rid, prekey));
-                    break;
+                    keyElements.add(new OmemoKeyElement_VOmemo(Base64.decode(parser.nextText()), rid, prekey));
                 }
                 break;
             case END_ELEMENT:
@@ -135,6 +129,6 @@ public class OmemoVOmemoProvider extends ExtensionElementProvider<OmemoElement_V
                 break;
             }
         }
-        return new OmemoKeysElement_VOmemo(jid, keys);
+        return keyElements;
     }
 }

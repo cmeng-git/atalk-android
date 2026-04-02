@@ -35,10 +35,10 @@ public abstract class OmemoBundleElement implements ExtensionElement {
 
     protected final int signedPreKeyId;
     protected final String signedPreKeyB64;
-    private byte[] signedPreKey;
     protected final String signedPreKeySignatureB64;
-    private byte[] signedPreKeySignature;
     protected final String identityKeyB64;
+    private byte[] signedPreKey;
+    private byte[] signedPreKeySignature;
     private byte[] identityKey;
     protected final Map<Integer, String> preKeysB64;
     private Map<Integer, byte[]> preKeys;

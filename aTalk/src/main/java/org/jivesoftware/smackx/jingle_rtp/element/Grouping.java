@@ -106,7 +106,7 @@ public class Grouping extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the Grouping.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, Grouping> {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

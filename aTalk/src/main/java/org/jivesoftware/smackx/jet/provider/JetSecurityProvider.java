@@ -28,10 +28,12 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.jet.JetManager;
 import org.jivesoftware.smackx.jet.component.JetSecurityImpl;
 import org.jivesoftware.smackx.jet.element.JetSecurity;
 import org.jivesoftware.smackx.jingle.provider.JingleContentSecurityProvider;
+
 import org.jxmpp.JxmppContext;
 
 /**
@@ -58,7 +60,8 @@ public class JetSecurityProvider extends JingleContentSecurityProvider<JetSecuri
         ExtensionElementProvider<?> encryptionElementProvider = JetManager.getEnvelopeProvider(type);
         if (encryptionElementProvider != null) {
             child = encryptionElementProvider.parse(parser);
-        } else {
+        }
+        else {
             LOGGER.log(Level.WARNING, "Unknown child element in JetSecurity: " + type);
             return null;
         }

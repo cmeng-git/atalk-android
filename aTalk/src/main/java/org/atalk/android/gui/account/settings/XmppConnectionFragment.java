@@ -103,6 +103,8 @@ public class XmppConnectionFragment extends BasePreferenceFragment
 
         initTLSCert(pps.getAccountID());
         mapSummaries(summaryMapper);
+
+        exitOnBackKey();
     }
 
     protected void initPreferences() {

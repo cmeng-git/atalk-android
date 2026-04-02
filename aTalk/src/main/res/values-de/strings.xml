@@ -1326,6 +1326,7 @@
     <string name="omemo2_enable">omemo:2-Unterstützung aktivieren</string>
     <string name="omemo2_optout">OMEMO-Chat-Abmeldung</string>
     <string name="omemo2_optout_reason">OMEMO-Chat-Abmeldung.\n Entschuldigung, aus Compliance-Gründen benötige ich eine dauerhafte, serverseitige Aufzeichnung unseres Gesprächs.</string>
+    <string name="omemo2_subscription_failed">Das Abonnieren von OMEMO-Bundles und Geräteveröffentlichungsknoten ist fehlgeschlagen!</string>
     <string name="omemo2_summary">Unterstützung für den XEP-0384 OMEMO-Element-Namensraum: \'urn:xmpp:omemo:2\'</string>
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">Ohne vorherige Überprüfung verschlüsseln</string>

@@ -1340,6 +1340,7 @@
     <string name="omemo2_enable">Aktifkan dukungan omemo:2</string>
     <string name="omemo2_optout">Nonaktifkan obrolan OMEMO</string>
     <string name="omemo2_optout_reason">Opsi untuk berhenti berlangganan obrolan OMEMO.\n Maaf, karena alasan kepatuhan, saya memerlukan catatan permanen percakapan kita di sisi server.</string>
+    <string name="omemo2_subscription_failed">Gagal berlangganan paket OMEMO dan node publikasi perangkat!</string>
     <string name="omemo2_summary">Mendukung namespace elemen XEP-0384 OMEMO: \'urn:xmpp:omemo:2\'</string>
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">Kepercayaan buta sebelum verifikasi</string>

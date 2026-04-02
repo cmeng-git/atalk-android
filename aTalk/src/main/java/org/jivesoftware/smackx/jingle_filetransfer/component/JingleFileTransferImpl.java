@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+
 import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.JingleUtil;
 import org.jivesoftware.smackx.jingle.component.JingleDescription;
@@ -93,33 +94,33 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
         JingleUtil jutil = new JingleUtil(connection);
         LOGGER.log(Level.INFO, "Local user cancels file transfer session @ state: " + mState);
         switch (mState) {
-            case pending:
-                if (mJingleSession.isResponder()) {
-                    jutil.sendSessionTerminateDecline(mJingleSession.getRemote(), mJingleSession.getSessionId());
-                }
-                else {
-                    jutil.sendSessionTerminateCancel(mJingleSession.getRemote(), mJingleSession.getSessionId());
-                }
-                break;
-
-            /*
-             * App should block user cancel while in protocol negotiation phase; both legacy si and JFT
-             * cannot support transfer cancel during protocol negotiation. Only allow cancel in active mode.
-             * Sender may experience "SocketException: Connection reset" due to async file transfer process.
-             */
-            // case negotiating:
-            case active:
-                mState = State.cancelled;
+        case pending:
+            if (mJingleSession.isResponder()) {
+                jutil.sendSessionTerminateDecline(mJingleSession.getRemote(), mJingleSession.getSessionId());
+            }
+            else {
                 jutil.sendSessionTerminateCancel(mJingleSession.getRemote(), mJingleSession.getSessionId());
-                break;
+            }
+            break;
 
-            case ended:
-                // user cancels while the file transfer has ended in JingleIncomingFileOffer#onBytestreamReady().
-                // just ignore and do nothing
-                return;
+        /*
+         * App should block user cancel while in protocol negotiation phase; both legacy si and JFT
+         * cannot support transfer cancel during protocol negotiation. Only allow cancel in active mode.
+         * Sender may experience "SocketException: Connection reset" due to async file transfer process.
+         */
+        // case negotiating:
+        case active:
+            mState = State.cancelled;
+            jutil.sendSessionTerminateCancel(mJingleSession.getRemote(), mJingleSession.getSessionId());
+            break;
 
-            default:
-                break;
+        case ended:
+            // user cancels while the file transfer has ended in JingleIncomingFileOffer#onBytestreamReady().
+            // just ignore and do nothing
+            return;
+
+        default:
+            break;
         }
         getParent().onContentCancel();
     }
@@ -185,16 +186,16 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
         @Override
         public void onSessionTerminated(JingleReason reason) {
             switch (reason.asEnum()) {
-                case cancel:
-                    mState = State.cancelled;
-                    break;
+            case cancel:
+                mState = State.cancelled;
+                break;
 
-                case success:
-                    mState = State.ended;
-                    break;
+            case success:
+                mState = State.ended;
+                break;
 
-                default:
-                    break;
+            default:
+                break;
             }
             mJingleSession.removeJingleSessionListener(this);
         }

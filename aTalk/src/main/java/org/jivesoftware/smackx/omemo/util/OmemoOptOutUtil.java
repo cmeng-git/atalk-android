@@ -1,12 +1,12 @@
 /*
- * aTalk, android VoIP and Instant Messaging client
+ *
  * Copyright 2014~2024 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,6 +31,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoMessage;
 import org.jivesoftware.smackx.omemo.element.OmemoOptOutElement;
@@ -41,14 +42,16 @@ import org.jivesoftware.smackx.stanza_content_encryption.element.FromAffixElemen
 import org.jivesoftware.smackx.stanza_content_encryption.element.TimestampAffixElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.ToAffixElement;
 import org.jivesoftware.smackx.stanza_content_encryption.provider.EnvelopeElementProvider;
+
 import org.jxmpp.jid.BareJid;
 
 public class OmemoOptOutUtil {
     private static TimestampAffixElement affixTimeStamp = null;
-    private static ToAffixElement affixTo = null;
     private static FromAffixElement affixFrom = null;
+    private static ToAffixElement affixTo = null;
     private static int timeDeltaInMinute = 10;
 
+    @SuppressWarnings("JavaUtilDate")
     public static EnvelopeElement createOmemoOptOut(OmemoManager manager, BareJid recipient, String reason) {
         OmemoOptOutElement optoutElement = new OmemoOptOutElement();
         if (StringUtils.isNotEmpty(reason)) {
@@ -93,7 +96,7 @@ public class OmemoOptOutUtil {
 
             XmlElement contentElement = (contentElements.size() != 0) ? contentElements.get(0) : null;
             if (contentElement != null) {
-                reasonText= ((OmemoOptOutElement) contentElement).getReason();
+                reasonText = ((OmemoOptOutElement) contentElement).getReason();
             }
         }
         return reasonText;
@@ -109,6 +112,10 @@ public class OmemoOptOutUtil {
         boolean isValid = affixElements.contains(new FromAffixElement(fromJid));
         if (!isValid) {
             reason = warning + " Invalid sender: " + affixFrom.getJid();
+        }
+
+        if (affixTo != null && StringUtils.isNotEmpty(reason)) {
+            reason += "Recipient: " + affixTo.getJid();
         }
 
         LocalDateTime localDateTime1 = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());

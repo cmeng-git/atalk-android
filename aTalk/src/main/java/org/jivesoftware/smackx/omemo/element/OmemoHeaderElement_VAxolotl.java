@@ -22,6 +22,7 @@ import java.util.List;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 /**
@@ -35,11 +36,13 @@ public class OmemoHeaderElement_VAxolotl extends OmemoHeaderElement<OmemoKeyElem
     public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
 
     private final List<OmemoKeyElement_VAxolotl> keys;
+
     public OmemoHeaderElement_VAxolotl(int sid, List<OmemoKeyElement_VAxolotl> keys, byte[] iv) {
         super(sid, iv);
         this.keys = keys;
     }
 
+    @Override
     public List<OmemoKeyElement_VAxolotl> getKeys() {
         return new ArrayList<>(keys);
     }

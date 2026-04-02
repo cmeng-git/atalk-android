@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
@@ -37,6 +39,9 @@ public class ParameterElement extends AbstractXmlElement {
      * The name of the "parameter" element.
      */
     public static final String ELEMENT = "parameter";
+
+    // Inherit the NAMESPACE from its parent for NamedElement.
+    public static final QName QNAME = new QName(RtpDescription.NAMESPACE, ELEMENT);
 
     /**
      * The name of the <code>name</code> parameter in the <code>parameter</code> element.
@@ -94,7 +99,7 @@ public class ParameterElement extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the ParameterElement.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, ParameterElement> {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

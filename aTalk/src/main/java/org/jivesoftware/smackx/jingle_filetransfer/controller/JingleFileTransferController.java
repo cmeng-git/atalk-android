@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.jingle_filetransfer.controller;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+
 import org.jivesoftware.smackx.jingle.JingleDescriptionController;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFile;

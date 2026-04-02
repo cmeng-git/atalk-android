@@ -1294,6 +1294,7 @@
     <string name="omemo2_enable">Ota käyttöön omemo:2-tuki</string>
     <string name="omemo2_optout">OMEMO-chatin peruuttaminen</string>
     <string name="omemo2_optout_reason">OMEMO-keskustelun peruutus.\n Pahoittelen, vaatimustenmukaisuussyistä tarvitsen keskustelustamme pysyvän, palvelinpuolen tallenteen.</string>
+    <string name="omemo2_subscription_failed">OMEMO-pakettien ja laitteiden julkaisusolmujen tilaaminen epäonnistui!</string>
     <string name="omemo2_summary">Tuki XEP-0384 OMEMO -elementin nimiavaruudelle: \'urn:xmpp:omemo:2\'</string>
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">Sokea luottamus ennen vahvistusta</string>

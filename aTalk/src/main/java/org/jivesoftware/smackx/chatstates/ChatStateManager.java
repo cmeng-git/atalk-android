@@ -35,9 +35,9 @@ import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromTypeFilter;
-import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
+import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.ToTypeFilter;
@@ -52,6 +52,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 
@@ -107,6 +108,7 @@ public final class ChatStateManager extends Manager {
      * not yet exist.
      *
      * @param connection the connection to return the ChatStateManager
+     *
      * @return the ChatStateManager related the connection.
      */
     public static synchronized ChatStateManager getInstance(final XMPPConnection connection) {
@@ -197,6 +199,7 @@ public final class ChatStateManager extends Manager {
      * Register a ChatStateListener. That listener will be informed about changed chat states.
      *
      * @param listener chatStateListener
+     *
      * @return true, if the listener was not registered before
      */
     public boolean addChatStateListener(ChatStateListener listener) {
@@ -209,6 +212,7 @@ public final class ChatStateManager extends Manager {
      * Unregister a ChatStateListener.
      *
      * @param listener chatStateListener
+     *
      * @return true, if the listener was registered before
      */
     public boolean removeChatStateListener(ChatStateListener listener) {
@@ -224,6 +228,7 @@ public final class ChatStateManager extends Manager {
      *
      * @param newState the new state of the chat
      * @param chat the chat.
+     *
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
@@ -246,8 +251,9 @@ public final class ChatStateManager extends Manager {
      * stanza with the state attached as a {@link org.jivesoftware.smack.packet.XmlElement},
      * if and only if the new chat state is different from the last state.
      *
-     * @param newState  the new state of the chat
+     * @param newState the new state of the chat
      * @param mucChat the MultiUserChat instance
+     *
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */

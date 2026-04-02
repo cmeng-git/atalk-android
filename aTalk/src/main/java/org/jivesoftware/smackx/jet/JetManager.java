@@ -33,6 +33,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.jivesoftware.smackx.ciphers.Aes256GcmNoPadding;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.jet.component.JetSecurityImpl;
@@ -98,6 +99,7 @@ public final class JetManager extends Manager implements JingleDescriptionManage
      * Register a new JingleSessionHandler with JingleManager when a new session-initiate is received.
      *
      * @param jingle Jingle session-initiate
+     *
      * @return IQ.Result
      */
     @Override

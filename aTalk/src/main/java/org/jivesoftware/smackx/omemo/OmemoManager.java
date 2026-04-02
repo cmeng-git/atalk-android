@@ -86,10 +86,13 @@ import org.jivesoftware.smackx.omemo.util.OmemoOptOutUtil;
 import org.jivesoftware.smackx.pep.PepEventListener;
 import org.jivesoftware.smackx.pep.PepManager;
 import org.jivesoftware.smackx.pubsub.AccessModel;
+import org.jivesoftware.smackx.pubsub.LeafNode;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
+import org.jivesoftware.smackx.pubsub.Subscription;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.stanza_content_encryption.element.EnvelopeElement;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -97,7 +100,7 @@ import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.FullJid;
 
 /**
- * Manager that allows sending messages encrypted with OMEMO.
+ * Manager that allows sending messages encrypted with OMEMO (support both namespaces).
  * This class also provides some methods useful for a client that implements OMEMO.
  *
  * @author Paul Schaub
@@ -124,10 +127,15 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
     private BareJid ownJid;
     private Integer deviceId;
     private boolean isOmemo2Enable = false;
+    private boolean isDevicesSubscribed = false;
+    private boolean isBundleSubscribed = false;
 
     // Default to null not to send publish-options; ejabberd server 25.10 returns conflict
     // and precondition-not-met errors for both publishBundle and publishDeviceList.
     private AccessModel omemoAccessModel = null;
+
+    PepEventListener<OmemoDeviceListElement> pepDeviceListEventListener_Omemo;
+    PepEventListener<OmemoDeviceListElement> pepDeviceListEventListener_Axolotl;
 
     /**
      * Private constructor.
@@ -260,12 +268,57 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
         return isOmemo2Enable;
     }
 
+    public boolean isBundleSubscribed() {
+        return isBundleSubscribed;
+    }
+
+    public boolean isDevicesSubscribed() {
+        return isDevicesSubscribed;
+    }
+
     public void setOmemo2AccessModel(AccessModel accessModel) {
         omemoAccessModel = accessModel;
     }
 
     public AccessModel getOmemo2AccessModel() {
         return omemoAccessModel;
+    }
+
+    /**
+     * Perform active subscriptions for both omemo2 bundles and devices to the server.
+     * A pre-requisite to successfully send pubsub#publish-options to server.
+     *
+     * @param vOmemo2 specify the respective Omemo NameSpace for retrieval of OmemoDeviceListElement.
+     *
+     * @return true if both the bundles and devices nodes subscription are completed successfully.
+     */
+    public boolean subscribe(boolean vOmemo2) {
+        BareJid userJid = getOwnJid();
+        PubSubManager pm = PubSubManager.getInstanceFor(getConnection(), userJid);
+
+        String nodeName = OmemoConstants.getOmemoNS(vOmemo2);
+        try {
+            LeafNode leafNode =  pm.getOrCreateLeafNode(nodeName);
+            Subscription subscription = leafNode.subscribe(userJid);
+            isDevicesSubscribed = (subscription.getId() != null);
+        }
+        catch (SmackException.NoResponseException | XMPPException.XMPPErrorException | NotConnectedException |
+               InterruptedException | PubSubException.NotALeafNodeException e) {
+            LOGGER.log(Level.WARNING, "Subscription unsuccessful for: " + nodeName + "\n" + e.getMessage());
+        }
+
+        nodeName = OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(getDeviceId(), vOmemo2);
+        try {
+            LeafNode leafNode =  pm.getOrCreateLeafNode(nodeName);
+            Subscription subscription = leafNode.subscribe(userJid);
+            isBundleSubscribed = (subscription.getId() != null);
+        }
+        catch (SmackException.NoResponseException | XMPPException.XMPPErrorException | NotConnectedException |
+               InterruptedException | PubSubException.NotALeafNodeException e) {
+            LOGGER.log(Level.WARNING, "Subscription unsuccessful for: " + nodeName + "\n" + e.getMessage());
+        }
+
+        return isDevicesSubscribed && isBundleSubscribed;
     }
 
     /**
@@ -603,7 +656,6 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
             throws InterruptedException, PubSubException.NotALeafNodeException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException, IOException {
         OmemoDeviceListElement omemoDevices = null;
-        ;
         try {
             omemoDevices = OmemoService.fetchDeviceList(connection(), contact, isOmemo2Enable);
         }
@@ -824,8 +876,7 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
     public List<Exception> purgeEverything() throws NotConnectedException, InterruptedException, IOException {
         List<Exception> exceptions = new ArrayList<>(5);
         PubSubManager pm = PubSubManager.getInstanceFor(getConnection(), getOwnJid());
-        OmemoManager omemoManager = OmemoManager.getInstanceFor(getConnection());
-        String nodeName = isOmemo2Enable ? OmemoConstants.PEP_NODE_DEVICES_V_OMEMO : OmemoConstants.PEP_NODE_DEVICES_V_AXOLOTL;
+        String nodeName = OmemoConstants.getOmemoNS(isOmemo2Enable);
 
         try {
             requestDeviceListUpdateFor(getOwnJid());
@@ -839,8 +890,9 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
                 .loadCachedDeviceList(getOwnDevice(), getOwnJid());
 
         for (OmemoDeviceElement device : devices.getAllDevices()) {
+            nodeName = OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(device.getId(), isOmemo2Enable);
             try {
-                pm.getLeafNode(OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(device.getId(), isOmemo2Enable)).deleteAllItems();
+                pm.getLeafNode(nodeName).deleteAllItems();
             }
             catch (SmackException.NoResponseException | PubSubException.NotALeafNodeException
                    | XMPPException.XMPPErrorException | PubSubException.NotAPubSubNodeException e) {
@@ -848,7 +900,7 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
             }
 
             try {
-                pm.deleteNode(OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(device.getId(), isOmemo2Enable));
+                pm.deleteNode(nodeName);
             }
             catch (SmackException.NoResponseException | XMPPException.XMPPErrorException e) {
                 exceptions.add(e);
@@ -1039,9 +1091,15 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
         connection().removeAsyncStanzaListener(this::internalOmemoMessageStanzaListener);
         carbonManager.removeCarbonCopyReceivedListener(this::internalOmemoCarbonCopyListener);
 
-        String nodeName = isOmemo2Enable ? OmemoConstants.PEP_NODE_DEVICES_V_OMEMO : OmemoConstants.PEP_NODE_DEVICES_V_AXOLOTL;
-        // Add listeners
-        pepManager.addPepEventListener(nodeName, OmemoDeviceListElement.class, pepOmemoDeviceListEventListener);
+        // Add both omemo PEP_NODE_DEVICES_x namespaces to PepEventListener.
+        pepDeviceListEventListener_Omemo = new PepEventOmemoListener(true);
+        pepDeviceListEventListener_Axolotl = new PepEventOmemoListener(false);
+
+        pepManager.addPepEventListener(OmemoConstants.PEP_NODE_DEVICES_V_OMEMO, OmemoDeviceListElement.class,
+                pepDeviceListEventListener_Omemo);
+        pepManager.addPepEventListener(OmemoConstants.PEP_NODE_DEVICES_V_AXOLOTL, OmemoDeviceListElement.class,
+                pepDeviceListEventListener_Axolotl);
+
         connection().addAsyncStanzaListener(this::internalOmemoMessageStanzaListener, OmemoManager::isOmemoMessage);
         carbonManager.addCarbonCopyReceivedListener(this::internalOmemoCarbonCopyListener);
     }
@@ -1050,7 +1108,8 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
      * Remove active stanza listeners needed for OMEMO.
      */
     public void stopStanzaAndPEPListeners() {
-        pepManager.removePepEventListener(pepOmemoDeviceListEventListener);
+        pepManager.removePepEventListener(pepDeviceListEventListener_Omemo);
+        pepManager.removePepEventListener(pepDeviceListEventListener_Axolotl);
         connection().removeAsyncStanzaListener(this::internalOmemoMessageStanzaListener);
         CarbonManager.getInstanceFor(connection()).removeCarbonCopyReceivedListener(this::internalOmemoCarbonCopyListener);
     }
@@ -1142,55 +1201,84 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
         });
     }
 
-    @SuppressWarnings("UnnecessaryLambda")
-    private final PepEventListener<OmemoDeviceListElement> pepOmemoDeviceListEventListener =
-            (from, receivedDeviceList, id, message) -> {
-                // Device List <list>
-                OmemoCachedDeviceList deviceList;
-                try {
-                    getOmemoService().getOmemoStoreBackend().mergeCachedDeviceList(getOwnDevice(), from, receivedDeviceList);
+    private class PepEventOmemoListener implements PepEventListener<OmemoDeviceListElement> {
+        final boolean isOmemo2;
 
-                    if (!from.asBareJid().equals(getOwnJid())) {
-                        return;
-                    }
+        PepEventOmemoListener(boolean vOmemo2) {
+            isOmemo2 = vOmemo2;
+        }
 
-                    deviceList = getOmemoService().cleanUpDeviceList(getOwnDevice());
-                }
-                catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "IOException while processing OMEMO PEP device updates. Message: " + message, e);
+        @Override
+        public void onPepEvent(EntityBareJid from, OmemoDeviceListElement receivedDeviceList, String id, Message message) {
+            // Device List <list>
+            OmemoCachedDeviceList deviceList;
+            try {
+                getOmemoService().getOmemoStoreBackend().mergeCachedDeviceList(getOwnDevice(), from, receivedDeviceList);
+
+                if (!from.asBareJid().equals(getOwnJid())) {
                     return;
                 }
-                // final OmemoDeviceListElement_VAxolotl newDeviceList = new OmemoDeviceListElement_VAxolotl(deviceList);
-                final OmemoDeviceListElement newDeviceList = getOmemoDeviceList(deviceList);
+                deviceList = getOmemoService().cleanUpDeviceList(getOwnDevice());
+            }
+            catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "IOException while processing OMEMO PEP device updates. Message: " + message, e);
+                return;
+            }
 
-                if (!newDeviceList.copyDevices().equals(receivedDeviceList.copyDevices())) {
-                    // See RN v3.4.0 for explanation; seem not necessary anymore
-                    // && !newDeviceList.copyDevices().equals(<previous published DeviceList>)) {
-                    LOGGER.log(Level.FINE, "Republish deviceList due to changes:\n" +
-                            " Received: " + receivedDeviceList.copyDevices() + "\n" +
-                            " Published: " + newDeviceList.copyDevices());
-                    Async.go(new Runnable() {
-                        @Override
-                        public void run() {
+            final OmemoDeviceListElement newDeviceList;
+            if (isOmemo2) {
+                newDeviceList = new OmemoDeviceListElement_VOmemo(deviceList);
+            }
+            else {
+                newDeviceList = new OmemoDeviceListElement_VAxolotl(deviceList);
+            }
+
+            if (!newDeviceList.copyDevices().equals(receivedDeviceList.copyDevices())) {
+                LOGGER.log(Level.FINE, "Republish deviceList due to changes:\n" +
+                        " Received: " + receivedDeviceList.copyDevices() + "\n" +
+                        " Published: " + newDeviceList.copyDevices());
+                Async.go(new Runnable() {
+                    @Override
+                    public void run() {
+                        // If the received itemId != ITEM_ID_CURRENT, it must be purged from the server. Otherwise this
+                        // will leads to endless loop in receiving the pepEvent from this item (as it not being updated)
+                        if (!id.equals(OmemoService.ITEM_ID_CURRENT)) {
+                            PubSubManager pm = PubSubManager.getInstanceFor(getConnection(), getOwnJid());
                             try {
-                                // LOGGER.log(Level.INFO, "received (new) DeviceList: " + receivedDeviceList.getDevices()
-                                //        + " (" + newDeviceList.getDevices() + ")");
-                                getConnection().setReplyTimeout(SMACK_REPLY_OMEMO_PUBLISH);
-                                OmemoService.publishDeviceList(connection(), newDeviceList);
+                                pm.deleteNode(id);
+                                LOGGER.log(Level.WARNING, "Purge Could not publish our deviceList upon an received update.");
                             }
-                            catch (InterruptedException | XMPPException.XMPPErrorException |
-                                   SmackException.NotConnectedException | SmackException.NoResponseException |
-                                   PubSubException.NotALeafNodeException e) {
-                                LOGGER.log(Level.WARNING, "Could not publish our deviceList upon an received update.", e);
+                            catch (SmackException.NoResponseException | XMPPException.XMPPErrorException |
+                                   NotConnectedException |
+                                   InterruptedException e) {
+                                LOGGER.log(Level.WARNING, "Could not remove item with id: " + id, e.getMessage());
                             }
-                            getConnection().setReplyTimeout(SmackConfiguration.getDefaultReplyTimeout());
                         }
-                    });
-                }
-            };
+
+                        try {
+                            // LOGGER.log(Level.INFO, "received (new) DeviceList: " + receivedDeviceList.getDevices()
+                            //        + " (" + newDeviceList.getDevices() + ")");
+                            getConnection().setReplyTimeout(SMACK_REPLY_OMEMO_PUBLISH);
+                            OmemoService.publishDeviceList(connection(), newDeviceList);
+                        }
+                        catch (InterruptedException | XMPPException.XMPPErrorException |
+                               SmackException.NotConnectedException | SmackException.NoResponseException |
+                               PubSubException.NotALeafNodeException e) {
+                            LOGGER.log(Level.WARNING, "Could not publish our deviceList upon an received update.", e);
+                        }
+                        getConnection().setReplyTimeout(SmackConfiguration.getDefaultReplyTimeout());
+                    }
+                });
+            }
+        }
+    }
 
     /**
      * StanzaFilter that filters messages containing a OMEMO element.
+     *
+     * @param stanza Stanza Message.
+     *
+     * @return true if stanza if an instance Omemo message.
      */
     public static boolean isOmemoMessage(Stanza stanza) {
         return stanza instanceof Message && OmemoManager.stanzaContainsOmemoElement(stanza);
@@ -1207,11 +1295,11 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
     }
 
     /**
-     * Return OmemoElement (v0.3.0 or v0.9.0) of the given OmemoMessage or null otherwise
+     * Return OmemoElement (v0.3.0 or v0.9.0) of the given OmemoMessage or null otherwise.
      *
-     * @param msg Message
+     * @param msg Message.
      *
-     * @return OmemoElement of msg or null
+     * @return OmemoElement of msg or null.
      */
     public static OmemoElement getOmemoMessage(Message msg) {
         OmemoElement omemoElement = null;

@@ -55,7 +55,7 @@ public class RawUdpTransport extends IceUdpTransport {
      * to obtain a new instance and {@link #build} to build the RawUdpTransport.
      */
     public static final class Builder extends IceUdpTransport.Builder {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

@@ -57,8 +57,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 502010
-        versionName "5.2.1"
+        versionCode 502020
+        versionName "5.2.2"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -213,9 +213,9 @@ dependencies {
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
     // implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.core:core-ktx:1.17.0'
+    implementation 'androidx.core:core-ktx:1.18.0'
 
-    implementation 'androidx.activity:activity-ktx:1.12.4'
+    implementation 'androidx.activity:activity-ktx:1.13.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.fragment:fragment-ktx:1.8.9'
@@ -223,8 +223,8 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.media3:media3-exoplayer:1.9.2'
-    implementation 'androidx.media3:media3-ui:1.9.2'
+    implementation 'androidx.media3:media3-exoplayer:1.10.0'
+    implementation 'androidx.media3:media3-ui:1.10.0'
     // implementation "androidx.webkit:webkit:1.14.0"
 
     implementation('com.jakewharton.timber:timber:5.0.1') {
@@ -234,13 +234,13 @@ dependencies {
 
     annotationProcessor 'com.github.bumptech.glide:compiler:5.0.5'
     implementation 'com.github.bumptech.glide:glide:5.0.5'
-    implementation 'com.github.seancfoley:ipaddress:5.6.1'
+    implementation 'com.github.seancfoley:ipaddress:5.6.2'
     implementation 'com.github.evgenyneu:js-evaluator-for-android:v6.0.0'
 
     implementation 'com.github.yalantis:ucrop:2.2.10'
     implementation 'com.google.android.material:material:1.13.0'
 
-    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.25'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.27'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta05'
     implementation 'com.squareup.okhttp3:okhttp:5.3.2'
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
@@ -438,6 +438,11 @@ dependencies {
         // Change namespace to to urn:xmpp:sce:1
         classDelete 'org.jivesoftware.smackx.stanza_content_encryption.element.ContentElement**'
         classDelete 'org.jivesoftware.smackx.stanza_content_encryption.element.ContentElementProvider**'
+        classDelete 'org.jivesoftware.smackx.stanza_content_encryption.element.PayloadElement**'
+
+        // Customization for aTalk usage
+        classDelete 'org.jivesoftware.smackx.thumbnails.element.ThumbnailElement**'
+        classDelete 'org.jivesoftware.smackx.thumbnails.provider.ThumbnailElementProvider**'
     }
 
     // smack-extensions
@@ -496,6 +501,9 @@ dependencies {
         // Custom smack classes that handle the XEP-0264 <File/> element
         classDelete 'org.jivesoftware.smackx.si.packet.StreamInitiation**'
         classDelete 'org.jivesoftware.smackx.si.provider.StreamInitiationProvider**'
+
+        // Throw ParseException if date string is null or empty
+        classDelete 'org.jivesoftware.smackx.delay.provider.LegacyDelayInformationProvider'
     }
 
     // smack-omemo
@@ -516,6 +524,9 @@ dependencies {
         classDelete 'org.jivesoftware.smackx.omemo.OmemoService**'
         // Support OmemoBundleElement_V... and OmemoDeviceElement classes
         classDelete 'org.jivesoftware.smackx.omemo.OmemoStore**'
+
+        // UpdateList<? extends OmemoKeyElement> keys
+        classDelete 'org.jivesoftware.smackx.omemo.OmemoRatchet**'
 
         // OmemoBundleElement base class for omemo2 extensions
         classDelete 'org.jivesoftware.smackx.omemo.element.OmemoBundleElement'

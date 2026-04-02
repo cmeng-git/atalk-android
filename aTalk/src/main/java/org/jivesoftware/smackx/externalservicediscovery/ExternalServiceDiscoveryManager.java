@@ -37,6 +37,7 @@ import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
@@ -67,6 +68,7 @@ public final class ExternalServiceDiscoveryManager extends Manager {
      * Obtain the ExternalServiceDiscoveryManager responsible for a connection.
      *
      * @param connection the connection object.
+     *
      * @return a ExternalServiceDiscoveryManager instance
      */
     public static synchronized ExternalServiceDiscoveryManager getInstanceFor(XMPPConnection connection) {
@@ -108,8 +110,9 @@ public final class ExternalServiceDiscoveryManager extends Manager {
                     if (discoverExtServices()) {
                         getExtServices();
                     }
-                } catch (XMPPErrorException | SmackException.NotConnectedException
-                        | SmackException.NoResponseException | InterruptedException e) {
+                }
+                catch (XMPPErrorException | SmackException.NotConnectedException
+                       | SmackException.NoResponseException | InterruptedException e) {
                     LOGGER.log(Level.WARNING, "Error during discovering XEP-0215 external service", e);
                 }
             }
@@ -128,6 +131,7 @@ public final class ExternalServiceDiscoveryManager extends Manager {
      * Note that this is a synchronous call -- Smack must wait for the server response.
      *
      * @return true if external service was discovered
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -163,23 +167,23 @@ public final class ExternalServiceDiscoveryManager extends Manager {
             // Timber.d("Ext services: %s", service.toXML());
 
             switch (action) {
-                case "add":
-                    mExtServices.add(service);
-                    break;
+            case "add":
+                mExtServices.add(service);
+                break;
 
-                case "delete":
-                case "modified":
-                    // mExtServices.removeIf(x -> x.serviceEquals(service));
-                    ListIterator<ServiceElement> iter = mExtServices.listIterator();
-                    while (iter.hasNext()) {
-                        if (iter.next().serviceEquals(service)) {
-                            iter.remove();
-                        }
+            case "delete":
+            case "modified":
+                // mExtServices.removeIf(x -> x.serviceEquals(service));
+                ListIterator<ServiceElement> iter = mExtServices.listIterator();
+                while (iter.hasNext()) {
+                    if (iter.next().serviceEquals(service)) {
+                        iter.remove();
                     }
+                }
 
-                    if ("modified".equals(action))
-                        mExtServices.add(service);
-                    break;
+                if ("modified".equals(action))
+                    mExtServices.add(service);
+                break;
             }
         }
     }
@@ -210,7 +214,8 @@ public final class ExternalServiceDiscoveryManager extends Manager {
                             if (service.getExpires() != null) {
                                 if (expireTE == null) {
                                     expireTE = expireT;
-                                } else if (expireTE.compareTo(expireT) > 0) {
+                                }
+                                else if (expireTE.compareTo(expireT) > 0) {
                                     expireTE = expireT;
                                 }
                             }
@@ -220,14 +225,17 @@ public final class ExternalServiceDiscoveryManager extends Manager {
 
                 if (expireTE != null) {
                     expireTE = Instant.parse(expireTE).toString();
-                } else {
+                }
+                else {
                     expireTE = Instant.now()
-                            .plus(3, ChronoUnit.MONTHS)
+                            .plus(3 * 30, ChronoUnit.DAYS)
                             .toString();
                 }
             }
             mServiceExpire = expireTE;
-        } catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException | XMPPException.XMPPErrorException e) {
+        }
+        catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException |
+               XMPPException.XMPPErrorException e) {
             LOGGER.log(Level.SEVERE, "Could not get external services: " + e, e);
         }
     }

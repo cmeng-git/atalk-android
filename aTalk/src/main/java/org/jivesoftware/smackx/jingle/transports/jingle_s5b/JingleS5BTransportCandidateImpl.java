@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5Client;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5ClientForInitiator;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5Utils;

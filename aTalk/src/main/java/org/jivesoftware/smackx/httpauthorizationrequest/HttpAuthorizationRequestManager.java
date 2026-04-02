@@ -40,7 +40,8 @@ import org.jivesoftware.smack.packet.Message.Body;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.packet.StanzaError;
-import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
+
+import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmElement;
 import org.jivesoftware.smackx.httpauthorizationrequest.packet.ConfirmIQ;
 
 import org.jxmpp.jid.DomainBareJid;
@@ -51,14 +52,14 @@ import org.jxmpp.jid.Jid;
  * IQ : when the request is via EntityFullJid
  * Message: When request is via EntityBareJid
  *
- * XEP-0070: Verifying HTTP Requests via XMPP (1.0.1 (2016-12-09))
+ * XEP-0070: Verifying HTTP Requests via XMPP (1.0.2 (2025-09-30))
  *
  * @see HttpAuthorizationRequestListener on callback
  */
 public final class HttpAuthorizationRequestManager extends Manager {
     private static final StanzaFilter MESSAGE_FILTER = new AndFilter(
             MessageTypeFilter.NORMAL_OR_CHAT,
-            new StanzaExtensionFilter(ConfirmExtension.ELEMENT, ConfirmExtension.NAMESPACE)
+            new StanzaExtensionFilter(ConfirmElement.ELEMENT, ConfirmElement.NAMESPACE)
     );
 
     private static final StanzaFilter INCOMING_MESSAGE_FILTER = new AndFilter(
@@ -92,9 +93,9 @@ public final class HttpAuthorizationRequestManager extends Manager {
         // Listen for message HTTP request
         connection.addSyncStanzaListener(stanza -> {
             final Message message = (Message) stanza;
-            ConfirmExtension confirmExtension = ConfirmExtension.from(message);
+            ConfirmElement confirmElement = ConfirmElement.from(message);
 
-            String id = confirmExtension.getId();
+            String id = confirmElement.getId();
             mAuthRequests.put(id, message);
 
             final Jid from = message.getFrom();
@@ -107,7 +108,7 @@ public final class HttpAuthorizationRequestManager extends Manager {
             }
 
             for (HttpAuthorizationRequestListener listener : incomingListeners) {
-                listener.onHttpAuthorizationRequest(bareFrom, confirmExtension, instruction);
+                listener.onHttpAuthorizationRequest(bareFrom, confirmElement, instruction);
             }
         }, INCOMING_MESSAGE_FILTER);
 
@@ -117,16 +118,16 @@ public final class HttpAuthorizationRequestManager extends Manager {
             @Override
             public IQ handleIQRequest(IQ iqRequest) {
                 ConfirmIQ iqHttpRequest = (ConfirmIQ) iqRequest;
-                ConfirmExtension confirmExtension = iqHttpRequest.getConfirmExtension();
+                ConfirmElement confirmElement = iqHttpRequest.getConfirmExtension();
 
-                String id = confirmExtension.getId();
+                String id = confirmElement.getId();
                 mAuthRequests.put(id, iqRequest);
 
                 final Jid from = iqHttpRequest.getFrom();
                 DomainBareJid bareFrom = from.asDomainBareJid();
 
                 for (HttpAuthorizationRequestListener listener : incomingListeners) {
-                    listener.onHttpAuthorizationRequest(bareFrom, confirmExtension, null);
+                    listener.onHttpAuthorizationRequest(bareFrom, confirmElement, null);
                 }
                 // let us handle the reply
                 return null;
@@ -177,7 +178,7 @@ public final class HttpAuthorizationRequestManager extends Manager {
                         .to(msgRequest.getFrom())
                         .ofType(msgRequest.getType())
                         .setThread(msgRequest.getThread())
-                        .addExtension(ConfirmExtension.from(msgRequest));
+                        .addExtension(ConfirmElement.from(msgRequest));
                 connection().sendStanza(messageAccept.build());
             }
             else if (authRequest instanceof ConfirmIQ) {
@@ -214,7 +215,7 @@ public final class HttpAuthorizationRequestManager extends Manager {
                         .to(msgRequest.getFrom())
                         .ofType(Message.Type.error)
                         .setThread(msgRequest.getThread())
-                        .addExtension(ConfirmExtension.from(msgRequest))
+                        .addExtension(ConfirmElement.from(msgRequest))
                         .addExtension(stanzaError);
                 connection().sendStanza(messageDeny.build());
             }

@@ -80,6 +80,9 @@ public class OmemoDevice {
 
     /**
      * Return the name of the PubSub {@link org.jivesoftware.smackx.pubsub.LeafNode} of this device.
+     *
+     * @param vOmemo2 omemo:2 option state.
+     *
      * @return node name.
      */
     public String getBundleNodeName(boolean vOmemo2) {

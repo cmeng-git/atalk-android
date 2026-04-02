@@ -27,10 +27,12 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.AbstractExtensionElement;
 import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
+
 import org.jxmpp.JxmppContext;
 
 /**

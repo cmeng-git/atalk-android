@@ -32,7 +32,6 @@ import net.java.sip.communicator.service.filehistory.FileHistoryService;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.history.HistoryService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
-import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.IMessage;
@@ -51,7 +50,6 @@ import org.atalk.android.gui.chat.filetransfer.FileReceiveConversation;
 import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
-import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
@@ -93,7 +91,8 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
         ServiceReference[] ppsRefs = null;
         try {
             ppsRefs = bc.getServiceReferences(ProtocolProviderService.class.getName(), null);
-        } catch (InvalidSyntaxException e) {
+        }
+        catch (InvalidSyntaxException e) {
             Timber.w("PPS service reference (add): %s", e.getMessage());
         }
 
@@ -118,7 +117,8 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
         ServiceReference[] ppsRefs = null;
         try {
             ppsRefs = bc.getServiceReferences(ProtocolProviderService.class.getName(), null);
-        } catch (InvalidSyntaxException e) {
+        }
+        catch (InvalidSyntaxException e) {
             Timber.w("PPS service reference (remove): %s", e.getMessage());
         }
 
@@ -202,6 +202,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     }
 
     /* ============= File Transfer Handlers - ScFileTransferListener callbacks implementations ============= */
+
     /**
      * Receive fileTransfer requests.
      *
@@ -235,7 +236,8 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
             else if (fileTransfer.getDirection() == FileTransfer.OUT) {
                 insertRecordToDB(event, ChatMessage.MESSAGE_FILE_TRANSFER_SEND, fileName);
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Timber.e(e, "Could not add file transfer log to history");
         }
     }
@@ -273,12 +275,13 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     public void insertRecordToDB(EventObject evt, int msgType, String fileName) {
         Date timeStamp = new Date();
         String uuid = null;
-        String mJid, mEntityJid;
+        String mJid = null, mEntityJid = null;
         String direction = FileRecord.OUT;
         Object entityJid = null;
         String serverMsgId = null;
         String remoteMsgId = null;
         ContentValues contentValues = new ContentValues();
+        String sessionUuid = null;
 
         if (evt instanceof FileTransferRequestEvent) {
             FileTransferRequestEvent event = (FileTransferRequestEvent) evt;
@@ -298,7 +301,8 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
             if (fileTransfer.getDirection() == FileTransfer.IN) {
                 direction = FileRecord.IN;
                 remoteMsgId = uuid;
-            } else {
+            }
+            else {
                 direction = FileRecord.OUT;
                 serverMsgId = uuid;
             }
@@ -311,18 +315,16 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
             }
         }
 
-        String sessionUuid;
         if (entityJid instanceof Contact) {
             Contact contact = (Contact) entityJid;
             sessionUuid = getMHS().getSessionUuidByJid(contact);
             mEntityJid = contact.getAddress();
             mJid = contact.getProtocolProvider().getOurJid().toString();
         }
-        else {
-            ChatRoom chatroom = (ChatRoom) entityJid;
-            sessionUuid = getMHS().getSessionUuidByJid(chatroom);
-            mJid = chatroom.getParentProvider().getOurJid().asEntityBareJidString();
-            mEntityJid = XmppStringUtils.parseLocalpart(mJid);
+        // Just return if the file is received via chatRoom (httpFileDownload). FileHttpDownloadConversation
+        // has been updated not to perform insertRecordToDB as message is already in DB.
+        else if (entityJid == null) {
+            return;
         }
 
         contentValues.put(ChatMessage.UUID, uuid);
@@ -343,6 +345,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     }
 
     /* ============= File Transfer Handlers - Update file transfer status ============= */
+
     /**
      * Update new status and fileName to the fileTransfer record in dataBase.
      * Keep file uri; for retry if not converted to MESSAGE_FILE_TRANSFER_HISTORY.

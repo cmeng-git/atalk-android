@@ -295,7 +295,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      * to obtain a new instance and {@link #build} to build the IceUdpTransportCandidate.
      */
     public static class Builder extends AbstractXmlElement.Builder<Builder, IceUdpTransportCandidate> {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

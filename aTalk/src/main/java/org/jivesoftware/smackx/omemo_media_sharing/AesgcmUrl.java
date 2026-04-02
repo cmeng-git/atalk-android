@@ -21,21 +21,23 @@ import java.net.URL;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
 
 /**
  * This class represents a aesgcm URL as described in XEP-0454: OMEMO Media Sharing.
  * As the builtin {@link URL} class cannot handle the aesgcm protocol identifier, this class
  * is used as a utility class that bundles together a {@link URL}, key and IV.
+ * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-0454: OMEMO Media Sharing</a>
  *
  * @author Paul Schaub
  * @author Eng Chong Meng
- * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-0454: OMEMO Media Sharing</a>
  */
 public class AesgcmUrl {
 
@@ -106,7 +108,7 @@ public class AesgcmUrl {
      * @throws NoSuchPaddingException if the JVM cannot provide the specified cipher mode
      * @throws NoSuchAlgorithmException if the JVM cannot provide the specified cipher mode
      * @throws InvalidAlgorithmParameterException if the JVM cannot provide the specified cipher
-     *                                            (eg. if no BC provider is added)
+     * (eg. if no BC provider is added)
      * @throws InvalidKeyException if the provided key is invalid
      */
     public Cipher getDecryptionCipher() throws NoSuchPaddingException, NoSuchAlgorithmException,
@@ -122,7 +124,8 @@ public class AesgcmUrl {
 
         try {
             return new URL(httpsUrlString);
-        } catch (MalformedURLException e) {
+        }
+        catch (MalformedURLException e) {
             throw new AssertionError("Failed to convert aesgcm URL to https URL: '" + aesgcmUrlString + "'", e);
         }
     }
@@ -142,17 +145,17 @@ public class AesgcmUrl {
         int ivLen;
         // determine the length of the initialization vector part
         switch (refBytes.length) {
-            // 32 bytes key + 16 bytes IV
-            case 48:
-                ivLen = 16;
-                break;
+        // 32 bytes key + 16 bytes IV
+        case 48:
+            ivLen = 16;
+            break;
 
-            // 32 bytes key + 12 bytes IV
-            case 44:
-                ivLen = 12;
-                break;
-            default:
-                throw new IllegalArgumentException("Provided URL has an invalid ref tag (" + ref.length() + "): '" + ref + "'");
+        // 32 bytes key + 12 bytes IV
+        case 44:
+            ivLen = 12;
+            break;
+        default:
+            throw new IllegalArgumentException("Provided URL has an invalid ref tag (" + ref.length() + "): '" + ref + "'");
         }
         iv = new byte[ivLen];
         System.arraycopy(refBytes, 0, iv, 0, ivLen);
@@ -167,6 +170,7 @@ public class AesgcmUrl {
      * Source: https://stackoverflow.com/a/140861/11150851
      *
      * @param s hex string
+     *
      * @return byte array
      */
     public static byte[] hexStringToByteArray(String s) {

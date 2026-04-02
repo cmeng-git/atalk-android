@@ -30,7 +30,9 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.CloseableUtil;
-import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
+
+import org.jivesoftware.smackx.thumbnails.element.ThumbnailElement;
+
 import org.jxmpp.jid.Jid;
 
 /**
@@ -116,6 +118,7 @@ public class OutgoingFileTransfer extends FileTransfer {
      *            The size in bytes of the file that will be transmitted.
      * @param description TODO javadoc me please
      *            A description of the file that will be transmitted.
+     * @param thumbnailElement ThumbNail element.
      * @return The OutputStream that is connected to the peer to transmit the
      *         file.
      * @throws XMPPException if an XMPP protocol error was received.
@@ -125,7 +128,7 @@ public class OutgoingFileTransfer extends FileTransfer {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public synchronized OutputStream sendFile(String fileName, long fileSize,
-            String description, Thumbnail thumbnail) throws XMPPException, SmackException, InterruptedException {
+            String description, ThumbnailElement thumbnailElement) throws XMPPException, SmackException, InterruptedException {
         if (isDone() || outputStream != null) {
             throw new IllegalStateException(
                     "The negotiation process has already"
@@ -133,7 +136,7 @@ public class OutgoingFileTransfer extends FileTransfer {
         }
         try {
             setFileInfo(fileName, fileSize);
-            this.outputStream = negotiateStream(fileName, fileSize, description, thumbnail);
+            this.outputStream = negotiateStream(fileName, fileSize, description, thumbnailElement);
         } catch (XMPPErrorException e) {
             handleXMPPException(e);
             throw e;
@@ -154,13 +157,14 @@ public class OutgoingFileTransfer extends FileTransfer {
      *            The size in bytes of the file that will be transmitted.
      * @param description TODO javadoc me please
      *            A description of the file that will be transmitted.
+     * @param thumbnailElement ThumbNail element.
      * @param progress TODO javadoc me please
      *            A callback to monitor the progress of the file transfer
      *            negotiation process and to retrieve the OutputStream when it
      *            is complete.
      */
     public synchronized void sendFile(final String fileName,
-            final long fileSize, final String description, final Thumbnail thumbnail,
+            final long fileSize, final String description, final ThumbnailElement thumbnailElement,
             final NegotiationProgress progress) {
         if (progress == null) {
             throw new IllegalArgumentException("Callback progress cannot be null.");
@@ -178,7 +182,7 @@ public class OutgoingFileTransfer extends FileTransfer {
             public void run() {
                 try {
                     OutgoingFileTransfer.this.outputStream
-                            = negotiateStream(fileName, fileSize, description, thumbnail);
+                            = negotiateStream(fileName, fileSize, description, thumbnailElement);
                     progress.outputStreamEstablished(OutgoingFileTransfer.this.outputStream);
                 }
                 catch (XMPPErrorException e) {
@@ -230,7 +234,7 @@ public class OutgoingFileTransfer extends FileTransfer {
             @Override
             public void run() {
                 try {
-                    outputStream = negotiateStream(file.getName(), file.length(), description, Thumbnail.fromFile(file));
+                    outputStream = negotiateStream(file.getName(), file.length(), description, ThumbnailElement.fromFile(file));
                 } catch (XMPPErrorException e) {
                     handleXMPPException(e);
                     return;
@@ -268,6 +272,10 @@ public class OutgoingFileTransfer extends FileTransfer {
         transferThread.start();
     }
 
+    public synchronized void sendStream(final InputStream in, final String fileName, final long fileSize, final String description) {
+        sendStream(in, fileName, fileSize, description, null);
+    }
+
     /**
      * This method handles the stream negotiation process and transmits the file
      * to the remote user. It returns immediately and the progress of the file
@@ -283,8 +291,9 @@ public class OutgoingFileTransfer extends FileTransfer {
      * @param fileName the name of the file that is transferred
      * @param fileSize the size of the file that is transferred
      * @param description a description for the file to transfer.
+     * @param thumbnailElement ThumbNail element.
      */
-    public synchronized void sendStream(final InputStream in, final String fileName, final long fileSize, final String description, final Thumbnail thumbnail) {
+    public synchronized void sendStream(final InputStream in, final String fileName, final long fileSize, final String description, final ThumbnailElement thumbnailElement) {
         checkTransferThread();
 
         setFileInfo(fileName, fileSize);
@@ -293,7 +302,7 @@ public class OutgoingFileTransfer extends FileTransfer {
             public void run() {
                 // Create packet filter.
                 try {
-                    outputStream = negotiateStream(fileName, fileSize, description, thumbnail);
+                    outputStream = negotiateStream(fileName, fileSize, description, thumbnailElement);
                 } catch (XMPPErrorException e) {
                     handleXMPPException(e);
                     return;
@@ -363,14 +372,14 @@ public class OutgoingFileTransfer extends FileTransfer {
     }
 
     private OutputStream negotiateStream(String fileName, long fileSize,
-            String description, Thumbnail thumbnail) throws SmackException, XMPPException, InterruptedException {
+            String description, ThumbnailElement thumbnailElement) throws SmackException, XMPPException, InterruptedException {
         // Negotiate the file transfer profile
 
         if (!updateStatus(Status.initial, Status.negotiating_transfer)) {
             throw new IllegalStateChangeException();
         }
         StreamNegotiator streamNegotiator = negotiator.negotiateOutgoingTransfer(
-                getPeer(), streamID, fileName, fileSize, description, thumbnail,
+                getPeer(), streamID, fileName, fileSize, description, thumbnailElement,
                 RESPONSE_TIMEOUT);
 
         // Negotiate the stream

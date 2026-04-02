@@ -190,6 +190,11 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
         }
     }
 
+    OmemoBundleElement packOmemoBundle(OmemoDevice userDevice)
+            throws CorruptedOmemoKeyException, IOException {
+        return packOmemoBundle(userDevice, false);
+    }
+
     /**
      * Pack a OmemoBundleElement containing our key material.
      *

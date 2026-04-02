@@ -129,10 +129,13 @@ import org.atalk.crypto.CryptoFragment;
 import org.atalk.crypto.listener.CryptoModeChangeListener;
 import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.persistance.FileBackend;
+
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo_media_sharing.AesgcmUrl;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 
@@ -942,6 +945,10 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
         return chatListAdapter;
     }
 
+    /**
+     * @param sender the message sender jid
+     * @return the sender Contact, null if sender is from chatRoom
+     */
     private Contact getContact(String sender) {
         if (StringUtils.isEmpty(sender))
             return null;
@@ -2033,7 +2040,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                             }
 
                             hasLatLng = true;
-                            mLocation = new double[]{Double.parseDouble(sLat), Double.parseDouble(sLng), Double.parseDouble(sAlt)};
+                            mLocation = new double[] {Double.parseDouble(sLat), Double.parseDouble(sLng), Double.parseDouble(sAlt)};
                         }
                         catch (NumberFormatException ex) {
                             Timber.w("GeoLocationActivity Number Format Exception %s: ", ex.getMessage());
@@ -2735,7 +2742,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
     public void onCryptoModeChange(OmemoManager manager, int chatType) {
         chatPanel.setChatType(chatType);
         changeBackground(mCFView, chatType);
-        mChatActivity.onChatSessionChange(manager.isOmemo2Enable() && chatPanel.isOmemoChat(), mChatMetaContact);
+        if (mChatActivity != null)
+            mChatActivity.onChatSessionChange(manager.isOmemo2Enable() && chatPanel.isOmemoChat(), mChatMetaContact);
     }
 
     /**

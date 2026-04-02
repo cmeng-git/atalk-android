@@ -1,5 +1,31 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        5.2.2 (502020)
+Release Date:   04/02/2026
+Author:         cmeng
+- Fix OmemoVOmemoProvider#parse() incorrect parsing of jid attribute in OmemoKeysElement_VOmemo.
+- Change bundles and devices nodes publish with item id='current' as recommended for Singleton Nodes.
+  see 12.21 Singleton Nodes#https://xmpp.org/extensions/xep-0060.html#impl-singleton
+- If onPepEvent received omemo#devices itemId != 'current', it must be purged from the server. Otherwise
+  this will leads to endless loop in receiving the pepEvent for this item (as it not being updated).
+- Must perform active subscription to node 'urn:xmpp:omemo:2:devices' and 'urn:xmpp:omemo:2:bundles', inorder to send publish-options successfully.
+- Add both omemo PEP_NODE_DEVICES_x namespaces to PepEventListener, so pubsub#events from either PEP_NODE_DEVICES_x are handled properly.
+  * Must have separate PepEventListener for each omemo namespace.
+  * Encrypted messages sent does not contain the intended recipient contact deviceId:
+  a. the deviceId identity is inactive in table (AVD-swan / Note10-swordfish); fixed by set it to active.
+  b. not sent by server for contact omemoDevice?: <event xmlns='http://jabber.org/protocol/pubsub#event'>
+- Fix app crashes on HttpFileDownload message received in chatRoom when insertRecordToDB as Contact is null.
+  * No need to perform insertRecordToDB() as the HttpFileDownload message is already in the database.
+- Fix unhandled BackKey problems with preference sub-menu for Connection, ICE, and Telephony VoIP-PBX settings.
+- Clean up Thumbnail.java file for fully XEP-0264: Jingle Content Thumbnails 0.4.2 (2024-07-24) compliant.
+- Revert AccountInfoPresenceActivity#loadDetails() to use ExecutorService, but without using 'try'-with-resources as this causes ANR.
+
+*** Observation #TODO: ***
+- Jingle-RTP NamedElement's e.g. PayloadType and ParameterElement are currently extended as AbstractXmlElement; contains potential problems.
+  Required major changes to source.
+- Receive contact #event for the omemoDevice update is using +notify.
+
+=========================================================================
 Version:        5.2.1 (502010)
 Release Date:   03/13/2026
 Author:         cmeng

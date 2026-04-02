@@ -24,7 +24,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -208,6 +208,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * Add a new recipient device to the message.
      *
      * @param contactsDevice device of the recipient
+     * @param vOmemo2 omemo:2 option state.
      *
      * @throws NoIdentityKeyException if we have no identityKey of that device. Can be fixed by fetching and
      * processing the devices bundle.
@@ -216,7 +217,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws UntrustedOmemoIdentityException if the user has decided not to trust that device.
      * @throws IOException if an I/O error occurred.
      */
-    public void addRecipient(OmemoDevice contactsDevice, boolean vmemo2)
+    public void addRecipient(OmemoDevice contactsDevice, boolean vOmemo2)
             throws NoIdentityKeyException, CorruptedOmemoKeyException, UndecidedOmemoIdentityException,
             UntrustedOmemoIdentityException, IOException {
 
@@ -230,11 +231,12 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
 
         case trusted:
             CiphertextTuple encryptedKey = ratchet.doubleRatchetEncrypt(contactsDevice, messageKey);
-            if (vmemo2) {
+            if (vOmemo2) {
                 OmemoKeyElement_VOmemo keyElement = new OmemoKeyElement_VOmemo(encryptedKey.getCiphertext(), contactsDevice.getDeviceId(), encryptedKey.isPreKeyMessage());
-                OmemoKeysElement_VOmemo keys = new OmemoKeysElement_VOmemo(contactsDevice.getJid().toString(), List.of(keyElement));
+                OmemoKeysElement_VOmemo keys = new OmemoKeysElement_VOmemo(contactsDevice.getJid().toString(), Arrays.asList(keyElement));
                 keysElement.add(keys);
-            } else {
+            }
+            else {
                 OmemoKeyElement_VAxolotl keyElement = new OmemoKeyElement_VAxolotl(encryptedKey.getCiphertext(), contactsDevice.getDeviceId(), encryptedKey.isPreKeyMessage());
                 keys.add(keyElement);
             }
@@ -247,6 +249,8 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
 
     /**
      * Assemble an OmemoMessageElement from the current state of the builder.
+     *
+     * @param vOmemo2 omemo:2 option state.
      *
      * @return OMEMO element
      */

@@ -522,7 +522,7 @@ public class AvatarManager extends Manager {
      * @param newAvatarId the new avatar Id
      */
     protected void fireListeners(EntityBareJid from, String oldAvatarId, String newAvatarId) {
-        // Timber.e("fireListeners userAvator: %s; %s => %s", from, oldAvatarId, newAvatarId);
+        // Timber.e("fireListeners userAvatar: %s; %s => %s", from, oldAvatarId, newAvatarId);
         for (AvatarChangeListener l : mListeners)
             l.onAvatarChange(from, oldAvatarId, newAvatarId);
     }

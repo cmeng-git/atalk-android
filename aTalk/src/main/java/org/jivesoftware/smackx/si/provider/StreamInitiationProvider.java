@@ -29,11 +29,14 @@ import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.si.packet.StreamInitiation.File;
-import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
+import org.jivesoftware.smackx.thumbnails.element.ThumbnailElement;
+import org.jivesoftware.smackx.thumbnails.provider.ThumbnailElementProvider;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
+
 import org.jxmpp.JxmppContext;
 import org.jxmpp.util.XmppDateTime;
 
@@ -52,6 +55,7 @@ public class StreamInitiationProvider extends IqProvider<StreamInitiation> {
      * @param parser the parser to parse
      */
 
+    @SuppressWarnings("JavaUtilDate")
     @Override
     public StreamInitiation parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws XmlPullParserException, IOException, SmackParsingException, ParseException {
@@ -69,7 +73,7 @@ public class StreamInitiationProvider extends IqProvider<StreamInitiation> {
         String hash = null;
         String date = null;
         String desc = null;
-        Thumbnail thumbnail = null;
+        ThumbnailElement thumbnailElement = null;
         boolean isRanged = false;
 
         // feature
@@ -99,8 +103,8 @@ public class StreamInitiationProvider extends IqProvider<StreamInitiation> {
                 else if (elementName.equals("x") && namespace.equals("jabber:x:data")) {
                     form = dataFormProvider.parse(parser);
                 }
-                else if (elementName.equals("thumbnail")) {
-                    thumbnail = new Thumbnail(parser);
+                else if (elementName.equals("thumbnailElement")) {
+                    thumbnailElement = ThumbnailElementProvider.INSTANCE.parse(parser);  // new ThumbnailElement(parser);
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
@@ -116,7 +120,8 @@ public class StreamInitiationProvider extends IqProvider<StreamInitiation> {
                     if (size != null) {
                         try {
                             fileSize = Long.parseLong(size);
-                        } catch (NumberFormatException e) {
+                        }
+                        catch (NumberFormatException e) {
                             LOGGER.log(Level.SEVERE, "Failed to parse file size from " + fileSize);
                         }
                     }
@@ -125,7 +130,8 @@ public class StreamInitiationProvider extends IqProvider<StreamInitiation> {
                     if (date != null) {
                         try {
                             fileDate = XmppDateTime.parseDate(date);
-                        } catch (ParseException e) {
+                        }
+                        catch (ParseException e) {
                             // couldn't parse date, use current date-time
                             LOGGER.log(Level.WARNING, "Unknown date format on incoming file transfer: " + date);
                         }
@@ -136,7 +142,7 @@ public class StreamInitiationProvider extends IqProvider<StreamInitiation> {
                     file.setDate(fileDate);
                     file.setDesc(desc);
                     file.setRanged(isRanged);
-                    file.setThumbnail(thumbnail);
+                    file.setThumbnail(thumbnailElement);
                     initiation.setFile(file);
                 }
             }

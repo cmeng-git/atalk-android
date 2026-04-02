@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.XmlElement;
+
 import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.adapter.JingleDescriptionAdapter;
 import org.jivesoftware.smackx.jingle.element.JingleContent;

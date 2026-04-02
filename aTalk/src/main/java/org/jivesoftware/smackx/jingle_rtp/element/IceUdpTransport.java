@@ -21,6 +21,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.XmlElement;
+
 import org.jivesoftware.smackx.colibri.WebSocketExtension;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
@@ -122,6 +123,7 @@ public class IceUdpTransport extends JingleContentTransport {
      * Removes <code>candidate</code> from the list of {@link IceUdpTransportCandidate}s registered with this transport.
      *
      * @param candidate the <code>CandidateExtensionElement</code> to remove from this transport element
+     *
      * @return <code>true</code> if the list of <code>CandidateExtensionElement</code>s registered with this
      * transport contains the specified <code>candidate</code>
      */
@@ -138,6 +140,7 @@ public class IceUdpTransport extends JingleContentTransport {
      *
      * @param src the <code>IceUdpTransport</code> to be cloned
      * @param copyDtls if <code>true</code> will also copy {@link SrtpFingerprint}.
+     *
      * @return a new <code>IceUdpTransport</code> instance which has the same run-time
      * type, attributes, namespace, text and candidates as the specified <code>src</code>
      */

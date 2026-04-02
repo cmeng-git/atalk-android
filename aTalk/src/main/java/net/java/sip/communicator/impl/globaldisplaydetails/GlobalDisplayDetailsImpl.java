@@ -225,8 +225,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
     }
 
     /**
-     * Called whenever a new avatar is defined for one of the protocols that we have subscribed
-     * for.
+     * Called whenever a new avatar is defined for one of the protocols that we have subscribed for.
      *
      * @param event the event containing the new image
      */

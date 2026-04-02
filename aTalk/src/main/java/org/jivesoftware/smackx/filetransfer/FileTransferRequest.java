@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.filetransfer;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
-import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
+import org.jivesoftware.smackx.thumbnails.element.ThumbnailElement;
 
 import org.jxmpp.jid.Jid;
 
@@ -49,7 +49,7 @@ public class FileTransferRequest {
         this.manager = manager;
     }
 
-    public Thumbnail getThumbnail() {
+    public ThumbnailElement getThumbnail() {
         return streamInitiation.getFile().getThumbnail();
     }
 

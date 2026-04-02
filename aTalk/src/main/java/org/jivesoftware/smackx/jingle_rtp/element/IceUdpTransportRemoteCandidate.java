@@ -54,7 +54,7 @@ public class IceUdpTransportRemoteCandidate extends IceUdpTransportCandidate {
      * obtain a new instance and {@link #build} to build the IceUdpTransportRemoteCandidate.
      */
     public static final class Builder extends IceUdpTransportCandidate.Builder {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

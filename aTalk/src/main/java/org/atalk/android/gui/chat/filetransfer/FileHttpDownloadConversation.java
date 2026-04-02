@@ -105,9 +105,10 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         messageViewHolder.stickerView.setImageDrawable(null);
         messageViewHolder.fileLabel.setText(getFileLabel(fileName, fileSize));
 
-        // Create a new file record in database for proper tracking.
-        FileTransferCreatedEvent event = new FileTransferCreatedEvent(httpFileTransferJabber, new Date());
-        mFHS.insertRecordToDB(event, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD, fileName);
+        // Not required as the MESSAGE_HTTP_FILE_DOWNLOAD message is already saved in the database.
+        // Create a new file record in database for proper tracking
+        // FileTransferCreatedEvent event = new FileTransferCreatedEvent(httpFileTransferJabber, new Date());
+        // mFHS.insertRecordToDB(event, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD, fileName);
 
         // Must reset button image to fileIcon on new(); else reused view may contain an old thumbnail image
         messageViewHolder.fileIcon.setImageResource(R.drawable.file_icon);

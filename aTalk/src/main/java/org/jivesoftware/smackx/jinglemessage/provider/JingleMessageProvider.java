@@ -25,8 +25,10 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
+
 import org.jxmpp.JxmppContext;
 
 /**
@@ -50,12 +52,14 @@ public class JingleMessageProvider extends ExtensionElementProvider<JingleMessag
 
                 if (elementName.equals(JingleMessage.ACTION_PROPOSE)) {
                     id = parser.getAttributeValue(JingleMessage.ATTR_ID);
-                } else if (elementName.equals(RtpDescription.ELEMENT)) {
+                }
+                else if (elementName.equals(RtpDescription.ELEMENT)) {
                     ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(
                             RtpDescription.ELEMENT, RtpDescription.NAMESPACE);
                     rtpDescription = (RtpDescription) provider.parse(parser);
                 }
-            } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
+            }
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getDepth() == initialDepth) {
                     break;
                 }

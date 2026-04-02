@@ -34,6 +34,7 @@ public class PayloadType extends AbstractXmlElement {
      */
     public static final String ELEMENT = "payload-type";
 
+    // Inherit the NAMESPACE from its parent for NamedElement.
     public static final QName QNAME = new QName(RtpDescription.NAMESPACE, ELEMENT);
 
     /**

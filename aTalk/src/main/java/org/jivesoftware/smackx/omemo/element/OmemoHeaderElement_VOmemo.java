@@ -22,6 +22,7 @@ import java.util.List;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 /**

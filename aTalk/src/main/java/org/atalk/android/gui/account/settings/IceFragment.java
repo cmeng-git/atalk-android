@@ -89,6 +89,8 @@ public class IceFragment extends BasePreferenceFragment
             getJingleNodeList();
             return true;
         });
+
+        exitOnBackKey();
     }
 
     /**

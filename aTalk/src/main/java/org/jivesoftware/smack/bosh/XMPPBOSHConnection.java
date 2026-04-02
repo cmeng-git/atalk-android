@@ -347,12 +347,12 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         }
 
         setWasAuthenticated();
-        client = null;
         sessionID = null;
         done = true;
         authenticated = false;
         connected = false;
         isFirstInitialization = true;
+        client = null;
 
         // Close down the readers and writers.
         CloseableUtil.maybeClose(readerPipe, LOGGER);

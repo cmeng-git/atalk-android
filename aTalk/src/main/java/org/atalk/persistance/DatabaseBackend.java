@@ -1046,9 +1046,11 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         }
     }
 
+    // Will remove null identityKey and deviceId == -1
     public int deleteNullIdentityKeyDevices() {
         final SQLiteDatabase db = getWritableDatabase();
-        return db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.IDENTITY_KEY + " IS NULL", null);
+        int cnt = db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.DEVICE_ID + " = -1", null);
+        return db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.IDENTITY_KEY + " IS NULL", null) + cnt;
     }
 
     public void setLastDeviceIdPublicationDate(OmemoDevice device, Date date) {

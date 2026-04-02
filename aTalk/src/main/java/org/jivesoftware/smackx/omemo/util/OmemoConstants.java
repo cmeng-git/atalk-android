@@ -46,10 +46,12 @@ public final class OmemoConstants {
      * Return the node name of the PEP node containing the device bundle of the device with device id deviceId.
      *
      * @param deviceId id of the device
+     * @param vOmemo2 omemo:2 option state.
+     *
      * @return node name of the devices bundle node
      */
     public static String PEP_NODE_BUNDLE_FROM_DEVICE_ID(int deviceId, boolean vOmemo2) {
-        return vOmemo2? PEP_NODE_BUNDLES_V_OMEMO : PEP_NODE_BUNDLES_V_AXOLOTL + ":" + deviceId;
+        return vOmemo2 ? PEP_NODE_BUNDLES_V_OMEMO : PEP_NODE_BUNDLES_V_AXOLOTL + ":" + deviceId;
     }
 
     public static String getOmemoNS(boolean vOmemo2) {

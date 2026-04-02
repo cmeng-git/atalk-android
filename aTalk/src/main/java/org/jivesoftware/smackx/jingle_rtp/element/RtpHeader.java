@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.jingle_rtp.element;
 import java.net.URI;
 
 import org.jivesoftware.smack.packet.XmlElement;
+
 import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
@@ -143,7 +144,7 @@ public class RtpHeader extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the RtpHeader.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, RtpHeader> {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -151,6 +152,7 @@ public class RtpHeader extends AbstractXmlElement {
          * Set the ID.
          *
          * @param id ID to set
+         *
          * @return builder instance
          */
         public Builder setID(String id) {
@@ -162,6 +164,7 @@ public class RtpHeader extends AbstractXmlElement {
          * Set the direction.
          *
          * @param senders the direction
+         *
          * @return builder instance
          */
         public Builder setSenders(Senders senders) {
@@ -173,6 +176,7 @@ public class RtpHeader extends AbstractXmlElement {
          * Set the URI.
          *
          * @param uri URI to set
+         *
          * @return builder instance
          */
         public Builder setURI(URI uri) {
@@ -184,6 +188,7 @@ public class RtpHeader extends AbstractXmlElement {
          * Set attributes.
          *
          * @param attributes attributes value
+         *
          * @return builder instance
          */
         public Builder setExtAttributes(String attributes) {

@@ -1349,6 +1349,7 @@
     <string name="omemo2_enable">Ativar suporte para omemo:2</string>
     <string name="omemo2_optout">Opção de desativação do chat OMEMO</string>
     <string name="omemo2_optout_reason">Opção de desativação do chat OMEMO.\nDesculpe, por motivos de conformidade, preciso de um registro permanente, no servidor, da nossa conversa.</string>
+    <string name="omemo2_subscription_failed">Falha ao se inscrever nos nós de publicação de pacotes e dispositivos OMEMO!</string>
     <string name="omemo2_summary">Suporte ao namespace do elemento OMEMO XEP-0384: \'urn:xmpp:omemo:2\'</string>
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">Confiança cega antes da verificação</string>

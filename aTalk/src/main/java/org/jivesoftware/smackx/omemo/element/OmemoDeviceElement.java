@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.omemo.element;
 
-import androidx.annotation.NonNull;
-
 import java.util.Objects;
 
 import org.jivesoftware.smack.packet.NamedElement;
@@ -63,6 +61,7 @@ public class OmemoDeviceElement implements NamedElement {
         return labelSig;
     }
 
+    @Override
     public String getElementName() {
         return DEVICE;
     }
@@ -80,7 +79,6 @@ public class OmemoDeviceElement implements NamedElement {
         return xml;
     }
 
-    @NonNull
     @Override
     public final String toString() {
         StringBuilder sb = new StringBuilder("OmemoDeviceElement: ");

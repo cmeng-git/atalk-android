@@ -16,15 +16,17 @@
  */
 package org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.jingle.element.JingleContentTransportCandidate;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
 
-import javax.xml.namespace.QName;
-
 /**
  * Class representing possible SOCKS5 TransportInfo elements.
+ *
  * @see <a href="https://xmpp.org/extensions/xep-0260.html">XEP-0260: Jingle SOCKS5 Bytestreams Transport Method 1.0.3 (2018-05-15)</a>
  */
 public abstract class JingleS5BTransportInfo implements JingleContentTransportInfo {

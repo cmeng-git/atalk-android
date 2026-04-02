@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.omemo.element;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 /**
@@ -27,6 +28,10 @@ import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 public class OmemoKeyElement_VOmemo extends OmemoKeyElement {
     public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_OMEMO;
     public static final String ATTR_PREKEY = "kex";
+
+    public OmemoKeyElement_VOmemo(byte[] data, int id) {
+        this(data, id, false);
+    }
 
     public OmemoKeyElement_VOmemo(byte[] data, int id, boolean preKey) {
         super(data, id, preKey);

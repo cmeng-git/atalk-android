@@ -16,7 +16,6 @@
  */
 
 /**
- * Smack's API for XEP-0391: Jingle Encrypted Transfers.
- * Internal classes.
+ * Smack's API for XEP-0391: Jingle Encrypted Transports.
  */
 package org.jivesoftware.smackx.jet.component;

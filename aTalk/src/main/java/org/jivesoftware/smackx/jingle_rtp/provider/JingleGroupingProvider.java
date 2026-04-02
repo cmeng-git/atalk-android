@@ -26,9 +26,11 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle_rtp.DefaultXmlElementProvider;
 import org.jivesoftware.smackx.jingle_rtp.element.Grouping;
+
 import org.jxmpp.JxmppContext;
 
 /**
@@ -44,6 +46,7 @@ public class JingleGroupingProvider extends ExtensionElementProvider<Grouping> {
      * and at the end of the method call it will be on the closing element of the stanza extension.
      *
      * @param parser an XML parser positioned at the stanza's starting element.
+     *
      * @return a new Grouping stanza extension instance.
      *
      * @throws XmlPullParserException if an error occurs pull parsing the XML.

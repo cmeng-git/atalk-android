@@ -25,8 +25,10 @@ import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
+
+import org.jivesoftware.smackx.thumbnails.element.ThumbnailElement;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import org.jxmpp.util.XmppDateTime;
 
 /**
@@ -74,6 +76,7 @@ public class StreamInitiation extends IQ {
      * Uniquely identifies a stream initiation to the recipient.
      *
      * @return The "id" attribute.
+     *
      * @see #setSessionID(String)
      */
     public String getSessionID() {
@@ -99,6 +102,7 @@ public class StreamInitiation extends IQ {
      * Identifies the type of file that is desired to be transferred.
      *
      * @return The mime-type.
+     *
      * @see #setMimeType(String)
      */
     public String getMimeType() {
@@ -139,7 +143,7 @@ public class StreamInitiation extends IQ {
      * negotiation and transfer.
      *
      * @return Returns the data form which contains the valid methods of stream
-     *         negotiation and transfer.
+     * negotiation and transfer.
      */
     public DataForm getFeatureNegotiationForm() {
         return featureNegotiation.getData();
@@ -221,7 +225,7 @@ public class StreamInitiation extends IQ {
 
         private boolean isRanged;
 
-        private Thumbnail thumbnail;
+        private ThumbnailElement thumbnailElement;
 
         /**
          * Constructor providing the name of the file and its size.
@@ -295,7 +299,7 @@ public class StreamInitiation extends IQ {
          * Sets the description of the file.
          *
          * @param desc The description of the file so that the file receiver can
-         *             know what file it is.
+         * know what file it is.
          */
         public void setDesc(final String desc) {
             this.desc = desc;
@@ -324,18 +328,18 @@ public class StreamInitiation extends IQ {
          * transfer.
          *
          * @return Returns whether or not the initiator can support a range for
-         *         the file transfer.
+         * the file transfer.
          */
         public boolean isRanged() {
             return isRanged;
         }
 
-        public void setThumbnail(final Thumbnail thumbnail) {
-            this.thumbnail = thumbnail;
+        public void setThumbnail(final ThumbnailElement thumbnailElement) {
+            this.thumbnailElement = thumbnailElement;
         }
 
-        public Thumbnail getThumbnail() {
-            return thumbnail;
+        public ThumbnailElement getThumbnail() {
+            return thumbnailElement;
         }
 
         @Override
@@ -358,13 +362,13 @@ public class StreamInitiation extends IQ {
             sb.optAttribute(ATTR_HASH, getHash());
 
             if (StringUtils.isNotEmpty(desc)
-                || isRanged() || (thumbnail != null)) {
+                    || isRanged() || (thumbnailElement != null)) {
                 sb.rightAngleBracket();
                 sb.optElement(ELEM_DESC, desc);
                 if (isRanged()) {
                     sb.emptyElement(ELEM_RANGE);
                 }
-                sb.optElement(thumbnail);
+                sb.optElement(thumbnailElement);
                 sb.closeElement(this);
             }
             else {
@@ -378,7 +382,6 @@ public class StreamInitiation extends IQ {
      * The feature negotiation portion of the StreamInitiation packet.
      *
      * @author Alexander Wenckus
-     *
      */
     public static class Feature implements XmlElement {
 

@@ -9,7 +9,7 @@ import java.io.File;
 
 import net.java.sip.communicator.service.protocol.OperationSetThumbnailedFileFactory;
 
-import org.jivesoftware.smackx.thumbnail.component.ThumbnailedFile;
+import org.jivesoftware.smackx.thumbnails.component.ThumbnailedFile;
 
 /**
  * The <code>OperationSetThumbnailedFileFactory</code> is meant to be used by bundles interested in

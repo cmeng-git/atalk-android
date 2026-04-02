@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
+import org.jivesoftware.smack.packet.XmlElement;
+
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
@@ -102,7 +104,7 @@ public class RtpDescription extends JingleContentDescription {
      * to obtain a new instance and {@link #build} to build the RtpDescription.
      */
     public static final class Builder extends JingleContentDescription.Builder {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

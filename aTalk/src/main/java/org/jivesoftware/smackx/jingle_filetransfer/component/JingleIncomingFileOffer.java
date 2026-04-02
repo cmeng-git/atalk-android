@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 import org.jivesoftware.smackx.hashes.HashManager;
 import org.jivesoftware.smackx.hashes.element.HashElement;
@@ -107,17 +108,20 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
                 }
             }
             LOGGER.log(Level.INFO, "Reading/Writing file finished: " + fname);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Cannot get InputStream from BytestreamSession: " + e, e);
             // will cause ConcurrentModificationException as progressListener will be removed onError.
             // notifyProgressListenersOnError(JingleReason.Reason.connectivity_error, e.getMessage());
-        } finally {
+        }
+        finally {
             mState = State.ended;
             if (inputStream != null) {
                 try {
                     inputStream.close();
                     LOGGER.log(Level.INFO, "CipherInputStream closed.");
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     LOGGER.log(Level.WARNING, "Could not close InputStream: " + e, e);
                 }
             }
@@ -126,7 +130,8 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
                 try {
                     target.close();
                     LOGGER.log(Level.INFO, "FileOutputStream closed.");
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     LOGGER.log(Level.SEVERE, "Could not close OutputStream: " + e, e);
                 }
             }
@@ -136,7 +141,8 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             byte[] mDigest = ((DigestInputStream) inputStream).getMessageDigest().digest();
             if (!Arrays.equals(hashElement.getHash(), mDigest)) {
                 LOGGER.log(Level.WARNING, "CHECKSUM MISMATCH!");
-            } else {
+            }
+            else {
                 LOGGER.log(Level.INFO, "CHECKSUM MATCHED :)");
             }
         }

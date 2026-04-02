@@ -1286,6 +1286,7 @@
     <string name="omemo2_enable">تفعيل دعم omemo:2</string>
     <string name="omemo2_optout">إلغاء الاشتراك في دردشة OMEMO</string>
     <string name="omemo2_optout_reason">إلغاء الاشتراك في دردشة OMEMO.\n عذرًا، لأسباب تتعلق بالامتثال، أحتاج إلى سجل دائم لمحادثتنا على الخادم.</string>
+    <string name="omemo2_subscription_failed">فشل الاشتراك في حزم OMEMO ونشر الأجهزة للعقد!</string>
     <string name="omemo2_summary">دعم مساحة اسم عنصر OMEMO XEP-0384: urn:xmpp:omemo:2</string>
     <!-- OMEMO device screen -->
     <string name="omemo_blind_trust_before_verification">الثقة العمياء قبل التحقق</string>

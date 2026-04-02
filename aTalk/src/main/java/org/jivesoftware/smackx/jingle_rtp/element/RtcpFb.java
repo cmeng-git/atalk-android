@@ -93,7 +93,7 @@ public class RtcpFb extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the RtcpFb.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, RtcpFb> {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

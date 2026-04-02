@@ -141,7 +141,7 @@ public class OperationSetPersistentPresenceJabberImpl
     private final ServerStoredContactListJabberImpl ssContactList;
 
     /**
-     * Handle subscriptions event is ready uf true.
+     * Handle subscriptions event is ready if true.
      */
     private boolean handleSubscribeEvent = false;
 
@@ -582,7 +582,7 @@ public class OperationSetPersistentPresenceJabberImpl
                 presenceBuilder.setStatus(statusMessage);
 
             /*
-             * cmeng 20240316: not necessary, as first <presence/> is sent to server and
+             * cmeng 20240316: not necessary, as when first <presence/> is sent to server and
              * ejabberd server will add VCardTempXUpdate to all entities whom subscribed to presence.
              * - Add VCardTempXUpdate to first <presence/> stanza send
              *

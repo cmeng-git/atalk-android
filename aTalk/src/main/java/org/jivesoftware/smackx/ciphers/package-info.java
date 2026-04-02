@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
- * Smack's API for XEP-0391: Jingle Encrypted Transfers.
+ * An authenticated encryption cipher suite used for secure data exchange,
+ * notably in Jingle Encrypted Transports (XEP-0391/XEP-0396) and OMEMO.
  */
 package org.jivesoftware.smackx.ciphers;

@@ -7,8 +7,21 @@
 -->
 
 <changelog>
-    <release version="5.2.1 (03/13/2026)" versioncode="502010">
+    <release version="5.2.2 (04/02/2026)" versioncode="502020">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Fix OmemoVOmemoProvider#parse() incorrect parsing of jid attribute in OmemoKeysElement_VOmemo</change>
+        <change>Change bundles and devices nodes publish with item id='current' as recommended for Singleton Nodes</change>
+        <change>If onPepEvent received omemo#devices itemId != 'current', it must be purged from the server. Otherwise this will leads to endless loop in receiving the pepEvent for this item (as it not being updated)</change>
+        <change>Must perform active subscription to node 'urn:xmpp:omemo:2:devices' and 'urn:xmpp:omemo:2:bundles', inorder to send publish-options successfully</change>
+        <change>Must have separate PepEventListener for each omemo namespace. Add both omemo PEP_NODE_DEVICES_x namespaces to PepEventListener, so pubsub#events from either PEP_NODE_DEVICES_x are handled properly</change>
+        <change>Fix app crashes on HttpFileDownload message received in chatRoom; Omit insert record as message is already in DB</change>
+        <change>Fix unhandled BackKey problems with preference sub-menu for Connection, ICE, and Telephony VoIP-PBX settings</change>
+        <change>Clean up Thumbnail.java file for fully XEP-0264: Jingle Content Thumbnails 0.4.2 (2024-07-24) compliant</change>
+        <change>Revert AccountInfoPresenceActivity #loadDetails() to use ExecutorService, but without using 'try'-with-resources as this causes ANR</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="5.2.1 (03/13/2026)" versioncode="502010">
         <change>Fix incorrect fetching of bundle from server in OmemoService#fetchBundle</change>
     </release>
 

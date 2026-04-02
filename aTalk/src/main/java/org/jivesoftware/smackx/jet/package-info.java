@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
- * Smack's API for XEP-0391: Jingle Encrypted Transfers.
+ * Smack's API for XEP-0391: Jingle Encrypted Transports.
  */
 package org.jivesoftware.smackx.jet;

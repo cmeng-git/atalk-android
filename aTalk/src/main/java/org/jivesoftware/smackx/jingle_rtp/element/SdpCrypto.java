@@ -208,7 +208,7 @@ public class SdpCrypto extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the SdpCrypto.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, SdpCrypto> {
-        protected Builder(String element, String namespace) {
+        Builder(String element, String namespace) {
             super(element, namespace);
         }
 

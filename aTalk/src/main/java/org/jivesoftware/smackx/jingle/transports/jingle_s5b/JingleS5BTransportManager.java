@@ -29,6 +29,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5Proxy;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
@@ -129,7 +130,9 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
         if (JingleS5BTransportManager.isUseExternalCandidates()) {
             try {
                 remoteHosts = getAvailableStreamHosts();
-            } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException.NotConnectedException | SmackException.NoResponseException e) {
+            }
+            catch (InterruptedException | XMPPException.XMPPErrorException | SmackException.NotConnectedException |
+                   SmackException.NoResponseException e) {
                 LOGGER.log(Level.WARNING, "Could not determine available StreamHosts.", e);
             }
         }
@@ -229,7 +232,8 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
             try {
                 Bytestream response = connection.sendIqRequestAndWaitForResponse(request);
                 streamHosts.addAll(response.getStreamHosts());
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 iterator.remove();
             }
         }
@@ -246,8 +250,9 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
             }
             localStreamHosts = queryLocalStreamHosts();
             availableStreamHosts = queryAvailableStreamHosts();
-        } catch (InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException |
-                 XMPPException.XMPPErrorException e) {
+        }
+        catch (InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException |
+               XMPPException.XMPPErrorException e) {
             LOGGER.log(Level.WARNING, "Could not query available StreamHosts: " + e, e);
         }
     }

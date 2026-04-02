@@ -35,6 +35,7 @@ import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.util.XmppElementUtil;
 
 /**
  * An {@link XmlElement} modeling the often required and used XML features when using XMPP.
@@ -75,7 +76,8 @@ public class AbstractXmlElement implements ExtensionElement {
         this.namespace = builder.namespace; // StringUtils.requireNotNullNorEmpty(builder.namespace, "Namespace must not be null nor empty");
         if (builder.attributes == null) {
             this.attributes = Collections.emptyMap();
-        } else {
+        }
+        else {
             this.attributes = builder.attributes;
         }
         this.text = builder.text;
@@ -98,7 +100,9 @@ public class AbstractXmlElement implements ExtensionElement {
      * This allow the XmlElement to be a child element of the redefined namespace
      *
      * @param namespace XmlElement namespace to be use
+     *
      * @return the set mBuilder or a modified mBuilder with the given namespace
+     *
      * @see DefaultXmlElementProvider on usage
      */
     // public <B extends Builder<?, ?>> B getBuilder(String namespace)
@@ -123,6 +127,7 @@ public class AbstractXmlElement implements ExtensionElement {
      * with this stanza extension.
      *
      * @param attribute the name of the attribute that we'd like to retrieve.
+     *
      * @return the string value of the specified <code>attribute</code> or <code>null</code> if no such attribute
      * is currently registered with this extension.
      */
@@ -134,6 +139,7 @@ public class AbstractXmlElement implements ExtensionElement {
      * Return the <code>int</code> value of the attribute with the specified <code>attribute</code>.
      *
      * @param attribute the name of the attribute that we'd like to retrieve
+     *
      * @return the <code>int</code> value of the specified <code>attribute</code> or value -1
      * if no such attribute is currently registered with this extension
      */
@@ -146,8 +152,10 @@ public class AbstractXmlElement implements ExtensionElement {
      * Try to parse and return the value of the specified <code>attribute</code> as an <code>URI</code>.
      *
      * @param attribute the name of the attribute that we'd like to retrieve.
+     *
      * @return the <code>URI</code> value of the specified <code>attribute</code> or <code>null</code> if no
      * such attribute is currently registered with this extension.
+     *
      * @throws IllegalArgumentException if <code>attribute</code> is not a valid {@link URI}
      */
     public URI getAttributeAsURI(String attribute)
@@ -158,7 +166,8 @@ public class AbstractXmlElement implements ExtensionElement {
 
         try {
             return new URI(attributeVal);
-        } catch (URISyntaxException e) {
+        }
+        catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
     }
@@ -167,16 +176,15 @@ public class AbstractXmlElement implements ExtensionElement {
         return Collections.unmodifiableMap(attributes);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends XmlElement> T getFirstChildElement(String element, String namespace) {
+    public XmlElement getFirstChildElement(String element, String namespace) {
         if (elements == null) {
             return null;
         }
         QName key = new QName(namespace, element);
-        return (T) elements.getFirst(key);
+        return elements.getFirst(key);
     }
 
-    public <T extends XmlElement> T getFirstChildElement(String element) {
+    public XmlElement getFirstChildElement(String element) {
         return getFirstChildElement(element, namespace);
     }
 
@@ -185,13 +193,20 @@ public class AbstractXmlElement implements ExtensionElement {
      *
      * @param <T> the specific type of <code>XmlElement</code> to be returned
      * @param type the <code>Class</code> of the extension we are looking for.
+     *
      * @return this stanza's first direct child extension that matches specified <code>type</code> or
      * <code>null</code> if no such child extension was found.
      */
     @SuppressWarnings("unchecked")
     public <T extends XmlElement> T getFirstChildElement(Class<T> type) {
+        // QName qName = XmppElementUtil.getQNameFor(type);
+        /*
+         * Below method must be used if the extended NamedElement does not contains QName;
+         * aTalk uses its parent namespace when create QName; PayloadType and Parameter
+         */
         try {
-            return (T) elements.getFirst(type.getDeclaredConstructor().newInstance().getQName());
+            QName qName = type.getDeclaredConstructor().newInstance().getQName();
+            return (T) elements.getFirst(qName);
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             LOGGER.log(Level.SEVERE, "getChildElements(Class<T> " + type.getSimpleName()
                     + " exception: " + e.getMessage());
@@ -231,11 +246,17 @@ public class AbstractXmlElement implements ExtensionElement {
      *
      * @param <T> the specific <code>XmlElement</code> type of child extensions to be returned
      * @param type the <code>Class</code> of the extension we are looking for.
+     *
      * @return a (possibly empty) list containing all of this packet's direct child extensions that
      * match the specified <code>type</code>
      */
     @SuppressWarnings("unchecked")
     public <T extends XmlElement> List<T> getChildElements(Class<T> type) {
+        // QName qName = XmppElementUtil.getQNameFor(type);
+        /*
+         * Below method must be used if the extended NamedElement does not contains QName;
+         * aTalk uses its parent namespace when create QName; PayloadType and Parameter etc
+         */
         try {
             QName qName = type.getDeclaredConstructor().newInstance().getQName();
             return (elements == null) ? Collections.emptyList() : (List<T>) elements.getAll(qName);
@@ -252,6 +273,7 @@ public class AbstractXmlElement implements ExtensionElement {
      *
      * @param <T> the specific type of <code>XmlElement</code> to be returned
      * @param src the <code>AbstractXmlElement</code> to be cloned
+     *
      * @return a new <code>AbstractXmlElement</code> instance of the run-time type of the specified
      * <code>src</code> which has the same attributes, elements and text
      */
@@ -260,7 +282,8 @@ public class AbstractXmlElement implements ExtensionElement {
         T dst;
         try {
             dst = (T) src.getClass().getConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        }
+        catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
 
@@ -299,7 +322,8 @@ public class AbstractXmlElement implements ExtensionElement {
         QName key = element.getQName();
         if (elements != null) {
             elements.put(key, element);
-        } else {
+        }
+        else {
             LOGGER.log(Level.SEVERE, "Element Name: " + element.getElementName());
         }
     }
@@ -341,7 +365,8 @@ public class AbstractXmlElement implements ExtensionElement {
                 }
             }
             xml.closeElement(this);
-        } else {
+        }
+        else {
             xml.closeEmptyElement();
         }
 
