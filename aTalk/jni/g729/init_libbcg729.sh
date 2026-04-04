@@ -36,10 +36,9 @@ fi
 rm -rf ${LIB_BCG729}
 echo -e "\n================ Fetching library source for ${LIB_BCG729}: ${LIB_BCG729}-${LIB_BCG729_VER} ============================"
 # git clone https://gitlab.linphone.org/BC/public/bcg729.git
-# Alternateive: https://gitlab.linphone.org/BC/public/bcg729/-/archive/release/1.1.1/bcg729-release-1.1.1.tar.gz
+# wget -O- https://gitlab.linphone.org/BC/public/bcg729/-/archive/release/1.1.1/bcg729-release-1.1.1.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_BCG729}
 wget --no-check-certificate -O- https://gitlab.linphone.org/BC/public/bcg729/-/archive/${LIB_BCG729_GIT}.tar.gz  | tar xz --strip-components=1 --one-top-level=${LIB_BCG729}
 # wget -O- https://codeload.github.com/BelledonneCommunications/bcg729/tar.gz/refs/tags/${LIB_BCG729_VER}  | tar xz --strip-components=1 --one-top-level=${LIB_BCG729}
 
 pushd ${LIB_BCG729} || exit
-./autogen.sh
 echo -e "======== Completed opus library source update ============================"
