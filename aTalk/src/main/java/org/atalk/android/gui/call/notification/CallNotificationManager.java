@@ -11,7 +11,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
@@ -119,7 +118,7 @@ public class CallNotificationManager {
 
         Notification notification = new NotificationCompat.Builder(context, AppNotifications.CALL_GROUP)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.missed_call)
+                .setSmallIcon(R.drawable.call_missed)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(contentView) // Sets custom content view to avoid buttons cropping
                 .build();
@@ -148,13 +147,22 @@ public class CallNotificationManager {
     }
 
     /**
-     * Binds pending intents to all control <code>Views</code>.
+     * Binds pending intents to all call control notification <code>Views</code>.
      *
      * @param ctx Android context.
      * @param contentView notification root <code>View</code>.
      * @param requestCodeBase the starting Request Code ID that will be used in the <code>Intents</code>
      */
     private void setIntents(Context ctx, RemoteViews contentView, int requestCodeBase) {
+        // Call switch on click; pendingIntent executed in place i.e. no via Broadcast receiver (multiple instances created)
+        // Intent videoCall = VideoCallActivity.createVideoCallIntent(ctx, mCallId);
+        // videoCall.putExtra(CallManager.CALL_TRANSFER, false);
+        // // videoCall.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); work only for SingleTask
+        // pVideo = PendingIntent.getActivity(ctx, requestCodeBase++, videoCall, getPendingIntentFlag(false, false));
+        PendingIntent callSwitch = PendingIntent.getBroadcast(ctx, requestCodeBase++, CallControl.getCallSwitch(mCallId),
+                getPendingIntentFlag(false, false));
+        contentView.setOnClickPendingIntent(R.id.button_call_switch, callSwitch);
+
         // Speakerphone button
         PendingIntent pSpeaker = PendingIntent.getBroadcast(ctx, requestCodeBase++, CallControl.getToggleSpeakerIntent(mCallId),
                 getPendingIntentFlag(false, false));
@@ -170,28 +178,23 @@ public class CallNotificationManager {
                 getPendingIntentFlag(false, false));
         contentView.setOnClickPendingIntent(R.id.button_hold, pHold);
 
+        // Call transfer via VideoCallActivity, and execute in place to show VideoCallActivity (note-10)
+        // Call via broadcast receiver has problem of CallTransferDialog keeps popping up
+        // Intent pTransfer = VideoCallActivity.createVideoCallIntent(ctx, mCallId);
+        // pTransfer.putExtra(CallManager.CALL_TRANSFER, true);
+        // pVideo = PendingIntent.getActivity(ctx, requestCodeBase++, pTransfer, getPendingIntentFlag(false, false));
+        // contentView.setOnClickPendingIntent(R.id.button_transfer, pVideo);
+        PendingIntent callTransfer = PendingIntent.getBroadcast(ctx, requestCodeBase++, CallControl.getCallTransfer(mCallId),
+                getPendingIntentFlag(false, false));
+        contentView.setOnClickPendingIntent(R.id.button_call_transfer, callTransfer);
+
         // Hangup button
-        PendingIntent pHangup = PendingIntent.getBroadcast(ctx, requestCodeBase++, CallControl.getHangupIntent(mCallId),
+        PendingIntent pHangup = PendingIntent.getBroadcast(ctx, requestCodeBase, CallControl.getHangupIntent(mCallId),
                 getPendingIntentFlag(false, false));
         contentView.setOnClickPendingIntent(R.id.button_hangup, pHangup);
 
-        // Transfer call via VideoCallActivity, and execute in place to show VideoCallActivity (note-10)
-        // Call via broadcast receiver has problem of CallTransferDialog keeps popping up
-        Intent pTransfer = new Intent(ctx, VideoCallActivity.class);
-        pTransfer.putExtra(CallManager.CALL_SID, mCallId);
-        pTransfer.putExtra(CallManager.CALL_TRANSFER, true);
-        pVideo = PendingIntent.getActivity(ctx, requestCodeBase++, pTransfer, getPendingIntentFlag(false, false));
-        contentView.setOnClickPendingIntent(R.id.button_transfer, pVideo);
-
-        // Show video call Activity on click; pendingIntent executed in place i.e. no via Broadcast receiver
-        Intent videoCall = new Intent(ctx, VideoCallActivity.class);
-        videoCall.putExtra(CallManager.CALL_SID, mCallId);
-        videoCall.putExtra(CallManager.CALL_TRANSFER, false);
-        pVideo = PendingIntent.getActivity(ctx, requestCodeBase, videoCall, getPendingIntentFlag(false, false));
-        contentView.setOnClickPendingIntent(R.id.button_back_to_call, pVideo);
-
         // Binds launch VideoCallActivity to the whole area
-        contentView.setOnClickPendingIntent(R.id.notificationContent, pVideo);
+        contentView.setOnClickPendingIntent(R.id.notificationContent, callSwitch);
     }
 
     /**

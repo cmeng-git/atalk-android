@@ -22,8 +22,7 @@ package net.java.sip.communicator.service.protocol;
  *
  * @author Emil Ivov
  */
-public class PresenceStatus implements Comparable<PresenceStatus>
-{
+public class PresenceStatus implements Comparable<PresenceStatus> {
     public static final int OFFLINE = 0;
 
     /**
@@ -91,8 +90,7 @@ public class PresenceStatus implements Comparable<PresenceStatus>
      * @param status the status variable representing the new instance
      * @param statusName the name of this PresenceStatus
      */
-    protected PresenceStatus(int status, String statusName)
-    {
+    protected PresenceStatus(int status, String statusName) {
         this(status, statusName, null);
     }
 
@@ -103,8 +101,7 @@ public class PresenceStatus implements Comparable<PresenceStatus>
      * @param statusName the name of this PresenceStatus
      * @param statusIcon an image that graphically represents the status or null if no such image is available.
      */
-    protected PresenceStatus(int status, String statusName, byte[] statusIcon)
-    {
+    protected PresenceStatus(int status, String statusName, byte[] statusIcon) {
         this.status = status;
         this.statusName = statusName;
         this.statusIcon = statusIcon;
@@ -115,8 +112,7 @@ public class PresenceStatus implements Comparable<PresenceStatus>
      *
      * @return a short indicating the level of availability corresponding to this status object.
      */
-    public int getStatus()
-    {
+    public int getStatus() {
         return status;
     }
 
@@ -125,8 +121,7 @@ public class PresenceStatus implements Comparable<PresenceStatus>
      *
      * @return a String variable containing the name of this status instance.
      */
-    public String getStatusName()
-    {
+    public String getStatusName() {
         return statusName;
     }
 
@@ -138,8 +133,7 @@ public class PresenceStatus implements Comparable<PresenceStatus>
      * @return a string representation of this object.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "PresenceStatus:" + getStatusName();
     }
 
@@ -148,8 +142,7 @@ public class PresenceStatus implements Comparable<PresenceStatus>
      *
      * @return true if the the status coefficient is higher than the ONLINE_THRESHOLD and false otherwise
      */
-    public boolean isOnline()
-    {
+    public boolean isOnline() {
         return getStatus() >= ONLINE_THRESHOLD;
     }
 
@@ -158,8 +151,7 @@ public class PresenceStatus implements Comparable<PresenceStatus>
      *
      * @return true if the the status coefficient is higher than the AVAILABLE_THRESHOLD and false otherwise
      */
-    public boolean isAvailable()
-    {
+    public boolean isAvailable() {
         return getStatus() >= AVAILABLE_THRESHOLD;
     }
 
@@ -170,8 +162,7 @@ public class PresenceStatus implements Comparable<PresenceStatus>
      * @return true if the the status coefficient is higher than the EAGER_TO_COMMUNICATE_THRESHOLD
      * and false otherwise
      */
-    public boolean isEagerToCommunicate()
-    {
+    public boolean isEagerToCommunicate() {
         return getStatus() >= EAGER_TO_COMMUNICATE_THRESHOLD;
     }
 
@@ -181,14 +172,15 @@ public class PresenceStatus implements Comparable<PresenceStatus>
      * more availability than the one specified by the parameter.
      *
      * @param target the <code>PresenceStatus</code> to be compared.
+     *
      * @return a negative integer, zero, or a positive integer as this object is less than, equal
      * to, or greater than the specified object.
+     *
      * @throws ClassCastException if the specified object's type prevents it from being compared to this Object.
      * @throws NullPointerException if o is null
      */
     public int compareTo(PresenceStatus target)
-            throws ClassCastException, NullPointerException
-    {
+            throws ClassCastException, NullPointerException {
         return (getStatus() - target.getStatus());
     }
 
@@ -197,12 +189,12 @@ public class PresenceStatus implements Comparable<PresenceStatus>
      * considered equal if and only if both their connectivity coefficient and their name are equal.
      *
      * @param obj the reference object with which to compare.
+     *
      * @return <code>true</code> if this presence status instance is equal to the <code>obj</code>
      * argument; <code>false</code> otherwise.
      */
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (!(obj instanceof PresenceStatus))
             return false;
 
@@ -217,8 +209,7 @@ public class PresenceStatus implements Comparable<PresenceStatus>
      * @return a hash code value for this object (which is actually the result of the getStatusName().hashCode()).
      */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return getStatusName().hashCode();
     }
 
@@ -228,8 +219,7 @@ public class PresenceStatus implements Comparable<PresenceStatus>
      * @return a byte array containing the image that graphically represents the status or null if
      * no such image is available.
      */
-    public byte[] getStatusIcon()
-    {
+    public byte[] getStatusIcon() {
         return statusIcon;
     }
 }

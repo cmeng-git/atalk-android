@@ -317,6 +317,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
             Intent ttsIntent = new Intent(this, TTSActivity.class);
             startActivity(ttsIntent);
             break;
+
         case R.id.show_hide_offline:
             boolean isShowOffline = !ConfigurationUtils.isShowOffline(); // toggle
             MetaContactListAdapter.presenceFilter.setShowOffline(isShowOffline);
@@ -329,11 +330,12 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
                     ? R.string.contact_offline_hide
                     : R.string.contact_offline_show;
             mShowHideOffline.setTitle(itemId);
-
             break;
+
         case R.id.notification_setting:
             openNotificationSettings();
             break;
+
         case R.id.sign_in_off:
             // Toggle current account presence status
             boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(ActionBarUtil.getStatus(this));
@@ -343,6 +345,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
             else
                 globalStatusService.publishStatus(GlobalStatusEnum.OFFLINE);
             break;
+
         default:
             return super.onOptionsItemSelected(item);
         }

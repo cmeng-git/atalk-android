@@ -19,12 +19,12 @@ package org.jivesoftware.smackx.jingle_rtp;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 
 /**
- * Interface for Basic Telephone support using Jingle.
+ * Interface for Basic Telephone support using Jingle or JingleMessage.
  *
  * @author Eng Chong Meng
  */
 public interface BasicTelephony {
-    void handleJingleSession(Jingle jingle, JingleCallSessionImpl session);
+    void handleJingleSession(JingleCallSessionImpl jingleCallSession, Jingle jingle);
 
     void handleJingleSession(Jingle jingle);
 }

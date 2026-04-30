@@ -272,7 +272,7 @@ public class OperationSetTelephonyConferencingJabberImpl
     @Override
     protected CallJabberImpl createOutgoingCall()
             throws OperationFailedException {
-        return new CallJabberImpl(getBasicTelephony(), JingleManager.randomId());
+        return new CallJabberImpl(getBasicTelephony(), JingleManager.randomUuid());
     }
 
     /**
@@ -482,7 +482,7 @@ public class OperationSetTelephonyConferencingJabberImpl
         OperationSetVideoBridge videoBridge = mPPS.getOperationSet(OperationSetVideoBridge.class);
         boolean isVideobridge = (videoBridge != null) && videoBridge.isActive();
 
-        CallJabberImpl call = new CallJabberImpl(getBasicTelephony(), JingleManager.randomId());
+        CallJabberImpl call = new CallJabberImpl(getBasicTelephony(), JingleManager.randomUuid());
         call.setAutoAnswer(true);
 
         String uri = "xmpp:" + chatRoom.getIdentifier() + "/" + chatRoom.getUserNickname();

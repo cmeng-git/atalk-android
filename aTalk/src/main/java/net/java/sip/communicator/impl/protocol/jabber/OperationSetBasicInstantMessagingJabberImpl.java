@@ -678,7 +678,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     public void registrationStateChanged(RegistrationStateChangeEvent evt) {
         XMPPConnection connection = mPPS.getConnection();
 
-        if (evt.getNewState() == RegistrationState.REGISTERING) {
+        if (evt.getNewState() == RegistrationState.CONNECTED) {
             opSetPersPresence = (OperationSetPersistentPresenceJabberImpl)
                     mPPS.getOperationSet(OperationSetPersistentPresence.class);
             /*

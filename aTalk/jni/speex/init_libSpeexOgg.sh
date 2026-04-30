@@ -26,40 +26,42 @@ fi
 if [[ $# -eq 2 ]]; then
   LIB_OGG_GIT=$2
 else
-  LIB_OGG_GIT="v1.3.5"
+  LIB_OGG_GIT="libogg-1.3.6"
 fi
 echo -e "\n### Fetch (speex-1.2rc1 & ${LIB_SPEEX_GIT}) and (ogg ${LIB_OGG_GIT}) libraries source ###"
 
 LIB_SPEEX="libspeex"
+proceed=true
 if [[ -d ${LIB_SPEEX} ]]; then
   # version="$(grep '^#define SPEEX_VERSION' < ${LIB_SPEEX}/arch.h | sed 's/^.*\([1-9]\.[0-9][a-z]*[0-9]\).*$/\1/')"
   version="$(grep '^#define SPEEX_VERSION' < ${LIB_SPEEX}/arch.h | sed 's/^.*\([1-9]\.[0-9]\.[0-9]\).*$/\1/')"
   if [[ "${LIB_SPEEX_GIT}" =~ .*"${version}".* ]]; then
     echo -e "========== Current speex source is: ${LIB_SPEEX}-${version} ==========\n"
+    proceed=false
+  fi
+fi
+
+if $proceed; then
+  rm -rf ${LIB_SPEEX}
+  echo -e "\n================ Fetching library source for ${LIB_SPEEX}: ${LIB_SPEEX_GIT} ============================"
+  wget -O- https://ftp.osuosl.org/pub/xiph/releases/speex/speex-1.2rc1.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_SPEEX}
+  wget -O- https://ftp.osuosl.org/pub/xiph/releases/speex/${LIB_SPEEX_GIT}.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_SPEEX}
+  echo -e "======== Completed speex library source update ============================"
+fi
+
+## ==================== libogg ================= ##
+LIB_OGG="libogg"
+if [[ -d ${LIB_OGG} ]]; then
+  version="$(grep -m 1 '^Version' < ${LIB_OGG}/CHANGES | sed 's/^Version \([1-9]\.[0-9]\.[0-9]\).*$/libogg-\1/')"
+  if [[ "${LIB_OGG_GIT}" =~ .*"${version}".* ]]; then
+    echo -e "\n========== Current ogg source is: ${LIB_OGG}-${version} =========="
     exit 0
   fi
 fi
 
-rm -rf ${LIB_SPEEX}
-echo -e "\n================ Fetching library source for ${LIB_SPEEX}: ${LIB_SPEEX_GIT} ============================"
-wget -O- http://downloads.us.xiph.org/releases/speex/speex-1.2rc1.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_SPEEX}
-wget -O- http://downloads.us.xiph.org/releases/speex/${LIB_SPEEX_GIT}.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_SPEEX}
-echo -e "======== Completed speex library source update ============================"
-
-
-## ==================== libogg ================= ##
-LIB_OGG="libogg"
-#if [[ -d ${LIB_OGG} ]]; then
-#  version="$(grep '^PACKAGE_VERSION' < ${LIB_OGG}/package_version | sed 's/^.*\([1-9]\.[0-9]\.[0-9]\).*$/\1/')"
-#  if [[ "${LIB_OGG_GIT}" =~ .*"${version}".* ]]; then
-#    echo -e "\n========== Current ogg source is: ${LIB_OGG}-${version} =========="
-#    exit 0
-#  fi
-#fi
-
 rm -rf ${LIB_OGG}
 echo -e "\n================ Fetching library source for ${LIB_OGG}: ${LIB_OGG_GIT} ============================"
-wget -O- https://github.com/xiph/ogg/archive/refs/tags/${LIB_OGG_GIT}.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_OGG}
+wget -O- https://ftp.osuosl.org/pub/xiph/releases/ogg/${LIB_OGG_GIT}.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_OGG}
 echo -e "======== Completed ogg library source update ============================"
 
 # For testing only

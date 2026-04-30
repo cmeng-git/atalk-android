@@ -10,12 +10,19 @@ import android.os.Bundle;
 
 import androidx.preference.PreferenceScreen;
 
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.UtilActivator;
+import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.BaseActivity;
+import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.gui.util.PreferenceUtil;
 import org.atalk.service.configuration.ConfigurationService;
+
+import org.jivesoftware.smack.XMPPConnection;
+
+import org.jivesoftware.smackx.omemo.OmemoManager;
 
 /**
  * Chat security settings screen with Omemo preferences - modified for aTalk
@@ -26,6 +33,7 @@ import org.atalk.service.configuration.ConfigurationService;
 public class ChatSecuritySettings extends BaseActivity {
     // OMEMO Security section
     static private final String P_KEY_OMEMO_KEY_BLIND_TRUST = "pref.key.omemo.key.blind.trust";
+    static private final String P_KEY_NODE_ITEM = "pref_node_item";
 
     static private ConfigurationService mConfig = null;
 
@@ -53,6 +61,9 @@ public class ChatSecuritySettings extends BaseActivity {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.security_preferences);
+            if (BuildConfig.BUILD_TYPE.equals("debug")) {
+                findPreference(P_KEY_NODE_ITEM).setVisible(true);
+            }
         }
 
         /**
@@ -91,9 +102,23 @@ public class ChatSecuritySettings extends BaseActivity {
             if (key == null)
                 return;
 
-        if (key.equals(P_KEY_OMEMO_KEY_BLIND_TRUST)) {
+            if (key.equals(P_KEY_OMEMO_KEY_BLIND_TRUST)) {
                 mConfig.setProperty(ConfigurationService.PNAME_OMEMO_KEY_BLIND_TRUST,
                         shPreferences.getBoolean(P_KEY_OMEMO_KEY_BLIND_TRUST, true));
+            }
+            else if (key.equals(P_KEY_NODE_ITEM)) {
+                String itemId = shPreferences.getString(P_KEY_NODE_ITEM, null);
+                if (itemId == null)
+                    return;
+
+                for (final ProtocolProviderService provider : AccountUtils.getOnlineProviders()) {
+                    XMPPConnection connection = provider.getConnection();
+                    if (connection != null) {
+                        OmemoManager oManager = OmemoManager.getInstanceFor(connection);
+                        oManager.deleteNodeItem(null, itemId);
+                        break;
+                    }
+                }
             }
         }
     }

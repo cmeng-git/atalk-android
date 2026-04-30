@@ -804,7 +804,7 @@ public class ServerStoredContactListJabberImpl {
      * Sets a reference to the currently active and valid instance of roster that this list is to
      * be used for retrieving server stored information
      */
-    void init(ContactChangesListener presenceChangeListener) {
+    protected void init(ContactChangesListener presenceChangeListener) {
         // FFR: v2.1.6 Huawei nova 3i/Y9 prime (HWINE) android-9, xmppConnection == null
         // This may be called when PPS is not-registered ???? called at RegistrationState.REGISTERED state
         xmppConnection = mPPS.getConnection();
@@ -820,7 +820,7 @@ public class ServerStoredContactListJabberImpl {
 
         // roster has been requested or loaded and dispatched, mark this
         synchronized (rosterInitLock) {
-            this.isRosterInitialized = true;
+            isRosterInitialized = true;
         }
 
         // now send initial presence status that was on hold earlier
@@ -885,7 +885,7 @@ public class ServerStoredContactListJabberImpl {
         mRoster = null;
 
         synchronized (rosterInitLock) {
-            this.isRosterInitialized = false;
+            isRosterInitialized = false;
         }
     }
 

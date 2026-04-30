@@ -7,6 +7,14 @@ package net.java.sip.communicator.service.protocol;
 
 import static net.java.sip.communicator.service.protocol.OperationSetBasicTelephony.HANGUP_REASON_BUSY_HERE;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.regex.Pattern;
+
 import net.java.sip.communicator.service.calendar.CalendarService;
 import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
 import net.java.sip.communicator.service.protocol.event.CallChangeListener;
@@ -22,14 +30,6 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.regex.Pattern;
-
 import timber.log.Timber;
 
 /**
@@ -41,8 +41,7 @@ import timber.log.Timber;
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-public class SingleCallInProgressPolicy
-{
+public class SingleCallInProgressPolicy {
     /**
      * Account property to enable per account rejecting calls if the account presence is in DND or OnThePhone status.
      */
@@ -101,8 +100,7 @@ public class SingleCallInProgressPolicy
      *
      * @param bundleContext the <code>BundleContext</code> to the <code>Call<code>s of which the new policy should apply
      */
-    public SingleCallInProgressPolicy(BundleContext bundleContext)
-    {
+    public SingleCallInProgressPolicy(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
 
         if (ProtocolProviderActivator.getConfigurationService()
@@ -117,8 +115,7 @@ public class SingleCallInProgressPolicy
      * @param call the <code>Call</code> to register with this policy in order to have the rules of the
      * latter apply to the former
      */
-    private void addCallListener(Call call)
-    {
+    private void addCallListener(Call call) {
         Timber.log(TimberLog.FINER, "Add call change listener");
 
         synchronized (calls) {
@@ -140,8 +137,7 @@ public class SingleCallInProgressPolicy
      * the rules of the latter apply to the <code>Call</code>s created by the former
      */
     private void addOperationSetBasicTelephonyListener(
-            OperationSetBasicTelephony<? extends ProtocolProviderService> telephony)
-    {
+            OperationSetBasicTelephony<? extends ProtocolProviderService> telephony) {
         Timber.log(TimberLog.FINER, "Call listener added to provider.");
         telephony.addCallListener(listener);
     }
@@ -152,8 +148,7 @@ public class SingleCallInProgressPolicy
      *
      * @param ev a <code>CallChangeEvent</code> value which describes the <code>Call</code> and the change in its state
      */
-    private void callStateChanged(CallChangeEvent ev)
-    {
+    private void callStateChanged(CallChangeEvent ev) {
         Call call = ev.getSourceCall();
         Timber.log(TimberLog.FINER, "Call state changed.");
 
@@ -196,8 +191,7 @@ public class SingleCallInProgressPolicy
     /**
      * Performs end-of-life cleanup associated with this instance e.g. removes added listeners.
      */
-    public void dispose()
-    {
+    public void dispose() {
         bundleContext.removeServiceListener(listener);
     }
 
@@ -213,19 +207,18 @@ public class SingleCallInProgressPolicy
      * {@link CallEvent#CALL_RECEIVED} which describes the type of the event to be handled
      * @param ev a <code>CallEvent</code> value which describes the change and the <code>Call</code> associated with it
      */
-    private void handleCallEvent(int type, Call call)
-    {
+    private void handleCallEvent(int type, Call call) {
         Timber.log(TimberLog.FINER, "Call event fired.");
 
         switch (type) {
-            case CallEvent.CALL_ENDED:
-                removeCallListener(call);
-                break;
+        case CallEvent.CALL_ENDED:
+            removeCallListener(call);
+            break;
 
-            case CallEvent.CALL_INITIATED:
-            case CallEvent.CALL_RECEIVED:
-                addCallListener(call);
-                break;
+        case CallEvent.CALL_INITIATED:
+        case CallEvent.CALL_RECEIVED:
+            addCallListener(call);
+            break;
         }
         /*
          * Forward to onThePhoneStatusPolicy for which we are proxying the Call-related events.
@@ -238,8 +231,7 @@ public class SingleCallInProgressPolicy
      *
      * @param ev a <code>CallEvent</code> which describes the received incoming <code>Call</code>
      */
-    private void incomingCallReceived(CallEvent ev)
-    {
+    private void incomingCallReceived(CallEvent ev) {
         Call call = ev.getSourceCall();
 
         // check whether we should hangup this call saying we are busy already on call
@@ -306,8 +298,7 @@ public class SingleCallInProgressPolicy
      *
      * @param call the <code>Call</code> the <code>CallPeer</code>s of which are to be put on hold
      */
-    private void putOnHold(Call call)
-    {
+    private void putOnHold(Call call) {
         OperationSetBasicTelephony<?> telephony
                 = call.getProtocolProvider().getOperationSet(OperationSetBasicTelephony.class);
 
@@ -321,7 +312,8 @@ public class SingleCallInProgressPolicy
                         && !CallPeerState.isOnHold(peerState)) {
                     try {
                         telephony.putOnHold(peer);
-                    } catch (OperationFailedException ex) {
+                    }
+                    catch (OperationFailedException ex) {
                         Timber.e(ex, "Failed to put %s on hold.", peer);
                     }
                 }
@@ -334,8 +326,7 @@ public class SingleCallInProgressPolicy
      *
      * @param call the call to reject.
      */
-    private void rejectCallWithBusyHere(Call call)
-    {
+    private void rejectCallWithBusyHere(Call call) {
         // We're interested in one-to-one incoming calls.
         if (call.getCallPeerCount() == 1) {
             CallPeer peer = call.getCallPeers().next();
@@ -346,7 +337,8 @@ public class SingleCallInProgressPolicy
             if (telephony != null) {
                 try {
                     telephony.hangupCallPeer(peer, HANGUP_REASON_BUSY_HERE, null);
-                } catch (OperationFailedException ex) {
+                }
+                catch (OperationFailedException ex) {
                     Timber.e(ex, "Failed to reject %s", peer);
                 }
             }
@@ -360,8 +352,7 @@ public class SingleCallInProgressPolicy
      * @param call the <code>Call</code> to unregister from this policy in order to have the rules of the
      * latter no longer apply to the former
      */
-    private void removeCallListener(Call call)
-    {
+    private void removeCallListener(Call call) {
         Timber.log(TimberLog.FINER, "Remove call change listener.");
 
         call.removeCallChangeListener(listener);
@@ -378,8 +369,7 @@ public class SingleCallInProgressPolicy
      * have the rules of the latter apply to the <code>Call</code>s created by the former
      */
     private void removeOperationSetBasicTelephonyListener(
-            OperationSetBasicTelephony<? extends ProtocolProviderService> telephony)
-    {
+            OperationSetBasicTelephony<? extends ProtocolProviderService> telephony) {
         telephony.removeCallListener(listener);
     }
 
@@ -391,8 +381,7 @@ public class SingleCallInProgressPolicy
      * to be examined for the registering or unregistering of a
      * <code>ProtocolProviderService</code> and thus a <code>OperationSetBasicTelephony</code>
      */
-    private void serviceChanged(ServiceEvent ev)
-    {
+    private void serviceChanged(ServiceEvent ev) {
         Object service = bundleContext.getService(ev.getServiceReference());
         if (service instanceof ProtocolProviderService) {
             Timber.log(TimberLog.FINER, "Protocol provider service changed.");
@@ -402,12 +391,12 @@ public class SingleCallInProgressPolicy
 
             if (telephony != null) {
                 switch (ev.getType()) {
-                    case ServiceEvent.REGISTERED:
-                        addOperationSetBasicTelephonyListener(telephony);
-                        break;
-                    case ServiceEvent.UNREGISTERING:
-                        removeOperationSetBasicTelephonyListener(telephony);
-                        break;
+                case ServiceEvent.REGISTERED:
+                    addOperationSetBasicTelephonyListener(telephony);
+                    break;
+                case ServiceEvent.UNREGISTERING:
+                    removeOperationSetBasicTelephonyListener(telephony);
+                    break;
                 }
             }
             else {
@@ -422,8 +411,7 @@ public class SingleCallInProgressPolicy
      *
      * @author Lyubomir Marinov
      */
-    private class OnThePhoneStatusPolicy
-    {
+    private class OnThePhoneStatusPolicy {
         /**
          * The regular expression which removes whitespace from the <code>statusName</code> property
          * value of <code>PresenceStatus</code> instances in order to recognize the
@@ -445,8 +433,7 @@ public class SingleCallInProgressPolicy
          * @param ev a <code>CallChangeEvent</code> which represents the details of the notification such
          * as the affected <code>Call</code> and its old and new <code>CallState</code>s
          */
-        public void callStateChanged(CallChangeEvent ev)
-        {
+        public void callStateChanged(CallChangeEvent ev) {
             Timber.log(TimberLog.FINER, "Call state changed.[2]");
 
             Call call = ev.getSourceCall();
@@ -470,12 +457,12 @@ public class SingleCallInProgressPolicy
          *
          * @param presence the <code>OperationSetPresence</code> which represents the set of supported
          * <code>PresenceStatus</code>es
+         *
          * @return the first <code>PresenceStatus</code> among the set of <code>PresenceStatus</code>es
          * supported by <code>presence</code> which represents &quot;On the phone&quot; if such
          * a <code>PresenceStatus</code> was found; otherwise, <code>null</code>
          */
-        private PresenceStatus findOnThePhonePresenceStatus(OperationSetPresence presence)
-        {
+        private PresenceStatus findOnThePhonePresenceStatus(OperationSetPresence presence) {
             for (PresenceStatus presenceStatus : presence.getSupportedStatusSet()) {
                 if (presenceStatusNameWhitespace.matcher(presenceStatus.getStatusName())
                         .replaceAll("").equalsIgnoreCase("OnThePhone")) {
@@ -485,13 +472,11 @@ public class SingleCallInProgressPolicy
             return null;
         }
 
-        private PresenceStatus forgetPresenceStatus(ProtocolProviderService pps)
-        {
+        private PresenceStatus forgetPresenceStatus(ProtocolProviderService pps) {
             return presenceStatuses.remove(pps);
         }
 
-        private void forgetPresenceStatuses()
-        {
+        private void forgetPresenceStatuses() {
             presenceStatuses.clear();
         }
 
@@ -503,8 +488,7 @@ public class SingleCallInProgressPolicy
          * {@link CallEvent#CALL_RECEIVED} which describes the type of the event to be handled
          * @param call the <code>Call</code> instance.
          */
-        public void handleCallEvent(int type, Call call)
-        {
+        public void handleCallEvent(int type, Call call) {
             run();
         }
 
@@ -515,8 +499,7 @@ public class SingleCallInProgressPolicy
          * @return <code>true</code> if there is at least one existing <code>Call</code> which is currently
          * in progress i.e. if the local user is currently on the phone; otherwise, <code>false</code>
          */
-        private boolean isOnThePhone()
-        {
+        private boolean isOnThePhone() {
             synchronized (calls) {
                 for (Call call : calls) {
                     if (CallState.CALL_IN_PROGRESS.equals(call.getCallState()))
@@ -533,18 +516,17 @@ public class SingleCallInProgressPolicy
          * @param presence the <code>OperationSetPresence</code> on which the method is to be invoked
          * @param presenceStatus the <code>PresenceStatus</code> to provide as the respective method argument value
          */
-        private void publishPresenceStatus(OperationSetPresence presence, PresenceStatus presenceStatus)
-        {
+        private void publishPresenceStatus(OperationSetPresence presence, PresenceStatus presenceStatus) {
             try {
                 presence.publishPresenceStatus(presenceStatus, null);
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 if (t instanceof ThreadDeath)
                     throw (ThreadDeath) t;
             }
         }
 
-        private PresenceStatus rememberPresenceStatus(ProtocolProviderService pps, PresenceStatus presenceStatus)
-        {
+        private PresenceStatus rememberPresenceStatus(ProtocolProviderService pps, PresenceStatus presenceStatus) {
             return presenceStatuses.put(pps, presenceStatus);
         }
 
@@ -553,12 +535,12 @@ public class SingleCallInProgressPolicy
          * supported by a specific <code>OperationSetPresence</code> which represents &quot; In meeting&quot;.
          *
          * @param presence the <code>OperationSetPresence</code> which represents the set of supported <code>PresenceStatus</code>es
+         *
          * @return the first <code>PresenceStatus</code> among the set of <code>PresenceStatus</code>es
          * supported by <code>presence</code> which represents &quot;In meeting&quot; if such a
          * <code>PresenceStatus</code> was found; otherwise, <code>null</code>
          */
-        private PresenceStatus findInMeetingPresenceStatus(OperationSetPresence presence)
-        {
+        private PresenceStatus findInMeetingPresenceStatus(OperationSetPresence presence) {
             for (PresenceStatus presenceStatus : presence.getSupportedStatusSet()) {
                 if (presenceStatusNameWhitespace.matcher(presenceStatus.getStatusName())
                         .replaceAll("").equalsIgnoreCase("InAMeeting")) {
@@ -571,8 +553,7 @@ public class SingleCallInProgressPolicy
         /**
          * Applies this policy to the current state of the application.
          */
-        private void run()
-        {
+        private void run() {
             Timber.log(TimberLog.FINER, "On the phone status policy run.");
             if (!ProtocolProviderActivator.getConfigurationService().getBoolean(
                     PNAME_ON_THE_PHONE_STATUS_ENABLED, false)) {
@@ -584,7 +565,8 @@ public class SingleCallInProgressPolicy
             ServiceReference[] ppsRefs;
             try {
                 ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
-            } catch (InvalidSyntaxException ise) {
+            }
+            catch (InvalidSyntaxException ise) {
                 Timber.log(TimberLog.FINER, "Can't access protocol providers refences.");
                 ppsRefs = null;
             }
@@ -694,15 +676,13 @@ public class SingleCallInProgressPolicy
      *
      * @author Lyubomir Marinov
      */
-    private class SingleCallInProgressPolicyListener implements CallChangeListener, CallListener, ServiceListener
-    {
+    private class SingleCallInProgressPolicyListener implements CallChangeListener, CallListener, ServiceListener {
         /**
          * Stops tracking the state of a specific <code>Call</code> and no longer tries to put it on hold when it ends.
          *
          * @see CallListener#callEnded(CallEvent)
          */
-        public void callEnded(CallEvent ev)
-        {
+        public void callEnded(CallEvent ev) {
             /*
              * Not using call ended, cause the CallListener is removed
              * when protocol disconnects and it can happen that this is
@@ -718,8 +698,7 @@ public class SingleCallInProgressPolicy
          *
          * @see CallChangeListener#callPeerAdded(CallPeerEvent)
          */
-        public void callPeerAdded(CallPeerEvent ev)
-        {
+        public void callPeerAdded(CallPeerEvent ev) {
             /*
              * Not of interest, just implementing CallChangeListener in which only
              * #callStateChanged(CallChangeEvent) is of interest.
@@ -732,8 +711,7 @@ public class SingleCallInProgressPolicy
          *
          * @see CallChangeListener#callPeerRemoved(CallPeerEvent)
          */
-        public void callPeerRemoved(CallPeerEvent ev)
-        {
+        public void callPeerRemoved(CallPeerEvent ev) {
             /*
              * Not of interest, just implementing CallChangeListener in which only
              * #callStateChanged(CallChangeEvent) is of interest.
@@ -745,10 +723,10 @@ public class SingleCallInProgressPolicy
          * other existing <code>Call</code>s on hold.
          *
          * @param ev the <code>CallChangeEvent</code> that we are to deliver.
+         *
          * @see CallChangeListener#callStateChanged(CallChangeEvent)
          */
-        public void callStateChanged(CallChangeEvent ev)
-        {
+        public void callStateChanged(CallChangeEvent ev) {
             // we are interested only in CALL_STATE_CHANGEs
             if (ev.getEventType().equals(CallChangeEvent.CALL_STATE_CHANGE))
                 SingleCallInProgressPolicy.this.callStateChanged(ev);
@@ -760,8 +738,7 @@ public class SingleCallInProgressPolicy
          *
          * @see CallListener#incomingCallReceived(CallEvent)
          */
-        public void incomingCallReceived(CallEvent ev)
-        {
+        public void incomingCallReceived(CallEvent ev) {
             SingleCallInProgressPolicy.this.incomingCallReceived(ev);
         }
 
@@ -771,8 +748,7 @@ public class SingleCallInProgressPolicy
          *
          * @see CallListener#outgoingCallCreated(CallEvent)
          */
-        public void outgoingCallCreated(CallEvent ev)
-        {
+        public void outgoingCallCreated(CallEvent ev) {
             SingleCallInProgressPolicy.this.handleCallEvent(CallEvent.CALL_INITIATED, ev.getSourceCall());
         }
 
@@ -785,8 +761,7 @@ public class SingleCallInProgressPolicy
          * registration which may be a <code>ProtocolProviderService</code> supporting
          * <code>OperationSetBasicTelephony</code> and thus being able to create new <code>Call</code>s
          */
-        public void serviceChanged(ServiceEvent ev)
-        {
+        public void serviceChanged(ServiceEvent ev) {
             Timber.log(TimberLog.FINER, "Service changed.");
             SingleCallInProgressPolicy.this.serviceChanged(ev);
         }

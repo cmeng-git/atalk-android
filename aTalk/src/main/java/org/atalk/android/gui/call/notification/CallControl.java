@@ -64,9 +64,20 @@ public class CallControl extends BroadcastReceiver {
     public static final int ACTION_TOGGLE_ON_HOLD = 3;
 
     /**
+     * Switch between two active calls.
+     */
+    public static final int ACTION_CALL_TRANSFER = 4;
+
+    /**
      * The hangup action value. Ends the call.
      */
     public static final int ACTION_HANGUP = 5;
+
+    /**
+     * Switch between two active calls.
+     */
+    public static final int ACTION_CALL_SWITCH = 6;
+
 
     /**
      * {@inheritDoc}
@@ -93,43 +104,53 @@ public class CallControl extends BroadcastReceiver {
 
         Timber.d("CallNotification received action: %s (%s): %s", action, callId, call.getCallPeers().next().getAddress());
         switch (action) {
-            case ACTION_TOGGLE_SPEAKER:
-                Timber.log(TimberLog.FINER, "Action TOGGLE SPEAKER");
-                AudioManager audio = aTalkApp.getAudioManager();
-                audio.setSpeakerphoneOn(!audio.isSpeakerphoneOn());
-                break;
+        case ACTION_TOGGLE_SPEAKER:
+            Timber.log(TimberLog.FINER, "Action TOGGLE SPEAKER");
+            AudioManager audio = aTalkApp.getAudioManager();
+            audio.setSpeakerphoneOn(!audio.isSpeakerphoneOn());
+            break;
 
-            case ACTION_TOGGLE_MUTE:
-                Timber.log(TimberLog.FINER, "Action TOGGLE MUTE");
-                boolean isMute = CallManager.isMute(call);
-                CallManager.setMute(call, !isMute);
-                break;
+        case ACTION_TOGGLE_MUTE:
+            Timber.log(TimberLog.FINER, "Action TOGGLE MUTE");
+            boolean isMute = CallManager.isMute(call);
+            CallManager.setMute(call, !isMute);
+            break;
 
-            case ACTION_TOGGLE_ON_HOLD:
-                Timber.log(TimberLog.FINER, "Action TOGGLE ON HOLD");
-                boolean isOnHold = CallManager.isLocallyOnHold(call);
-                CallManager.putOnHold(call, !isOnHold);
-                break;
+        case ACTION_TOGGLE_ON_HOLD:
+            Timber.log(TimberLog.FINER, "Action TOGGLE ON HOLD");
+            boolean isOnHold = CallManager.isLocallyOnHold(call);
+            CallManager.putOnHold(call, !isOnHold);
+            break;
 
-            case ACTION_HANGUP:
-                Timber.log(TimberLog.FINER, "Action HANGUP");
-                CallManager.hangupCall(call);
-                break;
+        case ACTION_CALL_TRANSFER:
+            Timber.log(TimberLog.FINER, "Action CALL_TRANSFER");
+            CallManager.callSwitchOrTransfer(call, true);
+            break;
 
-            default:
-                Timber.w("No valid action supplied");
+        case ACTION_HANGUP:
+            Timber.log(TimberLog.FINER, "Action HANGUP");
+            CallManager.hangupCall(call);
+            break;
+
+        case ACTION_CALL_SWITCH:
+            Timber.log(TimberLog.FINER, "Action CALL_SWITCH");
+            CallManager.callSwitchOrTransfer(call, false);
+            break;
+
+        default:
+            Timber.w("No valid action supplied");
         }
     }
 
     /**
-     * Creates the <code>Intent</code> for {@link #ACTION_HANGUP}.
+     * Creates the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      *
      * @param callId the ID of target call.
      *
-     * @return the <code>Intent</code> for {@link #ACTION_HANGUP}.
+     * @return the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      */
-    public static Intent getHangupIntent(String callId) {
-        return createIntent(callId, ACTION_HANGUP);
+    public static Intent getToggleSpeakerIntent(String callId) {
+        return createIntent(callId, ACTION_TOGGLE_SPEAKER);
     }
 
     /**
@@ -155,14 +176,36 @@ public class CallControl extends BroadcastReceiver {
     }
 
     /**
-     * Creates the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
+     * Creates the <code>Intent</code> for {@link #ACTION_CALL_TRANSFER}.
      *
      * @param callId the ID of target call.
      *
-     * @return the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
+     * @return the <code>Intent</code> for {@link #ACTION_CALL_TRANSFER}.
      */
-    public static Intent getToggleSpeakerIntent(String callId) {
-        return createIntent(callId, ACTION_TOGGLE_SPEAKER);
+    public static Intent getCallTransfer(String callId) {
+        return createIntent(callId, ACTION_CALL_TRANSFER);
+    }
+
+    /**
+     * Creates the <code>Intent</code> for {@link #ACTION_HANGUP}.
+     *
+     * @param callId the ID of target call.
+     *
+     * @return the <code>Intent</code> for {@link #ACTION_HANGUP}.
+     */
+    public static Intent getHangupIntent(String callId) {
+        return createIntent(callId, ACTION_HANGUP);
+    }
+
+    /**
+     * Creates the <code>Intent</code> for {@link #ACTION_CALL_SWITCH}.
+     *
+     * @param callId the ID of target call.
+     *
+     * @return the <code>Intent</code> for {@link #ACTION_CALL_SWITCH}.
+     */
+    public static Intent getCallSwitch(String callId) {
+        return createIntent(callId, ACTION_CALL_SWITCH);
     }
 
     /**

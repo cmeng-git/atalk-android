@@ -1174,6 +1174,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt fired CallPeerEvent
      */
+    @Override
     public void peerStateChanged(CallPeerChangeEvent evt) {
         try {
             CallPeer peer = evt.getSourceCallPeer();

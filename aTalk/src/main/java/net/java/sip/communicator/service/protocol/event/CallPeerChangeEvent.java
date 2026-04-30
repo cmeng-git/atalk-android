@@ -20,8 +20,7 @@ import net.java.sip.communicator.service.protocol.CallPeer;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent
-{
+public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent {
     /**
      * Serial version UID.
      */
@@ -76,8 +75,7 @@ public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent
      * @param oldValue of the changed property before the event occurred
      * @param newValue current value of the changed property.
      */
-    public CallPeerChangeEvent(CallPeer source, String type, Object oldValue, Object newValue)
-    {
+    public CallPeerChangeEvent(CallPeer source, String type, Object oldValue, Object newValue) {
         this(source, type, oldValue, newValue, null);
     }
 
@@ -90,8 +88,7 @@ public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent
      * @param newValue current value of the changed property.
      * @param reason a string containing a human readable reason that triggered this event (may be null).
      */
-    public CallPeerChangeEvent(CallPeer source, String type, Object oldValue, Object newValue, String reason)
-    {
+    public CallPeerChangeEvent(CallPeer source, String type, Object oldValue, Object newValue, String reason) {
         this(source, type, oldValue, newValue, reason, -1);
     }
 
@@ -105,8 +102,7 @@ public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent
      * @param reason a string containing a human readable reason that triggered this event (may be null).
      * @param reasonCode a code for the reason that triggered this event (may be -1 as not specified).
      */
-    public CallPeerChangeEvent(CallPeer source, String type, Object oldValue, Object newValue, String reason, int reasonCode)
-    {
+    public CallPeerChangeEvent(CallPeer source, String type, Object oldValue, Object newValue, String reason, int reasonCode) {
         super(source, type, oldValue, newValue);
         this.reason = reason;
         this.reasonCode = reasonCode;
@@ -118,8 +114,7 @@ public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent
      * @return a string containing one of the following values: CALL_PEER_STATUS_CHANGE,
      * CALL_PEER_DISPLAY_NAME_CHANGE, CALL_PEER_ADDRESS_CHANGE, CALL_PEER_IMAGE_CHANGE.
      */
-    public String getEventType()
-    {
+    public String getEventType() {
         return getPropertyName();
     }
 
@@ -129,8 +124,7 @@ public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent
      * @return A a String representation of this CallPeerChangeEvent.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "CallPeerChangeEvent: type=" + getEventType() + " oldV=" + getOldValue() + " newV="
                 + getNewValue() + " for peer=" + getSourceCallPeer();
     }
@@ -140,8 +134,7 @@ public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent
      *
      * @return a reference to the <code>CallPeer</code> that is the source of this event.
      */
-    public CallPeer getSourceCallPeer()
-    {
+    public CallPeer getSourceCallPeer() {
         return (CallPeer) getSource();
     }
 
@@ -151,8 +144,7 @@ public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent
      *
      * @return a reason string further explaining the event or null if no reason was set.
      */
-    public String getReasonString()
-    {
+    public String getReasonString() {
         return reason;
     }
 
@@ -161,8 +153,7 @@ public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent
      *
      * @return a reason code for the event or -1 if no reason code was set.
      */
-    public int getReasonCode()
-    {
+    public int getReasonCode() {
         return reasonCode;
     }
 }

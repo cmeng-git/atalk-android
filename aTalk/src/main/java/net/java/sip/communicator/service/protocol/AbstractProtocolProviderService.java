@@ -5,11 +5,6 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
-
-import org.atalk.impl.timberlog.TimberLog;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -17,6 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
+
+import org.atalk.impl.timberlog.TimberLog;
 
 import timber.log.Timber;
 
@@ -27,8 +27,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class AbstractProtocolProviderService implements ProtocolProviderService
-{
+public abstract class AbstractProtocolProviderService implements ProtocolProviderService {
     /**
      * A list of all listeners registered for <code>RegistrationStateChangeEvent</code>s.
      */
@@ -56,8 +55,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      *
      * @param listener the listener to register.
      */
-    public void addRegistrationStateChangeListener(RegistrationStateChangeListener listener)
-    {
+    public void addRegistrationStateChangeListener(RegistrationStateChangeListener listener) {
         if (listener == null) {
             throw new IllegalArgumentException("listener cannot be null");
         }
@@ -78,8 +76,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      * implementation is to be added
      * @param opset the <code>OperationSet</code> implementation to be added
      */
-    protected <T extends OperationSet> void addSupportedOperationSet(Class<T> opsetClass, T opset)
-    {
+    protected <T extends OperationSet> void addSupportedOperationSet(Class<T> opsetClass, T opset) {
         supportedOperationSets.put(opsetClass.getName(), opset);
     }
 
@@ -91,8 +88,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      * @param opsetClass the <code>Class</code> of <code>OperationSet</code> under the name of which the specified
      * implementation is to be added
      */
-    protected <T extends OperationSet> void removeSupportedOperationSet(Class<T> opsetClass)
-    {
+    protected <T extends OperationSet> void removeSupportedOperationSet(Class<T> opsetClass) {
         supportedOperationSets.remove(opsetClass.getName());
     }
 
@@ -100,8 +96,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      * Removes all <code>OperationSet</code> implementation from the set of supported
      * <code>OperationSet</code>s for this instance.
      */
-    protected void clearSupportedOperationSet()
-    {
+    protected void clearSupportedOperationSet() {
         supportedOperationSets.clear();
     }
 
@@ -117,8 +112,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      * @param reason a String further explaining the reason code or null if no such explanation is necessary.
      */
     public void fireRegistrationStateChanged(RegistrationState oldState,
-            RegistrationState newState, int reasonCode, String reason)
-    {
+            RegistrationState newState, int reasonCode, String reason) {
         this.fireRegistrationStateChanged(oldState, newState, reasonCode, reason, false);
     }
 
@@ -134,8 +128,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      * @param userRequest is the event by user request.
      */
     public void fireRegistrationStateChanged(RegistrationState oldState,
-            RegistrationState newState, int reasonCode, String reason, boolean userRequest)
-    {
+            RegistrationState newState, int reasonCode, String reason, boolean userRequest) {
         // no change - throws exception to trace the root; otherwise too many unnecessary events
         if (newState == oldState) {
             String msg = "The provider state unchanged: " + newState + ". Reason: " + reason;
@@ -155,7 +148,8 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
         for (RegistrationStateChangeListener listener : listeners)
             try {
                 listener.registrationStateChanged(event);
-            } catch (Throwable throwable) {
+            }
+            catch (Throwable throwable) {
                 /*
                  * The registration state has already changed and we're not using the
                  * RegistrationStateChangeListeners to veto the change so it doesn't make sense to,
@@ -176,12 +170,12 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      *
      * @param <T> the exact type of the <code>OperationSet</code> that we're looking for
      * @param opsetClass the <code>Class</code> of the operation set that we're looking for.
+     *
      * @return returns an <code>OperationSet</code> of the specified <code>Class</code> if the underlying
      * implementation supports it; <code>null</code>, otherwise.
      */
     @SuppressWarnings("unchecked")
-    public <T extends OperationSet> T getOperationSet(Class<T> opsetClass)
-    {
+    public <T extends OperationSet> T getOperationSet(Class<T> opsetClass) {
         return (T) supportedOperationSets.get(opsetClass.getName());
     }
 
@@ -191,8 +185,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      *
      * @return a String containing the display name of the protocol this service is implementing
      */
-    public String getProtocolDisplayName()
-    {
+    public String getProtocolDisplayName() {
         String displayName = getAccountID().getAccountPropertyString(ProtocolProviderFactory.PROTOCOL);
         return (displayName == null) ? getProtocolName() : displayName;
     }
@@ -202,10 +195,10 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      *
      * @param contactId ignored.
      * @param result ignored
+     *
      * @return true
      */
-    public boolean validateContactAddress(String contactId, List<String> result)
-    {
+    public boolean validateContactAddress(String contactId, List<String> result) {
         return true;
     }
 
@@ -219,8 +212,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      * @return a java.util.Map containing instance of all supported operation sets mapped against
      * their class names (e.g. OperationSetPresence.class.getName()) .
      */
-    public Map<String, OperationSet> getSupportedOperationSets()
-    {
+    public Map<String, OperationSet> getSupportedOperationSets() {
         return new Hashtable<>(supportedOperationSets);
     }
 
@@ -235,14 +227,14 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      * (e.g. <code>OperationSetPresence.class</code>.
      */
     @SuppressWarnings("unchecked")
-    public Collection<Class<? extends OperationSet>> getSupportedOperationSetClasses()
-    {
+    public Collection<Class<? extends OperationSet>> getSupportedOperationSetClasses() {
         Collection<Class<? extends OperationSet>> opSetClasses = new ArrayList<>();
         for (String opSetClassName : getSupportedOperationSets().keySet()) {
             try {
                 opSetClasses.add((Class<? extends OperationSet>) getSupportedOperationSets()
                         .get(opSetClassName).getClass().getClassLoader().loadClass(opSetClassName));
-            } catch (ClassNotFoundException e) {
+            }
+            catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -254,8 +246,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      *
      * @return <code>true</code> if the previous XMPP session's stream was resumed and <code>false</code> otherwise.
      */
-    public boolean isResumed()
-    {
+    public boolean isResumed() {
         return isResumed;
     }
 
@@ -264,8 +255,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      *
      * @return <code>true</code> if the provider is currently registered and <code>false</code> otherwise.
      */
-    public boolean isRegistered()
-    {
+    public boolean isRegistered() {
         return getRegistrationState().equals(RegistrationState.REGISTERED);
     }
 
@@ -275,8 +265,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      * @return <code>true</code> if the provider must be registered when placing a call and
      * <code>false</code> otherwise.
      */
-    public boolean isRegistrationRequiredForCalling()
-    {
+    public boolean isRegistrationRequiredForCalling() {
         return true;
     }
 
@@ -286,8 +275,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      *
      * @param listener the listener to register for <code>RegistrationStateChangeEvent</code>s.
      */
-    public void removeRegistrationStateChangeListener(RegistrationStateChangeListener listener)
-    {
+    public void removeRegistrationStateChangeListener(RegistrationStateChangeListener listener) {
         synchronized (registrationListeners) {
             registrationListeners.remove(listener);
         }
@@ -296,8 +284,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
     /**
      * Clear all registration state change listeners.
      */
-    public void clearRegistrationStateChangeListener()
-    {
+    public void clearRegistrationStateChangeListener() {
         synchronized (registrationListeners) {
             registrationListeners.clear();
         }
@@ -309,8 +296,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      * @return the class name and the currently handled account.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getClass().getSimpleName() + "(" + getAccountID() + ")";
     }
 
@@ -320,12 +306,12 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      * the UI) or automatic unregister can override this method.
      *
      * @param userRequest is the unregister by user request.
+     *
      * @throws OperationFailedException with the corresponding code it the registration fails for some reason
      * (e.g. a networking error or an implementation problem).
      */
     public void unregister(boolean userRequest)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         this.unregister();
     }
 
@@ -334,8 +320,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      *
      * @return the Lock for the current PPS synchronization point
      */
-    public Lock getLoginInitLock()
-    {
+    public Lock getLoginInitLock() {
         return loginInitLock;
     }
 }

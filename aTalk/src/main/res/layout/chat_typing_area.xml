@@ -156,7 +156,7 @@
         android:background="@null"
         android:minHeight="40dp"
         android:minWidth="40dp"
-        android:src="@drawable/send_call_dark"/>
+        android:src="@drawable/call_switch_dark"/>
 
     <ImageButton
         android:id="@+id/audioMicButton"

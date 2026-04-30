@@ -3,7 +3,6 @@ package org.atalk.android.gui.menu;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -60,7 +59,6 @@ public class GlobalStatusMenu
     private final FragmentActivity mActivity;
     private final LayoutInflater mInflater;
     private final PopupWindow mWindow;
-    private final WindowManager mWindowManager;
     private View mRootView;
 
     private boolean mDidAction;
@@ -98,7 +96,6 @@ public class GlobalStatusMenu
             return false;
         });
 
-        mWindowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
         mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         setRootViewId(R.layout.status_menu);
         mAnimStyle = ANIM_AUTO;
@@ -147,7 +144,6 @@ public class GlobalStatusMenu
 
         mArrowDown = mRootView.findViewById(R.id.arrow_down);
         mArrowUp = mRootView.findViewById(R.id.arrow_up);
-
         mScroller = mRootView.findViewById(R.id.scroller);
 
         // This was previously defined on show() method, moved here to prevent force close
@@ -340,7 +336,8 @@ public class GlobalStatusMenu
                         if (pps.isRegistered()) {
                             accountPresence.publishPresenceStatus(selectedStatus, statusMessage);
                         }
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         Timber.e(e, "Account presence publish error.");
                     }
                 }).start();
@@ -434,29 +431,29 @@ public class GlobalStatusMenu
         int arrowPos = requestedX - mArrowUp.getMeasuredWidth() / 2;
 
         switch (mAnimStyle) {
-            case ANIM_GROW_FROM_LEFT:
+        case ANIM_GROW_FROM_LEFT:
+            mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Left : R.style.Animations_PopDownMenu_Left);
+            break;
+        case ANIM_GROW_FROM_RIGHT:
+            mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Right : R.style.Animations_PopDownMenu_Right);
+            break;
+        case ANIM_GROW_FROM_CENTER:
+            mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Center : R.style.Animations_PopDownMenu_Center);
+            break;
+        case ANIM_REFLECT:
+            mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Reflect : R.style.Animations_PopDownMenu_Reflect);
+            break;
+        case ANIM_AUTO:
+            if (arrowPos <= screenWidth / 4) {
                 mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Left : R.style.Animations_PopDownMenu_Left);
-                break;
-            case ANIM_GROW_FROM_RIGHT:
-                mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Right : R.style.Animations_PopDownMenu_Right);
-                break;
-            case ANIM_GROW_FROM_CENTER:
+            }
+            else if (arrowPos > screenWidth / 4 && arrowPos < 3 * (screenWidth / 4)) {
                 mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Center : R.style.Animations_PopDownMenu_Center);
-                break;
-            case ANIM_REFLECT:
-                mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Reflect : R.style.Animations_PopDownMenu_Reflect);
-                break;
-            case ANIM_AUTO:
-                if (arrowPos <= screenWidth / 4) {
-                    mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Left : R.style.Animations_PopDownMenu_Left);
-                }
-                else if (arrowPos > screenWidth / 4 && arrowPos < 3 * (screenWidth / 4)) {
-                    mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Center : R.style.Animations_PopDownMenu_Center);
-                }
-                else {
-                    mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Right : R.style.Animations_PopDownMenu_Right);
-                }
-                break;
+            }
+            else {
+                mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Right : R.style.Animations_PopDownMenu_Right);
+            }
+            break;
         }
     }
 
@@ -525,12 +522,12 @@ public class GlobalStatusMenu
             ProtocolProviderService pps = (ProtocolProviderService) service;
 
             switch (event.getType()) {
-                case ServiceEvent.REGISTERED:
-                    addMenuItemPPS(pps);
-                    break;
-                case ServiceEvent.UNREGISTERING:
-                    removeMenuItemPPS(pps);
-                    break;
+            case ServiceEvent.REGISTERED:
+                addMenuItemPPS(pps);
+                break;
+            case ServiceEvent.UNREGISTERING:
+                removeMenuItemPPS(pps);
+                break;
             }
         }
     }

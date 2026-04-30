@@ -159,29 +159,29 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
             // we'll have a look for a corresponding global status and its protocol representation.
             if (status == null) {
                 switch (lastStatus) {
-                    case GlobalStatusEnum.ONLINE_STATUS:
-                        status = getPresenceStatus(protocolProvider, PresenceStatus.AVAILABLE_THRESHOLD,
-                                PresenceStatus.EAGER_TO_COMMUNICATE_THRESHOLD);
-                        break;
-                    case GlobalStatusEnum.AWAY_STATUS:
-                        status = getPresenceStatus(protocolProvider, PresenceStatus.AWAY_THRESHOLD,
-                                PresenceStatus.AVAILABLE_THRESHOLD);
-                        break;
-                    case GlobalStatusEnum.EXTENDED_AWAY_STATUS:
-                        status = getPresenceStatus(protocolProvider, PresenceStatus.EXTENDED_AWAY_THRESHOLD,
-                                PresenceStatus.AWAY_THRESHOLD);
-                        break;
-                    case GlobalStatusEnum.DO_NOT_DISTURB_STATUS:
-                        status = getPresenceStatus(protocolProvider, PresenceStatus.ONLINE_THRESHOLD,
-                                PresenceStatus.EXTENDED_AWAY_THRESHOLD);
-                        break;
-                    case GlobalStatusEnum.FREE_FOR_CHAT_STATUS:
-                        status = getPresenceStatus(protocolProvider, PresenceStatus.AVAILABLE_THRESHOLD,
-                                PresenceStatus.MAX_STATUS_VALUE);
-                        break;
-                    case GlobalStatusEnum.OFFLINE_STATUS:
-                        status = getPresenceStatus(protocolProvider, 0, GlobalStatusEnum.ONLINE_THRESHOLD);
-                        break;
+                case GlobalStatusEnum.ONLINE_STATUS:
+                    status = getPresenceStatus(protocolProvider, PresenceStatus.AVAILABLE_THRESHOLD,
+                            PresenceStatus.EAGER_TO_COMMUNICATE_THRESHOLD);
+                    break;
+                case GlobalStatusEnum.AWAY_STATUS:
+                    status = getPresenceStatus(protocolProvider, PresenceStatus.AWAY_THRESHOLD,
+                            PresenceStatus.AVAILABLE_THRESHOLD);
+                    break;
+                case GlobalStatusEnum.EXTENDED_AWAY_STATUS:
+                    status = getPresenceStatus(protocolProvider, PresenceStatus.EXTENDED_AWAY_THRESHOLD,
+                            PresenceStatus.AWAY_THRESHOLD);
+                    break;
+                case GlobalStatusEnum.DO_NOT_DISTURB_STATUS:
+                    status = getPresenceStatus(protocolProvider, PresenceStatus.ONLINE_THRESHOLD,
+                            PresenceStatus.EXTENDED_AWAY_THRESHOLD);
+                    break;
+                case GlobalStatusEnum.FREE_FOR_CHAT_STATUS:
+                    status = getPresenceStatus(protocolProvider, PresenceStatus.AVAILABLE_THRESHOLD,
+                            PresenceStatus.MAX_STATUS_VALUE);
+                    break;
+                case GlobalStatusEnum.OFFLINE_STATUS:
+                    status = getPresenceStatus(protocolProvider, 0, GlobalStatusEnum.ONLINE_THRESHOLD);
+                    break;
                 }
             }
         }
@@ -299,96 +299,104 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
         LoginManager loginManager = GlobalDisplayDetailsActivator.getUIService().getLoginManager();
 
         Collection<ProtocolProviderService> protocolProviders = AccountUtils.getRegisteredProviders();
-        for (ProtocolProviderService protocolProvider : protocolProviders) {
+        for (ProtocolProviderService pps : protocolProviders) {
             switch (itemName) {
-                case GlobalStatusEnum.ONLINE_STATUS:
-                    if (!protocolProvider.isRegistered()) {
-                        saveStatusInformation(protocolProvider, itemName);
-                        loginManager.login(protocolProvider);
+            case GlobalStatusEnum.ONLINE_STATUS:
+                // if user registered but global status indicate otherwise; then re-sync and let user login again.
+				// onRosterLoaded() not being called under race condition. Should not happen anymore in 5.3.0 release
+                if (pps.isRegistered() && !getGlobalPresenceStatus().isOnline()) {
+                    LoginManager.logoff(pps);
+                    return;
+                }
+
+                // Proceed to login if user is not already registered.
+                if (!pps.isRegistered()) {
+                    loginManager.login(pps);
+                    saveStatusInformation(pps, itemName);
+                }
+                else {
+                    OperationSetPresence presence = pps.getOperationSet(OperationSetPresence.class);
+                    if (presence == null) {
+                        saveStatusInformation(pps, itemName);
                     }
                     else {
-                        OperationSetPresence presence = protocolProvider.getOperationSet(OperationSetPresence.class);
-                        if (presence == null) {
-                            saveStatusInformation(protocolProvider, itemName);
-                        }
-                        else {
-                            for (PresenceStatus status : presence.getSupportedStatusSet()) {
-                                if ((status.getStatus() < PresenceStatus.EAGER_TO_COMMUNICATE_THRESHOLD)
-                                        && (status.getStatus() >= PresenceStatus.AVAILABLE_THRESHOLD)) {
-                                    new PublishPresenceStatusThread(protocolProvider, presence, status).start();
-                                    this.saveStatusInformation(protocolProvider, status.getStatusName());
-                                    break;
-                                }
+                        for (PresenceStatus status : presence.getSupportedStatusSet()) {
+                            if ((status.getStatus() < PresenceStatus.EAGER_TO_COMMUNICATE_THRESHOLD)
+                                    && (status.getStatus() >= PresenceStatus.AVAILABLE_THRESHOLD)) {
+                                new PublishPresenceStatusThread(pps, presence, status).start();
+                                saveStatusInformation(pps, status.getStatusName());
+                                break;
                             }
                         }
                     }
-                    break;
+                }
+                break;
 
-                case GlobalStatusEnum.OFFLINE_STATUS:
-                    if (!protocolProvider.getRegistrationState().equals(RegistrationState.UNREGISTERED)
-                            && !protocolProvider.getRegistrationState().equals(RegistrationState.UNREGISTERING)) {
-                        OperationSetPresence presence = protocolProvider.getOperationSet(OperationSetPresence.class);
+            case GlobalStatusEnum.OFFLINE_STATUS:
+                if (!pps.getRegistrationState().equals(RegistrationState.UNREGISTERED)
+                        && !pps.getRegistrationState().equals(RegistrationState.UNREGISTERING)) {
+                    OperationSetPresence presence = pps.getOperationSet(OperationSetPresence.class);
 
-                        if (presence == null) {
-                            saveStatusInformation(protocolProvider, itemName);
-                            LoginManager.logoff(protocolProvider);
-                        }
-                        else {
-                            for (PresenceStatus status : presence.getSupportedStatusSet()) {
-                                if (status.getStatus() < PresenceStatus.ONLINE_THRESHOLD) {
-                                    this.saveStatusInformation(protocolProvider, status.getStatusName());
-                                    break;
-                                }
+                    if (presence == null) {
+                        saveStatusInformation(pps, itemName);
+                        LoginManager.logoff(pps);
+                    }
+                    else {
+                        for (PresenceStatus status : presence.getSupportedStatusSet()) {
+                            if (status.getStatus() < PresenceStatus.ONLINE_THRESHOLD) {
+                                saveStatusInformation(pps, status.getStatusName());
+                                break;
                             }
-                            // Must use separate thread for account unRegistration. Otherwise
-                            // StrictMode Exception from android-protocolProvider.unregister(true);
-                            LoginManager.logoff(protocolProvider);
                         }
+                        // Must use separate thread for account unRegistration. Otherwise
+                        // StrictMode Exception from android-protocolProvider.unregister(true);
+                        LoginManager.logoff(pps);
                     }
-                    break;
+                }
+                break;
 
-                case GlobalStatusEnum.FREE_FOR_CHAT_STATUS:
-                    if (!protocolProvider.isRegistered()) {
-                        saveStatusInformation(protocolProvider, itemName);
-                        loginManager.login(protocolProvider);
-                    }
-                    else
-                        // we search for highest available status here
-                        publishStatus(protocolProvider, PresenceStatus.AVAILABLE_THRESHOLD, PresenceStatus.MAX_STATUS_VALUE);
-                    break;
+            case GlobalStatusEnum.FREE_FOR_CHAT_STATUS:
+                if (!pps.isRegistered()) {
+                    saveStatusInformation(pps, itemName);
+                    loginManager.login(pps);
+                }
+                else
+                    // we search for highest available status here
+                    publishStatus(pps, PresenceStatus.AVAILABLE_THRESHOLD, PresenceStatus.MAX_STATUS_VALUE);
+                break;
 
-                case GlobalStatusEnum.DO_NOT_DISTURB_STATUS:
-                    if (!protocolProvider.isRegistered()) {
-                        saveStatusInformation(protocolProvider, itemName);
-                        loginManager.login(protocolProvider);
-                    }
-                    else {
-                        // status between online and away is DND
-                        publishStatus(protocolProvider, PresenceStatus.ONLINE_THRESHOLD, PresenceStatus.EXTENDED_AWAY_THRESHOLD);
-                    }
-                    break;
+            case GlobalStatusEnum.DO_NOT_DISTURB_STATUS:
+                if (!pps.isRegistered()) {
+                    saveStatusInformation(pps, itemName);
+                    loginManager.login(pps);
+                }
+                else {
+                    // status between online and away is DND
+                    publishStatus(pps, PresenceStatus.ONLINE_THRESHOLD, PresenceStatus.EXTENDED_AWAY_THRESHOLD);
+                }
+                break;
 
-                case GlobalStatusEnum.AWAY_STATUS:
-                    if (!protocolProvider.isRegistered()) {
-                        saveStatusInformation(protocolProvider, itemName);
-                        loginManager.login(protocolProvider);
-                    }
-                    else {
-                        // a status in the away interval
-                        publishStatus(protocolProvider, PresenceStatus.AWAY_THRESHOLD, PresenceStatus.AVAILABLE_THRESHOLD);
-                    }
-                    break;
+            case GlobalStatusEnum.AWAY_STATUS:
+                if (!pps.isRegistered()) {
+                    saveStatusInformation(pps, itemName);
+                    loginManager.login(pps);
+                }
+                else {
+                    // a status in the away interval
+                    publishStatus(pps, PresenceStatus.AWAY_THRESHOLD, PresenceStatus.AVAILABLE_THRESHOLD);
+                }
+                break;
 
-                case GlobalStatusEnum.EXTENDED_AWAY_STATUS:
-                    if (!protocolProvider.isRegistered()) {
-                        saveStatusInformation(protocolProvider, itemName);
-                        loginManager.login(protocolProvider);
-                    }
-                    else {
-                        // a status in the away interval
-                        publishStatus(protocolProvider, PresenceStatus.EXTENDED_AWAY_THRESHOLD, PresenceStatus.AWAY_THRESHOLD);
-                    }
-                    break;
+            case GlobalStatusEnum.EXTENDED_AWAY_STATUS:
+                if (!pps.isRegistered()) {
+                    saveStatusInformation(pps, itemName);
+                    loginManager.login(pps);
+                }
+                else {
+                    // a status in the away interval
+                    publishStatus(pps, PresenceStatus.EXTENDED_AWAY_THRESHOLD, PresenceStatus.AWAY_THRESHOLD);
+                }
+                break;
             }
         }
     }
@@ -508,9 +516,11 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
         public void run() {
             try {
                 presence.publishPresenceStatus(status, "");
-            } catch (IllegalArgumentException | IllegalStateException e1) {
+            }
+            catch (IllegalArgumentException | IllegalStateException e1) {
                 Timber.e(e1, "Error - changing status");
-            } catch (OperationFailedException e1) {
+            }
+            catch (OperationFailedException e1) {
                 if (e1.getErrorCode() == OperationFailedException.GENERAL_ERROR) {
                     String msgText = aTalkApp.getResString(R.string.status_change_general_error,
                             protocolProvider.getAccountID().getUserID(), protocolProvider.getAccountID().getService());

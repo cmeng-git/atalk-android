@@ -24,9 +24,12 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.dialogs.DialogActivity;
+
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
+
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
+
 import org.jxmpp.jid.Jid;
 
 import timber.log.Timber;
@@ -116,15 +119,16 @@ public class AppCallUtil {
             return;
         }
 
+        // Must init a new Sid for this call session.
+        OperationSetBasicTelephonyJabberImpl opsBasicTelephony
+                = (OperationSetBasicTelephonyJabberImpl) pps.getOperationSet(OperationSetBasicTelephony.class);
+        String sid = opsBasicTelephony.initSid();
+
         boolean isJmSupported = metaContact.isFeatureSupported(JingleMessage.NAMESPACE);
         if (isJmSupported) {
-            JingleMessageSessionImpl.sendJingleMessagePropose(pps.getConnection(), callee, isVideoCall);
+            JingleMessageSessionImpl.sendJingleMessagePropose(callee.asBareJid(), sid, isVideoCall);
         }
         else {
-            // Must init the Sid if call not via JingleMessage
-            OperationSetBasicTelephonyJabberImpl basicTelephony = (OperationSetBasicTelephonyJabberImpl)
-                    pps.getOperationSet(OperationSetBasicTelephony.class);
-            basicTelephony.initSid();
             if (callButtonView != null) {
                 showCallViaMenu(context, callee, callButtonView, isVideoCall);
             }
@@ -168,10 +172,12 @@ public class AppCallUtil {
             public void run() {
                 try {
                     CallManager.createCall(provider, callee.toString(), isVideoCall);
-                } catch (Throwable t) {
+                }
+                catch (Throwable t) {
                     Timber.e(t, "Error creating the call: %s", t.getMessage());
                     DialogActivity.showDialog(context, context.getString(R.string.error), t.getMessage());
-                } finally {
+                }
+                finally {
                     createCallThread = null;
                 }
             }

@@ -24,8 +24,7 @@ package org.atalk.impl.neomedia.transform.srtp.crypto;
  *
  * SRTP Counter Mode AES Encryption algorithm is defined in RFC3711, section 4.1.1.
  */
-public abstract class SrtpCipherCtr
-{
+public abstract class SrtpCipherCtr {
     protected static final int BLKLEN = 16;
 
     /**
@@ -49,8 +48,7 @@ public abstract class SrtpCipherCtr
     /**
      * Check the validity of process function arguments
      */
-    protected static void checkProcessArgs(byte[] data, int off, int len, byte[] iv)
-    {
+    protected static void checkProcessArgs(byte[] data, int off, int len, byte[] iv) {
         if (iv.length != BLKLEN)
             throw new IllegalArgumentException("iv.length != BLKLEN");
         if (off < 0)

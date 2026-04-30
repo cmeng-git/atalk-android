@@ -110,7 +110,7 @@ public abstract class Call extends DataObject {
     protected Call(ProtocolProviderService sourceProvider, String sid) {
         // create the uid
         if (TextUtils.isEmpty(sid)) {
-            callId = JingleManager.randomId();
+            callId = JingleManager.randomUuid();
         }
         else {
             callId = sid;

@@ -35,8 +35,7 @@ import org.atalk.android.aTalkApp;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class CallPeerState
-{
+public class CallPeerState {
     /**
      * This constant value indicates a String representation of the UNKNOWN call state.
      */
@@ -227,10 +226,10 @@ public class CallPeerState
      * the issuer (which may be local and/or remote).
      *
      * @param state the <code>CallPeerState</code> value to be checked whether it signals a call hold
+     *
      * @return <code>true</code> if the specified <code>state</code> signals a call hold; <code>false</code>, otherwise
      */
-    public static boolean isOnHold(CallPeerState state)
-    {
+    public static boolean isOnHold(CallPeerState state) {
         return CallPeerState.ON_HOLD_LOCALLY.equals(state)
                 || CallPeerState.ON_HOLD_MUTUALLY.equals(state)
                 || CallPeerState.ON_HOLD_REMOTELY.equals(state);
@@ -252,8 +251,7 @@ public class CallPeerState
      * @param callPeerState a string representation of the state.
      * @param callStateLocalizedStr the localized string representing this state
      */
-    private CallPeerState(String callPeerState, String callStateLocalizedStr)
-    {
+    private CallPeerState(String callPeerState, String callStateLocalizedStr) {
         this.callStateStr = callPeerState;
         this.callStateLocalizedStr = callStateLocalizedStr;
     }
@@ -264,8 +262,7 @@ public class CallPeerState
      * @return A string value (one of the _BUSY, _CALLING, _CONNECTED, _CONNECTING, _DISCONNECTED,
      * _FAILED, _RINGING constants) representing this call peer state).
      */
-    public String getStateString()
-    {
+    public String getStateString() {
         return callStateStr;
     }
 
@@ -274,8 +271,7 @@ public class CallPeerState
      *
      * @return a localized String representation of the CallPeerState
      */
-    public String getLocalizedStateString()
-    {
+    public String getLocalizedStateString() {
         return callStateLocalizedStr;
     }
 
@@ -287,8 +283,7 @@ public class CallPeerState
      * @return a string representation of this object.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getClass().getName() + ":" + getStateString();
     }
 }

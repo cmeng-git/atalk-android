@@ -25,21 +25,18 @@ import org.bouncycastle.crypto.params.KeyParameter;
  * You can use any <code>BlockCipher</code> with <code>BLKLEN</code> bytes key and
  * block size like TwofishEngine instead of AES.
  */
-public class SrtpCipherCtrJava extends SrtpCipherCtr
-{
+public class SrtpCipherCtrJava extends SrtpCipherCtr {
     private final byte[] tmpCipherBlock = new byte[BLKLEN];
     private final BlockCipher cipher;
 
-    public SrtpCipherCtrJava(BlockCipher cipher)
-    {
+    public SrtpCipherCtrJava(BlockCipher cipher) {
         this.cipher = cipher;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void init(byte[] key)
-    {
+    public void init(byte[] key) {
         if (key.length != 16 && key.length != 24 && key.length != 32)
             throw new IllegalArgumentException("Not an AES key length");
 
@@ -49,8 +46,7 @@ public class SrtpCipherCtrJava extends SrtpCipherCtr
     /**
      * {@inheritDoc}
      */
-    public void process(byte[] data, int off, int len, byte[] iv)
-    {
+    public void process(byte[] data, int off, int len, byte[] iv) {
         checkProcessArgs(data, off, len, iv);
 
         int l = len, o = off;

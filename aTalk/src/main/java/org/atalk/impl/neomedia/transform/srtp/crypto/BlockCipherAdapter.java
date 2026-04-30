@@ -5,11 +5,6 @@
  */
 package org.atalk.impl.neomedia.transform.srtp.crypto;
 
-import org.bouncycastle.crypto.BlockCipher;
-import org.bouncycastle.crypto.CipherParameters;
-import org.bouncycastle.crypto.DataLengthException;
-import org.bouncycastle.crypto.params.KeyParameter;
-
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -17,6 +12,11 @@ import java.security.Key;
 import javax.crypto.Cipher;
 import javax.crypto.ShortBufferException;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.bouncycastle.crypto.BlockCipher;
+import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.DataLengthException;
+import org.bouncycastle.crypto.params.KeyParameter;
 
 import timber.log.Timber;
 
@@ -27,8 +27,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class BlockCipherAdapter implements BlockCipher
-{
+public class BlockCipherAdapter implements BlockCipher {
     /**
      * The name of the algorithm implemented by this instance.
      */
@@ -53,8 +52,7 @@ public class BlockCipherAdapter implements BlockCipher
      * @param cipher the <code>javax.crypto.Cipher</code> instance to be adapted to the
      * <code>org.bouncycastle.crypto.BlockCipher</code> interface by the new instance
      */
-    public BlockCipherAdapter(Cipher cipher)
-    {
+    public BlockCipherAdapter(Cipher cipher) {
         if (cipher == null)
             throw new NullPointerException("cipher");
 
@@ -89,8 +87,7 @@ public class BlockCipherAdapter implements BlockCipher
      * {@inheritDoc}
      */
     @Override
-    public String getAlgorithmName()
-    {
+    public String getAlgorithmName() {
         return algorithmName;
     }
 
@@ -98,8 +95,7 @@ public class BlockCipherAdapter implements BlockCipher
      * {@inheritDoc}
      */
     @Override
-    public int getBlockSize()
-    {
+    public int getBlockSize() {
         return blockSize;
     }
 
@@ -110,8 +106,7 @@ public class BlockCipherAdapter implements BlockCipher
      * @return the <code>javax.crypto.Cipher</code> instance which is adapted to the
      * <code>org.bouncycastle.crypto.BlockCipher</code> interface by this instance
      */
-    public Cipher getCipher()
-    {
+    public Cipher getCipher() {
         return cipher;
     }
 
@@ -120,8 +115,7 @@ public class BlockCipherAdapter implements BlockCipher
      */
     @Override
     public void init(boolean forEncryption, CipherParameters params)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         Key key = null;
 
         if (params instanceof KeyParameter) {
@@ -133,7 +127,8 @@ public class BlockCipherAdapter implements BlockCipher
 
         try {
             cipher.init(forEncryption ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE, key);
-        } catch (InvalidKeyException ike) {
+        }
+        catch (InvalidKeyException ike) {
             Timber.e(ike, "%s", ike.getMessage());
             throw new IllegalArgumentException(ike);
         }
@@ -144,11 +139,11 @@ public class BlockCipherAdapter implements BlockCipher
      */
     @Override
     public int processBlock(byte[] in, int inOff, byte[] out, int outOff)
-            throws DataLengthException, IllegalStateException
-    {
+            throws DataLengthException, IllegalStateException {
         try {
             return cipher.update(in, inOff, getBlockSize(), out, outOff);
-        } catch (ShortBufferException sbe) {
+        }
+        catch (ShortBufferException sbe) {
             Timber.e(sbe, "%s", sbe.getMessage());
 
             DataLengthException dle = new DataLengthException();
@@ -161,11 +156,11 @@ public class BlockCipherAdapter implements BlockCipher
      * {@inheritDoc}
      */
     @Override
-    public void reset()
-    {
+    public void reset() {
         try {
             cipher.doFinal();
-        } catch (GeneralSecurityException gse) {
+        }
+        catch (GeneralSecurityException gse) {
             Timber.e(gse, "%s", gse.getMessage());
         }
     }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- Message settings -->
     <PreferenceCategory android:title="@string/omemo_messaging_security">
         <CheckBoxPreference
@@ -42,4 +43,11 @@
                 android:targetPackage="org.atalk.android" />
         </PreferenceScreen>
     </PreferenceCategory>
+
+    <EditTextPreference
+        android:inputType="text"
+        android:key="pref_node_item"
+        android:summary="Enter the node item id to be deleted"
+        android:title="Delete an Item from a Node"
+        app:isPreferenceVisible="false"/>
 </PreferenceScreen>

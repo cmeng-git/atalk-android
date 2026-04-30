@@ -19,7 +19,7 @@
 if [[ $# -eq 1 ]]; then
   LIB_OPUS_GIT=$1
 else
-  LIB_OPUS_GIT="opus-1.5.2"
+  LIB_OPUS_GIT="opus-1.6.1"
 fi
 echo -e "\n### Fetch opus library source ${LIB_OPUS_GIT} ###"
 

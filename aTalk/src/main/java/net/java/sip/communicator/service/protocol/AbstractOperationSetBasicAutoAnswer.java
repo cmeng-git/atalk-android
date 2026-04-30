@@ -166,12 +166,12 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
         /**
          * The call peer which has generated the call.
          */
-        private CallPeer peer;
+        private final CallPeer peer;
 
         /**
          * Indicates if the remote peer which has created this call wish to have a video call.
          */
-        private boolean isVideoCall;
+        private final boolean isVideoCall;
 
         /**
          * Wait for peer to switch into INCOMING_CALL state, before auto-answering the call in a new thread.

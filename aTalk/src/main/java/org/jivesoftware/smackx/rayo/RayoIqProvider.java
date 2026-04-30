@@ -1,11 +1,11 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client. Implementing: XEP-0327: Rayo
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -13,20 +13,24 @@
  */
 package org.jivesoftware.smackx.rayo;
 
+import java.io.IOException;
+import java.text.ParseException;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
+import org.jivesoftware.smack.packet.XmlElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.provider.IqProvider;
+import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.DefaultExtensionElementProvider;
 
-import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.provider.IqProvider;
-import org.jivesoftware.smack.provider.ProviderManager;
 import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
-
-import java.io.IOException;
-import java.text.ParseException;
 
 /**
  * Provider handles parsing of Rayo IQ stanzas and converting objects back to their XML representation.
@@ -35,8 +39,7 @@ import java.text.ParseException;
  *
  * @author Pawel Domas
  */
-public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
-{
+public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq> {
     /**
      * Rayo namespace.
      */
@@ -47,8 +50,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
      *
      * @param providerManager the <code>ProviderManager</code> to which this instance wil be bound to.
      */
-    public void registerRayoIQs(ProviderManager providerManager)
-    {
+    public void registerRayoIQs(ProviderManager providerManager) {
         // <dial>
         ProviderManager.addIQProvider(DialIq.ELEMENT, NAMESPACE, this);
         // <ref>
@@ -117,52 +119,52 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
 
         while (!done) {
             switch (parser.next()) {
-                case END_ELEMENT: {
-                    String name = parser.getName();
-                    if (rootElement.equals(name)) {
-                        done = true;
-                    }
-                    else if (HeaderExtension.ELEMENT.equals(name)) {
-                        if (header != null) {
-                            iq.addExtension(header);
-                            header = null;
-                        }
-                    }
-                    /*
-                     * else if (End.isValidReason(name)) { if (end != null && reason != null) {
-                     * end.setReason(reason); reason = null; } }
-                     */
-                    break;
+            case END_ELEMENT: {
+                String name = parser.getName();
+                if (rootElement.equals(name)) {
+                    done = true;
                 }
+                else if (HeaderExtension.ELEMENT.equals(name)) {
+                    if (header != null) {
+                        iq.addExtension(header);
+                        header = null;
+                    }
+                }
+                /*
+                 * else if (End.isValidReason(name)) { if (end != null && reason != null) {
+                 * end.setReason(reason); reason = null; } }
+                 */
+                break;
+            }
 
-                case START_ELEMENT: {
-                    String name = parser.getName();
+            case START_ELEMENT: {
+                String name = parser.getName();
 
-                    if (HeaderExtension.ELEMENT.equals(name)) {
-                        header = new HeaderExtension();
-                        String nameAttr = parser.getAttributeValue("",
-                                HeaderExtension.NAME_ATTR_NAME);
-                        header.setName(nameAttr);
-                        String valueAttr = parser.getAttributeValue("",
-                                HeaderExtension.VALUE_ATTR_NAME);
-                        header.setValue(valueAttr);
-                    }
-                    /*
-                     * else if (End.isValidReason(name)) {
-                     * 	reason = new JingleReason(name);
-                     *
-                     * String platformCode = parser.getAttributeValue( "",
-                     * JingleReason.PLATFORM_CODE_ATTRIBUTE);
-                     *
-                     * if (StringUtils.isNotEmpty(platformCode)) {
-                     * reason.setPlatformCode(platformCode); } }
-                     */
-                    break;
+                if (HeaderExtension.ELEMENT.equals(name)) {
+                    header = new HeaderExtension();
+                    String nameAttr = parser.getAttributeValue("",
+                            HeaderExtension.NAME_ATTR_NAME);
+                    header.setName(nameAttr);
+                    String valueAttr = parser.getAttributeValue("",
+                            HeaderExtension.VALUE_ATTR_NAME);
+                    header.setValue(valueAttr);
                 }
-                case TEXT_CHARACTERS: {
-                    // Parse some text here
-                    break;
-                }
+                /*
+                 * else if (End.isValidReason(name)) {
+                 * 	reason = new JingleReason(name);
+                 *
+                 * String platformCode = parser.getAttributeValue( "",
+                 * JingleReason.PLATFORM_CODE_ATTRIBUTE);
+                 *
+                 * if (StringUtils.isNotEmpty(platformCode)) {
+                 * reason.setPlatformCode(platformCode); } }
+                 */
+                break;
+            }
+            case TEXT_CHARACTERS: {
+                // Parse some text here
+                break;
+            }
             }
         }
         return iq;
@@ -172,16 +174,14 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
      * Base class for all Ray IQs. Takes care of <header /> extension handling as well as other
      * functions shared by all IQs.
      */
-    public static abstract class RayoIq extends IQ
-    {
+    public static abstract class RayoIq extends IQ {
         /**
          * Creates new instance of <code>RayoIq</code>.
          *
          * @param elementName the name of XML element that will be used.
          */
 
-        protected RayoIq(String elementName)
-        {
+        protected RayoIq(String elementName) {
             super(elementName, NAMESPACE);
         }
 
@@ -190,8 +190,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          *
          * @param original the class to copy the data from.
          */
-        protected RayoIq(RayoIq original)
-        {
+        protected RayoIq(RayoIq original) {
             super(original);
         }
 
@@ -199,16 +198,15 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          * Returns value of the header extension with given <code>name</code> (if any).
          *
          * @param name the name of header extension which value we want to retrieve.
+         *
          * @return value of header extension with given <code>name</code> if it exists or <code>null</code> otherwise.
          */
-        public String getHeader(String name)
-        {
+        public String getHeader(String name) {
             HeaderExtension header = findHeader(name);
             return header != null ? header.getValue() : null;
         }
 
-        private HeaderExtension findHeader(String name)
-        {
+        private HeaderExtension findHeader(String name) {
             for (XmlElement ext : getExtensions()) {
                 if (ext instanceof HeaderExtension) {
                     HeaderExtension header = (HeaderExtension) ext;
@@ -226,8 +224,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          * @param name the attribute name of the 'header' extension to be added.
          * @param value the 'value' attribute of the 'header' extension that will be added to this IQ.
          */
-        public void setHeader(String name, String value)
-        {
+        public void setHeader(String name, String value) {
             HeaderExtension headerExt = findHeader(name);
 
             if (headerExt == null) {
@@ -242,8 +239,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
     /**
      * The 'dial' IQ used to initiate new outgoing call session in Rayo protocol.
      */
-    public static class DialIq extends RayoIq
-    {
+    public static class DialIq extends RayoIq {
         /**
          * The name of XML element for this IQ.
          */
@@ -274,17 +270,16 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
         /**
          * Creates new instance of <code>DialIq</code>.
          */
-        public DialIq()
-        {
+        public DialIq() {
             super(DialIq.ELEMENT);
         }
 
         /**
          * Creates a new instance of this class as a copy from <code>original</code>.
+         *
          * @param original the class to copy the data from.
          */
-        public DialIq(DialIq original)
-        {
+        public DialIq(DialIq original) {
             // copies: id, to, from, extensions, error, type
             super(original);
             source = original.source;
@@ -293,12 +288,13 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
 
         /**
          * Creates new <code>DialIq</code> for given source and destination addresses.
+         *
          * @param to the destination address/call URI to be used.
          * @param from the source address that will be set on new <code>DialIq</code> instance.
+         *
          * @return new <code>DialIq</code> parametrized with given source and destination addresses.
          */
-        public static DialIq create(String to, String from)
-        {
+        public static DialIq create(String to, String from) {
             DialIq dialIq = new DialIq();
             dialIq.setSource(from);
             dialIq.setDestination(to);
@@ -310,8 +306,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          *
          * @return source address value of this <code>DialIq</code>.
          */
-        public String getSource()
-        {
+        public String getSource() {
             return source;
         }
 
@@ -320,8 +315,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          *
          * @param source the new source address value to be set.
          */
-        public void setSource(String source)
-        {
+        public void setSource(String source) {
             this.source = source;
         }
 
@@ -330,8 +324,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          *
          * @return destination address/call URI associated with this instance.
          */
-        public String getDestination()
-        {
+        public String getDestination() {
             return destination;
         }
 
@@ -340,8 +333,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          *
          * @param destination the new destination address/call URI to set.
          */
-        public void setDestination(String destination)
-        {
+        public void setDestination(String destination) {
             this.destination = destination;
         }
 
@@ -350,8 +342,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          */
 
         @Override
-        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
-        {
+        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
             xml.optAttribute(SRC_ATTR_NAME, source);
             xml.optAttribute(DST_ATTR_NAME, destination);
             xml.setEmptyElement();
@@ -362,8 +353,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
     /**
      * Rayo 'ref' IQ sent by the server as a reply to 'dial' request. Holds created call's resource in 'uri' attribute.
      */
-    public static class RefIq extends RayoIq
-    {
+    public static class RefIq extends RayoIq {
         /**
          * XML element name of <code>RefIq</code>.
          */
@@ -382,8 +372,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
         /**
          * Creates new <code>RefIq</code>.
          */
-        protected RefIq()
-        {
+        protected RefIq() {
             super(RefIq.ELEMENT);
         }
 
@@ -391,10 +380,10 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          * Creates new <code>RefIq</code> parametrized with given call <code>uri</code>.
          *
          * @param uri the call URI to be set on newly created <code>RefIq</code>.
+         *
          * @return new <code>RefIq</code> parametrized with given call <code>uri</code>.
          */
-        public static RefIq create(String uri)
-        {
+        public static RefIq create(String uri) {
             RefIq refIq = new RefIq();
             refIq.setUri(uri);
             return refIq;
@@ -406,10 +395,10 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          * @param requestIq the request IQ which 'from', 'to' and 'id' attributes will be used for
          * constructing result IQ.
          * @param uri the call URI that will be included in newly created <code>RefIq</code>.
+         *
          * @return result <code>RefIq</code> for given <code>requestIq</code> parametrized with given call <code>uri</code>.
          */
-        public static RefIq createResult(IQ requestIq, String uri)
-        {
+        public static RefIq createResult(IQ requestIq, String uri) {
             RefIq refIq = create(uri);
             refIq.setType(IQ.Type.result);
             refIq.setStanzaId(requestIq.getStanzaId());
@@ -422,8 +411,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          * {@inheritDoc}
          */
         @Override
-        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
-        {
+        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
             xml.optAttribute(URI_ATTR_NAME, uri);
             xml.setEmptyElement();
             return xml;
@@ -434,8 +422,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          *
          * @param uri the call <code>uri</code> to be stored in this instance.
          */
-        public void setUri(String uri)
-        {
+        public void setUri(String uri) {
             this.uri = uri;
         }
 
@@ -444,8 +431,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          *
          * @return the call URI held by this instance.
          */
-        public String getUri()
-        {
+        public String getUri() {
             return uri;
         }
     }
@@ -456,8 +442,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
      * result IQ which means that hangup operation is now scheduled. After it is actually executed
      * presence indication with {@link EndExtension} is sent through the presence to confirm the operation.
      */
-    public static class HangUp extends RayoIq
-    {
+    public static class HangUp extends RayoIq {
         /**
          * The name of 'hangup' element.
          */
@@ -466,8 +451,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
         /**
          * Creates new instance of <code>HangUp</code> IQ.
          */
-        protected HangUp()
-        {
+        protected HangUp() {
             super(ELEMENT);
         }
 
@@ -476,10 +460,10 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
          *
          * @param from source JID.
          * @param to the destination address/call URI to be ended by this IQ.
+         *
          * @return new, parametrized instance of {@link HangUp} IQ.
          */
-        public static HangUp create(Jid from, Jid to)
-        {
+        public static HangUp create(Jid from, Jid to) {
             HangUp hangUp = new HangUp();
             hangUp.setFrom(from);
             hangUp.setTo(to);
@@ -488,8 +472,7 @@ public class RayoIqProvider extends IqProvider<RayoIqProvider.RayoIq>
         }
 
         @Override
-        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
-        {
+        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
             xml.setEmptyElement();
             return xml;
         }

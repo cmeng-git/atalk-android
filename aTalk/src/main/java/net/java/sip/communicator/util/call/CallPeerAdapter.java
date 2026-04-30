@@ -6,6 +6,9 @@
  */
 package net.java.sip.communicator.util.call;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import net.java.sip.communicator.service.gui.call.CallPeerRenderer;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.CallPeerState;
@@ -17,9 +20,6 @@ import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOffEvent
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOnEvent;
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutEvent;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 
 /**
  * <code>CallPeerAdapter</code> implements common <code>CallPeer</code> related
@@ -30,8 +30,7 @@ import java.beans.PropertyChangeListener;
  * @author Lyubomir Marinov
  */
 public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.event.CallPeerAdapter
-        implements CallPeerSecurityListener, PropertyChangeListener
-{
+        implements CallPeerSecurityListener, PropertyChangeListener {
     /**
      * The <code>CallPeer</code> which is depicted by {@link #renderer}.
      */
@@ -54,8 +53,7 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
      * @param renderer the <code>CallPeerRenderer</code> which is to be facilitated
      * by the new instance
      */
-    public CallPeerAdapter(CallPeer peer, CallPeerRenderer renderer)
-    {
+    public CallPeerAdapter(CallPeer peer, CallPeerRenderer renderer) {
         this.peer = peer;
         this.renderer = renderer;
 
@@ -68,8 +66,7 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
      * Removes the listeners implemented by this instance from the associated
      * <code>CallPeer</code> and prepares it for garbage collection.
      */
-    public void dispose()
-    {
+    public void dispose() {
         peer.removeCallPeerListener(this);
         peer.removeCallPeerSecurityListener(this);
         peer.removePropertyChangeListener(this);
@@ -79,8 +76,7 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
      * {@inheritDoc}
      */
     @Override
-    public void peerDisplayNameChanged(CallPeerChangeEvent ev)
-    {
+    public void peerDisplayNameChanged(CallPeerChangeEvent ev) {
         if (peer.equals(ev.getSourceCallPeer()))
             renderer.setPeerName((String) ev.getNewValue());
     }
@@ -89,8 +85,7 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
      * {@inheritDoc}
      */
     @Override
-    public void peerImageChanged(CallPeerChangeEvent ev)
-    {
+    public void peerImageChanged(CallPeerChangeEvent ev) {
         if (peer.equals(ev.getSourceCallPeer()))
             renderer.setPeerImage((byte[]) ev.getNewValue());
     }
@@ -99,17 +94,14 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
      * {@inheritDoc}
      */
     @Override
-    public void peerStateChanged(CallPeerChangeEvent ev)
-    {
+    public void peerStateChanged(CallPeerChangeEvent ev) {
         CallPeer sourcePeer = ev.getSourceCallPeer();
 
         if (!sourcePeer.equals(peer))
             return;
 
-        CallPeerState newState = (CallPeerState) ev.getNewValue();
         CallPeerState oldState = (CallPeerState) ev.getOldValue();
-
-        String newStateString = sourcePeer.getState().getLocalizedStateString();
+        CallPeerState newState = (CallPeerState) ev.getNewValue();
 
         if (newState == CallPeerState.CONNECTED) {
             if (!CallPeerState.isOnHold(oldState)) {
@@ -134,7 +126,8 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
             renderer.getCallRenderer().updateHoldButtonState();
         }
 
-        renderer.setPeerState(oldState, newState, newStateString);
+        String newStateString = sourcePeer.getState().getLocalizedStateString();
+        renderer.setPeerState(newStateString);
 
         String reasonString = ev.getReasonString();
         if (reasonString != null)
@@ -144,8 +137,7 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
     /**
      * {@inheritDoc}
      */
-    public void propertyChange(PropertyChangeEvent ev)
-    {
+    public void propertyChange(PropertyChangeEvent ev) {
         String propertyName = ev.getPropertyName();
 
         if (propertyName.equals(CallPeer.MUTE_PROPERTY_NAME)) {
@@ -160,16 +152,14 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
      *
      * <code>CallPeerAdapter</code> does nothing.
      */
-    public void securityMessageReceived(CallPeerSecurityMessageEvent event)
-    {
+    public void securityMessageReceived(CallPeerSecurityMessageEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
     public void securityNegotiationStarted(
-            CallPeerSecurityNegotiationStartedEvent ev)
-    {
+            CallPeerSecurityNegotiationStartedEvent ev) {
         if (peer.equals(ev.getSource()))
             renderer.securityNegotiationStarted(ev);
     }
@@ -177,8 +167,7 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
     /**
      * {@inheritDoc}
      */
-    public void securityOff(CallPeerSecurityOffEvent ev)
-    {
+    public void securityOff(CallPeerSecurityOffEvent ev) {
         if (peer.equals(ev.getSource()))
             renderer.securityOff(ev);
     }
@@ -186,8 +175,7 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
     /**
      * {@inheritDoc}
      */
-    public void securityOn(CallPeerSecurityOnEvent ev)
-    {
+    public void securityOn(CallPeerSecurityOnEvent ev) {
         if (peer.equals(ev.getSource()))
             renderer.securityOn(ev);
     }
@@ -195,8 +183,7 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
     /**
      * {@inheritDoc}
      */
-    public void securityTimeout(CallPeerSecurityTimeoutEvent ev)
-    {
+    public void securityTimeout(CallPeerSecurityTimeoutEvent ev) {
         if (peer.equals(ev.getSource()))
             renderer.securityTimeout(ev);
     }

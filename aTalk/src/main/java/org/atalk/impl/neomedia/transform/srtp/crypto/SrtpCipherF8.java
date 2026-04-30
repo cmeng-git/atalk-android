@@ -15,10 +15,10 @@
  */
 package org.atalk.impl.neomedia.transform.srtp.crypto;
 
+import java.util.Arrays;
+
 import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.params.KeyParameter;
-
-import java.util.Arrays;
 
 /**
  * SrtpCipherF8 implements Srtp F8 Mode Encryption for 128 bits block cipher.
@@ -36,18 +36,16 @@ import java.util.Arrays;
  *
  * As defined by RFC3711: F8 mode encryption is optional.
  *
- *                        mandatory to impl     optional      default
+ * mandatory to impl     optional      default
  * -------------------------------------------------------------------------
- *   encryption           AES-CM, NULL          AES-f8        AES-CM
- *   message integrity    HMAC-SHA1                -          HMAC-SHA1
- *   key derivation       (PRF) AES-CM             -          AES-CM
- *
+ * encryption           AES-CM, NULL          AES-f8        AES-CM
+ * message integrity    HMAC-SHA1                -          HMAC-SHA1
+ * key derivation       (PRF) AES-CM             -          AES-CM
  *
  * @author Bing SU (nova.su@gmail.com)
  * @author Werner Dittmann <werner.dittmann@t-online.de>
  */
-public class SrtpCipherF8
-{
+public class SrtpCipherF8 {
     /**
      * block size, just a short name.
      */
@@ -56,8 +54,7 @@ public class SrtpCipherF8
     /**
      * F8 mode encryption context, see RFC3711 section 4.1.2 for detailed description.
      */
-    static class F8Context
-    {
+    static class F8Context {
         public byte[] S;
         public byte[] ivAccent;
         long J;
@@ -80,8 +77,7 @@ public class SrtpCipherF8
      */
     private BlockCipher cipher;
 
-    public SrtpCipherF8(BlockCipher cipher)
-    {
+    public SrtpCipherF8(BlockCipher cipher) {
         this.cipher = cipher;
     }
 
@@ -89,8 +85,7 @@ public class SrtpCipherF8
      * @param k_e encryption key
      * @param k_s salt key
      */
-    public void init(byte[] k_e, byte[] k_s)
-    {
+    public void init(byte[] k_e, byte[] k_s) {
         if (k_e.length != BLKLEN)
             throw new IllegalArgumentException("k_e.length != BLKLEN");
         if (k_s.length > k_e.length)
@@ -110,8 +105,7 @@ public class SrtpCipherF8
             maskedKey[i] ^= 0x55;
     }
 
-    public void process(byte[] data, int off, int len, byte[] iv)
-    {
+    public void process(byte[] data, int off, int len, byte[] iv) {
         if (iv.length != BLKLEN)
             throw new IllegalArgumentException("iv.length != BLKLEN");
         if (off < 0)
@@ -149,15 +143,13 @@ public class SrtpCipherF8
 
         int inLen = len;
 
-        while (inLen >= BLKLEN)
-        {
+        while (inLen >= BLKLEN) {
             processBlock(f8ctx, data, off, BLKLEN);
             inLen -= BLKLEN;
             off += BLKLEN;
         }
 
-        if (inLen > 0)
-        {
+        if (inLen > 0) {
             processBlock(f8ctx, data, off, inLen);
         }
     }
@@ -166,17 +158,12 @@ public class SrtpCipherF8
      * Encrypt / Decrypt a block using F8 Mode AES algorithm, read len bytes
      * data from in at inOff and write the output into out at outOff
      *
-     * @param f8ctx
-     *            F8 encryption context
-     * @param inOut
-     *            byte array holding the data to be processed
-     * @param off
-     *            start offset of the data to be processed inside inOut array
-     * @param len
-     *            length of the data to be processed inside inOut array from off
+     * @param f8ctx F8 encryption context
+     * @param inOut byte array holding the data to be processed
+     * @param off start offset of the data to be processed inside inOut array
+     * @param len length of the data to be processed inside inOut array from off
      */
-    private void processBlock(F8Context f8ctx, byte[] inOut, int off, int len)
-    {
+    private void processBlock(F8Context f8ctx, byte[] inOut, int off, int len) {
         /*
          * XOR the previous key stream with IV'
          * ( S(-1) xor IV' )

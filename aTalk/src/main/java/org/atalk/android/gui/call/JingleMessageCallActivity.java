@@ -17,7 +17,6 @@
 package org.atalk.android.gui.call;
 
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,15 +28,18 @@ import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 
 import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
-import org.atalk.android.gui.aTalk;
 import org.atalk.android.util.AppImageUtil;
-import org.atalk.impl.appstray.NotificationPopupHandler;
+
 import org.jivesoftware.smackx.avatar.AvatarManager;
+import org.jivesoftware.smackx.jingle.element.JingleReason;
+
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
 /**
- * The process to handle the incoming and outgoing call for <code>Jingle Message</code> states changes.
- * Note: incoming call is via ReceivedCallActivity instead due to android-12 constraint.
+ * The process to handle the outgoing call via AppCallUtil, and incoming for JingleMessage call.
+ * Note: incoming call is via NotificationPopupHandler, only if aTalk is in locked screen
+ * i.e. jingleMessage propose => JingleMessageCallActivity;
  * <p>
  * Implementation for aTalk v3.0.5:
  * Starting with Android 12 notifications will not work if they do not start activities directly
@@ -49,12 +51,14 @@ import org.jxmpp.jid.Jid;
  * @author Eng Chong Meng
  */
 public class JingleMessageCallActivity extends BaseActivity implements JingleMessageSessionImpl.JmEndListener {
+    // private JingleMessageSessionImpl mJmSession;
     private ImageView peerAvatar;
+    // private Jid mRemote;
     private String mSid;
 
     /**
      * Create the UI with call hang up button to retract call for outgoing call.
-     * Incoming JingleMessage <propose/> will only sendJingleAccept(mSid), automatically only
+     * Incoming JingleMessage <propose/> will only sendJingleMessageProceed(mSid), automatically only
      * if aTalk is not in locked screen; else show UI for user choice to accept or reject call.
      * Note: heads-up notification is not shown when device is in locked screen.
      *
@@ -75,33 +79,37 @@ public class JingleMessageCallActivity extends BaseActivity implements JingleMes
         peerAvatar = findViewById(R.id.calleeAvatar);
 
         JingleMessageSessionImpl.setJmEndListener(this);
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            // Jingle Message / Jingle Session sid
+            // Jingle Message sid; may get changed in tie-break;
             mSid = extras.getString(CallManager.CALL_SID);
 
             String eventType = extras.getString(CallManager.CALL_EVENT);
             boolean isIncomingCall = NotificationManager.INCOMING_CALL.equals(eventType);
             boolean autoAccept = extras.getBoolean(CallManager.AUTO_ACCEPT, false);
+
             if (isIncomingCall && autoAccept) {
-                JingleMessageSessionImpl.sendJingleAccept(mSid);
+                JingleMessageSessionImpl.sendJingleMessageProceed(mSid);
                 return;
             }
 
-            Jid remote = JingleMessageSessionImpl.getRemote();
+            // Get the current JM call recipient; not pass in as parameter.
+            Jid remote = JingleMessageSessionImpl.getRecipient();
             ((TextView) findViewById(R.id.calleeAddress)).setText(remote);
-            setPeerImage(remote);
+            setPeerImage(remote.asBareJid());
 
             if (isIncomingCall) {
                 // Call accepted, send Jingle Message <accept/> to inform caller.
                 callButton.setOnClickListener(v -> {
-                            JingleMessageSessionImpl.sendJingleAccept(mSid);
+                            JingleMessageSessionImpl.sendJingleMessageProceed(mSid);
                         }
                 );
 
                 // Call rejected, send Jingle Message <reject/> to inform caller.
                 hangUpButton.setOnClickListener(v -> {
-                            JingleMessageSessionImpl.sendJingleMessageReject(mSid);
+                            JingleReason reason = new JingleReason(JingleReason.Reason.busy, "Busy", null);
+                            JingleMessageSessionImpl.sendJingleMessageReject(mSid, reason);
                         }
                 );
             }
@@ -109,9 +117,8 @@ public class JingleMessageCallActivity extends BaseActivity implements JingleMes
                 // Call retract, send Jingle Message <retract/> to inform caller.
                 hangUpButton.setOnClickListener(v -> {
                             // NPE: Get triggered with remote == null at time???
-                            if (remote != null) {
-                                JingleMessageSessionImpl.sendJingleMessageRetract(remote, mSid);
-                            }
+                            JingleMessageSessionImpl.sendJingleMessageRetract(remote.asBareJid(), mSid);
+                            endJmCallActivity();
                         }
                 );
                 callButton.setVisibility(View.GONE);
@@ -129,20 +136,12 @@ public class JingleMessageCallActivity extends BaseActivity implements JingleMes
         }
     };
 
+
     /**
-     * Bring aTalk to foreground, and end JingleMessageCallActivity UI; else user is prompted with
-     * both heads-up notification and ReceivedCallActivity UI to take action, this confuses user;
-     * Also to avoid failure arises on launching ...CallActivity from background;
-     * <p>
-     * Note: Due to android design constraints i.e. only activity launch is allowed when android is in locked screen.
-     * Hence two UI are still being shown on call received i.e. JingleMessageCallActivity and VideoCallActivity
+     * Destroy JingleMessageCallActivity UI, else remain visible after end call.
      */
     @Override
-    public void onJmEndCallback() {
-        NotificationPopupHandler.removeCallNotification(mSid);
-        startActivity(aTalk.class);
-
-        // Must destroy JingleMessageCallActivity UI, else remain visible after end call.
+    public void endJmCallActivity() {
         finish();
     }
 
@@ -151,11 +150,11 @@ public class JingleMessageCallActivity extends BaseActivity implements JingleMes
      *
      * @param callee the avatar of the callee
      */
-    public void setPeerImage(Jid callee) {
+    public void setPeerImage(BareJid callee) {
         if (callee == null)
             return;
 
-        byte[] avatar = AvatarManager.getAvatarImageByJid(callee.asBareJid());
+        byte[] avatar = AvatarManager.getAvatarImageByJid(callee);
         if ((avatar != null) && (avatar.length != 0)) {
             peerAvatar.setImageBitmap(AppImageUtil.bitmapFromBytes(avatar));
         }

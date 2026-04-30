@@ -17,42 +17,51 @@
 package org.jivesoftware.smackx.jinglemessage.element;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
+import org.jivesoftware.smackx.jingle.element.JingleReason;
+import org.jivesoftware.smackx.jinglemessage.JingleMessageState;
+
+import timber.log.Timber;
 
 /**
- * Implements <code>XmlElement</code> for XEP-0353: Jingle Message Initiation 0.4.0 (2021-11-27).
- * @see <a href="https://xmpp.org/extensions/xep-0353.html">XEP-0353: Jingle Message Initiation</a>
+ * Implements <code>XmlElement</code> for XEP-0353: Jingle Message Initiation 0.8.0 (2026-02-19).
  *
  * @author Eng Chong Meng
+ * @see <a href="https://xmpp.org/extensions/xep-0353.html">XEP-0353: Jingle Message Initiation</a>
  */
 public class JingleMessage implements XmlElement {
     public static final String NAMESPACE = "urn:xmpp:jingle-message:0";
     public final String ELEMENT;
     public final QName QNAME;
 
-    public static final String ACTION_PROPOSE = "propose";
-    public static final String ACTION_RETRACT = "retract";
-    public static final String ACTION_ACCEPT = "accept";
+    public static final String ACTION_FINISH = "finish";
     public static final String ACTION_PROCEED = "proceed";
+    public static final String ACTION_PROPOSE = "propose";
     public static final String ACTION_REJECT = "reject";
+    public static final String ACTION_RETRACT = "retract";
+    public static final String ACTION_RINGING = "ringing";
 
     public static final String ATTR_ID = "id";
 
+    private final String mAction;
+    private final String mUuid;
+    /**
+     * The <code>reason</code> extension in a <code>jingleMessage</code> provides machine
+     * and possibly human-readable information about the reason for the action.
+     */
+    private final JingleReason mReason;
 
-    private List<RtpDescription> rtpDescriptions = null;
-
-    private String action;
-    private final String id;
-    private final List<String> media = new ArrayList<>();
+    // List of the NamedElement or XmlElement to be included in JingleMessage before sending.
+    private List<NamedElement> namedElements = null;
 
     /**
      * Creates a new instance of jingleMessage.
@@ -60,25 +69,19 @@ public class JingleMessage implements XmlElement {
      * @param action message type element name
      * @param id Jingle message id.
      */
-    public JingleMessage(String action, String id) {
-        this.action = action;
-        this.id = id;
+    public JingleMessage(String action, String id, JingleReason reason, NamedElement element) {
+        mAction = action;
+        assert id != null;
+        mUuid = id;
+        mReason = reason;
+        addElement(element);
+
         ELEMENT = action;
         QNAME = new QName(NAMESPACE, ELEMENT);
     }
 
-    public JingleMessage(StandardExtensionElement extElement) {
-        this(extElement.getElementName(), extElement.getAttributeValue(ATTR_ID));
-        if (ACTION_PROPOSE.equals(action)) {
-            List<StandardExtensionElement> elements
-                    = extElement.getElements(RtpDescription.ELEMENT, RtpDescription.NAMESPACE);
-            media.clear();
-            if (elements != null) {
-                for (StandardExtensionElement element : elements) {
-                    media.add(element.getAttributeValue(RtpDescription.ATTR_MEDIA));
-                }
-            }
-        }
+    public JingleMessage(String action, String id) {
+        this(action, id, null, null);
     }
 
     /**
@@ -87,11 +90,7 @@ public class JingleMessage implements XmlElement {
      * @return the action specified in the jingle message.
      */
     public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
+        return mAction;
     }
 
     /**
@@ -100,27 +99,51 @@ public class JingleMessage implements XmlElement {
      * @return the jingle message id.
      */
     public String getId() {
-        return id;
+        return mUuid;
     }
 
-    public List<String> getMedia() {
-        return media;
+    public JingleMessageState getJmState() {
+        return JingleMessageState.fromString(mAction);
+    }
+
+    public JingleReason getReason() {
+        return mReason;
+    }
+
+    public List<NamedElement> getElements(String elementName) {
+        List<NamedElement> elements = new ArrayList<>();
+        if (namedElements != null) {
+            for (NamedElement element : namedElements) {
+                if (element.getElementName().equals(elementName)) {
+                    elements.add(element);
+                }
+            }
+        }
+        return elements;
     }
 
     /**
-     * Returns the jingle message RtpDescription.
+     * Returns the jingle message extensions.
      *
-     * @return the jingle message RtpDescription.
+     * @return the jingle message extensions.
      */
-    public List<RtpDescription> getDescriptionExt() {
-        return rtpDescriptions;
+    public List<NamedElement> getElements() {
+        return namedElements;
     }
 
-    public void addDescriptionExtension(RtpDescription extElement) {
-        if (rtpDescriptions == null) {
-            rtpDescriptions = new ArrayList<>();
+    public void addElement(NamedElement element) {
+        if (element == null) return;
+        if (namedElements == null) {
+            namedElements = new ArrayList<>();
         }
-        rtpDescriptions.add(extElement);
+        namedElements.add(element);
+    }
+
+    public void addElements(Collection<? extends NamedElement> elements) {
+        if (elements == null) return;
+        for (NamedElement namedElement : elements) {
+            addElement(namedElement);
+        }
     }
 
     @Override
@@ -136,15 +159,16 @@ public class JingleMessage implements XmlElement {
     @Override
     public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
-        xml.attribute(ATTR_ID, id);
-        if (rtpDescriptions == null) {
+        xml.attribute(ATTR_ID, mUuid);
+
+        if (mReason == null && namedElements == null) {
             xml.closeEmptyElement();
         }
         else {
             xml.rightAngleBracket();
-            for (RtpDescription extension : rtpDescriptions) {
-                xml.append(extension);
-            }
+            xml.optElement(mReason);
+
+            xml.optAppend(namedElements);
             xml.closeElement(ELEMENT);
         }
         return xml;

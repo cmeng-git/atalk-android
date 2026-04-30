@@ -26,11 +26,11 @@ import static org.dhcp4java.DHCPConstants.DHCPINFORM;
 import static org.dhcp4java.DHCPConstants.DHCPRELEASE;
 import static org.dhcp4java.DHCPConstants.DHCPREQUEST;
 
-import org.atalk.impl.timberlog.TimberLog;
-
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.util.Properties;
+
+import org.atalk.impl.timberlog.TimberLog;
 
 import timber.log.Timber;
 
@@ -47,8 +47,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  * @version 1.00
  */
-public class DHCPServlet
-{
+public class DHCPServlet {
     /**
      * the server instance running this servlet
      */
@@ -64,8 +63,7 @@ public class DHCPServlet
      *
      * @param props a Properties containing parameters, as passed to <code>DHCPCoreServer</code>
      */
-    public void init(Properties props)
-    {
+    public void init(Properties props) {
         // read whatever parameters you need
     }
 
@@ -79,10 +77,10 @@ public class DHCPServlet
      * only valid DHCP packets.
      *
      * @param requestDatagram the datagram received from the client
+     *
      * @return response the datagram to send back, or <code>null</code> if no answer
      */
-    public DatagramPacket serviceDatagram(DatagramPacket requestDatagram)
-    {
+    public DatagramPacket serviceDatagram(DatagramPacket requestDatagram) {
         DatagramPacket responseDatagram;
 
         if (requestDatagram == null) {
@@ -124,9 +122,11 @@ public class DHCPServlet
             Timber.log(TimberLog.FINER, "Sending back to %s (%s)", address.getHostAddress(), port);
             this.postProcess(requestDatagram, responseDatagram);
             return responseDatagram;
-        } catch (DHCPBadPacketException e) {
+        }
+        catch (DHCPBadPacketException e) {
             Timber.w("Invalid DHCP packet received: %s", e.getMessage());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Timber.w("Unexpected Exception: %s", e.getMessage());
         }
 
@@ -143,10 +143,10 @@ public class DHCPServlet
      * <p>Default behaviour: ignore BOOTP packets, and dispatch to <code>doXXX()</code> methods.
      *
      * @param request DHCP request from the client
+     *
      * @return response DHCP response to send back to client, <code>null</code> if no response
      */
-    protected DHCPPacket service(DHCPPacket request)
-    {
+    protected DHCPPacket service(DHCPPacket request) {
         Byte dhcpMessageType;
 
         if (request == null) {
@@ -166,20 +166,20 @@ public class DHCPServlet
 
         if (request.getOp() == BOOTREQUEST) {
             switch (dhcpMessageType) {
-                case DHCPDISCOVER:
-                    return this.doDiscover(request);
-                case DHCPREQUEST:
-                    return this.doRequest(request);
-                case DHCPINFORM:
-                    return this.doInform(request);
-                case DHCPDECLINE:
-                    return this.doDecline(request);
-                case DHCPRELEASE:
-                    return this.doRelease(request);
+            case DHCPDISCOVER:
+                return this.doDiscover(request);
+            case DHCPREQUEST:
+                return this.doRequest(request);
+            case DHCPINFORM:
+                return this.doInform(request);
+            case DHCPDECLINE:
+                return this.doDecline(request);
+            case DHCPRELEASE:
+                return this.doRelease(request);
 
-                default:
-                    Timber.i("Unsupported message type %s", dhcpMessageType);
-                    return null;
+            default:
+                Timber.i("Unsupported message type %s", dhcpMessageType);
+                return null;
             }
         }
         else if (request.getOp() == BOOTREPLY) {
@@ -197,10 +197,10 @@ public class DHCPServlet
      * Process DISCOVER request.
      *
      * @param request DHCP request received from client
+     *
      * @return DHCP response to send back, or <code>null</code> if no response.
      */
-    protected DHCPPacket doDiscover(DHCPPacket request)
-    {
+    protected DHCPPacket doDiscover(DHCPPacket request) {
         Timber.log(TimberLog.FINER, "DISCOVER packet received");
         return null;
     }
@@ -209,10 +209,10 @@ public class DHCPServlet
      * Process REQUEST request.
      *
      * @param request DHCP request received from client
+     *
      * @return DHCP response to send back, or <code>null</code> if no response.
      */
-    protected DHCPPacket doRequest(DHCPPacket request)
-    {
+    protected DHCPPacket doRequest(DHCPPacket request) {
         Timber.log(TimberLog.FINER, "REQUEST packet received");
         return null;
     }
@@ -221,10 +221,10 @@ public class DHCPServlet
      * Process INFORM request.
      *
      * @param request DHCP request received from client
+     *
      * @return DHCP response to send back, or <code>null</code> if no response.
      */
-    protected DHCPPacket doInform(DHCPPacket request)
-    {
+    protected DHCPPacket doInform(DHCPPacket request) {
         Timber.log(TimberLog.FINER, "INFORM packet received");
         return null;
     }
@@ -233,10 +233,10 @@ public class DHCPServlet
      * Process DECLINE request.
      *
      * @param request DHCP request received from client
+     *
      * @return DHCP response to send back, or <code>null</code> if no response.
      */
-    protected DHCPPacket doDecline(DHCPPacket request)
-    {
+    protected DHCPPacket doDecline(DHCPPacket request) {
         Timber.log(TimberLog.FINER, "DECLINE packet received");
         return null;
     }
@@ -245,10 +245,10 @@ public class DHCPServlet
      * Process RELEASE request.
      *
      * @param request DHCP request received from client
+     *
      * @return DHCP response to send back, or <code>null</code> if no response.
      */
-    protected DHCPPacket doRelease(DHCPPacket request)
-    {
+    protected DHCPPacket doRelease(DHCPPacket request) {
         Timber.log(TimberLog.FINER, "RELEASE packet received");
         return null;
     }
@@ -266,24 +266,21 @@ public class DHCPServlet
      * @param requestDatagram datagram received from client
      * @param responseDatagram datagram sent back to client
      */
-    protected void postProcess(DatagramPacket requestDatagram, DatagramPacket responseDatagram)
-    {
+    protected void postProcess(DatagramPacket requestDatagram, DatagramPacket responseDatagram) {
         // default is nop
     }
 
     /**
      * @return Returns the server.
      */
-    public DHCPCoreServer getServer()
-    {
+    public DHCPCoreServer getServer() {
         return server;
     }
 
     /**
      * @param server The server to set.
      */
-    public void setServer(DHCPCoreServer server)
-    {
+    public void setServer(DHCPCoreServer server) {
         this.server = server;
     }
 }

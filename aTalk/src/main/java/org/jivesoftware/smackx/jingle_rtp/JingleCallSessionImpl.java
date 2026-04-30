@@ -111,6 +111,7 @@ public class JingleCallSessionImpl extends JingleSession {
      * Pass on to BasicTelephony implementation to handle all call session request.
      *
      * @param request Jingle request
+     *
      * @return IQResult
      */
     @Override
@@ -123,12 +124,15 @@ public class JingleCallSessionImpl extends JingleSession {
      * Send session-terminate and wait for response; without unregister the associated Jingle Session Handler.
      *
      * @param jingleReason reason for session-terminate
+     *
      * @return IQ response, null if exception occurred.
      */
     public IQ terminateSession(JingleReason jingleReason) {
         try {
             return mConnection.sendIqRequestAndWaitForResponse(jutil.createSessionTerminate(remote, sid, jingleReason));
-        } catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException | XMPPException.XMPPErrorException e) {
+        }
+        catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException |
+               XMPPException.XMPPErrorException e) {
             LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
             return null;
         }
@@ -143,6 +147,10 @@ public class JingleCallSessionImpl extends JingleSession {
      */
     public void terminateSessionAndUnregister(JingleReason.Reason reason, String reasonText) {
         JingleReason jingleReason = new JingleReason(reason, reasonText, null);
+        terminateSessionAndUnregister(jingleReason);
+    }
+
+    public void terminateSessionAndUnregister(JingleReason jingleReason) {
         terminateSession(jingleReason);
         unregisterJingleSessionHandler();
     }

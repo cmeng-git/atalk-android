@@ -20,8 +20,7 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class DtmfRawPacket extends RawPacket implements Cloneable
-{
+public class DtmfRawPacket extends RawPacket implements Cloneable {
     /**
      * The event code to send.
      */
@@ -50,8 +49,7 @@ public class DtmfRawPacket extends RawPacket implements Cloneable
      * @param length Length of the packet's data.
      * @param payload the payload that has been negotiated for telephone events by our signaling modules.
      */
-    public DtmfRawPacket(byte[] buffer, int offset, int length, byte payload)
-    {
+    public DtmfRawPacket(byte[] buffer, int offset, int length, byte payload) {
         super(buffer, offset, length);
         setPayloadType(payload);
     }
@@ -61,8 +59,7 @@ public class DtmfRawPacket extends RawPacket implements Cloneable
      *
      * @param pkt the RTP packet.
      */
-    public DtmfRawPacket(RawPacket pkt)
-    {
+    public DtmfRawPacket(RawPacket pkt) {
         super(pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
 
         int at = getHeaderLength();
@@ -83,8 +80,7 @@ public class DtmfRawPacket extends RawPacket implements Cloneable
      * @param timestamp the RTP timestamp
      * @param volume the DTMF volume
      */
-    public void init(int code, boolean end, boolean marker, int duration, long timestamp, int volume)
-    {
+    public void init(int code, boolean end, boolean marker, int duration, long timestamp, int volume) {
         Timber.log(TimberLog.FINER, "DTMF send on RTP, code: %s duration = %s timestamps = %s Marker = %s End = %s",
                 code, duration, timestamp, marker, end);
 
@@ -124,8 +120,7 @@ public class DtmfRawPacket extends RawPacket implements Cloneable
      * packets.
      * @param volume describes the power level of the tone, expressed in dBm0
      */
-    private void setDtmfPayload(int code, boolean end, int duration, int volume)
-    {
+    private void setDtmfPayload(int code, boolean end, int duration, int volume) {
         this.code = code;
         this.end = end;
         this.duration = duration;
@@ -146,8 +141,7 @@ public class DtmfRawPacket extends RawPacket implements Cloneable
      *
      * @return the code
      */
-    public int getCode()
-    {
+    public int getCode() {
         return code;
     }
 
@@ -156,8 +150,7 @@ public class DtmfRawPacket extends RawPacket implements Cloneable
      *
      * @return the end
      */
-    public boolean isEnd()
-    {
+    public boolean isEnd() {
         return end;
     }
 
@@ -166,8 +159,7 @@ public class DtmfRawPacket extends RawPacket implements Cloneable
      *
      * @return the duration
      */
-    public int getDuration()
-    {
+    public int getDuration() {
         return duration;
     }
 
@@ -176,8 +168,7 @@ public class DtmfRawPacket extends RawPacket implements Cloneable
      *
      * @return the volume
      */
-    public int getVolume()
-    {
+    public int getVolume() {
         return volume;
     }
 
@@ -187,8 +178,7 @@ public class DtmfRawPacket extends RawPacket implements Cloneable
      * @return a new <code>DtmfRawPacket</code> instance which has the same properties as this instance
      */
     @Override
-    public Object clone()
-    {
+    public Object clone() {
         RawPacket pkt = new RawPacket(getBuffer().clone(), getOffset(), getLength());
         return new DtmfRawPacket(pkt);
     }

@@ -85,12 +85,13 @@ import org.atalk.service.neomedia.ZrtpControl;
 import org.atalk.util.FullScreenHelper;
 import org.atalk.util.MediaType;
 import org.jetbrains.annotations.NotNull;
+
 import org.jxmpp.jid.Jid;
 
 import timber.log.Timber;
 
 /**
- * The <code>VideoCallActivity</code> corresponds the call screen.
+ * A new <code>VideoCallActivity</code> instance is created for each incoming call up to max of two in call hold.
  *
  * @author Yana Stamcheva
  * @author Pawel Domas
@@ -243,11 +244,12 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
                 return;
             }
             // Check to see if launching call transfer dialog on resume has been requested
-            callTransfer = extras.containsKey(CallManager.CALL_TRANSFER) && extras.getBoolean(CallManager.CALL_TRANSFER);
+            callTransfer = extras.getBoolean(CallManager.CALL_TRANSFER);
 
         }
         if (mCall == null)
             return;
+        CallManager.addVideoCall(mCall, this);
 
         // Registers as the call state listener
         mCall.addCallChangeListener(this);
@@ -324,9 +326,9 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
      * @return new video call <code>Intent</code> parametrized with given <code>callIdentifier</code>.
      */
     public static Intent createVideoCallIntent(Context parent, String callIdentifier) {
-        // Timber.d(new Exception("createVideoCallIntent: " + parent.getPackageName()));
         Intent videoCallIntent = new Intent(parent, VideoCallActivity.class);
         videoCallIntent.putExtra(CallManager.CALL_SID, callIdentifier);
+        videoCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return videoCallIntent;
     }
 
@@ -514,52 +516,52 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.button_call_back_to_chat:
+        case R.id.button_call_back_to_chat:
+            finish();
+            break;
+
+        case R.id.button_speakerphone:
+            AudioManager audioManager = aTalkApp.getAudioManager();
+            audioManager.setSpeakerphoneOn(!audioManager.isSpeakerphoneOn());
+            updateSpeakerphoneStatus();
+            break;
+
+        case R.id.button_call_microphone:
+            if (micEnabled)
+                CallManager.setMute(mCall, !isMuted());
+            break;
+
+        case R.id.button_call_hold:
+            // call == null if call setup failed
+            if (mCall != null)
+                CallManager.putOnHold(mCall, !isOnHold());
+            break;
+
+        case R.id.button_call_transfer:
+            // call == null if call setup failed
+            if (mCall != null)
+                transferCall();
+            break;
+
+        case R.id.button_call_hangup:
+            // Start the hang up Thread, Activity will be closed later on call ended event
+            if (mCall == null || CallState.CALL_ENDED == mCall.getCallState()) {
                 finish();
-                break;
+            }
+            else {
+                CallManager.hangupCall(mCall);
+                setErrorReason(callState.errorReason);
+            }
+            break;
 
-            case R.id.button_speakerphone:
-                AudioManager audioManager = aTalkApp.getAudioManager();
-                audioManager.setSpeakerphoneOn(!audioManager.isSpeakerphoneOn());
-                updateSpeakerphoneStatus();
-                break;
+        case R.id.security_group:
+            showZrtpInfoDialog();
+            break;
 
-            case R.id.button_call_microphone:
-                if (micEnabled)
-                    CallManager.setMute(mCall, !isMuted());
-                break;
-
-            case R.id.button_call_hold:
-                // call == null if call setup failed
-                if (mCall != null)
-                    CallManager.putOnHold(mCall, !isOnHold());
-                break;
-
-            case R.id.button_call_transfer:
-                // call == null if call setup failed
-                if (mCall != null)
-                    transferCall();
-                break;
-
-            case R.id.button_call_hangup:
-                // Start the hang up Thread, Activity will be closed later on call ended event
-                if (mCall == null || CallState.CALL_ENDED == mCall.getCallState()) {
-                    finish();
-                }
-                else {
-                    CallManager.hangupCall(mCall);
-                    setErrorReason(callState.errorReason);
-                }
-                break;
-
-            case R.id.security_group:
-                showZrtpInfoDialog();
-                break;
-
-            case R.id.clickable_toast:
-                showZrtpInfoDialog();
-                sasToastControl.hideToast(true);
-                break;
+        case R.id.clickable_toast:
+            showZrtpInfoDialog();
+            sasToastControl.hideToast(true);
+            break;
         }
     }
 
@@ -570,20 +572,20 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
     public boolean onLongClick(View v) {
         DialogFragment newFragment;
         switch (v.getId()) {
-            // Create and show the volume control dialog.
-            case R.id.button_speakerphone:
-                // Create and show the dialog.
-                newFragment = VolumeControlDialog.createOutputVolCtrlDialog();
-                newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
-                return true;
+        // Create and show the volume control dialog.
+        case R.id.button_speakerphone:
+            // Create and show the dialog.
+            newFragment = VolumeControlDialog.createOutputVolCtrlDialog();
+            newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
+            return true;
 
-            // Create and show the mic gain control dialog.
-            case R.id.button_call_microphone:
-                if (micEnabled) {
-                    newFragment = VolumeControlDialog.createInputVolCtrlDialog();
-                    newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
-                }
-                return true;
+        // Create and show the mic gain control dialog.
+        case R.id.button_call_microphone:
+            if (micEnabled) {
+                newFragment = VolumeControlDialog.createInputVolCtrlDialog();
+                newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
+            }
+            return true;
         }
         return false;
     }
@@ -605,7 +607,8 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
 
             mTransferDialog = new CallTransferDialog(this, initialPeer, transferCalls);
             mTransferDialog.show();
-        } catch (NoSuchElementException e) {
+        }
+        catch (NoSuchElementException e) {
             Timber.w("Transferring call: %s", e.getMessage());
         }
     }
@@ -679,18 +682,18 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
         int action = event.getAction();
         int keyCode = event.getKeyCode();
         switch (keyCode) {
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                if (action == KeyEvent.ACTION_UP) {
-                    callVolumeControl.onKeyVolUp();
-                }
-                return true;
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                if (action == KeyEvent.ACTION_DOWN) {
-                    callVolumeControl.onKeyVolDown();
-                }
-                return true;
-            default:
-                return super.dispatchKeyEvent(event);
+        case KeyEvent.KEYCODE_VOLUME_UP:
+            if (action == KeyEvent.ACTION_UP) {
+                callVolumeControl.onKeyVolUp();
+            }
+            return true;
+        case KeyEvent.KEYCODE_VOLUME_DOWN:
+            if (action == KeyEvent.ACTION_DOWN) {
+                callVolumeControl.onKeyVolDown();
+            }
+            return true;
+        default:
+            return super.dispatchKeyEvent(event);
         }
     }
 
@@ -727,11 +730,9 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
     /**
      * Sets the peer state.
      *
-     * @param oldState the old peer state
-     * @param newState the new peer state
      * @param stateString the state of the call peer
      */
-    public void setPeerState(CallPeerState oldState, CallPeerState newState, final String stateString) {
+    public void setPeerState(final String stateString) {
         runOnUiThread(() -> {
             TextView statusName = findViewById(R.id.callStatus);
             statusName.setText(stateString);
@@ -881,17 +882,17 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.video_dimension:
-                aTalkApp.showToastMessage("Not implemented!");
-                return true;
-            case R.id.call_info_item:
-                showCallInfoDialog();
-                return true;
-            case R.id.call_zrtp_info_item:
-                showZrtpInfoDialog();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        case R.id.video_dimension:
+            aTalkApp.showToastMessage("Not implemented!");
+            return true;
+        case R.id.call_info_item:
+            showCallInfoDialog();
+            return true;
+        case R.id.call_zrtp_info_item:
+            showZrtpInfoDialog();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -938,7 +939,7 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
             callPeer.addPropertyChangeListener(callPeerAdapter);
         }
 
-        setPeerState(callPeer.getState(), callPeer.getState(), callPeer.getState().getLocalizedStateString());
+        setPeerState(callPeer.getState().getLocalizedStateString());
         onCallConferenceEventObject(evt);
     }
 
@@ -989,7 +990,8 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
                 stopCallTimer();
                 doFinishActivity();
             }
-        } finally {
+        }
+        finally {
             updateViewFromModel(ev);
         }
     }
@@ -1024,7 +1026,7 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
         callPeer.addCallPeerSecurityListener(callPeerAdapter);
         callPeer.addPropertyChangeListener(callPeerAdapter);
 
-        setPeerState(null, callPeer.getState(), callPeer.getState().getLocalizedStateString());
+        setPeerState(callPeer.getState().getLocalizedStateString());
         setPeerName(callPeer.getDisplayName());
         setPeerImage(CallUIUtils.getCalleeAvatar(mCall));
         callTimer.callPeerAdded(callPeer);

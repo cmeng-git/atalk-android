@@ -5,24 +5,6 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import org.atalk.impl.neomedia.audiolevel.AudioLevelEventDispatcher;
-import org.atalk.impl.neomedia.audiolevel.AudioLevelMap;
-import org.atalk.impl.neomedia.conference.AudioMixer;
-import org.atalk.impl.neomedia.conference.AudioMixingPushBufferDataSource;
-import org.atalk.impl.neomedia.conference.DataSourceFilter;
-import org.atalk.impl.neomedia.protocol.PushBufferDataSourceDelegate;
-import org.atalk.impl.neomedia.protocol.TranscodingDataSource;
-import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.QualityPreset;
-import org.atalk.service.neomedia.RTPExtension;
-import org.atalk.service.neomedia.VolumeControl;
-import org.atalk.service.neomedia.codec.EncodingConfiguration;
-import org.atalk.service.neomedia.device.MediaDevice;
-import org.atalk.service.neomedia.device.MediaDeviceWrapper;
-import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
-import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.MediaType;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -43,6 +25,24 @@ import javax.media.protocol.DataSource;
 import javax.media.protocol.PushBufferStream;
 import javax.media.rtp.ReceiveStream;
 
+import org.atalk.impl.neomedia.audiolevel.AudioLevelEventDispatcher;
+import org.atalk.impl.neomedia.audiolevel.AudioLevelMap;
+import org.atalk.impl.neomedia.conference.AudioMixer;
+import org.atalk.impl.neomedia.conference.AudioMixingPushBufferDataSource;
+import org.atalk.impl.neomedia.conference.DataSourceFilter;
+import org.atalk.impl.neomedia.protocol.PushBufferDataSourceDelegate;
+import org.atalk.impl.neomedia.protocol.TranscodingDataSource;
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.service.neomedia.QualityPreset;
+import org.atalk.service.neomedia.RTPExtension;
+import org.atalk.service.neomedia.VolumeControl;
+import org.atalk.service.neomedia.codec.EncodingConfiguration;
+import org.atalk.service.neomedia.device.MediaDevice;
+import org.atalk.service.neomedia.device.MediaDeviceWrapper;
+import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
+import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.MediaType;
+
 import timber.log.Timber;
 
 /**
@@ -53,8 +53,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class AudioMixerMediaDevice extends AbstractMediaDevice
-        implements MediaDeviceWrapper
-{
+        implements MediaDeviceWrapper {
     /**
      * The <code>AudioMixer</code> which performs audio mixing in this <code>MediaDevice</code> (and rather
      * the session that it represents).
@@ -77,10 +76,8 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * {@link #localUserAudioLevelDispatcher} and which delivers each of the audio level changes to
      * {@link #localUserAudioLevelListeners}.
      */
-    private final SimpleAudioLevelListener localUserAudioLevelDelegate = new SimpleAudioLevelListener()
-    {
-        public void audioLevelChanged(int level)
-        {
+    private final SimpleAudioLevelListener localUserAudioLevelDelegate = new SimpleAudioLevelListener() {
+        public void audioLevelChanged(int level) {
             lastMeasuredLocalUserAudioLevel = level;
             fireLocalUserAudioLevelChanged(level);
         }
@@ -145,8 +142,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      *
      * @param device the <code>AudioMediaDeviceImpl</code> which the new instance is to enable audio mixing on
      */
-    public AudioMixerMediaDevice(AudioMediaDeviceImpl device)
-    {
+    public AudioMixerMediaDevice(AudioMediaDeviceImpl device) {
         /*
          * AudioMixer is initialized with a CaptureDevice so we have to be sure that the wrapped
          * device can provide one.
@@ -161,13 +157,13 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * Connects to a specific <code>CaptureDevice</code> given in the form of a <code>DataSource</code>.
      *
      * @param captureDevice the <code>CaptureDevice</code> to be connected to
+     *
      * @throws IOException if anything wrong happens while connecting to the specified <code>captureDevice</code>
      * @see AbstractMediaDevice#connect(DataSource)
      */
     @Override
     public void connect(DataSource captureDevice)
-            throws IOException
-    {
+            throws IOException {
         DataSource effectiveCaptureDevice = captureDevice;
 
         /*
@@ -192,11 +188,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      *
      * @return a <code>DataSource</code> instance which gives access to the media captured by this
      * <code>MediaDevice</code>
+     *
      * @see AbstractMediaDevice#createOutputDataSource()
      */
     @Override
-    public AudioMixingPushBufferDataSource createOutputDataSource()
-    {
+    public AudioMixingPushBufferDataSource createOutputDataSource() {
         return getAudioMixer().createOutDataSource();
     }
 
@@ -208,8 +204,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      */
     @Override
     protected Processor createPlayer(DataSource dataSource)
-            throws Exception
-    {
+            throws Exception {
         return device.createPlayer(dataSource);
     }
 
@@ -220,8 +215,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * <code>MediaDevice</code> on which this instance enables mixing i.e. {@link #getWrappedDevice()}.
      */
     @Override
-    protected Renderer createRenderer()
-    {
+    protected Renderer createRenderer() {
         return device.createRenderer();
     }
 
@@ -231,11 +225,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      *
      * @return a new <code>MediaDeviceSession</code> instance which is to represent the use of this
      * <code>MediaDevice</code> by a <code>MediaStream</code>
+     *
      * @see AbstractMediaDevice#createSession()
      */
     @Override
-    public synchronized MediaDeviceSession createSession()
-    {
+    public synchronized MediaDeviceSession createSession() {
         if (deviceSession == null)
             deviceSession = new AudioMixerMediaDeviceSession();
         return new MediaStreamMediaDeviceSession(deviceSession);
@@ -247,8 +241,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      *
      * @param level the new/current audio level of the local media stream.
      */
-    private void fireLocalUserAudioLevelChanged(int level)
-    {
+    private void fireLocalUserAudioLevelChanged(int level) {
         List<SimpleAudioLevelListenerWrapper> localUserAudioLevelListeners;
 
         synchronized (localUserAudioLevelListenersSyncRoot) {
@@ -277,15 +270,12 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * @return the <code>AudioMixer</code> which performs audio mixing in this <code>MediaDevice</code>
      * (and rather the session it represents)
      */
-    private synchronized AudioMixer getAudioMixer()
-    {
+    private synchronized AudioMixer getAudioMixer() {
         if (audioMixer == null) {
-            audioMixer = new AudioMixer(device.createCaptureDevice())
-            {
+            audioMixer = new AudioMixer(device.createCaptureDevice()) {
                 @Override
                 protected void connect(DataSource dataSource, DataSource inputDataSource)
-                        throws IOException
-                {
+                        throws IOException {
                     /*
                      * CaptureDevice needs special connecting as defined by AbstractMediaDevice
                      * and, especially, MediaDeviceImpl.
@@ -298,8 +288,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
 
                 @Override
                 protected void read(PushBufferStream stream, Buffer buffer, DataSource dataSource)
-                        throws IOException
-                {
+                        throws IOException {
                     super.read(stream, buffer, dataSource);
 
                     /*
@@ -358,10 +347,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * {@link MediaDirection#RECVONLY} if this is a write-only device or
      * {@link MediaDirection#SENDRECV} if this <code>MediaDevice</code> can both capture and
      * render media
+     *
      * @see MediaDevice#getDirection()
      */
-    public MediaDirection getDirection()
-    {
+    public MediaDirection getDirection() {
         return device.getDirection();
     }
 
@@ -369,10 +358,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * Gets the <code>MediaFormat</code> in which this <t>MediaDevice</code> captures media.
      *
      * @return the <code>MediaFormat</code> in which this <code>MediaDevice</code> captures media
+     *
      * @see MediaDevice#getFormat()
      */
-    public MediaFormat getFormat()
-    {
+    public MediaFormat getFormat() {
         return device.getFormat();
     }
 
@@ -381,10 +370,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      *
      * @return {@link MediaType#AUDIO} if this is an audio device or {@link MediaType#VIDEO} if
      * this is a video device
+     *
      * @see MediaDevice#getMediaType()
      */
-    public MediaType getMediaType()
-    {
+    public MediaType getMediaType() {
         return device.getMediaType();
     }
 
@@ -395,8 +384,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * @return a <code>List</code> containing the <code>CSRC_AUDIO_LEVEL_URN</code> extension descriptor.
      */
     @Override
-    public List<RTPExtension> getSupportedExtensions()
-    {
+    public List<RTPExtension> getSupportedExtensions() {
         if (rtpExtensions == null) {
             rtpExtensions = new ArrayList<RTPExtension>(2);
 
@@ -405,7 +393,8 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
             try {
                 csrcAudioLevelURN = new URI(RTPExtension.CSRC_AUDIO_LEVEL_URN);
                 ssrcAudioLevelURN = new URI(RTPExtension.SSRC_AUDIO_LEVEL_URN);
-            } catch (URISyntaxException e) {
+            }
+            catch (URISyntaxException e) {
                 // can't happen since CSRC_AUDIO_LEVEL_URN is a valid URI and never changes.
                 csrcAudioLevelURN = null;
                 ssrcAudioLevelURN = null;
@@ -427,11 +416,12 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      *
      * @param sendPreset not used
      * @param receivePreset not used
+     *
      * @return the list of <code>MediaFormat</code>s supported by this <code>MediaDevice</code>
+     *
      * @see MediaDevice#getSupportedFormats()
      */
-    public List<MediaFormat> getSupportedFormats(QualityPreset sendPreset, QualityPreset receivePreset)
-    {
+    public List<MediaFormat> getSupportedFormats(QualityPreset sendPreset, QualityPreset receivePreset) {
         return device.getSupportedFormats();
     }
 
@@ -441,8 +431,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      *
      * @param listener the <code>ReceiveStreamBufferListener</code> which gets notified
      */
-    public void setReceiveStreamBufferListener(ReceiveStreamBufferListener listener)
-    {
+    public void setReceiveStreamBufferListener(ReceiveStreamBufferListener listener) {
         this.receiveStreamBufferListener = listener;
     }
 
@@ -453,13 +442,14 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * @param sendPreset not used
      * @param receivePreset not used
      * @param encodingConfiguration the <code>EncodingConfiguration</code> instance to use
+     *
      * @return the list of <code>MediaFormat</code>s supported by this <code>MediaDevice</code> and enabled
      * in <code>encodingConfiguration</code>.
+     *
      * @see MediaDevice#getSupportedFormats(QualityPreset, QualityPreset, EncodingConfiguration)
      */
     public List<MediaFormat> getSupportedFormats(QualityPreset sendPreset,
-            QualityPreset receivePreset, EncodingConfiguration encodingConfiguration)
-    {
+            QualityPreset receivePreset, EncodingConfiguration encodingConfiguration) {
         return device.getSupportedFormats(encodingConfiguration);
     }
 
@@ -469,10 +459,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      *
      * @return the actual <code>MediaDevice</code> which this <code>MediaDevice</code> is effectively built
      * on top of and forwarding to
+     *
      * @see MediaDeviceWrapper#getWrappedDevice()
      */
-    public MediaDevice getWrappedDevice()
-    {
+    public MediaDevice getWrappedDevice() {
         return device;
     }
 
@@ -483,8 +473,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      *
      * @param dataSourceFilter the <code>DataSourceFilter</code> which selects the <code>DataSource</code>s to be removed
      */
-    private void removeInputDataSources(DataSourceFilter dataSourceFilter)
-    {
+    private void removeInputDataSources(DataSourceFilter dataSourceFilter) {
         AudioMixer audioMixer = this.audioMixer;
         if (audioMixer != null)
             audioMixer.removeInDataSources(dataSourceFilter);
@@ -494,8 +483,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * Represents the one and only <code>MediaDeviceSession</code> with the <code>MediaDevice</code> of
      * this <code>AudioMixer</code>
      */
-    private class AudioMixerMediaDeviceSession extends MediaDeviceSession
-    {
+    private class AudioMixerMediaDeviceSession extends MediaDeviceSession {
         /**
          * The list of <code>MediaDeviceSession</code>s of <code>MediaStream</code>s which use this
          * <code>AudioMixer</code>.
@@ -512,8 +500,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * Initializes a new <code>AudioMixingMediaDeviceSession</code> which is to represent the
          * <code>MediaDeviceSession</code> of this <code>AudioMixer</code> with its <code>MediaDevice</code>
          */
-        public AudioMixerMediaDeviceSession()
-        {
+        public AudioMixerMediaDeviceSession() {
             super(AudioMixerMediaDevice.this);
         }
 
@@ -523,8 +510,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          *
          * @param l the listener we'd like to add.
          */
-        void addLocalUserAudioLevelListener(SimpleAudioLevelListener l)
-        {
+        void addLocalUserAudioLevelListener(SimpleAudioLevelListener l) {
             // If the listener is null, we have nothing more to do here.
             if (l == null)
                 return;
@@ -565,8 +551,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * this instance
          */
         void addMediaStreamMediaDeviceSession(
-                MediaStreamMediaDeviceSession mediaStreamMediaDeviceSession)
-        {
+                MediaStreamMediaDeviceSession mediaStreamMediaDeviceSession) {
             if (mediaStreamMediaDeviceSession == null)
                 throw new NullPointerException("mediaStreamMediaDeviceSession");
 
@@ -584,8 +569,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * the associated <code>MediaDevice</code>
          */
         @Override
-        public void addPlaybackDataSource(DataSource playbackDataSource)
-        {
+        public void addPlaybackDataSource(DataSource playbackDataSource) {
             /*
              * We don't play back the contributions of the conference members separately, we have a
              * single playback of the mix of all contributions but ours.
@@ -603,8 +587,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * associated <code>AudioMixer</code>
          */
         @Override
-        public void addReceiveStream(ReceiveStream receiveStream)
-        {
+        public void addReceiveStream(ReceiveStream receiveStream) {
             addSSRC(0xFFFFFFFFL & receiveStream.getSSRC());
         }
 
@@ -617,11 +600,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * the <code>AudioMixer</code>.
          *
          * @return the <code>DataSource</code> that this instance is to read captured media from
+         *
          * @see MediaDeviceSession#createCaptureDevice()
          */
         @Override
-        protected DataSource createCaptureDevice()
-        {
+        protected DataSource createCaptureDevice() {
             return getAudioMixer().getLocalOutDataSource();
         }
 
@@ -629,8 +612,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * {@inheritDoc}
          */
         @Override
-        protected Player createPlayer(DataSource dataSource)
-        {
+        protected Player createPlayer(DataSource dataSource) {
             /*
              * TODO AudioMixerMediaDevice wraps a MediaDevice so AudioMixerMediaDeviceSession
              * should wrap a MediaDeviceSession of that same wrapped MediaDevice.
@@ -645,8 +627,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * @param outputVolumeControl the <code>VolumeControl</code> which is to be control the volume (level) of the audio
          * (to be) played back by this instance
          */
-        void setOutputVolumeControl(VolumeControl outputVolumeControl)
-        {
+        void setOutputVolumeControl(VolumeControl outputVolumeControl) {
             this.outputVolumeControl = outputVolumeControl;
         }
 
@@ -657,8 +638,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * @param stream the stream that <code>l</code> would like to register as an audio level listener for.
          * @param listener the listener we'd like to register for notifications from <code>stream</code>.
          */
-        void setStreamAudioLevelListener(ReceiveStream stream, SimpleAudioLevelListener listener)
-        {
+        void setStreamAudioLevelListener(ReceiveStream stream, SimpleAudioLevelListener listener) {
             synchronized (streamAudioLevelListeners) {
                 AudioLevelEventDispatcher dispatcher = streamAudioLevelListeners.get(stream);
 
@@ -667,7 +647,8 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
                         try {
                             dispatcher.setAudioLevelListener(null);
                             dispatcher.setAudioLevelCache(null, -1);
-                        } finally {
+                        }
+                        finally {
                             streamAudioLevelListeners.remove(stream);
                         }
                     }
@@ -692,8 +673,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * conference-specific volume (levels).
          */
         @Override
-        protected Renderer createRenderer(Player player, TrackControl trackControl)
-        {
+        protected Renderer createRenderer(Player player, TrackControl trackControl) {
             Renderer renderer = super.createRenderer(player, trackControl);
             if (renderer != null) {
                 AudioMediaDeviceSession.setVolumeControl(renderer, outputVolumeControl);
@@ -707,8 +687,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          *
          * @param l the listener we'd like to remove.
          */
-        void removeLocalUserAudioLevelListener(SimpleAudioLevelListener l)
-        {
+        void removeLocalUserAudioLevelListener(SimpleAudioLevelListener l) {
             synchronized (localUserAudioLevelListenersSyncRoot) {
                 // check if this listener has already been added.
                 int index = localUserAudioLevelListeners.indexOf(new SimpleAudioLevelListenerWrapper(l));
@@ -749,8 +728,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * by this instance
          */
         void removeMediaStreamMediaDeviceSession(
-                MediaStreamMediaDeviceSession mediaStreamMediaDeviceSession)
-        {
+                MediaStreamMediaDeviceSession mediaStreamMediaDeviceSession) {
             if (mediaStreamMediaDeviceSession != null) {
                 synchronized (mediaStreamMediaDeviceSessions) {
                     if (mediaStreamMediaDeviceSessions.remove(mediaStreamMediaDeviceSession)
@@ -768,13 +746,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * by the associated <code>AudioMixer</code>
          */
         @Override
-        public void removePlaybackDataSource(final DataSource playbackDataSource)
-        {
-            removeInputDataSources(new DataSourceFilter()
-            {
+        public void removePlaybackDataSource(final DataSource playbackDataSource) {
+            removeInputDataSources(new DataSourceFilter() {
                 @Override
-                public boolean accept(DataSource dataSource)
-                {
+                public boolean accept(DataSource dataSource) {
                     return dataSource.equals(playbackDataSource);
                 }
             });
@@ -790,8 +765,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * associated <code>AudioMixer</code>
          */
         @Override
-        public void removeReceiveStream(ReceiveStream receiveStream)
-        {
+        public void removeReceiveStream(ReceiveStream receiveStream) {
             long ssrc = 0xFFFFFFFFL & receiveStream.getSSRC();
             removeSSRC(ssrc);
 
@@ -805,8 +779,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * <code>AudioMixer</code> and the contribution of that <code>MediaStream</code> to the mix.
      */
     private static class MediaStreamMediaDeviceSession extends AudioMediaDeviceSession
-            implements PropertyChangeListener
-    {
+            implements PropertyChangeListener {
         /**
          * The <code>MediaDeviceSession</code> of the <code>AudioMixer</code> that this instance exposes to
          * a <code>MediaStream</code>. While there are multiple
@@ -847,8 +820,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * contribute to the mix
          */
         public MediaStreamMediaDeviceSession(
-                AudioMixerMediaDeviceSession audioMixerMediaDeviceSession)
-        {
+                AudioMixerMediaDeviceSession audioMixerMediaDeviceSession) {
             super(audioMixerMediaDeviceSession.getDevice());
 
             this.audioMixerMediaDeviceSession = audioMixerMediaDeviceSession;
@@ -863,11 +835,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * @see MediaDeviceSession#close(MediaDirection)
          */
         @Override
-        public void close(MediaDirection direction)
-        {
+        public void close(MediaDirection direction) {
             try {
                 super.close(direction);
-            } finally {
+            }
+            finally {
                 audioMixerMediaDeviceSession.removeMediaStreamMediaDeviceSession(this);
             }
         }
@@ -877,12 +849,13 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * back on the <code>MediaDevice</code> represented by this instance.
          *
          * @param dataSource the <code>DataSource</code> to create a new <code>Player</code> for
+         *
          * @return a new <code>Player</code> for the specified <code>dataSource</code>
+         *
          * @see MediaDeviceSession#createPlayer(DataSource)
          */
         @Override
-        protected Player createPlayer(DataSource dataSource)
-        {
+        protected Player createPlayer(DataSource dataSource) {
             /*
              * We don't want the contribution of each conference member played back separately, we
              * want the one and only mix of all contributions but ours to be played back once for
@@ -900,8 +873,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * the mixer encapsulated by this device session.
          */
         @Override
-        public long[] getRemoteSSRCList()
-        {
+        public long[] getRemoteSSRCList() {
             return audioMixerMediaDeviceSession.getRemoteSSRCList();
         }
 
@@ -911,11 +883,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          *
          * @param playbackDataSource the <code>DataSource</code> which has been added for playback on the represented
          * <code>MediaDevice</code>
+         *
          * @see MediaDeviceSession#playbackDataSourceAdded(DataSource)
          */
         @Override
-        protected void playbackDataSourceAdded(DataSource playbackDataSource)
-        {
+        protected void playbackDataSourceAdded(DataSource playbackDataSource) {
             super.playbackDataSourceAdded(playbackDataSource);
             DataSource captureDevice = getCaptureDevice();
 
@@ -936,11 +908,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          *
          * @param playbackDataSource the <code>DataSource</code> which has been removed from playback on the represented
          * <code>MediaDevice</code>
+         *
          * @see MediaDeviceSession#playbackDataSourceRemoved(DataSource)
          */
         @Override
-        protected void playbackDataSourceRemoved(DataSource playbackDataSource)
-        {
+        protected void playbackDataSourceRemoved(DataSource playbackDataSource) {
             super.playbackDataSourceRemoved(playbackDataSource);
             audioMixerMediaDeviceSession.removePlaybackDataSource(playbackDataSource);
         }
@@ -949,11 +921,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * Notifies this <code>MediaDeviceSession</code> that a <code>DataSource</code> has been updated.
          *
          * @param playbackDataSource the <code>DataSource</code> which has been updated.
+         *
          * @see MediaDeviceSession#playbackDataSourceUpdated(DataSource)
          */
         @Override
-        protected void playbackDataSourceUpdated(DataSource playbackDataSource)
-        {
+        protected void playbackDataSourceUpdated(DataSource playbackDataSource) {
             super.playbackDataSourceUpdated(playbackDataSource);
             DataSource captureDevice = getCaptureDevice();
 
@@ -976,8 +948,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * @param evt that <code>PropertyChangeEvent</code> whose old and new value we will be relaying to
          * the stream.
          */
-        public void propertyChange(PropertyChangeEvent evt)
-        {
+        public void propertyChange(PropertyChangeEvent evt) {
             if (MediaDeviceSession.SSRC_LIST.equals(evt.getPropertyName())) {
                 firePropertyChange(MediaDeviceSession.SSRC_LIST, evt.getOldValue(),
                         evt.getNewValue());
@@ -994,8 +965,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
          */
         @Override
-        protected void receiveStreamAdded(ReceiveStream receiveStream)
-        {
+        protected void receiveStreamAdded(ReceiveStream receiveStream) {
             super.receiveStreamAdded(receiveStream);
 
             /*
@@ -1021,8 +991,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
          */
         @Override
-        protected void receiveStreamRemoved(ReceiveStream receiveStream)
-        {
+        protected void receiveStreamRemoved(ReceiveStream receiveStream) {
             super.receiveStreamRemoved(receiveStream);
             audioMixerMediaDeviceSession.removeReceiveStream(receiveStream);
         }
@@ -1034,8 +1003,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * @param processor the processor.
          */
         @Override
-        protected void registerLocalUserAudioLevelEffect(Processor processor)
-        {
+        protected void registerLocalUserAudioLevelEffect(Processor processor) {
         }
 
         /**
@@ -1045,8 +1013,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * @param l the <code>SoundLevelListener</code> to add
          */
         @Override
-        public void setLocalUserAudioLevelListener(SimpleAudioLevelListener l)
-        {
+        public void setLocalUserAudioLevelListener(SimpleAudioLevelListener l) {
             if (localUserAudioLevelListener != null) {
                 audioMixerMediaDeviceSession.removeLocalUserAudioLevelListener(localUserAudioLevelListener);
                 localUserAudioLevelListener = null;
@@ -1071,8 +1038,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * not perform playback/rendering.
          */
         @Override
-        public void setOutputVolumeControl(VolumeControl outputVolumeControl)
-        {
+        public void setOutputVolumeControl(VolumeControl outputVolumeControl) {
             audioMixerMediaDeviceSession.setOutputVolumeControl(outputVolumeControl);
         }
 
@@ -1085,8 +1051,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * session or <code>null</code> if we are trying to unregister it.
          */
         @Override
-        public void setStreamAudioLevelListener(SimpleAudioLevelListener listener)
-        {
+        public void setStreamAudioLevelListener(SimpleAudioLevelListener listener) {
             synchronized (streamAudioLevelListenerLock) {
                 streamAudioLevelListener = listener;
 
@@ -1106,13 +1071,13 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * <code>csrc</code>.
          *
          * @param csrc the CSRC ID whose last measured audio level we'd like to retrieve.
+         *
          * @return the audio level that was last measured by the underlying mixer for the specified
          * <code>csrc</code> or <code>-1</code> if the <code>csrc</code> does not belong to neither of
          * the conference participants.
          */
         @Override
-        public int getLastMeasuredAudioLevel(long csrc)
-        {
+        public int getLastMeasuredAudioLevel(long csrc) {
             return ((AudioMixerMediaDevice) getDevice()).audioLevelCache.getLevel(csrc);
         }
 
@@ -1122,8 +1087,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * @return the audio level that was last measured for the local user.
          */
         @Override
-        public int getLastMeasuredLocalUserAudioLevel()
-        {
+        public int getLastMeasuredLocalUserAudioLevel() {
             return ((AudioMixerMediaDevice) getDevice()).lastMeasuredLocalUserAudioLevel;
         }
 
@@ -1136,8 +1100,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * of the actual media fed from its <code>CaptureDevice</code>; otherwise, <code>false</code>
          */
         @Override
-        public void setMute(boolean mute)
-        {
+        public void setMute(boolean mute) {
             boolean oldValue = isMute();
             super.setMute(mute);
             boolean newValue = isMute();
@@ -1159,8 +1122,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * A very lightweight wrapper that allows us to track the number of times that a particular
      * listener was added.
      */
-    private static class SimpleAudioLevelListenerWrapper
-    {
+    private static class SimpleAudioLevelListenerWrapper {
         /**
          * The listener being wrapped by this wrapper.
          */
@@ -1176,8 +1138,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          *
          * @param l the listener we'd like to wrap;
          */
-        public SimpleAudioLevelListenerWrapper(SimpleAudioLevelListener l)
-        {
+        public SimpleAudioLevelListenerWrapper(SimpleAudioLevelListener l) {
             this.listener = l;
             this.referenceCount = 1;
         }
@@ -1186,11 +1147,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * Returns <code>true</code> if <code>obj</code> is a wrapping the same listener as ours.
          *
          * @param obj the wrapper we'd like to compare to this instance
+         *
          * @return <code>true</code> if <code>obj</code> is a wrapping the same listener as ours.
          */
         @Override
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             return (obj instanceof SimpleAudioLevelListenerWrapper)
                     && ((SimpleAudioLevelListenerWrapper) obj).listener == listener;
         }
@@ -1201,8 +1162,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * @return a hash code value for this instance for the benefit of hashtables
          */
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             /*
              * Equality is based on the listener field only so its hashCode is enough. Besides,
              * it's the only immutable of this instance i.e. the only field appropriate for the
@@ -1217,12 +1177,13 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * object's <code>AudioMixer</code>.
      *
      * @param inputDataSource the <code>DataSource</code> to search for
+     *
      * @return Returns the <code>TranscodingDataSource</code> associated with <code>inputDataSource</code>
      * in this object's <code>AudioMixer</code>
+     *
      * @see AudioMixer#getTranscodingDataSource(javax.media.protocol.DataSource)
      */
-    public TranscodingDataSource getTranscodingDataSource(DataSource inputDataSource)
-    {
+    public TranscodingDataSource getTranscodingDataSource(DataSource inputDataSource) {
         return getAudioMixer().getTranscodingDataSource(inputDataSource);
     }
 }

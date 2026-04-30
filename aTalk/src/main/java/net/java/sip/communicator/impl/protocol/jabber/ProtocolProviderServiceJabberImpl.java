@@ -102,7 +102,6 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.settings.BoshProxyDialog;
-import org.atalk.android.gui.call.JingleMessageSessionImpl;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.login.LoginSynchronizationPoint;
 import org.atalk.android.gui.util.LocaleHelper;
@@ -212,8 +211,6 @@ import org.jivesoftware.smackx.jingle_rtp.element.SrtpFingerprint;
 import org.jivesoftware.smackx.jingle_rtp.element.ZrtpHash;
 import org.jivesoftware.smackx.jingleinfo.JingleInfoQueryIQ;
 import org.jivesoftware.smackx.jingleinfo.JingleInfoQueryIQProvider;
-import org.jivesoftware.smackx.jinglemessage.JingleMessageManager;
-import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
 import org.jivesoftware.smackx.jinglenodes.SmackServiceNode;
 import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
 import org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ;
@@ -1295,7 +1292,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         }
 
         // cmeng - leave the registering state broadcast when xmpp is connected - may be better to do it here
-        fireRegistrationStateChanged(RegistrationState.UNREGISTERED, RegistrationState.REGISTERING,
+        fireRegistrationStateChanged(RegistrationState.CONNECTED, RegistrationState.REGISTERING,
                 RegistrationStateChangeEvent.REASON_NOT_SPECIFIED, null);
 
         // Init the user authentication SynchronizedPoints
@@ -1546,8 +1543,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
              * Broadcast to all others after connection is connected but before actual account registration start.
              * This is required by others to init their states and get ready when the user is authenticated
              */
-            // fireRegistrationStateChanged(RegistrationState.UNREGISTERED, RegistrationState.REGISTERING,
-            //        RegistrationStateChangeEvent.REASON_USER_REQUEST, "TCP Connection Successful");
+             fireRegistrationStateChanged(RegistrationState.INIT, RegistrationState.CONNECTED,
+                    RegistrationStateChangeEvent.REASON_USER_REQUEST, "TCP Connection Connected");
         }
 
         /**
@@ -1617,11 +1614,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             /*  Start up JetManager for jingle security file transfer */
             JetManager.getInstanceFor(mConnection);
 
-            // Start up both instances for incoming JingleMessage events handlers
-            JingleMessageManager.getInstanceFor(connection);
-            JingleMessageSessionImpl.getInstanceFor(connection);
-
-            // Fire registration state has changed
+            // Fire registration state changed
             if (resumed) {
                 fireRegistrationStateChanged(RegistrationState.REGISTERING, RegistrationState.REGISTERED,
                         RegistrationStateChangeEvent.REASON_RESUMED, msg, false);
@@ -1931,7 +1924,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Setup all the Smack Service Discovery and other features that can only be performed during
-     * actual account registration stage (mConnection). For initial setup see:
+     * actual account registration stage (mConnection). These features must be added before user
+     * is authenticated, else it will be discovered by others. For initial setup see:
      * {@link #initSmackDefaultSettings()} and {@link #initialize(EntityBareJid, JabberAccountID)}
      * <p>
      * Note: For convenience, many of the OperationSets when supported will handle state and events changes on its own.
@@ -2029,8 +2023,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             supportedFeatures.add(URN_XMPP_JINGLE_RTP);
             // XEP-0177: Jingle Raw UDP Transport Method
             supportedFeatures.add(URN_XMPP_JINGLE_RAW_UDP_0);
-
-            supportedFeatures.add(JingleMessage.NAMESPACE);
 
             /*
              * Reflect the preference of the user with respect to the use of ICE.

@@ -90,7 +90,7 @@ public class JingleSessionImpl extends JingleSession {
      * @param recipient The remote file-recipient
      */
     public JingleSessionImpl(XMPPConnection connection, FullJid recipient) {
-        this(connection, connection.getUser(), recipient, Role.initiator, JingleManager.randomId(), null);
+        this(connection, connection.getUser(), recipient, Role.initiator, JingleManager.randomUuid(), null);
     }
 
     /**
@@ -205,7 +205,7 @@ public class JingleSessionImpl extends JingleSession {
 
         // Only content has finished i.e. SessionState.ended; skip if the remote cancel the file transfer.
         if (mSessionState == SessionState.ended && contentImpls.size() == 1) {
-            JingleReason jingleReason = new JingleReason(JingleReason.Reason.success, "success", null);
+            JingleReason jingleReason = new JingleReason(JingleReason.Reason.success, "Success", null);
             terminateSession(jingleReason);
         }
 
@@ -234,8 +234,9 @@ public class JingleSessionImpl extends JingleSession {
         else {
             try {
                 jutil.sendSessionTerminateContentCancel(remote, sid, jingleContent.getCreator(), jingleContent.getName());
-            } catch (SmackException.NotConnectedException | InterruptedException
-                     | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
+            }
+            catch (SmackException.NotConnectedException | InterruptedException
+                   | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
                 LOGGER.log(Level.SEVERE, "Could not send content-cancel: " + e, e);
             }
         }
@@ -251,8 +252,9 @@ public class JingleSessionImpl extends JingleSession {
         notifySessionTerminated(jingleReason);
         try {
             mConnection.sendIqRequestAndWaitForResponse(jutil.createSessionTerminate(remote, sid, jingleReason));
-        } catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException |
-                 XMPPException.XMPPErrorException e) {
+        }
+        catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException |
+               XMPPException.XMPPErrorException e) {
             LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
         }
         mManager.unregisterJingleSessionHandler(remote, sid, this);
@@ -261,32 +263,32 @@ public class JingleSessionImpl extends JingleSession {
     @Override
     public IQ handleJingleSessionRequest(Jingle request) {
         switch (request.getAction()) {
-            case content_modify:
-            case description_info:
-            case security_info:
-            case session_info:
-            case transport_accept:
-            case transport_info:
-            case transport_reject:
-            case transport_replace:
-                return getSoleAffectedContentOrThrow(request).handleJingleRequest(request, mConnection);
+        case content_modify:
+        case description_info:
+        case security_info:
+        case session_info:
+        case transport_accept:
+        case transport_info:
+        case transport_reject:
+        case transport_replace:
+            return getSoleAffectedContentOrThrow(request).handleJingleRequest(request, mConnection);
 
-            case content_accept:
-                return handleContentAccept(request);
-            case content_add:
-                return handleContentAdd(request);
-            case content_reject:
-                return handleContentReject(request);
-            case content_remove:
-                return handleContentRemove(request);
-            case session_accept:
-                return handleSessionAccept(request);
-            case session_initiate:
-                return handleSessionInitiate(request);
-            case session_terminate:
-                return handleSessionTerminate(request);
-            default:
-                throw new AssertionError("Illegal jingle action: " + request.getAction());
+        case content_accept:
+            return handleContentAccept(request);
+        case content_add:
+            return handleContentAdd(request);
+        case content_reject:
+            return handleContentReject(request);
+        case content_remove:
+            return handleContentRemove(request);
+        case session_accept:
+            return handleSessionAccept(request);
+        case session_initiate:
+            return handleSessionInitiate(request);
+        case session_terminate:
+            return handleSessionTerminate(request);
+        default:
+            throw new AssertionError("Illegal jingle action: " + request.getAction());
         }
     }
 
@@ -331,8 +333,9 @@ public class JingleSessionImpl extends JingleSession {
                 LOGGER.log(Level.WARNING, "Unsupported description type: " + description.getNamespace());
                 try {
                     jutil.sendSessionTerminateUnsupportedApplications(remote, sid);
-                } catch (SmackException.NotConnectedException | InterruptedException
-                         | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
+                }
+                catch (SmackException.NotConnectedException | InterruptedException
+                       | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
                     LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
                 }
             }
@@ -352,16 +355,16 @@ public class JingleSessionImpl extends JingleSession {
 
         // the resultant state is currently not used by JingleSessionImpl
         switch (reason.asEnum()) {
-            case cancel:
-                updateSessionState(SessionState.cancelled);
-                break;
+        case cancel:
+            updateSessionState(SessionState.cancelled);
+            break;
 
-            case success:
-                updateSessionState(SessionState.ended);
-                break;
+        case success:
+            updateSessionState(SessionState.ended);
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
 
         // Inform the client on session terminated.

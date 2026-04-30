@@ -57,8 +57,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 502020
-        versionName "5.2.2"
+        versionCode 503000
+        versionName "5.3.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -191,7 +191,7 @@ android {
         exclude 'META-INF/core_release.kotlin_module'
         exclude 'META-INF/kotlin-stdlib-jdk8.kotlin_module'
         exclude 'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
-        exclude 'META-INF/versions/25/OSGI-INF/MANIFEST.MF'
+        exclude 'META-INF/versions/17/OSGI-INF/MANIFEST.MF'
     }
 }
 
@@ -232,15 +232,15 @@ dependencies {
     }
     implementation 'com.karumi:dexter:6.2.3'
 
-    annotationProcessor 'com.github.bumptech.glide:compiler:5.0.5'
-    implementation 'com.github.bumptech.glide:glide:5.0.5'
+    annotationProcessor 'com.github.bumptech.glide:compiler:5.0.7'
+    implementation 'com.github.bumptech.glide:glide:5.0.7'
     implementation 'com.github.seancfoley:ipaddress:5.6.2'
     implementation 'com.github.evgenyneu:js-evaluator-for-android:v6.0.0'
 
     implementation 'com.github.yalantis:ucrop:2.2.10'
     implementation 'com.google.android.material:material:1.13.0'
 
-    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.27'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.29'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta05'
     implementation 'com.squareup.okhttp3:okhttp:5.3.2'
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
@@ -251,7 +251,7 @@ dependencies {
 
     // commons-codec:1.16.x not compatible with Note10, crashes with No static method isEmpty([B)Z in class org/apache/commons/codec/binary/BinaryCodec;
     // or its super classes (declaration of 'org.apache.commons.codec.binary.BinaryCodec' appears in /system/framework/org.apache.http.legacy.jar)
-    implementation 'commons-codec:commons-codec:1.21.0'
+    implementation 'commons-codec:commons-codec:1.22.0'
     implementation 'org.apache.commons:commons-text:1.15.0'
     implementation 'org.apache.james:apache-mime4j-core:0.8.13'
     implementation 'org.bitlet:weupnp:0.1.4'
@@ -263,10 +263,10 @@ dependencies {
 
     // Need to add android.jetifier.ignorelist in gradle.properties when using 1.83
     // see https://issuetracker.google.com/issues/294342862
-    implementation 'org.bouncycastle:bcpg-jdk18on:1.83'   // zrtp
-    implementation 'org.bouncycastle:bcpkix-jdk18on:1.83' // CertificateServiceImpl jcajce
+    implementation 'org.bouncycastle:bcpg-jdk18on:1.84'   // zrtp
+    implementation 'org.bouncycastle:bcpkix-jdk18on:1.84' // CertificateServiceImpl jcajce
     // implementation 'org.bouncycastle:bcprov-jdk18on:1.81' // SHA3-256 - auto included.
-    implementation 'org.bouncycastle:bctls-jdk18on:1.83'  // dtls-srtp
+    implementation 'org.bouncycastle:bctls-jdk18on:1.84'  // dtls-srtp
 
     // For debug and tracing for bouncycastle - AS allows direct copy and replacement of bc source for debug
 //    implementation jarjar.repackage {
@@ -497,6 +497,8 @@ dependencies {
         classDelete 'org.jivesoftware.smackx.pep.PepManager**'
         classDelete 'org.jivesoftware.smackx.pubsub.LeafNode**'
         classDelete 'org.jivesoftware.smackx.pubsub.PubSubManager**'
+        // Update RetractItem implementation to confirm to 1.30.0 (2025-11-11)
+        classDelete 'org.jivesoftware.smackx.pubsub.RetractItem**'
 
         // Custom smack classes that handle the XEP-0264 <File/> element
         classDelete 'org.jivesoftware.smackx.si.packet.StreamInitiation**'

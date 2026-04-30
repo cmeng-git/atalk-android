@@ -41,8 +41,8 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.call.CallManager;
-import org.atalk.android.gui.call.JingleMessageCallActivity;
 import org.atalk.android.gui.call.JingleMessageSessionImpl;
+import org.atalk.android.gui.call.JingleMessageCallActivity;
 import org.atalk.android.gui.call.ReceivedCallActivity;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
@@ -51,9 +51,8 @@ import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.util.AppUtils;
 import org.atalk.impl.appnotification.AppNotifications;
 import org.atalk.service.osgi.OSGiService;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
+
+import org.jivesoftware.smackx.jingle.element.JingleReason;
 
 import timber.log.Timber;
 
@@ -126,111 +125,113 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
         // Do no tie this to Note-10 Edge-light, else call UI is not shown
         String notificationGroup = popupMessage.getGroup();
         switch (notificationGroup) {
-            case AppNotifications.CALL_GROUP:
-                // if (!aTalkApp.isForeground && NotificationManager.INCOMING_CALL.equals(popupMessage.getEventType())) {
-                if (NotificationManager.INCOMING_CALL.equals(popupMessage.getEventType())) {
-                    Object tag = popupMessage.getTag();
-                    if (tag == null)
-                        return;
+        case AppNotifications.CALL_GROUP:
+            // if (!aTalkApp.isForeground && NotificationManager.INCOMING_CALL.equals(popupMessage.getEventType())) {
+            if (NotificationManager.INCOMING_CALL.equals(popupMessage.getEventType())) {
+                Object tag = popupMessage.getTag();
+                if (tag == null)
+                    return;
 
-                    String mSid = (String) tag;
-                    callNotificationMap.put(mSid, nId);
+                String mSid = (String) tag;
+                callNotificationMap.put(mSid, nId);
 
-                    // Note: Heads-up prompt is not shown under android locked screen, it auto launches activity.
-                    // So disable auto-answer (JMC) in this case; hence allow user choice to cancel/accept incoming call
-                    // For jingleMessage propose => JingleMessageCallActivity;
-                    Intent fullScreenIntent;
-                    int msgType = popupMessage.getMessageType();
-                    Timber.d("Pop up message type: %s; mSid: %s; nId: %s", msgType, mSid, nId);
-                    if (SystrayService.JINGLE_MESSAGE_PROPOSE == msgType) {
-                        fullScreenIntent = new Intent(mContext, JingleMessageCallActivity.class)
-                                .putExtra(CallManager.CALL_SID, mSid)
-                                .putExtra(CallManager.AUTO_ACCEPT, !aTalkApp.isDeviceLocked())
-                                .putExtra(CallManager.CALL_EVENT, NotificationManager.INCOMING_CALL);
-                    }
-                    // Take the call via ReceivedCallActivity inorder to end call alert properly;
-                    // auto-answer once the call has been accepted via the headsup notification.
-                    else {
-                        fullScreenIntent = new Intent(mContext, ReceivedCallActivity.class)
-                                .putExtra(CallManager.CALL_SID, mSid)
-                                .putExtra(CallManager.AUTO_ACCEPT, SystrayService.HEADS_UP_INCOMING_CALL == msgType);
-                    }
-
-                    PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(aTalkApp.getInstance(),
-                            0, fullScreenIntent, getPendingIntentFlag(false, true));
-
-                    mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH)
-                            .setCategory(Notification.CATEGORY_CALL)
-                            .setFullScreenIntent(fullScreenPendingIntent, true)
-                            .setOngoing(true)
-                            .setAutoCancel(false);  // must not allow user to cancel, else no UI to take call
-
-                    // Build end call action
-                    NotificationCompat.Action dismissAction = new NotificationCompat.Action.Builder(
-                            R.drawable.ic_call_end_light,
-                            aTalkApp.getResString(R.string.dismiss),
-                            createDismissIntent(nId)).build();
-                    mBuilder.addAction(dismissAction);
-
-                    // Build answer call action
-                    NotificationCompat.Action answerAction = new NotificationCompat.Action.Builder(
-                            R.drawable.ic_call_light,
-                            aTalkApp.getResString(R.string.answer),
-                            fullScreenPendingIntent).build();
-                    mBuilder.addAction(answerAction);
+                // Note: Heads-up prompt is not shown under android locked screen, instead it auto launches JingleMessageCallActivity.
+                // So disable auto-answer (JMC) in this case; hence allow user choice to cancel/accept the incoming call.
+                // i.e. for jingleMessage propose => JingleMessageCallActivity;
+                Intent fullScreenIntent;
+                int msgType = popupMessage.getMessageType();
+                Timber.d("Pop up message type: %s; mSid: %s; nId: %s", msgType, mSid, nId);
+                if (SystrayService.JINGLE_MESSAGE_PROPOSE == msgType) {
+                    fullScreenIntent = new Intent(mContext, JingleMessageCallActivity.class)
+                            .putExtra(CallManager.CALL_SID, mSid)
+                            .putExtra(CallManager.AUTO_ACCEPT, !aTalkApp.isDeviceLocked())
+                            .putExtra(CallManager.CALL_EVENT, NotificationManager.INCOMING_CALL);
                 }
-                break;
+                // Take the call via ReceivedCallActivity inorder to end call alert properly;
+                // auto-answer once the call has been accepted via the heads-up notification.
+                else {
+                    fullScreenIntent = new Intent(mContext, ReceivedCallActivity.class)
+                            .putExtra(CallManager.CALL_SID, mSid)
+                            .putExtra(CallManager.AUTO_ACCEPT, SystrayService.HEADS_UP_INCOMING_CALL == msgType);
+                }
 
-            // Create android Heads-up / Action Notification for incoming message
-            case AppNotifications.MESSAGE_GROUP:
-                if (!aTalkApp.isForeground && !newPopup.isSnooze(nId) && newPopup.isHeadUpNotificationAllow()) {
-                    mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
+                PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(aTalkApp.getInstance(),
+                        0, fullScreenIntent, getPendingIntentFlag(false, true));
 
-                    // Build Mark as read action
-                    NotificationCompat.Action markReadAction = new NotificationCompat.Action.Builder(
-                            R.drawable.ic_read_dark,
-                            aTalkApp.getResString(R.string.mark_as_read),
-                            createReadPendingIntent(nId))
-                            .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ)
-                            // .setShowsUserInterface(true)
-                            .build();
-                    mBuilder.addAction(markReadAction);
+                mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setCategory(Notification.CATEGORY_CALL)
+                        .setFullScreenIntent(fullScreenPendingIntent, true)
+                        .setOngoing(true)
+                        .setAutoCancel(false);  // must not allow user to cancel, else no UI to take call
 
-                    // Build Reply action for OS >= android-N (Override for API-34 built!!!)
-                    RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
-                            .setLabel("Quick reply")
-                            .build();
+                // Build end call action
+                NotificationCompat.Action dismissAction = new NotificationCompat.Action.Builder(
+                        R.drawable.ic_call_end_light,
+                        aTalkApp.getResString(R.string.dismiss),
+                        createDismissIntent(nId)).build();
+                mBuilder.addAction(dismissAction);
 
-                    NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
-                            R.drawable.ic_send_text_dark,
-                            aTalkApp.getResString(R.string.reply),
-                            createReplyIntent(nId))
-                            .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
-                            // .setShowsUserInterface(true)
-                            .addRemoteInput(remoteInput)
-                            .build();
-                    mBuilder.addAction(replyAction);
+                // Build answer call action
+                NotificationCompat.Action answerAction = new NotificationCompat.Action.Builder(
+                        R.drawable.ic_call_light,
+                        aTalkApp.getResString(R.string.answer),
+                        fullScreenPendingIntent)
+                        .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_CALL)
+                        .build();
+                mBuilder.addAction(answerAction);
+            }
+            break;
 
-                    // Build Snooze action if more than the specific limit has been reached
-                    if (newPopup instanceof AppMergedPopup) {
-                        if (((AppMergedPopup) newPopup).displaySnoozeAction()) {
-                            NotificationCompat.Action snoozeAction = new NotificationCompat.Action.Builder(
-                                    R.drawable.ic_notifications_paused_dark,
-                                    aTalkApp.getResString(R.string.snooze),
-                                    createSnoozeIntent(nId))
-                                    .build();
-                            mBuilder.addAction(snoozeAction);
-                        }
+        // Create android Heads-up / Action Notification for incoming message
+        case AppNotifications.MESSAGE_GROUP:
+            if (!aTalkApp.isForeground && !newPopup.isSnooze(nId) && newPopup.isHeadUpNotificationAllow()) {
+                mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
+
+                // Build Mark as read action
+                NotificationCompat.Action markReadAction = new NotificationCompat.Action.Builder(
+                        R.drawable.ic_read_dark,
+                        aTalkApp.getResString(R.string.mark_as_read),
+                        createReadPendingIntent(nId))
+                        .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ)
+                        // .setShowsUserInterface(true)
+                        .build();
+                mBuilder.addAction(markReadAction);
+
+                // Build Reply action for OS >= android-N (Override for API-34 built!!!)
+                RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
+                        .setLabel("Quick reply")
+                        .build();
+
+                NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
+                        R.drawable.ic_send_text_dark,
+                        aTalkApp.getResString(R.string.reply),
+                        createReplyIntent(nId))
+                        .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
+                        // .setShowsUserInterface(true)
+                        .addRemoteInput(remoteInput)
+                        .build();
+                mBuilder.addAction(replyAction);
+
+                // Build Snooze action if more than the specific limit has been reached
+                if (newPopup instanceof AppMergedPopup) {
+                    if (((AppMergedPopup) newPopup).displaySnoozeAction()) {
+                        NotificationCompat.Action snoozeAction = new NotificationCompat.Action.Builder(
+                                R.drawable.ic_notifications_paused_dark,
+                                aTalkApp.getResString(R.string.snooze),
+                                createSnoozeIntent(nId))
+                                .build();
+                        mBuilder.addAction(snoozeAction);
                     }
                 }
-                break;
+            }
+            break;
 
-            case AppNotifications.FILE_GROUP:
-                if (!aTalkApp.isForeground && newPopup.isHeadUpNotificationAllow()) {
-                    mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
-                    Timber.w("Incoming File!!!");
-                }
-                break;
+        case AppNotifications.FILE_GROUP:
+            if (!aTalkApp.isForeground && newPopup.isHeadUpNotificationAllow()) {
+                mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
+                Timber.w("Incoming File!!!");
+            }
+            break;
         }
 
         // caches the notification until clicked or cleared
@@ -417,54 +418,55 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
         boolean jinglePropose = SystrayService.JINGLE_MESSAGE_PROPOSE == message.getMessageType();
 
         switch (action) {
-            case PopupClickReceiver.ACTION_POPUP_CLEAR:
-                break;
+        case PopupClickReceiver.ACTION_POPUP_CLEAR:
+            break;
 
-            case PopupClickReceiver.ACTION_MARK_AS_READ:
-                if (tag instanceof Contact) {
-                    Contact contact = (Contact) tag;
-                    MetaContact metaContact = AppGUIActivator.getContactListService().findMetaContactByContact(contact);
-                    if (metaContact != null) {
-                        metaContact.setUnreadCount(0);
-                    }
-                    Fragment clf = aTalk.getFragment(aTalk.CL_FRAGMENT);
-                    if (clf instanceof ContactListFragment) {
-                        ((ContactListFragment) clf).updateUnreadCount(metaContact);
-                    }
+        case PopupClickReceiver.ACTION_MARK_AS_READ:
+            if (tag instanceof Contact) {
+                Contact contact = (Contact) tag;
+                MetaContact metaContact = AppGUIActivator.getContactListService().findMetaContactByContact(contact);
+                if (metaContact != null) {
+                    metaContact.setUnreadCount(0);
                 }
-                else if (tag instanceof ChatRoomJabberImpl) {
-                    ChatRoomJabberImpl chatRoom = (ChatRoomJabberImpl) tag;
-                    ChatRoomWrapper chatRoomWrapper
-                            = MUCActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, false);
-                    chatRoomWrapper.setUnreadCount(0);
-                    Fragment crlf = aTalk.getFragment(aTalk.CRL_FRAGMENT);
-                    if (crlf instanceof ChatRoomListFragment) {
-                        ((ChatRoomListFragment) crlf).updateUnreadCount(chatRoomWrapper);
-                    }
+                Fragment clf = aTalk.getFragment(aTalk.CL_FRAGMENT);
+                if (clf instanceof ContactListFragment) {
+                    ((ContactListFragment) clf).updateUnreadCount(metaContact);
                 }
-                break;
-
-            case PopupClickReceiver.ACTION_SNOOZE:
-                popup.setSnooze(notificationId);
-                break;
-
-            case PopupClickReceiver.ACTION_CALL_DISMISS:
-                String sid = (String) tag;
-                callNotificationMap.remove(sid);
-
-                if (jinglePropose) {
-                    JingleMessageSessionImpl.sendJingleMessageReject(sid);
+            }
+            else if (tag instanceof ChatRoomJabberImpl) {
+                ChatRoomJabberImpl chatRoom = (ChatRoomJabberImpl) tag;
+                ChatRoomWrapper chatRoomWrapper
+                        = MUCActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, false);
+                chatRoomWrapper.setUnreadCount(0);
+                Fragment crlf = aTalk.getFragment(aTalk.CRL_FRAGMENT);
+                if (crlf instanceof ChatRoomListFragment) {
+                    ((ChatRoomListFragment) crlf).updateUnreadCount(chatRoomWrapper);
                 }
-                else {
-                    Call call = CallManager.getActiveCall(sid);
-                    if (call != null) {
-                        CallManager.hangupCall(call);
-                    }
-                }
-                break;
+            }
+            break;
 
-            default:
-                Timber.w("Unsupported action: %s", action);
+        case PopupClickReceiver.ACTION_SNOOZE:
+            popup.setSnooze(notificationId);
+            break;
+
+        case PopupClickReceiver.ACTION_CALL_DISMISS:
+            String sid = (String) tag;
+            removeCallNotification(sid);
+
+            if (jinglePropose) {
+                JingleReason reason = new JingleReason(JingleReason.Reason.busy, "Busy", null);
+                JingleMessageSessionImpl.sendJingleMessageReject(sid, reason);
+            }
+            else {
+                Call call = CallManager.getActiveCall(sid);
+                if (call != null) {
+                    CallManager.hangupCall(call);
+                }
+            }
+            break;
+
+        default:
+            Timber.w("Unsupported action: %s", action);
         }
 
         // Remove the notification for all actions except ACTION_SNOOZE.
@@ -505,7 +507,6 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
      *
      * @param callId call Id / Jingle Sid
      *
-     * @see JingleMessageSessionImpl#onJingleMessageProceed(XMPPConnection, JingleMessage, Message)
      * @see #getCallNotificationId(String)
      */
     public static void removeCallNotification(String callId) {

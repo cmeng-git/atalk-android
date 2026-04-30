@@ -215,9 +215,11 @@
             android:configChanges="orientation|screenSize|screenLayout"
             android:hardwareAccelerated="true" />
         <activity
-            android:name="org.atalk.android.gui.call.JingleMessageCallActivity" />
+            android:name="org.atalk.android.gui.call.JingleMessageCallActivity"
+            android:launchMode="singleTask" />
         <activity
-            android:name="org.atalk.android.gui.call.ReceivedCallActivity" />
+            android:name="org.atalk.android.gui.call.ReceivedCallActivity"
+            android:launchMode="singleTask" />
         <activity
             android:name="org.atalk.android.gui.chat.ChatActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

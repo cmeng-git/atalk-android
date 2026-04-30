@@ -18,8 +18,6 @@
  */
 package org.dhcp4java;
 
-import org.atalk.impl.timberlog.TimberLog;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramPacket;
@@ -31,6 +29,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.atalk.impl.timberlog.TimberLog;
 
 import timber.log.Timber;
 
@@ -70,8 +70,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  * @version 1.00
  */
-public class DHCPCoreServer implements Runnable
-{
+public class DHCPCoreServer implements Runnable {
 
     private static final int BOUNDED_QUEUE_SIZE = 20;
 
@@ -115,8 +114,7 @@ public class DHCPCoreServer implements Runnable
      * <p>Constructor shall not be called directly. New servers are created through
      * <code>initServer()</code> factory.
      */
-    private DHCPCoreServer(DHCPServlet servlet, Properties userProps)
-    {
+    private DHCPCoreServer(DHCPServlet servlet, Properties userProps) {
         this.servlet = servlet;
         this.userProps = userProps;
     }
@@ -130,12 +128,13 @@ public class DHCPCoreServer implements Runnable
      * must not be <code>null</code>.
      * @param userProps specific properties, overriding file and default properties,
      * may be <code>null</code>.
+     *
      * @return the new <code>DHCPCoreServer</code> instance (never null).
+     *
      * @throws DHCPServerInitException unable to start the server.
      */
     public static DHCPCoreServer initServer(DHCPServlet servlet, Properties userProps)
-            throws DHCPServerInitException
-    {
+            throws DHCPServerInitException {
         if (servlet == null) {
             throw new IllegalArgumentException("servlet must not be null");
         }
@@ -148,8 +147,7 @@ public class DHCPCoreServer implements Runnable
      * Initialize the server context from the Properties, and open socket.
      */
     protected void init()
-            throws DHCPServerInitException
-    {
+            throws DHCPServerInitException {
         if (this.serverSocket != null) {
             throw new IllegalStateException("Server already initialized");
         }
@@ -196,9 +194,11 @@ public class DHCPCoreServer implements Runnable
             // now intialize the servlet
             this.servlet.setServer(this);
             this.servlet.init(this.properties);
-        } catch (DHCPServerInitException e) {
+        }
+        catch (DHCPServerInitException e) {
             throw e;        // transparently re-throw
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             this.serverSocket = null;
             Timber.e(e, "Cannot open socket");
             throw new DHCPServerInitException("Unable to init server", e);
@@ -210,8 +210,7 @@ public class DHCPCoreServer implements Runnable
      *
      * @see java.lang.Runnable#run()
      */
-    protected void dispatch()
-    {
+    protected void dispatch() {
         try {
             DatagramPacket requestDatagram = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
             Timber.log(TimberLog.FINER, "Waiting for packet");
@@ -231,7 +230,8 @@ public class DHCPCoreServer implements Runnable
             // send work to thread pool
             DHCPServletDispatcher dispatcher = new DHCPServletDispatcher(this, servlet, requestDatagram);
             threadPool.execute(dispatcher);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Timber.log(TimberLog.FINER, e, "IOException");
         }
     }
@@ -241,8 +241,7 @@ public class DHCPCoreServer implements Runnable
      *
      * <p>This is a callback method used by servlet dispatchers to send back responses.
      */
-    protected void sendResponse(DatagramPacket responseDatagram)
-    {
+    protected void sendResponse(DatagramPacket responseDatagram) {
         if (responseDatagram == null) {
             return; // skipping
         }
@@ -250,7 +249,8 @@ public class DHCPCoreServer implements Runnable
         try {
             // sending back
             this.serverSocket.send(responseDatagram);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Timber.log(TimberLog.FINER, e, "IOException");
         }
     }
@@ -269,10 +269,10 @@ public class DHCPCoreServer implements Runnable
      * This method can be overriden to specify an non default socket behaviour
      *
      * @param props Properties loaded from /DHCPd.properties
+     *
      * @return the socket address, null if there was a problem
      */
-    protected InetSocketAddress getInetSocketAddress(Properties props)
-    {
+    protected InetSocketAddress getInetSocketAddress(Properties props) {
         if (props == null) {
             throw new IllegalArgumentException("null props not allowed");
         }
@@ -287,11 +287,12 @@ public class DHCPCoreServer implements Runnable
      * Parse a string of the form 'server:port' or '192.168.1.10:67'.
      *
      * @param address string to parse
+     *
      * @return InetSocketAddress newly created
+     *
      * @throws IllegalArgumentException if unable to parse string
      */
-    public static InetSocketAddress parseSocketAddress(String address)
-    {
+    public static InetSocketAddress parseSocketAddress(String address) {
         if (address == null) {
             throw new IllegalArgumentException("Null address not allowed");
         }
@@ -311,15 +312,15 @@ public class DHCPCoreServer implements Runnable
      * This is the main loop for accepting new request and delegating work to
      * servlets in different threads.
      */
-    public void run()
-    {
+    public void run() {
         if (this.serverSocket == null) {
             throw new IllegalStateException("Listening socket is not open - terminating");
         }
         while (!this.stopped) {
             try {
                 this.dispatch();        // do the stuff
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Timber.w(e, "Unexpected Exception");
             }
         }
@@ -328,8 +329,7 @@ public class DHCPCoreServer implements Runnable
     /**
      * This method stops the server and closes the socket.
      */
-    public void stopServer()
-    {
+    public void stopServer() {
         this.stopped = true;
         this.serverSocket.close();        // this generates an exception when trying to receive
     }
@@ -353,20 +353,17 @@ public class DHCPCoreServer implements Runnable
         DEF_PROPS.put(SERVER_THREADS_KEEPALIVE, SERVER_THREADS_KEEPALIVE_DEFAULT);
     }
 
-    private static class ServerThreadFactory implements ThreadFactory
-    {
+    private static class ServerThreadFactory implements ThreadFactory {
         private static final AtomicInteger poolNumber = new AtomicInteger(1);
 
         final AtomicInteger threadNumber = new AtomicInteger(1);
         final String namePrefix;
 
-        ServerThreadFactory()
-        {
+        ServerThreadFactory() {
             this.namePrefix = "DHCPCoreServer-" + poolNumber.getAndIncrement() + "-thread-";
         }
 
-        public Thread newThread(Runnable runnable)
-        {
+        public Thread newThread(Runnable runnable) {
             return new Thread(runnable, this.namePrefix + this.threadNumber.getAndIncrement());
         }
     }
@@ -374,8 +371,7 @@ public class DHCPCoreServer implements Runnable
     /**
      * @return Returns the socket address.
      */
-    public InetSocketAddress getSockAddress()
-    {
+    public InetSocketAddress getSockAddress() {
         return sockAddress;
     }
 }
@@ -384,25 +380,23 @@ public class DHCPCoreServer implements Runnable
 /**
  * Servlet dispatcher
  */
-class DHCPServletDispatcher implements Runnable
-{
+class DHCPServletDispatcher implements Runnable {
     private final DHCPCoreServer server;
     private final DHCPServlet dispatchServlet;
     private final DatagramPacket dispatchPacket;
 
-    public DHCPServletDispatcher(DHCPCoreServer server, DHCPServlet servlet, DatagramPacket req)
-    {
+    public DHCPServletDispatcher(DHCPCoreServer server, DHCPServlet servlet, DatagramPacket req) {
         this.server = server;
         this.dispatchServlet = servlet;
         this.dispatchPacket = req;
     }
 
-    public void run()
-    {
+    public void run() {
         try {
             DatagramPacket response = this.dispatchServlet.serviceDatagram(this.dispatchPacket);
             this.server.sendResponse(response);        // invoke callback method
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Timber.log(TimberLog.FINER, e, "Exception in dispatcher");
         }
     }

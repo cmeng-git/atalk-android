@@ -27,8 +27,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class Sctp
-{
+public class Sctp {
     /**
      * FIXME Remove once usrsctp_finish is fixed
      */
@@ -57,7 +56,8 @@ public class Sctp
 
         try {
             System.loadLibrary(lib);
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             Timber.e("Failed to load native library %s: %s", lib, t.getMessage());
             if (t instanceof Error)
                 throw (Error) t;
@@ -71,8 +71,7 @@ public class Sctp
      *
      * @param ptr native socket pointer.
      */
-    static void closeSocket(long ptr)
-    {
+    static void closeSocket(long ptr) {
         usrsctp_close(ptr);
         sockets.remove(ptr);
     }
@@ -82,10 +81,10 @@ public class Sctp
      * the socket.
      *
      * @param localPort local SCTP socket port.
+     *
      * @return new <code>SctpSocket</code> for given SCTP port.
      */
-    public static SctpSocket createSocket(int localPort)
-    {
+    public static SctpSocket createSocket(int localPort) {
         long ptr = usrsctp_socket(localPort);
         SctpSocket socket;
 
@@ -105,8 +104,7 @@ public class Sctp
      * @throws IOException if usrsctp stack has failed to shutdown.
      */
     public static synchronized void finish()
-            throws IOException
-    {
+            throws IOException {
         // Skip if we're not the last one
         //if(--sctpEngineCount > 0)
         //  return;
@@ -150,8 +148,7 @@ public class Sctp
     /**
      * Initializes native SCTP counterpart.
      */
-    public static synchronized void init()
-    {
+    public static synchronized void init() {
         // Skip if we're not the first one
         //if(sctpEngineCount++ > 0)
         //    return;
@@ -182,8 +179,7 @@ public class Sctp
      * @param offset position in the buffer where packet data starts.
      * @param len length of packet data in the buffer.
      */
-    static void onConnIn(long socketPtr, byte[] packet, int offset, int len)
-    {
+    static void onConnIn(long socketPtr, byte[] packet, int offset, int len) {
         on_network_in(socketPtr, packet, offset, len);
     }
 
@@ -201,8 +197,7 @@ public class Sctp
      */
     public static void onSctpInboundPacket(
             long socketAddr, byte[] data, int sid, int ssn, int tsn, long ppid,
-            int context, int flags)
-    {
+            int context, int flags) {
         SctpSocket socket = sockets.get(socketAddr);
 
         if (socket == null) {
@@ -220,11 +215,11 @@ public class Sctp
      * @param data buffer holding packet data
      * @param tos type of service???
      * @param set_df use IP don't fragment option
+     *
      * @return 0 if the packet has been successfully sent or -1 otherwise.
      */
     public static int onSctpOutboundPacket(
-            long socketAddr, byte[] data, int tos, int set_df)
-    {
+            long socketAddr, byte[] data, int tos, int set_df) {
         // FIXME handle tos and set_df
 
         SctpSocket socket = sockets.get(socketAddr);
@@ -259,6 +254,7 @@ public class Sctp
      *
      * @param ptr native socket pointer.
      * @param remotePort remote SCTP port.
+     *
      * @return <code>true</code> if the socket has been successfully connected.
      */
     static native boolean usrsctp_connect(long ptr, int remotePort);
@@ -274,6 +270,7 @@ public class Sctp
      * Initializes native SCTP counterpart.
      *
      * @param port UDP encapsulation port.
+     *
      * @return <code>true</code> on success.
      */
     private static native boolean usrsctp_init(int port);
@@ -297,6 +294,7 @@ public class Sctp
      * @param ordered should we care about message order ?
      * @param sid SCTP stream identifier
      * @param ppid payload protocol identifier
+     *
      * @return sent bytes count or <code>-1</code> in case of an error.
      */
     static native int usrsctp_send(
@@ -306,6 +304,7 @@ public class Sctp
      * Creates native SCTP socket and returns pointer to it.
      *
      * @param localPort local SCTP socket port.
+     *
      * @return native socket pointer or 0 if operation failed.
      */
     private static native long usrsctp_socket(int localPort);

@@ -29,8 +29,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public interface OperationSetPersistentPresence extends OperationSetPresence
-{
+public interface OperationSetPersistentPresence extends OperationSetPresence {
     /**
      * Persistently adds a subscription for the presence status of the contact corresponding to the
      * specified contactIdentifier to the top level group. Note that this method, unlike the
@@ -44,6 +43,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      *
      * @param contactIdentifier the contact whose status updates we are subscribing for.
      * @param pps the owner of the contact to be added to RootGroup.
+     *
      * @throws OperationFailedException with code NETWORK_FAILURE if subscribing fails due to errors experienced during
      * network communication
      * @throws IllegalArgumentException if <code>contact</code> is not a contact known to the underlying protocol provider
@@ -78,6 +78,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      * server stored contact lists.
      *
      * @param contact the contact whose status updates we are unsubscribing from.
+     *
      * @throws OperationFailedException with code NETWORK_FAILURE if unsubscribing fails due to errors experienced during
      * network communication
      * @throws IllegalArgumentException if <code>contact</code> is not a contact known to the underlying protocol provider
@@ -91,6 +92,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      *
      * @param groupName the name of the new group to create.
      * @param parent the group where the new group should be created
+     *
      * @throws OperationFailedException with code NETWORK_FAILURE if creating the group fails because of a network error.
      * @throws IllegalArgumentException if <code>parent</code> is not a contact known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a service.
@@ -102,6 +104,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      * Removes the specified group from the server stored contact list.
      *
      * @param group the group to remove.
+     *
      * @throws OperationFailedException with code NETWORK_FAILURE if deleting the group fails because of a network error.
      * @throws IllegalArgumentException if <code>parent</code> is not a contact known to the underlying protocol provider.
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a service.
@@ -124,6 +127,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      *
      * @param contactToMove the <code>Contact</code> to move
      * @param newParent the <code>ContactGroup</code> where <code>Contact</code> would be placed.
+     *
      * @throws OperationFailedException when the operation didn't finished successfully.
      */
     void moveContactToGroup(Contact contactToMove, ContactGroup newParent)
@@ -162,6 +166,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      * @param persistentData a String returned Contact's getPersistentData() method during a previous run and that
      * has been persistently stored locally.
      * @param parentGroup the group where the unresolved contact is supposed to belong to.
+     *
      * @return the unresolved <code>Contact</code> created from the specified <code>address</code> and
      * <code>persistentData</code>
      */
@@ -180,6 +185,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      * that has been persistently stored locally.
      * @param parentGroup the group under which the new group is to be created or null if this is group directly
      * underneath the root.
+     *
      * @return the unresolved <code>ContactGroup</code> created from the specified <code>uid</code> and
      * <code>persistentData</code>
      */
@@ -190,6 +196,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      *
      * @param contact the <code>Contact</code> that we are renaming
      * @param newName a <code>String</code> containing the new display name for <code>metaContact</code>.
+     *
      * @throws IllegalArgumentException if <code>contact</code> is not an instance that belongs
      * to the underlying implementation.
      */

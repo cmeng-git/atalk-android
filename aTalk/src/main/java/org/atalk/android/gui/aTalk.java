@@ -263,7 +263,8 @@ public class aTalk extends MainMenuActivity {
             if (bundleContext != null) {
                 try {
                     stop(bundleContext);
-                } catch (Throwable t) {
+                }
+                catch (Throwable t) {
                     Timber.e(t, "Error stopping application:%s", t.getLocalizedMessage());
                     if (t instanceof ThreadDeath)
                         throw (ThreadDeath) t;
@@ -294,26 +295,26 @@ public class aTalk extends MainMenuActivity {
                 return Objects.requireNonNull(mFragments.get(position));
 
             switch (position) {
-                case CL_FRAGMENT:
-                    // The main pager view fragment containing the contact List
-                    mFragments.put(CL_FRAGMENT, new ContactListFragment());
-                    break;
+            case CL_FRAGMENT:
+                // The main pager view fragment containing the contact List
+                mFragments.put(CL_FRAGMENT, new ContactListFragment());
+                break;
 
-                case CRL_FRAGMENT:
-                    mFragments.put(CRL_FRAGMENT, new ChatRoomListFragment());
-                    break;
+            case CRL_FRAGMENT:
+                mFragments.put(CRL_FRAGMENT, new ChatRoomListFragment());
+                break;
 
-                case CHAT_SESSION_FRAGMENT:
-                    mFragments.put(CHAT_SESSION_FRAGMENT, new ChatSessionFragment());
-                    break;
+            case CHAT_SESSION_FRAGMENT:
+                mFragments.put(CHAT_SESSION_FRAGMENT, new ChatSessionFragment());
+                break;
 
-                case CALL_HISTORY_FRAGMENT:
-                    mFragments.put(CALL_HISTORY_FRAGMENT, new CallHistoryFragment());
-                    break;
+            case CALL_HISTORY_FRAGMENT:
+                mFragments.put(CALL_HISTORY_FRAGMENT, new CallHistoryFragment());
+                break;
 
-                default: // if (position == WP_FRAGMENT){
-                    mFragments.put(WP_FRAGMENT, new WebViewFragment());
-                    break;
+            default: // if (position == WP_FRAGMENT){
+                mFragments.put(WP_FRAGMENT, new WebViewFragment());
+                break;
             }
             return Objects.requireNonNull(mFragments.get(position));
         }
@@ -364,7 +365,7 @@ public class aTalk extends MainMenuActivity {
         if (ActivityCompat.checkSelfPermission(aTalkApp.getInstance(), permission) != PackageManager.PERMISSION_GRANTED) {
             if (requestPermission && (callBack != null)) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(callBack, permission)) {
-                    ActivityCompat.requestPermissions(callBack, new String[]{permission}, requestCode);
+                    ActivityCompat.requestPermissions(callBack, new String[] {permission}, requestCode);
                 }
                 else {
                     showHintMessage(requestCode, permission);

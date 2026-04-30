@@ -16,60 +16,22 @@
  */
 package org.jivesoftware.smackx.jinglemessage;
 
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Message;
 
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
 
 /**
- * Interface for listening to jingle Message events.
+ * Interface for implementing a listener for incoming jingle Message Session events.
  *
  * @author Eng Chong Meng
  * @see <a href="https://xmpp.org/extensions/xep-0353.html">XEP-0353: Jingle Message Initiation</a>
  */
 public interface JingleMessageListener {
     /**
-     * Caller propose an media call.
+     * JingleMessage event listener.
      *
-     * @param connection xmppConnection
      * @param jingleMessage instance of <code>JingleMessage</code>
      * @param message instance of <code>Message</code>
      */
-    void onJingleMessagePropose(XMPPConnection connection, JingleMessage jingleMessage, Message message);
-
-    /**
-     * Caller has retract the call.
-     *
-     * @param connection xmppConnection
-     * @param jingleMessage instance of <code>JingleMessage</code>
-     * @param message instance of <code>Message</code>
-     */
-    void onJingleMessageRetract(XMPPConnection connection, JingleMessage jingleMessage, Message message);
-
-    /**
-     * Call has accepted the call; broadcast message by server to other callee resources.
-     *
-     * @param connection xmppConnection
-     * @param jingleMessage instance of <code>JingleMessage</code>
-     * @param message instance of <code>Message</code>
-     */
-    void onJingleMessageAccept(XMPPConnection connection, JingleMessage jingleMessage, Message message);
-
-    /**
-     * Called accepted and request to proceed.
-     *
-     * @param connection xmppConnection
-     * @param jingleMessage instance of <code>JingleMessage</code>
-     * @param message instance of <code>Message</code>
-     */
-    void onJingleMessageProceed(XMPPConnection connection, JingleMessage jingleMessage, Message message);
-
-    /**
-     * callee has rejected the call.
-     *
-     * @param connection xmppConnection
-     * @param jingleMessage instance of <code>JingleMessage</code>
-     * @param message instance of <code>Message</code>
-     */
-    void onJingleMessageReject(XMPPConnection connection, JingleMessage jingleMessage, Message message);
+    void handleJmSession(JingleMessage jingleMessage, Message message);
 }

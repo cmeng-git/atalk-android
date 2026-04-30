@@ -15,8 +15,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
  *
  * @author Lyubomir Marinov
  */
-public class OpenSslHmac implements Mac
-{
+public class OpenSslHmac implements Mac {
     private static native int EVP_MD_size(long md);
 
     private static native long EVP_sha1();
@@ -67,10 +66,10 @@ public class OpenSslHmac implements Mac
      * Initializes a new <code>OpenSslHmac</code> instance with a specific digest algorithm.
      *
      * @param digestAlgorithm the algorithm of the digest to initialize the new instance with
+     *
      * @see OpenSslHmac#SHA1
      */
-    public OpenSslHmac(int digestAlgorithm)
-    {
+    public OpenSslHmac(int digestAlgorithm) {
         if (!OpenSslWrapperLoader.isLoaded())
             throw new RuntimeException("OpenSSL wrapper not loaded");
 
@@ -95,8 +94,7 @@ public class OpenSslHmac implements Mac
      */
     @Override
     public int doFinal(byte[] out, int outOff)
-            throws DataLengthException, IllegalStateException
-    {
+            throws DataLengthException, IllegalStateException {
         if (out == null)
             throw new NullPointerException("out");
         if ((outOff < 0) || (out.length <= outOff))
@@ -133,8 +131,7 @@ public class OpenSslHmac implements Mac
      */
     @Override
     protected void finalize()
-            throws Throwable
-    {
+            throws Throwable {
         try {
             // Well, the destroying in the finalizer should exist as a backup
             // anyway. There is no way to explicitly invoke the destroying at
@@ -145,7 +142,8 @@ public class OpenSslHmac implements Mac
                 this.ctx = 0;
                 HMAC_CTX_destroy(ctx);
             }
-        } finally {
+        }
+        finally {
             super.finalize();
         }
     }
@@ -154,8 +152,7 @@ public class OpenSslHmac implements Mac
      * {@inheritDoc}
      */
     @Override
-    public String getAlgorithmName()
-    {
+    public String getAlgorithmName() {
         return algorithmName;
     }
 
@@ -163,8 +160,7 @@ public class OpenSslHmac implements Mac
      * {@inheritDoc}
      */
     @Override
-    public int getMacSize()
-    {
+    public int getMacSize() {
         return macSize;
     }
 
@@ -173,8 +169,7 @@ public class OpenSslHmac implements Mac
      */
     @Override
     public void init(CipherParameters params)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         key = (params instanceof KeyParameter)
                 ? ((KeyParameter) params).getKey() : null;
 
@@ -191,8 +186,7 @@ public class OpenSslHmac implements Mac
      * {@inheritDoc}
      */
     @Override
-    public void reset()
-    {
+    public void reset() {
         if (key == null)
             throw new IllegalStateException("key == null");
         if (ctx == 0)
@@ -208,8 +202,7 @@ public class OpenSslHmac implements Mac
      */
     @Override
     public void update(byte in)
-            throws IllegalStateException
-    {
+            throws IllegalStateException {
         // TODO Auto-generated method stub
     }
 
@@ -218,8 +211,7 @@ public class OpenSslHmac implements Mac
      */
     @Override
     public void update(byte[] in, int off, int len)
-            throws DataLengthException, IllegalStateException
-    {
+            throws DataLengthException, IllegalStateException {
         if (len != 0) {
             if (in == null)
                 throw new NullPointerException("in");

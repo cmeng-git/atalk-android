@@ -75,11 +75,11 @@ public final class JingleCallManager extends Manager implements JingleHandler {
      */
     private final BasicTelephony mBasicTelephony;
 
-    public static synchronized JingleCallManager getInstanceFor(XMPPConnection connection, BasicTelephony operation) {
+    public static synchronized JingleCallManager getInstanceFor(XMPPConnection connection, BasicTelephony basicTelephony) {
         JingleCallManager manager = INSTANCES.get(connection);
 
         if (manager == null) {
-            manager = new JingleCallManager(connection, operation);
+            manager = new JingleCallManager(connection, basicTelephony);
             INSTANCES.put(connection, manager);
         }
         return manager;
@@ -258,7 +258,7 @@ public final class JingleCallManager extends Manager implements JingleHandler {
         }
         final JingleCallSessionImpl session = new JingleCallSessionImpl(connection(), initiator, jingle.getSid(),
                 jingle.getContents(), mBasicTelephony);
-        Async.go(() -> mBasicTelephony.handleJingleSession(jingle, session));
+        Async.go(() -> mBasicTelephony.handleJingleSession(session, jingle));
         return IQ.createResultIQ(jingle);
     }
 

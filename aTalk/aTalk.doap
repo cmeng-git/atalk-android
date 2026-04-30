@@ -617,7 +617,7 @@
             <xmpp:SupportedXep>
                 <xmpp:xep rdf:resource='https://xmpp.org/extensions/xep-0353.html'/>
                 <xmpp:status>complete</xmpp:status>
-                <xmpp:version>0.6.0</xmpp:version>
+                <xmpp:version>0.8.0</xmpp:version>
                 <xmpp:since>2.3.0</xmpp:since>
             </xmpp:SupportedXep>
         </implements>
@@ -657,7 +657,7 @@
             <xmpp:SupportedXep>
                 <xmpp:xep rdf:resource='https://xmpp.org/extensions/xep-0384.html'/>
                 <xmpp:status>complete</xmpp:status>
-                <xmpp:version>0.9.0</xmpp:version>
+                <xmpp:version>0.9.1</xmpp:version>
                 <xmpp:since>5.2.0</xmpp:since>
                 <xmpp:note xml:lang='en'>Support both 'eu.siacs.conversations.axolotl' (since 0.7.9) and 'urn:xmpp:omemo:2' namespaces encrypted message decryption.</xmpp:note>
             </xmpp:SupportedXep>

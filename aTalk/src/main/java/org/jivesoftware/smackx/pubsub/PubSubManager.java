@@ -530,7 +530,7 @@ public final class PubSubManager extends Manager {
     /**
      * Delete the specified node.
      *
-     * @param nodeId TODO javadoc me please
+     * @param nodeId The delete element node attribute
      *
      * @return <code>true</code> if this node existed and was deleted and <code>false</code> if this node did not exist.
      *
@@ -553,6 +553,36 @@ public final class PubSubManager extends Manager {
             }
         }
         nodeMap.remove(nodeId);
+        return res;
+    }
+
+    /**
+     * Delete the specified Node/Item.
+     *
+     * @param nodeId The retract element node attribute
+     * @param itemId The item element id attribute
+     *
+     * @return <code>true</code> if this node existed and was deleted and <code>false</code> if this node-item did not exist.
+     *
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     */
+    public boolean retractNodeItem(String nodeId, String itemId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        boolean res = true;
+        try {
+            PubSub pubSub = PubSub.createPubsubPacket(pubSubService, IQ.Type.set, new RetractItem(nodeId, itemId));
+            sendPubsubPacket(pubSub);
+        }
+        catch (XMPPErrorException e) {
+            if (e.getStanzaError().getCondition() == StanzaError.Condition.item_not_found) {
+                res = false;
+            }
+            else {
+                throw e;
+            }
+        }
         return res;
     }
 

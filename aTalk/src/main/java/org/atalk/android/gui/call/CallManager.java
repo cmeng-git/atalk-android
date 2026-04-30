@@ -5,6 +5,8 @@
  */
 package org.atalk.android.gui.call;
 
+import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 
 import java.awt.Component;
@@ -61,7 +63,10 @@ import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.MediaType;
+
 import org.jivesoftware.smackx.avatar.AvatarManager;
+import org.jivesoftware.smackx.jingle.JingleManager;
+
 import org.jxmpp.jid.BareJid;
 
 import timber.log.Timber;
@@ -86,6 +91,7 @@ public class CallManager {
      * The string ID is an instance of the time when the call is first activated
      */
     private static final Map<String, Call> activeCalls = new HashMap<>();
+    private static final Map<Call, VideoCallActivity> videoCalls = new WeakHashMap<>();
 
     /**
      * A map of active outgoing calls per <code>UIContactImpl</code>.
@@ -95,7 +101,7 @@ public class CallManager {
     public synchronized static String addActiveCall(Call call) {
         String key = call.getCallId();
         if (TextUtils.isEmpty(key)) {
-            key = String.valueOf(System.currentTimeMillis());
+            key = JingleManager.randomUuid();
             Timber.e("CallId is not initialized with jingle sid: %s", key);
         }
         synchronized (activeCalls) {
@@ -125,6 +131,7 @@ public class CallManager {
             for (String removeKey : toRemove) {
                 removeActiveCall(removeKey);
             }
+            removeVideoCall(call);
         }
     }
 
@@ -159,6 +166,46 @@ public class CallManager {
     public synchronized static int getActiveCallsCount() {
         synchronized (activeCalls) {
             return activeCalls.size();
+        }
+    }
+
+    public synchronized static void addVideoCall(Call call, VideoCallActivity callActivity) {
+        synchronized (videoCalls) {
+            videoCalls.put(call, callActivity);
+        }
+    }
+
+    private synchronized static void removeVideoCall(Call call) {
+        synchronized (videoCalls) {
+            videoCalls.remove(call);
+        }
+    }
+
+    /**
+     * Switch the UI to the request call. Finish() old activity and re-start new.
+     * When switching between two calls from notification using pendingIntent, a new instance of the VideoCall
+     * is created on each call switch. Need user to hangup each newly created activity. Solution not working:
+     * a. ActivityManager.moveTaskToFront()
+     * b. FLAG_ACTIVITY_REORDER_TO_FRONT.
+     *
+     * @param call The call to switch to.
+     */
+    public static void callSwitchOrTransfer(Call call, boolean transfer) {
+        if (call != null) {
+            VideoCallActivity vCall = videoCalls.get(call);
+            if (vCall != null) {
+                videoCalls.remove(call);
+                vCall.finish(); // finish existing before start new.
+
+                Context ctx = aTalkApp.getInstance();
+                Intent videoCall = VideoCallActivity.createVideoCallIntent(ctx, call.getCallId());
+                videoCall.putExtra(CallManager.CALL_TRANSFER, transfer);
+                ctx.startActivity(videoCall);
+
+                // Not working.
+                // final ActivityManager activityManager = (ActivityManager) aTalkApp.getInstance().getSystemService(Context.ACTIVITY_SERVICE);
+                // activityManager.moveTaskToFront(vCall.getTaskId(), ActivityManager.MOVE_TASK_NO_USER_ACTION);
+            }
         }
     }
 
@@ -408,7 +455,8 @@ public class CallManager {
         if (telephony != null) {
             try {
                 telephony.transfer(peer, target);
-            } catch (OperationFailedException ex) {
+            }
+            catch (OperationFailedException ex) {
                 String error = aTalkApp.getResString(R.string.call_transfer_failed,
                         peer.getAddress(), target.getAddress(), ex.getMessage());
                 Timber.w("%s", error);
@@ -431,7 +479,8 @@ public class CallManager {
         if (telephony != null) {
             try {
                 telephony.transfer(peer, target);
-            } catch (OperationFailedException ex) {
+            }
+            catch (OperationFailedException ex) {
                 String error = aTalkApp.getResString(R.string.call_transfer_failed,
                         peer.getAddress(), target, ex.getMessage());
                 Timber.w("%s", error);
@@ -793,7 +842,8 @@ public class CallManager {
                         internalCall(protocolProvider, contact, stringContact, contactResource, uiContact);
                     }
                 }
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 if (t instanceof ThreadDeath)
                     throw (ThreadDeath) t;
 
@@ -984,7 +1034,8 @@ public class CallManager {
                 }
                 else
                     createdCall = desktopSharingOpSet.createVideoCall(stringContact);
-            } catch (OperationFailedException | ParseException e) {
+            }
+            catch (OperationFailedException | ParseException e) {
                 exception = e;
             }
             if (exception != null) {
@@ -1046,7 +1097,8 @@ public class CallManager {
 
                     try {
                         telephony.answerVideoCallPeer(peer);
-                    } catch (OperationFailedException ofe) {
+                    }
+                    catch (OperationFailedException ofe) {
                         Timber.e("Could not answer %s with video because of the following exception: %s",
                                 peer, ofe.getMessage());
                     }
@@ -1055,7 +1107,8 @@ public class CallManager {
                     OperationSetBasicTelephony<?> telephony = pps.getOperationSet(OperationSetBasicTelephony.class);
                     try {
                         telephony.answerCallPeer(peer);
-                    } catch (OperationFailedException ofe) {
+                    }
+                    catch (OperationFailedException ofe) {
                         Timber.e("Could not answer %s because of the following exception: %s", peer, ofe.getMessage());
                     }
                 }
@@ -1193,7 +1246,8 @@ public class CallManager {
                             telephonyConferencing.inviteCalleeToCall(contact, ppsCall);
                         }
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     Timber.e(e, "Failed to invite callee: %s", Arrays.toString(contactArray));
                     DialogActivity.showDialog(aTalkApp.getInstance(),
                             aTalkApp.getResString(R.string.error), e.getMessage());
@@ -1237,7 +1291,8 @@ public class CallManager {
                     for (String contact : callees)
                         opSetVideoBridge.inviteCalleeToCall(contact, call);
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Timber.e(e, "Failed to invite callee: %s", Arrays.toString(callees));
                 DialogActivity.showDialog(aTalkApp.getInstance(),
                         aTalkApp.getResString(R.string.error), e.getMessage());
@@ -1327,14 +1382,14 @@ public class CallManager {
             for (CallPeer peer : peers) {
                 OperationSetBasicTelephony<?> basicTelephony
                         = peer.getProtocolProvider().getOperationSet(OperationSetBasicTelephony.class);
-
                 try {
                     // Must send JingleMessage retract to close the loop if Jingle RTP has yet to start
                     if (CallState.CALL_INITIALIZATION.equals(peer.getCall().getCallState())) {
-                        JingleMessageSessionImpl.sendJingleMessageRetract(peer);
+                        JingleMessageSessionImpl.sendJingleMessageRetract(peer.getPeerJid().asBareJid(), peer.getCall().getCallId());
                     }
                     basicTelephony.hangupCallPeer(peer);
-                } catch (OperationFailedException ofe) {
+                }
+                catch (OperationFailedException ofe) {
                     Timber.e(ofe, "Could not hang up: %s", peer);
                 }
             }
@@ -1367,7 +1422,8 @@ public class CallManager {
             if (videoTelephony != null) {
                 try {
                     videoTelephony.setLocalVideoAllowed(call, enable);
-                } catch (OperationFailedException ex) {
+                }
+                catch (OperationFailedException ex) {
                     Timber.e("Failed to toggle the streaming of local video. %s", ex.getMessage());
                 }
             }
@@ -1395,7 +1451,8 @@ public class CallManager {
                     telephony.putOnHold(callPeer);
                 else
                     telephony.putOffHold(callPeer);
-            } catch (OperationFailedException ex) {
+            }
+            catch (OperationFailedException ex) {
                 Timber.e(ex, "Failed to put %s %s", callPeer.getAddress(), (isOnHold ? " on hold." : " off hold. "));
             }
         }
@@ -1449,7 +1506,8 @@ public class CallManager {
                     try {
                         telephony.putOffHold(callPeer);
                         Thread.sleep(400);
-                    } catch (Exception ofe) {
+                    }
+                    catch (Exception ofe) {
                         Timber.e("Failed to put off hold. %s", ofe.getMessage());
                     }
                 }

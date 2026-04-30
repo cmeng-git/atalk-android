@@ -100,6 +100,7 @@ public class ReceivedCallActivity extends BaseActivity implements CallChangeList
                 return;
             }
 
+            // Auto answer if call accept via notification.
             if (extras.getBoolean(CallManager.AUTO_ACCEPT, false))
                 mVideoCallButton.performClick();
         }

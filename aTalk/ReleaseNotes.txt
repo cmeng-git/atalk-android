@@ -1,5 +1,34 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        5.3.0 (503000)
+Release Date:   04/30/2026
+Author:         cmeng
+- Migrate all Jingle stanza sid to use UUIDv4 as recommended in XEP-0353: Jingle Message Initiation 0.8.0 (2026-02-19)
+  i.e. 5. Business Rules https://xmpp.org/extensions/xep-0353.html#business-rules
+- Update JingleMessage design/implementation to compliance with v0.8.0 (2026-02-19) specifications.
+- During tie-break, sending of Retract and Reject message to remote Jid will not follow as specified; else JM does not work properly.
+- Ensure proper handling of jingle call when exceptions occurred; JingleMessage session needs to be informed and hang up call correctly.
+- aTalk media call now handles Tie-Break, Call-Migrate, Call-Waiting, Call-Hold and Call-Transfer.
+- aTalk JingleMessage implementation is backward compatible to client with XEP-0353 v0.3.1 implementation e.g. conversions.
+- Fix Call Switch/Transfer creating multiple instances of VideoCallActivity when access via notification; Use CallManager finish(), and then startActivity.
+  When switching between two calls from notification, a new instance of the VideoCallActivity is created each time.
+  Need user to hangup each newly created activity when call end.
+  Tested no working: a. ActivityManager.moveTaskToFront();  b. FLAG_ACTIVITY_REORDER_TO_FRONT.
+- Remove CallPeerJabberImpl#hangup() method never throws exceptions.
+- Fix presence indicator error even after the user has authenticated. Roster callback on onRosterLoaded() is not called due to race condition.
+  Move addRosterLoadedListener() after user is connected and not after registered.
+- Add RegistrationState.CONNECTED; all discovered features must be added before user is authenticated.
+- Change incorrect use 'delete' to 'retract' to remove a node item in onPepEvent received omemo#devices itemId != 'current'.
+- Update smack pubsub RetractItem implementation to confirm to 1.30.0 (2025-11-11)
+- Update 'About' to reflect actual third party libraries used, and use atalk.doap instead for XEP used by aTalk.
+- Upgrade jni libs for libvpx 1.15.2 => 1.16.0; opus lib 1.5.2 => 1.6.1; libOgg 1.3.5 => 1.3.6; update init_libSppexOgg.sh script file.
+
+*** Observation #TODO: ***
+- Jingle-RTP NamedElement's e.g. PayloadType and ParameterElement are currently extended as AbstractXmlElement; contains potential problems.
+  Required major changes to source.
+- Receive contact #event for the omemoDevice update is using +notify.
+
+=========================================================================
 Version:        5.2.2 (502020)
 Release Date:   04/02/2026
 Author:         cmeng
@@ -19,11 +48,6 @@ Author:         cmeng
 - Fix unhandled BackKey problems with preference sub-menu for Connection, ICE, and Telephony VoIP-PBX settings.
 - Clean up Thumbnail.java file for fully XEP-0264: Jingle Content Thumbnails 0.4.2 (2024-07-24) compliant.
 - Revert AccountInfoPresenceActivity#loadDetails() to use ExecutorService, but without using 'try'-with-resources as this causes ANR.
-
-*** Observation #TODO: ***
-- Jingle-RTP NamedElement's e.g. PayloadType and ParameterElement are currently extended as AbstractXmlElement; contains potential problems.
-  Required major changes to source.
-- Receive contact #event for the omemoDevice update is using +notify.
 
 =========================================================================
 Version:        5.2.1 (502010)

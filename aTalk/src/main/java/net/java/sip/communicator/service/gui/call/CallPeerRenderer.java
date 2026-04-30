@@ -132,11 +132,9 @@ public interface CallPeerRenderer
     /**
      * Sets the state of the contained call peer by specifying the state name.
      *
-     * @param oldState the previous state of the peer
-     * @param newState the new state of the peer
      * @param stateString the state of the contained call peer
      */
-    void setPeerState(CallPeerState oldState, CallPeerState newState, String stateString);
+    void setPeerState(String stateString);
 
     /**
      * Shows/hides the security panel.

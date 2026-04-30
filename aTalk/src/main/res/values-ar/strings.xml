@@ -142,6 +142,7 @@
     <string name="call_initiating">جارٍ بدء المكالمة</string>
     <string name="call_rejected">رفض %1$s المكالمة.</string>
     <string name="call_retracted">سحب %1$s المكالمة.</string>
+    <string name="call_migrated">تم نقل المكالمة.</string>
     <string name="call_missed">مكالمات فائتة من:</string>
     <string name="call_no_active_device">لم يتمكن aTalk من العثور على أي أجهزة صوت/فيديو نشطة، وبالتالي لا يمكن إنشاء المكالمة.</string>
     <string name="call_no_audio_device">لم يتم تهيئة جهاز صوتي.</string>
@@ -264,6 +265,7 @@
     <string name="app_libraries">يستخدم aTalk المكتبات الطرفية التالية: %1$s</string>
     <string name="app_revision_fmt">معلومات المراجعة: %1$s</string>
     <string name="app_xep">يدعم aTalk XEPs التالية: %1$s</string>
+    <string name="atalk_doap">يعمل برنامج aTalk بسلاسة مع جميع خوادم XMPP تقريبًا المتوفرة على الشبكة، ولا يحده سوى ميزات الخوادم المدعومة. راجع &lt;a href="https://xmpp.org/doap/atalk.doap">atalk.doap&lt;\a> للاطلاع على قائمة معايير XEP المدعومة، وهي معايير خاصة بعملاء XMPP.</string>
     <string name="powered_by">مدعوم من atalk.org</string>
 
     <!-- PTT Chat -->
@@ -486,7 +488,7 @@
     <string name="last">الأخير</string>
     <string name="last_message_correction">تصحيح الرسالة الأخيرة</string>
     <string name="last_name">الاسم الأخير</string>
-    <string name="last_seen">اليوم: %s</string>
+    <string name="last_seen">اليوم:%1$s</string>
     <string name="leave">مغادرة</string>
     <string name="leave_chat_room">مغادرة غرفة الدردشة</string>
     <string name="locally_on_hold">في الانتظار محليًا</string>

@@ -542,8 +542,8 @@ public class OperationSetPersistentPresenceJabberImpl
 
         // if we got publish presence, and we are still in a process of initializing the roster,
         // just save the status and we will dispatch it when we are ready with the roster as
-        // sending initial presence is recommended to be done after requesting the roster, but we
-        // want to also dispatch it
+        // sending initial presence is recommended to be done after requesting the roster,
+        // but we want to also dispatch it
         synchronized (ssContactList.getRosterInitLock()) {
             if (!ssContactList.isRosterInitialized()) {
                 // store it
@@ -910,23 +910,24 @@ public class OperationSetPersistentPresenceJabberImpl
             RegistrationState eventNew = evt.getNewState();
             XMPPConnection xmppConnection = mPPS.getConnection();
 
-            if (eventNew == RegistrationState.REGISTERING) {
-                // contactChangesListener will be used to store presence events till roster is initialized
-                mContactChangesListener = new ContactChangesListener();
-                mContactChangesListener.storeEvents();
-            }
-            else if (eventNew == RegistrationState.REGISTERED) {
+            if (eventNew == RegistrationState.CONNECTED) {
                 /*
                  * Add a RosterLoaded listener as this will indicate when the roster is
                  * received or loaded from RosterStore (upon authenticated). We are then ready
                  * to dispatch the contact list. Note the actual RosterListener used is added
                  * and active just after the RosterLoadedListener is triggered.
                  *
-                 * setup to init ssContactList upon receiving the rosterLoaded event
+                 * Must setup to init ssContactList upon receiving the connected event;
+                 * else race condition can happen, and presence indicator not properly updated.
                  */
                 mRoster = Roster.getInstanceFor(xmppConnection);
                 mRoster.addRosterLoadedListener(new ServerStoredListInit());
 
+                // contactChangesListener will be used to store presence events till roster is initialized
+                mContactChangesListener = new ContactChangesListener();
+                mContactChangesListener.storeEvents();
+            }
+            else if (eventNew == RegistrationState.REGISTERED) {
                 // Adds subscription listeners only when user is authenticated
                 if (!handleSubscribeEvent) {
                     mRoster.addSubscribeListener(OperationSetPersistentPresenceJabberImpl.this);
@@ -1210,7 +1211,7 @@ public class OperationSetPersistentPresenceJabberImpl
     /**
      * Manage changes of statuses by resource.
      */
-    class ContactChangesListener extends AbstractRosterListener {
+    protected class ContactChangesListener extends AbstractRosterListener {
         /**
          * Store events for later processing, used when initializing contactList.
          */
@@ -1553,7 +1554,7 @@ public class OperationSetPersistentPresenceJabberImpl
      * cmeng (20190810) - Handler another instance user presence events return from smack
      * smack callback for all presenceAvailable for all entities (users login and contacts).
      *
-     * @param address FullJid of own or the buddy subscribe to (user)
+     * @param address FullJid of own or the buddy subscribed to (user)
      * @param presence presence with available / unavailable state (from presenceUnavailable)
      */
     @Override
@@ -1566,12 +1567,12 @@ public class OperationSetPersistentPresenceJabberImpl
         if (localContact == null)
             localContact = getLocalContact();
 
-        // Update resource if receive from instances of user presence and localContact is not null
+        // Update resource if received from instances of user presence and localContact is not null
         if ((localContact != null) && (address != null)) {
             EntityFullJid ourJid = mPPS.getOurJid(); // Received NPE from FFR
             if ((ourJid != null) && ourJid.asBareJid().isParentOf(address)) {
                 // Timber.d("Smack presence update own instance %s %s: %s", userJid, address, localContact);
-                updateResource(localContact, null, presence);
+                updateResource(localContact, address, presence);
             }
         }
     }

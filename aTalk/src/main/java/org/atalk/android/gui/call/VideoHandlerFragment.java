@@ -11,7 +11,6 @@ import static android.hardware.camera2.CameraMetadata.LENS_FACING_FRONT;
 import android.Manifest;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,7 +22,6 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 
 import java.awt.Component;
@@ -294,7 +292,8 @@ public class VideoHandlerFragment extends BaseFragment implements MenuProvider, 
         if (cameraSwitchThread != null) {
             try {
                 cameraSwitchThread.join();
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }

@@ -5,11 +5,11 @@
  */
 package org.atalk.impl.neomedia;
 
+import java.awt.Dimension;
+
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.service.neomedia.QualityControl;
 import org.atalk.service.neomedia.QualityPreset;
-
-import java.awt.Dimension;
 
 import timber.log.Timber;
 
@@ -20,8 +20,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-class QualityControlImpl implements QualityControl
-{
+class QualityControlImpl implements QualityControl {
     /**
      * This is the local settings from the configuration panel.
      */
@@ -42,8 +41,7 @@ class QualityControlImpl implements QualityControl
      *
      * @param preset the desired video settings.
      */
-    private void setRemoteReceivePreset(QualityPreset preset)
-    {
+    private void setRemoteReceivePreset(QualityPreset preset) {
         QualityPreset preferredSendPreset = getPreferredSendPreset();
 
         if (preset.compareTo(preferredSendPreset) > 0)
@@ -63,8 +61,7 @@ class QualityControlImpl implements QualityControl
      *
      * @return the current preset
      */
-    public QualityPreset getRemoteReceivePreset()
-    {
+    public QualityPreset getRemoteReceivePreset() {
         return preset;
     }
 
@@ -73,8 +70,7 @@ class QualityControlImpl implements QualityControl
      *
      * @return minimum resolution values for remote part.
      */
-    public QualityPreset getRemoteSendMinPreset()
-    {
+    public QualityPreset getRemoteSendMinPreset() {
         /* We do not support such a value at the time of this writing. */
         return null;
     }
@@ -84,8 +80,7 @@ class QualityControlImpl implements QualityControl
      *
      * @return max resolution values for remote part.
      */
-    public QualityPreset getRemoteSendMaxPreset()
-    {
+    public QualityPreset getRemoteSendMaxPreset() {
         return maxPreset;
     }
 
@@ -94,8 +89,7 @@ class QualityControlImpl implements QualityControl
      *
      * @param preset
      */
-    public void setRemoteSendMaxPreset(QualityPreset preset)
-    {
+    public void setRemoteSendMaxPreset(QualityPreset preset) {
         this.maxPreset = preset;
     }
 
@@ -105,8 +99,7 @@ class QualityControlImpl implements QualityControl
      * @param preset the max preset
      */
     @Override
-    public void setPreferredRemoteSendMaxPreset(QualityPreset preset)
-    {
+    public void setPreferredRemoteSendMaxPreset(QualityPreset preset) {
         setRemoteSendMaxPreset(preset);
     }
 
@@ -115,8 +108,7 @@ class QualityControlImpl implements QualityControl
      *
      * @return the local setting of capture
      */
-    private QualityPreset getPreferredSendPreset()
-    {
+    private QualityPreset getPreferredSendPreset() {
         if (localSettingsPreset == null) {
             DeviceConfiguration devCfg = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration();
             localSettingsPreset = new QualityPreset(devCfg.getVideoSize(), devCfg.getFrameRate());
@@ -129,8 +121,7 @@ class QualityControlImpl implements QualityControl
      *
      * @param res
      */
-    public void setRemoteReceiveResolution(Dimension res)
-    {
+    public void setRemoteReceiveResolution(Dimension res) {
         setRemoteReceivePreset(new QualityPreset(res));
     }
 }

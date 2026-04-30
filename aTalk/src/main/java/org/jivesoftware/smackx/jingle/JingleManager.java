@@ -29,6 +29,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.id.UuidStanzaIdSource;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.jingle.element.Jingle;
@@ -130,5 +131,9 @@ public final class JingleManager extends Manager {
 
     public static String randomId() {
         return StringUtils.randomString(24);
+    }
+
+    public static String randomUuid() {
+        return UuidStanzaIdSource.INSTANCE.getNewStanzaId();
     }
 }

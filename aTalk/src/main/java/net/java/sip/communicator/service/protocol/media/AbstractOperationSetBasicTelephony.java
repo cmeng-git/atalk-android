@@ -5,6 +5,11 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallConference;
 import net.java.sip.communicator.service.protocol.ChatRoom;
@@ -21,11 +26,6 @@ import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.service.neomedia.recording.Recorder;
 import org.atalk.util.MediaType;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -34,14 +34,14 @@ import timber.log.Timber;
  * details.
  *
  * @param <T> the implementation specific provider class like for example <code>ProtocolProviderServiceSipImpl</code>.
+ *
  * @author Lyubomir Marinov
  * @author Emil Ivov
  * @author Dmitri Melnikov
  * @author Eng Chong Meng
  */
 public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProviderService>
-        implements OperationSetBasicTelephony<T>
-{
+        implements OperationSetBasicTelephony<T> {
     /**
      * A list of listeners registered for call events.
      */
@@ -54,8 +54,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      * <code>null</code> as the <code>CallConference</code> argument.
      */
     public Call createCall(Contact callee)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         return createCall(callee, null);
     }
 
@@ -66,11 +65,11 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      * {@link Contact#getAddress()} as the <code>String</code> argument.
      */
     public Call createCall(Contact callee, CallConference conference)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         try {
             return createCall(callee.getAddress(), conference);
-        } catch (ParseException pe) {
+        }
+        catch (ParseException pe) {
             throw new OperationFailedException(pe.getMessage(), OperationFailedException.ILLEGAL_ARGUMENT, pe);
         }
     }
@@ -82,8 +81,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      * <code>null</code> as the <code>CallConference</code> argument.
      */
     public Call createCall(String uri)
-            throws OperationFailedException, ParseException
-    {
+            throws OperationFailedException, ParseException {
         return createCall(uri, null);
     }
 
@@ -94,8 +92,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      */
     @Override
     public Call createCall(ConferenceDescription cd, ChatRoom chatRoom)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         throw new OperationFailedException("Creating a call with a ConferenceDescription is not implemented in "
                 + getClass(), OperationFailedException.INTERNAL_ERROR);
     }
@@ -107,8 +104,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      * @param eventID the ID of the event to dispatch
      * @param sourceCall the call on which the event has occurred.
      */
-    public void fireCallEvent(int eventID, Call sourceCall)
-    {
+    public void fireCallEvent(int eventID, Call sourceCall) {
         fireCallEvent(eventID, sourceCall, null);
     }
 
@@ -120,8 +116,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      * @param sourceCall the call on which the event has occurred.
      * @param mediaDirections direction map for media types
      */
-    public void fireCallEvent(int eventID, Call sourceCall, Map<MediaType, MediaDirection> mediaDirections)
-    {
+    public void fireCallEvent(int eventID, Call sourceCall, Map<MediaType, MediaDirection> mediaDirections) {
         fireCallEvent(new CallEvent(sourceCall, eventID, mediaDirections));
     }
 
@@ -131,8 +126,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      *
      * @param event the event to dispatch
      */
-    public void fireCallEvent(CallEvent event)
-    {
+    public void fireCallEvent(CallEvent event) {
         List<CallListener> listeners;
         synchronized (callListeners) {
             listeners = new ArrayList<>(callListeners);
@@ -143,15 +137,15 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
             Timber.log(TimberLog.FINER, "Dispatching a CallEvent to %s. The event is: %s", listener.getClass(), event);
 
             switch (event.getEventID()) {
-                case CallEvent.CALL_INITIATED:
-                    listener.outgoingCallCreated(event);
-                    break;
-                case CallEvent.CALL_RECEIVED:
-                    listener.incomingCallReceived(event);
-                    break;
-                case CallEvent.CALL_ENDED:
-                    listener.callEnded(event);
-                    break;
+            case CallEvent.CALL_INITIATED:
+                listener.outgoingCallCreated(event);
+                break;
+            case CallEvent.CALL_RECEIVED:
+                listener.incomingCallReceived(event);
+                break;
+            case CallEvent.CALL_ENDED:
+                listener.callEnded(event);
+                break;
             }
         }
     }
@@ -161,8 +155,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      *
      * @param listener the listener to register with this provider.
      */
-    public void addCallListener(CallListener listener)
-    {
+    public void addCallListener(CallListener listener) {
         synchronized (callListeners) {
             if (!callListeners.contains(listener))
                 callListeners.add(listener);
@@ -174,8 +167,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      *
      * @param listener the listener to unregister.
      */
-    public void removeCallListener(CallListener listener)
-    {
+    public void removeCallListener(CallListener listener) {
         synchronized (callListeners) {
             callListeners.remove(listener);
         }
@@ -190,8 +182,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      * @param call the <code>Call</code> whose mute state is to be set
      * @param mute <code>true</code> to mute the call streams being sent to <code>peers</code>; otherwise, <code>false</code>
      */
-    public void setMute(Call call, boolean mute)
-    {
+    public void setMute(Call call, boolean mute) {
         if (call instanceof MediaAwareCall)
             ((MediaAwareCall<?, ?, ?>) call).setMute(mute);
         else {
@@ -213,15 +204,16 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      *
      * @param call the <code>Call</code> which is to be recorded by the returned <code>Recorder</code> when the
      * latter is started
+     *
      * @return a new <code>Recorder</code> which is to record the specified <code>call</code> (into a file
      * which is to be specified when starting the returned <code>Recorder</code>)
+     *
      * @throws OperationFailedException if anything goes wrong while creating the new <code>Recorder</code> for the specified
      * <code>call</code>
      * @see OperationSetBasicTelephony#createRecorder(Call)
      */
     public Recorder createRecorder(Call call)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         return (call instanceof MediaAwareCall<?, ?, ?>) ? ((MediaAwareCall<?, ?, ?>) call).createRecorder() : null;
     }
 }

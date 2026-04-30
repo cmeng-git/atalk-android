@@ -9,6 +9,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 import net.java.sip.communicator.plugin.notificationwiring.NotificationWiringActivator;
 import net.java.sip.communicator.service.notification.NotificationData;
@@ -30,13 +35,10 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.util.AppUtils;
 import org.atalk.impl.appstray.NotificationPopupHandler;
-import org.jivesoftware.smackx.avatar.AvatarManager;
-import org.jxmpp.jid.Jid;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
+import org.jivesoftware.smackx.avatar.AvatarManager;
+
+import org.jxmpp.jid.Jid;
 
 import timber.log.Timber;
 
@@ -99,72 +101,73 @@ public class AppCallListener implements CallListener, CallChangeListener {
      */
     protected void onCallEvent(final CallEvent evt) {
         Call call = evt.getSourceCall();
+        String sid;
 
         Timber.d("Received CallEvent: %s: %s", evt.getEventID(), call.getCallId());
         switch (evt.getEventID()) {
-            // Triggered by outgoing call after session-initiate
-            case CallEvent.CALL_INITIATED:
-                storeSpeakerPhoneStatus();
-                clearVideoCallState();
+        // Triggered by outgoing call after session-initiate
+        case CallEvent.CALL_INITIATED:
+            storeSpeakerPhoneStatus();
+            clearVideoCallState();
 
-                String sid = CallManager.addActiveCall(call);
-                startVideoCallActivity(sid);
-                break;
+            sid = CallManager.addActiveCall(call);
+            startVideoCallActivity(sid);
+            break;
 
-            case CallEvent.CALL_RECEIVED:
-                // cmeng 20220529: Allow two active calls to support call in waiting
-                if (CallManager.getActiveCallsCount() > 1) {
-                    CallManager.hangupCall(call);
+        case CallEvent.CALL_RECEIVED:
+            // cmeng 20220529: Allow two active calls to support call in waiting
+            if (CallManager.getActiveCallsCount() > 1) {
+                CallManager.hangupCall(call);
+            }
+            else {
+                if (CallManager.getActiveCallsCount() == 0) {
+                    storeSpeakerPhoneStatus();
+                    clearVideoCallState();
                 }
-                else {
-                    if (CallManager.getActiveCallsCount() == 0) {
-                        storeSpeakerPhoneStatus();
-                        clearVideoCallState();
+
+                // cmeng - answer call and on hold current - mic not working
+                // Launch UI for user selection of audio or video call
+                sid = CallManager.addActiveCall(call);
+                boolean jmCall = JingleMessageSessionImpl.isJingleMessageSession(call.getCallId());
+                Timber.d("aTalk jmCall: %s;  ForeGround: %s; LockScreen: %s; %s",
+                        jmCall, aTalkApp.isForeground, aTalkApp.isDeviceLocked(), sid);
+
+                if (aTalkApp.isForeground) {
+                    // For incoming call accepted via Jingle Message propose session.
+                    if (jmCall) {
+                        // Accept call via VideoCallActivity UI to allow auto-answer the Jingle Call
+                        startVideoCallActivity(sid);
+
+                        // Accept call via ReceivedCallActivity for user choice to start audio/video call
+                        // This also be executed if android is in locked screen
+                        // startReceivedCallActivity(sid);
                     }
-
-                    // cmeng - answer call and on hold current - mic not working
-                    // Launch UI for user selection of audio or video call
-                    sid = CallManager.addActiveCall(call);
-                    boolean jmCall = call.getCallId().equals(JingleMessageSessionImpl.getSid());
-                    Timber.d("aTalk jmCall: %s;  ForeGround: %s; LockScreen: %s; %s",
-                            jmCall, aTalkApp.isForeground, aTalkApp.isDeviceLocked(), sid);
-
-                    if (aTalkApp.isForeground) {
-                        // For incoming call accepted via Jingle Message propose session.
-                        if (jmCall) {
-                            // Accept call via VideoCallActivity UI to allow auto-answer the Jingle Call
-                            startVideoCallActivity(sid);
-
-                            // Accept call via ReceivedCallActivity for user choice to start audio/video call
-                            // This also be executed if android is in locked screen
-                            // startReceivedCallActivity(sid);
-                        }
-                        // For Jingle incoming call session. UI with user choice of audio/video buttons
-                        else {
-                            startReceivedCallActivity(sid);
-                        }
-                    }
-                    // Launch a heads-up UI for user to accept the call with pendingIntent based on derived msgType.
-                    // When android is NOT (inForeGround OR deviceLocked), Launch HeadsUp notification UI for user
-                    // to accept call; procced to auto answer call once accept in ReceivedCallActivity.
-                    // @See NotificationPopupHandler#showPopupMessage()
+                    // For Jingle incoming call session. UI with user choice of audio/video buttons
                     else {
-                        Jid peerJid = call.getCallPeers().next().getContact().getJid();
-                        int msgType = jmCall || !aTalkApp.isDeviceLocked() ?
-                                SystrayService.HEADS_UP_INCOMING_CALL : SystrayService.JINGLE_INCOMING_CALL;
-                        Timber.d("Call msgType: %s", msgType);
-                        startIncomingCallNotification(peerJid, sid, msgType, evt.isVideoCall());
+                        startReceivedCallActivity(sid);
                     }
-
-                    // merge call - exception; It will end up with a conference call.
-                    // CallManager.answerCallInFirstExistingCall(evt.getSourceCall());
                 }
-                break;
+                // Launch a heads-up UI for user to accept the call with pendingIntent based on derived msgType.
+                // When android is NOT (inForeGround OR deviceLocked), Launch HeadsUp notification UI for user
+                // to accept call; procced to auto answer call once accept in ReceivedCallActivity.
+                // @See NotificationPopupHandler#showPopupMessage()
+                else {
+                    Jid peerJid = call.getCallPeers().next().getContact().getJid();
+                    int msgType = jmCall || !aTalkApp.isDeviceLocked() ?
+                            SystrayService.HEADS_UP_INCOMING_CALL : SystrayService.JINGLE_INCOMING_CALL;
+                    Timber.d("Call msgType: %s", msgType);
+                    startIncomingCallNotification(peerJid, sid, msgType, evt.isVideoCall());
+                }
 
-            // Call Activity must close itself
-            case CallEvent.CALL_ENDED:
-                endCall(call);
-                break;
+                // merge call - exception; It will end up with a conference call.
+                // CallManager.answerCallInFirstExistingCall(evt.getSourceCall());
+            }
+            break;
+
+        // Call Activity must close itself
+        case CallEvent.CALL_ENDED:
+            endCall(call);
+            break;
         }
     }
 
@@ -233,7 +236,6 @@ public class AppCallListener implements CallListener, CallChangeListener {
         // Check for resource permission before continue; min mic is enabled
         if (aTalk.isMediaCallAllowed(false)) {
             Intent videoCall = VideoCallActivity.createVideoCallIntent(appContext, sid);
-            videoCall.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             appContext.startActivity(videoCall);
         }
     }
@@ -241,7 +243,7 @@ public class AppCallListener implements CallListener, CallChangeListener {
     /**
      * Starts the receive call UI when in legacy jingle call
      *
-     * @param call the <code>Call</code> to be handled
+     * @param sid the Call Sid to be handled
      */
     private void startReceivedCallActivity(String sid) {
         Intent intent = new Intent(appContext, ReceivedCallActivity.class)
@@ -285,7 +287,6 @@ public class AppCallListener implements CallListener, CallChangeListener {
                 CallManager.answerCall(call, isVideoCall);
                 String callIdentifier = CallManager.addActiveCall(call);
                 Intent videoCall = VideoCallActivity.createVideoCallIntent(appContext, callIdentifier);
-                videoCall.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 appContext.startActivity(videoCall);
             }
         }.start();

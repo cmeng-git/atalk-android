@@ -5,6 +5,12 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
 import net.java.sip.communicator.service.protocol.event.CallPeerConferenceEvent;
 import net.java.sip.communicator.service.protocol.event.CallPeerConferenceListener;
@@ -19,12 +25,6 @@ import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutE
 
 import org.atalk.util.event.PropertyChangeNotifier;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import timber.log.Timber;
 
 /**
@@ -34,14 +34,14 @@ import timber.log.Timber;
  * @param <T> the call extension class like for example <code>CallSipImpl</code> or <code>CallJabberImpl</code>
  * @param <U> the provider extension class like for example <code>ProtocolProviderServiceSipImpl</code> or
  * <code>ProtocolProviderServiceJabberImpl</code>
+ *
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
 public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProviderService>
-        extends PropertyChangeNotifier implements CallPeer
-{
+        extends PropertyChangeNotifier implements CallPeer {
     /**
      * The constant which describes an empty set of <code>ConferenceMember</code>s (and which can be
      * used to reduce allocations).
@@ -124,8 +124,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     /**
      * Initializes a new <code>AbstractCallPeer</code> instance.
      */
-    protected AbstractCallPeer()
-    {
+    protected AbstractCallPeer() {
         conferenceMembers = Collections.emptyList();
         unmodifiableConferenceMembers = Collections.unmodifiableList(conferenceMembers);
     }
@@ -135,8 +134,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @return a string representing an alternative IMPP address corresponding to this <code>CallPeer</code>
      */
-    public String getAlternativeIMPPAddress()
-    {
+    public String getAlternativeIMPPAddress() {
         return alternativeIMPPAddress;
     }
 
@@ -145,8 +143,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param address an alternative IMPP address corresponding to this <code>CallPeer</code>
      */
-    public void setAlternativeIMPPAddress(String address)
-    {
+    public void setAlternativeIMPPAddress(String address) {
         alternativeIMPPAddress = address;
     }
 
@@ -157,8 +154,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param listener the <code>CallPeerConferenceListener</code> to add
      */
-    public void addCallPeerConferenceListener(CallPeerConferenceListener listener)
-    {
+    public void addCallPeerConferenceListener(CallPeerConferenceListener listener) {
         if (listener != null)
             synchronized (callPeerConferenceListeners) {
                 if (!callPeerConferenceListeners.contains(listener))
@@ -171,8 +167,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param listener a listener instance to register with this peer.
      */
-    public void addCallPeerListener(CallPeerListener listener)
-    {
+    public void addCallPeerListener(CallPeerListener listener) {
         if (listener == null)
             return;
         synchronized (callPeerListeners) {
@@ -186,8 +181,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param listener a listener instance to register with this peer.
      */
-    public void addCallPeerSecurityListener(CallPeerSecurityListener listener)
-    {
+    public void addCallPeerSecurityListener(CallPeerSecurityListener listener) {
         if (listener == null)
             return;
         synchronized (callPeerSecurityListeners) {
@@ -206,8 +200,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      * reported by this peer. If the specified <code>ConferenceMember</code> is already contained
      * in the list, it is not added again and no event is fired.
      */
-    public void addConferenceMember(ConferenceMember conferenceMember)
-    {
+    public void addConferenceMember(ConferenceMember conferenceMember) {
         if (conferenceMember == null)
             throw new NullPointerException("conferenceMember");
         else {
@@ -236,8 +229,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param errorMessage error message that can be displayed.
      */
-    public void fireConferenceMemberErrorEvent(String errorMessage)
-    {
+    public void fireConferenceMemberErrorEvent(String errorMessage) {
         if (errorMessage == null || errorMessage.length() == 0) {
             Timber.w("The error message for %  is null or empty string.", this.getDisplayName());
             return;
@@ -254,11 +246,11 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param ssrc the SSRC identifier of the audio RTP streams transmitted by the
      * <code>ConferenceMember</code> that we are looking for.
+     *
      * @return the first <code>ConferenceMember</code> whose <code>audioSsrc</code> is equal to
      * <code>ssrc</code> or <code>null</code> if no such <code>ConferenceMember</code> was found
      */
-    protected ConferenceMember findConferenceMember(long ssrc)
-    {
+    protected ConferenceMember findConferenceMember(long ssrc) {
         List<ConferenceMember> members = getConferenceMembers();
         for (int i = 0, memberCount = members.size(); i < memberCount; i++) {
             ConferenceMember member = members.get(i);
@@ -276,8 +268,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      * @param oldValue the value of the source property before it changed.
      * @param newValue the current value of the source property.
      */
-    protected void fireCallPeerChangeEvent(String eventType, Object oldValue, Object newValue)
-    {
+    protected void fireCallPeerChangeEvent(String eventType, Object oldValue, Object newValue) {
         this.fireCallPeerChangeEvent(eventType, oldValue, newValue, null);
     }
 
@@ -291,8 +282,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      * @param reason a string that could be set to contain a human readable explanation for the transition
      * (particularly handy when moving into a FAILED state).
      */
-    protected void fireCallPeerChangeEvent(String eventType, Object oldValue, Object newValue, String reason)
-    {
+    protected void fireCallPeerChangeEvent(String eventType, Object oldValue, Object newValue, String reason) {
         this.fireCallPeerChangeEvent(eventType, oldValue, newValue, reason, -1);
     }
 
@@ -307,8 +297,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      * (particularly handy when moving into a FAILED state).
      * @param reasonCode the reason code for the reason of this event.
      */
-    protected void fireCallPeerChangeEvent(String eventType, Object oldValue, Object newValue, String reason, int reasonCode)
-    {
+    protected void fireCallPeerChangeEvent(String eventType, Object oldValue, Object newValue, String reason, int reasonCode) {
         CallPeerChangeEvent evt = new CallPeerChangeEvent(this, eventType, oldValue, newValue, reason, reasonCode);
 
         Iterator<CallPeerListener> listeners;
@@ -322,21 +311,22 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
             // catch any possible errors, so we are sure we dispatch events to all listeners
             try {
                 switch (eventType) {
-                    case CallPeerChangeEvent.CALL_PEER_ADDRESS_CHANGE:
-                        listener.peerAddressChanged(evt);
-                        break;
-                    case CallPeerChangeEvent.CALL_PEER_DISPLAY_NAME_CHANGE:
-                        listener.peerDisplayNameChanged(evt);
-                        break;
-                    case CallPeerChangeEvent.CALL_PEER_IMAGE_CHANGE:
-                        listener.peerImageChanged(evt);
-                        break;
-                    case CallPeerChangeEvent.CALL_PEER_STATE_CHANGE:
-                        // Timber.d("Dispatching CallPeerChangeEvent CALL_PEER_STATE_CHANGE to: %s", listener);
-                        listener.peerStateChanged(evt);
-                        break;
+                case CallPeerChangeEvent.CALL_PEER_ADDRESS_CHANGE:
+                    listener.peerAddressChanged(evt);
+                    break;
+                case CallPeerChangeEvent.CALL_PEER_DISPLAY_NAME_CHANGE:
+                    listener.peerDisplayNameChanged(evt);
+                    break;
+                case CallPeerChangeEvent.CALL_PEER_IMAGE_CHANGE:
+                    listener.peerImageChanged(evt);
+                    break;
+                case CallPeerChangeEvent.CALL_PEER_STATE_CHANGE:
+                    // Timber.d("Dispatching CallPeerChangeEvent CALL_PEER_STATE_CHANGE to: %s", listener);
+                    listener.peerStateChanged(evt);
+                    break;
                 }
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 Timber.e(t, "Error dispatching event to %s: %s", listener, eventType);
             }
         }
@@ -348,8 +338,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param conferenceEvent a <code>CallPeerConferenceEvent</code> to be fired and carrying the event data
      */
-    protected void fireCallPeerConferenceEvent(CallPeerConferenceEvent conferenceEvent)
-    {
+    protected void fireCallPeerConferenceEvent(CallPeerConferenceEvent conferenceEvent) {
         CallPeerConferenceListener[] listeners;
 
         synchronized (callPeerConferenceListeners) {
@@ -359,38 +348,38 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
         int eventID = conferenceEvent.getEventID();
         String eventIDString;
         switch (eventID) {
-            case CallPeerConferenceEvent.CONFERENCE_FOCUS_CHANGED:
-                eventIDString = "CONFERENCE_FOCUS_CHANGED";
-                break;
-            case CallPeerConferenceEvent.CONFERENCE_MEMBER_ADDED:
-                eventIDString = "CONFERENCE_MEMBER_ADDED";
-                break;
-            case CallPeerConferenceEvent.CONFERENCE_MEMBER_REMOVED:
-                eventIDString = "CONFERENCE_MEMBER_REMOVED";
-                break;
-            case CallPeerConferenceEvent.CONFERENCE_MEMBER_ERROR_RECEIVED:
-                eventIDString = "CONFERENCE_MEMBER_ERROR_RECEIVED";
-                break;
-            default:
-                eventIDString = "UNKNOWN";
-                break;
+        case CallPeerConferenceEvent.CONFERENCE_FOCUS_CHANGED:
+            eventIDString = "CONFERENCE_FOCUS_CHANGED";
+            break;
+        case CallPeerConferenceEvent.CONFERENCE_MEMBER_ADDED:
+            eventIDString = "CONFERENCE_MEMBER_ADDED";
+            break;
+        case CallPeerConferenceEvent.CONFERENCE_MEMBER_REMOVED:
+            eventIDString = "CONFERENCE_MEMBER_REMOVED";
+            break;
+        case CallPeerConferenceEvent.CONFERENCE_MEMBER_ERROR_RECEIVED:
+            eventIDString = "CONFERENCE_MEMBER_ERROR_RECEIVED";
+            break;
+        default:
+            eventIDString = "UNKNOWN";
+            break;
         }
         Timber.d("Dispatching CallPeerConferenceEvent with ID %s to %s listeners", eventIDString, listeners.length);
 
         for (CallPeerConferenceListener listener : listeners)
             switch (eventID) {
-                case CallPeerConferenceEvent.CONFERENCE_FOCUS_CHANGED:
-                    listener.conferenceFocusChanged(conferenceEvent);
-                    break;
-                case CallPeerConferenceEvent.CONFERENCE_MEMBER_ADDED:
-                    listener.conferenceMemberAdded(conferenceEvent);
-                    break;
-                case CallPeerConferenceEvent.CONFERENCE_MEMBER_REMOVED:
-                    listener.conferenceMemberRemoved(conferenceEvent);
-                    break;
-                case CallPeerConferenceEvent.CONFERENCE_MEMBER_ERROR_RECEIVED:
-                    listener.conferenceMemberErrorReceived(conferenceEvent);
-                    break;
+            case CallPeerConferenceEvent.CONFERENCE_FOCUS_CHANGED:
+                listener.conferenceFocusChanged(conferenceEvent);
+                break;
+            case CallPeerConferenceEvent.CONFERENCE_MEMBER_ADDED:
+                listener.conferenceMemberAdded(conferenceEvent);
+                break;
+            case CallPeerConferenceEvent.CONFERENCE_MEMBER_REMOVED:
+                listener.conferenceMemberRemoved(conferenceEvent);
+                break;
+            case CallPeerConferenceEvent.CONFERENCE_MEMBER_ERROR_RECEIVED:
+                listener.conferenceMemberErrorReceived(conferenceEvent);
+                break;
             }
     }
 
@@ -402,8 +391,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      * @param i18nMessage message
      * @param severity severity level
      */
-    protected void fireCallPeerSecurityMessageEvent(String messageType, String i18nMessage, int severity)
-    {
+    protected void fireCallPeerSecurityMessageEvent(String messageType, String i18nMessage, int severity) {
         CallPeerSecurityMessageEvent evt = new CallPeerSecurityMessageEvent(this, messageType, i18nMessage, severity);
 
         Timber.d("Dispatching CallPeer Security Message Events to %s listeners:\n%s",
@@ -426,8 +414,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param evt the event object with details to pass on to the consumers
      */
-    protected void fireCallPeerSecurityNegotiationStartedEvent(CallPeerSecurityNegotiationStartedEvent evt)
-    {
+    protected void fireCallPeerSecurityNegotiationStartedEvent(CallPeerSecurityNegotiationStartedEvent evt) {
         lastSecurityEvent = evt;
 
         Timber.d("Dispatching CallPeerSecurityStatusEvent Started to %s listeners: %s",
@@ -448,8 +435,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param evt the event object with details to pass on to the consumers
      */
-    protected void fireCallPeerSecurityOffEvent(CallPeerSecurityOffEvent evt)
-    {
+    protected void fireCallPeerSecurityOffEvent(CallPeerSecurityOffEvent evt) {
         lastSecurityEvent = evt;
         Timber.d("Dispatching CallPeerSecurityAuthenticationEvent OFF to %s listeners: %s",
                 callPeerSecurityListeners.size(), evt.toString());
@@ -470,8 +456,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param evt the event object with details to pass on to the consumers
      */
-    protected void fireCallPeerSecurityOnEvent(CallPeerSecurityOnEvent evt)
-    {
+    protected void fireCallPeerSecurityOnEvent(CallPeerSecurityOnEvent evt) {
         lastSecurityEvent = evt;
         Timber.d("Dispatching CallPeerSecurityStatusEvent ON to %s listeners: %s",
                 callPeerSecurityListeners.size(), evt.toString());
@@ -493,8 +478,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param evt the event object with details to pass on to the consumers
      */
-    protected void fireCallPeerSecurityTimeoutEvent(CallPeerSecurityTimeoutEvent evt)
-    {
+    protected void fireCallPeerSecurityTimeoutEvent(CallPeerSecurityTimeoutEvent evt) {
         lastSecurityEvent = evt;
 
         Timber.d("Dispatching CallPeerSecurityStatusEvent Timeout to %s listeners: %s",
@@ -525,8 +509,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      * of the duration of the participation in a <code>Call</code> or
      * {@link CallPeer#CALL_DURATION_START_TIME_UNKNOWN} if such a transition has not been performed
      */
-    public long getCallDurationStartTime()
-    {
+    public long getCallDurationStartTime() {
         return callDurationStartTime;
     }
 
@@ -537,8 +520,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      * @return a URL link to a location with call information or a call control web interface
      * related to this peer or <code>null</code> if no such URL is available.
      */
-    public URL getCallInfoURL()
-    {
+    public URL getCallInfoURL() {
         // if signaling protocols (such as SIP) know where to get this URL from they should override this method
         return null;
     }
@@ -546,8 +528,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     /**
      * {@inheritDoc}
      */
-    public int getConferenceMemberCount()
-    {
+    public int getConferenceMemberCount() {
         synchronized (conferenceMembersSyncRoot) {
             return isConferenceFocus() ? getConferenceMembers().size() : 0;
         }
@@ -556,8 +537,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     /**
      * {@inheritDoc}
      */
-    public List<ConferenceMember> getConferenceMembers()
-    {
+    public List<ConferenceMember> getConferenceMembers() {
         synchronized (conferenceMembersSyncRoot) {
             return unmodifiableConferenceMembers;
         }
@@ -568,8 +548,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @return the <code>CallPeerSecurityStatusEvent</code> that contains the current security settings.
      */
-    public CallPeerSecurityStatusEvent getCurrentSecuritySettings()
-    {
+    public CallPeerSecurityStatusEvent getCurrentSecuritySettings() {
         return lastSecurityEvent;
     }
 
@@ -585,8 +564,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @return a CallPeerState instance representing the peer's state.
      */
-    public CallPeerState getState()
-    {
+    public CallPeerState getState() {
         return state;
     }
 
@@ -595,8 +573,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @return <code>true</code> if this peer is a conference focus and <code>false</code> otherwise.
      */
-    public boolean isConferenceFocus()
-    {
+    public boolean isConferenceFocus() {
         return conferenceFocus;
     }
 
@@ -609,8 +586,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      * @return <code>true</code> if an audio stream is being sent to this peer and it is currently mute;
      * <code>false</code>, otherwise
      */
-    public boolean isMute()
-    {
+    public boolean isMute() {
         return isMute;
     }
 
@@ -619,8 +595,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param listener the <code>CallPeerConferenceListener</code> to remove
      */
-    public void removeCallPeerConferenceListener(CallPeerConferenceListener listener)
-    {
+    public void removeCallPeerConferenceListener(CallPeerConferenceListener listener) {
         if (listener != null)
             synchronized (callPeerConferenceListeners) {
                 callPeerConferenceListeners.remove(listener);
@@ -632,8 +607,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param listener the listener to unregister.
      */
-    public void removeCallPeerListener(CallPeerListener listener)
-    {
+    public void removeCallPeerListener(CallPeerListener listener) {
         if (listener == null)
             return;
         synchronized (callPeerListeners) {
@@ -646,8 +620,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param listener the listener to unregister.
      */
-    public void removeCallPeerSecurityListener(CallPeerSecurityListener listener)
-    {
+    public void removeCallPeerSecurityListener(CallPeerSecurityListener listener) {
         if (listener == null)
             return;
         synchronized (callPeerSecurityListeners) {
@@ -665,8 +638,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      * @param conferenceMember a <code>ConferenceMember</code> to be removed from the list of <code>ConferenceMember</code>
      * reported by this peer. If the specified <code>ConferenceMember</code> is no contained in the list, no event is fired.
      */
-    public void removeConferenceMember(ConferenceMember conferenceMember)
-    {
+    public void removeConferenceMember(ConferenceMember conferenceMember) {
         if (conferenceMember != null) {
             synchronized (conferenceMembersSyncRoot) {
                 if (conferenceMembers.contains(conferenceMember)) {
@@ -692,8 +664,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param conferenceFocus <code>true</code> if this peer is to become a conference focus and <code>false</code> otherwise.
      */
-    public void setConferenceFocus(boolean conferenceFocus)
-    {
+    public void setConferenceFocus(boolean conferenceFocus) {
         if (this.conferenceFocus != conferenceFocus) {
             this.conferenceFocus = conferenceFocus;
 
@@ -707,8 +678,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param newMuteValue the new value of the mute property for this call peer
      */
-    public void setMute(boolean newMuteValue)
-    {
+    public void setMute(boolean newMuteValue) {
         this.isMute = newMuteValue;
         firePropertyChange(MUTE_PROPERTY_NAME, isMute, newMuteValue);
     }
@@ -719,8 +689,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      *
      * @param newState the state this call peer should enter.
      */
-    public void setState(CallPeerState newState)
-    {
+    public void setState(CallPeerState newState) {
         setState(newState, null);
     }
 
@@ -732,8 +701,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      * @param reason a string that could be set to contain a human readable explanation for the transition
      * (particularly handy when moving into a FAILED state).
      */
-    public void setState(CallPeerState newState, String reason)
-    {
+    public void setState(CallPeerState newState, String reason) {
         setState(newState, reason, -1);
     }
 
@@ -746,8 +714,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      * (particularly handy when moving into a FAILED state).
      * @param reasonCode the code for the reason of the state change.
      */
-    public void setState(CallPeerState newState, String reason, int reasonCode)
-    {
+    public void setState(CallPeerState newState, String reason, int reasonCode) {
         CallPeerState oldState = getState();
         if (oldState == newState)
             return;
@@ -766,8 +733,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
      * @return a string representation of the peer and its state.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getDisplayName() + " <" + getAddress() + ">; status=" + getState().getStateString();
     }
 }

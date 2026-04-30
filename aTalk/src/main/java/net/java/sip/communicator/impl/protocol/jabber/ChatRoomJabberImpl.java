@@ -123,7 +123,6 @@ import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
 import org.jivesoftware.smackx.omemo.exceptions.NoOmemoSupportException;
 import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
-import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.oob.packet.OutOfBandData;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 import org.jivesoftware.smackx.sid.element.StanzaIdElement;
@@ -951,11 +950,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             if (callId != null) {
                 CallJabberImpl call = activeRepository.findByCallId(callId);
                 for (CallPeerJabberImpl peer : call.getCallPeerList()) {
-                    try {
-                        peer.hangup(false, null, null);
-                    } catch (NotConnectedException | InterruptedException e) {
-                        Timber.e(e, "Could not hangup peer %s", peer.getAddress());
-                    }
+                    peer.hangup(false, null, null);
                 }
             }
         }
@@ -968,11 +963,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
         for (CallJabberImpl call : tmpConferenceCalls) {
             for (CallPeerJabberImpl peer : call.getCallPeerList())
-                try {
-                    peer.hangup(false, null, null);
-                } catch (NotConnectedException | InterruptedException e) {
-                    Timber.e(e, "Could not hangup peer %s", peer.getAddress());
-                }
+                peer.hangup(false, null, null);
         }
         clearCachedConferenceDescriptionList();
 

@@ -229,6 +229,7 @@ public abstract class MediaAwareCall<
      * @param evt The <code>CallPeerChangeEvent</code> instance containing the source event as well as its
      * previous and its new status.
      */
+    @Override
     public void peerStateChanged(CallPeerChangeEvent evt) {
         Object newState = evt.getNewValue();
 

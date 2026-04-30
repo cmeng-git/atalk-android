@@ -6,17 +6,18 @@
 
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetJitsiMeetTools;
 
-import org.jivesoftware.smack.packet.XmlElement;
 import org.json.JSONObject;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
+import org.jivesoftware.smack.packet.XmlElement;
 
 import timber.log.Timber;
 
@@ -27,8 +28,7 @@ import timber.log.Timber;
  * @author Cristian Florin Ghita
  * @author Eng Chong Meng
  */
-public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMeetTools
-{
+public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMeetTools {
     private final ProtocolProviderServiceJabberImpl parentProvider;
 
     /**
@@ -41,8 +41,7 @@ public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMe
      *
      * @param parentProvider parent Jabber protocol provider service instance.
      */
-    public OperationSetJitsiMeetToolsJabberImpl(ProtocolProviderServiceJabberImpl parentProvider)
-    {
+    public OperationSetJitsiMeetToolsJabberImpl(ProtocolProviderServiceJabberImpl parentProvider) {
         this.parentProvider = parentProvider;
     }
 
@@ -50,16 +49,14 @@ public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMe
      * {@inheritDoc}
      */
     @Override
-    public void addSupportedFeature(String featureName)
-    {
+    public void addSupportedFeature(String featureName) {
         parentProvider.getDiscoveryManager().addFeature(featureName);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void removeSupportedFeature(String featureName)
-    {
+    public void removeSupportedFeature(String featureName) {
         parentProvider.getDiscoveryManager().removeFeature(featureName);
     }
 
@@ -67,8 +64,7 @@ public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMe
      * {@inheritDoc}
      */
     @Override
-    public void sendPresenceExtension(ChatRoom chatRoom, XmlElement extension)
-    {
+    public void sendPresenceExtension(ChatRoom chatRoom, XmlElement extension) {
         ((ChatRoomJabberImpl) chatRoom).sendPresenceExtension(extension);
     }
 
@@ -76,8 +72,7 @@ public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMe
      * {@inheritDoc}
      */
     @Override
-    public void removePresenceExtension(ChatRoom chatRoom, XmlElement extension)
-    {
+    public void removePresenceExtension(ChatRoom chatRoom, XmlElement extension) {
         ((ChatRoomJabberImpl) chatRoom).removePresenceExtension(extension);
     }
 
@@ -85,20 +80,17 @@ public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMe
      * {@inheritDoc}
      */
     @Override
-    public void setPresenceStatus(ChatRoom chatRoom, String statusMessage)
-    {
+    public void setPresenceStatus(ChatRoom chatRoom, String statusMessage) {
         ((ChatRoomJabberImpl) chatRoom).publishPresenceStatus(statusMessage);
     }
 
     @Override
-    public void addRequestListener(JitsiMeetRequestListener requestHandler)
-    {
+    public void addRequestListener(JitsiMeetRequestListener requestHandler) {
         this.requestHandlers.add(requestHandler);
     }
 
     @Override
-    public void removeRequestListener(JitsiMeetRequestListener requestHandler)
-    {
+    public void removeRequestListener(JitsiMeetRequestListener requestHandler) {
         this.requestHandlers.remove(requestHandler);
     }
 
@@ -109,8 +101,7 @@ public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMe
      * the muted status of audio stream.
      * startMuted[1] represents the muted status of video stream.
      */
-    public void notifySessionStartMuted(boolean[] startMuted)
-    {
+    public void notifySessionStartMuted(boolean[] startMuted) {
         boolean handled = false;
         for (JitsiMeetRequestListener l : requestHandlers) {
             l.onSessionStartMuted(startMuted);
@@ -126,8 +117,7 @@ public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMe
      */
     @Override
     public void sendJSON(CallPeer callPeer, JSONObject jsonObject, Map<String, Object> params)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         throw new OperationFailedException("Operation not supported for this protocol yet!",
                 OperationFailedException.NOT_SUPPORTED_OPERATION);
     }

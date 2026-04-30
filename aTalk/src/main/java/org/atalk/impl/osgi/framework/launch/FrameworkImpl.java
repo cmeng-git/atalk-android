@@ -6,6 +6,13 @@
  */
 package org.atalk.impl.osgi.framework.launch;
 
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Dictionary;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.atalk.impl.osgi.framework.BundleImpl;
 import org.atalk.impl.osgi.framework.ServiceRegistrationImpl;
 import org.atalk.impl.osgi.framework.startlevel.FrameworkStartLevelImpl;
@@ -28,21 +35,13 @@ import org.osgi.framework.launch.Framework;
 import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
 
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class FrameworkImpl extends BundleImpl implements Framework
-{
+public class FrameworkImpl extends BundleImpl implements Framework {
     private final List<BundleImpl> bundles = new LinkedList<>();
 
     private final Map<String, String> configuration;
@@ -57,16 +56,14 @@ public class FrameworkImpl extends BundleImpl implements Framework
 
     private final List<ServiceRegistrationImpl> serviceRegistrations = new LinkedList<>();
 
-    public FrameworkImpl(Map<String, String> configuration)
-    {
+    public FrameworkImpl(Map<String, String> configuration) {
         super(null, 0, null);
         this.configuration = configuration;
         bundles.add(this);
     }
 
     @Override
-    public <A> A adapt(Class<A> type)
-    {
+    public <A> A adapt(Class<A> type) {
         Object adapt;
         if (FrameworkStartLevel.class.equals(type)) {
             synchronized (this) {
@@ -83,37 +80,33 @@ public class FrameworkImpl extends BundleImpl implements Framework
         return (a != null) ? a : super.adapt(type);
     }
 
-    public void addBundleListener(BundleImpl origin, BundleListener listener)
-    {
+    public void addBundleListener(BundleImpl origin, BundleListener listener) {
         if (eventDispatcher != null)
             eventDispatcher.addListener(origin, BundleListener.class, listener);
     }
 
-    public void addServiceListener(BundleImpl origin, ServiceListener listener, Filter filter)
-    {
+    public void addServiceListener(BundleImpl origin, ServiceListener listener, Filter filter) {
         if (eventDispatcher != null)
             eventDispatcher.addListener(origin, ServiceListener.class, listener);
     }
 
-    public void fireBundleEvent(int type, Bundle bundle)
-    {
+    public void fireBundleEvent(int type, Bundle bundle) {
         fireBundleEvent(type, bundle, bundle);
     }
 
-    private void fireBundleEvent(int type, Bundle bundle, Bundle origin)
-    {
+    private void fireBundleEvent(int type, Bundle bundle, Bundle origin) {
         if (eventDispatcher != null)
             eventDispatcher.fireBundleEvent(new BundleEvent(type, bundle, origin));
     }
 
-    private void fireFrameworkEvent(int type, FrameworkListener... listeners)
-    {
+    private void fireFrameworkEvent(int type, FrameworkListener... listeners) {
         if ((listeners != null) && (listeners.length != 0)) {
             FrameworkEvent event = new FrameworkEvent(type, this, null);
             for (FrameworkListener listener : listeners)
                 try {
                     listener.frameworkEvent(event);
-                } catch (Throwable t) {
+                }
+                catch (Throwable t) {
                     if (type != FrameworkEvent.ERROR) {
                         // TODO Auto-generated method stub
                     }
@@ -122,14 +115,12 @@ public class FrameworkImpl extends BundleImpl implements Framework
         }
     }
 
-    private void fireServiceEvent(int type, ServiceReference<?> reference)
-    {
+    private void fireServiceEvent(int type, ServiceReference<?> reference) {
         if (eventDispatcher != null)
             eventDispatcher.fireServiceEvent(new ServiceEvent(type, reference));
     }
 
-    public BundleImpl getBundle(long id)
-    {
+    public BundleImpl getBundle(long id) {
         if (id == 0)
             return this;
         else {
@@ -142,8 +133,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
         }
     }
 
-    private List<BundleImpl> getBundlesByStartLevel(int startLevel)
-    {
+    private List<BundleImpl> getBundlesByStartLevel(int startLevel) {
         List<BundleImpl> bundles = new LinkedList<>();
 
         synchronized (this.bundles) {
@@ -159,8 +149,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
 
     public Collection<ServiceReference<?>> getServiceReferences(BundleImpl origin, Class<?> clazz, String className,
             Filter filter, boolean checkAssignable)
-            throws InvalidSyntaxException
-    {
+            throws InvalidSyntaxException {
         Filter classNameFilter = FrameworkUtil.createFilter('('
                 + Constants.OBJECTCLASS + '=' + ((className == null) ? '*' : className)
                 + ')');
@@ -182,31 +171,26 @@ public class FrameworkImpl extends BundleImpl implements Framework
     }
 
     @Override
-    public FrameworkImpl getFramework()
-    {
+    public FrameworkImpl getFramework() {
         return this;
     }
 
-    private long getNextBundleId()
-    {
+    private long getNextBundleId() {
         return nextBundleId++;
     }
 
     public void init()
-            throws BundleException
-    {
+            throws BundleException {
         setState(STARTING);
     }
 
     @Override
     public void init(FrameworkListener... listeners)
-            throws BundleException
-    {
+            throws BundleException {
     }
 
     public Bundle installBundle(BundleImpl origin, String location, InputStream input)
-            throws BundleException
-    {
+            throws BundleException {
         if (location == null)
             throw new BundleException("location");
 
@@ -232,8 +216,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
 
     // public ServiceRegistration<?> registerService(BundleImpl origin, Class<?> clazz, String[] classNames,
     public ServiceRegistration registerService(BundleImpl origin, Class<?> clazz, String[] classNames,
-            Object service, Dictionary<String, ?> properties)
-    {
+            Object service, Dictionary<String, ?> properties) {
         if ((classNames == null) || (classNames.length == 0))
             throw new IllegalArgumentException("classNames");
         else if (service == null)
@@ -251,7 +234,8 @@ public class FrameworkImpl extends BundleImpl implements Framework
                         if (Class.forName(className, false, classLoader).isAssignableFrom(serviceClass)) {
                             illegalArgumentException = false;
                         }
-                    } catch (ClassNotFoundException | LinkageError eiie) {
+                    }
+                    catch (ClassNotFoundException | LinkageError eiie) {
                         cause = eiie;
                     }
                     if (illegalArgumentException) throw new IllegalArgumentException(className, cause);
@@ -272,22 +256,19 @@ public class FrameworkImpl extends BundleImpl implements Framework
         return serviceRegistration;
     }
 
-    public void removeBundleListener(BundleImpl origin, BundleListener listener)
-    {
+    public void removeBundleListener(BundleImpl origin, BundleListener listener) {
         if (eventDispatcher != null)
             eventDispatcher.removeListener(origin, BundleListener.class, listener);
     }
 
-    public void removeServiceListener(BundleImpl origin, ServiceListener listener)
-    {
+    public void removeServiceListener(BundleImpl origin, ServiceListener listener) {
         if (eventDispatcher != null)
             eventDispatcher.removeListener(origin, ServiceListener.class, listener);
     }
 
     @Override
     public void start(int options)
-            throws BundleException
-    {
+            throws BundleException {
         int state = getState();
         if ((state == INSTALLED) || (state == RESOLVED)) {
             init();
@@ -302,15 +283,14 @@ public class FrameworkImpl extends BundleImpl implements Framework
                 if (s != null)
                     try {
                         startLevel = Integer.parseInt(s);
-                    } catch (NumberFormatException nfe) {
+                    }
+                    catch (NumberFormatException nfe) {
                     }
             }
 
             FrameworkStartLevel frameworkStartLevel = adapt(FrameworkStartLevel.class);
-            FrameworkListener listener = new FrameworkListener()
-            {
-                public void frameworkEvent(FrameworkEvent event)
-                {
+            FrameworkListener listener = new FrameworkListener() {
+                public void frameworkEvent(FrameworkEvent event) {
                     synchronized (this) {
                         notifyAll();
                     }
@@ -324,7 +304,8 @@ public class FrameworkImpl extends BundleImpl implements Framework
                 while (frameworkStartLevel.getStartLevel() < startLevel)
                     try {
                         listener.wait();
-                    } catch (InterruptedException ie) {
+                    }
+                    catch (InterruptedException ie) {
                         interrupted = true;
                     }
                 if (interrupted)
@@ -334,8 +315,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
         }
     }
 
-    public void startLevelChanged(int oldStartLevel, int newStartLevel, FrameworkListener... listeners)
-    {
+    public void startLevelChanged(int oldStartLevel, int newStartLevel, FrameworkListener... listeners) {
         if (oldStartLevel < newStartLevel) {
             for (BundleImpl bundle : getBundlesByStartLevel(newStartLevel)) {
                 try {
@@ -344,7 +324,8 @@ public class FrameworkImpl extends BundleImpl implements Framework
                     if (bundleStartLevel.isActivationPolicyUsed())
                         options |= START_ACTIVATION_POLICY;
                     bundle.start(options);
-                } catch (Throwable t) {
+                }
+                catch (Throwable t) {
                     if (t instanceof ThreadDeath)
                         throw (ThreadDeath) t;
                     Timber.e(t, "Error changing start level");
@@ -354,13 +335,13 @@ public class FrameworkImpl extends BundleImpl implements Framework
         fireFrameworkEvent(FrameworkEvent.STARTLEVEL_CHANGED, listeners);
     }
 
-    public void startLevelChanging(int oldStartLevel, int newStartLevel, FrameworkListener... listeners)
-    {
+    public void startLevelChanging(int oldStartLevel, int newStartLevel, FrameworkListener... listeners) {
         if (oldStartLevel > newStartLevel) {
             for (BundleImpl bundle : getBundlesByStartLevel(oldStartLevel)) {
                 try {
                     bundle.stop(STOP_TRANSIENT);
-                } catch (Throwable t) {
+                }
+                catch (Throwable t) {
                     if (t instanceof ThreadDeath)
                         throw (ThreadDeath) t;
                     Timber.e(t, "Error changing start level");
@@ -370,45 +351,39 @@ public class FrameworkImpl extends BundleImpl implements Framework
     }
 
     @Override
-    protected void stateChanged(int oldState, int newState)
-    {
+    protected void stateChanged(int oldState, int newState) {
         switch (newState) {
-            case RESOLVED:
-                if (eventDispatcher != null) {
-                    eventDispatcher.stop();
-                    eventDispatcher = null;
+        case RESOLVED:
+            if (eventDispatcher != null) {
+                eventDispatcher.stop();
+                eventDispatcher = null;
+            }
+            synchronized (this) {
+                if (frameworkStartLevel != null) {
+                    frameworkStartLevel.stop();
+                    frameworkStartLevel = null;
                 }
-                synchronized (this) {
-                    if (frameworkStartLevel != null) {
-                        frameworkStartLevel.stop();
-                        frameworkStartLevel = null;
-                    }
-                }
-                break;
-            case STARTING:
-                eventDispatcher = new EventDispatcher();
-                break;
+            }
+            break;
+        case STARTING:
+            eventDispatcher = new EventDispatcher();
+            break;
         }
         super.stateChanged(oldState, newState);
     }
 
     @Override
     public void stop(int options)
-            throws BundleException
-    {
+            throws BundleException {
         final FrameworkStartLevelImpl frameworkStartLevel = (FrameworkStartLevelImpl) adapt(FrameworkStartLevel.class);
 
-        new Thread(getClass().getName() + ".stop")
-        {
+        new Thread(getClass().getName() + ".stop") {
             @Override
-            public void run()
-            {
+            public void run() {
                 FrameworkImpl framework = FrameworkImpl.this;
                 framework.setState(STOPPING);
-                FrameworkListener listener = new FrameworkListener()
-                {
-                    public void frameworkEvent(FrameworkEvent event)
-                    {
+                FrameworkListener listener = new FrameworkListener() {
+                    public void frameworkEvent(FrameworkEvent event) {
                         synchronized (this) {
                             notifyAll();
                         }
@@ -421,7 +396,8 @@ public class FrameworkImpl extends BundleImpl implements Framework
                     while (frameworkStartLevel.getStartLevel() != 0)
                         try {
                             listener.wait();
-                        } catch (InterruptedException ie) {
+                        }
+                        catch (InterruptedException ie) {
                             interrupted = true;
                         }
                     if (interrupted)
@@ -434,8 +410,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
         }.start();
     }
 
-    public void unregisterService(BundleImpl origin, ServiceRegistrationImpl serviceRegistration)
-    {
+    public void unregisterService(BundleImpl origin, ServiceRegistrationImpl serviceRegistration) {
         boolean removed;
         synchronized (serviceRegistrations) {
             removed = serviceRegistrations.remove(serviceRegistration);
@@ -450,8 +425,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
         }
     }
 
-    public ServiceReference<?>[] getRegisteredServices()
-    {
+    public ServiceReference<?>[] getRegisteredServices() {
         // cmeng: ArrayIndexOutOfBoundsException: length=40; index=40 cause contactList to be empty
         synchronized (serviceRegistrations) {
             ServiceReference<?>[] references = new ServiceReference[serviceRegistrations.size()];
@@ -463,8 +437,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
     }
 
     public FrameworkEvent waitForStop(long timeout)
-            throws InterruptedException
-    {
+            throws InterruptedException {
         // TODO Auto-generated method stub
         return null;
     }

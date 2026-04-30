@@ -167,6 +167,7 @@
     <string name="call_initiating">Starte Anruf</string>
     <string name="call_rejected">%1$s hat den Anruf abgelehnt</string>
     <string name="call_retracted">%1$s hat den Anruf zurückgenommen.</string>
+    <string name="call_migrated">Anruf migriert.</string>
     <string name="call_missed">Verpasste Anrufe von:</string>
     <string name="call_no_active_device">aTalk konnte keine aktiven Audio-/Videogeräte finden und konnte daher den Anruf nicht erstellen.</string>
     <string name="call_no_audio_device">Kein Audiogerät definiert.</string>
@@ -289,6 +290,7 @@
     <string name="app_libraries">aTalk benutzt folgende Bibliotheken von Drittanbietern: %1$s</string>
     <string name="app_revision_fmt">Revision: %1$s</string>
     <string name="app_xep">aTalk unterstützt folgende XEPs: %1$s</string>
+    <string name="atalk_doap">aTalk funktioniert nahtlos mit nahezu allen im Netzwerk verfügbaren XMPP-Servern; die einzige Einschränkung besteht in den vom Server unterstützten Funktionen. Eine Liste der unterstützten XEPs und Standards für XMPP-Clients finden Sie unter &lt;a href="https://xmpp.org/doap/atalk.doap">atalk.doap&lt;/a>.</string>
     <string name="powered_by">Unterstützt von atalk.org</string>
 
     <!-- PTT Chat -->
@@ -497,7 +499,7 @@
     <string name="last">Letzter</string>
     <string name="last_message_correction">Letzte Nachrichtenkorrektur</string>
     <string name="last_name">Letzter Name</string>
-    <string name="last_seen">Heute: %s</string>
+    <string name="last_seen">Heute:%1$s</string>
     <string name="leave">Verlassen</string>
     <string name="leave_chat_room">Chatraum verlassen</string>
     <string name="locally_on_hold">Lokal auf Abruf</string>
@@ -534,7 +536,7 @@
     <string name="no">Nein</string>
     <string name="no_online_telephony_account">Zum Tätigen eines Anrufs wird mindestens ein Online-Telefonie-Konto benötigt. Bitte melde dich bei einem deiner Telefonkonten an und versuche es erneut.</string>
     <string name="not_authorized">Nicht autorisiert</string>
-    <string name="not_authorized_hint">Sie sind nicht berechtigt, auf den Server zuzugreifen. Überprüfen Sie die Kontoeinstellungen, das Passwort oder aktivieren Sie die IB-Registrierung und versuchen Sie es erneut:\n%s"</string>
+    <string name="not_authorized_hint">Sie sind nicht berechtigt, auf den Server zuzugreifen. Überprüfen Sie die Kontoeinstellungen, das Passwort oder aktivieren Sie die IB-Registrierung und versuchen Sie es erneut:\n%1$s"</string>
     <string name="off">Aus</string>
     <string name="offline">Offline</string>
     <string name="ok">OK</string>
@@ -550,14 +552,14 @@
     <string name="play">Abspielen</string>
     <string name="postal_code">Postleitzahl</string>
     <string name="rename">Umbenennen</string>
-    <string name="registration_required">Fehler bei der Registrierung des Kontos auf dem Server:\n%s"</string>
+    <string name="registration_required">Fehler bei der Registrierung des Kontos auf dem Server:\n%1$s"</string>
     <string name="save">Speichern</string>
     <string name="show_stack_trace">Zeige Stack-Trace</string>
     <string name="street">Straße</string>
     <string name="submit">Senden</string>
     <string name="user_login">Bitte loggen Sie sich ein</string>
     <string name="work">Arbeit</string>
-    <string name="xmpp_connection_error">Beim Herstellen einer XMPP-Verbindung ist ein Problem aufgetreten:\n%s"</string>
+    <string name="xmpp_connection_error">Beim Herstellen einer XMPP-Verbindung ist ein Problem aufgetreten:\n%1$s"</string>
 
     <!-- Call -->
 	<string name="btn_video_tooltip">Video umschalten</string>
@@ -924,7 +926,7 @@
     <string name="media_security_warning_no_expected_rs_match">&lt;html&gt;Ein erwartetes gemeinsames Passwort
     fehlt.&lt;br/&gt;&lt;b&gt;SAS-Verifikation ist erforderlich.&lt;/b&gt;&lt;br/&gt;Wenn SAS-Codes nicht übereinstimmen, dann auflegen und neu versuchen.&lt;/html&gt;</string>
     <string name="media_security_zrtp_generic_message">&lt;html&gt;Ein schwerwiegendes ZRTP-Problem wurde erkannt.&lt;br/&gt;&lt;b&gt;Ihr Anruf läuft unverschlüsselt.&lt;br&gt;&lt;br/&gt;Fehlercode: %1$s&lt;/html&gt;</string>
-    <string name="media_security_zrtp_handshake_timeout">Der Anruf ist nicht sicher; RTP-Handshake-Timeout: %s</string>
+    <string name="media_security_zrtp_handshake_timeout">Der Anruf ist nicht sicher; RTP-Handshake-Timeout:%1$s</string>
 
     <!-- DTLS-SRTP Securing -->
     <string name="media_security_encryption_ended">Die Anrufverschlüsselung wurde beendet: %1$s</string>

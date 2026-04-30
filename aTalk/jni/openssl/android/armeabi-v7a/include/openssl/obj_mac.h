@@ -1965,7 +1965,7 @@
 #define NID_id_cmc_recipientNonce               333
 #define OBJ_id_cmc_recipientNonce               OBJ_id_cmc,7L
 
-#define SN_id_cmc_addExtensions         "id-cmc-addExtensions"
+#define SN_id_cmc_addExtensions         "id-cmc-addElements"
 #define NID_id_cmc_addExtensions                334
 #define OBJ_id_cmc_addExtensions                OBJ_id_cmc,8L
 

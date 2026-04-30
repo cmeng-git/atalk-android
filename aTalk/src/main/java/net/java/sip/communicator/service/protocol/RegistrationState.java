@@ -32,6 +32,12 @@ public class RegistrationState
 	public static final RegistrationState INIT = new RegistrationState("Initial");
 
 	/**
+	 * A transition state indicating that it has connected but before actual account registration start.
+	 * This is required by others to init their states and get ready before the user is authenticated
+	 */
+	public static final RegistrationState CONNECTED = new RegistrationState("Connected");
+
+	/**
 	 * A transition state indicating that registration has been undertaken but has not yet been confirmed by
      * the registrar server/service (after xmppConnection connected). The state generally occurs after the client
 	 * hs undertaken action to completing the registration and the server is about to respond.

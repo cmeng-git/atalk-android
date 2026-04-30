@@ -30,15 +30,13 @@ import org.osgi.framework.ServiceReference;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class PresenceStatusHandler implements ServiceListener, RegistrationStateChangeListener
-{
+public class PresenceStatusHandler implements ServiceListener, RegistrationStateChangeListener {
     /**
      * Start the handler with given OSGI context.
      *
      * @param bundleContext OSGI context to be used.
      */
-    public void start(BundleContext bundleContext)
-    {
+    public void start(BundleContext bundleContext) {
         bundleContext.addServiceListener(this);
 
         ServiceReference<ProtocolProviderService>[] pps
@@ -56,14 +54,12 @@ public class PresenceStatusHandler implements ServiceListener, RegistrationState
      *
      * @param bundleContext OSGI context to be used by this instance.
      */
-    public void stop(BundleContext bundleContext)
-    {
+    public void stop(BundleContext bundleContext) {
         bundleContext.removeServiceListener(this);
     }
 
     @Override
-    public void registrationStateChanged(RegistrationStateChangeEvent evt)
-    {
+    public void registrationStateChanged(RegistrationStateChangeEvent evt) {
         // There is nothing we can do when account is registering...
         if (evt.getNewState().equals(RegistrationState.REGISTERING)) {
             // startConnecting(protocolProvider);
@@ -74,8 +70,7 @@ public class PresenceStatusHandler implements ServiceListener, RegistrationState
     }
 
     @Override
-    public void serviceChanged(ServiceEvent event)
-    {
+    public void serviceChanged(ServiceEvent event) {
         ServiceReference<?> serviceRef = event.getServiceReference();
 
         // if the event is caused by a bundle being stopped, we don't want to know
@@ -91,12 +86,12 @@ public class PresenceStatusHandler implements ServiceListener, RegistrationState
         }
 
         switch (event.getType()) {
-            case ServiceEvent.REGISTERED:
-                ((ProtocolProviderService) service).addRegistrationStateChangeListener(this);
-                break;
-            case ServiceEvent.UNREGISTERING:
-                ((ProtocolProviderService) service).removeRegistrationStateChangeListener(this);
-                break;
+        case ServiceEvent.REGISTERED:
+            ((ProtocolProviderService) service).addRegistrationStateChangeListener(this);
+            break;
+        case ServiceEvent.UNREGISTERING:
+            ((ProtocolProviderService) service).removeRegistrationStateChangeListener(this);
+            break;
         }
     }
 
@@ -105,8 +100,7 @@ public class PresenceStatusHandler implements ServiceListener, RegistrationState
      *
      * @param protocolProvider the protocol provider for which new status will be adjusted.
      */
-    private void updateStatus(ProtocolProviderService protocolProvider)
-    {
+    private void updateStatus(ProtocolProviderService protocolProvider) {
         OperationSetPresence presence = AccountStatusUtils.getProtocolPresenceOpSet(protocolProvider);
 
         PresenceStatus offlineStatus = null;

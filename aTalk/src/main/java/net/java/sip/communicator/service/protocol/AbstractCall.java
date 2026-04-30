@@ -5,8 +5,6 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -14,18 +12,20 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
+
 /**
  * Provides implementations for some of the methods in the <code>Call</code> abstract class to facilitate implementations.
  *
  * @param <T> the peer extension class like for example <code>CallPeerSipImpl</code> or <code>CallPeerJabberImpl</code>
  * @param <U> the provider extension class like for example <code>ProtocolProviderServiceSipImpl</code> or
  * <code>ProtocolProviderServiceJabberImpl</code>
+ *
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProviderService> extends Call
-{
+public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProviderService> extends Call {
     /**
      * The list of <code>CallPeer</code>s of this <code>Call</code>. It is implemented as a copy-on-write
      * storage in order to optimize the implementation of {@link Call#getCallPeers()}. It represents
@@ -59,8 +59,7 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
      * @param sourceProvider the proto provider that created us.
      * @param sid the Jingle session-initiate id if provided.
      */
-    protected AbstractCall(U sourceProvider, String sid)
-    {
+    protected AbstractCall(U sourceProvider, String sid) {
         super(sourceProvider, sid);
 
         callPeers = Collections.emptyList();
@@ -73,8 +72,7 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
      * Delegates to {@link #propertyChangeSupport}.
      */
     @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener)
-    {
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
@@ -89,12 +87,13 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
      * </p>
      *
      * @param callPeer the <code>CallPeer</code> to be added to the list of <code>CallPeer</code>s of this <code>Call</code>
+     *
      * @return <code>true</code> if the list of <code>CallPeer</code>s of this <code>Call</code> was modified as
      * a result of the execution of the method; otherwise, <code>false</code>
+     *
      * @throws NullPointerException if <code>callPeer</code> is <code>null</code>
      */
-    protected boolean doAddCallPeer(T callPeer)
-    {
+    protected boolean doAddCallPeer(T callPeer) {
         if (callPeer == null)
             throw new NullPointerException("callPeer");
 
@@ -131,11 +130,11 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
      * </p>
      *
      * @param callPeer the <code>CallPeer</code> to be removed from the list of <code>CallPeer</code>s of this <code>Call</code>
+     *
      * @return <code>true</code> if the list of <code>CallPeer</code>s of this <code>Call</code> was modified as
      * a result of the execution of the method; otherwise, <code>false</code>
      */
-    protected boolean doRemoveCallPeer(T callPeer)
-    {
+    protected boolean doRemoveCallPeer(T callPeer) {
         synchronized (callPeersSyncRoot) {
             /*
              * The List of CallPeers of this Call is implemented as a copy-on-write storage in order
@@ -160,8 +159,7 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
      * Delegates to {@link #propertyChangeSupport}.
      */
     @Override
-    protected void firePropertyChange(String property, Object oldValue, Object newValue)
-    {
+    protected void firePropertyChange(String property, Object oldValue, Object newValue) {
         propertyChangeSupport.firePropertyChange(property, oldValue, newValue);
     }
 
@@ -171,8 +169,7 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
      * @return an <code>int</code> indicating the number of peers currently associated with this call.
      */
     @Override
-    public int getCallPeerCount()
-    {
+    public int getCallPeerCount() {
         return getCallPeerList().size();
     }
 
@@ -182,8 +179,7 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
      *
      * @return an unmodifiable <code>List</code> of the <code>CallPeer</code>s of this <code>Call</code>
      */
-    public List<T> getCallPeerList()
-    {
+    public List<T> getCallPeerList() {
         synchronized (callPeersSyncRoot) {
             return unmodifiableCallPeers;
         }
@@ -196,8 +192,7 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
      * @return an <code>Iterator</code> over the (list of) <code>CallPeer</code>s of this <code>Call</code>
      */
     @Override
-    public Iterator<T> getCallPeers()
-    {
+    public Iterator<T> getCallPeers() {
         return getCallPeerList().iterator();
     }
 
@@ -208,8 +203,7 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
      */
     @Override
     @SuppressWarnings("unchecked")
-    public U getProtocolProvider()
-    {
+    public U getProtocolProvider() {
         return (U) super.getProtocolProvider();
     }
 
@@ -219,8 +213,7 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
      * Delegates to {@link #propertyChangeSupport}.
      */
     @Override
-    public void removePropertyChangeListener(PropertyChangeListener listener)
-    {
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 }

@@ -17,17 +17,22 @@
 package org.jivesoftware.smackx.jinglemessage.provider;
 
 import java.io.IOException;
-import java.text.ParseException;
 
-import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jivesoftware.smackx.jingle.element.JingleReason;
+import org.jivesoftware.smackx.jingle.provider.JingleProvider;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
+import org.jivesoftware.smackx.jinglemessage.element.MigratedElement;
+import org.jivesoftware.smackx.jinglemessage.element.TieBreakElement;
 
 import org.jxmpp.JxmppContext;
 
@@ -37,39 +42,50 @@ import org.jxmpp.JxmppContext;
  *
  * @author Eng Chong Meng
  */
-public class JingleMessageProvider extends ExtensionElementProvider<JingleMessage> {
-    @Override
-    public JingleMessage parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
-            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
-        RtpDescription rtpDescription = null;
-        String elementName = null;
-        String id = null;
+public class JingleMessageProvider {
+    public static JingleMessage parse(StandardExtensionElement extElement)
+            throws XmlPullParserException, IOException, SmackParsingException {
 
+        JingleReason reason = null;
+        RtpDescription rtpDescription = null;
+        NamedElement element = null;
+
+        String action = extElement.getElementName();
+        String uuid = extElement.getAttributeValue(JingleMessage.ATTR_ID);
+
+        XmlPullParser parser = PacketParserUtils.getParserFor(extElement.toXML().toString());
         while (true) {
             XmlPullParser.Event eventType = parser.next();
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
-                elementName = parser.getName();
+                String elementName = parser.getName();
+                switch (elementName) {
+                case JingleReason.ELEMENT:
+                    reason = JingleProvider.parseJingleReason(parser, JxmppContext.getDefaultContext());
+                    break;
 
-                if (elementName.equals(JingleMessage.ACTION_PROPOSE)) {
-                    id = parser.getAttributeValue(JingleMessage.ATTR_ID);
-                }
-                else if (elementName.equals(RtpDescription.ELEMENT)) {
+                case RtpDescription.ELEMENT:
                     ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(
                             RtpDescription.ELEMENT, RtpDescription.NAMESPACE);
                     rtpDescription = (RtpDescription) provider.parse(parser);
-                }
-            }
-            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getDepth() == initialDepth) {
+                    break;
+
+                case MigratedElement.ELEMENT:
+                    String toId = extElement.getFirstElement(elementName).getAttributeValue(MigratedElement.ATTR_TO_ID);
+                    element = new MigratedElement(toId);
+                    break;
+
+                case TieBreakElement.ELEMENT:
+                    element = new TieBreakElement();
                     break;
                 }
             }
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
+                break;
+            }
         }
 
-        JingleMessage jingleMessage = new JingleMessage(elementName, id);
-        jingleMessage.addDescriptionExtension(rtpDescription);
-
+        JingleMessage jingleMessage = new JingleMessage(action, uuid, reason, element);
+        jingleMessage.addElement(rtpDescription);
         return jingleMessage;
     }
-
 }

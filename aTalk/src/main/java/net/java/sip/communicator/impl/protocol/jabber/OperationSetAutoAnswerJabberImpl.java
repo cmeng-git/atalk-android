@@ -14,6 +14,7 @@ import net.java.sip.communicator.service.protocol.Call;
 import org.atalk.android.gui.call.JingleMessageSessionImpl;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.MediaType;
+
 import org.jivesoftware.smackx.jingle.element.Jingle;
 
 import timber.log.Timber;
@@ -82,9 +83,9 @@ public class OperationSetAutoAnswerJabberImpl extends AbstractOperationSetBasicA
         // JingleMessage <propose/> will call via ReceivedCallActivity UI when android is in locked screen;
         // Check aTalkApp.isForeground for incoming alert to continue.
 //        answerOnJingleMessageAccept = aTalkApp.isForeground && (jingleSessionInit != null)
-//                && JingleMessageSessionImpl.isJingleMessageAccept(jingleSessionInit);
+//                && JingleMessageSessionImpl.isJingleMessageSession(jingleSessionInit);
         answerOnJingleMessageAccept = (jingleSessionInit != null)
-                && JingleMessageSessionImpl.isJingleMessageAccept(jingleSessionInit);
+                && JingleMessageSessionImpl.isJingleMessageSession(jingleSessionInit.getSid());
         Timber.d("OnJingleMessageAccept (auto answer): %s", answerOnJingleMessageAccept);
 
         boolean isVideoCall = false;

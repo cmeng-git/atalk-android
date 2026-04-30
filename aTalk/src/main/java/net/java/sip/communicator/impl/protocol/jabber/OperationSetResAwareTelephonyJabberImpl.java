@@ -103,7 +103,7 @@ public class OperationSetResAwareTelephonyJabberImpl implements OperationSetReso
     public Call createCall(String uri, String calleeResource, CallConference conference)
             throws OperationFailedException
     {
-        CallJabberImpl call = new CallJabberImpl(jabberTelephony, JingleManager.randomId());
+        CallJabberImpl call = new CallJabberImpl(jabberTelephony, JingleManager.randomUuid());
         if (conference != null)
             call.setConference(conference);
 
