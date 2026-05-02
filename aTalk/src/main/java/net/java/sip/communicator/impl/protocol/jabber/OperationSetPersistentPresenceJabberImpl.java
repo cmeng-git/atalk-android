@@ -48,6 +48,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.impl.timberlog.TimberLog;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -62,6 +63,7 @@ import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterLoadedListener;
 import org.jivesoftware.smack.roster.RosterUtil;
 import org.jivesoftware.smack.roster.SubscribeListener;
+
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.listener.AvatarChangeListener;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
@@ -72,6 +74,7 @@ import org.jivesoftware.smackx.blocking.JidsBlockedListener;
 import org.jivesoftware.smackx.blocking.JidsUnblockedListener;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.jivesoftware.smackx.nick.packet.Nick;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -765,29 +768,29 @@ public class OperationSetPersistentPresenceJabberImpl
         // Check status mode when user is available
         Presence.Mode mode = presence.getMode();
         switch (mode) {
-            case available:
+        case available:
+            return jabberStatusEnum.getStatus(JabberStatusEnum.AVAILABLE);
+        case away:
+            // on the phone a special status which is away with custom status message
+            if (presence.getStatus() != null && presence.getStatus().contains(JabberStatusEnum.ON_THE_PHONE))
+                return jabberStatusEnum.getStatus(JabberStatusEnum.ON_THE_PHONE);
+            else if (presence.getStatus() != null && presence.getStatus().contains(JabberStatusEnum.IN_A_MEETING))
+                return jabberStatusEnum.getStatus(JabberStatusEnum.IN_A_MEETING);
+            else
+                return jabberStatusEnum.getStatus(JabberStatusEnum.AWAY);
+        case chat:
+            return jabberStatusEnum.getStatus(JabberStatusEnum.FREE_FOR_CHAT);
+        case dnd:
+            return jabberStatusEnum.getStatus(JabberStatusEnum.DO_NOT_DISTURB);
+        case xa:
+            return jabberStatusEnum.getStatus(JabberStatusEnum.EXTENDED_AWAY);
+        default:
+            //unknown status
+            if (presence.isAway())
+                return jabberStatusEnum.getStatus(JabberStatusEnum.AWAY);
+            if (presence.isAvailable())
                 return jabberStatusEnum.getStatus(JabberStatusEnum.AVAILABLE);
-            case away:
-                // on the phone a special status which is away with custom status message
-                if (presence.getStatus() != null && presence.getStatus().contains(JabberStatusEnum.ON_THE_PHONE))
-                    return jabberStatusEnum.getStatus(JabberStatusEnum.ON_THE_PHONE);
-                else if (presence.getStatus() != null && presence.getStatus().contains(JabberStatusEnum.IN_A_MEETING))
-                    return jabberStatusEnum.getStatus(JabberStatusEnum.IN_A_MEETING);
-                else
-                    return jabberStatusEnum.getStatus(JabberStatusEnum.AWAY);
-            case chat:
-                return jabberStatusEnum.getStatus(JabberStatusEnum.FREE_FOR_CHAT);
-            case dnd:
-                return jabberStatusEnum.getStatus(JabberStatusEnum.DO_NOT_DISTURB);
-            case xa:
-                return jabberStatusEnum.getStatus(JabberStatusEnum.EXTENDED_AWAY);
-            default:
-                //unknown status
-                if (presence.isAway())
-                    return jabberStatusEnum.getStatus(JabberStatusEnum.AWAY);
-                if (presence.isAvailable())
-                    return jabberStatusEnum.getStatus(JabberStatusEnum.AVAILABLE);
-                break;
+            break;
         }
         return jabberStatusEnum.getStatus(JabberStatusEnum.OFFLINE);
     }

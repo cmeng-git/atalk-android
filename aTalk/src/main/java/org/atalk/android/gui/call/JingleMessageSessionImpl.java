@@ -90,7 +90,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
 
     private final List<String> media = new ArrayList<>();
 
-    private boolean isVideoCall = false;
+    private static boolean isVideoCall = false;
     private static boolean inProgress = false;
 
     private static JingleMessageState mState = JingleMessageState.initial;
@@ -166,6 +166,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
         // Save a copy of the remote and id for outgoing call.
         mRemote = recipient;
         mSid = sid;
+        isVideoCall = videoCall;
 
         List<XmlElement> xmlElements = new ArrayList<>();
         RtpDescription.Builder rtpBuilder = RtpDescription.getBuilder();

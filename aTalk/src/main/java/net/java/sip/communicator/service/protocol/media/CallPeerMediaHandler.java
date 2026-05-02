@@ -515,7 +515,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * specified <code>MediaType</code>, is the default choice of the user for a <code>MediaDevice</code>
      * with the specified <code>MediaType</code> and is appropriate for the current states of the
      * associated <code>CallPeer</code> and <code>Call</code>.
-     *
+     * <p>
      * For example, when the local peer is acting as a conference focus in the <code>Call</code> of the
      * associated <code>CallPeer</code>, the audio device must be a mixer.
      *
@@ -976,14 +976,14 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Compares a list of <code>MediaFormat</code>s offered by a remote party to the list of locally
      * supported <code>RTPExtension</code>s as returned by one of our local <code>MediaDevice</code>s and
      * returns a third <code>List</code> that contains their intersection.
-     *
+     * <p>
      * At the same time remove FORMAT_PARAMETER_ATTR_IMAGEATTR from localFormat if not found in remoteFormat
      *
      * @param remoteFormats remote <code>MediaFormat</code>'s found in the SDP message
      * @param localFormats local supported <code>MediaFormat</code> of our device
      *
      * @return intersection between our local and remote <code>MediaFormat</code>
-     *
+     * <p>
      * Note that it also treats telephone-event as a special case and puts it to the end of the
      * intersection, if there is any intersection.
      *
@@ -1623,7 +1623,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * the stream of type <code>mediaType</code> towards the <code>CallPeer</code>. It consist of a group
      * identifier (shared between the local audio and video streams towards the <code>CallPeer</code>)
      * and an identifier for the particular stream, separated by a space.
-     *
+     * <p>
      * {@see https://tools.ietf.org/html/draft-ietf-mmusic-msid}
      *
      * @param mediaType the media type of the stream for which to return the value for 'msid'

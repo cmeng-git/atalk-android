@@ -57,7 +57,6 @@ import java.util.regex.Pattern;
 
 import net.java.sip.communicator.service.update.UpdateService;
 
-import org.apache.commons.io.IOUtils;
 import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -68,6 +67,8 @@ import org.atalk.impl.appversion.VersionActivator;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.version.VersionService;
+
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
@@ -80,10 +81,8 @@ import timber.log.Timber;
  */
 public class UpdateServiceImpl implements UpdateService {
     // Default update link; path is case-sensitive.
-    private static final String[] updateLinks = {
-            "https://raw.githubusercontent.com/cmeng-git/atalk-android/master/aTalk/release/version.properties",
-            "https://atalk.sytes.net/releases/atalk-android/version.properties"
-    };
+    private static final String updateLink =
+            "https://raw.githubusercontent.com/cmeng-git/atalk-android/master/aTalk/release/version.properties";
 
     // filename is case-sensitive
     private static final String fileNameApk = String.format("aTalk-%s-%s.apk", BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE);
@@ -91,7 +90,9 @@ public class UpdateServiceImpl implements UpdateService {
     // github apk is in the release directory; for apk download
     private static final String urlApk = "https://github.com/cmeng-git/atalk-android/releases/download/%s/";
 
-    private static final String releaseNotes = "https://raw.githubusercontent.com/cmeng-git/atalk-android/refs/tags/%s/aTalk/ReleaseNotes.txt";
+    // New changes info is extracted from changeLog
+    private static final String changeLog
+            = "https://raw.githubusercontent.com/cmeng-git/atalk-android/master/aTalk/src/main/res/xml/changelog_master.xml";
 
     /**
      * Apk mime type constant.
@@ -147,6 +148,7 @@ public class UpdateServiceImpl implements UpdateService {
             if (!mIsLatest) {
                 if (checkLastDLFileAction() < DownloadManager.ERROR_UNKNOWN)
                     return;
+                // currentVersion = "5.2.2";
 
                 Context context = aTalkApp.getInstance();
                 String title = context.getString(R.string.update_install_update);
@@ -154,23 +156,28 @@ public class UpdateServiceImpl implements UpdateService {
                         String.valueOf(latestVersionCode), fileNameApk, currentVersion, String.valueOf(currentVersionCode));
                 String btnText = context.getString(R.string.update_download);
 
-                String historyText = "&#9210; no change";
-                if (isValidateLink(releaseNotes.replace("%s", latestVersion))) {
+                String historyText = "&#9210; No change";
+                if (isValidateLink(changeLog)) {
                     try {
                         InputStream inputStream = mHttpConnection.getInputStream();
                         String releaseNotes = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
 
-                        Pattern pattern = Pattern.compile("(Project aTalk.+?Author:.+?)Version:\\s+" + currentVersion, Pattern.DOTALL);
+                        // Pattern pattern = Pattern.compile("(Project aTalk.+?Author:.+?)Version:\\s+" + currentVersion, Pattern.DOTALL);
+                        Pattern pattern = Pattern.compile("<changelog>.+?(<release version.+?)<release version=\"" + currentVersion, Pattern.DOTALL);
                         Matcher matcher = pattern.matcher(releaseNotes);
                         if (matcher.find()) {
                             historyText = matcher.group(1);
                             if (historyText != null) {
-                                historyText = historyText.replaceAll("\n- ", "\n&#9210; " ).replaceAll("\n", "<br />");
+                                historyText = historyText
+                                        .replaceAll("<release", "<b>Release")
+                                        .replaceAll("versioncode.+?\">", "</b>")
+                                        .replaceAll("<change", "&#9210; <change")
+                                        .replaceAll("\n", "<br />");
                             }
                         }
                     }
                     catch (IOException e) {
-                        Timber.d("Invalid release Notes link: %s", e.getMessage());
+                        Timber.d("Invalid changeLog link: %s", e.getMessage());
                         return;
                     }
                 }
@@ -558,36 +565,29 @@ public class UpdateServiceImpl implements UpdateService {
         currentVersion = versionService.getCurrentVersionName();
         currentVersionCode = versionService.getCurrentVersionCode();
 
-        for (String aLink : updateLinks) {
-            try {
-                if (isValidateLink(aLink)) {
-                    InputStream inputStream = mHttpConnection.getInputStream();
-                    Properties mProperties = new Properties();
-                    mProperties.load(inputStream);
-                    inputStream.close();
+        try {
+            if (isValidateLink(updateLink)) {
+                InputStream inputStream = mHttpConnection.getInputStream();
+                Properties mProperties = new Properties();
+                mProperties.load(inputStream);
+                inputStream.close();
 
-                    latestVersion = mProperties.getProperty("last_version");
-                    latestVersionCode = Long.parseLong(mProperties.getProperty("last_version_code"));
+                latestVersion = mProperties.getProperty("last_version");
+                latestVersionCode = Long.parseLong(mProperties.getProperty("last_version_code"));
 
-                    if (aLink.contains("github")) {
-                        downloadLink = urlApk.replace("%s", latestVersion) + fileNameApk;
-                    }
-                    else {
-                        String aLinkPrefix = aLink.substring(0, aLink.lastIndexOf("/") + 1);
-                        downloadLink = aLinkPrefix + fileNameApk;
-                    }
-                    if (isValidateLink(downloadLink)) {
-                        // return true if current running application is already the latest
-                        return (currentVersionCode >= latestVersionCode);
-                    }
-                    else {
-                        downloadLink = null;
-                    }
+                downloadLink = urlApk.replace("%s", latestVersion) + fileNameApk;
+                if (isValidateLink(downloadLink)) {
+                    // return true if current running application is already the latest
+                    return (currentVersionCode >= latestVersionCode);
+                }
+                // No apk found for update
+                else {
+                    downloadLink = null;
                 }
             }
-            catch (IOException e) {
-                Timber.w("Could not retrieve version.properties for checking: %s", e.getMessage());
-            }
+        }
+        catch (IOException e) {
+            Timber.w("Could not retrieve version.properties for checking: %s", e.getMessage());
         }
         // return true if all failed to force update.
         return true;
@@ -606,6 +606,7 @@ public class UpdateServiceImpl implements UpdateService {
             mHttpConnection = (HttpURLConnection) mUrl.openConnection();
             mHttpConnection.setRequestMethod("GET");
             mHttpConnection.setRequestProperty("Content-length", "0");
+            mHttpConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             mHttpConnection.setUseCaches(false);
             mHttpConnection.setAllowUserInteraction(false);
             mHttpConnection.setConnectTimeout(100000);

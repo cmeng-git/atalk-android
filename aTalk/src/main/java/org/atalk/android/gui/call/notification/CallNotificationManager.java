@@ -61,7 +61,7 @@ public class CallNotificationManager {
     /**
      * Back to call pending intent, to allow trigger from message chat send button
      */
-    private PendingIntent pVideo = null;
+    private PendingIntent callSwitch = null;
 
     /**
      * The call ID that will be used in this <code>Instance</code>, and the <code>Intents</code> binding.
@@ -154,12 +154,7 @@ public class CallNotificationManager {
      * @param requestCodeBase the starting Request Code ID that will be used in the <code>Intents</code>
      */
     private void setIntents(Context ctx, RemoteViews contentView, int requestCodeBase) {
-        // Call switch on click; pendingIntent executed in place i.e. no via Broadcast receiver (multiple instances created)
-        // Intent videoCall = VideoCallActivity.createVideoCallIntent(ctx, mCallId);
-        // videoCall.putExtra(CallManager.CALL_TRANSFER, false);
-        // // videoCall.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); work only for SingleTask
-        // pVideo = PendingIntent.getActivity(ctx, requestCodeBase++, videoCall, getPendingIntentFlag(false, false));
-        PendingIntent callSwitch = PendingIntent.getBroadcast(ctx, requestCodeBase++, CallControl.getCallSwitch(mCallId),
+        callSwitch = PendingIntent.getBroadcast(ctx, requestCodeBase++, CallControl.getCallSwitch(mCallId),
                 getPendingIntentFlag(false, false));
         contentView.setOnClickPendingIntent(R.id.button_call_switch, callSwitch);
 
@@ -178,12 +173,6 @@ public class CallNotificationManager {
                 getPendingIntentFlag(false, false));
         contentView.setOnClickPendingIntent(R.id.button_hold, pHold);
 
-        // Call transfer via VideoCallActivity, and execute in place to show VideoCallActivity (note-10)
-        // Call via broadcast receiver has problem of CallTransferDialog keeps popping up
-        // Intent pTransfer = VideoCallActivity.createVideoCallIntent(ctx, mCallId);
-        // pTransfer.putExtra(CallManager.CALL_TRANSFER, true);
-        // pVideo = PendingIntent.getActivity(ctx, requestCodeBase++, pTransfer, getPendingIntentFlag(false, false));
-        // contentView.setOnClickPendingIntent(R.id.button_transfer, pVideo);
         PendingIntent callTransfer = PendingIntent.getBroadcast(ctx, requestCodeBase++, CallControl.getCallTransfer(mCallId),
                 getPendingIntentFlag(false, false));
         contentView.setOnClickPendingIntent(R.id.button_call_transfer, callTransfer);
@@ -223,10 +212,11 @@ public class CallNotificationManager {
     }
 
     public void backToCall() {
-        if (pVideo != null) {
+        if (callSwitch != null) {
             try {
-                pVideo.send();
-            } catch (PendingIntent.CanceledException e) {
+                callSwitch.send();
+            }
+            catch (PendingIntent.CanceledException e) {
                 Timber.w("Back to call: %s", e.getMessage());
             }
         }

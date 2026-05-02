@@ -147,6 +147,7 @@ public class ServiceDiscoveryHelper {
      */
     public DiscoverInfo discoverInfoNonBlocking(Jid entityJid) {
         // Check if we have it cached in the Entity Capabilities Manager
+        // Will always return null if JID_TO_NODEVER_CACHE.lookup(user) == null
         DiscoverInfo discoverInfo = EntityCapsManager.getDiscoverInfoByUser(entityJid);
         if (entityJid instanceof BareJid)
             Timber.e(new Exception("Warning! discoInfo for BareJid: " + entityJid));

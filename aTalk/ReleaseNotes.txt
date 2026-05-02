@@ -1,5 +1,14 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        5.4.0 (504000)
+Release Date:   05/02/2026
+Author:         cmeng
+- Fix starting a video call always end in an audio call being setup due to last update.
+- Fix backToCall/chat function not working due to last update.
+- Do not setState to CallPeerState.FAILED before calling hangup(); else it will be ignored at sender device to hangup call.
+- When checking or before update, show all the new changes info when there is a new version found - debug version only.
+
+=========================================================================
 Version:        5.3.0 (503000)
 Release Date:   04/30/2026
 Author:         cmeng

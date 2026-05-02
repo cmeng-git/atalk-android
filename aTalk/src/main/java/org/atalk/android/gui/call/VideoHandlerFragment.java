@@ -9,6 +9,7 @@ import static android.hardware.camera2.CameraMetadata.LENS_FACING_BACK;
 import static android.hardware.camera2.CameraMetadata.LENS_FACING_FRONT;
 
 import android.Manifest;
+import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Menu;
@@ -165,12 +166,14 @@ public class VideoHandlerFragment extends BaseFragment implements MenuProvider, 
     private VideoCallActivity mCallActivity;
 
     /**
-     * Must be called by parent activity on fragment attached
+     * Must be called on fragment attached to setup the OnRemoteVideoChangeListener.
      *
-     * @param activity VideoCall Activity
+     * @param context VideoCall Activity
      */
-    public void setRemoteVideoChangeListener(VideoCallActivity activity) {
-        mCallActivity = activity;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mCallActivity = (VideoCallActivity) context;
     }
 
     @Override

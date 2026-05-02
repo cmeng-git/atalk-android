@@ -7,8 +7,15 @@
 -->
 
 <changelog>
-    <release version="5.3.0 (04/30/2026)" versioncode="503000">
+    <release version="5.4.0 (05/02/2026)" versioncode="504000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>Fix starting a video call always end in an audio call being setup.</change>
+        <change>Fix backToCall/chat function not working due to last update</change>
+        <change>Do not setState to CallPeerState.FAILED before calling hangup(); else it will be ignored at sender device to hangup call.</change>
+        <change>When checking or before update, show all the new changes info when there is a new version found - debug version only.</change>
+    </release>
+
+    <release version="5.3.0 (04/30/2026)" versioncode="503000">
         <change>Migrate all Jingle stanza sid to use UUIDv4 as recommended in XEP-0353: Jingle Message Initiation 0.8.0 (2026-02-19).</change>
         <change>Update JingleMessage design/implementation to compliance with v0.8.0 (2026-02-19) specifications.</change>
         <change>During tie-break, sending of Retract and Reject message to remote Jid will not follow as specified; else JM does not work properly.</change>

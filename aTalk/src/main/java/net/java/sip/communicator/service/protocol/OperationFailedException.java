@@ -17,8 +17,7 @@ package net.java.sip.communicator.service.protocol;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class OperationFailedException extends Exception
-{
+public class OperationFailedException extends Exception {
     /**
      * Serial version UID.
      */
@@ -150,8 +149,7 @@ public class OperationFailedException extends Exception
      * @param message A message containing details on the error that caused the exception
      * @param errorCode the error code of the exception (one of the error code fields of this class)
      */
-    public OperationFailedException(String message, int errorCode)
-    {
+    public OperationFailedException(String message, int errorCode) {
         super(message);
         this.errorCode = errorCode;
     }
@@ -163,8 +161,7 @@ public class OperationFailedException extends Exception
      * @param errorCode the error code of the exception (one of the error code fields of this class)
      * @param cause the error that caused this exception
      */
-    public OperationFailedException(String message, int errorCode, Throwable cause)
-    {
+    public OperationFailedException(String message, int errorCode, Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
     }
@@ -174,8 +171,7 @@ public class OperationFailedException extends Exception
      *
      * @return the error code for the exception.
      */
-    public int getErrorCode()
-    {
+    public int getErrorCode() {
         return errorCode;
     }
 }

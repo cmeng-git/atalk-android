@@ -30,9 +30,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentOnAttachListener;
 
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
@@ -84,6 +82,7 @@ import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.service.neomedia.ZrtpControl;
 import org.atalk.util.FullScreenHelper;
 import org.atalk.util.MediaType;
+
 import org.jetbrains.annotations.NotNull;
 
 import org.jxmpp.jid.Jid;
@@ -100,7 +99,7 @@ import timber.log.Timber;
 public class VideoCallActivity extends BaseActivity implements CallPeerRenderer, CallRenderer,
         CallChangeListener, PropertyChangeListener, ZrtpInfoDialog.SasVerificationListener,
         AutoHideController.AutoHideListener, View.OnClickListener, View.OnLongClickListener,
-        VideoHandlerFragment.OnRemoteVideoChangeListener, FragmentOnAttachListener {
+        VideoHandlerFragment.OnRemoteVideoChangeListener {
     /**
      * Tag name for the fragment that handles proximity sensor in order to turn the screen on and off.
      */
@@ -289,8 +288,6 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
         padlockGroupView.setOnClickListener(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.addFragmentOnAttachListener(this);
-
         if (savedInstanceState == null) {
             videoFragment = new VideoHandlerFragment();
             callVolumeControl = new CallVolumeCtrlFragment();
@@ -330,14 +327,6 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
         videoCallIntent.putExtra(CallManager.CALL_SID, callIdentifier);
         videoCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return videoCallIntent;
-    }
-
-    @Override
-    public void onAttachFragment(@NonNull @NotNull FragmentManager fragmentManager, @NonNull @NotNull Fragment fragment) {
-        // Timber.w("onAttachFragment Tag: %s", fragment);
-        if (fragment instanceof VideoHandlerFragment) {
-            ((VideoHandlerFragment) fragment).setRemoteVideoChangeListener(this);
-        }
     }
 
     @Override
