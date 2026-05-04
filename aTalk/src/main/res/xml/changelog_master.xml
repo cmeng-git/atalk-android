@@ -7,8 +7,16 @@
 -->
 
 <changelog>
-    <release version="5.4.0 (05/02/2026)" versioncode="504000">
+    <release version="5.5.0 (05/04/2026)" versioncode="505000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>JingleMessage must send JM 'reject' to own user, so server will relay to all its resources for action.</change>
+        <change>Improve the handling process of JingleMessage and UI during tie-break conditions under multiple resources.</change>
+        <change>Fix ServiceDiscoveryHelper #discoverInfoNonBlocking end in endless loop if nodeVerHash is null.</change>
+        <change>Cleanup and simplify MetaContactImpl#isFeatureSupported() implementation.</change>
+        <change>Remove permission.READ_PHONE_STATE, and all PhoneNumberI18nService related sources; not required in aTalk but conflict with android phone security check.</change>
+    </release>
+
+    <release version="5.4.0 (05/02/2026)" versioncode="504000">
         <change>Fix starting a video call always end in an audio call being setup.</change>
         <change>Fix backToCall/chat function not working due to last update</change>
         <change>Do not setState to CallPeerState.FAILED before calling hangup(); else it will be ignored at sender device to hangup call.</change>

@@ -36,6 +36,8 @@ import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
+import timber.log.Timber;
+
 /**
  * The process to handle the outgoing call via AppCallUtil, and incoming for JingleMessage call.
  * Note: incoming call is via NotificationPopupHandler, only if aTalk is in locked screen
@@ -77,8 +79,9 @@ public class JingleMessageCallActivity extends BaseActivity implements JingleMes
         ImageButton callButton = findViewById(R.id.callButton);
         ImageButton hangUpButton = findViewById(R.id.hangupButton);
         peerAvatar = findViewById(R.id.calleeAvatar);
-
+        // Still found race condition at time where the activity is not ended.
         JingleMessageSessionImpl.setJmEndListener(this);
+        Timber.d("Registered JmEndListener");
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -118,7 +121,7 @@ public class JingleMessageCallActivity extends BaseActivity implements JingleMes
                 hangUpButton.setOnClickListener(v -> {
                             // NPE: Get triggered with remote == null at time???
                             JingleMessageSessionImpl.sendJingleMessageRetract(remote.asBareJid(), mSid);
-                            endJmCallActivity();
+                            endJmCallActivity(mSid);
                         }
                 );
                 callButton.setVisibility(View.GONE);
@@ -138,11 +141,17 @@ public class JingleMessageCallActivity extends BaseActivity implements JingleMes
 
 
     /**
-     * Destroy JingleMessageCallActivity UI, else remain visible after end call.
+     * Destroy JingleMessageCallActivity UI, when the call is rejected.
+     * Check to ensure this is the target activity.
      */
     @Override
-    public void endJmCallActivity() {
-        finish();
+    public boolean endJmCallActivity(String sid) {
+        if (sid.equals(mSid)) {
+            finish();
+            return true;
+        }
+        Timber.e("Mismatch sid: %s (%s)", sid, mSid);
+        return false;
     }
 
     /**

@@ -924,7 +924,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
 
         if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
                 && accountID.isEncryptionProtocolEnabled(SrtpControlType.DTLS_SRTP)
-                && protocolProvider.isFeatureSupported(jvb,
+                && protocolProvider.isFeatureListSupported(jvb,
                 ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_DTLS_SRTP)) {
             String tlsCertSA = accountID.getAccountPropertyString(ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, DEFAULT_SIGNATURE_AND_HASH_ALGORITHM);
             DtlsControlImpl.setTlsCertificateSA(tlsCertSA);

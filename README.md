@@ -107,7 +107,6 @@ Libraries used in this project:
 * [js-evaluator-for-android](https://github.com/evgenyneu/js-evaluator-for-android)
 * [jxmpp-jid](https://github.com/igniterealtime/jxmpp)
 * [libjitsi](https://github.com/jitsi/libjitsi)
-* [libphonenumber](https://github.com/googlei18n/libphonenumber)
 * [libvpx](https://github.com/webmproject/libvpx)
 * [miniDNS](https://github.com/MiniDNS/minidns)
 * [Noembed](https://noembed.com/)

@@ -1,5 +1,16 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        5.5.0 (505000)
+Release Date:   05/04/2026
+Author:         cmeng
+- JingleMessage must send JM 'reject' to own user, so server will relay to all its resources for action.
+- Improve the handling process of JingleMessage and UI during tie-break conditions under multiple resources.
+- Fix ServiceDiscoveryHelper#discoverInfoNonBlocking end in endless loop if nodeVerHash is null.
+- Remove redundant isFeatureSupported() function, use isFeatureListSupported() instead.
+- Cleanup and simplify MetaContactImpl#isFeatureSupported() implementation.
+- Remove permission.READ_PHONE_STATE, and all PhoneNumberI18nService related sources; not required in aTalk but conflict with android phone security check.
+
+=========================================================================
 Version:        5.4.0 (504000)
 Release Date:   05/02/2026
 Author:         cmeng

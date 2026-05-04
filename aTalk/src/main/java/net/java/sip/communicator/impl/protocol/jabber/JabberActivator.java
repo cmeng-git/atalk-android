@@ -13,7 +13,6 @@ import net.java.sip.communicator.service.googlecontacts.GoogleContactsService;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.hid.HIDService;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
-import net.java.sip.communicator.service.protocol.PhoneNumberI18nService;
 import net.java.sip.communicator.service.protocol.ProtocolNames;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
@@ -23,6 +22,7 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.service.version.VersionService;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -102,11 +102,6 @@ public class JabberActivator implements BundleActivator {
      * A reference to the currently valid <code>VersionService</code> instance.
      */
     private static VersionService versionService = null;
-
-    /**
-     * The registered PhoneNumberI18nService.
-     */
-    private static PhoneNumberI18nService phoneNumberI18nService;
 
     /**
      * The global display details service instance.
@@ -314,18 +309,6 @@ public class JabberActivator implements BundleActivator {
             versionService = (VersionService) bundleContext.getService(versionServiceReference);
         }
         return versionService;
-    }
-
-    /**
-     * Returns the PhoneNumberI18nService.
-     *
-     * @return returns the PhoneNumberI18nService.
-     */
-    public static PhoneNumberI18nService getPhoneNumberI18nService() {
-        if (phoneNumberI18nService == null) {
-            phoneNumberI18nService = ServiceUtils.getService(bundleContext, PhoneNumberI18nService.class);
-        }
-        return phoneNumberI18nService;
     }
 
     /**

@@ -13,8 +13,7 @@ package net.java.sip.communicator.service.contactsource;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public interface ContactSourceService
-{
+public interface ContactSourceService {
     /**
      * Type of a default source.
      */
@@ -29,7 +28,7 @@ public interface ContactSourceService
      * Type of a history source. Queries only when history should be shown.
      */
     int HISTORY_TYPE = 2;
-    
+
     /**
      * Type of a contact list source. Queries to be shown in the contact list.
      */
@@ -51,18 +50,19 @@ public interface ContactSourceService
 
     /**
      * Creates and returns new <code>ContactQuery</code> instance.
-     * 
+     *
      * @param queryString the string to search for
-     * 
+     *
      * @return new <code>ContactQuery</code> instance.
      */
     ContactQuery createContactQuery(String queryString);
-    
+
     /**
      * Creates and returns new <code>ContactQuery</code> instance.
-     * 
+     *
      * @param queryString the string to search for
      * @param contactCount the maximum count of result contacts
+     *
      * @return new <code>ContactQuery</code> instance.
      */
     ContactQuery createContactQuery(String queryString, int contactCount);

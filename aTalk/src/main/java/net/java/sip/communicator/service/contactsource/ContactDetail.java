@@ -15,17 +15,17 @@
  */
 package net.java.sip.communicator.service.contactsource;
 
-import net.java.sip.communicator.service.protocol.OperationSet;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The <code>ContactDetail</code> is a detail of a <code>SourceContact</code>
@@ -49,13 +49,11 @@ import java.util.Map;
  * @author Yana Stamcheva
  * @author Lyubomir Marinov
  */
-public class ContactDetail
-{
+public class ContactDetail {
     /**
      * Defines all possible categories for a <code>ContactDetail</code>.
      */
-    public enum Category
-    {
+    public enum Category {
         /**
          * The standard/well-known category of a <code>ContactDetail</code>
          * representing personal details, like name, last name, nickname.
@@ -87,11 +85,6 @@ public class ContactDetail
         InstantMessaging("InstantMessaging"),
 
         /**
-         * The standard/well-known category of a <code>ContactDetail</code> representing a phone number.
-         */
-        Phone("Phone"),
-
-        /**
          * The standard/well-known category of a <code>ContactDetail</code> representing a postal
          * address.
          */
@@ -107,8 +100,7 @@ public class ContactDetail
          *
          * @param value the value to set.
          */
-        Category(String value)
-        {
+        Category(String value) {
             this.value = value;
         }
 
@@ -117,8 +109,7 @@ public class ContactDetail
          *
          * @return the value
          */
-        public String value()
-        {
+        public String value() {
             return value;
         }
 
@@ -126,10 +117,10 @@ public class ContactDetail
          * Creates enum from its value.
          *
          * @param value the enum's value.
+         *
          * @return created enum.
          */
-        public static Category fromString(String value)
-        {
+        public static Category fromString(String value) {
             if (value != null) {
                 for (Category category : Category.values()) {
                     if (value.equalsIgnoreCase(category.value())) {
@@ -145,8 +136,7 @@ public class ContactDetail
     /**
      * Defines all possible sub-categories for a <code>ContactDetail</code>.
      */
-    public enum SubCategory
-    {
+    public enum SubCategory {
         /**
          * The standard/well-known label of a <code>ContactDetail</code>
          * representing a name. It could be an organization name or a personal name.
@@ -248,8 +238,7 @@ public class ContactDetail
          *
          * @param value the value to set.
          */
-        SubCategory(String value)
-        {
+        SubCategory(String value) {
             this.value = value;
         }
 
@@ -258,8 +247,7 @@ public class ContactDetail
          *
          * @return the value
          */
-        public String value()
-        {
+        public String value() {
             return value;
         }
 
@@ -267,10 +255,10 @@ public class ContactDetail
          * Creates enum from its value.
          *
          * @param value the enum's value.
+         *
          * @return created enum.
          */
-        public static SubCategory fromString(String value)
-        {
+        public static SubCategory fromString(String value) {
             if (value != null) {
                 for (SubCategory subCategory : SubCategory.values()) {
                     if (value.equalsIgnoreCase(subCategory.value())) {
@@ -328,8 +316,7 @@ public class ContactDetail
      *
      * @param contactDetailValue the contact detail value corresponding to this detail
      */
-    public ContactDetail(String contactDetailValue)
-    {
+    public ContactDetail(String contactDetailValue) {
         this(contactDetailValue, null, null, null);
     }
 
@@ -340,8 +327,7 @@ public class ContactDetail
      * @param contactDetailValue the contact detail value corresponding to this detail
      * @param detailDisplayName the display name of this detail
      */
-    public ContactDetail(String contactDetailValue, String detailDisplayName)
-    {
+    public ContactDetail(String contactDetailValue, String detailDisplayName) {
         this(contactDetailValue, detailDisplayName, null, null);
     }
 
@@ -353,8 +339,7 @@ public class ContactDetail
      * @param category
      */
     public ContactDetail(String contactDetailValue,
-            Category category)
-    {
+            Category category) {
         this(contactDetailValue, null, category, null);
     }
 
@@ -368,8 +353,7 @@ public class ContactDetail
      */
     public ContactDetail(String contactDetailValue,
             String detailDisplayName,
-            Category category)
-    {
+            Category category) {
         this(contactDetailValue, detailDisplayName, category, null);
     }
 
@@ -385,8 +369,7 @@ public class ContactDetail
      */
     public ContactDetail(String contactDetailValue,
             Category category,
-            SubCategory[] subCategories)
-    {
+            SubCategory[] subCategories) {
         this(contactDetailValue, null, category, subCategories);
     }
 
@@ -403,17 +386,12 @@ public class ContactDetail
     public ContactDetail(String contactDetailValue,
             String detailDisplayName,
             Category category,
-            SubCategory[] subCategories)
-    {
+            SubCategory[] subCategories) {
         // the value of the detail
         this.contactDetailValue = contactDetailValue;
 
         if (StringUtils.isNotEmpty(detailDisplayName)) {
             this.detailDisplayName = detailDisplayName;
-        }
-        else if (category == Category.Phone) {
-            this.detailDisplayName = ContactSourceActivator.getPhoneNumberI18nService()
-                    .formatForDisplay(contactDetailValue);
         }
         else {
             this.detailDisplayName = contactDetailValue;
@@ -440,8 +418,7 @@ public class ContactDetail
      * <code>OperationSet</code> classes
      */
     public void setPreferredProviders(
-            Map<Class<? extends OperationSet>, ProtocolProviderService> preferredProviders)
-    {
+            Map<Class<? extends OperationSet>, ProtocolProviderService> preferredProviders) {
         this.preferredProviders = preferredProviders;
     }
 
@@ -458,8 +435,7 @@ public class ContactDetail
      * <code>ProtocolProviderService</code>s for specific <code>OperationSet</code> classes
      */
     public void setPreferredProtocols(
-            Map<Class<? extends OperationSet>, String> preferredProtocols)
-    {
+            Map<Class<? extends OperationSet>, String> preferredProtocols) {
         this.preferredProtocols = preferredProtocols;
 
         // protocol added so an opset is supported, add it if missing
@@ -480,8 +456,7 @@ public class ContactDetail
      * with this contact detail (e.g. sending a message, making a call, etc.)
      */
     public void setSupportedOpSets(
-            List<Class<? extends OperationSet>> supportedOpSets)
-    {
+            List<Class<? extends OperationSet>> supportedOpSets) {
         this.supportedOpSets = supportedOpSets;
     }
 
@@ -490,8 +465,7 @@ public class ContactDetail
      *
      * @param supportedOpSet the OpSet to support.
      */
-    public void addSupportedOpSet(Class<? extends OperationSet> supportedOpSet)
-    {
+    public void addSupportedOpSet(Class<? extends OperationSet> supportedOpSet) {
         if (this.supportedOpSets == null) {
             this.supportedOpSets
                     = new ArrayList<Class<? extends OperationSet>>(2);
@@ -506,8 +480,7 @@ public class ContactDetail
      * @return the category of this <code>ContactQuery</code> if it has any;
      * otherwise, <code>null</code>
      */
-    public Category getCategory()
-    {
+    public Category getCategory() {
         return category;
     }
 
@@ -516,8 +489,7 @@ public class ContactDetail
      *
      * @return the contact address corresponding to this detail
      */
-    public String getDetail()
-    {
+    public String getDetail() {
         return contactDetailValue;
     }
 
@@ -526,8 +498,7 @@ public class ContactDetail
      *
      * @return the display name of this detail
      */
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return detailDisplayName;
     }
 
@@ -537,12 +508,12 @@ public class ContactDetail
      *
      * @param opSetClass the <code>OperationSet</code> class corresponding to a
      * certain action (e.g. sending an instant message, making a call, etc.).
+     *
      * @return the preferred <code>ProtocolProviderService</code> corresponding to
      * the given <code>opSetClass</code>
      */
     public ProtocolProviderService getPreferredProtocolProvider(
-            Class<? extends OperationSet> opSetClass)
-    {
+            Class<? extends OperationSet> opSetClass) {
         if (preferredProviders != null && preferredProviders.size() > 0)
             return preferredProviders.get(opSetClass);
 
@@ -560,11 +531,11 @@ public class ContactDetail
      *
      * @param opSetClass the <code>OperationSet</code> class corresponding to a
      * certain action (e.g. sending an instant message, making a call, etc.).
+     *
      * @return the name of the preferred protocol for the operation given by
      * the <code>opSetClass</code>
      */
-    public String getPreferredProtocol(Class<? extends OperationSet> opSetClass)
-    {
+    public String getPreferredProtocol(Class<? extends OperationSet> opSetClass) {
         if (preferredProtocols != null && preferredProtocols.size() > 0)
             return preferredProtocols.get(opSetClass);
 
@@ -578,8 +549,7 @@ public class ContactDetail
      *
      * @return a list of all supported <code>OperationSet</code> classes
      */
-    public List<Class<? extends OperationSet>> getSupportedOperationSets()
-    {
+    public List<Class<? extends OperationSet>> getSupportedOperationSets() {
         return supportedOpSets;
     }
 
@@ -591,11 +561,11 @@ public class ContactDetail
      *
      * @param subCategory the subCategory to be determined whether
      * it is contained in this <code>ContactDetail</code>
+     *
      * @return <code>true</code> if the specified <code>label</code> is contained in the
      * set of labels of this <code>ContactDetail</code>
      */
-    public boolean containsSubCategory(SubCategory subCategory)
-    {
+    public boolean containsSubCategory(SubCategory subCategory) {
         return subCategories.contains(subCategory);
     }
 
@@ -608,8 +578,7 @@ public class ContactDetail
      * <code>ContactDetail</code> has no labels, the returned <code>Collection</code> is
      * empty.
      */
-    public Collection<SubCategory> getSubCategories()
-    {
+    public Collection<SubCategory> getSubCategories() {
         return Collections.unmodifiableCollection(subCategories);
     }
 }

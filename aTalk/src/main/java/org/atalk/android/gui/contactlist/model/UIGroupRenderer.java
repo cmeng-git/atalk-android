@@ -19,5 +19,5 @@ public interface UIGroupRenderer {
      *
      * @return the display name for given contact group instance.
      */
-    public String getDisplayName(Object groupImpl);
+    String getDisplayName(Object groupImpl);
 }

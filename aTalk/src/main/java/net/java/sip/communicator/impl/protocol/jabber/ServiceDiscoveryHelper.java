@@ -138,27 +138,32 @@ public class ServiceDiscoveryHelper {
     }
 
     /**
-     * Returns the discovered information of a given XMPP entity addressed by its JID
-     * if cached, otherwise schedules for retrieval.
+     * Returns the discovered information of a given XMPP entity addressed by its Jid
+     * if cached, otherwise schedules for retrieval only if nvh is not null.
      *
      * @param entityJid the address of the XMPP entity. Buddy Jid should be FullJid
      *
      * @return the discovered information.
      */
     public DiscoverInfo discoverInfoNonBlocking(Jid entityJid) {
-        // Check if we have it cached in the Entity Capabilities Manager
-        // Will always return null if JID_TO_NODEVER_CACHE.lookup(user) == null
-        DiscoverInfo discoverInfo = EntityCapsManager.getDiscoverInfoByUser(entityJid);
-        if (entityJid instanceof BareJid)
+        // BareJid does not have DiscoverInfo.
+        if (entityJid instanceof BareJid) {
             Timber.e(new Exception("Warning! discoInfo for BareJid: " + entityJid));
-
-        // discoverInfo is not available for BareJid
-        if (discoverInfo != null || entityJid instanceof BareJid) {
-            return discoverInfo;
+            return null;
         }
 
-        // Add to retrieve discovery thread
-        retriever.addEntityForRetrieve(entityJid);
+        // Check if we have it cached in the Entity Capabilities Manager
+        // Will always return null if JID_TO_NODEVER_CACHE.lookup(user) == null
+        // DiscoverInfo discoverInfo = null;
+        EntityCapsManager.NodeVerHash nvh = EntityCapsManager.getNodeVerHashByJid(entityJid);
+        if (nvh != null) {
+            DiscoverInfo discoverInfo = EntityCapsManager.getDiscoveryInfoByNodeVer(nvh.getNodeVer());
+            if (discoverInfo != null) {
+                return discoverInfo;
+            }
+            // Add to retrieve discovery thread only if nvh != null, else end in endless loop.
+            retriever.addEntityForRetrieve(entityJid);
+        }
         return null;
     }
 

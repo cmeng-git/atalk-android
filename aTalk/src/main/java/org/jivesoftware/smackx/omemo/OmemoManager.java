@@ -1247,7 +1247,7 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
                         if (!id.equals(OmemoService.ITEM_ID_CURRENT)) {
                             EventElement event = ((EventElement) message.getExtension(EventElement.QNAME));
                             ItemsExtension itemExt = (ItemsExtension) event.getExtensions().get(0);
-                            deleteNodeItem(itemExt.getNamespace(), id);
+                            deleteNodeItem(itemExt.getNode(), id);
                             return;
                         }
                         try {

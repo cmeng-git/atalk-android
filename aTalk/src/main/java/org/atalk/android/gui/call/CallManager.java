@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import net.java.sip.communicator.impl.phonenumbers.PhoneNumberI18nServiceImpl;
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallConference;
 import net.java.sip.communicator.service.protocol.CallPeer;
@@ -47,10 +46,8 @@ import net.java.sip.communicator.service.protocol.media.MediaAwareCall;
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 import net.java.sip.communicator.service.protocol.media.ProtocolMediaActivator;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.NetworkUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AppGUIActivator;
@@ -63,6 +60,8 @@ import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.MediaType;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.jingle.JingleManager;
@@ -819,15 +818,9 @@ public class CallManager {
 
             Contact contact = this.contact;
             String stringContact = this.stringContact;
-            if (ConfigurationUtils.isNormalizePhoneNumber()
-                    && !NetworkUtils.isValidIPAddress(stringContact)) {
-                if (contact != null) {
-                    stringContact = contact.getAddress();
-                    contact = null;
-                }
-                if (stringContact != null) {
-                    stringContact = new PhoneNumberI18nServiceImpl().normalize(stringContact);
-                }
+            if (contact != null) {
+                stringContact = contact.getAddress();
+                contact = null;
             }
 
             try {
@@ -1190,9 +1183,6 @@ public class CallManager {
                 List<String> contactList = entry.getValue();
                 String[] contactArray = contactList.toArray(new String[0]);
 
-                if (ConfigurationUtils.isNormalizePhoneNumber())
-                    normalizePhoneNumbers(contactArray);
-
                 /* Try to have a single Call per ProtocolProviderService. */
                 Call ppsCall;
 
@@ -1279,9 +1269,6 @@ public class CallManager {
             // but we check in order to be sure to be able to proceed.
             if (opSetVideoBridge == null || !opSetVideoBridge.isActive())
                 return;
-
-            if (ConfigurationUtils.isNormalizePhoneNumber())
-                normalizePhoneNumbers(callees);
 
             try {
                 if (call == null) {
@@ -1536,16 +1523,5 @@ public class CallManager {
                 }
             }
         }
-    }
-
-    /**
-     * Normalizes the phone numbers (if any) in a list of <code>String</code> contact addresses or
-     * phone numbers.
-     *
-     * @param callees the list of contact addresses or phone numbers to be normalized
-     */
-    private static void normalizePhoneNumbers(String[] callees) {
-        for (int i = 0; i < callees.length; i++)
-            callees[i] = AppGUIActivator.getPhoneNumberI18nService().normalize(callees[i]);
     }
 }

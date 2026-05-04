@@ -233,24 +233,6 @@
         </Preference>
     </PreferenceCategory>
 
-    <!-- Phone Call Settings -->
-    <PreferenceCategory
-        android:key="pref.cat.settings.call"
-        android:title="@string/call">
-
-        <CheckBoxPreference
-            android:key="pref.key.call.remove.special"
-            android:summaryOff="@string/settings_normalize_off"
-            android:summaryOn="@string/settings_normalize_on"
-            android:title="@string/settings_normalize_number" />
-
-        <CheckBoxPreference
-            android:key="pref.key.call.convert.letters"
-            android:summaryOff="@string/settings_phone_alpha_no_allow"
-            android:summaryOn="@string/settings_phone_allow_alpha"
-            android:title="@string/settings_phone_alpha_allow" />
-    </PreferenceCategory>
-
     <!-- Advanced Settings -->
     <PreferenceCategory
         android:title="@string/advanced">

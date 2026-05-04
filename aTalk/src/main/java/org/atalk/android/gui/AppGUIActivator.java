@@ -20,7 +20,6 @@ import net.java.sip.communicator.service.metahistory.MetaHistoryService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.AccountManager;
-import net.java.sip.communicator.service.protocol.PhoneNumberI18nService;
 import net.java.sip.communicator.service.protocol.SecurityAuthority;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
 import net.java.sip.communicator.service.systray.SystrayService;
@@ -34,6 +33,7 @@ import org.atalk.android.gui.login.AndroidSecurityAuthority;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaService;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -92,11 +92,6 @@ public class AppGUIActivator implements BundleActivator {
 
     private static MessageHistoryService messageHistoryService;
     private static FileHistoryService fileHistoryService;
-
-    /**
-     * The registered PhoneNumberI18nService.
-     */
-    private static PhoneNumberI18nService phoneNumberI18nService;
 
     /**
      * Called when this bundle is started.
@@ -335,17 +330,5 @@ public class AppGUIActivator implements BundleActivator {
         if (messageHistoryService == null)
             messageHistoryService = ServiceUtils.getService(bundleContext, MessageHistoryService.class);
         return messageHistoryService;
-    }
-
-    /**
-     * Returns the PhoneNumberI18nService.
-     *
-     * @return returns the PhoneNumberI18nService.
-     */
-    public static PhoneNumberI18nService getPhoneNumberI18nService() {
-        if (phoneNumberI18nService == null) {
-            phoneNumberI18nService = ServiceUtils.getService(bundleContext, PhoneNumberI18nService.class);
-        }
-        return phoneNumberI18nService;
     }
 }

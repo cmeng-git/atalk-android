@@ -10,6 +10,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.java.sip.communicator.service.contactsource.AbstractContactQuery;
 import net.java.sip.communicator.service.contactsource.ContactQuery;
 import net.java.sip.communicator.service.contactsource.SourceContact;
@@ -17,17 +20,13 @@ import net.java.sip.communicator.service.contactsource.SourceContact;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Android contact query.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSource>
-{
+public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSource> {
     /**
      * Selection query
      */
@@ -79,8 +78,7 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
      * @param contactSource parent Android contact source.
      * @param queryString query string.
      */
-    protected AndroidContactQuery(AndroidContactSource contactSource, String queryString)
-    {
+    protected AndroidContactQuery(AndroidContactSource contactSource, String queryString) {
         super(contactSource);
         this.queryString = queryString;
     }
@@ -89,8 +87,7 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
      * {@inheritDoc}
      */
     @Override
-    public void start()
-    {
+    public void start() {
         if (queryThread != null)
             return;
 
@@ -101,13 +98,12 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
     /**
      * Executes the query.
      */
-    private void doQuery()
-    {
+    private void doQuery() {
         ContentResolver contentResolver = aTalkApp.getInstance().getContentResolver();
         Cursor cursor = null;
 
         try {
-            cursor = contentResolver.query(CONTACTS_URI, PROJECTION, SELECTION, new String[]{queryString}, null);
+            cursor = contentResolver.query(CONTACTS_URI, PROJECTION, SELECTION, new String[] {queryString}, null);
             if (cancel)
                 return;
 
@@ -138,9 +134,9 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
                 try {
                     result = contentResolver.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            new String[]{ContactsContract.CommonDataKinds.Phone.DATA},
+                            new String[] {ContactsContract.CommonDataKinds.Phone.DATA},
                             ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY + "=?",
-                            new String[]{String.valueOf(lookUp)}, null);
+                            new String[] {String.valueOf(lookUp)}, null);
 
                     if (result != null) {
                         while (result.moveToNext() && !cancel) {
@@ -150,7 +146,8 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
                                     thumbnail, photoUri, photoId, phone));
                         }
                     }
-                } finally {
+                }
+                finally {
                     if (result != null)
                         result.close();
                 }
@@ -158,10 +155,12 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
             if (!cancel) {
                 setStatus(ContactQuery.QUERY_COMPLETED);
             }
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
             aTalkApp.showToastMessage(aTalkApp.getResString(R.string.contacts_permission_denied_feedback)
                     + "\n" + e.getMessage());
-        } finally {
+        }
+        finally {
             if (cursor != null)
                 cursor.close();
         }
@@ -171,12 +170,12 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
      * {@inheritDoc}
      */
     @Override
-    public void cancel()
-    {
+    public void cancel() {
         cancel = true;
         try {
             queryThread.join();
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         super.cancel();
@@ -188,8 +187,7 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
      * @return the query string, this query was created for
      */
     @Override
-    public String getQueryString()
-    {
+    public String getQueryString() {
         return queryString;
     }
 
@@ -199,8 +197,7 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
      * @return the list of <code>SourceContact</code>s returned by this query
      */
     @Override
-    public List<SourceContact> getQueryResults()
-    {
+    public List<SourceContact> getQueryResults() {
         return results;
     }
 }

@@ -36,13 +36,15 @@ import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.DataObject;
 
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smackx.avatar.AvatarManager;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.roster.Roster;
+
+import org.jivesoftware.smackx.avatar.AvatarManager;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
@@ -224,14 +226,10 @@ public class MetaContactImpl extends DataObject implements MetaContact {
             return false;
         }
 
-        List<Presence> presences = Roster.getInstanceFor(pps.getConnection()).getPresences(contact.getJid().asBareJid());
+        Roster roster = Roster.getInstanceFor(pps.getConnection());
+        List<Presence> presences = roster.getAvailablePresences(contact.getJid().asBareJid());
         for (Presence presence : presences) {
-            if (presence.isAvailable()) {
-                DiscoverInfo featureInfo = pps.getScHelper().discoverInfoNonBlocking(presence.getFrom());
-                if ((featureInfo != null) && featureInfo.containsFeature(feature)) {
-                    return true;
-                }
-            }
+            return pps.isFeatureListSupported(presence.getFrom(), feature);
         }
         return false;
     }
@@ -570,7 +568,8 @@ public class MetaContactImpl extends DataObject implements MetaContact {
 
             if ((contactImage != null) && (contactImage.length > 0))
                 return contactImage;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             Timber.e(ex, "Failed to get the photo of contact %s", contact);
         }
         return null;
@@ -902,7 +901,8 @@ public class MetaContactImpl extends DataObject implements MetaContact {
             jsonArray.put(value);
             details.put(name, jsonArray);
             fireMetaContactModified(name, null, value);
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             Timber.e("Add detail: %s", e.getMessage());
         }
     }
@@ -923,7 +923,8 @@ public class MetaContactImpl extends DataObject implements MetaContact {
                     break;
                 }
             }
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             Timber.e("Remove detail: %s", e.getMessage());
         }
     }
@@ -956,7 +957,8 @@ public class MetaContactImpl extends DataObject implements MetaContact {
                     break;
                 }
             }
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             Timber.e("Change detail: %s", e.getMessage());
         }
     }
@@ -982,7 +984,8 @@ public class MetaContactImpl extends DataObject implements MetaContact {
         JSONArray jsonArray = new JSONArray();
         try {
             jsonArray = (JSONArray) details.get(name);
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             e.printStackTrace();
         }
         return jsonArray;

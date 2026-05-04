@@ -566,8 +566,6 @@
     <string name="folder">Carpeta</string>
     <string name="other">Otro</string>
     <string name="organization">Organización</string>
-    <string name="phone">Teléfono</string>
-    <string name="phones">Teléfonos</string>
     <string name="play">Reproducir</string>
     <string name="postal_code">Código postal</string>
     <string name="rename">Renombrar</string>
@@ -610,7 +608,6 @@
     <string name="retry">Reintentar</string>
     <string name="search">Buscar</string>
     <string name="search_contact">Buscar contacto</string>>
-    <string name="phonebook">Agenda telefónica</string>
     <string name="security">Seguridad</string>
     <string name="select_account_owner">Selecciona el propietario de la cuenta</string>
     <string name="assign_group">Contacto asignado al grupo:</string>
@@ -1285,14 +1282,6 @@
 
     <string name="loading_wait">Cargando, por favor espere…</string>
 
-    <!-- Remove special characters from phone number -->
-    <string name="settings_normalize_number">Símbolos especiales en los números de teléfono</string>
-    <string name="settings_normalize_off">Sin modificaciones de número de teléfono</string>
-    <string name="settings_normalize_on">Se eliminarán los símbolos especiales del número</string>
-    <!-- Convert letters in phone numbers -->
-    <string name="settings_phone_alpha_no_allow">Sin modificaciones de número de teléfono</string>
-    <string name="settings_phone_alpha_allow">Letras en números de teléfono</string>
-
     <!-- Call settings -->
     <string name="call">Llamar</string>
     <string name="media_call">Llamada medios</string>
@@ -1458,7 +1447,6 @@
     <string name="permission_microphone">Micrófono</string>
     <string name="permission_music">Música y audio</string>
     <string name="permission_notifications">Notificaciones</string>
-    <string name="permission_phone">Teléfono</string>
     <string name="permission_video">Foto y vídeo</string>
     <string name="permission_storage">Almacenamiento</string>
     <string name="permission_hint">¡Para obtener el máximo rendimiento de la aplicación y compatibilidad con todas las funciones, aTalk requiere que otorgues los permisos para los siguientes servicios. Sin ellos, aTalk puede no funcionar o tener un comportamiento inesperado!</string>
@@ -1485,9 +1473,6 @@
 
     <string name="notifications_permission_denied_dialog_title">Solicitud de permiso de notificaciones</string>
     <string name="notifications_permission_denied_feedback">Las notificaciones de aTalk estarán deshabilitadas hasta que concedas la solicitud de permiso.</string>
-
-    <string name="phone_permission_denied_dialog_title">Solicitud de permiso para leer estado del teléfono</string>
-    <string name="phone_permission_denied_feedback">Las funciones del teléfono no estarán disponibles hasta que otorgues la solicitud de permiso</string>
 
     <string name="video_permission_denied_dialog_title">Solicitud de permiso de fotografía y vídeo.</string>
     <string name="video_permission_denied_feedback">No se puede acceder al archivo multimedia de fotografía y vídeo hasta que usted conceda la solicitud de permiso</string>

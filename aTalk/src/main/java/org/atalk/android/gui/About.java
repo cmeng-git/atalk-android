@@ -67,7 +67,6 @@ public class About extends BaseActivity implements View.OnClickListener {
             new String[]{"jmdns", "https://github.com/jmdns/jmdns"},
             new String[]{"jxmpp-jid", "https://github.com/igniterealtime/jxmpp"},
             new String[]{"libjitsi", "https://github.com/jitsi/libjitsi"},
-            new String[]{"libphonenumber", "https://github.com/googlei18n/libphonenumber"},
             new String[]{"libvpx", "https://github.com/webmproject/libvpx"},
             new String[]{"media3-exoplayer", "https://github.com/androidx/media"},
             new String[]{"Mime4j", "https://james.apache.org/mime4j/"},

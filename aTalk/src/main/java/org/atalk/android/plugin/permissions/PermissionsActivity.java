@@ -97,7 +97,6 @@ public class PermissionsActivity extends BaseActivity {
         permissionList.add(Manifest.permission.CAMERA);
         permissionList.add(Manifest.permission.READ_CONTACTS);
         permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
-        permissionList.add(Manifest.permission.READ_PHONE_STATE);
         permissionList.add(Manifest.permission.RECORD_AUDIO);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -170,7 +169,6 @@ public class PermissionsActivity extends BaseActivity {
 
     private void initView() {
         mBinding.contactsPermissionButton.setOnClickListener(v -> onContactsPermissionButtonClicked());
-        mBinding.phonePermissionButton.setOnClickListener(v -> onPhonePermissionButtonClicked());
         mBinding.locationPermissionButton.setOnClickListener(v -> onLocationPermissionButtonClicked());
         mBinding.micPermissionButton.setOnClickListener(v -> onMicPermissionButtonClicked());
         mBinding.cameraPermissionButton.setOnClickListener(v -> onCameraPermissionButtonClicked());
@@ -246,14 +244,6 @@ public class PermissionsActivity extends BaseActivity {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.READ_CONTACTS)
                 .withListener(contactsPermissionListener)
-                .withErrorListener(errorListener)
-                .check();
-    }
-
-    public void onPhonePermissionButtonClicked() {
-        Dexter.withContext(this)
-                .withPermission(Manifest.permission.READ_PHONE_STATE)
-                .withListener(phonePermissionListener)
                 .withErrorListener(errorListener)
                 .check();
     }
@@ -491,15 +481,6 @@ public class PermissionsActivity extends BaseActivity {
 
         deniedPermissionListener = DialogOnDeniedPermissionListener.Builder
                 .withContext(this)
-                .withTitle(R.string.phone_permission_denied_dialog_title)
-                .withMessage(R.string.phone_permission_denied_feedback)
-                .withButtonText(android.R.string.ok)
-                .withIcon(R.drawable.ic_icon)
-                .build();
-        phonePermissionListener = new CompositePermissionListener(fbPermissionListener, deniedPermissionListener);
-
-        deniedPermissionListener = DialogOnDeniedPermissionListener.Builder
-                .withContext(this)
                 .withTitle(R.string.location_permission_denied_dialog_title)
                 .withMessage(R.string.location_permission_denied_feedback)
                 .withButtonText(android.R.string.ok)
@@ -572,10 +553,6 @@ public class PermissionsActivity extends BaseActivity {
 
             case Manifest.permission.READ_CONTACTS:
                 feedbackView = mBinding.contactsPermissionFeedback;
-                break;
-
-            case Manifest.permission.READ_PHONE_STATE:
-                feedbackView = mBinding.phonePermissionFeedback;
                 break;
 
             case Manifest.permission.ACCESS_FINE_LOCATION:

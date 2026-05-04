@@ -794,7 +794,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                              * inception. But that is not the case with the Jingle ICE-UDP transport.
                              */
                             if ((jitsiVideobridge != null)
-                                    && !protocolProvider.isFeatureSupported(jitsiVideobridge,
+                                    && !protocolProvider.isFeatureListSupported(jitsiVideobridge,
                                     ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_ICE_UDP_1)) {
                                 for (int i = transports.length - 1; i >= 0; i--) {
                                     if (ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_ICE_UDP_1.equals(transports[i])) {
@@ -1902,7 +1902,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
             // initiator
             if (remoteContent == null) {
-                addFingerprintToLocalTransport = protocolProvider.isFeatureSupported(mPeer.getPeerJid(),
+                addFingerprintToLocalTransport = protocolProvider.isFeatureListSupported(mPeer.getPeerJid(),
                         ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_DTLS_SRTP);
             }
             // responder
@@ -1972,7 +1972,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                  */
                 if ((localFingerprints != null) && !localFingerprints.isEmpty()) {
                     if (remoteContent == null) { // initiator
-                        if (!protocolProvider.isFeatureSupported(mPeer.getPeerJid(),
+                        if (!protocolProvider.isFeatureListSupported(mPeer.getPeerJid(),
                                 ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_DTLS_SRTP)) {
                             localFingerprints = null;
                         }

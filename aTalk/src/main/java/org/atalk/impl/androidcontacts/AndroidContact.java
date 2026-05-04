@@ -11,13 +11,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
+import java.util.ArrayList;
+
 import net.java.sip.communicator.service.contactsource.ContactDetail;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.contactsource.GenericSourceContact;
 
 import org.atalk.android.aTalkApp;
-
-import java.util.ArrayList;
 
 /**
  * Android source contact class.
@@ -25,8 +25,7 @@ import java.util.ArrayList;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AndroidContact extends GenericSourceContact
-{
+public class AndroidContact extends GenericSourceContact {
     private final long id;
     private final String lookUpKey;
     private final String thumbnailUri;
@@ -35,8 +34,7 @@ public class AndroidContact extends GenericSourceContact
     private final String phone;
 
     public AndroidContact(ContactSourceService contactSource, long id, String loopUpKey,
-            String displayName, String thumbnail, String photoUri, String photoId, String phone)
-    {
+            String displayName, String thumbnail, String photoUri, String photoId, String phone) {
         super(contactSource, displayName, new ArrayList<ContactDetail>());
 
         this.id = id;
@@ -54,8 +52,7 @@ public class AndroidContact extends GenericSourceContact
      * {@inheritDoc}
      */
     @Override
-    public String getContactAddress()
-    {
+    public String getContactAddress() {
         return super.getContactAddress();
 
         /*
@@ -112,8 +109,7 @@ public class AndroidContact extends GenericSourceContact
      * {@inheritDoc}
      */
     @Override
-    public byte[] getImage()
-    {
+    public byte[] getImage() {
         byte[] image = super.getImage();
 
         if (image == null) {
@@ -121,7 +117,7 @@ public class AndroidContact extends GenericSourceContact
             Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
             Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
             Cursor cursor = ctx.getContentResolver().query(photoUri,
-                    new String[]{ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
+                    new String[] {ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
 
             if (cursor == null)
                 return null;
@@ -130,7 +126,8 @@ public class AndroidContact extends GenericSourceContact
                     image = cursor.getBlob(0);
                     setImage(image);
                 }
-            } finally {
+            }
+            finally {
                 cursor.close();
             }
             /*

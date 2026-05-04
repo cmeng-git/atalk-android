@@ -2822,18 +2822,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
-     * Determines if the given list of <code>features</code> is supported by the specified jabber id.
-     *
-     * @param jid the jabber id that we'd like to get information about
-     * @param feature the feature to check for
-     *
-     * @return <code>true</code> if the list of features is supported, otherwise returns <code>false</code>
-     */
-    public boolean isFeatureSupported(Jid jid, String feature) {
-        return isFeatureListSupported(jid, feature);
-    }
-
-    /**
      * Returns the full jabber id (jid) corresponding to the given contact. If the provider is not
      * connected then just returns the given jid (BareJid).
      *

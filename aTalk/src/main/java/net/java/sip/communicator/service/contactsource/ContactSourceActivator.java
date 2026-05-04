@@ -15,9 +15,6 @@
  */
 package net.java.sip.communicator.service.contactsource;
 
-import net.java.sip.communicator.service.protocol.PhoneNumberI18nService;
-import net.java.sip.communicator.util.ServiceUtils;
-
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -30,12 +27,6 @@ public class ContactSourceActivator implements BundleActivator {
      */
     public static BundleContext bundleContext;
 
-    /**
-     * The registered PhoneNumberI18nService.
-     */
-    private static PhoneNumberI18nService phoneNumberI18nService;
-
-
     @Override
     public void start(BundleContext bundleContext)
             throws Exception {
@@ -45,17 +36,5 @@ public class ContactSourceActivator implements BundleActivator {
     @Override
     public void stop(BundleContext bundleContext)
             throws Exception {
-    }
-
-    /**
-     * Returns the PhoneNumberI18nService.
-     *
-     * @return returns the PhoneNumberI18nService.
-     */
-    public static PhoneNumberI18nService getPhoneNumberI18nService() {
-        if (phoneNumberI18nService == null) {
-            phoneNumberI18nService = ServiceUtils.getService(bundleContext, PhoneNumberI18nService.class);
-        }
-        return phoneNumberI18nService;
     }
 }

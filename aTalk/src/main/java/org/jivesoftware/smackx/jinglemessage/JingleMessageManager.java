@@ -106,12 +106,12 @@ public final class JingleMessageManager extends Manager {
 
     private JingleMessageManager(final XMPPConnection connection) {
         super(connection);
-        ProviderManager.addExtensionProvider(RtpDescription.ELEMENT, RtpDescription.NAMESPACE, new JingleRTPDescriptionProvider());
 
         connection.addSyncStanzaListener(new StanzaListener() {
             @Override
             public void processStanza(Stanza stanza) {
                 final Message message = (Message) stanza;
+                ;
                 final JingleMessage jingleMessage;
                 StandardExtensionElement extElement = (StandardExtensionElement) message.getExtension(JingleMessage.NAMESPACE);
                 try {
@@ -143,6 +143,7 @@ public final class JingleMessageManager extends Manager {
             }
         }, INCOMING_JINGLE_MESSAGE_FILTER);
 
+        ProviderManager.addExtensionProvider(RtpDescription.ELEMENT, RtpDescription.NAMESPACE, new JingleRTPDescriptionProvider());
         ServiceDiscoveryManager serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
         serviceDiscoveryManager.addFeature(NAMESPACE);
     }

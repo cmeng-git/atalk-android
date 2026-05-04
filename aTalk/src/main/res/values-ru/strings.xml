@@ -561,8 +561,6 @@
     <string name="folder">Папка</string>
     <string name="other">Другое</string>
     <string name="organization">Организация</string>
-    <string name="phone">Телефон</string>
-    <string name="phones">Телефоны</string>
     <string name="play">Озвучить</string>
     <string name="postal_code">Почтовый код</string>
     <string name="rename">Переименовать</string>
@@ -605,7 +603,6 @@
     <string name="retry">Повторить</string>
     <string name="search">Поиск</string>
     <string name="search_contact">Поиск контакта</string>&gt;
-    <string name="phonebook">Телефонная книга</string>
     <string name="security">Безопасность</string>
     <string name="select_account_owner">Выбрать владельца учётной записи</string>
     <string name="assign_group">Группа:</string>
@@ -1259,14 +1256,6 @@
     <string name="tts_voice">Голос по умолчанию:</string>
     <string name="loading_wait">Загрузка, пожалуйста подождите…</string>
 
-    <!-- Remove special characters from phone number -->
-    <string name="settings_normalize_number">Специальные символы в телефонных номерах</string>
-    <string name="settings_normalize_off">Нет изменений номера телефона</string>
-    <string name="settings_normalize_on">Специальные символы будут удалены из числа</string>
-    <!-- Convert letters in phone numbers -->
-    <string name="settings_phone_alpha_no_allow">Нет изменений номера телефона</string>
-    <string name="settings_phone_alpha_allow">Письма в телефонных номерах</string>
-
     <!-- Call settings -->
     <string name="call">Вызов</string>
     <string name="media_call">Медиа звонок</string>
@@ -1430,7 +1419,6 @@
     <string name="permission_microphone">Микрофон</string>
     <string name="permission_music">Музыка и аудио</string>
     <string name="permission_notifications">Уведомления</string>
-    <string name="permission_phone">Телефон</string>
     <string name="permission_video">Фото и видео</string>
     <string name="permission_storage">Хранение</string>
     <string name="permission_hint">Для максимальной производительности и полной поддержки приложений, aTalk требует предоставления разрешений для следующих служб. Без них aTalk может не работать или может иметь неожиданное поведение!</string>
@@ -1456,9 +1444,6 @@
 
     <string name="notifications_permission_denied_dialog_title">Запрос разрешения на уведомления</string>
     <string name="notifications_permission_denied_feedback">Уведомления от aTalk будут отключены пока вы не предоставите разрешение</string>
-
-    <string name="phone_permission_denied_dialog_title">Прочитать запрос разрешения состояния телефона</string>
-    <string name="phone_permission_denied_feedback">Функции телефона не будут доступны, пока вы не предоставите запрос на разрешение</string>
 
     <string name="video_permission_denied_dialog_title">Запрос разрешения на фото и видео</string>
     <string name="video_permission_denied_feedback">Медиа-фото и видеофайлы недоступны, пока вы не предоставите разрешение</string>

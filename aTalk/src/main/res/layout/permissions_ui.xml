@@ -67,22 +67,6 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/phone_permission_button"
-                    style="@style/PermissionButton"
-                    android:text="@string/permission_phone" />
-
-                <TextView
-                    android:id="@+id/phone_permission_feedback"
-                    style="@style/PermissionFeedback"
-                    android:text="@string/permission_unknown" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
                     android:id="@+id/location_permission_button"
                     style="@style/PermissionButton"
                     android:text="@string/permission_location" />

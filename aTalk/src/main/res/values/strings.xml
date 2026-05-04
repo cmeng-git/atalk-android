@@ -562,8 +562,6 @@
     <string name="folder">Folder</string>
     <string name="other">Other</string>
     <string name="organization">Organization</string>
-    <string name="phone">Phone</string>
-    <string name="phones">Phones</string>
     <string name="play">Play</string>
     <string name="postal_code">Postal Code</string>
     <string name="rename">Rename</string>
@@ -606,7 +604,6 @@
     <string name="retry">Retry</string>
     <string name="search">Search</string>
     <string name="search_contact">Search contact</string>>
-    <string name="phonebook">Phone book</string>
     <string name="security">Security</string>
     <string name="select_account_owner">Select Account Owner</string>
     <string name="assign_group">Contact Assigned Group:</string>
@@ -1272,14 +1269,6 @@
     <string name="tts_voice">Default TTS voice:</string>
     <string name="loading_wait">Loading, please wait…</string>
 
-    <!-- Remove special characters from phone number -->
-    <string name="settings_normalize_number">Special symbols in phone numbers</string>
-    <string name="settings_normalize_off">No phone number modifications</string>
-    <string name="settings_normalize_on">Special symbols will be removed from the number</string>
-    <!-- Convert letters in phone numbers -->
-    <string name="settings_phone_alpha_no_allow">No phone number modifications</string>
-    <string name="settings_phone_alpha_allow">Letters in phone numbers</string>
-
     <!-- Call settings -->
     <string name="call">Call</string>
     <string name="media_call">Media call</string>
@@ -1445,7 +1434,6 @@
     <string name="permission_microphone">Microphone</string>
     <string name="permission_music">Music &amp; Audio</string>
     <string name="permission_notifications">Notifications</string>
-    <string name="permission_phone">Phone</string>
     <string name="permission_video">Photo &amp; Video</string>
     <string name="permission_storage">Storage</string>
     <string name="permission_hint">For application maximum performance and full features support, aTalk requires you to grant permissions for the following services. Without them, aTalk may not work or may have unexpected behavior!</string>
@@ -1471,9 +1459,6 @@
 
     <string name="notifications_permission_denied_dialog_title">Notifications permission request</string>
     <string name="notifications_permission_denied_feedback">Notifications from aTalk will be disabled until you grant the permission request</string>
-
-    <string name="phone_permission_denied_dialog_title">Read Phone State permission request</string>
-    <string name="phone_permission_denied_feedback">Phone features will not be available until you grant the permission request</string>
 
     <string name="video_permission_denied_dialog_title">Photo and video permission request</string>
     <string name="video_permission_denied_feedback">Media photo and video file is not accessible until you grant the permission request</string>

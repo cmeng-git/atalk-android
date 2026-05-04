@@ -561,8 +561,6 @@
     <string name="folder">zložka</string>
     <string name="other">ostatné</string>
     <string name="organization">Organizácia</string>
-    <string name="phone">telefón</string>
-    <string name="phones">telefóny</string>
     <string name="play">hrať</string>
     <string name="postal_code">poštové smerovacie číslo</string>
     <string name="rename">premenovanie</string>
@@ -605,7 +603,6 @@
     <string name="retry">Skúsiť znova</string>
     <string name="search">Vyhľadávanie</string>
     <string name="search_contact">Vyhľadajte kontakt</string>>
-    <string name="phonebook">Telefónny zoznam</string>
     <string name="security">zabezpečenia</string>
     <string name="select_account_owner">Vyberte vlastníka účtu</string>
     <string name="assign_group">Priradená skupina:</string>
@@ -1272,14 +1269,6 @@
 
     <string name="loading_wait">Načitáva sa, prosím čakajte…</string>
 
-    <!-- Remove special characters from phone number -->
-    <string name="settings_normalize_number">Špeciálne symboly v telefónnych číslach</string>
-    <string name="settings_normalize_off">Žiadne úpravy telefónneho čísla</string>
-    <string name="settings_normalize_on">Z tohto čísla budú odstránené špeciálne symboly</string>
-    <!-- Convert letters in phone numbers -->
-    <string name="settings_phone_alpha_no_allow">Žiadne úpravy telefónneho čísla</string>
-    <string name="settings_phone_alpha_allow">Písmená v telefónnych číslach</string>
-
     <!-- Call settings -->
     <string name="call">volanie</string>
     <string name="media_call">Mediálny hovor</string>
@@ -1445,7 +1434,6 @@
     <string name="permission_microphone">Mikrofón</string>
     <string name="permission_music">Hudba a zvuk</string>
     <string name="permission_notifications">Upozornenia</string>
-    <string name="permission_phone">Telefonovanie</string>
     <string name="permission_video">Foto a video</string>
     <string name="permission_storage">Ukladovanie</string>
     <string name="permission_hint">Na podporu všetkých funkcií aTalk sa vyžaduje, aby ste udelili povolenia pre nasledujúce služby. Bez nich nemusia funkcie aTalk fungovať alebo môžu mať neočakávané správanie!</string>
@@ -1472,9 +1460,6 @@
 
     <string name="notifications_permission_denied_dialog_title">Žiadosť o povolenie upozornení</string>
     <string name="notifications_permission_denied_feedback">Upozornenia z aTalk budú vypnuté, kým neschválite žiadosť o povolenie</string>
-
-    <string name="phone_permission_denied_dialog_title">Prečítajte si žiadosť o povolenie štátneho telefónu</string>
-    <string name="phone_permission_denied_feedback">Telefónne funkcie nebudú k dispozícii, kým neudelíte žiadosť o povolenie</string>
 
     <string name="video_permission_denied_dialog_title">Žiadosť o povolenie na fotografie a videá</string>
     <string name="video_permission_denied_feedback">Mediálny súbor fotografií a videa nebude prístupný, kým neschválite žiadosť o povolenie</string>

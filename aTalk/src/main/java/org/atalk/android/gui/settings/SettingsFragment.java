@@ -100,10 +100,6 @@ public class SettingsFragment extends BasePreferenceFragment
     private static final String P_KEY_POPUP_HANDLER = "pref.key.notification.popup_handler";
     public static final String P_KEY_HEADS_UP_ENABLE = "pref.key.notification.heads_up_enable";
 
-    // Call section
-    private static final String P_KEY_NORMALIZE_PNUMBER = "pref.key.call.remove.special";
-    private static final String P_KEY_ACCEPT_ALPHA_PNUMBERS = "pref.key.call.convert.letters";
-
     // Video settings
     private static final String P_KEY_VIDEO_CAMERA = "pref.key.video.camera";
     // Video resolutions
@@ -188,9 +184,6 @@ public class SettingsFragment extends BasePreferenceFragment
                 disableMediaOptions();
                 return;
             }
-
-            // Call section
-            initCallPreferences();
 
             // Video section
             initVideoPreferences();
@@ -387,10 +380,6 @@ public class SettingsFragment extends BasePreferenceFragment
      * Initializes notifications section
      */
     private void initNotificationPreferences() {
-        // Remove for android play store release
-        // GeoPreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_AUTO_UPDATE_CHECK_ENABLE,
-        //		cfg.getBoolean(AUTO_UPDATE_CHECK_ENABLE, true));
-
         BundleContext bc = AppGUIActivator.bundleContext;
         ServiceReference[] handlerRefs = ServiceUtils.getServiceReferences(bc, PopupMessageHandler.class);
 
@@ -443,16 +432,6 @@ public class SettingsFragment extends BasePreferenceFragment
         if (myPrefCat != null) {
             mPreferenceScreen.removePreference(myPrefCat);
         }
-    }
-
-    /**
-     * Initializes call section
-     */
-    private void initCallPreferences() {
-        PreferenceUtil.setCheckboxVal(mPreferenceScreen, P_KEY_NORMALIZE_PNUMBER,
-                ConfigurationUtils.isNormalizePhoneNumber());
-        PreferenceUtil.setCheckboxVal(mPreferenceScreen, P_KEY_ACCEPT_ALPHA_PNUMBERS,
-                ConfigurationUtils.acceptPhoneNumberWithAlphaChars());
     }
 
     /**
@@ -565,6 +544,17 @@ public class SettingsFragment extends BasePreferenceFragment
             return;
 
         switch (key) {
+        case P_KEY_AUTO_START:
+            ConfigurationUtils.setAutoStart(shPreferences.getBoolean(
+                    P_KEY_AUTO_START, ConfigurationUtils.isAutoStartEnable()));
+            break;
+
+        case P_KEY_WEB_PAGE:
+            String wpStr = shPreferences.getString(P_KEY_WEB_PAGE, ConfigurationUtils.getWebPage());
+            ConfigurationUtils.setWebPage(wpStr);
+            updateWebPageSummary();
+            break;
+
             case P_KEY_LOG_CHAT_HISTORY:
                 MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
                 boolean enable = false;
@@ -582,15 +572,7 @@ public class SettingsFragment extends BasePreferenceFragment
                 ConfigurationUtils.setChatHistorySize(Integer.parseInt(intStr));
                 updateHistorySizeSummary();
                 break;
-            case P_KEY_WEB_PAGE:
-                String wpStr = shPreferences.getString(P_KEY_WEB_PAGE, ConfigurationUtils.getWebPage());
-                ConfigurationUtils.setWebPage(wpStr);
-                updateWebPageSummary();
-                break;
-            case P_KEY_AUTO_START:
-                ConfigurationUtils.setAutoStart(shPreferences.getBoolean(
-                        P_KEY_AUTO_START, ConfigurationUtils.isAutoStartEnable()));
-                break;
+
             case P_KEY_MESSAGE_DELIVERY_RECEIPT:
                 ConfigurationUtils.setSendMessageDeliveryReceipt(shPreferences.getBoolean(
                         P_KEY_MESSAGE_DELIVERY_RECEIPT, ConfigurationUtils.isSendMessageDeliveryReceipt()));
@@ -607,20 +589,6 @@ public class SettingsFragment extends BasePreferenceFragment
                 ConfigurationUtils.setPresenceSubscribeAuto(shPreferences.getBoolean(
                         P_KEY_PRESENCE_SUBSCRIBE_MODE, ConfigurationUtils.isPresenceSubscribeAuto()));
                 break;
-
-            // Disable for android play store
-            /* else if (key.equals(P_KEY_AUTO_UPDATE_CHECK_ENABLE)) {
-				Boolean isEnable = shPreferences.getBoolean(P_KEY_AUTO_UPDATE_CHECK_ENABLE, true);
-				mConfigService.setProperty(AUTO_UPDATE_CHECK_ENABLE, isEnable);
-
-				// Perform software version update check on first launch
-				Intent intent = new Intent(mActivity, OnlineUpdateService.class);
-				if (isEnable)
-					intent.setAction(OnlineUpdateService.ACTION_AUTO_UPDATE_START);
-				else
-					intent.setAction(OnlineUpdateService.ACTION_AUTO_UPDATE_STOP);
-				mActivity.startService(intent);
-			}*/
 
             /*
              * Chat alerter is not implemented on Android
@@ -650,10 +618,6 @@ public class SettingsFragment extends BasePreferenceFragment
                 break;
             case P_KEY_HEADS_UP_ENABLE:
                 ConfigurationUtils.setHeadsUp(shPreferences.getBoolean(P_KEY_HEADS_UP_ENABLE, true));
-                break;
-            // Normalize phone number
-            case P_KEY_NORMALIZE_PNUMBER:
-                ConfigurationUtils.setNormalizePhoneNumber(shPreferences.getBoolean(P_KEY_NORMALIZE_PNUMBER, true));
                 break;
             // Camera
             case P_KEY_VIDEO_CAMERA:
