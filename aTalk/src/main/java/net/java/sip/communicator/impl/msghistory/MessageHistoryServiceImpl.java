@@ -68,7 +68,6 @@ import net.java.sip.communicator.service.protocol.OperationSetContactCapabilitie
 import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
 import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
 import net.java.sip.communicator.service.protocol.OperationSetPresence;
-import net.java.sip.communicator.service.protocol.OperationSetSmsMessaging;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.AdHocChatRoomMessageDeliveredEvent;
 import net.java.sip.communicator.service.protocol.event.AdHocChatRoomMessageDeliveryFailedEvent;
@@ -114,7 +113,6 @@ import org.jivesoftware.smackx.omemo.element.OmemoElement;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
 import org.jivesoftware.smackx.omemo.exceptions.NoRawSessionException;
-import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 import org.jxmpp.jid.EntityBareJid;
@@ -274,17 +272,6 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             Timber.log(TimberLog.FINER, "Service did not have OperationSet BasicInstantMessaging.");
         }
 
-        OperationSetSmsMessaging opSetSMS = provider.getOperationSet(OperationSetSmsMessaging.class);
-        if (opSetSMS != null) {
-            opSetSMS.addMessageListener(this);
-
-            if (this.messageSourceService != null)
-                opSetSMS.addMessageListener(messageSourceService);
-        }
-        else {
-            Timber.log(TimberLog.FINER, "Service did not have OperationSet SmsMessaging.");
-        }
-
         OperationSetMultiUserChat opSetMultiUChat = provider.getOperationSet(OperationSetMultiUserChat.class);
         if (opSetMultiUChat != null) {
             for (ChatRoom room : opSetMultiUChat.getCurrentlyJoinedChatRooms()) {
@@ -332,14 +319,6 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
             if (this.messageSourceService != null)
                 opSetIm.removeMessageListener(messageSourceService);
-        }
-
-        OperationSetSmsMessaging opSetSMS = provider.getOperationSet(OperationSetSmsMessaging.class);
-        if (opSetSMS != null) {
-            opSetSMS.removeMessageListener(this);
-
-            if (this.messageSourceService != null)
-                opSetSMS.removeMessageListener(messageSourceService);
         }
 
         OperationSetMultiUserChat opSetMultiUChat = provider.getOperationSet(OperationSetMultiUserChat.class);
@@ -932,8 +911,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
-    public Collection<EventObject> findRecentMessagesPerContact(int count, String providerToFilter,
-            String contactToFilter, boolean isSMSEnabled) {
+    public Collection<EventObject> findRecentMessagesPerContact(int count, String providerToFilter, String contactToFilter) {
         String sessionUuid;
         String accountUuid;
         String entityJid;
@@ -976,18 +954,13 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
             // find contact or chatRoom for given contactJid; skip if not found contacts,
             // disabled accounts and hidden one
-            descriptor = getContactOrRoomByID(accountUuid, entityJid, isSMSEnabled);
+            descriptor = getContactOrRoomByID(accountUuid, entityJid);
             if (descriptor == null)
                 continue;
 
             whereCondition = ChatMessage.SESSION_UUID + "=?";
             argList.clear();
             argList.add(sessionUuid);
-            if (isSMSEnabled) {
-                whereCondition += " AND (" + ChatMessage.MSG_TYPE + "=? OR " + ChatMessage.MSG_TYPE + "=?)";
-                argList.add(String.valueOf(ChatMessage.MESSAGE_SMS_IN));
-                argList.add(String.valueOf(ChatMessage.MESSAGE_SMS_OUT));
-            }
             args = argList.toArray(new String[0]);
 
             cursorMsg = mDB.query(ChatMessage.TABLE_NAME, null, whereCondition, args,
@@ -1068,11 +1041,10 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param accountUuid the account Uuid.
      * @param contactId the entityBareJid for Contact or ChatRoom in String.
-     * @param isSMSEnabled get contact from SmsMessage if true
      *
      * @return Contact or ChatRoom object.
      */
-    private Object getContactOrRoomByID(String accountUuid, String contactId, boolean isSMSEnabled) {
+    private Object getContactOrRoomByID(String accountUuid, String contactId) {
         // skip for system virtual server e.g. atalk.org without "@"
         if (StringUtils.isEmpty(contactId) || contactId.indexOf("@") <= 0)
             return null;
@@ -1104,12 +1076,6 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         Contact contact = opSetPresence.findContactByID(contactId);
         if (contact != null)
             return contact;
-
-        if (isSMSEnabled) {
-            // we will check only for sms contacts
-            OperationSetSmsMessaging opSetSMS = pps.getOperationSet(OperationSetSmsMessaging.class);
-            return (opSetSMS == null) ? null : opSetSMS.getContact(contactId);
-        }
 
         OperationSetMultiUserChat opSetMuc = pps.getOperationSet(OperationSetMultiUserChat.class);
         if (opSetMuc == null)
@@ -1345,11 +1311,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         String sender = mProperties.get(ChatMessage.JID);
 
         if (msg.isOutgoing) {
-            MessageDeliveredEvent evt = new MessageDeliveredEvent(msg, contact, null, sender, timestamp);
-            if (ChatMessage.MESSAGE_SMS_OUT == msg.getMsgSubType()) {
-                evt.setSmsMessage(true);
-            }
-            return evt;
+            return new MessageDeliveredEvent(msg, contact, null, sender, timestamp);
         }
         else {
             // ContactResource has no meaning for the given contact, so set it to null
@@ -1439,13 +1401,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         String remoteMsgId = mProperties.get(ChatMessage.REMOTE_MSG_ID);
         boolean isOutgoing = ChatMessage.DIR_OUT.equals(mProperties.get(ChatMessage.DIRECTION));
 
-        int msgSubType = -1;
-        int msgType = Integer.parseInt(Objects.requireNonNull(mProperties.get(ChatMessage.MSG_TYPE)));
-        if ((msgType == ChatMessage.MESSAGE_SMS_OUT) || (msgType == ChatMessage.MESSAGE_SMS_IN))
-            msgSubType = msgType;
-
         return new MessageImpl(msgBody, encType, "", messageUID, xferStatus, receiptStatus,
-                serverMsgId, remoteMsgId, isOutgoing, messageReceivedDate, msgSubType);
+                serverMsgId, remoteMsgId, isOutgoing, messageReceivedDate);
     }
 
     /**
@@ -1793,10 +1750,9 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param destination The destination Contact
      * @param message IMessage message to be written
      * @param msgTimestamp the timestamp when was message received that came from the protocol provider
-     * @param isSmsSubtype whether message to write is an sms
      */
-    public void insertMessage(String direction, Contact source, Contact destination,
-            IMessage message, Date msgTimestamp, boolean isSmsSubtype) {
+    @Override
+    public void insertMessage(String direction, Contact source, Contact destination, IMessage message, Date msgTimestamp) {
         // return if logging is switched off for this particular contact
         MetaContact metaContact = MessageHistoryActivator.getContactListService()
                 .findMetaContactByContact(destination);
@@ -1805,7 +1761,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         }
 
         String sessionUuid = getSessionUuidByJid(destination);
-        int msgType = isSmsSubtype ? ChatMessage.MESSAGE_SMS_OUT : ChatMessage.MESSAGE_OUT;
+        int msgType = ChatMessage.MESSAGE_OUT;
 
         contentValues.clear();
         contentValues.put(ChatMessage.SESSION_UUID, sessionUuid);
@@ -2636,22 +2592,16 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     private static class MessageImpl extends AbstractMessage {
         private final boolean isOutgoing;
         private final Date messageReceivedDate;
-        private final int msgSubType;
 
         MessageImpl(String content, int encType, String subject, String messageUID, int xferStatus, int receiptStatus,
-                String serverMsgId, String remoteMsgId, boolean isOutgoing, Date messageReceivedDate, int msgSubType) {
+                String serverMsgId, String remoteMsgId, boolean isOutgoing, Date messageReceivedDate) {
             super(content, encType, subject, messageUID, xferStatus, receiptStatus, serverMsgId, remoteMsgId);
             this.isOutgoing = isOutgoing;
             this.messageReceivedDate = messageReceivedDate;
-            this.msgSubType = msgSubType;
         }
 
         public Date getMessageReceivedDate() {
             return messageReceivedDate;
-        }
-
-        public int getMsgSubType() {
-            return msgSubType;
         }
     }
 

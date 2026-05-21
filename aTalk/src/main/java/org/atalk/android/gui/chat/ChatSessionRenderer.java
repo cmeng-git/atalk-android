@@ -6,8 +6,6 @@
  */
 package org.atalk.android.gui.chat;
 
-import net.java.sip.communicator.service.protocol.ConferenceDescription;
-
 import javax.swing.Icon;
 
 /**
@@ -103,31 +101,9 @@ public interface ChatSessionRenderer
     void setChatIcon(Icon icon);
 
     /**
-     * Adds the given <code>conferenceDescription</code> to the list of chat
-     * conferences in this chat renderer.
-     * @param conferenceDescription the conference to add.
-     */
-    void addChatConferenceCall(ConferenceDescription conferenceDescription);
-
-    /**
-     * Removes the given <code>conferenceDescription</code> from the list of chat
-     * conferences in this chat panel chat.
-     * @param conferenceDescription the conference to remove.
-     */
-    void removeChatConferenceCall(ConferenceDescription conferenceDescription);
-    
-    /**
      * Sets the visibility of conferences panel to <code>true</code> or <code>false</code>
      * 
      * @param isVisible if <code>true</code> the panel is visible.
      */
     void setConferencesPanelVisible(boolean isVisible);
-    
-    /**
-     * This method is called when the local user publishes a  <code>ConferenceDescription</code> instance.
-     * 
-     * @param conferenceDescription the <code>ConferenceDescription</code> instance
-     * associated with the conference.
-     */
-    void chatConferenceDescriptionSent(ConferenceDescription conferenceDescription);
 }

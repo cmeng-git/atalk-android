@@ -2,6 +2,17 @@ package org.jivesoftware.smackx.jinglenodes;
 
 import static org.jivesoftware.smackx.jinglenodes.element.JingleEventIQ.KILLED;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackConfiguration;
@@ -19,34 +30,24 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ;
 import org.jivesoftware.smackx.jinglenodes.element.JingleEventIQ;
 import org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ;
-import org.jivesoftware.smackx.jinglenodes.provider.JingleEventProvider;
 import org.jivesoftware.smackx.jinglenodes.provider.JingleChannelProvider;
+import org.jivesoftware.smackx.jinglenodes.provider.JingleEventProvider;
 import org.jivesoftware.smackx.jinglenodes.provider.JingleTrackerProvider;
 import org.jivesoftware.smackx.jinglenodes.relay.RelayChannel;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-public class SmackServiceNode implements ConnectionListener
-{
+public class SmackServiceNode implements ConnectionListener {
     private final AbstractXMPPConnection connection;
 
     // String is usually a channelId
@@ -65,30 +66,28 @@ public class SmackServiceNode implements ConnectionListener
         ProviderManager.addIQProvider(JingleEventIQ.ELEMENT, JingleEventIQ.NAMESPACE, new JingleEventProvider());
     }
 
-    public SmackServiceNode(final AbstractXMPPConnection connection, final long timeout)
-    {
+    public SmackServiceNode(final AbstractXMPPConnection connection, final long timeout) {
         this.connection = connection;
         this.timeout = timeout;
         setup();
     }
 
     public void connect(final String user, final String password)
-            throws XMPPException, IOException, SmackException, InterruptedException
-    {
+            throws XMPPException, IOException, SmackException, InterruptedException {
         connect(user, password, false, Roster.SubscriptionMode.accept_all);
     }
 
     public void connect(final String user, final String password, final boolean tryCreateAccount,
             final Roster.SubscriptionMode mode)
-            throws XMPPException, SmackException, IOException, InterruptedException
-    {
+            throws XMPPException, SmackException, IOException, InterruptedException {
         connection.addConnectionListener(this);
         connection.connect();
         if (tryCreateAccount) {
             try {
                 AccountManager.getInstance(connection).createAccount(Localpart.from(user), password);
                 Thread.sleep(200);
-            } catch (NoResponseException | NotConnectedException | InterruptedException e1) {
+            }
+            catch (NoResponseException | NotConnectedException | InterruptedException e1) {
                 // Do Nothing as account may exists
             }
         }
@@ -97,8 +96,7 @@ public class SmackServiceNode implements ConnectionListener
         setup();
     }
 
-    private void setup()
-    {
+    private void setup() {
         scheduledExecutor.scheduleWithFixedDelay(() -> {
             for (final RelayChannel c : channels.values()) {
                 final long current = System.currentTimeMillis();
@@ -117,16 +115,13 @@ public class SmackServiceNode implements ConnectionListener
         connection.registerIQRequestHandler(new JingleEventIqRequestHandler());
     }
 
-    private class JingleTrackerIqRequestHandler extends AbstractIqRequestHandler
-    {
-        protected JingleTrackerIqRequestHandler()
-        {
+    private class JingleTrackerIqRequestHandler extends AbstractIqRequestHandler {
+        protected JingleTrackerIqRequestHandler() {
             super(JingleTrackerIQ.ELEMENT, JingleTrackerIQ.NAMESPACE, IQ.Type.get, Mode.sync);
         }
 
         @Override
-        public IQ handleIQRequest(IQ iqRequest)
-        {
+        public IQ handleIQRequest(IQ iqRequest) {
             final JingleTrackerIQ result = createKnownNodes();
             result.setStanzaId(iqRequest.getStanzaId());
             result.setFrom(iqRequest.getTo());
@@ -135,24 +130,19 @@ public class SmackServiceNode implements ConnectionListener
         }
     }
 
-    private class JingleChannelIqRequestHandler extends AbstractIqRequestHandler
-    {
-        protected JingleChannelIqRequestHandler()
-        {
+    private class JingleChannelIqRequestHandler extends AbstractIqRequestHandler {
+        protected JingleChannelIqRequestHandler() {
             super(JingleChannelIQ.ELEMENT, JingleChannelIQ.NAMESPACE, IQ.Type.get, Mode.sync);
         }
 
         @Override
-        public IQ handleIQRequest(IQ iqRequest)
-        {
+        public IQ handleIQRequest(IQ iqRequest) {
             return createUdpChannel((JingleChannelIQ) iqRequest);
         }
     }
 
-    private class JingleEventIqRequestHandler extends AbstractIqRequestHandler
-    {
-        protected JingleEventIqRequestHandler()
-        {
+    private class JingleEventIqRequestHandler extends AbstractIqRequestHandler {
+        protected JingleEventIqRequestHandler() {
             super(JingleEventIQ.ELEMENT, JingleEventIQ.NAMESPACE, IQ.Type.set, Mode.sync);
         }
 
@@ -161,11 +151,11 @@ public class SmackServiceNode implements ConnectionListener
          * Currently the killed event is sent from server (jn_erlang).
          *
          * @param iqRequest JingleEventIQ
+         *
          * @return iq.result
          */
         @Override
-        public IQ handleIQRequest(IQ iqRequest)
-        {
+        public IQ handleIQRequest(IQ iqRequest) {
             JingleEventIQ eventIQ = (JingleEventIQ) iqRequest;
             if (KILLED.equals(eventIQ.getEvent())) {
                 RelayChannel c = getChannels().get(eventIQ.getChannelId());
@@ -178,33 +168,28 @@ public class SmackServiceNode implements ConnectionListener
     }
 
     @Override
-    public void connectionClosed()
-    {
+    public void connectionClosed() {
         closeAllChannels();
         scheduledExecutor.shutdownNow();
     }
 
-    private void closeAllChannels()
-    {
+    private void closeAllChannels() {
         for (final RelayChannel c : channels.values()) {
             removeChannel(c);
         }
     }
 
-    private void removeChannel(final RelayChannel c)
-    {
+    private void removeChannel(final RelayChannel c) {
         channels.remove(c.getChannelId());
         c.close();
     }
 
     @Override
-    public void connectionClosedOnError(Exception e)
-    {
+    public void connectionClosedOnError(Exception e) {
         closeAllChannels();
     }
 
-    protected IQ createUdpChannel(final JingleChannelIQ iq)
-    {
+    protected IQ createUdpChannel(final JingleChannelIQ iq) {
         try {
             final RelayChannel rc = RelayChannel.createLocalRelayChannel("0.0.0.0", 10000, 40000);
             final int id = ids.incrementAndGet();
@@ -223,20 +208,19 @@ public class SmackServiceNode implements ConnectionListener
             result.setChannelId(sId);
             return result;
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
             return JingleChannelIQ.createEmptyError();
         }
     }
 
-    public AbstractXMPPConnection getConnection()
-    {
+    public AbstractXMPPConnection getConnection() {
         return connection;
     }
 
     public static JingleChannelIQ getChannel(final XMPPConnection xmppConnection, final Jid serviceNode)
-            throws NotConnectedException, InterruptedException
-    {
+            throws NotConnectedException, InterruptedException {
         if (xmppConnection == null || !xmppConnection.isConnected()) {
             return null;
         }
@@ -252,8 +236,7 @@ public class SmackServiceNode implements ConnectionListener
     }
 
     public static JingleTrackerIQ getServices(final XMPPConnection xmppConnection, final Jid serviceNode)
-            throws NotConnectedException, InterruptedException
-    {
+            throws NotConnectedException, InterruptedException {
         if (xmppConnection == null || !xmppConnection.isConnected()) {
             return null;
         }
@@ -273,8 +256,7 @@ public class SmackServiceNode implements ConnectionListener
             final int maxDepth, final int maxSearchNodes,
             final String protocol,
             final ConcurrentHashMap<Jid, Jid> visited)
-            throws NotConnectedException, InterruptedException
-    {
+            throws NotConnectedException, InterruptedException {
         if (xmppConnection == null || !xmppConnection.isConnected()) {
             return;
         }
@@ -308,14 +290,14 @@ public class SmackServiceNode implements ConnectionListener
 
     public static MappedNodes aSyncSearchServices(final XMPPConnection xmppConnection,
             final int maxEntries, final int maxDepth, final int maxSearchNodes,
-            final String protocol, final boolean searchBuddies)
-    {
+            final String protocol, final boolean searchBuddies) {
         final MappedNodes mappedNodes = new MappedNodes();
         final Runnable bgTask = () -> {
             try {
                 searchServices(new ConcurrentHashMap<>(), xmppConnection, maxEntries,
                         maxDepth, maxSearchNodes, protocol, searchBuddies, mappedNodes);
-            } catch (NotConnectedException | InterruptedException e) {
+            }
+            catch (NotConnectedException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         };
@@ -326,8 +308,7 @@ public class SmackServiceNode implements ConnectionListener
     public static MappedNodes searchServices(final XMPPConnection xmppConnection,
             final int maxEntries, final int maxDepth, final int maxSearchNodes,
             final String protocol, final boolean searchBuddies)
-            throws NotConnectedException, InterruptedException
-    {
+            throws NotConnectedException, InterruptedException {
         return searchServices(new ConcurrentHashMap<>(), xmppConnection, maxEntries,
                 maxDepth, maxSearchNodes, protocol, searchBuddies, new MappedNodes());
     }
@@ -336,8 +317,7 @@ public class SmackServiceNode implements ConnectionListener
             final XMPPConnection xmppConnection, final int maxEntries,
             final int maxDepth, final int maxSearchNodes, final String protocol,
             final boolean searchBuddies, final MappedNodes mappedNodes)
-            throws NotConnectedException, InterruptedException
-    {
+            throws NotConnectedException, InterruptedException {
         if (xmppConnection == null || !xmppConnection.isConnected()) {
             return null;
         }
@@ -348,7 +328,8 @@ public class SmackServiceNode implements ConnectionListener
         try {
             deepSearch(xmppConnection, maxEntries, JidCreate.from(xmppConnection.getHost()),
                     mappedNodes, maxDepth - 1, maxSearchNodes, protocol, visited);
-        } catch (XmppStringprepException | IllegalArgumentException ignore) {
+        }
+        catch (XmppStringprepException | IllegalArgumentException ignore) {
         }
 
         // Request to Buddies
@@ -370,8 +351,7 @@ public class SmackServiceNode implements ConnectionListener
             final int maxEntries, final Jid startPoint, final MappedNodes mappedNodes,
             final int maxDepth, final int maxSearchNodes, final String protocol,
             final ConcurrentHashMap<Jid, Jid> visited)
-            throws NotConnectedException, InterruptedException
-    {
+            throws NotConnectedException, InterruptedException {
         final DiscoverItems items = new DiscoverItems();
         items.setTo(startPoint);
         StanzaCollector collector = xmppConnection.createStanzaCollector(new StanzaIdFilter(items.getStanzaId()));
@@ -389,29 +369,24 @@ public class SmackServiceNode implements ConnectionListener
         collector.cancel();
     }
 
-    public static class MappedNodes
-    {
+    public static class MappedNodes {
         final Map<Jid, TrackerEntry> relayEntries = Collections.synchronizedMap(new LinkedHashMap<>());
         final Map<Jid, TrackerEntry> trackerEntries = Collections.synchronizedMap(new LinkedHashMap<>());
 
-        public Map<Jid, TrackerEntry> getRelayEntries()
-        {
+        public Map<Jid, TrackerEntry> getRelayEntries() {
             return relayEntries;
         }
 
-        public Map<Jid, TrackerEntry> getTrackerEntries()
-        {
+        public Map<Jid, TrackerEntry> getTrackerEntries() {
             return trackerEntries;
         }
     }
 
-    ConcurrentHashMap<String, RelayChannel> getChannels()
-    {
+    ConcurrentHashMap<String, RelayChannel> getChannels() {
         return channels;
     }
 
-    public JingleTrackerIQ createKnownNodes()
-    {
+    public JingleTrackerIQ createKnownNodes() {
         final JingleTrackerIQ iq = new JingleTrackerIQ();
         iq.setType(IQ.Type.result);
 
@@ -423,13 +398,11 @@ public class SmackServiceNode implements ConnectionListener
         return iq;
     }
 
-    public void addTrackerEntry(final TrackerEntry entry)
-    {
+    public void addTrackerEntry(final TrackerEntry entry) {
         trackerEntries.put(entry.getJid(), entry);
     }
 
-    public void addEntries(final MappedNodes entries)
-    {
+    public void addEntries(final MappedNodes entries) {
         for (final TrackerEntry t : entries.getRelayEntries().values()) {
             addTrackerEntry(t);
         }
@@ -438,13 +411,11 @@ public class SmackServiceNode implements ConnectionListener
         }
     }
 
-    public Map<Jid, TrackerEntry> getTrackerEntries()
-    {
+    public Map<Jid, TrackerEntry> getTrackerEntries() {
         return trackerEntries;
     }
 
-    public TrackerEntry getPreferredRelay()
-    {
+    public TrackerEntry getPreferredRelay() {
         for (final TrackerEntry trackerEntry : trackerEntries.values()) {
             if (TrackerEntry.Type.relay.equals(trackerEntry.getType())) {
                 return trackerEntry;
@@ -454,12 +425,10 @@ public class SmackServiceNode implements ConnectionListener
     }
 
     @Override
-    public void connected(XMPPConnection connection)
-    {
+    public void connected(XMPPConnection connection) {
     }
 
     @Override
-    public void authenticated(XMPPConnection connection, boolean resumed)
-    {
+    public void authenticated(XMPPConnection connection, boolean resumed) {
     }
 }

@@ -13,8 +13,7 @@ import java.util.EventListener;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public interface CallChangeListener extends EventListener
-{
+public interface CallChangeListener extends EventListener {
     /**
      * Indicates that a new call peer has joined the source call.
      *

@@ -5,17 +5,17 @@
  */
 package org.atalk.impl.neomedia.rtcp;
 
-import net.sf.fmj.media.rtp.RTCPCompoundPacket;
-
-import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.ByteArrayBuffer;
-import org.atalk.util.RTCPUtils;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import net.sf.fmj.media.rtp.RTCPCompoundPacket;
+
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.util.ByteArrayBuffer;
+import org.atalk.util.RTCPUtils;
 
 /**
  * A class which represents an RTCP Generic NACK feedback message, as defined
@@ -49,38 +49,37 @@ import java.util.List;
  *
  * @author Boris Grozev
  */
-public class NACKPacket extends RTCPFBPacket
-{
+public class NACKPacket extends RTCPFBPacket {
     /**
      * Gets a boolean indicating whether or not the RTCP packet specified in the
      * {@link ByteArrayBuffer} that is passed as an argument is a NACK packet or not.
      *
      * @param baf the {@link ByteArrayBuffer}
+     *
      * @return true if the byte array buffer holds a NACK packet, otherwise false.
      */
-    public static boolean isNACKPacket(ByteArrayBuffer baf)
-    {
+    public static boolean isNACKPacket(ByteArrayBuffer baf) {
         int rc = RTCPUtils.getReportCount(baf);
         return rc == FMT && isRTPFBPacket(baf);
     }
 
     /**
      * @param baf the NACK packet.
+     *
      * @return the set of sequence numbers reported lost in a NACK packet
      * represented by a {@link ByteArrayBuffer}.
      */
-    public static Collection<Integer> getLostPackets(ByteArrayBuffer baf)
-    {
+    public static Collection<Integer> getLostPackets(ByteArrayBuffer baf) {
         return getLostPacketsFci(getFCI(baf));
     }
 
     /**
      * @param fciBuffer the {@link ByteArrayBuffer} which represents the FCI field of a NACK packet.
+     *
      * @return the set of sequence numbers reported lost in the FCI field of a
      * NACK packet represented by a {@link ByteArrayBuffer}.
      */
-    public static Collection<Integer> getLostPacketsFci(ByteArrayBuffer fciBuffer)
-    {
+    public static Collection<Integer> getLostPacketsFci(ByteArrayBuffer fciBuffer) {
         Collection<Integer> lostPackets = new LinkedList<>();
         if (fciBuffer == null) {
             return lostPackets;
@@ -125,8 +124,7 @@ public class NACKPacket extends RTCPFBPacket
      *
      * @param base
      */
-    public NACKPacket(RTCPCompoundPacket base)
-    {
+    public NACKPacket(RTCPCompoundPacket base) {
         super(base);
     }
 
@@ -143,8 +141,7 @@ public class NACKPacket extends RTCPFBPacket
      * take into account that sequence numbers wrap at 2^16 and fails to pack numbers close
      * to 2^16 with those close to 0.
      */
-    public NACKPacket(long senderSSRC, long sourceSSRC, Collection<Integer> lostPackets)
-    {
+    public NACKPacket(long senderSSRC, long sourceSSRC, Collection<Integer> lostPackets) {
         super(FMT, RTPFB, senderSSRC, sourceSSRC);
 
         List<Integer> sorted = new LinkedList<>(lostPackets);
@@ -185,8 +182,7 @@ public class NACKPacket extends RTCPFBPacket
      *
      * @return
      */
-    synchronized public Collection<Integer> getLostPackets()
-    {
+    synchronized public Collection<Integer> getLostPackets() {
         if (lostPackets == null) {
             // parse this.fci as containing NACK entries and initialize this.lostPackets
             lostPackets = getLostPacketsFci(new RawPacket(fci, 0, fci.length));
@@ -195,8 +191,7 @@ public class NACKPacket extends RTCPFBPacket
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "RTCP NACK packet; packet sender: " + senderSSRC
                 + "; media sources: " + sourceSSRC
                 + "; NACK entries: " + (fci == null ? "none" : (fci.length / 4))

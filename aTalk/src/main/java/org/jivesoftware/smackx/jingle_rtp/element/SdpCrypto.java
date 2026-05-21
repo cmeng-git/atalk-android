@@ -18,9 +18,7 @@ package org.jivesoftware.smackx.jingle_rtp.element;
 
 import java.util.Objects;
 
-import javax.xml.namespace.QName;
-
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractElement;
 
 /**
  * The element containing details about an encryption algorithm that could be used during a jingle session.
@@ -31,19 +29,8 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Vincent Lucas
  * @author Eng Chong Meng
  */
-public class SdpCrypto extends AbstractXmlElement {
-    /**
-     * The name of the "crypto" element.
-     */
+public class SdpCrypto extends AbstractElement {
     public static final String ELEMENT = "crypto";
-
-    /**
-     * The namespace for the "crypto" element. It it set to "not null" only for GTalk SDES support
-     * (may be set to null once gtalk supports jingle).
-     */
-    public static final String NAMESPACE = RtpDescription.NAMESPACE;
-
-    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the 'crypto-suite' argument.
@@ -66,14 +53,14 @@ public class SdpCrypto extends AbstractXmlElement {
     public static final String ATTR_TAG = "tag";
 
     /**
-     * <code>SdpCrypto</code> default constructor; use in DefaultXmlElementProvider, and newInstance() etc.
+     * <code>SdpCrypto</code> default constructor; use in DefaultElementProvider, and newInstance() etc.
      */
     public SdpCrypto() {
         super(getBuilder());
     }
 
     /**
-     * Creates a new <code>SdpCrypto</code> element; required by DefaultXmlElementProvider().
+     * Creates a new <code>SdpCrypto</code> element; required by DefaultElementProvider().
      *
      * @param builder Builder instance
      */
@@ -200,16 +187,16 @@ public class SdpCrypto extends AbstractXmlElement {
     }
 
     public static Builder getBuilder() {
-        return new Builder(ELEMENT, NAMESPACE);
+        return new Builder(ELEMENT);
     }
 
     /**
-     * Builder for SdpCrypto. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
+     * Builder for SdpCrypto. Use {@link AbstractElement.Builder#Builder(String)}
      * to obtain a new instance and {@link #build} to build the SdpCrypto.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, SdpCrypto> {
-        Builder(String element, String namespace) {
-            super(element, namespace);
+    public static final class Builder extends AbstractElement.Builder<SdpCrypto> {
+        Builder(String element) {
+            super(element);
         }
 
         /**

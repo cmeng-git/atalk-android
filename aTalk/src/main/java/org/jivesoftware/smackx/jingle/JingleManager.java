@@ -70,7 +70,6 @@ public final class JingleManager extends Manager {
 
     private JingleManager(XMPPConnection connection) {
         super(connection);
-
         jutil = new JingleUtil(connection);
 
         connection.registerIQRequestHandler(
@@ -90,7 +89,6 @@ public final class JingleManager extends Manager {
                         }
 
                         if (jingle.getAction() == JingleAction.session_initiate) {
-
                             JingleContent content = jingle.getContents().get(0);
                             JingleContentDescription description = content.getDescription();
                             JingleHandler jingleDescriptionHandler

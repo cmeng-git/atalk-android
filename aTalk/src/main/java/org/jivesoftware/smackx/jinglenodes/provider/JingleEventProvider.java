@@ -20,21 +20,22 @@ import static org.jivesoftware.smackx.jinglenodes.element.JingleEventIQ.ATTR_EVE
 import static org.jivesoftware.smackx.jinglenodes.element.JingleEventIQ.ATTR_ID;
 import static org.jivesoftware.smackx.jinglenodes.element.JingleEventIQ.ATTR_TIME;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.IllegalFormatException;
+
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.jinglenodes.element.JingleEventIQ;
+
 import org.jxmpp.JxmppContext;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.IllegalFormatException;
-
-public class JingleEventProvider extends IqProvider<JingleEventIQ>
-{
+public class JingleEventProvider extends IqProvider<JingleEventIQ> {
 
     @Override
     public JingleEventIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
@@ -66,7 +67,8 @@ public class JingleEventProvider extends IqProvider<JingleEventIQ>
                             iq.setEvent(event);
                         if (time != null)
                             iq.setTime(Integer.parseInt(time));
-                    } catch (final IllegalFormatException | NumberFormatException e) {
+                    }
+                    catch (final IllegalFormatException | NumberFormatException e) {
                         e.printStackTrace();
                     }
                 }

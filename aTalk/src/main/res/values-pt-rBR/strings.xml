@@ -79,7 +79,7 @@
     <string name="call_transfer">Transferência</string>
     <string name="call_transfer_failed">Falha ao prosseguir com a transferência de chamada: %1$s ⇢ %2$s\n%3$s</string>
     <string name="call_transfer_hint">Selecione o nome do contato que você deseja transferir e depois clique em Transferir.</string>
-    <string name="call_transfer_msg">%1$s transferência de chamada para… %2$s</string>
+    <string name="call_transfer_msg">%1$s transferência de chamada para %2$s</string>
 
     <string name="attach_picture">Fotos</string>
     <string name="attach_take_picture">Fazer uma foto</string>
@@ -155,7 +155,8 @@
     <string name="call_audio">Ligação de voz</string>
     <string name="call_answered">%1$s respondeu à ligação.</string>
     <string name="call_disable_on_fault">aTalk falhou ao iniciar %1$s\nTodas as ligações da mídia e os serviços serão desativados.\n%2$s</string>
-    <string name="call_ended">O interlocutor remoto terminou a ligação: %1$s</string>
+    <string name="call_ended">Chamada encerrada</string>
+    <string name="call_ended_by_remote">O interlocutor remoto terminou a ligação: %1$s</string>
     <string name="call_error">A parte remota retorna um erro: %1$s</string>
     <string name="call_failed">Ligação falhou</string>
     <string name="call_history_name">Histórico de ligações</string>
@@ -340,10 +341,6 @@
     <string name="refresh_store_omemo">XEP-0384: Criptografia OMEMO</string>
 
     <string name="unregistered_message">Falha ao fazer login na conta:\nNome de usuário: %1$s\nNome do servidor: %2$s\nA conta está offline.</string>
-    <string name="create_videoBridge">Criar conexão de vídeo de ponte…</string>
-    <string name="create_videoBridge_menu">Criar uma conexão de vídeo de ponte</string>
-    <string name="create_join_video_conference">Criar / Participar em uma videoconferência</string>
-    <string name="create_video_conference">Criar uma nova videoconferência para esta sala</string>
     <string name="video_format_not_supported">Falha ao definir a pré-visualização de câmera no aparelho para: %1$s; Excepção: %2$s.</string>
     <string name="disconnected">Desconectado</string>
     <string name="disconnecting_">Desconectando %1$s</string>
@@ -684,7 +681,6 @@
     <string name="callinfo_call_information">Detalhes da ligação</string>
     <string name="callinfo_call_transport">Sinalizar ligação de transporte:</string>
     <string name="callinfo_codec">Codec/Frequência:</string>
-    <string name="callinfo_conference_focus">Foco da conferência:</string>
     <string name="callinfo_default_encrypted">Criptografia ativada:</string>
     <string name="callinfo_jitter">Jitter:</string>
     <string name="callinfo_key_exchange_protocol">Protocolo de troca das chaves</string>
@@ -694,7 +690,6 @@
     <string name="callinfo_media_srtp">SRTP:</string>
     <string name="callinfo_media_stream_transport_protocol">Protocolo de transporte de transmissão de mídia:</string>
     <string name="callinfo_na">N.A.</string>
-    <string name="callinfo_peer_count">Numero de participantes:</string>
     <string name="callinfo_remote_ip">IP/Porta remoto:</string>
     <string name="callinfo_rtt">RTT:</string>
     <string name="callinfo_details">Informações de ligação</string>
@@ -1060,8 +1055,6 @@
     <string name="sec_protocols_title">Protocolos de segurança</string>
     <string name="sec_protocols_message">Por favor, selecione os protocolos desejados em ordem</string>
     <string name="discard">Descartar</string>
-    <string name="sec_zrtp_signalling_on">ZRTP será anunciado sobre o protocolo sinalizador</string>
-    <string name="sec_zrtp_signalling_off">Não será anunciado o ZRTP</string>
 
     <!-- STUN/Jingle Nodes list -->
     <string name="service_gui_SERVERS_LIST_ADD_SERVER">Adicionar servidor</string>
@@ -1089,7 +1082,6 @@
     <string name="security_sdes_dlg_title">Selecione desejado conjunto de codificação</string>
     <string name="security_sdes_title">Conjunto de codificação de SDES</string>
     <string name="security_zrtp_options">Opções ZRTP</string>
-    <string name="security_zrtp_signalling">Sinalizador ZRTP</string>
 
     <!-- Common preferences -->
     <string name="audio_encoding">Codificação de áudio</string>

@@ -34,9 +34,16 @@ fi
 
 rm -rf ${LIB_OPUS}
 echo -e "\n================ Fetching library source for ${LIB_OPUS}: ${LIB_OPUS_GIT} ============================"
+# https://ftp.osuosl.org/pub/xiph/releases/opus/opus-1.6.1.tar.gz
 wget -O- https://downloads.xiph.org/releases/opus/${LIB_OPUS_GIT}.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_OPUS}
 echo -e "======== Completed opus library source update ============================"
 
 # For testing only
 # wget -O- https://archive.mozilla.org/pub/opus/opus-1.3.1.tar.gz | tar xz --strip-components=1 --one-top-level=opus
 # grep '^PACKAGE_VERSION=' < libopus/package_version | sed 's/^.*\([1-9]\.[0-9]\.[0-9]\).*$/\1/'
+
+if [ -d ${LIB_OPUS} ] ; then
+  exit 0
+else
+  exit 1
+fi

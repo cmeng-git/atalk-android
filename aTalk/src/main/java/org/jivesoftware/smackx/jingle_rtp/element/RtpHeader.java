@@ -18,7 +18,9 @@ package org.jivesoftware.smackx.jingle_rtp.element;
 
 import java.net.URI;
 
-import org.jivesoftware.smack.packet.XmlElement;
+import javax.xml.namespace.QName;
+
+import org.jivesoftware.smack.packet.NamedElement;
 
 import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
@@ -27,19 +29,21 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * RTP header extension.
  *
  * Jingle's Discovery Info URN for "XEP-0294: Jingle RTP Header Extensions Negotiation" support.
+ *
+ * @author Sebastien Vincent
+ * @author Eng Chong Meng
  * @see <a href="https://xmpp.org/extensions/xep-0294.html">XEP-0294: Jingle RTP Header Extensions Negotiation  1.1.1 (2021-10-23)</a>
  *
  * Note: Any type of RTP Header Extension that requires extra parameters in the a=b form can embed <code>parameter</code>
  * elements to describe it. Any other form of parameter can be stored as the 'key' attribute in a parameter
  * element with an empty value.
  * @see <a href="https://xmpp.org/extensions/xep-0294.html#element">XEP-0294 § 3. New elements</a>
- *
- * @author Sebastien Vincent
- * @author Eng Chong Meng
  */
 public class RtpHeader extends AbstractXmlElement {
     public static final String ELEMENT = "rtp-hdrext";
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:rtp-hdrext:0";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the ID attribute.
@@ -110,9 +114,9 @@ public class RtpHeader extends AbstractXmlElement {
      * @return "attributes" value
      */
     public String getExtAttributes() {
-        for (XmlElement ext : getChildElements()) {
-            if (ext instanceof ParameterElement) {
-                ParameterElement p = (ParameterElement) ext;
+        for (NamedElement ext : getChildElements()) {
+            if (ext instanceof Parameter) {
+                Parameter p = (Parameter) ext;
                 if (p.getName().equals(ATTR_ATTRIBUTES)) {
                     return p.getValue();
                 }
@@ -128,9 +132,9 @@ public class RtpHeader extends AbstractXmlElement {
      */
     public void setExtAttributes(String attributes) {
         // The rtp-hdrext extension can only contain a single "parameter" child
-        removeChildElement(new ParameterElement());
+        removeChildElement(new Parameter());
 
-        addChildElement(ParameterElement.builder(RtpHeader.NAMESPACE)
+        addChildElement(Parameter.builder()
                 .setNameValue(ATTR_ATTRIBUTES, attributes)
                 .build());
     }
@@ -193,8 +197,8 @@ public class RtpHeader extends AbstractXmlElement {
          */
         public Builder setExtAttributes(String attributes) {
             // The rtp-hdrext extension can only contain a single "parameter" child
-            removeChildElement(new ParameterElement());
-            addChildElement(ParameterElement.builder(RtpHeader.NAMESPACE)
+            removeChildElement(new Parameter());
+            addChildElement(Parameter.builder()
                     .setNameValue(ATTR_ATTRIBUTES, attributes)
                     .build());
             return this;

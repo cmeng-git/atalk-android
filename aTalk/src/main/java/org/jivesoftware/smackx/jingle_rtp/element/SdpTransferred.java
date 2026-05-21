@@ -32,14 +32,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Eng Chong Meng
  */
 public class SdpTransferred extends AbstractXmlElement {
-    /**
-     * The name of the "transferred" element.
-     */
     public static final String ELEMENT = "transferred";
-
-    /**
-     * The namespace of the "transferred" element.
-     */
     public static final String NAMESPACE = "urn:xmpp:jingle:transfer:0";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);

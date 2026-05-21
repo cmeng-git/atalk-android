@@ -187,7 +187,7 @@ public final class JingleContent extends AbstractXmlElement {
 
         // Not use: Is there a need to check for existing JingleContentDescription?
         public Builder setDescription(JingleContentDescription description) {
-            if (elements != null && elements.containsKey(description.getQName())) {
+            if (elements != null && elements.containsKey(description.getElementName())) {
                 throw new IllegalStateException("Jingle content description already set");
             }
             this.description = description;

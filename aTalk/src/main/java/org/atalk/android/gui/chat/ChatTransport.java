@@ -49,15 +49,6 @@ public interface ChatTransport {
     boolean allowsMessageCorrections();
 
     /**
-     * Returns {@code true} if this chat transport supports sms
-     * messaging, otherwise returns {@code false}.
-     *
-     * @return {@code true} if this chat transport supports sms
-     * messaging, otherwise returns {@code false}
-     */
-    boolean allowsSmsMessage();
-
-    /**
      * Returns {@code true} if this chat transport supports message delivery receipts,
      * otherwise returns {@code false}.
      *
@@ -166,45 +157,6 @@ public interface ChatTransport {
     boolean isContentTypeSupported(int mimeType);
 
     /**
-     * Whether a dialog need to be opened so the user can enter the destination number.
-     *
-     * @return <code>true</code> if dialog needs to be open.
-     */
-    boolean askForSMSNumber();
-
-    /**
-     * Sends the given SMS message trough this chat transport.
-     *
-     * @param phoneNumber the phone number to which to send the message
-     * @param message The message to send.
-     *
-     * @throws Exception if the send doesn't succeed
-     */
-    void sendSmsMessage(String phoneNumber, String message)
-            throws Exception;
-
-    /**
-     * Sends the given SMS message through this chat transport, leaving the transport to choose the destination.
-     *
-     * @param message The message to send.
-     *
-     * @throws Exception if the send doesn't succeed
-     */
-    void sendSmsMessage(String message)
-            throws Exception;
-
-    /**
-     * Sends the given SMS multimedia message through this chat transport,
-     * leaving the transport to choose the destination.
-     *
-     * @param file the file to send
-     *
-     * @throws Exception if the send doesn't succeed
-     */
-    Object sendMultimediaFile(File file)
-            throws Exception;
-
-    /**
      * Sends the given sticker file through this chat transport,
      * leaving the transport to choose the destination.
      *
@@ -271,25 +223,11 @@ public interface ChatTransport {
     ChatSession getParentChatSession();
 
     /**
-     * Adds an sms message listener to this chat transport.
-     *
-     * @param l The message listener to add.
-     */
-    void addSmsMessageListener(MessageListener l);
-
-    /**
      * Adds an instant message listener to this chat transport.
      *
      * @param l The message listener to add.
      */
     void addInstantMessageListener(MessageListener l);
-
-    /**
-     * Removes the given sms message listener from this chat transport.
-     *
-     * @param l The message listener to remove.
-     */
-    void removeSmsMessageListener(MessageListener l);
 
     /**
      * Removes the instant message listener from this chat transport.

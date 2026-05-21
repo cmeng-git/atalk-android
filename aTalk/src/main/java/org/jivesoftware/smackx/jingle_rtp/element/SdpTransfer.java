@@ -36,14 +36,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
  * @author Eng Chong Meng
  */
 public class SdpTransfer extends AbstractXmlElement {
-    /**
-     * The name of the "transfer" element.
-     */
     public static final String ELEMENT = "transfer";
-
-    /**
-     * The namespace of the "transfer" element.
-     */
     public static final String NAMESPACE = "urn:xmpp:jingle:transfer:0";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);

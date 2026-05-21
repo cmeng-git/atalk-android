@@ -30,6 +30,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 public class SctpMap extends AbstractXmlElement {
     public static final String ELEMENT = "sctpmap";
     public static final String NAMESPACE = "urn:xmpp:jingle:transports:dtls-sctp:1";
+
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**

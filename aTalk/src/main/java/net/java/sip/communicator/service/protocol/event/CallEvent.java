@@ -5,18 +5,17 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
-
-import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.util.MediaType;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.java.sip.communicator.service.protocol.Call;
+
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.util.MediaType;
 
 /**
  * An event class representing that an incoming, or an outgoing call has been created.
@@ -25,8 +24,7 @@ import java.util.Map;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class CallEvent extends EventObject
-{
+public class CallEvent extends EventObject {
     /**
      * An event id value indicating that this event has been triggered as a result of an outgoing call.
      */
@@ -43,6 +41,11 @@ public class CallEvent extends EventObject
     public static final int CALL_ENDED = 3;
 
     /**
+     * An event id value indicating that this event has been triggered as a result of an incoming call via JM.
+     */
+    public static final int CALL_RECEIVED_JM = 10;
+
+    /**
      * Serial version UID.
      */
     private static final long serialVersionUID = 0L;
@@ -50,47 +53,33 @@ public class CallEvent extends EventObject
     /**
      * Determines whether this event has been fired to indicate an incoming or an outgoing call.
      */
-    private final int eventID;
+    private final int mEventId;
 
     /**
      * The media types supported by this call, if information is available.
      */
-    private final Map<MediaType, MediaDirection> mediaDirections;
-
-    /**
-     * The conference of the call for this event. Must be set when creating this event. This is because when
-     * a call ends, the call conference may be released just after creating this event, but its
-     * reference will still be necessary in the future for the UI (i.e to release the call panel),
-     */
-    private final CallConference conference;
-
-    /**
-     * Indicate whether the call is recognized to be video call and desktop streaming call.
-     */
-    private boolean isDesktopStreaming = false;
+    private final Map<MediaType, MediaDirection> mMediaDirections;
 
     /**
      * Initializes a new <code>CallEvent</code> instance which is to represent an event fired by a
      * specific <code>Call</code> as its source.
      *
      * @param call the call that triggered this event.
-     * @param eventID determines whether the new instance represents an event notifying that:
+     * @param eventId determines whether the new instance represents an event notifying that:
      * a. an outgoing <code>Call</code> was initiated, or
      * b. an incoming <code>Call</code> was received, or
      * c. a <code>Call</code> has ended
      * @param mediaDirections Media Direction.
      */
-    public CallEvent(Call call, int eventID, Map<MediaType, MediaDirection> mediaDirections)
-    {
+    public CallEvent(Call call, int eventId, Map<MediaType, MediaDirection> mediaDirections) {
         super(call);
-        this.eventID = eventID;
+        mEventId = eventId;
 
         Map<MediaType, MediaDirection> thisMediaDirections = new HashMap<>();
         if (mediaDirections != null)
             thisMediaDirections.putAll(mediaDirections);
 
-        this.mediaDirections = Collections.unmodifiableMap(thisMediaDirections);
-        this.conference = call.getConference();
+        mMediaDirections = Collections.unmodifiableMap(thisMediaDirections);
     }
 
     /**
@@ -98,9 +87,8 @@ public class CallEvent extends EventObject
      *
      * @return one of the CALL_XXX static member ints.
      */
-    public int getEventID()
-    {
-        return this.eventID;
+    public int getEventId() {
+        return mEventId;
     }
 
     /**
@@ -108,9 +96,8 @@ public class CallEvent extends EventObject
      *
      * @return the supported media direction map of current call.
      */
-    public Map<MediaType, MediaDirection> getMediaDirections()
-    {
-        return mediaDirections;
+    public Map<MediaType, MediaDirection> getMediaDirections() {
+        return mMediaDirections;
     }
 
     /**
@@ -119,9 +106,8 @@ public class CallEvent extends EventObject
      *
      * @return the supported media types of current call.
      */
-    public List<MediaType> getMediaTypes()
-    {
-        return new ArrayList<>(mediaDirections.keySet());
+    public List<MediaType> getMediaTypes() {
+        return new ArrayList<>(mMediaDirections.keySet());
     }
 
     /**
@@ -129,19 +115,8 @@ public class CallEvent extends EventObject
      *
      * @return the <code>Call</code> that triggered this event.
      */
-    public Call getSourceCall()
-    {
+    public Call getSourceCall() {
         return (Call) getSource();
-    }
-
-    /**
-     * Returns the <code>CallConference</code> that triggered this event.
-     *
-     * @return the <code>CallConference</code> that triggered this event.
-     */
-    public CallConference getCallConference()
-    {
-        return this.conference;
     }
 
     /**
@@ -149,30 +124,9 @@ public class CallEvent extends EventObject
      *
      * @return true if the call is a video call, false otherwise
      */
-    public boolean isVideoCall()
-    {
-        MediaDirection direction = mediaDirections.get(MediaType.VIDEO);
+    public boolean isVideoCall() {
+        MediaDirection direction = mMediaDirections.get(MediaType.VIDEO);
         return (MediaDirection.SENDRECV == direction);
-    }
-
-    /**
-     * Returns whether the current event is for video call and desktop streaming one.
-     *
-     * @return true if this is video call and desktop streaming one.
-     */
-    public boolean isDesktopStreaming()
-    {
-        return isDesktopStreaming;
-    }
-
-    /**
-     * Change the desktop streaming indication for this event.
-     *
-     * @param value the new value.
-     */
-    public void setDesktopStreaming(boolean value)
-    {
-        this.isDesktopStreaming = value;
     }
 
     /**
@@ -181,8 +135,7 @@ public class CallEvent extends EventObject
      * @return A a String representation of this CallEvent.
      */
     @Override
-    public String toString()
-    {
-        return "CallEvent:[id=" + getEventID() + " Call=" + getSourceCall() + "]";
+    public String toString() {
+        return "CallEvent:[id=" + getEventId() + " Call=" + getSourceCall() + "]";
     }
 }

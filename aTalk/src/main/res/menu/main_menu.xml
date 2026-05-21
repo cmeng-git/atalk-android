@@ -23,11 +23,6 @@
         android:title="@string/jbr_telephony_voip_pbx"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/create_videobridge"
-        android:icon="@drawable/ic_videobridge"
-        android:title="@string/create_videoBridge"
-        android:visible="false" />
-    <item
         android:id="@+id/muc_bookmarks"
         android:title="@string/chatroom_bookmark_title" />
     <item

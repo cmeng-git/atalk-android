@@ -56,6 +56,27 @@ public class JingleCallSessionImpl extends JingleSession {
 
     private final JingleUtil jutil;
 
+    public SessionState mSessionState;
+
+    public enum SessionState {
+        fresh("Prior to session-initiate"),
+        pending("Prior to session-accept"),
+        active("Session accepted"),
+        cancelled("Session cancelled"),
+        ended("Session terminated");
+
+        private final String state;
+
+        SessionState(String state) {
+            this.state = state;
+        }
+
+        @Override
+        public String toString() {
+            return state;
+        }
+    }
+
     /**
      * Create a JingleSessionHandler as an 'initiator' to start a session-initiate for making call.
      *
@@ -66,6 +87,7 @@ public class JingleCallSessionImpl extends JingleSession {
      */
     public JingleCallSessionImpl(XMPPConnection connection, FullJid recipient, String sid, BasicTelephony basicTelephony) {
         this(connection, connection.getUser(), recipient, Role.initiator, sid, null, basicTelephony);
+        updateSessionState(SessionState.fresh);
     }
 
     /**
@@ -81,10 +103,11 @@ public class JingleCallSessionImpl extends JingleSession {
     public JingleCallSessionImpl(XMPPConnection connection, FullJid initiator, String sid,
             List<JingleContent> contents, BasicTelephony basicTelephony) {
         this(connection, initiator, connection.getUser(), Role.responder, sid, contents, basicTelephony);
+        updateSessionState(SessionState.pending);
     }
 
     /**
-     * Construct for the JingleFileSessionImpl for both session-initiate or session-accept.
+     * Construct for the JingleSessionHandler for both session-initiate or session-accept.
      *
      * @param connection XMPPConnection
      * @param initiator JingleSI initiator
@@ -116,7 +139,7 @@ public class JingleCallSessionImpl extends JingleSession {
      */
     @Override
     public IQ handleJingleSessionRequest(Jingle request) {
-        Async.go(() -> mBasicTelephony.handleJingleSession(request));
+        Async.go(() -> mBasicTelephony.handleJingleCallSession(request));
         return IQ.createResultIQ(request);
     }
 
@@ -124,40 +147,40 @@ public class JingleCallSessionImpl extends JingleSession {
      * Send session-terminate and wait for response; without unregister the associated Jingle Session Handler.
      *
      * @param jingleReason reason for session-terminate
-     *
-     * @return IQ response, null if exception occurred.
      */
-    public IQ terminateSession(JingleReason jingleReason) {
+    public void terminateSession(JingleReason jingleReason) {
+        // Block further sending of session-terminate.
+        updateSessionState(SessionState.ended);
+
         try {
-            return mConnection.sendIqRequestAndWaitForResponse(jutil.createSessionTerminate(remote, sid, jingleReason));
+            mConnection.sendIqRequestAndWaitForResponse(jutil.createSessionTerminate(remote, sid, jingleReason));
         }
         catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException |
                XMPPException.XMPPErrorException e) {
             LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
-            return null;
         }
-    }
-
-    /**
-     * Send session-terminate and wait for response, before unregister the associated Jingle Session Handler.
-     * Any stray remote jingle stanzas received after that will be responded with i.e. createErrorUnknownSession(jingle)
-     *
-     * @param reason reason for session-terminate
-     * @param reasonText reason text string for session-terminate
-     */
-    public void terminateSessionAndUnregister(JingleReason.Reason reason, String reasonText) {
-        JingleReason jingleReason = new JingleReason(reason, reasonText, null);
-        terminateSessionAndUnregister(jingleReason);
-    }
-
-    public void terminateSessionAndUnregister(JingleReason jingleReason) {
-        terminateSession(jingleReason);
-        unregisterJingleSessionHandler();
     }
 
     public void unregisterJingleSessionHandler() {
         mManager.unregisterJingleSessionHandler(remote, sid, this);
+        updateSessionState(SessionState.ended);
         LOGGER.info("Unregister JingleSession Handler: " + remote + " " + sid);
+    }
+
+    public void updateSessionState(SessionState newState) {
+        if (mSessionState != newState) {
+            LOGGER.info("Update SessionState: " + newState);
+            mSessionState = newState;
+        }
+    }
+
+    /**
+     * Check if jingle rtp session has ended; block sending of session-terminate if so.
+     *
+     * @return true if jingle rtp has ended.
+     */
+    public SessionState getSessionState() {
+        return mSessionState;
     }
 
     @Override

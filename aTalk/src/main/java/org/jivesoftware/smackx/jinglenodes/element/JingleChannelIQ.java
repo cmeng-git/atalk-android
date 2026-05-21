@@ -1,6 +1,7 @@
 package org.jivesoftware.smackx.jinglenodes.element;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jxmpp.jid.Jid;
 
 /**
@@ -9,8 +10,7 @@ import org.jxmpp.jid.Jid;
  * @see <a href="https://xmpp.org/extensions/xep-0278.html">XEP-0278: Jingle Relay Nodes</a>
  * @see <a href="https://xmpp.org/extensions/xep-0278.html#def">XEP-0278: Jingle Relay Nodes# 6. Formal Definition</a>
  */
-public class JingleChannelIQ extends IQ
-{
+public class JingleChannelIQ extends IQ {
     public static final String ELEMENT = "channel";
     public static final String NAMESPACE = "http://jabber.org/protocol/jinglenodes#channel";
 
@@ -33,104 +33,84 @@ public class JingleChannelIQ extends IQ
     private int expire = -1;
     private String mChannelId;
 
-    public JingleChannelIQ()
-    {
+    public JingleChannelIQ() {
         super(ELEMENT, NAMESPACE);
         setType(Type.get);
     }
 
-    public boolean isRequest()
-    {
+    public boolean isRequest() {
         return Type.get.equals(this.getType());
     }
 
-    public String getProtocol()
-    {
+    public String getProtocol() {
         return protocol;
     }
 
-    public void setProtocol(String protocol)
-    {
+    public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
 
-    public int getRemoteport()
-    {
+    public int getRemoteport() {
         return remoteport;
     }
 
-    public void setRemoteport(int remoteport)
-    {
+    public void setRemoteport(int remoteport) {
         this.remoteport = remoteport;
     }
 
-    public String getHost()
-    {
+    public String getHost() {
         return host;
     }
 
-    public void setHost(String host)
-    {
+    public void setHost(String host) {
         this.host = host;
     }
 
-    public int getLocalport()
-    {
+    public int getLocalport() {
         return localport;
     }
 
-    public void setLocalport(int localport)
-    {
+    public void setLocalport(int localport) {
         this.localport = localport;
     }
 
-    public String getChannelId()
-    {
+    public String getChannelId() {
         return mChannelId;
     }
 
-    public void setChannelId(String channelId)
-    {
+    public void setChannelId(String channelId) {
         this.mChannelId = channelId;
     }
 
-    public int getMaxKbps()
-    {
+    public int getMaxKbps() {
         return maxkbps;
     }
 
-    public void setMaxKbps(int kbps)
-    {
+    public void setMaxKbps(int kbps) {
         maxkbps = kbps;
     }
 
-    public int getExpire()
-    {
+    public int getExpire() {
         return expire;
     }
 
-    public void setExpire(int value)
-    {
+    public void setExpire(int value) {
         expire = value;
     }
 
-    public static IQ createEmptyResult(IQ iq)
-    {
+    public static IQ createEmptyResult(IQ iq) {
         return createIQ(iq.getStanzaId(), iq.getFrom(), iq.getTo(), IQ.Type.result);
     }
 
-    public static IQ createEmptyError(IQ iq)
-    {
+    public static IQ createEmptyError(IQ iq) {
         return createIQ(iq.getStanzaId(), iq.getFrom(), iq.getTo(), IQ.Type.error);
     }
 
-    public static IQ createEmptyError()
-    {
+    public static IQ createEmptyError() {
         return createIQ(null, null, null, IQ.Type.error);
     }
 
-    public static IQ createIQ(String id, Jid to, Jid from, IQ.Type type)
-    {
+    public static IQ createIQ(String id, Jid to, Jid from, IQ.Type type) {
         IQ iqPacket = new JingleChannelIQ();
         iqPacket.setStanzaId(id);
         iqPacket.setTo(to);
@@ -140,8 +120,7 @@ public class JingleChannelIQ extends IQ
     }
 
     @Override
-    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
-    {
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.attribute(ATTR_PROTOCOL, protocol);
         if ((localport > 0) && (remoteport > 0) && (host != null)) {
             xml.attribute(ATTR_HOST, host);

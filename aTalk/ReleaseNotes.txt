@@ -1,5 +1,41 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        6.0.0 (600000)
+Release Date:   05/21/2026
+Author:         cmeng
+- aTalk UI does not support SMS text and multimedia features, hence remove all source support i.e. OperationSetSmsMessaging class and all SMS utilities.
+- Remove aTalk Video conferencing features; it requires both server setup and heavy resource loading on aTalk device.
+  1. Remove all VideoBridge related classes in 8 directories and 4 classes in smackx:
+  dir: coin, colibri, condes, health, jibri, jingleInfo, jitsimeet and rayo.
+  classes: SdpSourceRidGroup, SSRCInfoExtension, AbstractExtensionElement and DefaultExtensionElementProvider.
+  2. A total of 25 classes in aTalk dir:
+  a. ColibriStreamConnector, OperationSetTelephonyConferencing*, OperationSetVideoBridge*
+  b. CallPeerConferenceAdapter, CallPeerConference*, ChatRoomConferencePublished*, ConferenceMembersSoundLevel*
+  c. AbstractOperationSetTelephonyConferencing, MediaAwareCallConference,
+  d. AbstractChatRoom, AbstractConferenceMember, AbstractOperationSetDesktopSharingClient, CallConference, ConferenceDescription
+     ConferenceMember*, OperationSetVideoBridge
+  e. ConferenceCallInviteDialog, AudioSilenceCaptureDevice, AudioSilenceMediaDevice, AudioSilenceSystem
+
+- Fix undesired double firing of incoming call alert notifications when receiving call via JingleMessageSession i.e.
+  a. onJingleMessagePropose(JingleMessageSessionImpl.java:342)
+  b. processSessionInitiate(CallJabberImpl.java:286)
+- Complete revamp jingle_rtp implementation; ensure class extends NameElement and XmlElement appropriately, and avoid mixed handling of classes.
+- Ensure JingleMessageSession ends properly with sending/receiving of 'finish' message, else subsequent call may have problem.
+- New fix implementation for ServiceDiscoveryHelper#discoverInfoNonBlocking end in endless loop if nodeVerHash is null.
+  Required to save a copy of the retrieved discoInfo in local nonCapsCache.
+- Enforce call encryption when enabled. Both parties must define a common encryption mode, else call ends with SecurityError.
+- Remove ZRTP signalling option. ZRTP-hash Element will be included in Jingle RTP session when ZRTP option is enabled.
+- Fix missing function "org.apache.commons.codec.binary.ApacheBase64" used by SrtpKeyParam; cause SDES crypt to fail.
+  Do not classRename sdes4j:1.1.5 import '...binary.Base64' to '...binary.ApacheBase64'. commons-codec:1.22.0 now provide Base64 class directly.
+  OperationSetBasicTelephonyJabberImpl.java:404: Didn't find class "org.apache.commons.codec.binary.ApacheBase64"
+- Update SdpSource to XEP-0339: Source-Specific Media Attributes in Jingle 1.0.1 (2021-10-23) compliance:
+  Remove obsolete ATTR_RID, mslabel and label lines.
+- v5.3.0 release libvpx upgrade may not have happened as script file was not fully updated to use the new v1.16.0.
+- Revert to use libvpx v1.15.2; libvpx 1.16.0 is ABI incompatible with aTalk. It removed support for 32-bit targets (armv7, armv7s, and i386).
+  Error: Failed to initialize encoder, libvpx error: ABI version mismatch
+  see https://github.com/webmproject/libvpx/blob/main/CHANGELOG
+
+=========================================================================
 Version:        5.5.0 (505000)
 Release Date:   05/04/2026
 Author:         cmeng
@@ -43,11 +79,6 @@ Author:         cmeng
 - Update 'About' to reflect actual third party libraries used, and use atalk.doap instead for XEP used by aTalk.
 - Upgrade jni libs for libvpx 1.15.2 => 1.16.0; opus lib 1.5.2 => 1.6.1; libOgg 1.3.5 => 1.3.6; update init_libSppexOgg.sh script file.
 
-*** Observation #TODO: ***
-- Jingle-RTP NamedElement's e.g. PayloadType and ParameterElement are currently extended as AbstractXmlElement; contains potential problems.
-  Required major changes to source.
-- Receive contact #event for the omemoDevice update is using +notify.
-
 =========================================================================
 Version:        5.2.2 (502020)
 Release Date:   04/02/2026
@@ -68,6 +99,12 @@ Author:         cmeng
 - Fix unhandled BackKey problems with preference sub-menu for Connection, ICE, and Telephony VoIP-PBX settings.
 - Clean up Thumbnail.java file for fully XEP-0264: Jingle Content Thumbnails 0.4.2 (2024-07-24) compliant.
 - Revert AccountInfoPresenceActivity#loadDetails() to use ExecutorService, but without using 'try'-with-resources as this causes ANR.
+
+*** Observation #TODO: ***
+- Jingle-RTP NamedElement's e.g. PayloadType, candidate and Parameter Elements are currently extended as AbstractXmlElement;
+  contains potential problems. Required major changes to source.
+  Problem resolved in aTalk v6.0.0 release.
+- Receive contact #event for the omemoDevice update is using +notify. Perform active subscription to node.
 
 =========================================================================
 Version:        5.2.1 (502010)

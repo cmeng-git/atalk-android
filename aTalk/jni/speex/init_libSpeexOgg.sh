@@ -68,3 +68,9 @@ echo -e "======== Completed ogg library source update ==========================
 # wget -O- http://downloads.us.xiph.org/releases/speex/speex-1.2rc1.tar.gz | tar xz --strip-components=1 --one-top-level=libspeex
 # wget -O- https://github.com/xiph/ogg/archive/refs/tags/v1.3.5.tar.gz | tar xz --strip-components=1 --one-top-level=libogg
 # grep '^#define SPEEX_VERSION' < libspeex/arch.h | sed 's/^.*\([1-9]\.[0-9][a-z]*[0-9]\).*$/\1/'
+
+if [[ -d ${LIB_SPEEX} && -d ${LIB_OGG} ]] ; then
+  exit 0
+else
+  exit 1
+fi

@@ -49,11 +49,6 @@ public abstract class SecurityAccountRegistration implements Serializable {
     private boolean mCallEncryptionEnable = true;
 
     /**
-     * Enables ZRTP encryption advertise in jingle session content.
-     */
-    private boolean mSipZrtpAttribute = true;
-
-    /**
      * Tells if SDES is enabled for this account.
      */
     private boolean mSdesEnable = false;
@@ -121,24 +116,6 @@ public abstract class SecurityAccountRegistration implements Serializable {
      */
     public void setCallEncryption(boolean callEncryption) {
         mCallEncryptionEnable = callEncryption;
-    }
-
-    /**
-     * Check if to include the ZRTP attribute to SIP/SDP or to Jabber/ Jingle IQ
-     *
-     * @return include the ZRTP attribute to SIP/SDP or to Jabber/ Jingle IQ
-     */
-    public boolean isSipZrtpAttribute() {
-        return mSipZrtpAttribute;
-    }
-
-    /**
-     * Sets ZRTP attribute support
-     *
-     * @param sipZrtpAttribute include the ZRTP attribute to SIP/SDP or to Jabber/IQ
-     */
-    public void setSipZrtpAttribute(boolean sipZrtpAttribute) {
-        mSipZrtpAttribute = sipZrtpAttribute;
     }
 
     /**
@@ -276,7 +253,6 @@ public abstract class SecurityAccountRegistration implements Serializable {
         // Sets the list of encryption protocol status.
         addEncryptionProtocolStatusToProperties(propertiesMap);
 
-        propertiesMap.put(ProtocolProviderFactory.DEFAULT_SIPZRTP_ATTRIBUTE, Boolean.toString(isSipZrtpAttribute()));
         propertiesMap.put(ProtocolProviderFactory.ZID_SALT, getZIDSalt());
         propertiesMap.put(ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, getDtlsCertSa());
         propertiesMap.put(ProtocolProviderFactory.SAVP_OPTION, Integer.toString(getSavpOption()));
@@ -318,7 +294,6 @@ public abstract class SecurityAccountRegistration implements Serializable {
         }
 
         // Load ZRTP encryption parameters
-        setSipZrtpAttribute(accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_SIPZRTP_ATTRIBUTE, true));
         mZIDSalt = ZrtpControlImpl.getAccountZIDSalt(accountID);
 
         // Load DTLS_SRTP TlsCertificateSA from DB or use DEFAULT_SIGNATURE_ALGORITHM if none is defined

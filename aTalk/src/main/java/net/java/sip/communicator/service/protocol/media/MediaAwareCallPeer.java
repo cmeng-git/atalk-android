@@ -5,43 +5,32 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import net.java.sip.communicator.service.protocol.AbstractCallPeer;
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
-import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.CallState;
-import net.java.sip.communicator.service.protocol.ConferenceMember;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerConferenceEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerConferenceListener;
 import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityNegotiationStartedEvent;
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOffEvent;
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOnEvent;
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityStatusEvent;
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutEvent;
-import net.java.sip.communicator.service.protocol.event.ConferenceMembersSoundLevelEvent;
-import net.java.sip.communicator.service.protocol.event.ConferenceMembersSoundLevelListener;
 import net.java.sip.communicator.service.protocol.event.SoundLevelListener;
 
 import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.SrtpControl;
-import org.atalk.service.neomedia.event.CsrcAudioLevelListener;
 import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.util.MediaType;
-import org.jivesoftware.smack.XMPPConnection;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import org.jivesoftware.smack.XMPPConnection;
 
 import timber.log.Timber;
 
@@ -55,6 +44,7 @@ import timber.log.Timber;
  * <code>CallPeerMediaHandlerJabberImpl</code>
  * @param <V> the provider extension class like for example <code>ProtocolProviderServiceSipImpl</code> or
  * <code>ProtocolProviderServiceJabberImpl</code>
+ *
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Boris Grozev
@@ -63,18 +53,11 @@ public abstract class MediaAwareCallPeer<
         T extends MediaAwareCall<?, ?, V>,
         U extends CallPeerMediaHandler<?>,
         V extends ProtocolProviderService> extends AbstractCallPeer<T, V>
-        implements SrtpListener, CallPeerConferenceListener, CsrcAudioLevelListener, SimpleAudioLevelListener
-{
+        implements SrtpListener, SimpleAudioLevelListener {
     /**
      * The call this peer belongs to.
      */
     private T call;
-
-    /**
-     * The listeners registered for level changes in the audio of participants that this peer might
-     * be mixing and that we are not directly communicating with.
-     */
-    private final List<ConferenceMembersSoundLevelListener> conferenceMembersSoundLevelListeners = new ArrayList<>();
 
     /**
      * A byte array containing the image/photo representing the call peer.
@@ -162,45 +145,13 @@ public abstract class MediaAwareCallPeer<
      *
      * @param owningCall the call that contains this call peer.
      */
-    public MediaAwareCallPeer(T owningCall)
-    {
+    public MediaAwareCallPeer(T owningCall) {
         this.call = owningCall;
         mPPS = owningCall.getProtocolProvider();
         mConnection = mPPS.getConnection();
 
         // create the uid
         this.peerID = String.valueOf(System.currentTimeMillis()) + hashCode();
-
-        // we listen for events when the call will become focus or not
-        // of a conference so we will add or remove our sound level listeners
-        super.addCallPeerConferenceListener(this);
-    }
-
-    /**
-     * Adds a specific <code>ConferenceMembersSoundLevelListener</code> to the list of listeners
-     * interested in and notified about changes in conference members sound level.
-     *
-     * @param listener the <code>ConferenceMembersSoundLevelListener</code> to add
-     * @throws NullPointerException if <code>listener</code> is <code>null</code>
-     */
-    public void addConferenceMembersSoundLevelListener(ConferenceMembersSoundLevelListener listener)
-    {
-        /*
-         * XXX The uses of the method at the time of this writing rely on being able to add a null
-         * listener so make it a no-op here.
-         */
-        if (listener == null)
-            return;
-
-        synchronized (conferenceMembersSoundLevelListeners) {
-            if (conferenceMembersSoundLevelListeners.size() == 0) {
-                // if this is the first listener that's being registered with
-                // us, we also need to register ourselves as a CSRC audio level
-                // listener with the media handler.
-                getMediaHandler().setCsrcAudioLevelListener(this);
-            }
-            conferenceMembersSoundLevelListeners.add(listener);
-        }
     }
 
     /**
@@ -212,29 +163,17 @@ public abstract class MediaAwareCallPeer<
      *
      * @param listener the <code>SoundLevelListener</code> to add
      */
-    public void addStreamSoundLevelListener(SoundLevelListener listener)
-    {
+    public void addStreamSoundLevelListener(SoundLevelListener listener) {
         synchronized (streamSoundLevelListenersSyncRoot) {
             if ((streamSoundLevelListeners == null) || streamSoundLevelListeners.isEmpty()) {
                 CallPeerMediaHandler<?> mediaHandler = getMediaHandler();
-
-                if (isJitsiVideobridge()) {
-                    /*
-                     * When the local user/peer has organized a telephony conference utilizing the
-                     * Jitsi Videobridge server-side technology, the server will calculate the audio
-                     * levels and not the client.
-                     */
-                    mediaHandler.setCsrcAudioLevelListener(this);
-                }
-                else {
-                    /*
-                     * If this is the first listener that's being registered with us, we also need
-                     * to register ourselves as an audio level listener with the media handler. We
-                     * do this so that audio levels would only be calculated if anyone is interested
-                     * in receiving them.
-                     */
-                    mediaHandler.setStreamAudioLevelListener(this);
-                }
+                /*
+                 * If this is the first listener that's being registered with us, we also need
+                 * to register ourselves as an audio level listener with the media handler. We
+                 * do this so that audio levels would only be calculated if anyone is interested
+                 * in receiving them.
+                 */
+                mediaHandler.setStreamAudioLevelListener(this);
             }
             /*
              * Implement streamAudioLevelListeners as a copy-on-write storage so that iterators over
@@ -254,8 +193,7 @@ public abstract class MediaAwareCallPeer<
      * @param listener the <code>PropertyChangeListener</code> to be notified when the properties associated with
      * the specified <code>Call</code> change their values
      */
-    public void addVideoPropertyChangeListener(PropertyChangeListener listener)
-    {
+    public void addVideoPropertyChangeListener(PropertyChangeListener listener) {
         if (listener == null)
             throw new NullPointerException("listener");
 
@@ -268,10 +206,8 @@ public abstract class MediaAwareCallPeer<
             if (!videoPropertyChangeListeners.contains(listener)
                     && videoPropertyChangeListeners.add(listener)
                     && (mediaHandlerPropertyChangeListener == null)) {
-                mediaHandlerPropertyChangeListener = new PropertyChangeListener()
-                {
-                    public void propertyChange(PropertyChangeEvent event)
-                    {
+                mediaHandlerPropertyChangeListener = new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent event) {
                         Iterable<PropertyChangeListener> listeners;
 
                         synchronized (videoPropertyChangeListeners) {
@@ -297,77 +233,16 @@ public abstract class MediaAwareCallPeer<
      *
      * @param newLevel the new audio level of the audio stream received from the remote peer
      */
-    public void audioLevelChanged(int newLevel)
-    {
-        /*
-         * If we're in a conference in which this CallPeer is the focus and we're the only member in
-         * it besides the focus, we will not receive audio levels in the RTP and our media will
-         * instead measure the audio levels of the received media. In order to make the UI oblivious
-         * of the difference, we have to translate the event to the appropriate type of listener.
-         *
-         * We may end up in a conference call with 0 members if the server for some reason doesn't
-         * support sip conference (our subscribes doesn't go to the focus of the conference) and so
-         * we must pass the sound levels measured on the stream so we can see the stream activity of the call.
-         */
-        int conferenceMemberCount = getConferenceMemberCount();
-
-        if ((conferenceMemberCount > 0) && (conferenceMemberCount < 3)) {
-            long audioRemoteSSRC = getMediaHandler().getRemoteSSRC(MediaType.AUDIO);
-
-            if (audioRemoteSSRC != CallPeerMediaHandler.SSRC_UNKNOWN) {
-                audioLevelsReceived(new long[]{audioRemoteSSRC, newLevel});
-                return;
-            }
-        }
+    public void audioLevelChanged(int newLevel) {
         fireStreamSoundLevelChanged(newLevel);
     }
 
     /**
-     * Implements {@link CsrcAudioLevelListener#audioLevelsReceived(long[])}. Delivers the received
-     * audio levels to the {@link ConferenceMembersSoundLevelListener}s registered with this <code>MediaAwareCallPeer</code>..
+     * Does nothing.
      *
-     * @param audioLevels the levels that we need to dispatch to all registered
-     * <code>ConferenceMemberSoundLevelListeners</code>.
+     * @param evt the event.
      */
-    public void audioLevelsReceived(long[] audioLevels)
-    {
-        /*
-         * When the local user/peer has organized a telephony conference utilizing the Jitsi
-         * Videobridge server-side technology, the server will calculate the audio levels and not the client.
-         */
-        if (isJitsiVideobridge()) {
-            long audioRemoteSSRC = getMediaHandler().getRemoteSSRC(MediaType.AUDIO);
-
-            if (audioRemoteSSRC != CallPeerMediaHandler.SSRC_UNKNOWN) {
-                for (int i = 0; i < audioLevels.length; i += 2) {
-                    if (audioLevels[i] == audioRemoteSSRC) {
-                        fireStreamSoundLevelChanged((int) audioLevels[i + 1]);
-                        break;
-                    }
-                }
-            }
-        }
-        if (getConferenceMemberCount() == 0)
-            return;
-
-        Map<ConferenceMember, Integer> levelsMap = new HashMap<>();
-        for (int i = 0; i < audioLevels.length; i += 2) {
-            ConferenceMember mmbr = findConferenceMember(audioLevels[i]);
-            if (mmbr != null)
-                levelsMap.put(mmbr, (int) audioLevels[i + 1]);
-        }
-
-        synchronized (conferenceMembersSoundLevelListeners) {
-            int conferenceMemberSoundLevelListenerCount = conferenceMembersSoundLevelListeners.size();
-
-            if (conferenceMemberSoundLevelListenerCount > 0) {
-                ConferenceMembersSoundLevelEvent ev = new ConferenceMembersSoundLevelEvent(this, levelsMap);
-
-                for (int i = 0; i < conferenceMemberSoundLevelListenerCount; i++) {
-                    conferenceMembersSoundLevelListeners.get(i).soundLevelChanged(ev);
-                }
-            }
-        }
+    public void callPeerAdded(CallPeerEvent evt) {
     }
 
     /**
@@ -375,82 +250,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @param evt the event.
      */
-    public void callPeerAdded(CallPeerEvent evt)
-    {
-    }
-
-    /**
-     * Does nothing.
-     *
-     * @param evt the event.
-     */
-    public void callPeerRemoved(CallPeerEvent evt)
-    {
-    }
-
-    /**
-     * Dummy implementation of
-     * {@link CallPeerConferenceListener #conferenceFocusChanged(CallPeerConferenceEvent)}.
-     *
-     * @param evt ignored
-     */
-    public void conferenceFocusChanged(CallPeerConferenceEvent evt)
-    {
-    }
-
-    /**
-     * Called when this peer becomes a mixer. The method add removes this class as the stream audio
-     * level listener for the media coming from this peer because the levels it delivers no longer represent the
-     * level of a particular member. The method also adds this class as a member (CSRC) audio level listener.
-     *
-     * @param conferenceEvent the event containing information (that we don't really use) on the newly add member.
-     */
-    public void conferenceMemberAdded(CallPeerConferenceEvent conferenceEvent)
-    {
-        if (getConferenceMemberCount() > 2) {
-            /*
-             * This peer is now a conference focus with more than three participants. It means that
-             * this peer is mixing and sending us audio for at least two separate participants. We
-             * therefore need to switch from stream to CSRC level listening.
-             */
-            CallPeerMediaHandler<?> mediaHandler = getMediaHandler();
-
-            mediaHandler.setStreamAudioLevelListener(null);
-            mediaHandler.setCsrcAudioLevelListener(this);
-        }
-    }
-
-    /**
-     * Dummy implementation of
-     * {@link CallPeerConferenceListener #conferenceMemberErrorReceived(CallPeerConferenceEvent)} .
-     *
-     * @param ev the event
-     */
-    public void conferenceMemberErrorReceived(CallPeerConferenceEvent ev)
-    {
-    }
-
-    /**
-     * Called when this peer stops being a mixer. The method add removes this class as the stream
-     * audio level listener for the media coming from this peer because the levels it delivers no
-     * longer represent the level of a particular member. The method also adds this class as a
-     * member (CSRC) audio level listener.
-     *
-     * @param conferenceEvent the event containing information (that we don't really use) on the freshly removed
-     * member.
-     */
-    public void conferenceMemberRemoved(CallPeerConferenceEvent conferenceEvent)
-    {
-        if (getConferenceMemberCount() < 3) {
-            /*
-             * This call peer is no longer mixing audio from multiple sources since there's only us
-             * and her in the call. We therefore need to switch from CSRC to stream level listening.
-             */
-            CallPeerMediaHandler<?> mediaHandler = getMediaHandler();
-
-            mediaHandler.setStreamAudioLevelListener(this);
-            mediaHandler.setCsrcAudioLevelListener(null);
-        }
+    public void callPeerRemoved(CallPeerEvent evt) {
     }
 
     /**
@@ -460,8 +260,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @param newLevel the new value of the sound level to notify <code>streamSoundLevelListeners</code> about
      */
-    private void fireStreamSoundLevelChanged(int newLevel)
-    {
+    private void fireStreamSoundLevelChanged(int newLevel) {
         List<SoundLevelListener> streamSoundLevelListeners;
 
         synchronized (streamSoundLevelListenersSyncRoot) {
@@ -494,8 +293,7 @@ public abstract class MediaAwareCallPeer<
      * @return a reference to the call containing this peer.
      */
     @Override
-    public T getCall()
-    {
+    public T getCall() {
         return call;
     }
 
@@ -504,8 +302,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @return byte[] a byte array containing the image or null if no image is available.
      */
-    public byte[] getImage()
-    {
+    public byte[] getImage() {
         return image;
     }
 
@@ -519,8 +316,7 @@ public abstract class MediaAwareCallPeer<
      * @return a reference to the <code>CallPeerMediaHandler</code> instance that this peer uses for
      * media related tips and tricks.
      */
-    public U getMediaHandler()
-    {
+    public U getMediaHandler() {
         return mediaHandler;
     }
 
@@ -529,8 +325,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @return an identifier representing this call peer.
      */
-    public String getPeerID()
-    {
+    public String getPeerID() {
         return peerID;
     }
 
@@ -540,39 +335,18 @@ public abstract class MediaAwareCallPeer<
      * @return a reference to the <code>ProtocolProviderService</code> that this peer belongs to.
      */
     @Override
-    public V getProtocolProvider()
-    {
+    public V getProtocolProvider() {
         return mPPS;
-    }
-
-    /**
-     * Determines whether this <code>CallPeer</code> is participating in a telephony conference
-     * organized by the local user/peer utilizing the Jitsi Videobridge server-side technology.
-     *
-     * @return <code>true</code> if this <code>CallPeer</code> is participating in a telephony conference
-     * organized by the local user/peer utilizing the Jitsi Videobridge server-side
-     * technology; otherwise, <code>false</code>
-     */
-    public final boolean isJitsiVideobridge()
-    {
-        Call call = getCall();
-        if (call != null) {
-            CallConference conference = call.getConference();
-            if (conference != null)
-                return conference.isJitsiVideobridge();
-        }
-        return false;
     }
 
     /**
      * Determines whether we are currently streaming video toward whoever this
      * <code>MediaAwareCallPeer</code> represents.
      *
-     * @return <code>true</code> if we are currently streaming video toward this <code>CallPeer</code> and
-     * <code>false</code> otherwise.
+     * @return <code>true</code> if we are currently streaming video toward this
+     * <code>CallPeer</code> and <code>false</code> otherwise.
      */
-    public boolean isLocalVideoStreaming()
-    {
+    public boolean isLocalVideoStreaming() {
         return getMediaHandler().isLocalVideoTransmissionEnabled();
     }
 
@@ -583,8 +357,7 @@ public abstract class MediaAwareCallPeer<
      * <code>false</code>, otherwise
      */
     @Override
-    public boolean isMute()
-    {
+    public boolean isMute() {
         return getMediaHandler().isMute();
     }
 
@@ -595,8 +368,7 @@ public abstract class MediaAwareCallPeer<
      * @param message a message to log and display to the user.
      * @param throwable the exception that cause the error we are logging
      */
-    public void logAndFail(String message, Throwable throwable)
-    {
+    public void logAndFail(String message, Throwable throwable) {
         Timber.e(throwable, "%s", message);
         setState(CallPeerState.FAILED, message);
     }
@@ -604,8 +376,7 @@ public abstract class MediaAwareCallPeer<
     /**
      * Updates the state of this <code>CallPeer</code> to match the locally-on-hold status of our media handler.
      */
-    public void reevalLocalHoldStatus()
-    {
+    public void reevalLocalHoldStatus() {
         CallPeerState state = getState();
         boolean locallyOnHold = getMediaHandler().isLocallyOnHold();
 
@@ -629,8 +400,7 @@ public abstract class MediaAwareCallPeer<
     /**
      * Updates the state of this <code>CallPeer</code> to match the remotely-on-hold status of our media handler.
      */
-    public void reevalRemoteHoldStatus()
-    {
+    public void reevalRemoteHoldStatus() {
         boolean remotelyOnHold = getMediaHandler().isRemotelyOnHold();
 
         CallPeerState state = getState();
@@ -652,34 +422,12 @@ public abstract class MediaAwareCallPeer<
     }
 
     /**
-     * Removes a specific <code>ConferenceMembersSoundLevelListener</code> of the list of listeners
-     * interested in and notified about changes in conference members sound level.
-     *
-     * @param listener the <code>ConferenceMembersSoundLevelListener</code> to remove
-     */
-    public void removeConferenceMembersSoundLevelListener(
-            ConferenceMembersSoundLevelListener listener)
-    {
-        synchronized (conferenceMembersSoundLevelListeners) {
-            if (conferenceMembersSoundLevelListeners.remove(listener)
-                    && (conferenceMembersSoundLevelListeners.size() == 0)) {
-                // if this was the last listener then we also remove ourselves
-                // as a CSRC audio level listener from the handler so that we
-                // don't have to create new events and maps for something no one
-                // is interested in.
-                getMediaHandler().setCsrcAudioLevelListener(null);
-            }
-        }
-    }
-
-    /**
      * Removes a specific <code>SoundLevelListener</code> of the list of listeners interested in and
      * notified about changes in stream sound level related information.
      *
      * @param listener the <code>SoundLevelListener</code> to remove
      */
-    public void removeStreamSoundLevelListener(SoundLevelListener listener)
-    {
+    public void removeStreamSoundLevelListener(SoundLevelListener listener) {
         synchronized (streamSoundLevelListenersSyncRoot) {
             /*
              * Implement streamAudioLevelListeners as a copy-on-write storage so that iterators over
@@ -709,8 +457,7 @@ public abstract class MediaAwareCallPeer<
      * @param listener the <code>PropertyChangeListener</code> to no longer be notified when the properties
      * associated with the specified <code>Call</code> change their values
      */
-    public void removeVideoPropertyChangeListener(PropertyChangeListener listener)
-    {
+    public void removeVideoPropertyChangeListener(PropertyChangeListener listener) {
         if (listener != null)
             synchronized (videoPropertyChangeListeners) {
                 /*
@@ -739,8 +486,7 @@ public abstract class MediaAwareCallPeer<
      * @param i18nMessage the message
      * @param severity severity level
      */
-    public void securityMessageReceived(String messageType, String i18nMessage, int severity)
-    {
+    public void securityMessageReceived(String messageType, String i18nMessage, int severity) {
         fireCallPeerSecurityMessageEvent(messageType, i18nMessage, severity);
     }
 
@@ -750,8 +496,7 @@ public abstract class MediaAwareCallPeer<
      * @param mediaType the <code>MediaType</code> of the call session
      * @param sender the security controller that caused the event
      */
-    public void securityNegotiationStarted(MediaType mediaType, SrtpControl sender)
-    {
+    public void securityNegotiationStarted(MediaType mediaType, SrtpControl sender) {
         fireCallPeerSecurityNegotiationStartedEvent(new CallPeerSecurityNegotiationStartedEvent(
                 this, toSessionType(mediaType), sender));
     }
@@ -761,8 +506,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @param mediaType the <code>MediaType</code> of the call session
      */
-    public void securityTimeout(MediaType mediaType)
-    {
+    public void securityTimeout(MediaType mediaType) {
         fireCallPeerSecurityTimeoutEvent(new CallPeerSecurityTimeoutEvent(this, toSessionType(mediaType)));
     }
 
@@ -771,8 +515,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @param mediaType the <code>MediaType</code> of the call session
      */
-    public void securityTurnedOff(MediaType mediaType)
-    {
+    public void securityTurnedOff(MediaType mediaType) {
         // If this event has been triggered because of a call end event and the
         // call is already ended we don't need to alert the user for security off.
         if ((call != null) && !call.getCallState().equals(CallState.CALL_ENDED)) {
@@ -787,8 +530,7 @@ public abstract class MediaAwareCallPeer<
      * @param cipher the cipher
      * @param sender the security controller that caused the event
      */
-    public void securityTurnedOn(MediaType mediaType, String cipher, SrtpControl sender)
-    {
+    public void securityTurnedOn(MediaType mediaType, String cipher, SrtpControl sender) {
         getMediaHandler().startSrtpMultistream(sender);
         fireCallPeerSecurityOnEvent(new CallPeerSecurityOnEvent(this, toSessionType(mediaType), cipher, sender));
     }
@@ -798,8 +540,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @param call the call that this call peer is participating in.
      */
-    public void setCall(T call)
-    {
+    public void setCall(T call) {
         this.call = call;
     }
 
@@ -808,8 +549,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @param image a byte array containing the image
      */
-    public void setImage(byte[] image)
-    {
+    public void setImage(byte[] image) {
         byte[] oldImage = getImage();
         this.image = image;
 
@@ -823,8 +563,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @param allowed <code>true</code> if local video transmission is allowed and <code>false</code> otherwise.
      */
-    public void setLocalVideoAllowed(boolean allowed)
-    {
+    public void setLocalVideoAllowed(boolean allowed) {
         CallPeerMediaHandler<?> mediaHandler = getMediaHandler();
 
         if (mediaHandler.isLocalVideoTransmissionEnabled() != allowed) {
@@ -844,8 +583,7 @@ public abstract class MediaAwareCallPeer<
      * @param mediaHandler a reference to the <code>CallPeerMediaHandler</code> instance that this peer uses for
      * media related tips and tricks.
      */
-    protected void setMediaHandler(U mediaHandler)
-    {
+    protected void setMediaHandler(U mediaHandler) {
         this.mediaHandler = mediaHandler;
     }
 
@@ -855,8 +593,7 @@ public abstract class MediaAwareCallPeer<
      * @param newMuteValue the new value of the mute property for this call peer
      */
     @Override
-    public void setMute(boolean newMuteValue)
-    {
+    public void setMute(boolean newMuteValue) {
         getMediaHandler().setMute(newMuteValue);
         super.setMute(newMuteValue);
     }
@@ -866,8 +603,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @param peerID the ID of this call peer.
      */
-    public void setPeerID(String peerID)
-    {
+    public void setPeerID(String peerID) {
         this.peerID = peerID;
     }
 
@@ -881,8 +617,7 @@ public abstract class MediaAwareCallPeer<
      * @param reasonCode the code for the reason of the state change.
      */
     @Override
-    public void setState(CallPeerState newState, String reason, int reasonCode)
-    {
+    public void setState(CallPeerState newState, String reason, int reasonCode) {
         // synchronized to mediaHandler if there are currently jobs of
         // initializing, configuring and starting streams (method processSessionAcceptContent
         // of CallPeerMediaHandler) we won't set and fire the current state
@@ -893,7 +628,8 @@ public abstract class MediaAwareCallPeer<
         synchronized (mediaHandler) {
             try {
                 super.setState(newState, reason, reasonCode);
-            } finally {
+            }
+            finally {
                 // make sure whatever happens to close the media
                 if (CallPeerState.DISCONNECTED.equals(newState)
                         || CallPeerState.FAILED.equals(newState))
@@ -909,8 +645,7 @@ public abstract class MediaAwareCallPeer<
      * @return the last <code>ConferenceInfoDocument</code> sent by us to this <code>CallPeer</code>. It is
      * a document with state <code>full</code>
      */
-    public ConferenceInfoDocument getLastConferenceInfoSent()
-    {
+    public ConferenceInfoDocument getLastConferenceInfoSent() {
         return lastConferenceInfoSent;
     }
 
@@ -919,8 +654,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @param confInfo the document to set.
      */
-    public void setLastConferenceInfoSent(ConferenceInfoDocument confInfo)
-    {
+    public void setLastConferenceInfoSent(ConferenceInfoDocument confInfo) {
         lastConferenceInfoSent = confInfo;
     }
 
@@ -931,8 +665,7 @@ public abstract class MediaAwareCallPeer<
      * @return the time (as obtained by <code>System.currentTimeMillis()</code>) at which we last sent a
      * <code>ConferenceInfoDocument</code> to this <code>CallPeer</code>.
      */
-    public long getLastConferenceInfoSentTimestamp()
-    {
+    public long getLastConferenceInfoSentTimestamp() {
         return lastConferenceInfoSentTimestamp;
     }
 
@@ -942,8 +675,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @param newTimestamp the time to set
      */
-    public void setLastConferenceInfoSentTimestamp(long newTimestamp)
-    {
+    public void setLastConferenceInfoSentTimestamp(long newTimestamp) {
         lastConferenceInfoSentTimestamp = newTimestamp;
     }
 
@@ -952,16 +684,14 @@ public abstract class MediaAwareCallPeer<
      *
      * @return the last <code>ConferenceInfoDocument</code> sent to us by this <code>CallPeer</code>.
      */
-    public ConferenceInfoDocument getLastConferenceInfoReceived()
-    {
+    public ConferenceInfoDocument getLastConferenceInfoReceived() {
         return lastConferenceInfoReceived;
     }
 
     /**
      * Gets the last <code>ConferenceInfoDocument</code> sent to us by this <code>CallPeer</code>.
      */
-    public void setLastConferenceInfoReceived(ConferenceInfoDocument confInfo)
-    {
+    public void setLastConferenceInfoReceived(ConferenceInfoDocument confInfo) {
         lastConferenceInfoReceived = confInfo;
     }
 
@@ -971,8 +701,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @return the last <code>ConferenceInfoDocument</code> sent to us by this <code>CallPeer</code>.
      */
-    public int getLastConferenceInfoReceivedVersion()
-    {
+    public int getLastConferenceInfoReceivedVersion() {
         return (lastConferenceInfoReceived == null) ? -1 : lastConferenceInfoReceived.getVersion();
     }
 
@@ -995,8 +724,7 @@ public abstract class MediaAwareCallPeer<
      * @return <code>true</code> if there is a conference-info document scheduled to be sent to this
      * <code>CallPeer</code> and <code>false</code> otherwise.
      */
-    public boolean isConfInfoScheduled()
-    {
+    public boolean isConfInfoScheduled() {
         synchronized (confInfoScheduledSyncRoot) {
             return confInfoScheduled;
         }
@@ -1008,8 +736,7 @@ public abstract class MediaAwareCallPeer<
      *
      * @param confInfoScheduled
      */
-    public void setConfInfoScheduled(boolean confInfoScheduled)
-    {
+    public void setConfInfoScheduled(boolean confInfoScheduled) {
         synchronized (confInfoScheduledSyncRoot) {
             this.confInfoScheduled = confInfoScheduled;
         }
@@ -1024,78 +751,29 @@ public abstract class MediaAwareCallPeer<
      * sessions with the rest of the conference members. Should always return non-null.
      *
      * @param mediaType the <code>MediaType</code> to use
+     *
      * @return Returns the direction of the session for media of type <code>mediaType</code> that we
      * have with this <code>CallPeer</code>.
      */
     public abstract MediaDirection getDirection(MediaType mediaType);
 
     /**
-     * {@inheritDoc}
-     *
-     * When a <code>ConferenceMember</code> is removed from a conference with a Jitsi-videobridge, an
-     * RTCP BYE packet is not always sent. Therefore, if the <code>ConferenceMember</code> had an
-     * associated video SSRC, the stream isn't be removed until it times out, leaving a blank video
-     * container in the interface for a few seconds. TODO: This works around the problem by removing
-     * the <code>ConferenceMember</code>'s <code>ReceiveStream</code> when the <code>ConferenceMember</code> is
-     * removed. The proper solution is to ensure that RTCP BYEs are sent whenever necessary, and
-     * when it is deployed this code should be removed.
-     *
-     * @param conferenceMember a <code>ConferenceMember</code> to be removed from the list of <code>ConferenceMember</code>
-     * reported by this peer. If the specified <code>ConferenceMember</code> is no contained in
-     * the list, no event
-     */
-    @Override
-    public void removeConferenceMember(ConferenceMember conferenceMember)
-    {
-        MediaStream videoStream = getMediaHandler().getStream(MediaType.VIDEO);
-        if (videoStream != null)
-            videoStream.removeReceiveStreamForSsrc(conferenceMember.getVideoSsrc());
-
-        MediaStream audioStream = getMediaHandler().getStream(MediaType.AUDIO);
-        if (audioStream != null) {
-            audioStream.removeReceiveStreamForSsrc(conferenceMember.getAudioSsrc());
-        }
-
-        // if there is a conference call we need to clear same ssrc from the sender stats
-        if (this.getCall() != null) {
-            MediaAwareCallConference callConference = this.getCall().getConference();
-
-            if (callConference != null) {
-                for (CallPeer cp : callConference.getCallPeers()) {
-                    if (cp instanceof MediaAwareCallPeer) {
-                        MediaAwareCallPeer<?, ?, ?> pm = (MediaAwareCallPeer<?, ?, ?>) cp;
-                        MediaStream as = pm.getMediaHandler().getStream(MediaType.AUDIO);
-                        if (as != null) {
-                            as.getMediaStreamStats().clearSendSsrc(conferenceMember.getAudioSsrc());
-                        }
-                        MediaStream vs = pm.getMediaHandler().getStream(MediaType.VIDEO);
-                        if (vs != null) {
-                            vs.getMediaStreamStats().clearSendSsrc(conferenceMember.getVideoSsrc());
-                        }
-                    }
-                }
-            }
-        }
-        super.removeConferenceMember(conferenceMember);
-    }
-
-    /**
      * Converts a specific <code>MediaType</code> into a <code>sessionType</code> value in the terms of the
      * <code>CallPeerSecurityStatusEvent</code> class.
      *
      * @param mediaType the <code>MediaType</code> to be converted
+     *
      * @return the <code>sessionType</code> value in the terms of the
      * <code>CallPeerSecurityStatusEvent</code> class that is equivalent to the specified <code>mediaType</code>
      */
-    private static int toSessionType(MediaType mediaType)
-    {
+    private static int toSessionType(MediaType mediaType) {
         switch (mediaType) {
-            case AUDIO:
-                return CallPeerSecurityStatusEvent.AUDIO_SESSION;
-            case VIDEO:
-                return CallPeerSecurityStatusEvent.VIDEO_SESSION;
-            default:
-                throw new IllegalArgumentException("mediaType");
+        case AUDIO:
+            return CallPeerSecurityStatusEvent.AUDIO_SESSION;
+        case VIDEO:
+            return CallPeerSecurityStatusEvent.VIDEO_SESSION;
+        default:
+            throw new IllegalArgumentException("mediaType");
         }
     }
 }

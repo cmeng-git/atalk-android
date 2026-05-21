@@ -7,20 +7,16 @@ import org.jxmpp.jid.Jid;
  *
  * @see <a href="https://xmpp.org/extensions/xep-0278.html#servicesdefinition">XEP-0278: Jingle Relay Nodes #5. Services Definitions</a>
  */
-public class TrackerEntry
-{
-    public enum Type
-    {
+public class TrackerEntry {
+    public enum Type {
         relay, tracker
     }
 
-    public enum Policy
-    {
+    public enum Policy {
         _public, _roster;
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return this.name().substring(1);
         }
     }
@@ -31,61 +27,50 @@ public class TrackerEntry
     private String protocol;
     private Jid jid;
 
-    public TrackerEntry(final Type type, final Policy policy, final Jid jid, final String protocol)
-    {
+    public TrackerEntry(final Type type, final Policy policy, final Jid jid, final String protocol) {
         this.type = type;
         this.policy = policy;
         this.jid = jid;
         this.protocol = protocol;
     }
 
-    public Type getType()
-    {
+    public Type getType() {
         return type;
     }
 
-    public void setType(Type type)
-    {
+    public void setType(Type type) {
         this.type = type;
     }
 
-    public Jid getJid()
-    {
+    public Jid getJid() {
         return jid;
     }
 
-    public void setJid(Jid jid)
-    {
+    public void setJid(Jid jid) {
         this.jid = jid;
     }
 
-    public boolean isVerified()
-    {
+    public boolean isVerified() {
         return verified;
     }
 
-    public void setVerified(boolean verified)
-    {
+    public void setVerified(boolean verified) {
         this.verified = verified;
     }
 
-    public Policy getPolicy()
-    {
+    public Policy getPolicy() {
         return policy;
     }
 
-    public void setPolicy(Policy policy)
-    {
+    public void setPolicy(Policy policy) {
         this.policy = policy;
     }
 
-    public String getProtocol()
-    {
+    public String getProtocol() {
         return protocol;
     }
 
-    public void setProtocol(String protocol)
-    {
+    public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
 }

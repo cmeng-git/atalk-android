@@ -26,47 +26,12 @@
                 android:text="@string/callinfo_call_information" />
 
             <TextView
-                android:id="@+id/peerCountLabel"
-                style="@style/CallInfo.Header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textView"
-                android:text="@string/callinfo_peer_count" />
-
-            <TextView
-                android:id="@+id/peerCount"
-                style="@style/CallInfo.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textView"
-                android:layout_toEndOf="@id/peerCountLabel"
-                android:text="xx" />
-
-            <TextView
-                android:id="@+id/confFocusLabel"
-                style="@style/CallInfo.Header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignStart="@id/textView"
-                android:layout_below="@id/peerCountLabel"
-                android:text="@string/callinfo_conference_focus" />
-
-            <TextView
-                android:id="@+id/conferenceFocus"
-                style="@style/CallInfo.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/peerCountLabel"
-                android:layout_toEndOf="@id/confFocusLabel"
-                android:text="true" />
-
-            <TextView
                 android:id="@+id/identityLabel"
                 style="@style/CallInfo.Header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/textView"
-                android:layout_below="@id/confFocusLabel"
+                android:layout_below="@id/textView"
                 android:text="@string/callinfo_call_identity" />
 
             <TextView
@@ -74,7 +39,7 @@
                 style="@style/CallInfo.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/confFocusLabel"
+                android:layout_below="@id/textView"
                 android:layout_toEndOf="@id/identityLabel"
                 android:layout_toRightOf="@id/identityLabel"
                 android:text="SIP_ID@sipproxy.com" />

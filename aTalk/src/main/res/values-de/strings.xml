@@ -79,7 +79,7 @@
     <string name="call_transfer">Übertragung</string>
     <string name="call_transfer_failed">Weiterleitung des Anrufs fehlgeschlagen: %1$s ⇢ %2$s\n%3$s</string>
     <string name="call_transfer_hint">Wählen Sie den Kontakt aus, an den Sie das Gespräch weiterleiten möchten.</string>
-    <string name="call_transfer_msg">%1$s Anruf weiterleiten an… %2$s</string>
+    <string name="call_transfer_msg">%1$s Anruf weiterleiten an %2$s</string>
 
     <string name="attach_picture">Bilder</string>
     <string name="attach_take_picture">Bild aufnehmen</string>
@@ -155,7 +155,8 @@
     <string name="call_audio">Audioanruf</string>
     <string name="call_answered">%1$s hat den Anruf beantwortet.</string>
     <string name="call_disable_on_fault">aTalk konnte %1$s nicht initialisieren\nAlle Medienanrufe/-dienste werden deaktiviert.\n%2$s</string>
-    <string name="call_ended">Der entfernte Anrufer hat den Anruf beendet: %1$s</string>
+    <string name="call_ended">Anruf beendet</string>
+    <string name="call_ended_by_remote">Der entfernte Anrufer hat den Anruf beendet: %1$s</string>
     <string name="call_error">Der entfernte Teilnehmer gibt einen Fehler zurück: %1$s</string>
     <string name="call_failed">Gescheiteter Anruf</string>
     <string name="call_history_name">Anrufverlauf</string>
@@ -340,10 +341,6 @@
     <string name="refresh_store_omemo">XEP-0384: OMEMO Verschlüsselung</string>
 
     <string name="unregistered_message">Anmeldung zum Konto fehlgeschlagen:\nBenutzer: %1$s\nServer: %2$s\nDas Konto ist offline.</string>
-    <string name="create_videoBridge">Eine Videobrücke erstellen…</string>
-    <string name="create_videoBridge_menu">Eine Videobrücke erstellen</string>
-    <string name="create_join_video_conference">Videokonferenzschaltung erzeugen/beitreten.</string>
-    <string name="create_video_conference">Eine neue Videokonferenz für diesen Chatraum einrichten.</string>
     <string name="video_format_not_supported">Die Gerätekamera kann die ausgewählte Videoauflösung im Hochformat nicht unterstützen. Bitte benutze das Telefon im Querformat für den Videoanruf:\n[width=%1$s; Höhe=%2$s]</string>
     <string name="disconnected">Beendet</string>
     <string name="disconnecting_">Beende %1$s</string>
@@ -670,7 +667,6 @@
     <string name="callinfo_call_information">Anrufinformationen</string>
     <string name="callinfo_call_transport">Signalisierung von Verbindungsübertragungen:</string>
     <string name="callinfo_codec">Codec/Frequenz:</string>
-    <string name="callinfo_conference_focus">Konferenzfokus:</string>
     <string name="callinfo_default_encrypted">Verschlüsselung aktiviert:</string>
     <string name="callinfo_jitter">Jitter:</string>
     <string name="callinfo_key_exchange_protocol">Schlüsselaustauschprotokoll</string>
@@ -680,7 +676,6 @@
     <string name="callinfo_media_srtp">SRTP:</string>
     <string name="callinfo_media_stream_transport_protocol">Media stream-Transportprotokoll:</string>
     <string name="callinfo_na">Nicht verfügbar</string>
-    <string name="callinfo_peer_count">Teilnehmeranzahl:</string>
     <string name="callinfo_remote_ip">Remote-IP/Port:</string>
     <string name="callinfo_rtt">RTT:</string>
     <string name="callinfo_details">Anruf-Details</string>
@@ -1037,8 +1032,6 @@
     <string name="sec_protocols_title">Sicherheitsprotokolle</string>
     <string name="sec_protocols_message">Bitte wähle die gewünschten Protokolle nach Reihenfolge</string>
     <string name="discard">Verwerfen</string>
-    <string name="sec_zrtp_signalling_on">ZRTP-Meldungen sind eingeschaltet</string>
-    <string name="sec_zrtp_signalling_off">ZRTP-Meldungen sind ausgeschaltet</string>
 
     <!-- STUN/Jingle Nodes list -->
     <string name="service_gui_SERVERS_LIST_ADD_SERVER">Server hinzufügen</string>
@@ -1067,7 +1060,6 @@
     <string name="security_sdes_dlg_title">Gewünschte Cipher-Suites auswählen</string>
     <string name="security_sdes_title">SDES Cipher-Suites</string>
     <string name="security_zrtp_options">ZRTP-Optionen</string>
-    <string name="security_zrtp_signalling">ZRTP-Signalisierung</string>
 
     <!-- Common preferences -->
     <string name="audio_encoding">Audiokodierung</string>

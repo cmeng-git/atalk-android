@@ -5,18 +5,15 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.CallPeerConferenceListener;
+import java.beans.PropertyChangeListener;
+import java.net.URL;
+
 import net.java.sip.communicator.service.protocol.event.CallPeerListener;
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityListener;
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityStatusEvent;
-import net.java.sip.communicator.service.protocol.event.ConferenceMembersSoundLevelListener;
 import net.java.sip.communicator.service.protocol.event.SoundLevelListener;
 
 import org.jxmpp.jid.Jid;
-
-import java.beans.PropertyChangeListener;
-import java.net.URL;
-import java.util.List;
 
 /**
  * The CallPeer is an interface that represents peers in a call. Users of the UIService need to
@@ -33,8 +30,7 @@ import java.util.List;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public interface CallPeer
-{
+public interface CallPeer {
     /**
      * The constant indicating that a <code>CallPeer</code> has not yet transitioned into a state
      * marking the beginning of a participation in a <code>Call</code> or that such a transition may
@@ -46,17 +42,6 @@ public interface CallPeer
      * The mute property name.
      */
     String MUTE_PROPERTY_NAME = "Mute";
-
-    /**
-     * Adds a specific <code>CallPeerConferenceListener</code> to the list of listeners interested in
-     * and notified about changes in conference-related information such as this peer acting or not
-     * acting as a conference focus and conference membership details.
-     *
-     * @param listener a <code>CallPeerConferenceListener</code> to be notified about changes in
-     * conference-related information. If the specified listener is already in the list of
-     * interested listeners (i.e. it has been previously added), it is not added again.
-     */
-    void addCallPeerConferenceListener(CallPeerConferenceListener listener);
 
     /**
      * Allows the user interface to register a listener interested in changes
@@ -71,14 +56,6 @@ public interface CallPeer
      * @param listener a listener instance to register with this peer
      */
     void addCallPeerSecurityListener(CallPeerSecurityListener listener);
-
-    /**
-     * Adds a specific <code>SoundLevelListener</code> to the list of listeners interested in and
-     * notified about changes in conference members sound level.
-     *
-     * @param listener the <code>SoundLevelListener</code> to add
-     */
-    void addConferenceMembersSoundLevelListener(ConferenceMembersSoundLevelListener listener);
 
     /**
      * Allows the user interface to register a listener interested in property changes.
@@ -127,28 +104,6 @@ public interface CallPeer
      * related to this peer or <code>null</code> if no such URL is available.
      */
     URL getCallInfoURL();
-
-    /**
-     * Gets the number of <code>ConferenceMember</code>s currently known to this peer if it is acting as
-     * a conference focus.
-     *
-     * @return the number of <code>ConferenceMember</code>s currently known to this peer if it is acting
-     * as a conference focus. If this peer is not acting as a conference focus or it does
-     * but there are currently no members in the conference it manages, a value of zero is
-     * returned.
-     */
-    int getConferenceMemberCount();
-
-    /**
-     * Gets the <code>ConferenceMember</code>s currently known to this peer if it is acting as a
-     * conference focus.
-     *
-     * @return a <code>List</code> of <code>ConferenceMember</code>s describing the members of a conference
-     * managed by this peer if it is acting as a conference focus. If this peer is not
-     * acting as a conference focus or it does but there are currently no members in the
-     * conference it manages, an empty <code>List</code> is returned.
-     */
-    List<ConferenceMember> getConferenceMembers();
 
     /**
      * Returns the contact corresponding to this peer or null if no particular contact has been  associated.
@@ -226,29 +181,11 @@ public interface CallPeer
     String getURI();
 
     /**
-     * Determines whether this peer is acting as a conference focus and thus may provide information
-     * about <code>ConferenceMember</code> such as {@link #getConferenceMembers()} and {@link #getConferenceMemberCount()}.
-     *
-     * @return <code>true</code> if this peer is acting as a conference focus; <code>false</code>, otherwise
-     */
-    boolean isConferenceFocus();
-
-    /**
      * Determines whether the audio stream (if any) being sent to this peer is mute.
      *
      * @return <code>true</code> if an audio stream is being sent to this peer and it is currently mute; <code>false</code>, otherwise
      */
     boolean isMute();
-
-    /**
-     * Removes a specific <code>CallPeerConferenceListener</code> from the list of listeners interested
-     * in and notified about changes in conference-related information such as this peer acting or
-     * not acting as a conference focus and conference membership details.
-     *
-     * @param listener a <code>CallPeerConferenceListener</code> to no longer be notified about changes in
-     * conference-related information
-     */
-    void removeCallPeerConferenceListener(CallPeerConferenceListener listener);
 
     /**
      * Unregisters the specified listener.
@@ -263,14 +200,6 @@ public interface CallPeer
      * @param listener the listener to unregister
      */
     void removeCallPeerSecurityListener(CallPeerSecurityListener listener);
-
-    /**
-     * Removes a specific <code>SoundLevelListener</code> of the list of listeners interested in and
-     * notified about changes in conference members sound level.
-     *
-     * @param listener the <code>SoundLevelListener</code> to remove
-     */
-    void removeConferenceMembersSoundLevelListener(ConferenceMembersSoundLevelListener listener);
 
     /**
      * Unregisters the specified property change listener.

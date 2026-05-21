@@ -21,8 +21,7 @@ import java.util.EventListener;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public interface ChatRoomMessageListener extends EventListener
-{
+public interface ChatRoomMessageListener extends EventListener {
     /**
      * Called when a new incoming <code>IMessage</code> has been received.
      *

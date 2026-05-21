@@ -111,7 +111,6 @@ public final class JingleMessageManager extends Manager {
             @Override
             public void processStanza(Stanza stanza) {
                 final Message message = (Message) stanza;
-                ;
                 final JingleMessage jingleMessage;
                 StandardExtensionElement extElement = (StandardExtensionElement) message.getExtension(JingleMessage.NAMESPACE);
                 try {
@@ -185,10 +184,10 @@ public final class JingleMessageManager extends Manager {
         jingleMessageListeners.remove(listener);
     }
 
-    //==================== Outgoing Call processes ====================//
+    // ==================== Outgoing Call processes ==================== //
 
     /**
-     * Prepare and send the Jingle Message <propose/>.
+     * Prepare and send the Jingle Message propose.
      *
      * @param recipient to which the call propose is sent
      * @param sid JingleMessage call UUID
@@ -205,6 +204,7 @@ public final class JingleMessageManager extends Manager {
      *
      * @param recipient to which the call retract is sent
      * @param sid JingleMessage call UUID
+     * @param reason JingleReason element
      * @param element may contain a TieBreakElement
      */
     public void sendJingleMessageRetract(Jid recipient, String sid, JingleReason reason, NamedElement element) {
@@ -212,7 +212,7 @@ public final class JingleMessageManager extends Manager {
         sendJingleMessage(recipient, msgRetract);
     }
 
-    //==================== Incoming Call processes ====================//
+    // ==================== Incoming Call processes ==================== //
 
     /**
      * Prepare Jingle Message Ringing and send it to the recipient callee on call received.
@@ -246,13 +246,14 @@ public final class JingleMessageManager extends Manager {
      * @param recipient the JM Reject recipient: Initiator(FullJid) or Responder(BareJid)
      * @param sid the intended Jingle Message call id
      * @param reason the JingleReason xmlElement to be included
+     * @param element may contain a NamedElement
      */
     public void sendJingleMessageReject(Jid recipient, String sid, JingleReason reason, NamedElement element) {
         JingleMessage msgReject = new JingleMessage(JingleMessage.ACTION_REJECT, sid, reason, element);
         sendJingleMessage(recipient, msgReject);
     }
 
-    //==================== common utilities ====================//
+    // ==================== common utilities ==================== //
 
     /**
      * Send Jingle Message finish on end call successful.
@@ -260,6 +261,7 @@ public final class JingleMessageManager extends Manager {
      * @param recipient the recipient callee Jid
      * @param sid the intended Jingle Message call id
      * @param reason the JingleReason xmlElement to be included
+     * @param element may contain e.g. Success Element
      */
     public void sendJingleMessageFinish(Jid recipient, String sid, JingleReason reason, NamedElement element) {
         JingleMessage msgFinish = new JingleMessage(JingleMessage.ACTION_FINISH, sid, reason, element);

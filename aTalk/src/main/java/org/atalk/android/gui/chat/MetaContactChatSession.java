@@ -241,36 +241,6 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Returns the default mobile number used to send sms-es in this session.
-     *
-     * @return the default mobile number used to send sms-es in this session.
-     */
-    @Override
-    public String getDefaultSmsNumber() {
-        String smsNumber;
-        JSONArray jsonArray = metaContact.getDetails("mobile");
-        if (jsonArray != null && jsonArray.length() > 0) {
-            try {
-                smsNumber = jsonArray.getString(0);
-                return smsNumber;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Sets the default mobile number used to send sms-es in this session.
-     *
-     * @param smsPhoneNumber The default mobile number used to send sms-es in this session.
-     */
-    @Override
-    public void setDefaultSmsNumber(String smsPhoneNumber) {
-        metaContact.addDetail("mobile", smsPhoneNumber);
-    }
-
-    /**
      * Initializes all chat transports for this chat session.
      *
      * @param protocolContact the <code>Contact</code> which is to be selected into this instance as the current

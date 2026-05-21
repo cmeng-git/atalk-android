@@ -7,8 +7,25 @@
 -->
 
 <changelog>
-    <release version="5.5.0 (05/04/2026)" versioncode="505000">
+    <release version="6.0.0 (05/21/2026)" versioncode="600000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>aTalk UI does not support SMS text and multimedia features, hence remove all source support i.e. OperationSetSmsMessaging class and all SMS utilities.</change>
+        <change>Remove aTalk Video conferencing features; it requires both server setup and heavy resource loading on aTalk device.</change>
+        <change>Remove all VideoBridge related classes in 8 directories &amp; 4 classes in smackx, and a total of 25 classes in aTalk dir.</change>
+        <change>Fix undesired double firing of incoming call alert notifications when receiving call via JingleMessageSession i.e. onJingleMessagePropose() and processSessionInitiate().</change>
+        <change>Complete revamp jingle_rtp implementation; ensure class extends NameElement and XmlElement appropriately, and avoid mixed handling of classes.</change>
+        <change>Ensure JingleMessageSession ends properly with sending/receiving of 'finish' message, else subsequent call may have problem.</change>
+        <change>New fix implementation for ServiceDiscoveryHelper#discoverInfoNonBlocking end in endless loop if nodeVerHash is null. Required to save a copy of the retrieved discoInfo in local nonCapsCache.</change>
+        <change>Enforce call encryption when enabled. Both parties must define a common encryption mode, else call ends with SecurityError.</change>
+        <change>Remove ZRTP signalling option. ZRTP-hash Element will be included in Jingle RTP session when ZRTP option is enabled.</change>
+        <change>Fix missing function 'ApacheBase64' used by SrtpKeyParam; cause SDES crypt to fail.</change>
+        <change>Update SdpSource to XEP-0339: Source-Specific Media Attributes in Jingle 1.0.1 (2021-10-23) compliance.</change>
+        <change>v5.3.0 release libvpx upgrade may not have happened as script file was not fully updated to use the new v1.16.0.</change>
+        <change>Revert to use libvpx v1.15.2; libvpx 1.16.0 is ABI incompatible with aTalk. It removed support for 32-bit targets (armv7, armv7s, and i386).</change>
+        <change>Bug fixes and enhancements.</change>
+    </release>
+
+    <release version="5.5.0 (05/04/2026)" versioncode="505000">
         <change>JingleMessage must send JM 'reject' to own user, so server will relay to all its resources for action.</change>
         <change>Improve the handling process of JingleMessage and UI during tie-break conditions under multiple resources.</change>
         <change>Fix ServiceDiscoveryHelper #discoverInfoNonBlocking end in endless loop if nodeVerHash is null.</change>

@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
@@ -28,9 +27,8 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Eng Chong Meng
  */
 public class SessionInfo extends AbstractXmlElement {
-    /**
-     * The name space for RTP description elements.
-     */
+    public static String ELEMENT;
+    ;
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:info:1";
 
     /**
@@ -39,8 +37,6 @@ public class SessionInfo extends AbstractXmlElement {
     public static final String ATTR_NAME = "name";
 
     public static final String ATTR_CREATOR = "creator";
-
-    public static final String ELEMENT = Jingle.ELEMENT;
 
     /**
      * Creates a new <code>SessionInfo</code> element; required by DefaultXmlElementProvider().
@@ -88,10 +84,12 @@ public class SessionInfo extends AbstractXmlElement {
      * Creates a <code>SessionInfo</code> instance corresponding to one of the {@link SessionInfoType}.
      *
      * @param type see {@link SessionInfoType}
+     *
      * @return builder instance
      */
     public static Builder builder(SessionInfoType type) {
-        return new Builder(type.toString(), NAMESPACE);
+        ELEMENT = type.toString();
+        return new Builder(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -104,6 +102,7 @@ public class SessionInfo extends AbstractXmlElement {
      * @param muteState SessionInfoType#mute or SessionInfoType#unmute
      * @param name the name of the session to be muted or <code>null</code> if the element pertains to all active sessions
      * @param creator the name of the session to be muted or <code>null</code> if the element pertains to all active sessions
+     *
      * @return builder instance
      */
     public static Builder sessionInfoMute(SessionInfoType muteState, String name, String creator) {

@@ -369,7 +369,6 @@ public class JingleSessionImpl extends JingleSession {
 
         // Inform the client on session terminated.
         notifySessionTerminated(reason);
-
         mManager.unregisterJingleSessionHandler(remote, sid, this);
         return IQ.createResultIQ(sessionTerminate);
     }

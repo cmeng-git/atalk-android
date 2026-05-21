@@ -45,12 +45,6 @@ public abstract class Call extends DataObject {
     public static final String CONFERENCE = "conference";
 
     /**
-     * The name of the <code>Call</code> property which indicates whether the local peer/user
-     * represented by the respective <code>Call</code> is acting as a conference focus.
-     */
-    public static final String CONFERENCE_FOCUS = "conferenceFocus";
-
-    /**
      * An identifier uniquely representing the call; set to same as Jingle Sid if available.
      */
     private final String callId;
@@ -72,23 +66,9 @@ public abstract class Call extends DataObject {
     private final boolean defaultEncryption;
 
     /**
-     * If this flag is set to true according to the account properties related with the
-     * sourceProvider the associated CallSession will set the SIP/SDP attribute (where applicable)
-     */
-    private final boolean sipZrtpAttribute;
-
-    /**
      * The state that this call is currently in.
      */
     private CallState callState = CallState.CALL_INITIALIZATION;
-
-    /**
-     * The telephony conference-related state of this <code>Call</code>. Since a non-conference
-     * <code>Call</code> may be converted into a conference <code>Call</code> at any time, every
-     * <code>Call</code> instance maintains a <code>CallConference</code> instance regardless of whether
-     * the <code>Call</code> in question is participating in a telephony conference.
-     */
-    private CallConference conference;
 
     /**
      * The flag that specifies whether incoming calls into this <code>Call</code> should be auto-answered.
@@ -121,8 +101,6 @@ public abstract class Call extends DataObject {
 
         defaultEncryption = accountID.getAccountPropertyBoolean(
                 ProtocolProviderFactory.DEFAULT_ENCRYPTION, true);
-        sipZrtpAttribute = accountID.getAccountPropertyBoolean(
-                ProtocolProviderFactory.DEFAULT_SIPZRTP_ATTRIBUTE, true);
         useTranslator = accountID.getAccountPropertyBoolean(
                 ProtocolProviderFactory.USE_TRANSLATOR_IN_CONFERENCE, false);
     }
@@ -311,13 +289,7 @@ public abstract class Call extends DataObject {
         CallState oldState = getCallState();
         if (oldState != newState) {
             callState = newState;
-
-            try {
-                fireCallChangeEvent(CallChangeEvent.CALL_STATE_CHANGE, oldState, callState, cause);
-            } finally {
-                if (CallState.CALL_ENDED.equals(getCallState()))
-                    setConference(null);
-            }
+            fireCallChangeEvent(CallChangeEvent.CALL_STATE_CHANGE, oldState, callState, cause);
         }
     }
 
@@ -328,15 +300,6 @@ public abstract class Call extends DataObject {
      */
     public boolean isDefaultEncrypted() {
         return defaultEncryption;
-    }
-
-    /**
-     * Check if to include the ZRTP attribute to SIP/SDP
-     *
-     * @return include the ZRTP attribute to SIP/SDP
-     */
-    public boolean isSipZrtpAttribute() {
-        return sipZrtpAttribute;
     }
 
     /**
@@ -354,17 +317,6 @@ public abstract class Call extends DataObject {
     public abstract int getCallPeerCount();
 
     /**
-     * Gets the indicator which determines whether the local peer represented by this <code>Call</code>
-     * is acting as a conference focus. In the case of SIP, for example, it determines whether the
-     * local peer should send the &quot;isfocus&quot; parameter in the Contact headers of its
-     * outgoing SIP signaling.
-     *
-     * @return <code>true</code> if the local peer represented by this <code>Call</code> is acting as a
-     * conference focus; otherwise, <code>false</code>
-     */
-    public abstract boolean isConferenceFocus();
-
-    /**
      * Adds a specific <code>SoundLevelListener</code> to the list of listeners interested in and
      * notified about changes in local sound level information.
      *
@@ -379,71 +331,6 @@ public abstract class Call extends DataObject {
      * @param l the <code>SoundLevelListener</code> to remove
      */
     public abstract void removeLocalUserSoundLevelListener(SoundLevelListener l);
-
-    /**
-     * Creates a new <code>CallConference</code> instance which is to represent the telephony
-     * conference-related state of this <code>Call</code>. Allows extenders to override and customize
-     * the runtime type of the <code>CallConference</code> to used by this <code>Call</code>.
-     *
-     * @return a new <code>CallConference</code> instance which is to represent the telephony
-     * conference-related state of this <code>Call</code>
-     */
-    protected CallConference createConference() {
-        return new CallConference();
-    }
-
-    /**
-     * Gets the telephony conference-related state of this <code>Call</code>. Since a non-conference
-     * <code>Call</code> may be converted into a conference <code>Call</code> at any time, every
-     * <code>Call</code> instance maintains a <code>CallConference</code> instance regardless of whether
-     * the <code>Call</code> in question is participating in a telephony conference.
-     *
-     * @return a <code>CallConference</code> instance which represents the telephony conference-related
-     * state of this <code>Call</code>.
-     */
-    public CallConference getConference() {
-        if (conference == null) {
-            CallConference newValue = createConference();
-
-            if (newValue == null) {
-                /*
-                 * Call is documented to always have a telephony conference-related state because
-                 * there is an expectation that a 1-to-1 Call can always be turned into a
-                 * conference Call.
-                 */
-                throw new IllegalStateException("conference");
-            }
-            else {
-                setConference(newValue);
-            }
-        }
-        return conference;
-    }
-
-    /**
-     * Sets the telephony conference-related state of this <code>Call</code>. If the invocation modifies
-     * this instance, it adds this <code>Call</code> to the newly set <code>CallConference</code> and fires
-     * a <code>PropertyChangeEvent</code> for the <code>CONFERENCE</code> property to its listeners.
-     *
-     * @param conference the <code>CallConference</code> instance to represent the telephony conference-related
-     * state of this <code>Call</code>
-     */
-    public void setConference(CallConference conference) {
-        if (this.conference != conference) {
-            CallConference oldValue = this.conference;
-
-            this.conference = conference;
-
-            CallConference newValue = this.conference;
-
-            if (oldValue != null)
-                oldValue.removeCall(this);
-            if (newValue != null)
-                newValue.addCall(this);
-
-            firePropertyChange(CONFERENCE, oldValue, newValue);
-        }
-    }
 
     /**
      * Adds a specific <code>PropertyChangeListener</code> to the list of listeners interested in and

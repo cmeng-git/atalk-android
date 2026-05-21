@@ -211,6 +211,7 @@ public class StreamInitiation extends IQ {
 
         public static final String ELEMENT = "file";
         public static final String NAMESPACE = "http://jabber.org/protocol/si/profile/file-transfer";
+
         public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final String name;

@@ -22,15 +22,17 @@ import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.XmlElement;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.provider.Provider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
-import org.jivesoftware.smackx.AbstractExtensionElement;
+import org.jivesoftware.smackx.jingle.provider.JingleContentProviderManager;
+
 import org.jxmpp.JxmppContext;
 
 /**
@@ -38,6 +40,7 @@ import org.jxmpp.JxmppContext;
  * been instantiated for.
  *
  * @param <EE> Class that the stanzas we will be parsing belong to
+ *
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
@@ -73,7 +76,9 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
      * and at the end of the method call it will be on the closing element of the stanza extension.
      *
      * @param parser an XML parser positioned at the stanza's starting element.
+     *
      * @return a new stanza extension instance.
+     *
      * @throws IOException if an error occurs in IO.
      * @throws XmlPullParserException if an error occurs pull parsing the XML.
      * @throws SmackParsingException if an error occurs parsing the XML.
@@ -82,10 +87,12 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
     @Override
     public EE parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws XmlPullParserException, IOException, SmackParsingException, ParseException {
-       EE stanzaExtension;
+        EE stanzaExtension;
         try {
             stanzaExtension = stanzaClass.getDeclaredConstructor().newInstance();
-        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException ignore) {
+        }
+        catch (IllegalAccessException | InstantiationException | NoSuchMethodException |
+               InvocationTargetException ignore) {
             LOGGER.log(Level.WARNING, "Unknown stanza class: " + parser.getName());
             return null;
         }
@@ -101,38 +108,44 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
         while (true) {
             XmlPullParser.Event event = parser.next();
             switch (event) {
-                case START_ELEMENT:
-                    String name = parser.getName();
-                    String namespace = parser.getNamespace();
+            case START_ELEMENT:
+                String name = parser.getName();
+                String namespace = parser.getNamespace();
 
-                    // Timber.d("<%s %s/> class: %s", name, namespace, stanzaExtension.getClass().getSimpleName());
-                    ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(name, namespace);
-                    // Extension element provider may not have been added properly if null
-                    if (provider == null) { //  && !JingleFileTransfer.NAMESPACE_V5.equals(namespace)) {
-                        LOGGER.log(Level.WARNING, "No provider for EE<" + name + " " + namespace + "/>");
-                    } else {
-                        XmlElement childExtension = provider.parse(parser);
-                        if (childExtension instanceof AbstractXmlElement || childExtension instanceof AbstractExtensionElement) {
-                            mBuilder.addChildElement(childExtension);
-                        } else
-                            LOGGER.log(Level.INFO, "Invalid Abstract Element: " + childExtension.getQName());
+                // Timber.d("<%s %s/> class: %s", name, namespace, stanzaExtension.getClass().getSimpleName());
+                Provider<?> provider = JingleContentProviderManager.getJingleContentElementProvider(name);
+                if (provider == null) {
+                    provider = ProviderManager.getExtensionProvider(name, namespace);
+                }
 
+                // Extension element provider may not have been added properly if null
+                if (provider == null) { //  && !JingleFileTransfer.NAMESPACE_V5.equals(namespace)) {
+                    LOGGER.log(Level.WARNING, "No DefaultXmlElement provider for EE<" + name + " " + namespace + "/>");
+                }
+                else {
+                    // LOGGER.log(Level.SEVERE, "Provider for DefaultXmlElement Element: " + name + " " + provider);
+                    NamedElement childExtension = (NamedElement) provider.parse(parser);
+                    if (childExtension != null) {
+                        mBuilder.addChildElement(childExtension);
                     }
-                    break;
+                    else
+                        LOGGER.log(Level.INFO, "Invalid NameElement: " + name);
+                }
+                break;
 
-                case TEXT_CHARACTERS:
-                    mBuilder.setText(parser.getText());
-                    break;
+            case TEXT_CHARACTERS:
+                mBuilder.setText(parser.getText());
+                break;
 
-                case END_ELEMENT:
-                    if (depth == parser.getDepth()) {
-                        break outerloop;
-                    }
-                    break;
+            case END_ELEMENT:
+                if (depth == parser.getDepth()) {
+                    break outerloop;
+                }
+                break;
 
-                // Catch all for incomplete switch (event) statement.
-                default:
-                    break;
+            // Catch all for incomplete switch (event) statement.
+            default:
+                break;
             }
         }
         return stanzaClass.cast(mBuilder.build());

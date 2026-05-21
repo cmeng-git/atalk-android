@@ -12,7 +12,6 @@ import java.util.List;
 
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallPeer;
-import net.java.sip.communicator.service.protocol.ConferenceMember;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
@@ -127,31 +126,6 @@ public abstract class AbstractOperationSetVideoTelephony<
     // work with MediaAware* in media package
     public List<Component> getVisualComponents(CallPeer peer) {
         return ((W) peer).getMediaHandler().getVisualComponents();
-    }
-
-    /**
-     * Returns the <code>ConferenceMember</code> corresponding to the given <code>visualComponent</code>.
-     *
-     * @param peer the parent <code>CallPeer</code>
-     * @param visualComponent the visual <code>Component</code>, which corresponding <code>ConferenceMember</code> we're
-     * looking for
-     *
-     * @return the <code>ConferenceMember</code> corresponding to the given <code>visualComponent</code>.
-     */
-    public ConferenceMember getConferenceMember(CallPeer peer, Component visualComponent) {
-        @SuppressWarnings("unchecked")
-        W w = (W) peer;
-        VideoMediaStream videoStream = (VideoMediaStream) w.getMediaHandler().getStream(MediaType.VIDEO);
-
-        if (videoStream != null) {
-            for (ConferenceMember member : peer.getConferenceMembers()) {
-                Component memberComponent = videoStream.getVisualComponent(member.getVideoSsrc());
-
-                if (visualComponent.equals(memberComponent))
-                    return member;
-            }
-        }
-        return null;
     }
 
     /**

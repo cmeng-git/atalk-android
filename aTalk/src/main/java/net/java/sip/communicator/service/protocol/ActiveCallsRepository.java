@@ -5,15 +5,15 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+
 import net.java.sip.communicator.service.protocol.event.CallChangeAdapter;
 import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
 import net.java.sip.communicator.service.protocol.event.CallEvent;
 
 import org.atalk.impl.timberlog.TimberLog;
-
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
 
 import timber.log.Timber;
 
@@ -24,12 +24,12 @@ import timber.log.Timber;
  *
  * @param <T> <code>Call</code>
  * @param <U> <code>OperationSetBasicTelephony</code>
+ *
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
 public abstract class ActiveCallsRepository<T extends Call, U extends OperationSetBasicTelephony<? extends ProtocolProviderService>>
-        extends CallChangeAdapter
-{
+        extends CallChangeAdapter {
     /**
      * A table mapping call ids against call instances.
      */
@@ -46,8 +46,7 @@ public abstract class ActiveCallsRepository<T extends Call, U extends OperationS
      * @param opSet a reference to the <code>AbstractOperationSetBasicTelephony</code> extension that created
      * us.
      */
-    public ActiveCallsRepository(U opSet)
-    {
+    public ActiveCallsRepository(U opSet) {
         this.parentOperationSet = opSet;
     }
 
@@ -56,8 +55,7 @@ public abstract class ActiveCallsRepository<T extends Call, U extends OperationS
      *
      * @param call CallSipImpl
      */
-    public void addCall(T call)
-    {
+    public void addCall(T call) {
         activeCalls.put(call.getCallId(), call);
         call.addCallChangeListener(this);
     }
@@ -65,12 +63,10 @@ public abstract class ActiveCallsRepository<T extends Call, U extends OperationS
     /**
      * If <code>evt</code> indicates that the call has been ended we remove it from the repository.
      *
-     * @param evt the <code>CallChangeEvent</code> instance containing the source calls and its old and new
-     * state.
+     * @param evt the <code>CallChangeEvent</code> instance containing the source calls and its old and new state.
      */
     @Override
-    public void callStateChanged(CallChangeEvent evt)
-    {
+    public void callStateChanged(CallChangeEvent evt) {
         if (evt.getEventType().equals(CallChangeEvent.CALL_STATE_CHANGE)
                 && evt.getNewValue().equals(CallState.CALL_ENDED)) {
             T sourceCall = activeCalls.remove(evt.getSourceCall().getCallId());
@@ -85,8 +81,7 @@ public abstract class ActiveCallsRepository<T extends Call, U extends OperationS
      *
      * @return an iterator over all currently active (non-ended) calls.
      */
-    public Iterator<T> getActiveCalls()
-    {
+    public Iterator<T> getActiveCalls() {
         synchronized (activeCalls) {
             /*
              * Given that we know the elements that will go into the new List, it is more optimal in
@@ -101,8 +96,7 @@ public abstract class ActiveCallsRepository<T extends Call, U extends OperationS
      *
      * @return the number of calls currently tracked by this repository.
      */
-    public int getActiveCallCount()
-    {
+    public int getActiveCallCount() {
         synchronized (activeCalls) {
             return activeCalls.size();
         }
@@ -115,8 +109,7 @@ public abstract class ActiveCallsRepository<T extends Call, U extends OperationS
      * @param eventID the ID of the event to dispatch
      * @param sourceCall the call on which the event has occurred.
      */
-    protected void fireCallEvent(int eventID, Call sourceCall)
-    {
+    protected void fireCallEvent(int eventID, Call sourceCall) {
         fireCallEvent(eventID, sourceCall, null);
     }
 

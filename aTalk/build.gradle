@@ -57,8 +57,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 505000
-        versionName "5.5.0"
+        versionCode 600000
+        versionName "6.0.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -223,8 +223,8 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.media3:media3-exoplayer:1.10.0'
-    implementation 'androidx.media3:media3-ui:1.10.0'
+    implementation 'androidx.media3:media3-exoplayer:1.10.1'
+    implementation 'androidx.media3:media3-ui:1.10.1'
     // implementation "androidx.webkit:webkit:1.14.0"
 
     implementation('com.jakewharton.timber:timber:5.0.1') {
@@ -238,7 +238,7 @@ dependencies {
     implementation 'com.github.evgenyneu:js-evaluator-for-android:v6.0.0'
 
     implementation 'com.github.yalantis:ucrop:2.2.10'
-    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'com.google.android.material:material:1.14.0'
 
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta05'
     implementation 'com.squareup.okhttp3:okhttp:5.3.2'
@@ -252,8 +252,12 @@ dependencies {
     // or its super classes (declaration of 'org.apache.commons.codec.binary.BinaryCodec' appears in /system/framework/org.apache.http.legacy.jar)
     implementation 'commons-codec:commons-codec:1.22.0'
     implementation 'org.apache.commons:commons-text:1.15.0'
-    implementation 'org.apache.james:apache-mime4j-core:0.8.13'
+    implementation 'org.apache.james:apache-mime4j-core:0.8.14'
     implementation 'org.bitlet:weupnp:0.1.4'
+
+    // Do classRename sdes4j:1.1.5 import 'org.apache.commons.codec.binary.Base64' to '.binary.ApacheBase64'
+    // commons-codec:1.22.0 now provide Base64 class directly.
+    implementation 'ch.imvs:sdes4j:1.1.5'
 
     // bcprov-jdk15on-1.65 works with Android. From bcprov-jdk15on-1.66, Java 16 (major version 59) is required which Android Studio does not support.
     // Can also use jdk15to18: bcprov-jdk15to18-167.jar - not working on aTalk as conflict with others e.g. zrtp4j, smack-openpgp
@@ -392,19 +396,6 @@ dependencies {
         classDelete 'org.ice4j.stack.NetAccessManager**'
     }
 
-    // implementation 'ch.imvs:sdes4j:1.1.5' - not compatible due to java library use
-    // libraries from maven repository but need to change Base64 to ApacheBase64 to avoid conflict with android
-    // declaration of 'org.apache.commons.codec.binary.Base64' appears in /system/framework/org.apache.http.legacy.boot.jar
-    implementation jarjar.repackage("sde4j-1.1.4.jar") {
-        from('ch.imvs:sdes4j:1.1.4') {
-            transitive = false
-        }
-        // destinationDir new File("${projectDir}/libs")
-
-        // v1.1.4 uses binary.Base64
-        classRename 'org.apache.commons.codec.binary.Base64', 'org.apache.commons.codec.binary.ApacheBase64'
-    }
-
     // smack-bosh
     implementation jarjar.repackage("smack-bosh-${smackVersion}.jar") {
         from("org.igniterealtime.smack:smack-bosh:${smackVersion}") {
@@ -498,6 +489,7 @@ dependencies {
         classDelete 'org.jivesoftware.smackx.pubsub.PubSubManager**'
         // Update RetractItem implementation to confirm to 1.30.0 (2025-11-11)
         classDelete 'org.jivesoftware.smackx.pubsub.RetractItem**'
+        classDelete 'org.jivesoftware.smackx.pubsub.provider.RetractEventProvider**'
 
         // Custom smack classes that handle the XEP-0264 <File/> element
         classDelete 'org.jivesoftware.smackx.si.packet.StreamInitiation**'

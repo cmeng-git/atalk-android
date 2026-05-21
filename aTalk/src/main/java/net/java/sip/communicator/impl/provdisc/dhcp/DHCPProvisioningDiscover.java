@@ -86,7 +86,6 @@ public class DHCPProvisioningDiscover implements Runnable {
         mPort = port;
         mOption = option;
         xid = new Random().nextInt();
-
         socket = new DatagramSocket(port);
 
         /*

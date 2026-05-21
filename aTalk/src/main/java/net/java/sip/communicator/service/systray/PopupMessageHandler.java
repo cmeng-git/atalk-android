@@ -45,7 +45,6 @@ public interface PopupMessageHandler
      * Returns a preference index, which indicates how many features the handler
      * implements. Implementer should calculate preference index by adding "1"
      * for each of the following features that the implementation supports:
-     *
      * 1) showing images
      * 2) detecting clicks
      * 3) being able to match a click to a message

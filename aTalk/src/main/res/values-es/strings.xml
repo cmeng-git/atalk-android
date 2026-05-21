@@ -82,7 +82,7 @@
     <string name="call_transfer">Transferir</string>
     <string name="call_transfer_failed">Error al continuar con la transferencia de llamadas: %1$s &#8674; %2$s\n%3$s</string>
     <string name="call_transfer_hint">Seleccione el nombre del contacto al que desea transferir y presione Transferir.</string>
-    <string name="call_transfer_msg">%1$s transferencia de llamadas a&#8230; %2$s</string>
+    <string name="call_transfer_msg">%1$s transferencia de llamadas a %2$s</string>
 
     <string name="attach_picture">Fotos</string>
     <string name="attach_take_picture">Hacer Foto</string>
@@ -158,7 +158,8 @@
     <string name="call_audio">Llamada de audio</string>
     <string name="call_answered">%1$s ha contestado la llamada.</string>
     <string name="call_disable_on_fault">aTalk no ha podido inicializar %1$s\nTodas las llamadas/servicios de medios estarán deshabilitados.\n%2$s</string>
-    <string name="call_ended">La persona que llama ha finalizado la llamada.: %1$s</string>
+    <string name="call_ended">Finalizó la llamada</string>
+    <string name="call_ended_by_remote">La persona que llama ha finalizado la llamada.: %1$s</string>
     <string name="call_error">La parte remota devuelve un error: %1$s</string>
     <string name="call_failed">Llamada fallida</string>
     <string name="call_history_name">Histórico de Llamadas</string>
@@ -344,10 +345,6 @@
     <string name="refresh_store_omemo">XEP-0384: Cifrado OMEMO</string>
 
     <string name="unregistered_message">Error en el inicio de sesión de conexión de la cuenta:\nNombre de usuario: %1$s\nServidor: %2$s\nLa cuenta está fuera de línea.</string>
-    <string name="create_videoBridge">Crear una pasarela de vídeo&#8230;</string>
-    <string name="create_videoBridge_menu">Crear una pasarela de vídeo</string>
-    <string name="create_join_video_conference">Crear / Unirse a una videoconferencia</string>
-    <string name="create_video_conference">Crear una nueva videoconferencia para esta sala de chat</string>
     <string name="video_format_not_supported">Error al configurar la vista previa de la cámara del dispositivo en: %1$s; Excepción: %2$s.</string>
     <string name="disconnected">Desconectado</string>
     <string name="disconnecting_">Desconectando %1$s</string>
@@ -689,7 +686,6 @@
     <string name="callinfo_call_information">Información de la llamada</string>
     <string name="callinfo_call_transport">Señalización del transporte de llamadas:</string>
     <string name="callinfo_codec">Codificador/Frecuencia:</string>
-    <string name="callinfo_conference_focus">Tema central de la conferencia:</string>
     <string name="callinfo_default_encrypted">Cifrado habilitado:</string>
     <string name="callinfo_jitter">Inestabilidad:</string>
     <string name="callinfo_key_exchange_protocol">Protocolo de intercambio de claves</string>
@@ -699,7 +695,6 @@
     <string name="callinfo_media_srtp">SRTP:</string>
     <string name="callinfo_media_stream_transport_protocol">Protocolo de transporte de secuencias de medios:</string>
     <string name="callinfo_na">N.A.</string>
-    <string name="callinfo_peer_count">Recuento de participantes:</string>
     <string name="callinfo_remote_ip">IP/Puerto remoto:</string>
     <string name="callinfo_rtt">RTT:</string>
     <string name="callinfo_details">Información de los detalles de la llamada</string>
@@ -1071,8 +1066,6 @@
     <string name="sec_protocols_title">Protocolos de seguridad</string>
     <string name="sec_protocols_message">Por favor, seleccionar los protocolos deseados en orden</string>
     <string name="discard">Descartar</string>
-    <string name="sec_zrtp_signalling_on">ZRTP será anunciado sobre el protocolo de señalización</string>
-    <string name="sec_zrtp_signalling_off">No habrá ningún anuncio ZRTP</string>
 
     <!-- STUN/Jingle Nodes list -->
     <string name="service_gui_SERVERS_LIST_ADD_SERVER">Añadir servidor</string>
@@ -1100,7 +1093,6 @@
     <string name="security_sdes_dlg_title">Selecciona las suites de cifrado deseadas</string>
     <string name="security_sdes_title">Suites de cifrado SDES</string>
     <string name="security_zrtp_options">Opciones ZRTP</string>
-    <string name="security_zrtp_signalling">Señalización ZRTP</string>
 
     <!-- Common preferences -->
     <string name="audio_encoding">Codificación de audio</string>

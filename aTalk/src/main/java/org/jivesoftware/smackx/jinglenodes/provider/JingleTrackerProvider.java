@@ -5,22 +5,23 @@ import static org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ.ATTR_P
 import static org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ.ATTR_PROTOCOL;
 import static org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ.ATTR_VERIFIED;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
+import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
 import org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ;
+
 import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.impl.JidCreate;
-import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
 
-import java.io.IOException;
-import java.text.ParseException;
-
-public class JingleTrackerProvider extends IqProvider<JingleTrackerIQ>
-{
+public class JingleTrackerProvider extends IqProvider<JingleTrackerIQ> {
 
     @Override
     public JingleTrackerIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
@@ -51,7 +52,7 @@ public class JingleTrackerProvider extends IqProvider<JingleTrackerIQ>
                 final String protocol = parser.getAttributeValue(null, ATTR_PROTOCOL);
                 final TrackerEntry.Policy policy = TrackerEntry.Policy.valueOf("_"
                         + parser.getAttributeValue(null, ATTR_POLICY));
-                final String address = parser.getAttributeValue(null,  ATTR_ADDRESS);
+                final String address = parser.getAttributeValue(null, ATTR_ADDRESS);
                 final String verified = parser.getAttributeValue(null, ATTR_VERIFIED);
 
                 if (address != null && address.length() > 0) {

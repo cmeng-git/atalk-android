@@ -16,26 +16,18 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import javax.xml.namespace.QName;
-
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractElement;
 
 /**
  * Represents the <code>payload-type</code> elements described.
  * XEP-0167: Jingle RTP Sessions 1.2.1 (2020-09-29)
+ * @see <a href="https://xmpp.org/extensions/xep-0167.html#format">XEP-0167 § 4. Application Format</a>
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
- * @see <a href="https://xmpp.org/extensions/xep-0167.html#format">XEP-0167 § 4. Application Format</a>
  */
-public class PayloadType extends AbstractXmlElement {
-    /**
-     * The name of the "payload-type" element.
-     */
+public class PayloadType extends AbstractElement {
     public static final String ELEMENT = "payload-type";
-
-    // Inherit the NAMESPACE from its parent for NamedElement.
-    public static final QName QNAME = new QName(RtpDescription.NAMESPACE, ELEMENT);
 
     /**
      * The name of the <code>channels</code> <code>payload-type</code> argument.
@@ -70,13 +62,10 @@ public class PayloadType extends AbstractXmlElement {
 
     /**
      * Creates a new {@link PayloadType} instance.
-     *
-     * The namespace of the "payload-type" element;
      * PayloadType is currently a child element of standard RtpDescription;
-     * // @see org.jivesoftware.smackx.colibri.ColibriConferenceIQ
      */
     public PayloadType() {
-        super(builder(RtpDescription.NAMESPACE));
+        super(builder());
     }
 
     public PayloadType(Builder builder) {
@@ -154,17 +143,40 @@ public class PayloadType extends AbstractXmlElement {
         setAttribute(ATTR_CHANNELS, channels);
     }
 
-    public static Builder builder(String nameSpace) {
-        return new Builder(ELEMENT, nameSpace);
+    public static Builder builder() {
+        return new Builder(ELEMENT);
     }
 
     /**
-     * Builder for JingleContentTransport. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
+     * Builder for JingleContentTransport. Use {@link AbstractElement.Builder#Builder(String)}
      * to obtain a new instance and {@link #build} to build the JingleContentTransport.
      */
-    public static class Builder extends AbstractXmlElement.Builder<Builder, PayloadType> {
-        protected Builder(String element, String namespace) {
-            super(element, namespace);
+    public static class Builder extends AbstractElement.Builder<PayloadType> {
+        protected Builder(String element) {
+            super(element);
+        }
+
+        /**
+         * Specifies the payload identifier for this encoding.
+         *
+         * @param id the payload type id
+         * @return builder instance
+         */
+        public Builder setId(int id) {
+            addAttribute(ATTR_ID, id);
+            return this;
+        }
+
+        /**
+         * Sets the name of the encoding, or as per the XEP: the appropriate subtype of the MIME type.
+         * Setting this field is RECOMMENDED for static payload types, REQUIRED for dynamic payload types.
+         *
+         * @param name the name of this encoding.
+         * @return builder instance
+         */
+        public Builder setName(String name) {
+            addAttribute(ATTR_NAME, name);
+            return this;
         }
 
         /**
@@ -186,17 +198,6 @@ public class PayloadType extends AbstractXmlElement {
          */
         public Builder setClockrate(int clockrate) {
             addAttribute(ATTR_CLOCKRATE, clockrate);
-            return this;
-        }
-
-        /**
-         * Specifies the payload identifier for this encoding.
-         *
-         * @param id the payload type id
-         * @return builder instance
-         */
-        public Builder setId(int id) {
-            addAttribute(ATTR_ID, id);
             return this;
         }
 
@@ -223,24 +224,12 @@ public class PayloadType extends AbstractXmlElement {
         }
 
         /**
-         * Sets the name of the encoding, or as per the XEP: the appropriate subtype of the MIME type.
-         * Setting this field is RECOMMENDED for static payload types, REQUIRED for dynamic payload types.
-         *
-         * @param name the name of this encoding.
-         * @return builder instance
-         */
-        public Builder setName(String name) {
-            addAttribute(ATTR_NAME, name);
-            return this;
-        }
-
-        /**
          * Adds an SDP parameter to the list that we already have registered for this payload type.
          *
          * @param parameter an SDP parameter for this encoding.
          * @return builder instance
          */
-        public Builder addParameter(ParameterElement parameter) {
+        public Builder addParameter(Parameter parameter) {
             // parameters are the only extensions we can have so let's use super's list.
             addChildElement(parameter);
             return this;

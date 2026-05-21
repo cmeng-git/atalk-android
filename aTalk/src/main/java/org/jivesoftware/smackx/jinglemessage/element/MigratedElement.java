@@ -61,8 +61,8 @@ public class MigratedElement implements NamedElement {
     }
 
     public int equals(MigratedElement other) {
-        if (other instanceof MigratedElement) {
-            String uuid = ((MigratedElement) other).getUuidd();
+        if (other != null) {
+            String uuid = other.getUuidd();
             return getUuidd().compareTo(uuid);
         }
         return -1;

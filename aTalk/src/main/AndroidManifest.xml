@@ -69,6 +69,7 @@
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@drawable/ic_logo"
+        android:enableOnBackInvokedCallback="true"
         android:label="@string/application_name"
         android:logo="@drawable/ic_notification"
         android:networkSecurityConfig="@xml/network_security_config"

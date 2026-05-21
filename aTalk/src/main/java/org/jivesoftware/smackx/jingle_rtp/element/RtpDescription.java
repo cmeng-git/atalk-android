@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.XmlElement;
 
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
@@ -32,15 +34,10 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Eng Chong Meng
  */
 public class RtpDescription extends JingleContentDescription {
-    /**
-     * The name of the "description" element.
-     */
     public static final String ELEMENT = "description";
-
-    /**
-     * The name space for RTP description elements.
-     */
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:1";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the <code>media</code> description argument.

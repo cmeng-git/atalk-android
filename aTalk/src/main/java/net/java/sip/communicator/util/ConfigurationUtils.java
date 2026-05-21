@@ -401,16 +401,6 @@ public class ConfigurationUtils {
             = "gui.contactlist.HIDE_ADDRESS_IN_CALL_HISTORY_TOOLTIP_ENABLED";
 
     /**
-     * Texts to notify that sms has been sent or sms has been received.
-     */
-    private static boolean isSmsNotifyTextDisabled = false;
-
-    /**
-     * To disable displaying sms delivered message or sms received.
-     */
-    private static final String SMS_MSG_NOTIFY_TEXT_DISABLED_PROP = "gui.contactlist.SMS_MSG_NOTIFY_TEXT_DISABLED_PROP";
-
-    /**
      * Whether domain will be shown in receive call dialog.
      */
     private static boolean isHideDomainInReceivedCallDialogEnabled = false;
@@ -468,16 +458,6 @@ public class ConfigurationUtils {
     public static final String pWebPage = "gui.WEB_PAGE_ACCESS";
     private static final String pWindowTransparency = "gui.WINDOW_TRANSPARENCY";
     private static final String pHeadsUpEnable = P_KEY_HEADS_UP_ENABLE;
-
-    /**
-     * Indicates if phone numbers should be normalized before dialed.
-     */
-    private static boolean isNormalizePhoneNumber;
-
-    /**
-     * Indicates if a string containing alphabetical characters might be considered as a phone number.
-     */
-    private static boolean acceptPhoneNumberWithAlphaChars;
 
     /**
      * The name of the single interface property.
@@ -817,12 +797,7 @@ public class ConfigurationUtils {
 
         isChatRoomConfigDisabled = mConfigService.getBoolean(CHAT_ROOM_CONFIG_DISABLED_PROP, isChatRoomConfigDisabled);
 
-        isNormalizePhoneNumber = mConfigService.getBoolean("gui.NORMALIZE_PHONE_NUMBER", true);
-
         alerterEnabled = mConfigService.getBoolean(ALERTER_ENABLED_PROP, true);
-
-        // Load the "ACCEPT_PHONE_NUMBER_WITH_ALPHA_CHARS" property.
-        acceptPhoneNumberWithAlphaChars = mConfigService.getBoolean("gui.ACCEPT_PHONE_NUMBER_WITH_ALPHA_CHARS", true);
 
         isHideAddressInCallHistoryTooltipEnabled = mConfigService.getBoolean(HIDE_ADDR_IN_CALL_HISTORY_TOOLTIP_PROPERTY,
                 isHideAddressInCallHistoryTooltipEnabled);
@@ -837,7 +812,6 @@ public class ConfigurationUtils {
 
         hideExtendedAwayStatus = mConfigService.getBoolean(pHideExtendedAwayStatus, hideExtendedAwayStatus);
 
-        isSmsNotifyTextDisabled = mConfigService.getBoolean(SMS_MSG_NOTIFY_TEXT_DISABLED_PROP, isSmsNotifyTextDisabled);
         showMasterPasswordWarning = mConfigService.getBoolean(MASTER_PASS_WARNING_PROP, true);
 
         // Quite Time settings
@@ -1594,25 +1568,6 @@ public class ConfigurationUtils {
     }
 
     /**
-     * Returns {@code true} if phone numbers should be normalized, {@code false} otherwise.
-     *
-     * @return {@code true} if phone numbers should be normalized, {@code false} otherwise.
-     */
-    public static boolean isNormalizePhoneNumber() {
-        return isNormalizePhoneNumber;
-    }
-
-    /**
-     * Updates the "NORMALIZE_PHONE_NUMBER" property.
-     *
-     * @param isNormalize indicates to the user interface whether all dialed phone numbers should be normalized
-     */
-    public static void setNormalizePhoneNumber(boolean isNormalize) {
-        isNormalizePhoneNumber = isNormalize;
-        mConfigService.setProperty("gui.NORMALIZE_PHONE_NUMBER", Boolean.toString(isNormalize));
-    }
-
-    /**
      * Returns {@code true} if window alerter is enabled (tack bar or dock icon).
      *
      * @return {@code true} if window alerter is enables, {@code false} otherwise.
@@ -1722,29 +1677,6 @@ public class ConfigurationUtils {
     }
 
     /**
-     * Returns {@code true} if a string with a alphabetical character might be considered as
-     * a phone number. {@code false} otherwise.
-     *
-     * @return {@code true} if a string with a alphabetical character might be considered as
-     * a phone number. {@code false} otherwise.
-     */
-    public static boolean acceptPhoneNumberWithAlphaChars() {
-        return acceptPhoneNumberWithAlphaChars;
-    }
-
-    /**
-     * Updates the "ACCEPT_PHONE_NUMBER_WITH_CHARS" property.
-     *
-     * @param accept indicates to the user interface whether a string with alphabetical characters might be
-     * accepted as a phone number.
-     */
-    public static void setAcceptPhoneNumberWithAlphaChars(boolean accept) {
-        acceptPhoneNumberWithAlphaChars = accept;
-        mConfigService.setProperty("gui.ACCEPT_PHONE_NUMBER_WITH_ALPHA_CHARS",
-                Boolean.toString(acceptPhoneNumberWithAlphaChars));
-    }
-
-    /**
      * Returns {@code true} if status changed should be shown in chat history area, {@code false} otherwise.
      *
      * @return {@code true} if status changed should be shown in chat history area, {@code false} otherwise.
@@ -1814,15 +1746,6 @@ public class ConfigurationUtils {
      */
     public static boolean isHideAddressInCallHistoryTooltipEnabled() {
         return isHideAddressInCallHistoryTooltipEnabled;
-    }
-
-    /**
-     * Whether to display or not the text notifying that a message is a incoming or outgoing sms message.
-     *
-     * @return whether to display the text notifying that a message is sms.
-     */
-    public static boolean isSmsNotifyTextDisabled() {
-        return isSmsNotifyTextDisabled;
     }
 
     /**

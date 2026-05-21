@@ -36,13 +36,7 @@ import org.jivesoftware.smackx.thumbnails.component.ThumbnailedFile;
  * @author Eng Chong Meng
  */
 public class ThumbnailElement implements XmlElement {
-    /**
-     * The name of the XML element used for transport of thumbnail parameters.
-     */
     public static final String ELEMENT = "thumbnail";
-    /**
-     * The names XMPP space that the thumbnail elements belong to.
-     */
     public static final String NAMESPACE = "urn:xmpp:thumbs:1";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);

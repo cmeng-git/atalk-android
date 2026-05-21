@@ -14,11 +14,9 @@ import android.view.ViewGroup;
 import java.awt.Dimension;
 import java.net.InetSocketAddress;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.TransportProtocol;
 import net.java.sip.communicator.service.protocol.media.CallPeerMediaHandler;
@@ -77,8 +75,8 @@ public class CallInfoDialogFragment extends BaseDialogFragment {
     private View viewContainer;
 
     /**
-     * Factory method that creates new dialog fragment and injects the <code>callKey</code> into the dialog arguments
-     * bundle.
+     * Factory method that creates new dialog fragment and injects the <code>callKey</code>
+     * into the dialog arguments bundle.
      *
      * @param callKey the key string that identifies active call in {@link CallManager}.
      *
@@ -158,26 +156,13 @@ public class CallInfoDialogFragment extends BaseDialogFragment {
      * Updates the view to display actual call information.
      */
     private void doUpdateView() {
-        CallConference conference = mCall.getConference();
-        List<Call> calls = conference.getCalls();
-        if (calls.isEmpty())
-            return;
-
-        Call aCall = calls.get(0);
-        // Identity.
-        setTextViewValue(R.id.identity, aCall.getProtocolProvider().getAccountID().getDisplayName());
-        // Peer count.
-        setTextViewValue(R.id.peerCount, String.valueOf(conference.getCallPeerCount()));
-        // Conference focus.
-        setTextViewValue(R.id.conferenceFocus, String.valueOf(conference.isConferenceFocus()));
-        // Preferred transport.
-        TransportProtocol preferredTransport = aCall.getProtocolProvider().getTransportProtocol();
-        setTextViewValue(R.id.transport, preferredTransport.toString());
-
-        List<CallPeer> callPeers = conference.getCallPeers();
-        if (callPeers.isEmpty())
-            return;
-        constructPeerInfo(callPeers.get(0));
+        if (mCall != null) {
+            // Identity.
+            setTextViewValue(R.id.identity, mCall.getProtocolProvider().getAccountID().getDisplayName());
+            // Preferred transport.
+            TransportProtocol preferredTransport = mCall.getProtocolProvider().getTransportProtocol();
+            setTextViewValue(R.id.transport, preferredTransport.toString());
+        }
     }
 
     /**
@@ -564,27 +549,6 @@ public class CallInfoDialogFragment extends BaseDialogFragment {
     }
 
     /**
-     * Calculates media statistics for all peers. This must be executed on non UI thread or the network on UI thread
-     * exception will occur.
-     */
-    private void updateMediaStats() {
-        CallConference conference = mCall.getConference();
-
-        for (CallPeer callPeer : conference.getCallPeers()) {
-            if (!(callPeer instanceof MediaAwareCallPeer)) {
-                continue;
-            }
-
-            CallPeerMediaHandler<?> callPeerMediaHandler = ((MediaAwareCallPeer<?, ?, ?>) callPeer).getMediaHandler();
-            if (callPeerMediaHandler == null) {
-                continue;
-            }
-            calcStreamMediaStats(callPeerMediaHandler.getStream(MediaType.AUDIO));
-            calcStreamMediaStats(callPeerMediaHandler.getStream(MediaType.VIDEO));
-        }
-    }
-
-    /**
      * Calculates media stream statistics.
      *
      * @param mediaStream the media stream that will have it's statistics recalculated.
@@ -619,7 +583,8 @@ public class CallInfoDialogFragment extends BaseDialogFragment {
                     this.notify();
                 }
                 this.join();
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -629,13 +594,12 @@ public class CallInfoDialogFragment extends BaseDialogFragment {
             synchronized (this) {
                 while (run) {
                     try {
-                        // Recalculate statistics and refresh view.
-                        updateMediaStats();
                         updateView();
 
                         // place loop in wait for next update and release lock
                         this.wait(1000);
-                    } catch (InterruptedException e) {
+                    }
+                    catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }

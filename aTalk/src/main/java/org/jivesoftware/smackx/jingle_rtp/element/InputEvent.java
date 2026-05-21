@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
@@ -25,12 +27,10 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Eng Chong Meng
  */
 public class InputEvent extends AbstractXmlElement {
-    /**
-     * Name of the XML element representing the extension.
-     */
     public static final String ELEMENT = "inputevt";
-
     public static final String NAMESPACE = "http://jitsi.org/protocol/inputevt";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     public InputEvent() {
         super(getBuilder());

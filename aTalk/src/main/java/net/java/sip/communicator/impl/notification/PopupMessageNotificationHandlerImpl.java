@@ -50,7 +50,6 @@ public class PopupMessageNotificationHandlerImpl implements PopupMessageNotifica
             popupMsg.setMessageType(data.getMessageType());
             popupMsg.setTimeout(action.getTimeout());
             popupMsg.setGroup(action.getGroupName());
-
             sysTray.showPopupMessage(popupMsg);
         }
         // Allow message to be empty? since some protocols allow empty lines.

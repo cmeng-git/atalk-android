@@ -7,9 +7,7 @@ package net.java.sip.communicator.service.protocol;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import net.java.sip.communicator.service.protocol.event.ChatRoomConferencePublishedListener;
 import net.java.sip.communicator.service.protocol.event.ChatRoomLocalUserRoleListener;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceListener;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPropertyChangeListener;
@@ -19,8 +17,10 @@ import net.java.sip.communicator.service.protocol.event.ChatRoomPropertyChangeLi
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.omemo.OmemoManager;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -282,7 +282,6 @@ public interface ChatRoom {
 
     /**
      * Invites another user to this room.
-     *
      * If the room is password-protected, the invitee will receive a password to use to join the
      * room. If the room is members-only, the the invitee may be added to the member list.
      *
@@ -539,16 +538,6 @@ public interface ChatRoom {
     void revokeVoice(String nickname);
 
     /**
-     * Publishes a <code>ConferenceDescription</code> to the chat room.
-     *
-     * @param cd the description to publish
-     * @param name the name of the conference
-     *
-     * @return the published conference
-     */
-    ConferenceDescription publishConference(ConferenceDescription cd, String name);
-
-    /**
      * Updates the presence status of private messaging contact.
      *
      * @param chatRoomMember the chatRoom member.
@@ -561,36 +550,6 @@ public interface ChatRoom {
      * @param contact the contact.
      */
     void updatePrivateContactPresenceStatus(Contact contact);
-
-    /**
-     * Adds a listener that will be notified when a member of this chat room has published a
-     * <code>ConferenceDescription</code> to the room.
-     *
-     * @param listener the listener to add.
-     */
-    void addConferencePublishedListener(ChatRoomConferencePublishedListener listener);
-
-    /**
-     * Removes a listener that was being notified when a member of this chat room had published a
-     * <code>ConferenceDescription</code> to the room.
-     *
-     * @param listener the listener to remove.
-     */
-    void removeConferencePublishedListener(ChatRoomConferencePublishedListener listener);
-
-    /**
-     * Returns cached <code>ConferenceDescription</code> instances.
-     *
-     * @return the cached <code>ConferenceDescription</code> instances.
-     */
-    Map<String, ConferenceDescription> getCachedConferenceDescriptions();
-
-    /**
-     * Returns the number of cached <code>ConferenceDescription</code> instances.
-     *
-     * @return the number of cached <code>ConferenceDescription</code> instances.
-     */
-    int getCachedConferenceDescriptionSize();
 
     /**
      * Destroys the chat room.

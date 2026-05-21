@@ -28,14 +28,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Eng Chong Meng
  */
 public class RtcpFb extends AbstractXmlElement {
-    /**
-     * The name of the RTCP feedback element.
-     */
     public static final String ELEMENT = "rtcp-fb";
-
-    /**
-     * The name space for RTP feedback elements.
-     */
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:rtcp-fb:0";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
@@ -100,10 +93,10 @@ public class RtcpFb extends AbstractXmlElement {
         /**
          * Adds a specific parameter (as defined by Source-Specific Media Attributes in Jingle) to this source.
          *
-         * @param parameter the <code>ParameterElement</code> to add to this source
+         * @param parameter the <code>Parameter</code> to add to this source
          * @return builder instance
          */
-        public Builder addParameter(ParameterElement parameter) {
+        public Builder addParameter(Parameter parameter) {
             addChildElement(parameter);
             return this;
         }

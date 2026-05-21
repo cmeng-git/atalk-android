@@ -833,7 +833,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         if (scHomeDirLocation == null) {
             // no luck, check whether user has specified a custom name in the system properties
-            // return "/data/user/0/org.atalk.ohos/files" linked to /data/data/..
+            // return "/data/user/0/org.atalk.android/files" linked to /data/data/..
             scHomeDirLocation = getSystemProperty(PNAME_SC_HOME_DIR_LOCATION);
 
             if (scHomeDirLocation == null)
@@ -865,7 +865,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         if (scHomeDirName == null) {
             // no luck, check whether user has specified a custom name in the system properties
-            // return "/data/user/0/org.atalk.ohos/files" linked to /data/data/..
+            // return "/data/user/0/org.atalk.android/files" linked to /data/data/..
             scHomeDirName = getSystemProperty(PNAME_SC_HOME_DIR_NAME);
 
             if (scHomeDirName == null)

@@ -69,9 +69,9 @@ public class AppCallListener implements CallListener, CallChangeListener {
      *
      * Delivers the <code>CallEvent</code> to the AWT event dispatching thread.
      */
-    public void incomingCallReceived(CallEvent ev) {
-        onCallEvent(ev);
-        ev.getSourceCall().addCallChangeListener(this);
+    public void incomingCallReceived(CallEvent event) {
+        onCallEvent(event);
+        event.getSourceCall().addCallChangeListener(this);
     }
 
     /**
@@ -97,14 +97,14 @@ public class AppCallListener implements CallListener, CallChangeListener {
      * Notifies this <code>CallListener</code> about a specific <code>CallEvent</code>. Executes in whichever
      * thread brought the event to this listener. Delivers the event to the AWT event dispatching thread.
      *
-     * @param evt the <code>CallEvent</code> this <code>CallListener</code> is being notified about
+     * @param event the <code>CallEvent</code> this <code>CallListener</code> is being notified about
      */
-    protected void onCallEvent(final CallEvent evt) {
-        Call call = evt.getSourceCall();
+    protected void onCallEvent(final CallEvent event) {
+        Call call = event.getSourceCall();
         String sid;
 
-        Timber.d("Received CallEvent: %s: %s", evt.getEventID(), call.getCallId());
-        switch (evt.getEventID()) {
+        Timber.d("Received CallEvent: %s: %s", event.getEventId(), call.getCallId());
+        switch (event.getEventId()) {
         // Triggered by outgoing call after session-initiate
         case CallEvent.CALL_INITIATED:
             storeSpeakerPhoneStatus();
@@ -115,6 +115,7 @@ public class AppCallListener implements CallListener, CallChangeListener {
             break;
 
         case CallEvent.CALL_RECEIVED:
+        case CallEvent.CALL_RECEIVED_JM:
             // cmeng 20220529: Allow two active calls to support call in waiting
             if (CallManager.getActiveCallsCount() > 1) {
                 CallManager.hangupCall(call);
@@ -156,7 +157,7 @@ public class AppCallListener implements CallListener, CallChangeListener {
                     int msgType = jmCall || !aTalkApp.isDeviceLocked() ?
                             SystrayService.HEADS_UP_INCOMING_CALL : SystrayService.JINGLE_INCOMING_CALL;
                     Timber.d("Call msgType: %s", msgType);
-                    startIncomingCallNotification(peerJid, sid, msgType, evt.isVideoCall());
+                    startIncomingCallNotification(peerJid, sid, msgType, event.isVideoCall());
                 }
 
                 // merge call - exception; It will end up with a conference call.

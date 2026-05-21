@@ -18,14 +18,14 @@ package org.jivesoftware.smackx.jingle;
 
 import java.util.List;
 
-import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
-
 import org.jivesoftware.smack.packet.XmlElement;
+
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
@@ -57,6 +57,7 @@ public class JingleUtil {
      * @param recipient the destination Jid
      * @param sessionId the ID of the Jingle session that this message will be terminating.
      * @param contentList the content elements containing media and transport descriptions.
+     *
      * @return the newly constructed {@link Jingle} <code>session-initiate</code> packet.
      */
     public Jingle createSessionInitiate(FullJid recipient, String sessionId, List<JingleContent> contentList) {
@@ -134,6 +135,7 @@ public class JingleUtil {
      *
      * @param sessionInitIQ the received session-initiate Jingle
      * @param contentList the content elements containing media and transport descriptions.
+     *
      * @return the newly constructed {@link Jingle} <code>session-accept</code> packet.
      */
     public Jingle createSessionAccept(Jingle sessionInitIQ, Iterable<JingleContent> contentList) {
@@ -195,6 +197,7 @@ public class JingleUtil {
      *
      * @param recipient their full jid
      * @param sessionId the ID of the Jingle session this IQ will belong to.
+     *
      * @return a {@link Jingle} <code>session-info</code> packet carrying a the specified payload type.
      */
     public Jingle createSessionInfo(FullJid recipient, String sessionId) {
@@ -207,6 +210,7 @@ public class JingleUtil {
      * @param recipient their full jid
      * @param sessionId the ID of the Jingle session this IQ will belong to.
      * @param type the exact type (e.g. ringing, hold, mute) of the session info IQ.
+     *
      * @return a {@link Jingle} <code>session-info</code> packet carrying a the specified payload type.
      */
     public Jingle createSessionInfo(FullJid recipient, String sessionId, SessionInfoType type) {
@@ -230,6 +234,7 @@ public class JingleUtil {
      * @param recipient the remote Jid
      * @param sessionId the ID of the Jingle session that this message will be terminating.
      * @param reason the reason for the termination
+     *
      * @return the newly constructed {@link Jingle} <code>session-terminate</code> packet. .
      */
     public Jingle createSessionTerminate(FullJid recipient, String sessionId, JingleReason reason) {
@@ -379,6 +384,7 @@ public class JingleUtil {
      *
      * @param sessionInitIQ the received session-initiate Jingle
      * @param contentList the content elements containing media and transport descriptions.
+     *
      * @return the newly constructed {@link Jingle} <code>description-info</code> packet.
      */
     public Jingle createDescriptionInfo(Jingle sessionInitIQ, Iterable<JingleContent> contentList) {
@@ -406,6 +412,7 @@ public class JingleUtil {
      * @param recipient the destination Jid
      * @param sessionId the ID of the Jingle session that this message will be terminating.
      * @param contentList the content elements containing media transport descriptions.
+     *
      * @return the newly constructed {@link Jingle} <code>transport-info</code> packet.
      */
     public Jingle createTransportInfo(FullJid recipient, String sessionId, Iterable<JingleContent> contentList) {
@@ -431,6 +438,7 @@ public class JingleUtil {
      * @param recipient the destination Jid
      * @param sessionId the ID of the Jingle session that this message will be terminating.
      * @param contentList the content elements containing media and transport descriptions.
+     *
      * @return the newly constructed {@link Jingle} <code>content-add</code> packet.
      */
     public Jingle createContentAdd(FullJid recipient, String sessionId, List<JingleContent> contentList) {
@@ -456,6 +464,7 @@ public class JingleUtil {
      * @param recipient the destination Jid
      * @param sessionId the ID of the Jingle session that this message will be terminating.
      * @param contentList the content elements containing media and transport descriptions.
+     *
      * @return the newly constructed {@link Jingle} <code>content-accept</code> packet.
      */
     public Jingle createContentAccept(FullJid recipient, String sessionId, Iterable<JingleContent> contentList) {
@@ -481,6 +490,7 @@ public class JingleUtil {
      * @param recipient the destination Jid
      * @param sessionId the ID of the Jingle session that this message will be terminating.
      * @param contentList the content elements containing media and transport descriptions.
+     *
      * @return the newly constructed {@link Jingle} <code>content-reject</code> packet.
      */
     public Jingle createContentReject(FullJid recipient, String sessionId, Iterable<JingleContent> contentList) {
@@ -508,6 +518,7 @@ public class JingleUtil {
      * @param recipient the destination Jid
      * @param sessionId the ID of the Jingle session that this message will be terminating.
      * @param content the content element containing media and transport description.
+     *
      * @return the newly constructed {@link Jingle} <code>content-modify</code> packet.
      */
     public Jingle createContentModify(FullJid recipient, String sessionId, JingleContent content) {
@@ -531,6 +542,7 @@ public class JingleUtil {
      * @param recipient the destination Jid
      * @param sessionId the ID of the Jingle session that this message will be terminating.
      * @param contentList the content elements containing media and transport descriptions.
+     *
      * @return the newly constructed {@link Jingle} <code>content-remove</code> packet.
      */
     public Jingle createContentRemove(FullJid recipient, String sessionId, Iterable<JingleContent> contentList) {

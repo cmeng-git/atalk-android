@@ -5,16 +5,11 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.ConferenceDescription;
-import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
@@ -48,56 +43,6 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
     private final List<CallListener> callListeners = new ArrayList<>();
 
     /**
-     * {@inheritDoc}
-     *
-     * Forwards to {@link OperationSetBasicTelephony#createCall(Contact, CallConference)} with
-     * <code>null</code> as the <code>CallConference</code> argument.
-     */
-    public Call createCall(Contact callee)
-            throws OperationFailedException {
-        return createCall(callee, null);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Forwards to {@link OperationSetBasicTelephony#createCall(String, CallConference)} with
-     * {@link Contact#getAddress()} as the <code>String</code> argument.
-     */
-    public Call createCall(Contact callee, CallConference conference)
-            throws OperationFailedException {
-        try {
-            return createCall(callee.getAddress(), conference);
-        }
-        catch (ParseException pe) {
-            throw new OperationFailedException(pe.getMessage(), OperationFailedException.ILLEGAL_ARGUMENT, pe);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Forwards to {@link OperationSetBasicTelephony#createCall(String, CallConference)} with
-     * <code>null</code> as the <code>CallConference</code> argument.
-     */
-    public Call createCall(String uri)
-            throws OperationFailedException, ParseException {
-        return createCall(uri, null);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Always throws an exception.
-     */
-    @Override
-    public Call createCall(ConferenceDescription cd, ChatRoom chatRoom)
-            throws OperationFailedException {
-        throw new OperationFailedException("Creating a call with a ConferenceDescription is not implemented in "
-                + getClass(), OperationFailedException.INTERNAL_ERROR);
-    }
-
-    /**
      * Creates and dispatches a <code>CallEvent</code> notifying registered listeners that an event with
      * id <code>eventID</code> has occurred on <code>sourceCall</code>.
      *
@@ -112,12 +57,12 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      * Creates and dispatches a <code>CallEvent</code> notifying registered listeners that an event with
      * id <code>eventID</code> has occurred on <code>sourceCall</code>.
      *
-     * @param eventID the ID of the event to dispatch
+     * @param eventId the ID of the event to dispatch
      * @param sourceCall the call on which the event has occurred.
      * @param mediaDirections direction map for media types
      */
-    public void fireCallEvent(int eventID, Call sourceCall, Map<MediaType, MediaDirection> mediaDirections) {
-        fireCallEvent(new CallEvent(sourceCall, eventID, mediaDirections));
+    public void fireCallEvent(int eventId, Call sourceCall, Map<MediaType, MediaDirection> mediaDirections) {
+        fireCallEvent(new CallEvent(sourceCall, eventId, mediaDirections));
     }
 
     /**
@@ -136,11 +81,12 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
         for (CallListener listener : listeners) {
             Timber.log(TimberLog.FINER, "Dispatching a CallEvent to %s. The event is: %s", listener.getClass(), event);
 
-            switch (event.getEventID()) {
+            switch (event.getEventId()) {
             case CallEvent.CALL_INITIATED:
                 listener.outgoingCallCreated(event);
                 break;
             case CallEvent.CALL_RECEIVED:
+            case CallEvent.CALL_RECEIVED_JM:
                 listener.incomingCallReceived(event);
                 break;
             case CallEvent.CALL_ENDED:

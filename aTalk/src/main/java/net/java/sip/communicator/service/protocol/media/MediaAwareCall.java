@@ -13,7 +13,6 @@ import java.util.List;
 
 import net.java.sip.communicator.service.protocol.AbstractCall;
 import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.CallState;
@@ -29,9 +28,11 @@ import net.java.sip.communicator.service.protocol.event.DTMFListener;
 import net.java.sip.communicator.service.protocol.event.DTMFReceivedEvent;
 import net.java.sip.communicator.service.protocol.event.SoundLevelListener;
 
+import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.neomedia.MediaUseCase;
 import org.atalk.service.neomedia.RTPTranslator;
 import org.atalk.service.neomedia.device.MediaDevice;
+import org.atalk.service.neomedia.device.MediaDeviceWrapper;
 import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
 import org.atalk.service.neomedia.recording.Recorder;
 import org.atalk.util.MediaType;
@@ -65,6 +66,14 @@ public abstract class MediaAwareCall<
      * instead a call to <code>getDefaultDevice</code> is to be performed to retrieve the new value.
      */
     public static final String DEFAULT_DEVICE = "defaultDevice";
+
+    /**
+     * The <code>MediaDevice</code>s indexed by <code>MediaType</code> ordinal which are to be used by this
+     * telephony conference for media capture and/or playback. If the <code>MediaDevice</code> for a
+     * specific <code>MediaType</code> is <code>null</code> ,
+     * {@link MediaService#getDefaultDevice(MediaType, MediaUseCase)} is called.
+     */
+    private final MediaDevice[] devices;
 
     /**
      * Our video streaming policy.
@@ -119,6 +128,9 @@ public abstract class MediaAwareCall<
     protected MediaAwareCall(U parentOpSet, String sid) {
         super(parentOpSet.getProtocolProvider(), sid);
         this.parentOpSet = parentOpSet;
+
+        int mediaTypeCount = MediaType.values().length;
+        devices = new MediaDevice[mediaTypeCount];
     }
 
     /**
@@ -176,7 +188,8 @@ public abstract class MediaAwareCall<
 
         try {
             fireCallPeerEvent(callPeer, CallPeerEvent.CALL_PEER_REMOVED, (evt.getReasonString() != null));
-        } finally {
+        }
+        finally {
             /*
              * The peer should lose its state once it has finished firing the events in order to
              * allow the listeners to undo.
@@ -267,20 +280,9 @@ public abstract class MediaAwareCall<
      * <code>Call</code> is acting as a conference focus
      */
     public RTPTranslator getRTPTranslator(MediaType mediaType) {
-        return getConference().getRTPTranslator(mediaType);
-    }
-
-    /**
-     * Gets the indicator which determines whether the local peer represented by this <code>Call</code>
-     * is acting as a conference focus and thus may need to send the corresponding parameters in its
-     * outgoing signaling.
-     *
-     * @return <code>true</code> if the local peer represented by this <code>Call</code> is acting as a
-     * conference focus; otherwise, <code>false</code>
-     */
-    @Override
-    public boolean isConferenceFocus() {
-        return getConference().isConferenceFocus();
+        // return getConference().getRTPTranslator(mediaType);
+        // aTalk does not support conference, so no translator is needed.
+        return null;
     }
 
     /**
@@ -301,7 +303,14 @@ public abstract class MediaAwareCall<
      * current state of this <code>Call</code>
      */
     public MediaDevice getDefaultDevice(MediaType mediaType) {
-        return getConference().getDefaultDevice(mediaType, mediaUseCase);
+        int mediaTypeIndex = mediaType.ordinal();
+        MediaDevice device = devices[mediaTypeIndex];
+        MediaService mediaService = ProtocolMediaActivator.getMediaService();
+
+        if (device == null)
+            device = mediaService.getDefaultDevice(mediaType, mediaUseCase);
+
+        return device;
     }
 
     /**
@@ -635,7 +644,7 @@ public abstract class MediaAwareCall<
      * @param audioDevice the <code>MediaDevice</code> to be used by this <code>Call</code> for audio capture and/or playback
      */
     public void setAudioDevice(MediaDevice audioDevice) {
-        getConference().setDevice(MediaType.AUDIO, audioDevice);
+        setDevice(MediaType.AUDIO, audioDevice);
     }
 
     /**
@@ -653,7 +662,26 @@ public abstract class MediaAwareCall<
          * MediaAwareCallConference.setDevice will indirectly utilize the mediaUseCase.
          */
         mediaUseCase = useCase;
-        getConference().setDevice(MediaType.VIDEO, videoDevice);
+        setDevice(MediaType.VIDEO, videoDevice);
+    }
+
+    /**
+     * Sets the <code>MediaDevice</code> to be used by this telephony conference for capture and/or
+     * playback of media of a specific <code>MediaType</code>.
+     *
+     * @param mediaType the <code>MediaType</code> of the media which is to be captured and/or played back by the
+     * specified <code>device</code>
+     * @param device the <code>MediaDevice</code> to be used by this telephony conference for capture and/or
+     * playback of media of the specified <code>mediaType</code>
+     */
+    void setDevice(MediaType mediaType, MediaDevice device) {
+        int mediaTypeIndex = mediaType.ordinal();
+        MediaDevice oldValue = devices[mediaTypeIndex];
+        MediaDevice newValue = devices[mediaTypeIndex] = device;
+
+        if (oldValue != newValue) {
+            firePropertyChange(MediaAwareCall.DEFAULT_DEVICE, oldValue, newValue);
+        }
     }
 
     /**
@@ -670,7 +698,8 @@ public abstract class MediaAwareCall<
     protected void setCallState(CallState newState, CallPeerChangeEvent cause) {
         try {
             super.setCallState(newState, cause);
-        } finally {
+        }
+        finally {
             if (CallState.CALL_ENDED.equals(getCallState()))
                 ProtocolMediaActivator.getMediaService().removePropertyChangeListener(this);
         }
@@ -683,98 +712,13 @@ public abstract class MediaAwareCall<
      * @param ev a <code>PropertyChangeEvent</code> which specifies the name of the property which has its
      * value changed and the old and new values
      */
+
     public void propertyChange(PropertyChangeEvent ev) {
         /*
          * Forward PropertyChangeEvents notifying about changes in the values of MediaAwareCall
          * properties which are delegated to MediaAwareCallConference.
          */
-        if (ev.getSource() instanceof CallConference) {
-            String propertyName = ev.getPropertyName();
-
-            if (CONFERENCE_FOCUS.equals(propertyName)) {
-                conferenceFocusChanged((Boolean) ev.getOldValue(), (Boolean) ev.getNewValue());
-            }
-            else if (DEFAULT_DEVICE.equals(propertyName)) {
-                firePropertyChange(DEFAULT_DEVICE, ev.getOldValue(), ev.getNewValue());
-            }
-        }
-    }
-
-    /**
-     * Notifies this instance that the value of its property {@link Call#CONFERENCE_FOCUS} has
-     * changed from a specific old value to a specific new value. Fires a
-     * <code>PropertyChangeEvent</code> to the registered <code>PropertyChangeListener</code>s. Protocol
-     * implementations which extend <code>MediaAwareCall</code> will likely want to override in order to
-     * add notifying the associated <code>CallPeer</code>s about the change of the property value (e.g.
-     * SIP will want to include the &quot;isfocus&quot; parameter in the Contact header while the
-     * local peer is acting as a conference focus.)
-     *
-     * @param oldValue the value of the property <code>CONFERENCE_FOCUS</code> before the change
-     * @param newValue the value of the property <code>CONFERENCE_FOCUS</code> after the change
-     */
-    protected void conferenceFocusChanged(boolean oldValue, boolean newValue) {
-        firePropertyChange(CONFERENCE_FOCUS, oldValue, newValue);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Creates a new <code>MediaAwareCallConference</code> to represent the media-specific information
-     * associated with the telephony conference-related state of this <code>MediaAwareCall</code>.
-     */
-    @Override
-    protected CallConference createConference() {
-        return new MediaAwareCallConference(false, this.useTranslator);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Makes sure that the telephony conference-related state of this <code>MediaAwareCall</code> is
-     * represented by a <code>MediaAwareCallConference</code> instance.
-     */
-    @Override
-    public MediaAwareCallConference getConference() {
-        return (MediaAwareCallConference) super.getConference();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Listens to the changes in the values of the properties of this <code>Call</code>.
-     */
-    @Override
-    protected void firePropertyChange(String property, Object oldValue, Object newValue) {
-        if (oldValue != newValue) {
-            /*
-             * Listen to the changes in the values of the properties of the telephony
-             * conference-related state of this Call. For example, MediaAwareCall delegates some of
-             * its properties (e.g. DEFAULT_DEVICE) to its associated MediaAwareCallConference so
-             * changes to the values of the properties of the latter should result in
-             * PropertyChangeEvents fired by the former (as well).
-             */
-            if (CONFERENCE.equals(property)) {
-                if (oldValue != null) {
-                    ((CallConference) oldValue).removePropertyChangeListener(this);
-                }
-                if (newValue != null) {
-                    ((CallConference) newValue).addPropertyChangeListener(this);
-                }
-            }
-        }
-
-        super.firePropertyChange(property, oldValue, newValue);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Makes sure that the telephony conference-related state of this <code>MediaAwareCall</code> is
-     * represented by a <code>MediaAwareCallConference</code> instance.
-     */
-    @Override
-    public void setConference(CallConference conference) {
-        super.setConference(conference);
+        // if (ev.getSource() instanceof CallConference) { }
     }
 
     /**

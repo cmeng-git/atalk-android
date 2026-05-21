@@ -218,19 +218,4 @@ public interface OperationSetVideoTelephony extends OperationSet
      * @return the implemented quality control.
      */
     QualityControl getQualityControl(CallPeer peer);
-
-    /**
-     * Determines the <code>ConferenceMember</code> which is participating in a telephony conference
-     * with a specific <code>CallPeer</code> as its focus and which is sending a video content/RTP
-     * stream displayed in a specific visual <code>Component</code>.
-     *
-     * @param peer the <code>CallPeer</code> which is the conference focus of the telephony conference to be
-     * examined in order to locate the <code>ConferenceMember</code> which is sending the video
-     * content/RTP stream displayed in the specified <code>visualComponent</code>
-     * @param visualComponent the visual <code>Component</code> which displays the video content/RTP stream of the
-     * <code>ConferenceMember</code> to be located
-     * @return the <code>ConferenceMember</code>, if any, which is sending the video content/RTP stream
-     * displayed in the specific <code>visualComponent</code>
-     */
-    ConferenceMember getConferenceMember(CallPeer peer, Component visualComponent);
 }

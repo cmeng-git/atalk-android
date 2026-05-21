@@ -199,8 +199,7 @@ public interface MessageHistoryService {
      *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
-    Collection<EventObject> findRecentMessagesPerContact(int count, String providerToFilter,
-            String contactToFilter, boolean isSMSEnabled);
+    Collection<EventObject> findRecentMessagesPerContact(int count, String providerToFilter, String contactToFilter);
 
     /**
      * Adding progress listener for monitoring progress of search process

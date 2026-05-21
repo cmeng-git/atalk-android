@@ -9,10 +9,10 @@ package net.java.sip.communicator.service.msghistory;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
 
 /**
- * Special message source contact status, can be used to display only one (online) status for all message source
- * contacts.
+ * Special message source contact status, can be used to display only one (online) status for all message source contacts.
  *
  * @author Damian Minkov
+ * @author Eng Chong Meng
  */
 public class MessageSourceContactPresenceStatus extends PresenceStatus {
     /**
@@ -29,11 +29,6 @@ public class MessageSourceContactPresenceStatus extends PresenceStatus {
      * An image that graphically represents the status.
      */
     private byte[] statusIcon;
-    /**
-     * The Online status. Indicate that the user is able and willing to communicate in the chat room.
-     */
-    public static final MessageSourceContactPresenceStatus MSG_SRC_CONTACT_ONLINE = new MessageSourceContactPresenceStatus(MSG_SRC_CONTACT_ONLINE_THRESHOLD,
-            ONLINE_STATUS);
 
     /**
      * Constructs special message source contact status.

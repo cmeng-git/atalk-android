@@ -534,24 +534,6 @@ public class JabberAccountID extends AccountID {
     }
 
     /**
-     * Returns the default sms server.
-     *
-     * @return the account default sms server
-     */
-    public String getSmsServerAddress() {
-        return getAccountPropertyString(ProtocolProviderFactory.SMS_SERVER_ADDRESS);
-    }
-
-    /**
-     * Sets the default sms server.
-     *
-     * @param serverAddress the sms server to set as default
-     */
-    public void setSmsServerAddress(String serverAddress) {
-        setOrRemoveIfEmpty(ProtocolProviderFactory.SMS_SERVER_ADDRESS, serverAddress);
-    }
-
-    /**
      * Returns the service name - the virtualHost (server) we are logging to if it is null which is
      * not supposed to be - we return for compatibility the string we used in the first release for
      * creating AccountID (Using this string is wrong, but used for compatibility for now)

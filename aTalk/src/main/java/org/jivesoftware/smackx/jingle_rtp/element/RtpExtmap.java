@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
@@ -33,6 +35,8 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 public class RtpExtmap extends AbstractXmlElement {
     public static final String ELEMENT = "extmap-allow-mixed";
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:rtp-hdrext:0";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     public RtpExtmap() {
         super(getBuilder());

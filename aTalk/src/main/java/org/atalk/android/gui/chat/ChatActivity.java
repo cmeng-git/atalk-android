@@ -767,8 +767,7 @@ public class ChatActivity extends BaseActivity
                 isAudioCall = true;  // fall through to start either audio / video call
 
             case R.id.call_contact_video:
-                AppCallUtil.createCall(this, selectedChatPanel.getMetaContact(),
-                        (isAudioCall == null), null);
+                AppCallUtil.createCall(this, selectedChatPanel.getMetaContact(), (isAudioCall == null), null);
                 return true;
             }
         }

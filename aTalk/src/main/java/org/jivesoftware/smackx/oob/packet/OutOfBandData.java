@@ -38,15 +38,8 @@ public class OutOfBandData implements XmlElement {
      */
     private static final Logger LOGGER = Logger.getLogger(OutOfBandData.class.getName());
 
-    /**
-     * This oob extension namespace.
-     */
-    public static final String NAMESPACE = "jabber:iq:oob";
-
-    /**
-     * This oob extension element name.
-     */
     public static final String ELEMENT = "x";
+    public static final String NAMESPACE = "jabber:iq:oob";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 

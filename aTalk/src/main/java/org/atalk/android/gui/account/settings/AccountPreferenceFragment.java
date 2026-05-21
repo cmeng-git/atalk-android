@@ -131,7 +131,7 @@ public abstract class AccountPreferenceFragment extends BasePreferenceFragment
 
     /**
      * Method should return <code>SecurityAccountRegistration</code> if security details are supported
-     * by impl fragment. Preference category with key <code>pref_key_enable_encryption</code> must be
+     * by impl fragment. Preference category with key <code>pref_key_call_encryption</code> must be
      * present to trigger security edit activity.
      *
      * @return <code>SecurityAccountRegistration</code> if security details are supported by impl fragment.

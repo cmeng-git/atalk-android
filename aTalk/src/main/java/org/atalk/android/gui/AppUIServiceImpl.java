@@ -493,17 +493,6 @@ public class AppUIServiceImpl implements UIService {
     }
 
     /**
-     * Starts a new <code>Chat</code> with a specific set of participants.
-     *
-     * @param participants an array of <code>String</code> values specifying the participants to be included into the
-     * newly created <code>Chat</code>
-     * @param isSmsEnabled whether sms option should be enabled if possible
-     */
-    @Override
-    public void startChat(String[] participants, boolean isSmsEnabled) {
-    }
-
-    /**
      * Returns a collection of all currently in progress calls.
      *
      * @return a collection of all currently in progress calls.

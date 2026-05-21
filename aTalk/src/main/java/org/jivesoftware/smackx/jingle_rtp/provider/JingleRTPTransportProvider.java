@@ -20,23 +20,23 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.XmlElement;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.provider.Provider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
-import org.jivesoftware.smackx.AbstractExtensionElement;
+import org.jivesoftware.smackx.jingle.provider.JingleContentProviderManager;
 import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 
 import org.jxmpp.JxmppContext;
 
 /**
  * Provider for IceUdpTransport elements.
+ *
  * @author Eng Chong Meng
  */
 public class JingleRTPTransportProvider extends JingleContentTransportProvider<IceUdpTransport> {
@@ -48,7 +48,9 @@ public class JingleRTPTransportProvider extends JingleContentTransportProvider<I
      * and at the end of the method call it will be on the closing element of the stanza extension.
      *
      * @param parser an XML parser positioned at the stanza's starting element.
+     *
      * @return a new stanza extension instance.
+     *
      * @throws IOException if an error occurs in IO.
      * @throws XmlPullParserException if an error occurs pull parsing the XML.
      */
@@ -68,41 +70,48 @@ public class JingleRTPTransportProvider extends JingleContentTransportProvider<I
         while (true) {
             XmlPullParser.Event event = parser.next();
             switch (event) {
-                case START_ELEMENT:
-                    String name = parser.getName();
-                    String namespace = parser.getNamespace();
+            case START_ELEMENT:
+                String name = parser.getName();
+                String namespace = parser.getNamespace();
 
-                    // Timber.d("<%s %s/> class: %s", elementName, namespace, stanzaExtension.getClass().getSimpleName());
-                    ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(name, namespace);
-                    // Extension element provider may not have been added properly if null
-                    if (provider == null) { //  && !JingleFileTransfer.NAMESPACE_V5.equals(namespace)) {
-                        LOGGER.log(Level.WARNING, "No provider for EE<", name + " " + namespace + "/>");
-                    } else {
-                        try {
-                            XmlElement childExtension = provider.parse(parser);
-                            if (childExtension instanceof AbstractXmlElement || childExtension instanceof AbstractExtensionElement) {
-                                mBuilder.addChildElement(childExtension);
-                            } else
-                                LOGGER.log(Level.WARNING, "Invalid Abstract Element: " + childExtension.getQName());
-                        } catch (SmackParsingException e) {
-                            LOGGER.log(Level.WARNING, "Parse childElement exception: " + e.getMessage());
+                // Timber.d("<%s %s/> class: %s", elementName, namespace, stanzaExtension.getClass().getSimpleName());
+                Provider<?> provider = JingleContentProviderManager.getJingleContentElementProvider(name);
+                if (provider == null) {
+                    provider = ProviderManager.getExtensionProvider(name, namespace);
+                }
+
+                if (provider == null) { //  && !JingleFileTransfer.NAMESPACE_V5.equals(namespace)) {
+                    LOGGER.log(Level.WARNING, "No JingleRTPTransport for EE<", name + " " + namespace + "/>");
+                }
+                else {
+                    // LOGGER.log(Level.SEVERE, "Provider for JingleRTPTransport xmlElement: " + name + " " + provider);
+                    try {
+                        NamedElement childExtension = (NamedElement) provider.parse(parser);
+                        if (childExtension != null) {
+                            mBuilder.addChildElement(childExtension);
                         }
+                        else
+                            LOGGER.log(Level.WARNING, "Invalid JingleRTPTransport Element: " + name);
                     }
-                    break;
-
-                case TEXT_CHARACTERS:
-                    mBuilder.setText(parser.getText());
-                    break;
-
-                case END_ELEMENT:
-                    if (depth == parser.getDepth()) {
-                        break outerloop;
+                    catch (SmackParsingException e) {
+                        LOGGER.log(Level.WARNING, "Parse childElement exception: " + e.getMessage());
                     }
-                    break;
+                }
+                break;
 
-                // Catch all for incomplete switch (event) statement.
-                default:
-                    break;
+            case TEXT_CHARACTERS:
+                mBuilder.setText(parser.getText());
+                break;
+
+            case END_ELEMENT:
+                if (depth == parser.getDepth()) {
+                    break outerloop;
+                }
+                break;
+
+            // Catch all for incomplete switch (event) statement.
+            default:
+                break;
             }
         }
         return mBuilder.build();

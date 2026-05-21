@@ -5,17 +5,6 @@
  */
 package org.atalk.impl.configuration.xml;
 
-import org.atalk.impl.configuration.ConfigurationStore;
-import org.atalk.util.xml.DOMElementWriter;
-import org.atalk.util.xml.XMLException;
-import org.atalk.util.xml.XMLUtils;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -28,6 +17,18 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.atalk.impl.configuration.ConfigurationStore;
+import org.atalk.util.xml.DOMElementWriter;
+import org.atalk.util.xml.XMLException;
+import org.atalk.util.xml.XMLUtils;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import timber.log.Timber;
 
 /**
@@ -39,8 +40,7 @@ import timber.log.Timber;
  * @author Lubomir Marinov
  * @author Eng Chong Meng
  */
-public class XMLConfigurationStore implements ConfigurationStore
-{
+public class XMLConfigurationStore implements ConfigurationStore {
     /**
      * Name of the xml attribute containing property values
      */
@@ -80,8 +80,7 @@ public class XMLConfigurationStore implements ConfigurationStore
      * @return a Map clone of the current configuration property set.
      */
     @SuppressWarnings("unchecked")
-    private Map<String, Object> cloneProperties()
-    {
+    private Map<String, Object> cloneProperties() {
         return (Map<String, Object>) properties.clone();
     }
 
@@ -92,14 +91,14 @@ public class XMLConfigurationStore implements ConfigurationStore
      * @return a new runtime XML <code>Document</code> which is to contain the properties managed by
      * this <code>ConfigurationStore</code>
      */
-    private Document createPropertiesDocument()
-    {
+    private Document createPropertiesDocument() {
         if (propertiesDocument == null) {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder;
             try {
                 builder = factory.newDocumentBuilder();
-            } catch (ParserConfigurationException ex) {
+            }
+            catch (ParserConfigurationException ex) {
                 Timber.e(ex, "Failed to create a DocumentBuilder");
                 return null;
             }
@@ -114,13 +113,14 @@ public class XMLConfigurationStore implements ConfigurationStore
      * {@code ConfigurationStore} of a property with a specific name.
      *
      * @param propertyName the name of the property to get the value of
+     *
      * @return the value in this <code>ConfigurationStore</code> of the property with the specified
      * name; <code>null</code> if the property with the specified name does not have an association
      * with a value in this <code>ConfigurationStore</code>
+     *
      * @see ConfigurationStore#getProperty(String)
      */
-    public Object getProperty(String propertyName)
-    {
+    public Object getProperty(String propertyName) {
         Object value = properties.get(propertyName);
 
         // if this is a property reference make sure we return the referenced
@@ -138,10 +138,10 @@ public class XMLConfigurationStore implements ConfigurationStore
      * @return an array of <code>String</code>s which specify the names of the properties that have
      * values associated in this <code>ConfigurationStore</code>; an empty array if this instance
      * contains no property values
+     *
      * @see ConfigurationStore#getPropertyNames(String)
      */
-    public String[] getPropertyNames(String name)
-    {
+    public String[] getPropertyNames(String name) {
         Set<String> propertyNames = properties.keySet();
         return propertyNames.toArray(new String[0]);
     }
@@ -151,11 +151,12 @@ public class XMLConfigurationStore implements ConfigurationStore
      * name stands for a system property.
      *
      * @param propertyName the name of a property which is to be determined whether it is a system property
+     *
      * @return <code>true</code> if the specified name stands for a system property; <code>false</code>, otherwise
+     *
      * @see ConfigurationStore#isSystemProperty(String)
      */
-    public boolean isSystemProperty(String propertyName)
-    {
+    public boolean isSystemProperty(String propertyName) {
         return properties.get(propertyName) instanceof PropertyReference;
     }
 
@@ -163,13 +164,14 @@ public class XMLConfigurationStore implements ConfigurationStore
      * Loads the contents of the specified configuration file into the local properties object.
      *
      * @param file a reference to the configuration file to load.
+     *
      * @return a hashTable containing all properties extracted from the specified file.
+     *
      * @throws IOException if the specified file does not exist
      * @throws XMLException if there is a problem with the file syntax.
      */
     private Map<String, Object> loadConfiguration(File file)
-            throws IOException, XMLException
-    {
+            throws IOException, XMLException {
         try {
             DocumentBuilderFactory factory = XMLUtils.newDocumentBuilderFactory();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -196,10 +198,12 @@ public class XMLConfigurationStore implements ConfigurationStore
             }
 
             return props;
-        } catch (SAXException ex) {
+        }
+        catch (SAXException ex) {
             Timber.e(ex, "Error parsing configuration file");
             throw new XMLException(ex.getMessage(), ex);
-        } catch (ParserConfigurationException ex) {
+        }
+        catch (ParserConfigurationException ex) {
             // it is not highly probable that this might happen - so lets just log it.
             Timber.e(ex, "Error finding configuration for default parsers");
             return new Hashtable<String, Object>();
@@ -216,8 +220,7 @@ public class XMLConfigurationStore implements ConfigurationStore
      * @param props the dictionary object where all properties extracted from this node and its children
      * should be recorded.
      */
-    private void loadNode(Node node, String propertyName, Map<String, Object> props)
-    {
+    private void loadNode(Node node, String propertyName, Map<String, Object> props) {
         Node currentNode;
         NodeList children = node.getChildNodes();
 
@@ -257,8 +260,7 @@ public class XMLConfigurationStore implements ConfigurationStore
      * @param doc the XML <code>Document</code> where the new entries should be created
      * @param newProperties the table containing the properties that are to be introduced in the document.
      */
-    private void processNewProperties(Document doc, Map<String, Object> newProperties)
-    {
+    private void processNewProperties(Document doc, Map<String, Object> newProperties) {
         for (Map.Entry<String, Object> entry : newProperties.entrySet()) {
             Object value = entry.getValue();
             boolean system;
@@ -277,8 +279,7 @@ public class XMLConfigurationStore implements ConfigurationStore
      * @param value the value of the <code>value</code> attribute for the new entry
      * @param isSystem specifies whether this is a system property (system attribute will be set to true).
      */
-    private void processNewProperty(Document doc, String key, String value, boolean isSystem)
-    {
+    private void processNewProperty(Document doc, String key, String value, boolean isSystem) {
         StringTokenizer tokenizer = new StringTokenizer(key, ".");
         String[] toks = new String[tokenizer.countTokens()];
         int i = 0;
@@ -309,13 +310,13 @@ public class XMLConfigurationStore implements ConfigurationStore
      *
      * @param file the <code>File</code> to be read and to deserialize new property name-value associations
      * from into this instance
+     *
      * @throws IOException if there is an input error while reading from the specified <code>file</code>
      * @throws XMLException if parsing the contents of the specified <code>file</code> fails
      * @see ConfigurationStore#reloadConfiguration(File)
      */
     public void reloadConfiguration(File file)
-            throws IOException, XMLException
-    {
+            throws IOException, XMLException {
         properties = new Hashtable<>();
         fileExtractedProperties = loadConfiguration(file);
         properties.putAll(fileExtractedProperties);
@@ -328,10 +329,10 @@ public class XMLConfigurationStore implements ConfigurationStore
      *
      * @param propertyName the name of the property which is to have its value association in this
      * <code>ConfigurationStore</code> removed
+     *
      * @see ConfigurationStore#removeProperty(String)
      */
-    public void removeProperty(String propertyName)
-    {
+    public void removeProperty(String propertyName) {
         properties.remove(propertyName);
 
         fileExtractedProperties.remove(propertyName);
@@ -346,10 +347,10 @@ public class XMLConfigurationStore implements ConfigurationStore
      * <code>ConfigurationStore</code>
      * @param property the value to be assigned to the non-system property with the specified name in this
      * <code>ConfigurationStore</code>
+     *
      * @see ConfigurationStore#setNonSystemProperty(String, Object)
      */
-    public void setNonSystemProperty(String propertyName, Object property)
-    {
+    public void setNonSystemProperty(String propertyName, Object property) {
         properties.put(propertyName, property);
     }
 
@@ -358,10 +359,10 @@ public class XMLConfigurationStore implements ConfigurationStore
      * specific name to be considered a system property by the <code>ConfigurationStore</code>.
      *
      * @param propertyName the name of the property to be set as a system property in this <code>ConfigurationStore</code>
+     *
      * @see ConfigurationStore#setSystemProperty(String)
      */
-    public void setSystemProperty(String propertyName)
-    {
+    public void setSystemProperty(String propertyName) {
         setNonSystemProperty(propertyName, new PropertyReference(propertyName));
     }
 
@@ -372,10 +373,10 @@ public class XMLConfigurationStore implements ConfigurationStore
      *
      * @param out the <code>OutputStream</code> to receive the serialized form of the property name-value
      * associations currently present in this <code>ConfigurationStore</code>
+     *
      * @see ConfigurationStore#storeConfiguration(OutputStream)
      */
-    public void storeConfiguration(OutputStream out)
-    {
+    public void storeConfiguration(OutputStream out) {
         // resolve the properties that were initially in the file - back to the document.
         if (propertiesDocument == null)
             propertiesDocument = createPropertiesDocument();
@@ -417,8 +418,7 @@ public class XMLConfigurationStore implements ConfigurationStore
      * node including its one name
      * @param props the dictionary object where the up to date values of the node should be queried.
      */
-    private void updateNode(Node node, String propertyName, Map<String, Object> props)
-    {
+    private void updateNode(Node node, String propertyName, Map<String, Object> props) {
         Node currentNode;
         NodeList children = node.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
@@ -469,8 +469,7 @@ public class XMLConfigurationStore implements ConfigurationStore
      * local property set we store a PropertyReference instance that will retrieve it from the
      * system properties when  necessary.
      */
-    private static class PropertyReference
-    {
+    private static class PropertyReference {
         /**
          * The name of the system property represented by this instance.
          */
@@ -482,8 +481,7 @@ public class XMLConfigurationStore implements ConfigurationStore
          *
          * @param propertyName the name of the system property to be represented by the new instance
          */
-        public PropertyReference(String propertyName)
-        {
+        public PropertyReference(String propertyName) {
             this.propertyName = propertyName;
         }
 
@@ -492,8 +490,7 @@ public class XMLConfigurationStore implements ConfigurationStore
          *
          * @return the valued of the property as recorded in the System props.
          */
-        public Object getValue()
-        {
+        public Object getValue() {
             return System.getProperty(propertyName);
         }
     }

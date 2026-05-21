@@ -16,12 +16,13 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractElement;
 import org.jivesoftware.smackx.jingle_rtp.CandidateType;
 
 /**
  * IceUdpTransportCandidate for Jingle TransportCandidate transports.
  * XEP-0176: Jingle ICE-UDP Transport Method 1.1.1 (2021-03-04)
+ * XEP-0371: Jingle ICE Transport Method 0.3.1 (2021-03-04)
  * @see <a href="https://xmpp.org/extensions/xep-0176.html#table-2">XEP-0176 Table 2: Candidate Attributes</a>
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc5245">RFC5245: Interactive Connectivity Establishment (ICE):
  * A Protocol for Network Address Translator (NAT) Traversal for Offer/Answer Protocols</a>
@@ -29,13 +30,8 @@ import org.jivesoftware.smackx.jingle_rtp.CandidateType;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class IceUdpTransportCandidate extends AbstractXmlElement implements Comparable<IceUdpTransportCandidate> {
-    /**
-     * The name of the "candidate" element.
-     */
+public class IceUdpTransportCandidate extends AbstractElement implements Comparable<IceUdpTransportCandidate> {
     public static final String ELEMENT = "candidate";
-
-    public static final String NAMESPACE = IceUdpTransport.NAMESPACE;
 
     /**
      * The "component" ID for RTP components.
@@ -111,8 +107,6 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      * The name of the "tcptype" element.
      */
     public static final String ATTR_TCPTYPE = "tcptype";
-
-    public static final String ATTR_HOST = "host";
 
     public IceUdpTransportCandidate() {
         super(getBuilder());
@@ -287,16 +281,16 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
     }
 
     public static Builder getBuilder() {
-        return new Builder(ELEMENT, NAMESPACE);
+        return new Builder(ELEMENT);
     }
 
     /**
-     * Builder for IceUdpTransportCandidate. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
+     * Builder for IceUdpTransportCandidate. Use {@link AbstractElement.Builder#Builder(String)}
      * to obtain a new instance and {@link #build} to build the IceUdpTransportCandidate.
      */
-    public static class Builder extends AbstractXmlElement.Builder<Builder, IceUdpTransportCandidate> {
-        Builder(String element, String namespace) {
-            super(element, namespace);
+    public static class Builder extends AbstractElement.Builder<IceUdpTransportCandidate> {
+        Builder(String element) {
+            super(element);
         }
 
         /**

@@ -5,6 +5,9 @@
  */
 package org.atalk.impl.neomedia.rtcp;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 import net.sf.fmj.media.rtp.RTCPPacket;
 
@@ -12,9 +15,6 @@ import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.RTCPUtils;
 import org.atalk.util.RTPUtils;
-
-import java.io.DataOutputStream;
-import java.io.IOException;
 
 /**
  * Created by gp on 6/27/14.
@@ -31,8 +31,7 @@ import java.io.IOException;
  * :            Feedback Control Information (FCI)                 :
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  */
-public class RTCPFBPacket extends RTCPPacket
-{
+public class RTCPFBPacket extends RTCPPacket {
     public static final int RTPFB = 205;
 
     public static final int PSFB = 206;
@@ -54,8 +53,7 @@ public class RTCPFBPacket extends RTCPPacket
      */
     public long sourceSSRC;
 
-    public RTCPFBPacket(int fmt, int type, long senderSSRC, long sourceSSRC)
-    {
+    public RTCPFBPacket(int fmt, int type, long senderSSRC, long sourceSSRC) {
         super.type = type;
 
         this.fmt = fmt;
@@ -63,8 +61,7 @@ public class RTCPFBPacket extends RTCPPacket
         this.sourceSSRC = sourceSSRC;
     }
 
-    public RTCPFBPacket(RTCPCompoundPacket base)
-    {
+    public RTCPFBPacket(RTCPCompoundPacket base) {
         super(base);
     }
 
@@ -74,11 +71,11 @@ public class RTCPFBPacket extends RTCPPacket
      * RTPFB or PSFB packet.
      *
      * @param baf the {@link ByteArrayBuffer} that holds the RTCP packet.
+     *
      * @return true if the packet specified in the {@link ByteArrayBuffer} that is passed in the
      * first argument is an RTCP RTPFB or PSFB packet, otherwise false.
      */
-    public static boolean isRTCPFBPacket(ByteArrayBuffer baf)
-    {
+    public static boolean isRTCPFBPacket(ByteArrayBuffer baf) {
         return isRTPFBPacket(baf) || isPSFBPacket(baf);
     }
 
@@ -87,11 +84,11 @@ public class RTCPFBPacket extends RTCPPacket
      * {@link ByteArrayBuffer} passed in as an argument is an RTP FB packet.
      *
      * @param baf the {@link ByteArrayBuffer} that holds the packet
+     *
      * @return true if the packet specified in the {@link ByteArrayBuffer}
      * passed in as an argument is an RTP FB packet, otherwise false.
      */
-    public static boolean isRTPFBPacket(ByteArrayBuffer baf)
-    {
+    public static boolean isRTPFBPacket(ByteArrayBuffer baf) {
         int pt = RTCPUtils.getPacketType(baf);
         return pt == RTPFB;
     }
@@ -101,11 +98,11 @@ public class RTCPFBPacket extends RTCPPacket
      * {@link ByteArrayBuffer} passed in as an argument is an RTP FB packet.
      *
      * @param baf the {@link ByteArrayBuffer} that holds the packet
+     *
      * @return true if the packet specified in the {@link ByteArrayBuffer}
      * passed in as an argument is an RTP FB packet, otherwise false.
      */
-    public static boolean isPSFBPacket(ByteArrayBuffer baf)
-    {
+    public static boolean isPSFBPacket(ByteArrayBuffer baf) {
         int pt = RTCPUtils.getPacketType(baf);
         return (pt == PSFB);
     }
@@ -115,11 +112,11 @@ public class RTCPFBPacket extends RTCPPacket
      * {@link ByteArrayBuffer} passed in as an argument.
      *
      * @param baf the {@link ByteArrayBuffer} that holds the packet
+     *
      * @return the SSRC of the media source of the packet specified in the
      * {@link ByteArrayBuffer} passed in as an argument, or -1 in case of an error.
      */
-    public static long getSourceSSRC(ByteArrayBuffer baf)
-    {
+    public static long getSourceSSRC(ByteArrayBuffer baf) {
         if (baf == null || baf.isInvalid()) {
             return -1;
         }
@@ -130,10 +127,10 @@ public class RTCPFBPacket extends RTCPPacket
      * Gets the Feedback Control Information (FCI) field of an RTCP FB message.
      *
      * @param baf the {@link ByteArrayBuffer} that contains the RTCP message.
+     *
      * @return the Feedback Control Information (FCI) field of an RTCP FB message.
      */
-    public static ByteArrayBuffer getFCI(ByteArrayBuffer baf)
-    {
+    public static ByteArrayBuffer getFCI(ByteArrayBuffer baf) {
         if (!isRTCPFBPacket(baf)) {
             return null;
         }
@@ -147,8 +144,7 @@ public class RTCPFBPacket extends RTCPPacket
 
     @Override
     public void assemble(DataOutputStream dataoutputstream)
-            throws IOException
-    {
+            throws IOException {
         dataoutputstream.writeByte((byte) (0x80 /* version */ | fmt));
         dataoutputstream.writeByte((byte) type); // packet type, 205 or 206
 
@@ -168,8 +164,7 @@ public class RTCPFBPacket extends RTCPPacket
     }
 
     @Override
-    public int calcLength()
-    {
+    public int calcLength() {
         // Length (16 bits): The length of this packet in 32-bit words minus one, including the
         // header and any padding.
         int len = 12; // header+ssrc+ssrc
@@ -184,34 +179,31 @@ public class RTCPFBPacket extends RTCPPacket
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "\tRTCP FB packet from sync source " + senderSSRC;
     }
 
     /**
      * @return a {@link RawPacket} representation of this {@link RTCPFBPacket}.
+     *
      * @throws IOException
      */
     public RawPacket toRawPacket()
-            throws IOException
-    {
+            throws IOException {
         return RTCPPacketParserEx.toRawPacket(this);
     }
 
     /**
      * @return the {@code Sender SSRC} field of this {@code RTCP} feedback packet.
      */
-    public long getSenderSSRC()
-    {
+    public long getSenderSSRC() {
         return senderSSRC;
     }
 
     /**
      * @return the {@code Source SSRC} field of this {@code RTCP} feedback packet.
      */
-    public long getSourceSSRC()
-    {
+    public long getSourceSSRC() {
         return sourceSSRC;
     }
 }

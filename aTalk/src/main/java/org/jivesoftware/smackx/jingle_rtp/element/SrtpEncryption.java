@@ -18,13 +18,12 @@ package org.jivesoftware.smackx.jingle_rtp.element;
 
 import java.util.List;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractElement;
 
 /**
  * The element transporting encryption information during jingle session establishment.
  * Crypto supported: ZRTP and SDES;
  * Note: SDES_SRTP fingerPrints element is embedded in <code>transport</code> element
- *
  * XEP-0167: Jingle RTP Sessions 1.2.1 (2020-09-29)
  *
  * @author Emil Ivov
@@ -34,17 +33,8 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @see <a href="https://xmpp.org/extensions/xep-0262.html">XEP-0262: Use of ZRTP in Jingle RTP Sessions 1.0 (2011-06-15)</a>
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc6189">ZRTP: Media Path Key Agreement for Unicast Secure RTP (April 2011)</a>
  */
-public class SrtpEncryption extends AbstractXmlElement {
-    /**
-     * The name of the "encryption" element.
-     */
+public class SrtpEncryption extends AbstractElement {
     public static final String ELEMENT = "encryption";
-
-    /**
-     * The namespace of the "encryption" element. It it set to "not null" only for GTalk SDES support
-     * (may be set to null once GTalk supports jingle).
-     */
-    public static final String NAMESPACE = RtpDescription.NAMESPACE; // root NameSpace
 
     /**
      * The name of the <code>required</code> attribute.
@@ -52,7 +42,7 @@ public class SrtpEncryption extends AbstractXmlElement {
     public static final String ATTR_REQUIRED = "required";
 
     /**
-     * Creates a new instance of this <code>EncryptionExtensionElement</code>.
+     * Creates a new instance of this <code>EncryptionNamedElement</code>.
      */
     public SrtpEncryption() {
         super(getBuilder());
@@ -85,16 +75,16 @@ public class SrtpEncryption extends AbstractXmlElement {
     }
 
     public static Builder getBuilder() {
-        return new Builder(ELEMENT, NAMESPACE);
+        return new Builder(ELEMENT);
     }
 
     /**
-     * Builder for SrtpEncryption. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
+     * Builder for SrtpEncryption. Use {@link AbstractElement.Builder#Builder(String)}
      * to obtain a new instance and {@link #build} to build the SrtpEncryption.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, SrtpEncryption> {
-        Builder(String element, String namespace) {
-            super(element, namespace);
+    public static final class Builder extends AbstractElement.Builder<SrtpEncryption> {
+        Builder(String element) {
+            super(element);
         }
 
         /**
@@ -105,7 +95,7 @@ public class SrtpEncryption extends AbstractXmlElement {
          */
         public Builder setRequired(boolean required) {
             if (required)
-                addAttribute(ATTR_REQUIRED, Boolean.toString(required));
+                addAttribute(ATTR_REQUIRED, Boolean.toString(true));
             else
                 addAttribute(ATTR_REQUIRED, null);
             return this;

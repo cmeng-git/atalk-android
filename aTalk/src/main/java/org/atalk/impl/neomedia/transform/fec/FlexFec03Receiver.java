@@ -15,13 +15,13 @@
  */
 package org.atalk.impl.neomedia.transform.fec;
 
-import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.ArrayUtils;
-import org.atalk.util.RTPUtils;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.util.ArrayUtils;
+import org.atalk.util.RTPUtils;
 
 import timber.log.Timber;
 
@@ -32,15 +32,13 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class FlexFec03Receiver
-        extends AbstractFECReceiver
-{
+        extends AbstractFECReceiver {
     /**
      * Helper class to reconstruct missing packets
      */
     private Reconstructor reconstructor;
 
-    public FlexFec03Receiver(long mediaSsrc, byte fecPayloadType)
-    {
+    public FlexFec03Receiver(long mediaSsrc, byte fecPayloadType) {
         super(mediaSsrc, fecPayloadType);
         this.reconstructor = new Reconstructor(mediaPackets);
     }
@@ -49,8 +47,7 @@ public class FlexFec03Receiver
      * {@inheritDoc}
      */
     @Override
-    protected synchronized RawPacket[] doReverseTransform(RawPacket[] pkts)
-    {
+    protected synchronized RawPacket[] doReverseTransform(RawPacket[] pkts) {
         Set<Integer> flexFecPacketsToRemove = new HashSet<>();
         // Try to recover any missing media packets
         for (Map.Entry<Integer, RawPacket> entry : fecPackets.entrySet()) {
@@ -87,8 +84,7 @@ public class FlexFec03Receiver
         return pkts;
     }
 
-    private static class Reconstructor
-    {
+    private static class Reconstructor {
         /**
          * All available media packets.
          */
@@ -118,18 +114,15 @@ public class FlexFec03Receiver
          * this is a reference so it will remain up to date as the map is
          * filled out by the caller.
          */
-        Reconstructor(Map<Integer, RawPacket> mediaPackets)
-        {
+        Reconstructor(Map<Integer, RawPacket> mediaPackets) {
             this.mediaPackets = mediaPackets;
         }
 
-        public boolean complete()
-        {
+        public boolean complete() {
             return numMissing == 0;
         }
 
-        public boolean canRecover()
-        {
+        public boolean canRecover() {
             return numMissing == 1;
         }
 
@@ -140,8 +133,7 @@ public class FlexFec03Receiver
          *
          * @param p the {@link FlexFec03Packet} to be used for this reconstruction
          */
-        public void setFecPacket(FlexFec03Packet p)
-        {
+        public void setFecPacket(FlexFec03Packet p) {
             if (p == null) {
                 Timber.e("Error setting flexfec packet");
                 return;
@@ -174,10 +166,10 @@ public class FlexFec03Receiver
          * @param fecPacket the FlexFEC packet being used for recovery
          * @param recoveredPacket the blank RawPacket we're recreating the
          * recovered packet in
+         *
          * @return true on success, false otherwise
          */
-        private boolean startPacketRecovery(FlexFec03Packet fecPacket, RawPacket recoveredPacket)
-        {
+        private boolean startPacketRecovery(FlexFec03Packet fecPacket, RawPacket recoveredPacket) {
             if (fecPacket.getLength() < RawPacket.FIXED_HEADER_SIZE) {
                 Timber.e("Given FlexFEC packet is too small");
                 return false;
@@ -209,8 +201,7 @@ public class FlexFec03Receiver
          * @param source the packet to xor the header from
          * @param dest the packet to xor the header into
          */
-        private void xorHeaders(RawPacket source, RawPacket dest)
-        {
+        private void xorHeaders(RawPacket source, RawPacket dest) {
             // XOR the first 2 bytes of the header: V, P, X, CC, M, PT fields.
             dest.getBuffer()[0] ^= source.getBuffer()[source.getOffset() + 0];
             dest.getBuffer()[1] ^= source.getBuffer()[source.getOffset() + 1];
@@ -244,8 +235,7 @@ public class FlexFec03Receiver
          */
         private void xorPayloads(byte[] source, int sourceOffset,
                 byte[] dest, int destOffset,
-                int payloadLength)
-        {
+                int payloadLength) {
             for (int i = 0; i < payloadLength; ++i) {
                 dest[destOffset + i] ^= source[sourceOffset + i];
             }
@@ -258,8 +248,7 @@ public class FlexFec03Receiver
          * @param fecPacket the fec packet
          * @param recoveredPacket the media packet which was recovered
          */
-        private boolean finishPacketRecovery(FlexFec03Packet fecPacket, RawPacket recoveredPacket)
-        {
+        private boolean finishPacketRecovery(FlexFec03Packet fecPacket, RawPacket recoveredPacket) {
             // Set the RTP version to 2.
             recoveredPacket.getBuffer()[0] |= 0x80; // Set the 1st bit
             recoveredPacket.getBuffer()[0] &= 0xbf; // Clear the second bit
@@ -288,8 +277,7 @@ public class FlexFec03Receiver
          *
          * @return the recovered packet if successful, null otherwise
          */
-        private RawPacket recover()
-        {
+        private RawPacket recover() {
             if (!canRecover()) {
                 return null;
             }

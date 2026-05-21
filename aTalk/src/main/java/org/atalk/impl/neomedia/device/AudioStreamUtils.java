@@ -8,13 +8,13 @@ package org.atalk.impl.neomedia.device;
 import android.content.Context;
 import android.net.Uri;
 
-import org.atalk.android.aTalkApp;
-import org.atalk.impl.androidresources.AppResourceServiceImpl;
-
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import javax.media.format.AudioFormat;
+
+import org.atalk.android.aTalkApp;
+import org.atalk.impl.androidresources.AppResourceServiceImpl;
 
 import timber.log.Timber;
 
@@ -24,17 +24,18 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class AudioStreamUtils
-{
+public class AudioStreamUtils {
     /**
      * Obtains an audio input stream from the URL provided.
      *
      * @param uri a valid url to a sound resource.
+     *
      * @return the input stream to audio data.
+     *
      * @throws java.io.IOException if an I/O exception occurs
      */
-    public static InputStream getAudioInputStream(String uri)
-    {
+    public static InputStream getAudioInputStream(String uri) {
+        Timber.e("getAudioInputStream: %s", uri);
         InputStream audioStream = null;
         try {
             // Context context = ServiceUtils.getService(NeomediaActivator.getBundleContext(), OSGiService.class);
@@ -56,7 +57,8 @@ public class AudioStreamUtils
                 resourceUri = "android.resource://" + context.getPackageName() + "/" + resourceUri;
             }
             audioStream = context.getContentResolver().openInputStream(Uri.parse(resourceUri));
-        } catch (FileNotFoundException t) {
+        }
+        catch (FileNotFoundException t) {
             Timber.e(t, "Error opening file: %s", uri);
         }
         return audioStream;
@@ -66,10 +68,10 @@ public class AudioStreamUtils
      * Returns the audio format for the WAV <code>InputStream</code>. Or null if format cannot be obtained.
      *
      * @param audioInputStream the input stream.
+     *
      * @return the format of the audio stream.
      */
-    public static AudioFormat getFormat(InputStream audioInputStream)
-    {
+    public static AudioFormat getFormat(InputStream audioInputStream) {
         WaveHeader waveHeader = new WaveHeader(audioInputStream);
         return new AudioFormat(AudioFormat.LINEAR,
                 waveHeader.getSampleRate(), waveHeader.getBitsPerSample(), waveHeader.getChannels());

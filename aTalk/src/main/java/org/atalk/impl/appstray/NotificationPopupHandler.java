@@ -92,6 +92,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
      * {@inheritDoc}
      */
     public void showPopupMessage(PopupMessage popupMessage) {
+        // Timber.d("show Popup Message: %s", popupMessage.getMessage());
         AppPopup newPopup = null;
         mIsUpdate = false;
         // Check for existing notifications and mergePopUp else create new
@@ -511,7 +512,6 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
      */
     public static void removeCallNotification(String callId) {
         Integer notificationId = callNotificationMap.get(callId);
-        Timber.d("Removing notification for callId: %s => %s", callId, notificationId);
         if (notificationId != null) {
             removeNotification(notificationId);
             callNotificationMap.remove(callId);

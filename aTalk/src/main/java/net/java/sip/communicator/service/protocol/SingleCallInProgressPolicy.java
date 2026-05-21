@@ -24,6 +24,7 @@ import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
 
 import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
@@ -154,26 +155,12 @@ public class SingleCallInProgressPolicy {
 
         if (CallState.CALL_INITIALIZATION.equals(ev.getOldValue())
                 && CallState.CALL_IN_PROGRESS.equals(call.getCallState())) {
-            CallConference conference = call.getConference();
 
             synchronized (calls) {
                 for (Call otherCall : calls) {
-                    if (!call.equals(otherCall)
-                            && CallState.CALL_IN_PROGRESS.equals(otherCall.getCallState())) {
-                        /*
-                         * Only put on hold calls which are visually distinctive from the specified
-                         * call i.e. do not put on hold calls which participate in the same
-                         * telephony conference as the specified call.
-                         */
-                        boolean putOnHold;
-                        CallConference otherConference = otherCall.getConference();
-
-                        if (conference == null)
-                            putOnHold = (otherConference == null);
-                        else
-                            putOnHold = (conference != otherConference);
-                        if (putOnHold)
-                            putOnHold(otherCall);
+                    if (!call.equals(otherCall) && CallState.CALL_IN_PROGRESS.equals(otherCall.getCallState())) {
+                        // Only put on hold calls which are visually distinctive from the specified call
+                        putOnHold(otherCall);
                     }
                 }
             }
@@ -205,7 +192,7 @@ public class SingleCallInProgressPolicy {
      *
      * @param type one of {@link CallEvent#CALL_ENDED}, {@link CallEvent#CALL_INITIATED} and
      * {@link CallEvent#CALL_RECEIVED} which describes the type of the event to be handled
-     * @param ev a <code>CallEvent</code> value which describes the change and the <code>Call</code> associated with it
+     * @param call a <code>Call</code> instance.
      */
     private void handleCallEvent(int type, Call call) {
         Timber.log(TimberLog.FINER, "Call event fired.");
@@ -217,6 +204,7 @@ public class SingleCallInProgressPolicy {
 
         case CallEvent.CALL_INITIATED:
         case CallEvent.CALL_RECEIVED:
+        case CallEvent.CALL_RECEIVED_JM:
             addCallListener(call);
             break;
         }
@@ -229,10 +217,10 @@ public class SingleCallInProgressPolicy {
     /**
      * Notifies this instance that an incoming <code>Call</code> has been received.
      *
-     * @param ev a <code>CallEvent</code> which describes the received incoming <code>Call</code>
+     * @param event a <code>CallEvent</code> which describes the received incoming <code>Call</code>
      */
-    private void incomingCallReceived(CallEvent ev) {
-        Call call = ev.getSourceCall();
+    private void incomingCallReceived(CallEvent event) {
+        Call call = event.getSourceCall();
 
         // check whether we should hangup this call saying we are busy already on call
         if (CallState.CALL_INITIALIZATION.equals(call.getCallState())) {
@@ -738,8 +726,8 @@ public class SingleCallInProgressPolicy {
          *
          * @see CallListener#incomingCallReceived(CallEvent)
          */
-        public void incomingCallReceived(CallEvent ev) {
-            SingleCallInProgressPolicy.this.incomingCallReceived(ev);
+        public void incomingCallReceived(CallEvent event) {
+            SingleCallInProgressPolicy.this.incomingCallReceived(event);
         }
 
         /**

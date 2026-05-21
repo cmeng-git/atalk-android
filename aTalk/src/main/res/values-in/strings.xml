@@ -79,7 +79,7 @@
     <string name="call_transfer">Transfer</string>
     <string name="call_transfer_failed">Gagal melanjutkan transfer panggilan: %1$s &#8674; %2$s\n%3$s</string>
     <string name="call_transfer_hint">Pilih nama kontak yang ingin Anda transfer, lalu klik Transfer.</string>
-    <string name="call_transfer_msg">%1$s panggilan ditransfer ke&#8230; %2$s</string>
+    <string name="call_transfer_msg">%1$s panggilan ditransfer ke %2$s</string>
 
     <string name="attach_picture">Gambar</string>
     <string name="attach_take_picture">Ambil gambar</string>
@@ -155,7 +155,8 @@
     <string name="call_audio">Panggilan audio</string>
     <string name="call_answered">%1$s telah menjawab panggilan.</string>
     <string name="call_disable_on_fault">aTalk gagal menginisialisasi %1$s\nSemua panggilan/layanan media akan dinonaktifkan.\n%2$s</string>
-    <string name="call_ended">Penelepon jarak jauh telah mengakhiri panggilan: %1$s</string>
+    <string name="call_ended">Panggilan berakhir</string>
+    <string name="call_ended_by_remote">Penelepon jarak jauh telah mengakhiri panggilan: %1$s</string>
     <string name="call_error">Pesta jarak jauh mengembalikan kesalahan: %1$s</string>
     <string name="call_failed">Panggilan gagal</string>
     <string name="call_history_name">Riwayat Panggilan</string>
@@ -341,10 +342,6 @@
     <string name="refresh_store_omemo">XEP-0384: Enkripsi OMEMO</string>
 
     <string name="unregistered_message">Gagal login koneksi akun gagal:\nNama Pengguna: %1$s\nNama Server: %2$s\nAkun sedang offline.</string>
-    <string name="create_videoBridge">Buat jembatan video&#8230;</string>
-    <string name="create_videoBridge_menu">Buat jembatan video</string>
-    <string name="create_join_video_conference">Buat/Gabung konferensi video</string>
-    <string name="create_video_conference">Buat konferensi video baru untuk ruang obrolan ini</string>
     <string name="video_format_not_supported">Gagal menyetel pratinjau kamera perangkat ke: %1$s; Pengecualian: %2$s.</string>
     <string name="disconnected">Terputus</string>
     <string name="disconnecting_">Memutuskan sambungan %1$s</string>
@@ -672,7 +669,6 @@
     <string name="callinfo_call_information">Informasi panggilan</string>
     <string name="callinfo_call_transport">Transportasi panggilan sinyal:</string>
     <string name="callinfo_codec">Codec/Frekuensi:</string>
-    <string name="callinfo_conference_focus">Fokus konferensi:</string>
     <string name="callinfo_default_encrypted">Enkripsi diaktifkan:</string>
     <string name="callinfo_jitter">Jitter:</string>
     <string name="callinfo_key_exchange_protocol">Protokol pertukaran kunci</string>
@@ -682,7 +678,6 @@
     <string name="callinfo_media_srtp">SRTP:</string>
     <string name="callinfo_media_stream_transport_protocol">Protokol transport stream media:</string>
     <string name="callinfo_na">N.A.</string>
-    <string name="callinfo_peer_count">Jumlah peserta:</string>
     <string name="callinfo_remote_ip">IP/Port Jarak Jauh:</string>
     <string name="callinfo_rtt">RTT:</string>
     <string name="callinfo_details">Detail Info Panggilan</string>
@@ -1052,8 +1047,6 @@
     <string name="sec_protocols_title">Protokol keamanan</string>
     <string name="sec_protocols_message">Silakan pilih protokol yang diinginkan agar</string>
     <string name="discard">Buang</string>
-    <string name="sec_zrtp_signalling_on">ZRTP akan diiklankan melalui protokol pensinyalan</string>
-    <string name="sec_zrtp_signalling_off">Tidak akan ada iklan ZRTP</string>
 
     <!-- STUN/Jingle Nodes list -->
     <string name="service_gui_SERVERS_LIST_ADD_SERVER">Tambah server</string>
@@ -1081,7 +1074,6 @@
     <string name="security_sdes_dlg_title">Pilih cipher suite yang diinginkan</string>
     <string name="security_sdes_title">cipher suite SDES</string>
     <string name="security_zrtp_options">Opsi ZRTP</string>
-    <string name="security_zrtp_signalling">pensinyalan ZRTP</string>
 
     <!-- Common preferences -->
     <string name="audio_encoding">Enkode audio</string>

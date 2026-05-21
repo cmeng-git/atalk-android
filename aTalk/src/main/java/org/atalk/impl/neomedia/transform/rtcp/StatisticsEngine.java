@@ -15,6 +15,19 @@
  */
 package org.atalk.impl.neomedia.transform.rtcp;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.media.control.JitterBufferControl;
+import javax.media.rtp.ReceiveStream;
+import javax.media.rtp.ReceptionStats;
+
 import net.sf.fmj.media.rtp.BurstMetrics;
 import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 import net.sf.fmj.media.rtp.RTCPFeedback;
@@ -28,7 +41,6 @@ import net.sf.fmj.media.rtp.SSRCInfo;
 import net.sf.fmj.media.rtp.util.BadFormatException;
 import net.sf.fmj.utility.ByteBufferOutputStream;
 
-import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.impl.neomedia.MediaStreamStatsImpl;
 import org.atalk.impl.neomedia.RTCPPacketPredicate;
@@ -44,6 +56,7 @@ import org.atalk.impl.neomedia.transform.PacketTransformer;
 import org.atalk.impl.neomedia.transform.SinglePacketTransformer;
 import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
 import org.atalk.impl.neomedia.transform.TransformEngine;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.MediaStreamStats;
 import org.atalk.service.neomedia.RawPacket;
@@ -56,19 +69,6 @@ import org.atalk.util.MediaType;
 import org.atalk.util.RTCPUtils;
 import org.atalk.util.RTPUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.media.control.JitterBufferControl;
-import javax.media.rtp.ReceiveStream;
-import javax.media.rtp.ReceptionStats;
-
 import timber.log.Timber;
 
 /**
@@ -80,8 +80,7 @@ import timber.log.Timber;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class StatisticsEngine extends SinglePacketTransformer implements TransformEngine
-{
+public class StatisticsEngine extends SinglePacketTransformer implements TransformEngine {
     /**
      * The RTP statistics prefix we use for every log.
      * Simplifies parsing and searching for statistics info in log files.
@@ -97,12 +96,12 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      * @param buf
      * @param off
      * @param len
+     *
      * @return the length in bytes of the RTCP packet in <code>buf</code> starting
      * at <code>off</code> and spanning at most <code>len</code> bytes if it was determined that there
      * indeed appears to be such an RTCP packet; otherwise, <code>-1</code>
      */
-    private static int getLengthIfRTCP(byte[] buf, int off, int len)
-    {
+    private static int getLengthIfRTCP(byte[] buf, int off, int len) {
         if (off >= 0 && RTCPUtils.isRtcp(buf, off, len)) {
             int bytes = RTCPUtils.getLength(buf, off, len);
 
@@ -163,8 +162,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      *
      * @param stream the stream creating us.
      */
-    public StatisticsEngine(MediaStreamImpl stream)
-    {
+    public StatisticsEngine(MediaStreamImpl stream) {
         // XXX think about removing the isRTCP method now that we have the RTCPPacketPredicate in place.
         super(RTCPPacketPredicate.INSTANCE);
 
@@ -178,11 +176,11 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      *
      * @param pkt the <code>RawPacket</code> into which <code>extendedReport</code> is to be added
      * @param extendedReport the RTCP XR packet to add into <code>pkt</code>
+     *
      * @return <code>true</code> if <code>extendedReport</code> was added into <code>pkt</code>; otherwise,
      * <code>false</code>
      */
-    private boolean addRTCPExtendedReport(RawPacket pkt, RTCPExtendedReport extendedReport)
-    {
+    private boolean addRTCPExtendedReport(RawPacket pkt, RTCPExtendedReport extendedReport) {
         // Find an offset within pkt at which the specified RTCP XR packet is to be added.
         // According to RFC 3550, it should not follow an RTCP BYE packet with matching SSRC.
         byte[] buf = pkt.getBuffer();
@@ -245,7 +243,8 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
             try (DataOutputStream dos = new DataOutputStream(bbos)) {
                 extendedReport.assemble(dos);
                 added = (dos.size() == extendedReportLen);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
             }
             if (added) {
                 pkt.setLength(pkt.getLength() + extendedReportLen);
@@ -264,11 +263,11 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      *
      * @param pkt the <code>RawPacket</code> to which RTCP XR packets are to be added
      * @param sdpParams
+     *
      * @return a list of <code>RTCPExtendedReport</code> packets added to <code>pkt</code> or
      * <code>null</code> or an empty list if no RTCP XR packets were added to <code>pkt</code>
      */
-    private List<RTCPExtendedReport> addRTCPExtendedReports(RawPacket pkt, String sdpParams)
-    {
+    private List<RTCPExtendedReport> addRTCPExtendedReports(RawPacket pkt, String sdpParams) {
         // Create an RTCP XR packet for each RTCP SR or RR packet. Afterwards,
         // add the newly created RTCP XR packets into pkt.
         byte[] buf = pkt.getBuffer();
@@ -344,10 +343,10 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      * packet
      * @param sourceSSRCs the SSRCs of the RTP data packet sources to be reported upon by the new RTCP XR packet
      * @param sdpParams
+     *
      * @return a new RTCP XR packet with originator <code>senderSSRC</code> and reporting upon <code>sourceSSRCs</code>
      */
-    private RTCPExtendedReport createRTCPExtendedReport(int senderSSRC, int[] sourceSSRCs, String sdpParams)
-    {
+    private RTCPExtendedReport createRTCPExtendedReport(int senderSSRC, int[] sourceSSRCs, String sdpParams) {
         RTCPExtendedReport xr = null;
         if ((sourceSSRCs != null) && (sourceSSRCs.length != 0)
                 && (sdpParams != null) && sdpParams.contains(RTCPExtendedReport.VoIPMetricsReportBlock.SDP_PARAMETER)) {
@@ -377,11 +376,11 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      * @param senderSSRC
      * @param sourceSSRC the synchronization source identifier (SSRC) of the RTP
      * data packet source to be reported upon by the new instance
+     *
      * @return a new <code>RTCPExtendedReport.VoIPMetricsReportBlock</code> instance
      * reporting upon <code>sourceSSRC</code>
      */
-    private RTCPExtendedReport.VoIPMetricsReportBlock createVoIPMetricsReportBlock(int senderSSRC, int sourceSSRC)
-    {
+    private RTCPExtendedReport.VoIPMetricsReportBlock createVoIPMetricsReportBlock(int senderSSRC, int sourceSSRC) {
         RTCPExtendedReport.VoIPMetricsReportBlock voipMetrics = null;
         if (MediaType.AUDIO.equals(mediaType)) {
             ReceiveStream receiveStream = mediaStream.getReceiveStream(sourceSSRC);
@@ -398,12 +397,12 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      *
      * @param senderSSRC
      * @param receiveStream the <code>ReceiveStream</code> to be reported upon by the new instance
+     *
      * @return a new <code>RTCPExtendedReport.VoIPMetricsReportBlock</code> instance
      * reporting upon <code>receiveStream</code>
      */
     private RTCPExtendedReport.VoIPMetricsReportBlock
-    createVoIPMetricsReportBlock(int senderSSRC, ReceiveStream receiveStream)
-    {
+    createVoIPMetricsReportBlock(int senderSSRC, ReceiveStream receiveStream) {
         RTCPExtendedReport.VoIPMetricsReportBlock voipMetrics = new RTCPExtendedReport.VoIPMetricsReportBlock();
         voipMetrics.setSourceSSRC((int) receiveStream.getSSRC());
 
@@ -609,10 +608,10 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      *
      * @param receiveStream the <code>ReceiveStream</code> of which the number of packets decoded by means
      * of FEC is to be returned
+     *
      * @return the number of packets in <code>receiveStream</code> which have been decoded by means of FEC
      */
-    private long getFECDecodedPacketCount(ReceiveStream receiveStream)
-    {
+    private long getFECDecodedPacketCount(ReceiveStream receiveStream) {
         MediaDeviceSession devSession = mediaStream.getDeviceSession();
         long fecDecodedPacketCount = 0;
 
@@ -631,16 +630,14 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      *
      * @return minimum inter arrival jitter value we have reported.
      */
-    public long getMaxInterArrivalJitter()
-    {
+    public long getMaxInterArrivalJitter() {
         return maxInterArrivalJitter;
     }
 
     /**
      * Gets the average value of the jitter reported in RTCP packets, in RTP timestamp units.
      */
-    public double getAvgInterArrivalJitter()
-    {
+    public double getAvgInterArrivalJitter() {
         long numberOfRTCPReports = getCumulativeValue(numberOfRTCPReportsMap);
         long jitterSum = getCumulativeValue(jitterSumMap);
 
@@ -652,8 +649,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      *
      * @return maximum inter arrival jitter value we have reported.
      */
-    public long getMinInterArrivalJitter()
-    {
+    public long getMinInterArrivalJitter() {
         return minInterArrivalJitter;
     }
 
@@ -663,8 +659,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      * @return a reference to <code>this</code> instance of the <code>StatisticsEngine</code>.
      */
     @Override
-    public PacketTransformer getRTCPTransformer()
-    {
+    public PacketTransformer getRTCPTransformer() {
         return this;
     }
 
@@ -674,8 +669,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      * @return <code>null</code> since this engine does not require any RTP transformations.
      */
     @Override
-    public PacketTransformer getRTPTransformer()
-    {
+    public PacketTransformer getRTPTransformer() {
         return rtpTransformer;
     }
 
@@ -686,20 +680,21 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      * @param buf the byte array from which the RR or SR instance will be initialized.
      * @param off the offset into <code>buf</code>.
      * @param len the length of the data in <code>buf</code>.
+     *
      * @return a new SR or RR <code>RTCPReport</code> instance initialized from the specified byte array.
+     *
      * @throws IOException if an I/O error occurs while parsing the specified
      * <code>pkt</code> into a new SR or RR <code>RTCPReport</code> instance.
      */
     private RTCPReport parseRTCPReport(int type, byte[] buf, int off, int len)
-            throws IOException
-    {
+            throws IOException {
         switch (type) {
-            case RTCPPacket.RR:
-                return new RTCPReceiverReport(buf, off, len);
-            case RTCPPacket.SR:
-                return new RTCPSenderReport(buf, off, len);
-            default:
-                return null;
+        case RTCPPacket.RR:
+            return new RTCPReceiverReport(buf, off, len);
+        case RTCPPacket.SR:
+            return new RTCPSenderReport(buf, off, len);
+        default:
+            return null;
         }
     }
 
@@ -707,13 +702,14 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      * Initializes a new SR or RR <code>RTCPReport</code> instance from a specific <code>RawPacket</code>.
      *
      * @param pkt the <code>RawPacket</code> to parse into a new SR or RR <code>RTCPReport</code> instance
+     *
      * @return a new SR or RR <code>RTCPReport</code> instance initialized from the specified <code>pkt</code>
+     *
      * @throws IOException if an I/O error occurs while parsing the specified
      * <code>pkt</code> into a new SR or RR <code>RTCPReport</code> instance
      */
     private RTCPReport parseRTCPReport(RawPacket pkt)
-            throws IOException
-    {
+            throws IOException {
         return parseRTCPReport(pkt.getRTCPPacketType(), pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
     }
 
@@ -722,11 +718,11 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      * about the reception of packets with known types (currently these are RR, SR, XR, REMB, NACK).
      *
      * @param pkt the packet to reverse-transform
+     *
      * @return the packet which is the result of the reverse-transform
      */
     @Override
-    public RawPacket reverseTransform(RawPacket pkt)
-    {
+    public RawPacket reverseTransform(RawPacket pkt) {
         // SRTP may send non-RTCP packets.
         if (RTCPUtils.isRtcp(pkt.getBuffer(), pkt.getOffset(), pkt.getLength())) {
             mediaStreamStats.rtcpPacketReceived(pkt.getRTCPSSRC(), pkt.getLength());
@@ -736,7 +732,8 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
             try {
                 compound = (RTCPCompoundPacket) parser.parse(pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
                 ex = null;
-            } catch (BadFormatException | IllegalStateException e) {
+            }
+            catch (BadFormatException | IllegalStateException e) {
                 // In some parsing failures, FMJ swallows the original
                 // IOException and throws a runtime IllegalStateException.
                 // Handle it as if parsing failed.
@@ -758,7 +755,8 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
 
             try {
                 updateReceivedMediaStreamStats(compound.packets);
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 if (t instanceof ThreadDeath) {
                     throw (ThreadDeath) t;
                 }
@@ -777,65 +775,65 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      *
      * @param in the input packets
      */
-    private void updateReceivedMediaStreamStats(RTCPPacket[] in)
-    {
+    private void updateReceivedMediaStreamStats(RTCPPacket[] in) {
         MediaStreamStatsImpl streamStats = mediaStream.getMediaStreamStats();
 
         for (RTCPPacket rtcp : in) {
             switch (rtcp.type) {
-                case RTCPFBPacket.PSFB:
-                    if (rtcp instanceof RTCPREMBPacket) {
-                        RTCPREMBPacket remb = (RTCPREMBPacket) rtcp;
-                        Timber.log(TimberLog.FINER, "remb_received,stream = %s bps = %s, dest = %s",
-                                mediaStream.hashCode(), remb.getBitrate(), Arrays.toString(remb.getDest()));
-                        streamStats.rembReceived(remb);
-                    }
-                    break;
+            case RTCPFBPacket.PSFB:
+                if (rtcp instanceof RTCPREMBPacket) {
+                    RTCPREMBPacket remb = (RTCPREMBPacket) rtcp;
+                    Timber.log(TimberLog.FINER, "remb_received,stream = %s bps = %s, dest = %s",
+                            mediaStream.hashCode(), remb.getBitrate(), Arrays.toString(remb.getDest()));
+                    streamStats.rembReceived(remb);
+                }
+                break;
 
-                case RTCPPacket.SR:
-                    if (rtcp instanceof RTCPSRPacket) {
-                        streamStats.srReceived((RTCPSRPacket) rtcp);
-                    }
-                case RTCPPacket.RR:
-                    RTCPReport report;
-                    try {
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        rtcp.assemble(new DataOutputStream(baos));
-                        byte[] buf = baos.toByteArray();
-                        report = parseRTCPReport(rtcp.type, buf, 0, buf.length);
-                    } catch (IOException ioe) {
-                        Timber.e(ioe, "Failed to assemble an RTCP report.");
-                        report = null;
-                    }
-                    if (report != null) {
-                        streamStats.getRTCPReports().rtcpReportReceived(report);
-                    }
-                    break;
+            case RTCPPacket.SR:
+                if (rtcp instanceof RTCPSRPacket) {
+                    streamStats.srReceived((RTCPSRPacket) rtcp);
+                }
+            case RTCPPacket.RR:
+                RTCPReport report;
+                try {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    rtcp.assemble(new DataOutputStream(baos));
+                    byte[] buf = baos.toByteArray();
+                    report = parseRTCPReport(rtcp.type, buf, 0, buf.length);
+                }
+                catch (IOException ioe) {
+                    Timber.e(ioe, "Failed to assemble an RTCP report.");
+                    report = null;
+                }
+                if (report != null) {
+                    streamStats.getRTCPReports().rtcpReportReceived(report);
+                }
+                break;
 
-                case RTCPFBPacket.RTPFB:
-                    if (rtcp instanceof NACKPacket) {
-                        // NACKs are currently handled in RtxTransformer and do not
-                        // reach the StatisticsEngine.
-                        NACKPacket nack = (NACKPacket) rtcp;
-                        streamStats.nackReceived(nack);
-                    }
-                    else if (rtcp instanceof RTCPTCCPacket) {
-                        /*
-                         * Intuition: Packet is RTCP, wakeup RTCPPacketListeners which may include BWE workers
-                         */
-                        streamStats.tccPacketReceived((RTCPTCCPacket) rtcp);
-                    }
-                    break;
+            case RTCPFBPacket.RTPFB:
+                if (rtcp instanceof NACKPacket) {
+                    // NACKs are currently handled in RtxTransformer and do not
+                    // reach the StatisticsEngine.
+                    NACKPacket nack = (NACKPacket) rtcp;
+                    streamStats.nackReceived(nack);
+                }
+                else if (rtcp instanceof RTCPTCCPacket) {
+                    /*
+                     * Intuition: Packet is RTCP, wakeup RTCPPacketListeners which may include BWE workers
+                     */
+                    streamStats.tccPacketReceived((RTCPTCCPacket) rtcp);
+                }
+                break;
 
-                case RTCPExtendedReport.XR:
-                    if (rtcp instanceof RTCPExtendedReport) {
-                        streamStats.getRTCPReports().rtcpExtendedReportReceived((RTCPExtendedReport) rtcp);
-                    }
-                    break;
+            case RTCPExtendedReport.XR:
+                if (rtcp instanceof RTCPExtendedReport) {
+                    streamStats.getRTCPReports().rtcpExtendedReportReceived((RTCPExtendedReport) rtcp);
+                }
+                break;
 
-                default:
-                    // These types of RTCP packets are of no interest at present.
-                    break;
+            default:
+                // These types of RTCP packets are of no interest at present.
+                break;
             }
         }
     }
@@ -847,17 +845,18 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      * <code>StatisticsEngine</code> is not modifying it.
      *
      * @param pkt the packet to transform
+     *
      * @return the packet which is the result of the transform
      */
     @Override
-    public RawPacket transform(RawPacket pkt)
-    {
+    public RawPacket transform(RawPacket pkt) {
         // SRTP may send non-RTCP packets.
         if (RTCPUtils.isRtcp(pkt.getBuffer(), pkt.getOffset(), pkt.getLength())) {
             mediaStreamStats.rtcpPacketSent(pkt.getRTCPSSRC(), pkt.getLength());
             try {
                 updateSentMediaStreamStats(pkt);
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 if (t instanceof InterruptedException) {
                     Thread.currentThread().interrupt();
                 }
@@ -904,8 +903,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      * @param pkt the sent RTCP packet
      */
     private void updateSentMediaStreamStats(RawPacket pkt)
-            throws Exception
-    {
+            throws Exception {
         RTCPReport r = parseRTCPReport(pkt);
 
         if (r != null) {
@@ -966,10 +964,10 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      *
      * @param map the {@code Map} with {@code Long} values to sum up. Note that
      * we synchronize on this object!
+     *
      * @return the sum of the values of the specified {@code map}
      */
-    private static long getCumulativeValue(Map<?, Long> map)
-    {
+    private static long getCumulativeValue(Map<?, Long> map) {
         long cumulativeValue = 0;
 
         synchronized (map) {
@@ -988,10 +986,10 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      *
      * @param map the map to get the value. Note that we synchronize on that object!
      * @param ssrc the key
+     *
      * @return the result value or 0 if nothing is found.
      */
-    private static long getMapValue(Map<?, Long> map, long ssrc)
-    {
+    private static long getMapValue(Map<?, Long> map, long ssrc) {
         synchronized (map) {
             // there can be no entry, or the value can be null
             Long res = map.get(ssrc);
@@ -1007,31 +1005,26 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      * @param ssrc the key of the value to increment
      * @param step increment step value
      */
-    private static void incrementSSRCCounter(Map<Long, Long> map, long ssrc, long step)
-    {
+    private static void incrementSSRCCounter(Map<Long, Long> map, long ssrc, long step) {
         synchronized (map) {
             Long count = map.get(ssrc);
             map.put(ssrc, (count == null) ? step : (count + step));
         }
     }
 
-    private class RTPPacketTransformer extends SinglePacketTransformerAdapter
-    {
-        private RTPPacketTransformer()
-        {
+    private class RTPPacketTransformer extends SinglePacketTransformerAdapter {
+        private RTPPacketTransformer() {
             super(RTPPacketPredicate.INSTANCE);
         }
 
         @Override
-        public RawPacket transform(RawPacket pkt)
-        {
+        public RawPacket transform(RawPacket pkt) {
             mediaStreamStats.rtpPacketSent(pkt.getSSRCAsLong(), pkt.getSequenceNumber(), pkt.getLength(), pkt.isSkipStats());
             return pkt;
         }
 
         @Override
-        public RawPacket reverseTransform(RawPacket pkt)
-        {
+        public RawPacket reverseTransform(RawPacket pkt) {
             mediaStreamStats.rtpPacketReceived(pkt.getSSRCAsLong(), pkt.getSequenceNumber(), pkt.getLength());
             return pkt;
         }

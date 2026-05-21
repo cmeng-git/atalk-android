@@ -18,17 +18,18 @@ package org.jivesoftware.smackx.externalservicediscovery;
 import static net.java.sip.communicator.impl.netaddr.NetworkAddressManagerServiceImpl.STUN_SRV_NAME;
 import static net.java.sip.communicator.impl.netaddr.NetworkAddressManagerServiceImpl.TURN_SRV_NAME;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
 import org.ice4j.ice.harvest.StunCandidateHarvester;
 import org.ice4j.ice.harvest.TurnCandidateHarvester;
 import org.ice4j.security.LongTermCredential;
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.XMPPConnection;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * An implementation that extracts the services found in external service discovery
@@ -37,10 +38,8 @@ import java.util.List;
  * @author Eng Chong Meng
  * @see <a href="https://xmpp.org/extensions/xep-0215.html">XEP-0215: External Service Discovery</a>
  */
-public class IceCandidateHarvester
-{
-    public static List<StunCandidateHarvester> getExtServiceHarvester(XMPPConnection connection, String protocol)
-    {
+public class IceCandidateHarvester {
+    public static List<StunCandidateHarvester> getExtServiceHarvester(XMPPConnection connection, String protocol) {
         List<StunCandidateHarvester> stunServices = null;
 
         ExternalServiceDiscoveryManager xServiceManager = ExternalServiceDiscoveryManager.getInstanceFor(connection);

@@ -1,19 +1,18 @@
 package org.jivesoftware.smackx.jinglenodes.nio;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
-public class PublicIPResolver
-{
+public class PublicIPResolver {
     private final static byte BINDING_REQUEST_ID = 0x0001;
     private final static int MAPPED_ADDRESS = 0x0001;
     private final static byte[] CHANGE_REQUEST_NO_CHANGE = {0, 3, 0, 4, 0, 0, 0, 0};
     private final static Random r = new Random(System.nanoTime());
 
-    private static byte[] getHeader(final int contentLength)
-    {
+    private static byte[] getHeader(final int contentLength) {
         final byte[] header = new byte[20];
         header[0] = 0;
         header[1] = BINDING_REQUEST_ID;
@@ -26,8 +25,7 @@ public class PublicIPResolver
         return header;
     }
 
-    public static ByteBuffer createSTUNChangeRequest()
-    {
+    public static ByteBuffer createSTUNChangeRequest() {
         final byte[] header = getHeader(CHANGE_REQUEST_NO_CHANGE.length);
         final byte[] data = new byte[header.length + CHANGE_REQUEST_NO_CHANGE.length];
         System.arraycopy(header, 0, data, 0, header.length);
@@ -35,8 +33,7 @@ public class PublicIPResolver
         return ByteBuffer.wrap(data);
     }
 
-    public static Header parseResponse(byte[] data)
-    {
+    public static Header parseResponse(byte[] data) {
         byte[] lengthArray = new byte[2];
         System.arraycopy(data, 2, lengthArray, 0, 2);
         int length = unsignedShortToInt(lengthArray);
@@ -57,8 +54,7 @@ public class PublicIPResolver
         return null;
     }
 
-    private static Header parseHeader(byte[] data)
-    {
+    private static Header parseHeader(byte[] data) {
         byte[] typeArray = new byte[2];
         System.arraycopy(data, 0, typeArray, 0, 2);
         int type = unsignedShortToInt(typeArray);
@@ -87,49 +83,41 @@ public class PublicIPResolver
         return new Header(null, -1, lengthValue + 4);
     }
 
-    public static int unsignedShortToInt(final byte[] b)
-    {
+    public static int unsignedShortToInt(final byte[] b) {
         int a = b[0] & 0xFF;
         int aa = b[1] & 0xFF;
         return ((a << 8) + aa);
     }
 
-    public static int unsignedByteToInt(byte b)
-    {
+    public static int unsignedByteToInt(byte b) {
         return (int) b & 0xFF;
     }
 
-    public static class Header
-    {
+    public static class Header {
         final InetSocketAddress address;
         final int type;
         final int length;
 
-        public Header(final InetSocketAddress address, int type, int length)
-        {
+        public Header(final InetSocketAddress address, int type, int length) {
             this.address = address;
             this.type = type;
             this.length = length;
         }
 
-        public int getType()
-        {
+        public int getType() {
             return type;
         }
 
-        public InetSocketAddress getAddress()
-        {
+        public InetSocketAddress getAddress() {
             return address;
         }
 
-        public int getLength()
-        {
+        public int getLength() {
             return length;
         }
     }
 
-    public static InetSocketAddress getPublicAddress(final String stunServer, final int port)
-    {
+    public static InetSocketAddress getPublicAddress(final String stunServer, final int port) {
         int lport = 10002;
         for (int t = 0; t < 3; t++) {
             try {
@@ -137,7 +125,8 @@ public class PublicIPResolver
                         new InetSocketAddress(InetAddress.getByAddress(new byte[4]), lport));
                 return getPublicAddress(channel, stunServer, port);
 
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 lport += r.nextInt(10) + 1;
             }
         }
@@ -145,8 +134,7 @@ public class PublicIPResolver
     }
 
     public static InetSocketAddress getPublicAddress(final SelDatagramChannel channel,
-            final String stunServer, final int port)
-    {
+            final String stunServer, final int port) {
         final Header[] h = new Header[1];
         try {
             channel.setDatagramListener((channel1, buffer, address) -> {
@@ -168,7 +156,8 @@ public class PublicIPResolver
                 }
             }
             return null;
-        } catch (IOException | InterruptedException e) {
+        }
+        catch (IOException | InterruptedException e) {
             return null;
         }
     }

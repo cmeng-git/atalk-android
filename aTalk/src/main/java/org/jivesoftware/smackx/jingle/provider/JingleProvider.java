@@ -32,7 +32,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-import org.jivesoftware.smackx.AbstractExtensionElement;
+
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
@@ -47,6 +47,7 @@ import org.jivesoftware.smackx.jingle.element.UnknownJingleContentTransport;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
 import org.jivesoftware.smackx.jingle_rtp.element.SessionInfoType;
+
 import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.FullJid;
 
@@ -139,14 +140,14 @@ public class JingleProvider extends IqProvider<Jingle> {
                         else {
                             builder.setSessionInfo(SessionInfo.builder(type).build());
                         }
-                        // Handle all the aTalk AbstractExtensionElement extensions embedded in JingleIQ
                     }
+                    // Handle all the aTalk AbstractXmlElement extensions embedded in JingleIQ
                     else {
                         ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(tagName, namespace);
                         if (provider != null) {
                             LOGGER.info("Found provider for EE<" + tagName + " " + namespace + "/>");
                             XmlElement childExtension = provider.parse(parser);
-                            if (childExtension instanceof AbstractXmlElement || childExtension instanceof AbstractExtensionElement) {
+                            if (childExtension instanceof AbstractXmlElement) {
                                 builder.addExtension(childExtension);
                             }
                             else
@@ -154,7 +155,7 @@ public class JingleProvider extends IqProvider<Jingle> {
                         }
                         else {
                             // Extension element provider may not have been added properly if null
-                            LOGGER.severe("No provider for EE<" + tagName + " " + namespace + "/>");
+                            LOGGER.severe("No ExtensionElement provider for EE<" + tagName + " " + namespace + "/>");
                         }
                     }
                 }
@@ -244,12 +245,12 @@ public class JingleProvider extends IqProvider<Jingle> {
                 }
 
                 default:
-                    // Handle all the aTalk AbstractExtensionElement extensions embedded in JingleContent
+                    // Handle all the aTalk AbstractXmlElement extensions embedded in JingleContent
                     ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(tagName, namespace);
                     if (provider != null) {
                         LOGGER.info("Found provider for EE<" + tagName + " " + namespace + "/>");
                         XmlElement childExtension = provider.parse(parser);
-                        if (childExtension instanceof AbstractXmlElement || childExtension instanceof AbstractExtensionElement) {
+                        if (childExtension instanceof AbstractXmlElement) {
                             builder.addChildElement(childExtension);
                         }
                         else

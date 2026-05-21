@@ -7,6 +7,7 @@ package org.jivesoftware.smackx.inputevt;
 
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
+
 import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -17,8 +18,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class RemoteControlExtension implements XmlElement
-{
+public class RemoteControlExtension implements XmlElement {
     /**
      * AWT event that represents our <code>RemoteControlExtension</code>.
      */
@@ -32,8 +32,7 @@ public class RemoteControlExtension implements XmlElement
     /**
      * Constructor.
      */
-    public RemoteControlExtension()
-    {
+    public RemoteControlExtension() {
         videoPanelSize = null;
         event = null;
     }
@@ -43,8 +42,7 @@ public class RemoteControlExtension implements XmlElement
      *
      * @param videoPanelSize size of the panel that contains video
      */
-    public RemoteControlExtension(Dimension videoPanelSize)
-    {
+    public RemoteControlExtension(Dimension videoPanelSize) {
         this.videoPanelSize = videoPanelSize;
         this.event = null;
     }
@@ -54,8 +52,7 @@ public class RemoteControlExtension implements XmlElement
      *
      * @param event AWT event
      */
-    public RemoteControlExtension(ComponentEvent event)
-    {
+    public RemoteControlExtension(ComponentEvent event) {
         this.event = event;
         this.videoPanelSize = null;
     }
@@ -76,8 +73,7 @@ public class RemoteControlExtension implements XmlElement
      *
      * @return AWT <code>ComponentEvent</code>
      */
-    public ComponentEvent getEvent()
-    {
+    public ComponentEvent getEvent() {
         return event;
     }
 
@@ -86,8 +82,7 @@ public class RemoteControlExtension implements XmlElement
      *
      * @return "remote-control"
      */
-    public String getElementName()
-    {
+    public String getElementName() {
         return RemoteControlExtensionProvider.ELEMENT_REMOTE_CONTROL;
     }
 
@@ -97,8 +92,7 @@ public class RemoteControlExtension implements XmlElement
      *
      * @return the XML namespace of the packet extension.
      */
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return RemoteControlExtensionProvider.NAMESPACE;
     }
 
@@ -108,8 +102,7 @@ public class RemoteControlExtension implements XmlElement
      * @return XML representation of the item
      */
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
-    {
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder();
 
         if (event != null) {

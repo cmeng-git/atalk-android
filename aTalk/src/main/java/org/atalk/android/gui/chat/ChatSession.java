@@ -245,20 +245,6 @@ public abstract class ChatSession {
     public abstract Date getHistoryEndDate();
 
     /**
-     * Returns the default mobile number used to send sms-es in this session.
-     *
-     * @return the default mobile number used to send sms-es in this session.
-     */
-    public abstract String getDefaultSmsNumber();
-
-    /**
-     * Sets the default mobile number used to send sms-es in this session.
-     *
-     * @param smsPhoneNumber The default mobile number used to send sms-es in this session.
-     */
-    public abstract void setDefaultSmsNumber(String smsPhoneNumber);
-
-    /**
      * Disposes this chat session.
      */
     public abstract void dispose();

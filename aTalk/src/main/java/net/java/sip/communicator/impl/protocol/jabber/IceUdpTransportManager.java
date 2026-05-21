@@ -40,6 +40,7 @@ import org.atalk.service.neomedia.DefaultStreamConnector;
 import org.atalk.service.neomedia.MediaStreamTarget;
 import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.util.MediaType;
+
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
 import org.ice4j.ice.Agent;
@@ -56,8 +57,10 @@ import org.ice4j.ice.harvest.UPNPHarvester;
 import org.ice4j.security.LongTermCredential;
 import org.ice4j.socket.DatagramPacketFilter;
 import org.ice4j.socket.MultiplexingDatagramSocket;
+
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.XmlElement;
+
 import org.jivesoftware.smackx.externalservicediscovery.IceCandidateHarvester;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle_rtp.CandidateType;
@@ -93,7 +96,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * The ICE <code>Component</code> IDs in their common order used, for example,
      * by <code>DefaultStreamConnector</code>, <code>MediaStreamTarget</code>.
      */
-    private static final int[] COMPONENT_IDS = new int[]{Component.RTP, Component.RTCP};
+    private static final int[] COMPONENT_IDS = new int[] {Component.RTP, Component.RTCP};
 
     /**
      * A filter which accepts any non-RTCP packets (RTP, DTLS, etc).
@@ -255,22 +258,22 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             final String protocol = desc.getProtocol();
             Transport transport;
             switch (protocol) {
-                case StunServerDescriptor.PROTOCOL_UDP:
-                    transport = Transport.UDP;
-                    break;
-                case StunServerDescriptor.PROTOCOL_TCP:
-                    transport = Transport.TCP;
-                    break;
-                case StunServerDescriptor.PROTOCOL_DTLS:
-                    transport = Transport.DTLS;
-                    break;
-                case StunServerDescriptor.PROTOCOL_TLS:
-                    transport = Transport.TLS;
-                    break;
-                default:
-                    Timber.w("Unknown protocol %s", protocol);
-                    transport = Transport.UDP;
-                    break;
+            case StunServerDescriptor.PROTOCOL_UDP:
+                transport = Transport.UDP;
+                break;
+            case StunServerDescriptor.PROTOCOL_TCP:
+                transport = Transport.TCP;
+                break;
+            case StunServerDescriptor.PROTOCOL_DTLS:
+                transport = Transport.DTLS;
+                break;
+            case StunServerDescriptor.PROTOCOL_TLS:
+                transport = Transport.TLS;
+                break;
+            default:
+                Timber.w("Unknown protocol %s", protocol);
+                transport = Transport.UDP;
+                break;
             }
 
             for (TransportAddress addr : getTransportAddress(desc.getAddress(), desc.getPort(), transport)) {
@@ -355,7 +358,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             for (InetAddress inetAddress : inetAddresses) {
                 transportAddress.add(new TransportAddress(inetAddress, port, transport));
             }
-        } catch (UnknownHostException e) {
+        }
+        catch (UnknownHostException e) {
             Timber.e("UnknownHostException: %s", e.getMessage());
         }
         return transportAddress;
@@ -459,7 +463,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 try {
                     streamConnectorSockets[0] = componentSocket.getSocket(RTP_FILTER);
                     streamConnectorSockets[1] = componentSocket.getSocket(RTCP_FILTER);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     Timber.e("Failed to create filtered sockets.");
                     return null;
                 }
@@ -677,7 +682,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
          * In aTalk: rtcp-mux will re-align itself to jitsi rtcp-mux mode after first call from jitsi i.e. false.
          */
         if (rtcpmux) {
-            tpBuilder.addChildElement(RtcpMux.builder(IceUdpTransport.NAMESPACE).build());
+            tpBuilder.addChildElement(RtcpMux.builder().build());
         }
 
         for (Component component : stream.getComponents()) {
@@ -753,7 +758,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             portTracker = getPortTracker(media);
             // the following call involves STUN processing so it may take a while
             stream = getNetAddrMgr().createIceStream(rtcpmux ? 1 : 2, portTracker.getPort(), media, iceAgent);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             throw new OperationFailedException("Failed to initialize stream " + media,
                     OperationFailedException.INTERNAL_ERROR, ex);
         }
@@ -772,7 +778,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 portTracker.setNextPort(nextPort);
                 Timber.d("Updating the port tracker min port: %s", nextPort);
             }
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             //hey, we were just trying to be nice. if that didn't work for
             //some reason we really can't be held responsible!
             Timber.d(t, "Determining next port didn't work.");
@@ -870,21 +877,10 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 // media, transport.getFirstChildElement(IceUdpTransportCandidate.class).toXML());
             }
         }
-        /*
-         * When the local peer is organizing a telephony conference using the Jitsi Videobridge
-         * server-side technology, it is establishing connectivity by using information from a
-         * colibri Channel and not from the offer/answer of the remote peer.
-         */
-        if (getCallPeer().isJitsiVideobridge()) {
-            sendTransportInfoToJitsiVideobridge(mediaTransports);
-            return false;
-        }
-        else {
-            boolean status = startConnectivityEstablishment(mediaTransports);
-            Timber.d("### Processed Jingle (transport-info) for media: %s; startConnectivityEstablishment: %s",
-                    mediaTransports.keySet(), status);
-            return status;
-        }
+        boolean status = startConnectivityEstablishment(mediaTransports);
+        Timber.d("### Processed Jingle (transport-info) for media: %s; startConnectivityEstablishment: %s",
+                mediaTransports.keySet(), status);
+        return status;
     }
 
     /**
@@ -1064,7 +1060,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                         || IceProcessingState.WAITING.equals(iceAgent.getState())) {
                     try {
                         iceProcessingStateSyncRoot.wait(1000);
-                    } catch (InterruptedException ie) {
+                    }
+                    catch (InterruptedException ie) {
                         interrupted = true;
                     }
                     // Break the loop if maxWaitTimer timeout

@@ -20,6 +20,12 @@ jni/ffmpeg, jni/vpx, jni/openssl etc
 3. openssl:<br/>
    Build static libraries for the various architectures used for ./jni/openssl
 
+lib g722 and speex local sources.
+-----------------------------------------
+The below are local sources stored locally, and used by g722 and speex build. Do not remove.
+* g722/g722 contains the local source for compilation.
+* speex/include contains the includes file for ogg and speex reference.
+
 Built all
 --------------------------------------
 * Instead of build each static library separately, you may execute the build-jnilibs4atalk.sh<br/>

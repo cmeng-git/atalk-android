@@ -47,6 +47,7 @@ import org.jxmpp.jid.Jid;
 public class EnvelopeElement implements XmlElement {
     public static final String ELEMENT = "envelope";
     public static final String NAMESPACE = "urn:xmpp:sce:1";
+
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final List<AffixElement> affixElements;

@@ -78,10 +78,8 @@ import net.java.sip.communicator.service.protocol.OperationSetSecureZrtpTelephon
 import net.java.sip.communicator.service.protocol.OperationSetServerStoredAccountInfo;
 import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo;
 import net.java.sip.communicator.service.protocol.OperationSetTLS;
-import net.java.sip.communicator.service.protocol.OperationSetTelephonyConferencing;
 import net.java.sip.communicator.service.protocol.OperationSetThumbnailedFileFactory;
 import net.java.sip.communicator.service.protocol.OperationSetUserSearch;
-import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
 import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
 import net.java.sip.communicator.service.protocol.ProtocolIcon;
 import net.java.sip.communicator.service.protocol.ProtocolNames;
@@ -141,7 +139,6 @@ import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.packet.StreamError;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.roster.Roster;
@@ -154,7 +151,6 @@ import org.jivesoftware.smack.util.SslContextFactory;
 import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.dns.minidns.MiniDnsDane;
 
-import org.jivesoftware.smackx.DefaultExtensionElementProvider;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarData;
@@ -175,17 +171,10 @@ import org.jivesoftware.smackx.caps.provider.CapsExtensionProvider;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.captcha.provider.CaptchaProvider;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
-import org.jivesoftware.smackx.coin.CoinIQ;
-import org.jivesoftware.smackx.coin.CoinIQProvider;
-import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
-import org.jivesoftware.smackx.colibri.ColibriIQProvider;
-import org.jivesoftware.smackx.confdesc.ConferenceDescriptionExtension;
-import org.jivesoftware.smackx.confdesc.ConferenceDescriptionExtensionProvider;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.externalservicediscovery.ExternalServiceDiscoveryManager;
 import org.jivesoftware.smackx.externalservicediscovery.ExternalServiceDiscoveryProvider;
 import org.jivesoftware.smackx.externalservicediscovery.ExternalServices;
@@ -199,13 +188,8 @@ import org.jivesoftware.smackx.inputevt.InputEvtIQ;
 import org.jivesoftware.smackx.inputevt.InputEvtIQProvider;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
 import org.jivesoftware.smackx.iqregister.AccountManager;
-import org.jivesoftware.smackx.iqregister.packet.Registration;
-import org.jivesoftware.smackx.iqregister.provider.RegistrationProvider;
-import org.jivesoftware.smackx.iqregister.provider.RegistrationStreamFeatureProvider;
 import org.jivesoftware.smackx.iqversion.VersionManager;
 import org.jivesoftware.smackx.jet.JetManager;
-import org.jivesoftware.smackx.jibri.JibriIq;
-import org.jivesoftware.smackx.jibri.JibriIqProvider;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.provider.JingleProvider;
 import org.jivesoftware.smackx.jingle_filetransfer.JingleFileTransferManager;
@@ -217,20 +201,12 @@ import org.jivesoftware.smackx.jingle_rtp.element.RtpHeader;
 import org.jivesoftware.smackx.jingle_rtp.element.SdpTransfer;
 import org.jivesoftware.smackx.jingle_rtp.element.SrtpFingerprint;
 import org.jivesoftware.smackx.jingle_rtp.element.ZrtpHash;
-import org.jivesoftware.smackx.jingleinfo.JingleInfoQueryIQ;
-import org.jivesoftware.smackx.jingleinfo.JingleInfoQueryIQProvider;
 import org.jivesoftware.smackx.jinglenodes.SmackServiceNode;
 import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
 import org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ;
-import org.jivesoftware.smackx.jitsimeet.AvatarIdExtension;
-import org.jivesoftware.smackx.jitsimeet.AvatarUrl;
-import org.jivesoftware.smackx.jitsimeet.IdentityExtension;
-import org.jivesoftware.smackx.jitsimeet.JsonMessageExtension;
-import org.jivesoftware.smackx.jitsimeet.StatsId;
-import org.jivesoftware.smackx.jitsimeet.TranscriptionLanguageExtension;
-import org.jivesoftware.smackx.jitsimeet.TranscriptionRequestExtension;
-import org.jivesoftware.smackx.jitsimeet.TranscriptionStatusExtension;
-import org.jivesoftware.smackx.jitsimeet.TranslationLanguageExtension;
+import org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ;
+import org.jivesoftware.smackx.json.packet.JsonMessageExtension;
+import org.jivesoftware.smackx.json.provider.JsonMessageProvider;
 import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
@@ -325,18 +301,12 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Jingle's Discovery Info URN for Jingle Nodes support.
      */
-    public static final String URN_XMPP_JINGLE_NODES = "http://jabber.org/protocol/jinglenodes";
+    public static final String URN_XMPP_JINGLE_NODES = JingleTrackerIQ.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for "XEP-0251: Jingle Session Transfer" support.
      */
     public static final String URN_XMPP_JINGLE_TRANSFER_0 = SdpTransfer.NAMESPACE;
-
-    /**
-     * Jingle's Discovery Info URN for
-     * XEP-0298: Delivering Conference Information to Jingle Participants (Coin)
-     */
-    public static final String URN_XMPP_JINGLE_COIN = "urn:xmpp:coin";
 
     /**
      * Jingle's Discovery Info URN for &quot;XEP-0320: Use of DTLS-SRTP in Jingle Sessions&quot;.
@@ -545,13 +515,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Flag indicating are we currently executing connectAndLogin method.
      */
     private boolean inConnectAndLogin = false;
-
-    /**
-     * Flag indicates that the last getJitsiVideobridge returns NoResponseException
-     *
-     * @see #getJitsiVideobridge()
-     */
-    private boolean isLastVbNoResponse = false;
 
     /**
      * Instant of OperationSetPersistentPresent
@@ -2062,9 +2025,12 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             // XEP-0251: Jingle Session Transfer
             supportedFeatures.add(URN_XMPP_JINGLE_TRANSFER_0);
 
+            /**
+             * Jingle's Discovery Info URN for &quot;XEP-0320: Use of DTLS-SRTP in Jingle Sessions&quot;.
+             * "urn:xmpp:jingle:apps:dtls:0"
+             */
             if (mAccountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
                     && mAccountID.isEncryptionProtocolEnabled(SrtpControlType.DTLS_SRTP)) {
-                // XEP-0320: Use of DTLS-SRTP in Jingle Sessions
                 supportedFeatures.add(URN_XMPP_JINGLE_DTLS_SRTP);
             }
         }
@@ -2091,10 +2057,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             // XEP-0085: Chat State Notifications
             supportedFeatures.add(ChatStateExtension.NAMESPACE);
         }
-
-        // XEP-0298: Delivering Conference Information to Jingle Participants (Coin)
-        supportedFeatures.add(URN_XMPP_JINGLE_COIN);
-
         // this feature is mandatory to be compliant with Service Discovery - added by default
         // supportedFeatures.add("http://jabber.org/protocol/disco#info");
 
@@ -2281,14 +2243,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             /*
              * Tell Smack what are the additional IQProviders that aTalk can support
              */
-            // register our coin provider
-            ProviderManager.addIQProvider(CoinIQ.ELEMENT, CoinIQ.NAMESPACE, new CoinIQProvider());
-
-            // Jitsi Videobridge IqProvider and PacketExtensionProvider
-            ProviderManager.addIQProvider(ColibriConferenceIQ.ELEMENT, ColibriConferenceIQ.NAMESPACE,
-                    new ColibriIQProvider());
-
-            ProviderManager.addIQProvider(JibriIq.ELEMENT, JibriIq.NAMESPACE, new JibriIqProvider());
 
             // register our input event provider
             ProviderManager.addIQProvider(InputEvtIQ.ELEMENT, InputEvtIQ.NAMESPACE, new InputEvtIQProvider());
@@ -2297,59 +2251,31 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addIQProvider(Jingle.ELEMENT, Jingle.NAMESPACE, new JingleProvider());
 
             // register our JingleInfo provider
-            ProviderManager.addIQProvider(JingleInfoQueryIQ.ELEMENT, JingleInfoQueryIQ.NAMESPACE,
-                    new JingleInfoQueryIQProvider());
+//            ProviderManager.addIQProvider(JingleInfoQueryIQ.ELEMENT, JingleInfoQueryIQ.NAMESPACE,
+//                    new JingleInfoQueryIQProvider());
 
-            ProviderManager.addIQProvider(Registration.ELEMENT, Registration.NAMESPACE, new RegistrationProvider());
-
+//            ProviderManager.addIQProvider(Registration.ELEMENT, Registration.NAMESPACE, new RegistrationProvider());
+//
             ProviderManager.addIQProvider(ConfirmElement.ELEMENT, ConfirmElement.NAMESPACE, new ConfirmIQProvider());
 
             // XEP-0215: External Service Discovery to process IQ
             ProviderManager.addIQProvider(ExternalServices.ELEMENT, ExternalServices.NAMESPACE,
                     new ExternalServiceDiscoveryProvider());
 
-            ProviderManager.addExtensionProvider(
-                    ConferenceDescriptionExtension.ELEMENT, ConferenceDescriptionExtension.NAMESPACE,
-                    new ConferenceDescriptionExtensionProvider());
-
             ProviderManager.addExtensionProvider(Nick.QNAME.getLocalPart(), Nick.NAMESPACE, new NickProvider());
 
-            ProviderManager.addExtensionProvider(AvatarUrl.ELEMENT, AvatarUrl.NAMESPACE, new AvatarUrl.Provider());
-
-            ProviderManager.addExtensionProvider(StatsId.ELEMENT, StatsId.NAMESPACE, new StatsId.Provider());
-
-            ProviderManager.addExtensionProvider(IdentityExtension.ELEMENT, IdentityExtension.NAMESPACE,
-                    new IdentityExtension.Provider());
-
-            ProviderManager.addExtensionProvider(AvatarIdExtension.ELEMENT, AvatarIdExtension.NAMESPACE,
-                    new DefaultExtensionElementProvider<>(AvatarIdExtension.class));
-
+            // XEP-0432: Simple JSON Messaging
             ProviderManager.addExtensionProvider(JsonMessageExtension.ELEMENT, JsonMessageExtension.NAMESPACE,
-                    new DefaultExtensionElementProvider<>(JsonMessageExtension.class));
+                    new JsonMessageProvider());
 
-            ProviderManager.addExtensionProvider(TranslationLanguageExtension.ELEMENT,
-                    TranslationLanguageExtension.NAMESPACE,
-                    new DefaultExtensionElementProvider<>(TranslationLanguageExtension.class));
-
-            ProviderManager.addExtensionProvider(
-                    TranscriptionLanguageExtension.ELEMENT, TranscriptionLanguageExtension.NAMESPACE,
-                    new DefaultExtensionElementProvider<>(TranscriptionLanguageExtension.class));
-
-            ProviderManager.addExtensionProvider(
-                    TranscriptionStatusExtension.ELEMENT, TranscriptionStatusExtension.NAMESPACE,
-                    new DefaultExtensionElementProvider<>(TranscriptionStatusExtension.class));
-
-            ProviderManager.addExtensionProvider(
-                    TranscriptionRequestExtension.ELEMENT, TranscriptionRequestExtension.NAMESPACE,
-                    new DefaultExtensionElementProvider<>(TranscriptionRequestExtension.class));
 
             ProviderManager.addExtensionProvider(ConfirmElement.ELEMENT, ConfirmElement.NAMESPACE, new ConfirmExtProvider());
 
             /*
              * Tell Smack what are the additional StreamFeatureProvider and ExtensionProviders that aTalk can support
              */
-            ProviderManager.addStreamFeatureProvider(Registration.Feature.ELEMENT, Registration.Feature.NAMESPACE,
-                    (ExtensionElementProvider) new RegistrationStreamFeatureProvider());
+//            ProviderManager.addStreamFeatureProvider(Registration.Feature.ELEMENT, Registration.Feature.NAMESPACE,
+//                    (ExtensionElementProvider) new RegistrationStreamFeatureProvider());
 
             ProviderManager.addExtensionProvider(CapsExtension.ELEMENT, CapsExtension.NAMESPACE,
                     new CapsExtensionProvider());
@@ -2478,9 +2404,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 addSupportedOperationSet(OperationSetSecureZrtpTelephony.class, basicTelephony);
                 addSupportedOperationSet(OperationSetSecureSDesTelephony.class, basicTelephony);
 
-                // initialize audio telephony OperationSet
-                addSupportedOperationSet(OperationSetTelephonyConferencing.class,
-                        new OperationSetTelephonyConferencingJabberImpl(this));
                 addSupportedOperationSet(OperationSetBasicAutoAnswer.class,
                         new OperationSetAutoAnswerJabberImpl(this));
                 addSupportedOperationSet(OperationSetResourceAwareTelephony.class,
@@ -2493,14 +2416,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     // initialize video telephony OperationSet
                     addSupportedOperationSet(OperationSetVideoTelephony.class,
                             new OperationSetVideoTelephonyJabberImpl(basicTelephony));
-                }
-
-                // Only init video bridge if enabled
-                boolean isVideobridgeDisabled = JabberActivator.getConfigurationService()
-                        .getBoolean(OperationSetVideoBridge.IS_VIDEO_BRIDGE_DISABLED, false);
-                if (!isVideobridgeDisabled) {
-                    // init video bridge
-                    addSupportedOperationSet(OperationSetVideoBridge.class, new OperationSetVideoBridgeImpl(this));
                 }
 
                 // init DTMF
@@ -2855,8 +2770,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * when it is not android root's CA trusted.
      * Note: X509ExtendedTrustManager required API-24
      */
-    private class HostTrustManager implements X509TrustManager // X509ExtendedTrustManager
-    {
+    private class HostTrustManager implements X509TrustManager { // X509ExtendedTrustManager
         /**
          * The default trust manager.
          */
@@ -3135,51 +3049,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             Timber.e("Failed when checking for google account: %s", e.getMessage());
         }
         return false;
-    }
-
-    /**
-     * Gets the entity PRE_KEY_ID of the first Jitsi Videobridge associated with {@link #mConnection} i.e.
-     * provided by the <code>serviceName</code> of <code>mConnection</code>.
-     * Abort checking if last check returned with NoResponseException. Await 45s wait time
-     *
-     * @return the entity PRE_KEY_ID of the first Jitsi Videobridge associated with <code>mConnection</code>
-     */
-    public Jid getJitsiVideobridge() {
-        if (mConnection != null && mConnection.isConnected()) {
-            ServiceDiscoveryManager discoveryManager = getDiscoveryManager();
-            DomainBareJid serviceName = mConnection.getXMPPServiceDomain();
-            DiscoverItems discoverItems = null;
-
-            try {
-                discoverItems = discoveryManager.discoverItems(serviceName);
-            }
-            catch (NoResponseException | NotConnectedException | XMPPException | InterruptedException ex) {
-                Timber.d(ex, "Failed to discover the items associated with Jabber entity: %s", serviceName);
-            }
-
-            if ((discoverItems != null) && !isLastVbNoResponse) {
-                List<DiscoverItems.Item> discoverItemIter = discoverItems.getItems();
-
-                for (DiscoverItems.Item discoverItem : discoverItemIter) {
-                    Jid entityID = discoverItem.getEntityID();
-                    DiscoverInfo discoverInfo = null;
-
-                    try {
-                        discoverInfo = discoveryManager.discoverInfo(entityID);
-                    }
-                    catch (NoResponseException | NotConnectedException | XMPPException | InterruptedException ex) {
-                        Timber.w(ex, "Failed to discover information about Jabber entity: %s", entityID);
-                        if (ex instanceof NoResponseException) {
-                            isLastVbNoResponse = true;
-                        }
-                    }
-                    if ((discoverInfo != null) && discoverInfo.containsFeature(ColibriConferenceIQ.NAMESPACE)) {
-                        return entityID;
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     /**

@@ -17,11 +17,11 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.util.Iterator;
+
 import net.java.sip.communicator.service.protocol.ActiveCallsRepository;
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
-
-import java.util.Iterator;
 
 /**
  * Keeps a list of all calls currently active and maintained by this protocol
@@ -31,16 +31,14 @@ import java.util.Iterator;
  * @author Symphorien Wanko
  * @author Vincent Lucas
  */
-public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJabberImpl, OperationSetBasicTelephonyJabberImpl>
-{
+public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJabberImpl, OperationSetBasicTelephonyJabberImpl> {
     /**
      * It's where we store all active calls
      *
      * @param opSet the <code>OperationSetBasicTelphony</code> instance which has
      * been used to create calls in this repository
      */
-    public ActiveCallsRepositoryJabberImpl(OperationSetBasicTelephonyJabberImpl opSet)
-    {
+    public ActiveCallsRepositoryJabberImpl(OperationSetBasicTelephonyJabberImpl opSet) {
         super(opSet);
     }
 
@@ -49,11 +47,11 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
      * CallPeerJabberImpl} whose corresponding jingle session has the specified jingle <code>sid</code>.
      *
      * @param sid the jingle <code>sid</code> we're looking for.
+     *
      * @return the {@link CallJabberImpl} containing the peer with the
      * specified <code>sid</code> or <code>null</code> if we couldn't find one matching it.
      */
-    public CallJabberImpl findBySid(String sid)
-    {
+    public CallJabberImpl findBySid(String sid) {
         Iterator<CallJabberImpl> calls = getActiveCalls();
         while (calls.hasNext()) {
             CallJabberImpl call = calls.next();
@@ -67,10 +65,10 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
      * Returns the <code>Call</code> with ID equal to <code>callid</code>.
      *
      * @param callid the ID to search for
+     *
      * @return the <code>Call</code> with ID equal to <code>callid</code>.
      */
-    public CallJabberImpl findByCallId(String callid)
-    {
+    public CallJabberImpl findByCallId(String callid) {
         Iterator<CallJabberImpl> calls = getActiveCalls();
         while (calls.hasNext()) {
             CallJabberImpl call = calls.next();
@@ -84,11 +82,11 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
      * Returns the {@link CallPeerJabberImpl} whose jingle session has the specified jingle <code>sid</code>.
      *
      * @param sid the jingle <code>sid</code> we're looking for.
+     *
      * @return the {@link CallPeerJabberImpl} with the specified <code>sid</code>
      * or <code>null</code> if we couldn't find one matching it.
      */
-    public CallPeerJabberImpl findCallPeerBySid(String sid)
-    {
+    public CallPeerJabberImpl findCallPeerBySid(String sid) {
         Iterator<CallJabberImpl> calls = getActiveCalls();
         while (calls.hasNext()) {
             CallJabberImpl call = calls.next();
@@ -103,11 +101,11 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
      * Returns the {@link CallPeerJabberImpl} whose session-initiate's stanzaId has the specified IQ <code>id</code>.
      *
      * @param stanzaId the IQ <code>id</code> we're looking for.
+     *
      * @return the {@link CallPeerJabberImpl} with the specified
      * <code>stanzaId</code> or <code>null</code> if we couldn't find one matching it.
      */
-    public CallPeerJabberImpl findCallPeerByJingleIQStanzaId(String stanzaId)
-    {
+    public CallPeerJabberImpl findCallPeerByJingleIQStanzaId(String stanzaId) {
         Iterator<CallJabberImpl> calls = getActiveCalls();
         while (calls.hasNext()) {
             CallJabberImpl call = calls.next();
@@ -126,11 +124,11 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
      * @param sourceCall the call on which the event has occurred
      * @param cause the <code>CallChangeEvent</code>, if any, which is the cause
      * that necessitated a new <code>CallEvent</code> to be fired
+     *
      * @see ActiveCallsRepository#fireCallEvent(int, Call, CallChangeEvent)
      */
     @Override
-    protected void fireCallEvent(int eventID, Call sourceCall, CallChangeEvent cause)
-    {
+    protected void fireCallEvent(int eventID, Call sourceCall, CallChangeEvent cause) {
         parentOperationSet.fireCallEvent(eventID, sourceCall);
     }
 }

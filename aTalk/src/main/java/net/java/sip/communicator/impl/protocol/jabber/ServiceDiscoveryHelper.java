@@ -18,24 +18,25 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
-import net.java.sip.communicator.impl.protocol.jabber.caps.UserCapsNodeListener;
 import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.persistance.EntityCapsCache;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
+
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
+import org.jxmpp.util.cache.LruCache;
 
 import timber.log.Timber;
 
@@ -47,32 +48,17 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class ServiceDiscoveryHelper {
-    /**
-     * The {@link ServiceDiscoveryManager} supported in smack
-     */
     private final ServiceDiscoveryManager mDiscoveryManager;
-
-    /**
-     * The {@link XMPPConnection} that this manager is responsible for.
-     */
+    private final ProtocolProviderServiceJabberImpl mPPS;
     private final XMPPConnection mConnection;
 
-    /**
-     * The parent provider
-     */
-    private final ProtocolProviderServiceJabberImpl mPPS;
+    // for storing of nonCaps discoInfo; in not found EntityCapsManager.getDiscoverInfoByUser(entityJid)
+    private static final LruCache<Jid, DiscoverInfo> nonCapsCache = new LruCache<>(100);
 
     /**
      * The runnable responsible for retrieving discover info.
      */
     private final DiscoveryInfoRetriever retriever = new DiscoveryInfoRetriever();
-
-    /**
-     * The list of <code>UserCapsNodeListener</code>s interested in events notifying about
-     * possible changes in the list of user caps nodes of this <code>EntityCapsManager</code>.
-     */
-    private static final List<UserCapsNodeListener> userCapsNodeListeners = new LinkedList<>();
-
     private static EntityCapsCache entityCapsPersistentCache;
 
     /**
@@ -131,7 +117,8 @@ public class ServiceDiscoveryHelper {
         DiscoverInfo discoverInfo = null;
         try {
             discoverInfo = mDiscoveryManager.discoverInfo(entityJid);
-        } catch (NoResponseException | XMPPErrorException | NotConnectedException | InterruptedException e) {
+        }
+        catch (NoResponseException | XMPPErrorException | NotConnectedException | InterruptedException e) {
             Timber.e("Discovery info failed for: %s; %s", entityJid, e.getMessage());
         }
         return discoverInfo;
@@ -141,29 +128,34 @@ public class ServiceDiscoveryHelper {
      * Returns the discovered information of a given XMPP entity addressed by its Jid
      * if cached, otherwise schedules for retrieval only if nvh is not null.
      *
-     * @param entityJid the address of the XMPP entity. Buddy Jid should be FullJid
+     * @param entityJid the address of the XMPP entity. DiscInfo only valid for Contact with FullJid.
      *
      * @return the discovered information.
      */
     public DiscoverInfo discoverInfoNonBlocking(Jid entityJid) {
         // BareJid does not have DiscoverInfo.
         if (entityJid instanceof BareJid) {
-            Timber.e(new Exception("Warning! discoInfo for BareJid: " + entityJid));
+            Timber.e(new Exception("Warning! invalid discoInfo for BareJid: " + entityJid));
             return null;
         }
 
         // Check if we have it cached in the Entity Capabilities Manager
-        // Will always return null if JID_TO_NODEVER_CACHE.lookup(user) == null
-        // DiscoverInfo discoverInfo = null;
-        EntityCapsManager.NodeVerHash nvh = EntityCapsManager.getNodeVerHashByJid(entityJid);
-        if (nvh != null) {
-            DiscoverInfo discoverInfo = EntityCapsManager.getDiscoveryInfoByNodeVer(nvh.getNodeVer());
+        // Always return null if JID_TO_NODEVER_CACHE.lookup(user) == null
+        DiscoverInfo discoverInfo = EntityCapsManager.getDiscoverInfoByUser(entityJid);
+        if (discoverInfo != null) {
+            return discoverInfo;
+        }
+        // Check for local cache for discoverInfo
+        else {
+            discoverInfo = nonCapsCache.get(entityJid);
             if (discoverInfo != null) {
                 return discoverInfo;
             }
-            // Add to retrieve discovery thread only if nvh != null, else end in endless loop.
-            retriever.addEntityForRetrieve(entityJid);
         }
+
+        // Start retriever to request for discoInfo. Saved in nonCapsCache for later retrieval, else endless loop.
+        Timber.e("Retrieve nonCap discoInfo for Jid: %s", entityJid);
+        retriever.addEntityForRetrieve(entityJid);
         return null;
     }
 
@@ -203,7 +195,8 @@ public class ServiceDiscoveryHelper {
                         if (entities.isEmpty()) {
                             try {
                                 entities.wait();
-                            } catch (InterruptedException ex) {
+                            }
+                            catch (InterruptedException ex) {
                                 Timber.e("DiscoveryInfoRetriever: %s", ex.getMessage());
                             }
                         }
@@ -215,7 +208,8 @@ public class ServiceDiscoveryHelper {
                         requestDiscoveryInfo(entityToProcess);
                     }
                 }
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 // May happen on aTalk shutDown, where entities array outOfBound
                 Timber.w("Error requesting discovery info, thread ended: %s", t.getMessage());
             }
@@ -234,7 +228,14 @@ public class ServiceDiscoveryHelper {
             DiscoverInfo discoverInfo = null;
             try {
                 discoverInfo = mDiscoveryManager.discoverInfo(entityJid);
-            } catch (NoResponseException | XMPPErrorException | NotConnectedException | InterruptedException e) {
+                nonCapsCache.put(entityJid, discoverInfo);
+
+                // Contain private function call: not use
+                // CapsVersionAndHash versionAndHash = EntityCapsManager.generateVerificationString(discoverInfo, StringUtils.SHA1);
+                // String nodeVer = discoverInfo.getNode() + "#" + versionAndHash.version;
+                // EntityCapsManager.addDiscoverInfoByNode(nodeVer, nodeVer);
+            }
+            catch (NoResponseException | XMPPErrorException | NotConnectedException | InterruptedException e) {
                 Timber.e("DiscoveryManager.discoverInfo failed %s", e.getMessage());
             }
             if (discoverInfo != null) {

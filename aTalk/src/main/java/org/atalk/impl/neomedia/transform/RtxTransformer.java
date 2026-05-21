@@ -15,6 +15,13 @@
  */
 package org.atalk.impl.neomedia.transform;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.impl.neomedia.RTCPPacketPredicate;
 import org.atalk.impl.neomedia.RTPPacketPredicate;
@@ -35,13 +42,6 @@ import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.logging.Logger;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
 import timber.log.Timber;
 
 /**
@@ -55,8 +55,7 @@ import timber.log.Timber;
  * @author George Politis
  * @author Eng Chong Meng
  */
-public class RtxTransformer implements TransformEngine
-{
+public class RtxTransformer implements TransformEngine {
     /**
      * The name of the property used to disable NACK termination.
      */
@@ -98,8 +97,7 @@ public class RtxTransformer implements TransformEngine
      *
      * @param mediaStream the <code>MediaStreamImpl</code> for the transformer.
      */
-    public RtxTransformer(MediaStreamImpl mediaStream)
-    {
+    public RtxTransformer(MediaStreamImpl mediaStream) {
         this.mediaStream = mediaStream;
 
         ConfigurationService cfg = LibJitsi.getConfigurationService();
@@ -125,8 +123,7 @@ public class RtxTransformer implements TransformEngine
      * Implements {@link TransformEngine#getRTPTransformer()}.
      */
     @Override
-    public PacketTransformer getRTPTransformer()
-    {
+    public PacketTransformer getRTPTransformer() {
         return rtpTransformer;
     }
 
@@ -134,8 +131,7 @@ public class RtxTransformer implements TransformEngine
      * Implements {@link TransformEngine#getRTCPTransformer()}.
      */
     @Override
-    public PacketTransformer getRTCPTransformer()
-    {
+    public PacketTransformer getRTCPTransformer() {
         return rtcpTransformer;
     }
 
@@ -144,8 +140,7 @@ public class RtxTransformer implements TransformEngine
      *
      * @return true if the destination endpoint supports RTX, otherwise false.
      */
-    public boolean destinationSupportsRtx()
-    {
+    public boolean destinationSupportsRtx() {
         return !apt2rtx.isEmpty();
     }
 
@@ -158,11 +153,11 @@ public class RtxTransformer implements TransformEngine
      * count of the RTX packets (and their sequence numbers) which we sent for each SSRC.
      *
      * @param ssrc the SSRC of the RTX stream for the packet.
+     *
      * @return the sequence number which should be used for the next RTX
      * packet sent using SSRC <code>ssrc</code>.
      */
-    private int getNextRtxSequenceNumber(long ssrc)
-    {
+    private int getNextRtxSequenceNumber(long ssrc) {
         Integer seq;
         synchronized (rtxSequenceNumbers) {
             seq = rtxSequenceNumbers.get(ssrc);
@@ -182,10 +177,10 @@ public class RtxTransformer implements TransformEngine
      *
      * @param pkt the {@code RawPacket} that holds the RTP packet for
      * which to find a paired SSRC.
+     *
      * @return An SSRC paired with {@code ssrc} in an FID group, or -1.
      */
-    private long getRtxSsrc(RawPacket pkt)
-    {
+    private long getRtxSsrc(RawPacket pkt) {
         StreamRTPManager receiveRTPManager
                 = mediaStream.getRTPTranslator().findStreamRTPManagerByReceiveSSRC(pkt.getSSRC());
 
@@ -217,11 +212,11 @@ public class RtxTransformer implements TransformEngine
      * @param after the {@code TransformEngine} in the chain of
      * {@code TransformEngine}s of the associated {@code MediaStream} after
      * which the injection of {@code pkt} is to begin
+     *
      * @return {@code true} if the packet was successfully retransmitted,
      * {@code false} otherwise.
      */
-    private boolean retransmit(RawPacket pkt, Byte rtxPt, TransformEngine after)
-    {
+    private boolean retransmit(RawPacket pkt, Byte rtxPt, TransformEngine after) {
         boolean destinationSupportsRtx = rtxPt != null;
         boolean retransmitPlain;
 
@@ -244,7 +239,8 @@ public class RtxTransformer implements TransformEngine
             if (mediaStream != null) {
                 try {
                     mediaStream.injectPacket(pkt, /* data */ true, after);
-                } catch (TransmissionFailedException tfe) {
+                }
+                catch (TransmissionFailedException tfe) {
                     Timber.w("Failed to retransmit a packet.");
                     return false;
                 }
@@ -257,8 +253,7 @@ public class RtxTransformer implements TransformEngine
      * Notifies this instance that the dynamic payload types of the associated
      * {@link MediaStream} have changed.
      */
-    public void onDynamicPayloadTypesChanged()
-    {
+    public void onDynamicPayloadTypesChanged() {
         Map<Byte, Byte> apt2rtx = new HashMap<>();
         Map<Byte, Byte> rtx2apt = new HashMap<>();
 
@@ -278,7 +273,8 @@ public class RtxTransformer implements TransformEngine
             Byte apt;
             try {
                 apt = Byte.parseByte(aptString);
-            } catch (NumberFormatException nfe) {
+            }
+            catch (NumberFormatException nfe) {
                 Timber.e("Failed to parse apt: %s", aptString);
                 continue;
             }
@@ -300,12 +296,12 @@ public class RtxTransformer implements TransformEngine
      * @param after the {@code TransformEngine} in the chain of
      * {@code TransformEngine}s of the associated {@code MediaStream} after
      * which the injection of {@code pkt} is to begin
+     *
      * @return {@code true} if the packet was successfully retransmitted,
      * {@code false} otherwise.
      */
     private boolean encapsulateInRtxAndTransmit(
-            RawPacket pkt, long rtxSsrc, byte rtxPt, TransformEngine after)
-    {
+            RawPacket pkt, long rtxSsrc, byte rtxPt, TransformEngine after) {
         byte[] buf = pkt.getBuffer();
         int len = pkt.getLength();
         int off = pkt.getOffset();
@@ -335,7 +331,8 @@ public class RtxTransformer implements TransformEngine
             rtxPkt.setSequenceNumber(getNextRtxSequenceNumber(rtxSsrc));
             try {
                 mediaStream.injectPacket(rtxPkt, /* data */ true, after);
-            } catch (TransmissionFailedException tfe) {
+            }
+            catch (TransmissionFailedException tfe) {
                 Timber.w("Failed to transmit an RTX packet.");
                 return false;
             }
@@ -350,8 +347,7 @@ public class RtxTransformer implements TransformEngine
      * @return the SSRC paired with <code>ssrc</code> in an FID source-group, if
      * any. If none is found, returns -1.
      */
-    private long getPrimarySsrc(long rtxSSRC)
-    {
+    private long getPrimarySsrc(long rtxSSRC) {
         MediaStreamTrackReceiver receiver = mediaStream.getMediaStreamTrackReceiver();
 
         if (receiver == null) {
@@ -368,8 +364,7 @@ public class RtxTransformer implements TransformEngine
         return encoding.getPrimarySSRC();
     }
 
-    private RawPacketCache getCache()
-    {
+    private RawPacketCache getCache() {
         MediaStreamImpl stream = this.mediaStream;
         return stream != null ? stream.getCachingTransformer().getOutgoingRawPacketCache() : null;
     }
@@ -378,8 +373,7 @@ public class RtxTransformer implements TransformEngine
      * @param mediaSSRC
      * @param lostPackets
      */
-    private void nackReceived(long mediaSSRC, Collection<Integer> lostPackets)
-    {
+    private void nackReceived(long mediaSSRC, Collection<Integer> lostPackets) {
         Timber.d("%s nack_received,stream = %d; ssrc = %s; lost_packets = %s",
                 Logger.Category.STATISTICS, mediaStream.hashCode(), mediaSSRC, lostPackets);
 
@@ -450,10 +444,10 @@ public class RtxTransformer implements TransformEngine
      *
      * @param ssrc the media SSRC to protect.
      * @param bytes the amount of padding to send in bytes.
+     *
      * @return the remaining padding bytes budget.
      */
-    public int sendPadding(long ssrc, int bytes)
-    {
+    public int sendPadding(long ssrc, int bytes) {
         StreamRTPManager receiveRTPManager = mediaStream.getRTPTranslator()
                 .findStreamRTPManagerByReceiveSSRC((int) ssrc);
 
@@ -530,13 +524,11 @@ public class RtxTransformer implements TransformEngine
     /**
      * The transformer that decapsulates RTX.
      */
-    private class RTPTransformer extends SinglePacketTransformerAdapter
-    {
+    private class RTPTransformer extends SinglePacketTransformerAdapter {
         /**
          * Ctor.
          */
-        RTPTransformer()
-        {
+        RTPTransformer() {
             super(RTPPacketPredicate.INSTANCE);
         }
 
@@ -545,8 +537,7 @@ public class RtxTransformer implements TransformEngine
          * {@inheritDoc}
          */
         @Override
-        public RawPacket reverseTransform(RawPacket pkt)
-        {
+        public RawPacket reverseTransform(RawPacket pkt) {
             Byte apt = rtx2apt.get(pkt.getPayloadType());
             if (apt == null) {
                 return pkt;
@@ -583,13 +574,11 @@ public class RtxTransformer implements TransformEngine
     /**
      * The transformer that handles NACKs.
      */
-    private class RTCPTransformer extends SinglePacketTransformerAdapter
-    {
+    private class RTCPTransformer extends SinglePacketTransformerAdapter {
         /**
          * Ctor.
          */
-        RTCPTransformer()
-        {
+        RTCPTransformer() {
             super(RTCPPacketPredicate.INSTANCE);
         }
 
@@ -598,8 +587,7 @@ public class RtxTransformer implements TransformEngine
          * {@inheritDoc}
          */
         @Override
-        public RawPacket reverseTransform(RawPacket pkt)
-        {
+        public RawPacket reverseTransform(RawPacket pkt) {
             RTCPIterator it = new RTCPIterator(pkt);
             while (it.hasNext()) {
                 ByteArrayBuffer next = it.next();

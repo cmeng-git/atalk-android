@@ -34,7 +34,6 @@ import androidx.fragment.app.FragmentManager;
 
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.EventObject;
 import java.util.Iterator;
@@ -44,7 +43,6 @@ import java.util.NoSuchElementException;
 import net.java.sip.communicator.service.gui.call.CallPeerRenderer;
 import net.java.sip.communicator.service.gui.call.CallRenderer;
 import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.CallState;
@@ -97,7 +95,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class VideoCallActivity extends BaseActivity implements CallPeerRenderer, CallRenderer,
-        CallChangeListener, PropertyChangeListener, ZrtpInfoDialog.SasVerificationListener,
+        CallChangeListener, ZrtpInfoDialog.SasVerificationListener,
         AutoHideController.AutoHideListener, View.OnClickListener, View.OnLongClickListener,
         VideoHandlerFragment.OnRemoteVideoChangeListener {
     /**
@@ -175,11 +173,6 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
     static CallStateHolder callState = new CallStateHolder();
 
     /**
-     * The {@link CallConference} instance depicted by this <code>CallPanel</code>.
-     */
-    private CallConference callConference;
-
-    /**
      * Dialog displaying list of contacts for user selects to transfer the call to.
      */
     private CallTransferDialog mTransferDialog;
@@ -252,7 +245,6 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
 
         // Registers as the call state listener
         mCall.addCallChangeListener(this);
-        callConference = mCall.getConference();
 
         // Initialize callChat button action
         findViewById(R.id.button_call_back_to_chat).setOnClickListener(this);
@@ -903,16 +895,6 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        /*
-         * If a Call is added to or removed from the CallConference depicted by this CallPanel, an
-         * update of the view from its model will most likely be required.
-         */
-        if (CallConference.CALLS.equals(evt.getPropertyName()))
-            onCallConferenceEventObject(evt);
-    }
-
-    @Override
     public void callPeerAdded(CallPeerEvent evt) {
         CallPeer callPeer = evt.getSourceCallPeer();
         addCallPeerUI(callPeer);
@@ -944,7 +926,7 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
      * <code>ConferenceMember</code>s participating in any telephony conferences organized by them,
      * etc. In other words, notifies this instance about any change which may cause an update to
      * be required so that this view i.e. <code>CallPanel</code> depicts the current state of its
-     * model i.e. {@link #callConference}.
+     * model.
      *
      * @param ev the <code>EventObject</code> this instance is being notified about.
      */
@@ -969,13 +951,10 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
             }
             else if (ev instanceof PropertyChangeEvent) {
                 PropertyChangeEvent pcev = (PropertyChangeEvent) ev;
-
-                tryStopCallTimer = (CallConference.CALLS.equals(pcev.getPropertyName())
-                        && (pcev.getOldValue() instanceof Call) && (pcev.getNewValue() == null));
+                tryStopCallTimer = (pcev.getOldValue() instanceof Call) && (pcev.getNewValue() == null);
             }
 
-            if (tryStopCallTimer && (callConference.isEnded()
-                    || callConference.getCallPeerCount() == 0)) {
+            if (tryStopCallTimer) {
                 stopCallTimer();
                 doFinishActivity();
             }

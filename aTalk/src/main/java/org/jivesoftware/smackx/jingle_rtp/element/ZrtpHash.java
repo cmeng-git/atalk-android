@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
@@ -26,15 +28,10 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @see <a href="https://xmpp.org/extensions/xep-0262.html">XEP-0262: Use of ZRTP in Jingle RTP Sessions 1.0 (2011-06-15)</a>
  */
 public class ZrtpHash extends AbstractXmlElement {
-    /**
-     * The name of the "zrtp-hash" element.
-     */
     public static final String ELEMENT = "zrtp-hash";
-
-    /**
-     * The namespace for the "zrtp-hash" element.
-     */
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:zrtp:1";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the <code>version</code> attribute.

@@ -213,14 +213,9 @@ public class MessageSourceContact extends DataObject
             this.displayName = room.getName();
             this.ppService = room.getParentProvider();
             this.image = null;
-            this.status = room.isJoined() ? ChatRoomPresenceStatus.CHAT_ROOM_ONLINE
-                    : ChatRoomPresenceStatus.CHAT_ROOM_OFFLINE;
+            this.status = room.isJoined() ? ChatRoomPresenceStatus.CHAT_ROOM_ONLINE : ChatRoomPresenceStatus.CHAT_ROOM_OFFLINE;
             this.messageContent = e.getMessage().getContent();
             this.timestamp = e.getTimestamp();
-        }
-
-        if (service.isSMSEnabled()) {
-            this.status = MessageSourceContactPresenceStatus.MSG_SRC_CONTACT_ONLINE;
         }
         updateMessageContent();
     }
@@ -276,8 +271,7 @@ public class MessageSourceContact extends DataObject
                 // skip opset IM as we want explicitly muc support
                 if (opset.equals(OperationSetPresence.class)
                         || opset.equals(OperationSetPersistentPresence.class)
-                        || ((isChatRoom || service.isSMSEnabled())
-                        && opset.equals(OperationSetBasicInstantMessaging.class))) {
+                        || (isChatRoom && opset.equals(OperationSetBasicInstantMessaging.class))) {
                     continue;
                 }
 

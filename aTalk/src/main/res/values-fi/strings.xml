@@ -54,7 +54,7 @@
     <string name="call_transfer">Siirto</string>
     <string name="call_transfer_failed">Puhelunsiirtoa ei voitu jatkaa: %1$s ⇢ %2$s\n%3$s</string>
     <string name="call_transfer_hint">Valitse siirrettävän yhteystiedon nimi ja paina \"Siirrä\".</string>
-    <string name="call_transfer_msg">%1$s puhelua siirretään kohteeseen… %2$s</string>
+    <string name="call_transfer_msg">%1$s puhelua siirretään kohteeseen %2$s</string>
 
     <string name="attach_picture">Kuva</string>
     <string name="attach_take_picture">Ota kuva</string>
@@ -130,7 +130,8 @@
     <string name="call_audio">Äänipuhelu</string>
     <string name="call_answered">%1$s vastasi puheluun.</string>
     <string name="call_disable_on_fault">aTalk:in alustus epäonnistui %1$s\nKaikki mediapuhelut/palvelut otetaan pois käytöstä.\n%2$s</string>
-    <string name="call_ended">Vastapuoli lopetti puhelun: %1$s</string>
+    <string name="call_ended">Puhelu päättyi</string>
+    <string name="call_ended_by_remote">Vastapuoli lopetti puhelun: %1$s</string>
     <string name="call_error">Vastapuoli palautti virheen: %1$s</string>
     <string name="call_failed">Puhelu epäonnistui</string>
     <string name="call_history_name">Puheluloki</string>
@@ -315,10 +316,6 @@
     <string name="refresh_store_omemo">XEP-0384: OMEMO-Salaus</string>
 
     <string name="unregistered_message">Tilin kirjautumisen yhteys epäonnistui:\nKäyttäjän nimi: %1$s\nPalvelimen nimi: %2$s\nTämä tili on offline-tilassa.</string>
-    <string name="create_videoBridge">Luo videosilta…</string>
-    <string name="create_videoBridge_menu">Luo videosilta</string>
-    <string name="create_join_video_conference">Luo / Liity videokokoukseen</string>
-    <string name="create_video_conference">Luo uusi videokokous tälle keskusteluhuoneelle</string>
     <string name="video_format_not_supported">Ei voitu asettaa laitekameran esikatselua kohteeseen: %1$s; Poikkeus: %2$s.</string>
     <string name="disconnected">Yhteys katkaistu</string>
     <string name="disconnecting_">Yhteyttä katkaistaan %1$s</string>
@@ -656,7 +653,6 @@
     <string name="callinfo_call_information">Puhelun tiedot</string>
     <string name="callinfo_call_transport">Signaloivan puhelun kuljetus:</string>
     <string name="callinfo_codec">Koodekki/taajuus:</string>
-    <string name="callinfo_conference_focus">Kokouksen painopiste:</string>
     <string name="callinfo_default_encrypted">Salaus otettu käyttöön:</string>
     <string name="callinfo_jitter">Heilahtelu:</string>
     <string name="callinfo_key_exchange_protocol">Avaintenvaihtoprotokolla</string>
@@ -666,7 +662,6 @@
     <string name="callinfo_media_srtp">SRTP:</string>
     <string name="callinfo_media_stream_transport_protocol">Mediavirran siirtoprotokolla:</string>
     <string name="callinfo_na">Ei saatavilla.</string>
-    <string name="callinfo_peer_count">Osallistujien määrä:</string>
     <string name="callinfo_remote_ip">Vastapuolen IP-osoite/Portti:</string>
     <string name="callinfo_rtt">Edestakaisen matkan viive (RTT):</string>
     <string name="callinfo_details">Puhelun tarkemmat tiedot</string>
@@ -1007,8 +1002,6 @@
     <string name="sec_protocols_title">Turvallisuusprotokollat</string>
     <string name="sec_protocols_message">Valitse haluamiesi protokollien järjestys</string>
     <string name="discard">Hylkää</string>
-    <string name="sec_zrtp_signalling_on">ZRTP:tä mainostetaan signalointiprotokollan kautta</string>
-    <string name="sec_zrtp_signalling_off">ZRTP-mainosta ei tule</string>
 
     <!-- STUN/Jingle Nodes list -->
     <string name="service_gui_SERVERS_LIST_ADD_SERVER">Lisää palvelin</string>
@@ -1036,7 +1029,6 @@
     <string name="security_sdes_dlg_title">Valitse halutut salausalgoritmit</string>
     <string name="security_sdes_title">SDES-salausalgoritmit</string>
     <string name="security_zrtp_options">ZRTP-asetukset</string>
-    <string name="security_zrtp_signalling">ZRTP-signalointi</string>
 
     <!-- Common preferences -->
     <string name="audio_encoding">Äänen koodaus</string>

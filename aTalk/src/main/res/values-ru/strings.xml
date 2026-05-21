@@ -79,7 +79,7 @@
     <string name="call_transfer">Передача</string>
     <string name="call_transfer_failed">Не удалось продолжить перевод вызова: %1$s ⇢ %2$s\n%3$s</string>
     <string name="call_transfer_hint">Выберите контакт, который хотите передать, и нажмите Передача.</string>
-    <string name="call_transfer_msg">%1$s перевод вызова на… %2$s</string>
+    <string name="call_transfer_msg">%1$s перевод вызова на %2$s</string>
 
     <string name="attach_picture">Изображение</string>
     <string name="attach_take_picture">Сделать снимок</string>
@@ -155,7 +155,8 @@
     <string name="call_audio">Аудиозвонок</string>
     <string name="call_answered">%1$s ответил на звонок.</string>
     <string name="call_disable_on_fault">aTalk не удалось инициализировать %1$s\nЗвонки будут отключены.\n%2$s</string>
-    <string name="call_ended">Абонент завершил звонок: %1$s</string>
+    <string name="call_ended">Звонок завершился</string>
+    <string name="call_ended_by_remote">Абонент завершил звонок: %1$s</string>
     <string name="call_error">Отдалённая сторона возвращает ошибку: %1$s</string>
     <string name="call_failed">Не удалось выполнить вызов</string>
     <string name="call_history_name">Журнал вызовов</string>
@@ -340,10 +341,6 @@
     <string name="refresh_store_omemo">XEP-0384: Шифрование OMEMO</string>
 
     <string name="unregistered_message">Не удалось подключиться к учётной записи:\nИмя пользователя: %1$s\nНазвание сервера: %2$s\nУчётная запись отключена.</string>
-    <string name="create_videoBridge">Создать видеомост…</string>
-    <string name="create_videoBridge_menu">Создать видеомост</string>
-    <string name="create_join_video_conference">Создать или присоединиться к видеозвонку</string>
-    <string name="create_video_conference">Сделать новый видеозвонок для этого чата</string>
     <string name="video_format_not_supported">Не удалось установить предварительный просмотр камеры устройства на: %1$s; Исключение: %2$s.</string>
     <string name="disconnected">Отключено</string>
     <string name="disconnecting_">Отключение %1$s</string>
@@ -681,7 +678,6 @@
     <string name="callinfo_call_information">Информация о вызове</string>
     <string name="callinfo_call_transport">Транзакция вызова сигнализации:</string>
     <string name="callinfo_codec">Кодек/Частота:</string>
-    <string name="callinfo_conference_focus">Фокус конференции:</string>
     <string name="callinfo_default_encrypted">Включено шифрование:</string>
     <string name="callinfo_jitter">Джиттер:</string>
     <string name="callinfo_key_exchange_protocol">Протокол обмена ключами</string>
@@ -691,7 +687,6 @@
     <string name="callinfo_media_srtp">SRTP:</string>
     <string name="callinfo_media_stream_transport_protocol">Протокол передачи медиапотоков:</string>
     <string name="callinfo_na">N.A.</string>
-    <string name="callinfo_peer_count">Количество участников:</string>
     <string name="callinfo_remote_ip">Отдалённый IP/Порт:</string>
     <string name="callinfo_rtt">RTT:</string>
     <string name="callinfo_details">Информация о звонке</string>
@@ -1046,8 +1041,6 @@
     <string name="sec_protocols_title">Протоколы безопасности</string>
     <string name="sec_protocols_message">Выберите нужные протоколы в порядке</string>
     <string name="discard">Отменить</string>
-    <string name="sec_zrtp_signalling_on">ZRTP будет рекламироваться по протоколу сигнализации</string>
-    <string name="sec_zrtp_signalling_off">Не будет рекламы ZRTP</string>
 
     <!-- STUN/Jingle Nodes list -->
     <string name="service_gui_SERVERS_LIST_ADD_SERVER">Добавить сервер</string>
@@ -1075,7 +1068,6 @@
     <string name="security_sdes_dlg_title">Выберите нужный набор шифров</string>
     <string name="security_sdes_title">Набор шифров SDES</string>
     <string name="security_zrtp_options">Параметры ZRTP</string>
-    <string name="security_zrtp_signalling">Передача сигналов ZRTP</string>
 
     <!-- Common preferences -->
     <string name="audio_encoding">Кодирование аудио</string>

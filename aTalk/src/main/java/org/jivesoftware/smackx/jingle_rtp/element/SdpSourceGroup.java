@@ -24,21 +24,15 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Represents <code>ssrc-group</code> elements described.
- * @see <a href="https://xmpp.org/extensions/xep-0339.html">XEP-0339: Source-Specific Media Attributes in Jingle</a>
+ * @see <a href="https://xmpp.org/extensions/xep-0339.html">XEP-0339: Source-Specific Media Attributes in Jingle 1.0.1 (2021-10-23)</a>
+ * @see <a href="https://datatracker.ietf.org/doc/html/rfc5576">Source-Specific Media Attributes in the Session Description Protocol (SDP)</a>
  *
  * @author George Politis
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
 public class SdpSourceGroup extends AbstractXmlElement {
-    /**
-     * The name of the "ssrc-group" element.
-     */
     public static final String ELEMENT = "ssrc-group";
-
-    /**
-     * The namespace for the "ssrc-group" element.
-     */
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:ssma:0";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
@@ -47,21 +41,6 @@ public class SdpSourceGroup extends AbstractXmlElement {
      * The name of the payload <code>id</code> SDP argument.
      */
     public static final String ATTR_SEMANTICS = "semantics";
-
-    /**
-     * The constant used for signaling simulcast semantics.
-     */
-    public static final String SEMANTICS_SIMULCAST = "SIM";
-
-    /**
-     * The constant used for flow identification (see RFC5888).
-     */
-    public static final String SEMANTICS_FID = "FID";
-
-    /**
-     * The constant used for fec (see RFC5956).
-     */
-    public static final String SEMANTICS_FEC = "FEC-FR";
 
     /**
      * <code>SdpSourceGroup</code> default constructor; use in DefaultXmlElementProvider, and newInstance() etc.
@@ -114,6 +93,7 @@ public class SdpSourceGroup extends AbstractXmlElement {
          * Sets the semantics of this source group.
          *
          * @param semantics Semantics string
+         *
          * @return builder instance
          */
         public Builder setSemantics(String semantics) {
@@ -125,6 +105,7 @@ public class SdpSourceGroup extends AbstractXmlElement {
          * Sets the sources of this source group.
          *
          * @param sources the sources of this source group.
+         *
          * @return builder instance
          */
         public Builder addSources(List<SdpSource> sources) {

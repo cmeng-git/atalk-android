@@ -9,10 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import java.awt.Component;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,29 +22,20 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.CallState;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.ConferenceDescription;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ContactResource;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetAdvancedTelephony;
 import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetDesktopStreaming;
 import net.java.sip.communicator.service.protocol.OperationSetResourceAwareTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetTelephonyConferencing;
-import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
 import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.media.MediaAwareCall;
-import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 import net.java.sip.communicator.service.protocol.media.ProtocolMediaActivator;
-import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -200,58 +189,18 @@ public class CallManager {
                 Intent videoCall = VideoCallActivity.createVideoCallIntent(ctx, call.getCallId());
                 videoCall.putExtra(CallManager.CALL_TRANSFER, transfer);
                 ctx.startActivity(videoCall);
-
-                // Not working.
-                // final ActivityManager activityManager = (ActivityManager) aTalkApp.getInstance().getSystemService(Context.ACTIVITY_SERVICE);
-                // activityManager.moveTaskToFront(vCall.getTaskId(), ActivityManager.MOVE_TASK_NO_USER_ACTION);
             }
         }
     }
 
     /**
-     * Answers the given call with the required media.
+     * Answers the given call with the required media i.e. audio/video.
      *
      * @param call the call to answer
      * @param isVideoCall the incoming call type (audio/video?)
      */
     public static void answerCall(Call call, boolean isVideoCall) {
-        answerCall(call, null, isVideoCall);
-    }
-
-    /**
-     * Answers a specific <code>Call</code> with or without video and, optionally, does that in a
-     * telephony conference with an existing <code>Call</code>.
-     *
-     * @param call the call to answer
-     * @param existingCall current call in progress
-     * @param isVideoCall the incoming call type (audio/video?)
-     */
-    private static void answerCall(Call call, Call existingCall, boolean isVideoCall) {
-        // if (existingCall == null)
-        // openCallContainerIfNecessary(call);
-        new AnswerCallThread(call, existingCall, isVideoCall).start();
-    }
-
-    /**
-     * Answers the given call in an existing call. It will end up with a conference call.
-     *
-     * @param call the call to answer
-     */
-    public static void answerCallInFirstExistingCall(Call call) {
-        // Find the first existing call.
-        Iterator<Call> existingCallIter = getInProgressCalls().iterator();
-        Call existingCall = existingCallIter.hasNext() ? existingCallIter.next() : null;
-        answerCall(call, existingCall, false /* without video */);
-    }
-
-    /**
-     * Merges specific existing <code>Call</code>s into a specific telephony conference.
-     *
-     * @param conference the conference
-     * @param calls list of calls
-     */
-    public static void mergeExistingCalls(CallConference conference, Collection<Call> calls) {
-        new MergeExistingCalls(conference, calls).start();
+        new AnswerCallThread(call, isVideoCall).start();
     }
 
     /**
@@ -261,24 +210,6 @@ public class CallManager {
      */
     public static void hangupCall(Call call) {
         new HangupCallThread(call).start();
-    }
-
-    /**
-     * Hang ups the given <code>callPeer</code>.
-     *
-     * @param peer the <code>CallPeer</code> to hang up
-     */
-    public static void hangupCallPeer(CallPeer peer) {
-        new HangupCallThread(peer).start();
-    }
-
-    /**
-     * Asynchronously hangs up the <code>Call</code>s participating in a specific <code>CallConference</code>.
-     *
-     * @param conference the <code>CallConference</code> whose participating <code>Call</code>s are to be hanged up
-     */
-    public static void hangupCalls(CallConference conference) {
-        new HangupCallThread(conference).start();
     }
 
     /**
@@ -295,14 +226,13 @@ public class CallManager {
     /**
      * Creates a call to the contact represented by the given string.
      *
-     * @param protocolProvider the protocol provider to which this call belongs.
+     * @param pps the protocol provider to which this call belongs.
      * @param contact the contact to call to
      * @param uiContact the meta contact we're calling
      * @param isVideoCall true to setup video call
      */
-    public static void createCall(ProtocolProviderService protocolProvider, String contact, UIContactImpl uiContact,
-            boolean isVideoCall) {
-        new CreateCallThread(protocolProvider, null, null, uiContact, contact, null, null, isVideoCall).start();
+    public static void createCall(ProtocolProviderService pps, String contact, UIContactImpl uiContact, boolean isVideoCall) {
+        new CreateCallThread(pps, null, null, uiContact, contact, isVideoCall).start();
     }
 
     /**
@@ -326,96 +256,6 @@ public class CallManager {
     public static boolean isLocalVideoEnabled(Call call) {
         OperationSetVideoTelephony telephony = call.getProtocolProvider().getOperationSet(OperationSetVideoTelephony.class);
         return (telephony != null) && telephony.isLocalVideoAllowed(call);
-    }
-
-    /**
-     * Creates a call to the given list of contacts.
-     *
-     * @param protocolProvider the protocol provider to which this call belongs.
-     * @param callees the list of contacts to call to
-     */
-    public static void createConferenceCall(String[] callees, ProtocolProviderService protocolProvider) {
-        Map<ProtocolProviderService, List<String>> crossProtocolCallees = new HashMap<>();
-        crossProtocolCallees.put(protocolProvider, Arrays.asList(callees));
-        createConferenceCall(crossProtocolCallees);
-    }
-
-    /**
-     * Invites the given list of <code>callees</code> to the given conference <code>call</code>.
-     *
-     * @param callees the list of contacts to invite
-     * @param call the protocol provider to which this call belongs
-     */
-    public static void inviteToConferenceCall(String[] callees, Call call) {
-        Map<ProtocolProviderService, List<String>> crossProtocolCallees = new HashMap<>();
-        crossProtocolCallees.put(call.getProtocolProvider(), Arrays.asList(callees));
-        inviteToConferenceCall(crossProtocolCallees, call);
-    }
-
-    /**
-     * Invites the given list of <code>callees</code> to the given conference <code>call</code>.
-     *
-     * @param callees the list of contacts to invite
-     * @param call existing call
-     */
-    public static void inviteToConferenceCall(Map<ProtocolProviderService, List<String>> callees, Call call) {
-        new InviteToConferenceCallThread(callees, call).start();
-    }
-
-    /**
-     * Invites specific <code>callees</code> to a specific telephony conference.
-     *
-     * @param callees the list of contacts to invite
-     * @param conference the telephony conference to invite the specified <code>callees</code> into
-     */
-    public static void inviteToConferenceCall(Map<ProtocolProviderService, List<String>> callees,
-            CallConference conference) {
-        /*
-         * InviteToConferenceCallThread takes a specific Call but actually invites to the
-         * telephony conference associated with the specified Call (if any). In order to not
-         * change the signature of its constructor at this time, just pick up a Call
-         * participating in the specified telephony conference (if any).
-         */
-        Call call = null;
-        if (conference != null) {
-            List<Call> calls = conference.getCalls();
-
-            if (!calls.isEmpty())
-                call = calls.get(0);
-        }
-        new InviteToConferenceCallThread(callees, call).start();
-    }
-
-    /**
-     * Asynchronously creates a new conference <code>Call</code> with a specific list of
-     * participants/callees.
-     *
-     * @param callees the list of participants/callees to invite to a newly-created conference <code>Call</code>
-     */
-    public static void createConferenceCall(Map<ProtocolProviderService, List<String>> callees) {
-        new InviteToConferenceCallThread(callees, null).start();
-    }
-
-    /**
-     * Asynchronously creates a new video bridge conference <code>Call</code> with a specific list of
-     * participants/callees.
-     *
-     * @param callProvider the <code>ProtocolProviderService</code> to use for creating the call
-     * @param callees the list of participants/callees to invite to the newly-created video bridge
-     * conference <code>Call</code>
-     */
-    public static void createJitsiVideobridgeConfCall(ProtocolProviderService callProvider, String[] callees) {
-        new InviteToConferenceBridgeThread(callProvider, callees, null).start();
-    }
-
-    /**
-     * Invites the given list of <code>callees</code> to the given conference <code>call</code>.
-     *
-     * @param callees the list of contacts to invite
-     * @param call the protocol provider to which this call belongs
-     */
-    public static void inviteToJitsiVideobridgeConfCall(String[] callees, Call call) {
-        new InviteToConferenceBridgeThread(call.getProtocolProvider(), callees, call).start();
     }
 
     /**
@@ -490,24 +330,6 @@ public class CallManager {
     }
 
     /**
-     * Returns a list of all currently registered telephony providers.
-     *
-     * @return a list of all currently registered telephony providers
-     */
-    public static List<ProtocolProviderService> getTelephonyProviders() {
-        return AccountUtils.getRegisteredProviders(OperationSetBasicTelephony.class);
-    }
-
-    /**
-     * Returns a list of all currently registered telephony providers supporting conferencing.
-     *
-     * @return a list of all currently registered telephony providers supporting conferencing
-     */
-    public static List<ProtocolProviderService> getTelephonyConferencingProviders() {
-        return AccountUtils.getRegisteredProviders(OperationSetTelephonyConferencing.class);
-    }
-
-    /**
      * Returns a collection of all currently in progress calls. A call is active if it is in
      * progress so the method merely delegates to
      *
@@ -532,46 +354,6 @@ public class CallManager {
             image = AvatarManager.getAvatarImageByJid(peerJid);
         }
         return image;
-    }
-
-    /**
-     * Indicates if we have video streams to show in this interface.
-     *
-     * @param call the call to check for video streaming
-     *
-     * @return <code>true</code> if we have video streams to show in this interface; otherwise, <code>false</code>
-     */
-    public static boolean isVideoStreaming(Call call) {
-        return isVideoStreaming(call.getConference());
-    }
-
-    /**
-     * Indicates if we have video streams to show in this interface.
-     *
-     * @param conference the conference we check for video streaming
-     *
-     * @return <code>true</code> if we have video streams to show in this interface; otherwise, <code>false</code>
-     */
-    public static boolean isVideoStreaming(CallConference conference) {
-        for (Call call : conference.getCalls()) {
-            OperationSetVideoTelephony videoTelephony
-                    = call.getProtocolProvider().getOperationSet(OperationSetVideoTelephony.class);
-
-            if (videoTelephony == null)
-                continue;
-
-            if (videoTelephony.isLocalVideoStreaming(call))
-                return true;
-
-            Iterator<? extends CallPeer> callPeers = call.getCallPeers();
-
-            while (callPeers.hasNext()) {
-                List<Component> remoteVideos = videoTelephony.getVisualComponents(callPeers.next());
-                if ((remoteVideos != null) && (remoteVideos.size() > 0))
-                    return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -711,20 +493,10 @@ public class CallManager {
         private final String stringContact;
 
         /**
-         * The description of a conference to call, if any.
-         */
-        private final ConferenceDescription conferenceDescription;
-
-        /**
          * The indicator which determines whether this instance is to create a new video (as
          * opposed to audio-only) <code>Call</code>.
          */
         private final boolean video;
-
-        /**
-         * The chat room associated with the call.
-         */
-        private final ChatRoom chatRoom;
 
         /**
          * Creates an instance of <code>CreateCallThread</code>.
@@ -736,7 +508,7 @@ public class CallManager {
          */
         public CreateCallThread(ProtocolProviderService protocolProvider, Contact contact,
                 ContactResource contactResource, boolean video) {
-            this(protocolProvider, contact, contactResource, null, null, null, null, video);
+            this(protocolProvider, contact, contactResource, null, null, video);
         }
 
         /**
@@ -747,22 +519,7 @@ public class CallManager {
          * @param video indicates if this is a video call
          */
         public CreateCallThread(ProtocolProviderService protocolProvider, String contact, boolean video) {
-            this(protocolProvider, null, null, null, contact, null, null, video);
-        }
-
-        /**
-         * Initializes a new <code>CreateCallThread</code> instance which is to create a new
-         * <code>Call</code> to a conference specified via a <code>ConferenceDescription</code>.
-         *
-         * @param protocolProvider the <code>ProtocolProviderService</code> which is to perform
-         * the establishment of the new <code>Call</code>.
-         * @param conferenceDescription the description of the conference to call.
-         * @param chatRoom the chat room associated with the call.
-         */
-        public CreateCallThread(ProtocolProviderService protocolProvider, ConferenceDescription conferenceDescription,
-                ChatRoom chatRoom) {
-            this(protocolProvider, null, null, null, null, conferenceDescription, chatRoom,
-                    false /* audio */);
+            this(protocolProvider, null, null, null, contact, video);
         }
 
         /**
@@ -777,21 +534,16 @@ public class CallManager {
          * @param contactResource the specific contact resource to call
          * @param uiContact the ui contact we're calling
          * @param stringContact the string callee to call
-         * @param conferenceDescription the description of a conference to call
-         * @param chatRoom the chat room associated with the call.
          * @param video <code>true</code> if this instance is to create a new video (as opposed to audio-only) <code>Call</code>
          */
         public CreateCallThread(ProtocolProviderService protocolProvider, Contact contact,
-                ContactResource contactResource, UIContactImpl uiContact, String stringContact,
-                ConferenceDescription conferenceDescription, ChatRoom chatRoom, boolean video) {
+                ContactResource contactResource, UIContactImpl uiContact, String stringContact, boolean video) {
             this.protocolProvider = protocolProvider;
             this.contact = contact;
             this.contactResource = contactResource;
             this.uiContact = uiContact;
             this.stringContact = stringContact;
             this.video = video;
-            this.conferenceDescription = conferenceDescription;
-            this.chatRoom = chatRoom;
         }
 
         @Override
@@ -824,16 +576,11 @@ public class CallManager {
             }
 
             try {
-                if (conferenceDescription != null) {
-                    internalCall(protocolProvider, conferenceDescription, chatRoom);
+                if (video) {
+                    internalCallVideo(protocolProvider, contact, uiContact, stringContact);
                 }
                 else {
-                    if (video) {
-                        internalCallVideo(protocolProvider, contact, uiContact, stringContact);
-                    }
-                    else {
-                        internalCall(protocolProvider, contact, stringContact, contactResource, uiContact);
-                    }
+                    internalCall(protocolProvider, contact, stringContact, contactResource, uiContact);
                 }
             }
             catch (Throwable t) {
@@ -919,22 +666,6 @@ public class CallManager {
     }
 
     /**
-     * Creates a call through the given <code>protocolProvider</code>.
-     *
-     * @param protocolProvider the <code>ProtocolProviderService</code> through which to make the call
-     * @param conferenceDescription the description of the conference to call
-     * @param chatRoom the chat room associated with the call.
-     */
-    private static void internalCall(ProtocolProviderService protocolProvider,
-            ConferenceDescription conferenceDescription, ChatRoom chatRoom)
-            throws OperationFailedException {
-        OperationSetBasicTelephony<?> telephony = protocolProvider.getOperationSet(OperationSetBasicTelephony.class);
-        if (telephony != null) {
-            telephony.createCall(conferenceDescription, chatRoom);
-        }
-    }
-
-    /**
      * Returns the <code>MetaContact</code>, to which the given <code>Call</code> was initially created.
      *
      * @param call the <code>Call</code>, which corresponding <code>MetaContact</code> we're looking for
@@ -961,92 +692,6 @@ public class CallManager {
     }
 
     /**
-     * Creates a desktop sharing session with the given Contact or a given String.
-     */
-    private static class CreateDesktopSharingThread extends Thread {
-        /**
-         * The string contact to share the desktop with.
-         */
-        private final String stringContact;
-
-        /**
-         * The protocol provider through which we share our desktop.
-         */
-        private final ProtocolProviderService protocolProvider;
-
-        /**
-         * The media device corresponding to the screen we would like to share.
-         */
-        private final MediaDevice mediaDevice;
-
-        /**
-         * The <code>UIContactImpl</code> we're calling.
-         */
-        private final UIContactImpl uiContact;
-
-        /**
-         * Whether user has selected sharing full screen or region.
-         */
-        private final boolean fullscreen;
-
-        /**
-         * Creates a desktop sharing session thread.
-         *
-         * @param protocolProvider protocol provider through which we share our desktop
-         * @param contact the contact to share the desktop with
-         * @param uiContact the <code>UIContact</code>, which initiated the desktop sharing session
-         * @param mediaDevice the media device corresponding to the screen we would like to share
-         */
-        public CreateDesktopSharingThread(ProtocolProviderService protocolProvider, String contact,
-                UIContactImpl uiContact, MediaDevice mediaDevice, boolean fullscreen) {
-            this.protocolProvider = protocolProvider;
-            this.stringContact = contact;
-            this.uiContact = uiContact;
-            this.mediaDevice = mediaDevice;
-            this.fullscreen = fullscreen;
-        }
-
-        @Override
-        public void run() {
-            OperationSetDesktopStreaming desktopSharingOpSet
-                    = protocolProvider.getOperationSet(OperationSetDesktopStreaming.class);
-
-            /*
-             * XXX If we are here and we just discover that OperationSetDesktopStreaming is not supported, then we're
-             * already in trouble - we've already started a whole new thread just to check that a reference is null.
-             */
-            if (desktopSharingOpSet == null)
-                return;
-
-            Throwable exception = null;
-
-            Call createdCall = null;
-            try {
-                if (mediaDevice != null) {
-                    createdCall = desktopSharingOpSet.createVideoCall(stringContact, mediaDevice);
-                }
-                else
-                    createdCall = desktopSharingOpSet.createVideoCall(stringContact);
-            }
-            catch (OperationFailedException | ParseException e) {
-                exception = e;
-            }
-            if (exception != null) {
-                Timber.e("The call could not be created: %s", exception.getMessage());
-                DialogActivity.showDialog(aTalkApp.getInstance(),
-                        aTalkApp.getResString(R.string.error), exception.getMessage());
-            }
-
-            if (uiContact != null && createdCall != null)
-                addUIContactCall(uiContact, createdCall);
-
-            if (createdCall != null && fullscreen) {
-                // new FullScreenShareIndicator(createdCall);
-            }
-        }
-    }
-
-    /**
      * Answers to all <code>CallPeer</code>s associated with a specific <code>Call</code> and, optionally,
      * does that in a telephony conference with an existing <code>Call</code>.
      */
@@ -1057,28 +702,18 @@ public class CallManager {
         private final Call call;
 
         /**
-         * The existing <code>Call</code>, if any, which represents a telephony conference in which
-         * {@link #call} is to be answered.
-         */
-        private final Call existingCall;
-
-        /**
          * The indicator which determines whether this instance is to answer {@link #call} with
          * video.
          */
         private final boolean isVideoCall;
 
-        public AnswerCallThread(Call call, Call existingCall, boolean isVideoCall) {
+        public AnswerCallThread(Call call, boolean isVideoCall) {
             this.call = call;
-            this.existingCall = existingCall;
             this.isVideoCall = isVideoCall;
         }
 
         @Override
         public void run() {
-            if (existingCall != null)
-                call.setConference(existingCall.getConference());
-
             ProtocolProviderService pps = call.getProtocolProvider();
             Iterator<? extends CallPeer> peers = call.getCallPeers();
 
@@ -1087,7 +722,6 @@ public class CallManager {
 
                 if (isVideoCall) {
                     OperationSetVideoTelephony telephony = pps.getOperationSet(OperationSetVideoTelephony.class);
-
                     try {
                         telephony.answerVideoCallPeer(peer);
                     }
@@ -1110,191 +744,12 @@ public class CallManager {
     }
 
     /**
-     * Invites a list of callees to a conference <code>Call</code>. If the specified <code>Call</code> is
-     * <code>null</code>, creates a brand new telephony conference.
-     */
-    private static class InviteToConferenceCallThread extends Thread {
-        /**
-         * The addresses of the callees to be invited into the telephony conference to be
-         * organized by this instance. For further details, refer to the documentation on the
-         * <code>callees</code> parameter of the respective <code>InviteToConferenceCallThread</code>
-         * constructor.
-         */
-        private final Map<ProtocolProviderService, List<String>> callees;
-
-        /**
-         * The <code>Call</code>, if any, into the telephony conference of which {@link #callees} are
-         * to be invited. If non-<code>null</code>, its <code>CallConference</code> state will be shared
-         * with all <code>Call</code>s established by this instance for the purposes of having the
-         * <code>callees</code> into the same telephony conference.
-         */
-        private final Call call;
-
-        /**
-         * Initializes a new <code>InviteToConferenceCallThread</code> instance which is to invite a
-         * list of callees to a conference <code>Call</code>. If the specified <code>call</code> is
-         * <code>null</code>, creates a brand new telephony conference.
-         *
-         * @param callees the addresses of the callees to be invited into a telephony conference. The
-         * addresses are provided in multiple <code>List&lt;String&gt;</code>s. Each such list
-         * of addresses is mapped by the <code>ProtocolProviderService</code> through which they
-         * are to be invited into the telephony conference. If there are multiple
-         * <code>ProtocolProviderService</code>s in the specified <code>Map</code>, the resulting
-         * telephony conference is known by the name &quot;cross-protocol&quot;. It is also
-         * allowed to have a list of addresses mapped to <code>null</code> which means that the
-         * new instance will automatically choose
-         * a <code>ProtocolProviderService</code> to invite the respective callees into the
-         * telephony conference.
-         * @param call the <code>Call</code> to invite the specified <code>callees</code> into. If <code>null</code>,
-         * this instance will create a brand new telephony conference. Technically, a
-         * <code>Call</code> instance is protocol/account-specific and it is possible to have
-         * cross-protocol/account telephony conferences. That's why the specified
-         * <code>callees</code> are invited into one and the same <code>CallConference</code>:
-         * the one in which the specified <code>call</code> is participating or a new one if
-         * <code>call</code> is <code>null</code>. Of course, an attempt is made to have all callees
-         * from one and the same protocol/account into one <code>Call</code> instance.
-         */
-        public InviteToConferenceCallThread(Map<ProtocolProviderService, List<String>> callees, Call call) {
-            this.callees = callees;
-            this.call = call;
-        }
-
-        /**
-         * Invites {@link #callees} into a telephony conference which is optionally specified by
-         * {@link #call}.
-         */
-        @Override
-        public void run() {
-            CallConference conference = (call == null) ? null : call.getConference();
-            for (Map.Entry<ProtocolProviderService, List<String>> entry : callees.entrySet()) {
-                ProtocolProviderService pps = entry.getKey();
-
-                /*
-                 * We'd like to allow specifying callees without specifying an associated
-                 * ProtocolProviderService.
-                 */
-                if (pps != null) {
-                    OperationSetBasicTelephony<?> basicTelephony = pps.getOperationSet(OperationSetBasicTelephony.class);
-
-                    if (basicTelephony == null)
-                        continue;
-                }
-
-                List<String> contactList = entry.getValue();
-                String[] contactArray = contactList.toArray(new String[0]);
-
-                /* Try to have a single Call per ProtocolProviderService. */
-                Call ppsCall;
-
-                if ((call != null) && call.getProtocolProvider().equals(pps))
-                    ppsCall = call;
-                else {
-                    ppsCall = null;
-                    if (conference != null) {
-                        List<Call> conferenceCalls = conference.getCalls();
-
-                        if (pps == null) {
-                            /*
-                             * We'd like to allow specifying callees without specifying an
-                             * associated ProtocolProviderService. The simplest approach is to
-                             * just choose the first ProtocolProviderService involved in the
-                             * telephony conference.
-                             */
-                            if (call == null) {
-                                if (!conferenceCalls.isEmpty()) {
-                                    ppsCall = conferenceCalls.get(0);
-                                    pps = ppsCall.getProtocolProvider();
-                                }
-                            }
-                            else {
-                                ppsCall = call;
-                                pps = ppsCall.getProtocolProvider();
-                            }
-                        }
-                        else {
-                            for (Call conferenceCall : conferenceCalls) {
-                                if (pps.equals(conferenceCall.getProtocolProvider())) {
-                                    ppsCall = conferenceCall;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                OperationSetTelephonyConferencing telephonyConferencing
-                        = pps.getOperationSet(OperationSetTelephonyConferencing.class);
-
-                try {
-                    if (ppsCall == null) {
-                        ppsCall = telephonyConferencing.createConfCall(contactArray, conference);
-                        if (conference == null)
-                            conference = ppsCall.getConference();
-                    }
-                    else {
-                        for (String contact : contactArray) {
-                            telephonyConferencing.inviteCalleeToCall(contact, ppsCall);
-                        }
-                    }
-                }
-                catch (Exception e) {
-                    Timber.e(e, "Failed to invite callee: %s", Arrays.toString(contactArray));
-                    DialogActivity.showDialog(aTalkApp.getInstance(),
-                            aTalkApp.getResString(R.string.error), e.getMessage());
-                }
-            }
-        }
-    }
-
-    /**
-     * Invites a list of callees to a specific conference <code>Call</code>. If the specified
-     * <code>Call</code> is <code>null</code>, creates a brand new telephony conference.
-     */
-    private static class InviteToConferenceBridgeThread extends Thread {
-        private final ProtocolProviderService callProvider;
-        private final String[] callees;
-        private final Call call;
-
-        public InviteToConferenceBridgeThread(ProtocolProviderService callProvider, String[] callees, Call call) {
-            this.callProvider = callProvider;
-            this.callees = callees;
-            this.call = call;
-        }
-
-        @Override
-        public void run() {
-            OperationSetVideoBridge opSetVideoBridge = callProvider.getOperationSet(OperationSetVideoBridge.class);
-
-            // Normally if this method is called then this should not happen
-            // but we check in order to be sure to be able to proceed.
-            if (opSetVideoBridge == null || !opSetVideoBridge.isActive())
-                return;
-
-            try {
-                if (call == null) {
-                    opSetVideoBridge.createConfCall(callees);
-                }
-                else {
-                    for (String contact : callees)
-                        opSetVideoBridge.inviteCalleeToCall(contact, call);
-                }
-            }
-            catch (Exception e) {
-                Timber.e(e, "Failed to invite callee: %s", Arrays.toString(callees));
-                DialogActivity.showDialog(aTalkApp.getInstance(),
-                        aTalkApp.getResString(R.string.error), e.getMessage());
-            }
-        }
-    }
-
-    /**
      * Hangs up a specific <code>Call</code> (i.e. all <code>CallPeer</code>s associated with a
      * <code>Call</code>), <code>CallConference</code> (i.e. all <code>Call</code>s participating in a
      * <code>CallConference</code>), or <code>CallPeer</code>.
      */
     private static class HangupCallThread extends Thread {
         private final Call call;
-        private final CallConference conference;
         private final CallPeer peer;
 
         /**
@@ -1305,18 +760,7 @@ public class CallManager {
          */
         public HangupCallThread(Call call) {
             // this.call = call;
-            this(call, null, null);
-        }
-
-        /**
-         * Initializes a new <code>HangupCallThread</code> instance which is to hang up a specific
-         * <code>CallConference</code> i.e. all <code>Call</code>s participating in the
-         * <code>CallConference</code>.
-         *
-         * @param conference the <code>CallConference</code> whose participating <code>Call</code>s re to be hanged up
-         */
-        public HangupCallThread(CallConference conference) {
-            this(null, conference, null);
+            this(call, null);
         }
 
         /**
@@ -1326,7 +770,7 @@ public class CallManager {
          * @param peer the <code>CallPeer</code> to hang up
          */
         public HangupCallThread(CallPeer peer) {
-            this(null, null, peer);
+            this(null, peer);
         }
 
         /**
@@ -1334,12 +778,10 @@ public class CallManager {
          * <code>Call</code>, <code>CallConference</code>, or <code>CallPeer</code>.
          *
          * @param call the <code>Call</code> whose associated <code>CallPeer</code>s are to be hanged up
-         * @param conference the <code>CallConference</code> whose participating <code>Call</code>s re to be hanged up
          * @param peer the <code>CallPeer</code> to hang up
          */
-        private HangupCallThread(Call call, CallConference conference, CallPeer peer) {
+        private HangupCallThread(Call call, CallPeer peer) {
             this.call = call;
-            this.conference = conference;
             this.peer = peer;
         }
 
@@ -1358,10 +800,6 @@ public class CallManager {
                 }
             }
 
-            if (conference != null) {
-                peers.addAll(conference.getCallPeers());
-            }
-
             if (peer != null) {
                 peers.add(peer);
             }
@@ -1373,8 +811,11 @@ public class CallManager {
                     // Must send JingleMessage retract to close the loop if Jingle RTP has yet to start
                     if (CallState.CALL_INITIALIZATION.equals(peer.getCall().getCallState())) {
                         JingleMessageSessionImpl.sendJingleMessageRetract(peer.getPeerJid().asBareJid(), peer.getCall().getCallId());
+                        String reasonText = aTalkApp.getResString(R.string.call_retracted, "Caller");
+                        basicTelephony.hangupCallPeer(peer, OperationSetBasicTelephony.HANGUP_REASON_CALL_RETRACT, reasonText);
+                    } else {
+                        basicTelephony.hangupCallPeer(peer);
                     }
-                    basicTelephony.hangupCallPeer(peer);
                 }
                 catch (OperationFailedException ofe) {
                     Timber.e(ofe, "Could not hang up: %s", peer);
@@ -1441,86 +882,6 @@ public class CallManager {
             }
             catch (OperationFailedException ex) {
                 Timber.e(ex, "Failed to put %s %s", callPeer.getAddress(), (isOnHold ? " on hold." : " off hold. "));
-            }
-        }
-    }
-
-    /**
-     * Merges specific existing <code>Call</code>s into a specific telephony conference.
-     */
-    private static class MergeExistingCalls extends Thread {
-        /**
-         * The telephony conference in which {@link #calls} are to be merged.
-         */
-        private final CallConference conference;
-
-        /**
-         * Second call.
-         */
-        private final Collection<Call> calls;
-
-        /**
-         * Initializes a new <code>MergeExistingCalls</code> instance which is to merge specific
-         * existing <code>Call</code>s into a specific telephony conference.
-         *
-         * @param conference the telephony conference in which the specified <code>Call</code>s are to be merged
-         * @param calls the <code>Call</code>s to be merged into the specified telephony conference
-         */
-        public MergeExistingCalls(CallConference conference, Collection<Call> calls) {
-            this.conference = conference;
-            this.calls = calls;
-        }
-
-        /**
-         * Puts off hold the <code>CallPeer</code>s of a specific <code>Call</code> which are locally on
-         * hold.
-         *
-         * @param call the <code>Call</code> which is to have its <code>CallPeer</code>s put off hold
-         */
-        private void putOffHold(Call call) {
-            Iterator<? extends CallPeer> peers = call.getCallPeers();
-            OperationSetBasicTelephony<?> telephony
-                    = call.getProtocolProvider().getOperationSet(OperationSetBasicTelephony.class);
-
-            while (peers.hasNext()) {
-                CallPeer callPeer = peers.next();
-                boolean putOffHold = true;
-
-                if (callPeer instanceof MediaAwareCallPeer) {
-                    putOffHold = ((MediaAwareCallPeer<?, ?, ?>) callPeer).getMediaHandler().isLocallyOnHold();
-                }
-                if (putOffHold) {
-                    try {
-                        telephony.putOffHold(callPeer);
-                        Thread.sleep(400);
-                    }
-                    catch (Exception ofe) {
-                        Timber.e("Failed to put off hold. %s", ofe.getMessage());
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void run() {
-            // conference
-            for (Call call : conference.getCalls())
-                putOffHold(call);
-
-            // calls
-            if (!calls.isEmpty()) {
-                for (Call call : calls) {
-                    if (conference.containsCall(call))
-                        continue;
-
-                    putOffHold(call);
-
-                    /*
-                     * Dispose of the CallPanel associated with the Call which is to be merged.
-                     */
-                    // cmeng - closeCallContainerIfNotNecessary(conference, false);
-                    call.setConference(conference);
-                }
             }
         }
     }

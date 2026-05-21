@@ -48,7 +48,7 @@ import timber.log.Timber;
 public class JabberPreferenceFragment extends AccountPreferenceFragment {
     // PreferenceScreen and PreferenceCategories for Account Settings...
     private static final String P_KEY_TELEPHONY = "pref.screen.jbr.telephony";
-    private static final String P_KEY_CALL_ENCRYPT = "pref_key_enable_encryption";
+    private static final String P_KEY_CALL_ENCRYPT = "pref_key_call_encryption";
     private static final String P_KEY_AUDIO_ENC = "pref_cat_enc_audio";
     private static final String P_KEY_VIDEO_ENC = "pref_cat_enc_video";
 
@@ -230,7 +230,6 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
                         myReg.setCallEncryption(secReg.isCallEncryption());
                         myReg.setEncryptionProtocol(secReg.getEncryptionProtocol());
                         myReg.setEncryptionProtocolStatus(secReg.getEncryptionProtocolStatus());
-                        myReg.setSipZrtpAttribute(secReg.isSipZrtpAttribute());
                         myReg.setZIDSalt(secReg.getZIDSalt());
                         myReg.setDtlsCertSa(secReg.getDtlsCertSa());
                         myReg.setSavpOption(secReg.getSavpOption());

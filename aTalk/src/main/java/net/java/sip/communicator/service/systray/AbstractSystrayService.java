@@ -6,19 +6,20 @@
  */
 package net.java.sip.communicator.service.systray;
 
-import net.java.sip.communicator.service.systray.event.SystrayPopupMessageListener;
-import net.java.sip.communicator.util.ServiceUtils;
-
-import org.atalk.service.configuration.ConfigurationService;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+
+import net.java.sip.communicator.service.systray.event.SystrayPopupMessageListener;
+import net.java.sip.communicator.util.ServiceUtils;
+
+import org.atalk.service.configuration.ConfigurationService;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
 import timber.log.Timber;
 
@@ -33,8 +34,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public abstract class AbstractSystrayService implements SystrayService
-{
+public abstract class AbstractSystrayService implements SystrayService {
     /**
      * OSGI bundle context
      */
@@ -62,8 +62,7 @@ public abstract class AbstractSystrayService implements SystrayService
      * @param bundleContext OSGI bundle context that will be used by this
      * instance
      */
-    public AbstractSystrayService(BundleContext bundleContext)
-    {
+    public AbstractSystrayService(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }
 
@@ -72,8 +71,7 @@ public abstract class AbstractSystrayService implements SystrayService
      *
      * @param handler the <code>PopupMessageHandler</code> to be registered.
      */
-    protected void addPopupHandler(PopupMessageHandler handler)
-    {
+    protected void addPopupHandler(PopupMessageHandler handler) {
         popupHandlerSet.put(handler.getClass().getName(), handler);
     }
 
@@ -82,8 +80,7 @@ public abstract class AbstractSystrayService implements SystrayService
      *
      * @param handler the <code>PopupMessageHandler</code> to be removed.
      */
-    protected void removePopupHandler(PopupMessageHandler handler)
-    {
+    protected void removePopupHandler(PopupMessageHandler handler) {
         popupHandlerSet.remove(handler.getClass().getName());
     }
 
@@ -91,10 +88,10 @@ public abstract class AbstractSystrayService implements SystrayService
      * Checks if given <code>handlerClass</code> is registered as a handler.
      *
      * @param handlerClass the class name to be checked.
+     *
      * @return <code>true</code> if given <code>handlerClass</code> is already registered as a handler.
      */
-    protected boolean containsHandler(String handlerClass)
-    {
+    protected boolean containsHandler(String handlerClass) {
         return popupHandlerSet.contains(handlerClass);
     }
 
@@ -103,8 +100,7 @@ public abstract class AbstractSystrayService implements SystrayService
      *
      * @return the current handler
      */
-    public PopupMessageHandler getActivePopupMessageHandler()
-    {
+    public PopupMessageHandler getActivePopupMessageHandler() {
         return activePopupMessageHandler;
     }
 
@@ -113,8 +109,7 @@ public abstract class AbstractSystrayService implements SystrayService
      *
      * @param popupMessage the message we will show
      */
-    public void showPopupMessage(PopupMessage popupMessage)
-    {
+    public void showPopupMessage(PopupMessage popupMessage) {
         // since popup handler could be loaded and unloaded on the fly,
         // we have to check if we currently have a valid one.
         if (activePopupMessageHandler != null)
@@ -127,8 +122,7 @@ public abstract class AbstractSystrayService implements SystrayService
      *
      * @param listener the listener to add
      */
-    public void addPopupMessageListener(SystrayPopupMessageListener listener)
-    {
+    public void addPopupMessageListener(SystrayPopupMessageListener listener) {
         if (activePopupMessageHandler != null)
             activePopupMessageHandler.addPopupMessageListener(listener);
         else {
@@ -144,8 +138,7 @@ public abstract class AbstractSystrayService implements SystrayService
      *
      * @param listener the listener to remove
      */
-    public void removePopupMessageListener(SystrayPopupMessageListener listener)
-    {
+    public void removePopupMessageListener(SystrayPopupMessageListener listener) {
         if (activePopupMessageHandler != null)
             activePopupMessageHandler.removePopupMessageListener(listener);
     }
@@ -154,10 +147,10 @@ public abstract class AbstractSystrayService implements SystrayService
      * Set the handler which will be used for popup message
      *
      * @param newHandler the handler to set. providing a null handler is like disabling popup.
+     *
      * @return the previously used popup handler
      */
-    public PopupMessageHandler setActivePopupMessageHandler(PopupMessageHandler newHandler)
-    {
+    public PopupMessageHandler setActivePopupMessageHandler(PopupMessageHandler newHandler) {
         PopupMessageHandler oldHandler = activePopupMessageHandler;
         Timber.i("setting the following popup handler as active: %s", newHandler);
 
@@ -177,8 +170,7 @@ public abstract class AbstractSystrayService implements SystrayService
     /**
      * Sets activePopupHandler to be the one with the highest preference index.
      */
-    public void selectBestPopupMessageHandler()
-    {
+    public void selectBestPopupMessageHandler() {
         PopupMessageHandler preferredHandler = null;
         int highestPrefIndex = 0;
 
@@ -200,13 +192,13 @@ public abstract class AbstractSystrayService implements SystrayService
     /**
      * Initializes popup handler by searching registered services for class <code>PopupMessageHandler</code>.
      */
-    protected void initHandlers()
-    {
+    protected void initHandlers() {
         // Listens for new popup handlers
         try {
             bundleContext.addServiceListener(new ServiceListenerImpl(),
                     "(objectclass=" + PopupMessageHandler.class.getName() + ")");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Timber.w("%s", e.getMessage());
         }
 
@@ -239,15 +231,13 @@ public abstract class AbstractSystrayService implements SystrayService
     /**
      * An implementation of <code>ServiceListener</code> we will use
      */
-    private class ServiceListenerImpl implements ServiceListener
-    {
+    private class ServiceListenerImpl implements ServiceListener {
         /**
          * implements <code>ServiceListener.serviceChanged</code>
          *
          * @param serviceEvent
          */
-        public void serviceChanged(ServiceEvent serviceEvent)
-        {
+        public void serviceChanged(ServiceEvent serviceEvent) {
             try {
                 Object service = bundleContext.getService(serviceEvent.getServiceReference());
                 // Event filters don't work on Android
@@ -295,7 +285,8 @@ public abstract class AbstractSystrayService implements SystrayService
                         selectBestPopupMessageHandler();
                     }
                 }
-            } catch (IllegalStateException e) {
+            }
+            catch (IllegalStateException e) {
                 Timber.d(e);
             }
         }

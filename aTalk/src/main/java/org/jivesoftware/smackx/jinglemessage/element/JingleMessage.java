@@ -30,8 +30,6 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jinglemessage.JingleMessageState;
 
-import timber.log.Timber;
-
 /**
  * Implements <code>XmlElement</code> for XEP-0353: Jingle Message Initiation 0.8.0 (2026-02-19).
  *
@@ -68,13 +66,15 @@ public class JingleMessage implements XmlElement {
      *
      * @param action message type element name
      * @param id Jingle message id.
+     * @param reason Jingle reason.
+     * @param namedElement child Named element to be included.
      */
-    public JingleMessage(String action, String id, JingleReason reason, NamedElement element) {
+    public JingleMessage(String action, String id, JingleReason reason, NamedElement namedElement) {
         mAction = action;
         assert id != null;
         mUuid = id;
         mReason = reason;
-        addElement(element);
+        addElement(namedElement);
 
         ELEMENT = action;
         QNAME = new QName(NAMESPACE, ELEMENT);
@@ -131,12 +131,12 @@ public class JingleMessage implements XmlElement {
         return namedElements;
     }
 
-    public void addElement(NamedElement element) {
-        if (element == null) return;
+    public void addElement(NamedElement namedElement) {
+        if (namedElement == null) return;
         if (namedElements == null) {
             namedElements = new ArrayList<>();
         }
-        namedElements.add(element);
+        namedElements.add(namedElement);
     }
 
     public void addElements(Collection<? extends NamedElement> elements) {

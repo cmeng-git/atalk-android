@@ -5,17 +5,17 @@
  */
 package org.atalk.impl.neomedia.transform.sdes;
 
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.service.neomedia.AbstractSrtpControl;
 import org.atalk.service.neomedia.SDesControl;
 import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.util.MediaType;
-
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import ch.imvs.sdes4j.srtp.SrtpCryptoAttribute;
 import ch.imvs.sdes4j.srtp.SrtpCryptoSuite;
@@ -29,8 +29,7 @@ import ch.imvs.sdes4j.srtp.SrtpSDesFactory;
  * @author Eng Chong Meng
  * @author MilanKral
  */
-public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> implements SDesControl
-{
+public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> implements SDesControl {
     /**
      * List of enabled crypto suites.
      */
@@ -43,15 +42,14 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
 
     private SrtpCryptoAttribute[] attributes;
 
-    private SrtpSDesFactory sdesFactory;
+    private final SrtpSDesFactory sdesFactory;
     private SrtpCryptoAttribute selectedInAttribute;
     private SrtpCryptoAttribute selectedOutAttribute;
 
     /**
      * SDESControl
      */
-    public SDesControlImpl()
-    {
+    public SDesControlImpl() {
         super(SrtpControlType.SDES);
         {
             enabledCryptoSuites.add(SrtpCryptoSuite.AES_256_CM_HMAC_SHA1_80);
@@ -76,8 +74,7 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
         sdesFactory.setRandomGenerator(new SecureRandom());
     }
 
-    public SrtpCryptoAttribute getInAttribute()
-    {
+    public SrtpCryptoAttribute getInAttribute() {
         return selectedInAttribute;
     }
 
@@ -86,24 +83,20 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
      *
      * @return The crypto attributes enabled on this computer.
      */
-    public SrtpCryptoAttribute[] getInitiatorCryptoAttributes()
-    {
+    public SrtpCryptoAttribute[] getInitiatorCryptoAttributes() {
         initAttributes();
         return attributes;
     }
 
-    public SrtpCryptoAttribute getOutAttribute()
-    {
+    public SrtpCryptoAttribute getOutAttribute() {
         return selectedOutAttribute;
     }
 
-    public boolean getSecureCommunicationStatus()
-    {
+    public boolean getSecureCommunicationStatus() {
         return (transformEngine != null);
     }
 
-    public Iterable<String> getSupportedCryptoSuites()
-    {
+    public Iterable<String> getSupportedCryptoSuites() {
         return Collections.unmodifiableList(supportedCryptoSuites);
     }
 
@@ -113,10 +106,10 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
      *
      * @return a new <code>SDesTransformEngine</code> instance to be associated with and used by this
      * <code>SDesControlImpl</code> instance
+     *
      * @see AbstractSrtpControl#createTransformEngine()
      */
-    protected SDesTransformEngine createTransformEngine()
-    {
+    protected SDesTransformEngine createTransformEngine() {
         return new SDesTransformEngine(selectedInAttribute, selectedOutAttribute);
     }
 
@@ -124,8 +117,7 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
      * Initializes the available SRTP crypto attributes containing: the crypto-suite, the key-param
      * and the session-param.
      */
-    private void initAttributes()
-    {
+    private void initAttributes() {
         if (attributes == null) {
             if (selectedOutAttribute != null) {
                 attributes = new SrtpCryptoAttribute[1];
@@ -145,11 +137,14 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
      * {@link #getInitiatorCryptoAttributes()}) based on the peer's first matching cipher suite.
      *
      * @param peerAttributes The peer's crypto offers.
+     *
      * @return A SrtpCryptoAttribute when a matching cipher suite was found; <code>null</code>, otherwise.
      */
-    public SrtpCryptoAttribute initiatorSelectAttribute(Iterable<SrtpCryptoAttribute> peerAttributes)
-    {
+    public SrtpCryptoAttribute initiatorSelectAttribute(Iterable<SrtpCryptoAttribute> peerAttributes) {
         for (SrtpCryptoAttribute peerCA : peerAttributes) {
+            if (attributes == null)
+                break;
+
             for (SrtpCryptoAttribute localCA : attributes) {
                 if (localCA.getCryptoSuite().equals(peerCA.getCryptoSuite())) {
                     selectedInAttribute = peerCA;
@@ -169,8 +164,7 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
      *
      * @return <code>true</code>
      */
-    public boolean requiresSecureSignalingTransport()
-    {
+    public boolean requiresSecureSignalingTransport() {
         return true;
     }
 
@@ -179,11 +173,11 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
      * the local crypto attribute. Used when the control is running in the role as responder.
      *
      * @param peerAttributes The peer's crypto attribute offering.
+     *
      * @return The local crypto attribute for the answer of the offer or <code>null</code> if no
      * matching cipher suite could be found.
      */
-    public SrtpCryptoAttribute responderSelectAttribute(Iterable<SrtpCryptoAttribute> peerAttributes)
-    {
+    public SrtpCryptoAttribute responderSelectAttribute(Iterable<SrtpCryptoAttribute> peerAttributes) {
         for (SrtpCryptoAttribute ea : peerAttributes) {
             for (String suite : enabledCryptoSuites) {
                 if (suite.equals(ea.getCryptoSuite().encode())) {
@@ -205,20 +199,17 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
      * The implementation of <code>SDesControlImpl</code> does nothing because <code>SDesControlImpl</code>
      * does not utilize the <code>RTPConnector</code>.
      */
-    public void setConnector(AbstractRTPConnector connector)
-    {
+    public void setConnector(AbstractRTPConnector connector) {
     }
 
     // must trim any leading or training spaces, else cause error
-    public void setEnabledCiphers(Iterable<String> ciphers)
-    {
+    public void setEnabledCiphers(Iterable<String> ciphers) {
         enabledCryptoSuites.clear();
         for (String c : ciphers)
             enabledCryptoSuites.add(c.trim());
     }
 
-    public void start(MediaType mediaType)
-    {
+    public void start(MediaType mediaType) {
         SrtpListener srtpListener = getSrtpListener();
         // in srtp the started and security event is one after another in some other security mechanisms
         // e.g. zrtp: there can be started and no security one or security timeout event

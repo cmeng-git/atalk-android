@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.jingle.element.Jingle;
  * @author Eng Chong Meng
  */
 public interface BasicTelephony {
-    void handleJingleSession(JingleCallSessionImpl jingleCallSession, Jingle jingle);
+    void handleJingleCallSession(JingleCallSessionImpl jingleCallSession, Jingle jingle);
 
-    void handleJingleSession(Jingle jingle);
+    void handleJingleCallSession(Jingle jingle);
 }

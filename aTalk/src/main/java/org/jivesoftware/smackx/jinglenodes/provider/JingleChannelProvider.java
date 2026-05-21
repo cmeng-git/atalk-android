@@ -8,21 +8,22 @@ import static org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ.ATTR_M
 import static org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ.ATTR_PROTOCOL;
 import static org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ.ATTR_REMOTEPORT;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.IllegalFormatException;
+
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ;
+
 import org.jxmpp.JxmppContext;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.IllegalFormatException;
-
-public class JingleChannelProvider extends IqProvider<JingleChannelIQ>
-{
+public class JingleChannelProvider extends IqProvider<JingleChannelIQ> {
     @Override
     public JingleChannelIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws XmlPullParserException, IOException, SmackParsingException, ParseException {
@@ -64,7 +65,8 @@ public class JingleChannelProvider extends IqProvider<JingleChannelIQ>
                             iq.setMaxKbps(Integer.parseInt(maxKbps));
                         if (expire != null)
                             iq.setExpire(Integer.parseInt(expire));
-                    } catch (final IllegalFormatException | NumberFormatException e) {
+                    }
+                    catch (final IllegalFormatException | NumberFormatException e) {
                         e.printStackTrace();
                     }
                 }

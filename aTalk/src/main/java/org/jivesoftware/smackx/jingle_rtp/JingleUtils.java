@@ -7,34 +7,6 @@ package org.jivesoftware.smackx.jingle_rtp;
 
 import static org.atalk.impl.neomedia.format.MediaFormatImpl.FORMAT_PARAMETER_ATTR_IMAGEATTR;
 
-import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
-import net.java.sip.communicator.service.protocol.media.DynamicPayloadTypeRegistry;
-import net.java.sip.communicator.service.protocol.media.DynamicRTPExtensionsRegistry;
-import net.java.sip.communicator.util.NetworkUtils;
-
-import org.apache.commons.lang3.StringUtils;
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaService;
-import org.atalk.service.neomedia.MediaStreamTarget;
-import org.atalk.service.neomedia.RTPExtension;
-import org.atalk.service.neomedia.format.AudioMediaFormat;
-import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.service.neomedia.format.MediaFormatFactory;
-import org.atalk.util.MediaType;
-import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smackx.jingle.element.JingleContent;
-import org.jivesoftware.smackx.jingle.element.JingleContent.Creator;
-import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
-import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
-import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportCandidate;
-import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportRemoteCandidate;
-import org.jivesoftware.smackx.jingle_rtp.element.ParameterElement;
-import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
-import org.jivesoftware.smackx.jingle_rtp.element.RtcpMux;
-import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
-import org.jivesoftware.smackx.jingle_rtp.element.RtpHeader;
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -44,6 +16,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
+import net.java.sip.communicator.service.protocol.media.DynamicPayloadTypeRegistry;
+import net.java.sip.communicator.service.protocol.media.DynamicRTPExtensionsRegistry;
+import net.java.sip.communicator.util.NetworkUtils;
+
+import org.atalk.impl.timberlog.TimberLog;
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.service.neomedia.MediaService;
+import org.atalk.service.neomedia.MediaStreamTarget;
+import org.atalk.service.neomedia.RTPExtension;
+import org.atalk.service.neomedia.format.AudioMediaFormat;
+import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.service.neomedia.format.MediaFormatFactory;
+import org.atalk.util.MediaType;
+
+import org.apache.commons.lang3.StringUtils;
+
+import org.jivesoftware.smack.packet.XmlEnvironment;
+
+import org.jivesoftware.smackx.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle.element.JingleContent.Creator;
+import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportCandidate;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportRemoteCandidate;
+import org.jivesoftware.smackx.jingle_rtp.element.Parameter;
+import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
+import org.jivesoftware.smackx.jingle_rtp.element.RtcpMux;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpHeader;
 
 import timber.log.Timber;
 
@@ -55,8 +58,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class JingleUtils
-{
+public class JingleUtils {
     /**
      * Extracts and returns the list of <code>MediaFormat</code>s advertised in <code>description</code>
      * preserving their oder and registering dynamic payload type numbers in the specified
@@ -69,11 +71,11 @@ public class JingleUtils
      * @param description the <code>MediaDescription</code> that we'd like to probe for a list of <code>MediaFormat</code>s
      * @param ptRegistry a reference to the <code>DynamycPayloadTypeRegistry</code> where we should be registering
      * newly added payload type number to format mappings.
+     *
      * @return an ordered list of <code>MediaFormat</code>s that are both advertised in the
      * <code>description</code> and supported by our <code>MediaService</code> implementation.
      */
-    public static List<MediaFormat> extractFormats(RtpDescription description, DynamicPayloadTypeRegistry ptRegistry)
-    {
+    public static List<MediaFormat> extractFormats(RtpDescription description, DynamicPayloadTypeRegistry ptRegistry) {
         List<MediaFormat> mediaFmts = new ArrayList<>();
         if (description == null) {
             return mediaFmts;
@@ -102,11 +104,11 @@ public class JingleUtils
      * @param ptRegistry the {@link DynamicPayloadTypeRegistry} that we would use for the registration of
      * possible dynamic payload types or <code>null</code> the returned <code>MediaFormat</code> is
      * to not be registered into a <code>DynamicPayloadTypeRegistry</code>.
+     *
      * @return the {@link MediaFormat} described in the <code>payloadType</code> extension or
      * <code>null</code> if we don't recognize the format.
      */
-    public static MediaFormat payloadTypeToMediaFormat(PayloadType payloadType, DynamicPayloadTypeRegistry ptRegistry)
-    {
+    public static MediaFormat payloadTypeToMediaFormat(PayloadType payloadType, DynamicPayloadTypeRegistry ptRegistry) {
         return payloadTypeToMediaFormat(payloadType, JabberActivator.getMediaService(), ptRegistry);
     }
 
@@ -120,21 +122,21 @@ public class JingleUtils
      * @param ptRegistry the {@link DynamicPayloadTypeRegistry} that we would use for the registration of
      * possible dynamic payload types or <code>null</code> the returned <code>MediaFormat</code> is
      * to not be registered into a <code>DynamicPayloadTypeRegistry</code>.
+     *
      * @return the {@link MediaFormat} described in the <code>payloadType</code> extension or
      * <code>null</code> if we don't recognize the format.
      */
     public static MediaFormat payloadTypeToMediaFormat(PayloadType payloadType,
-            MediaService mediaService, DynamicPayloadTypeRegistry ptRegistry)
-    {
+            MediaService mediaService, DynamicPayloadTypeRegistry ptRegistry) {
         byte pt = (byte) payloadType.getID();
         boolean unknown = false;
 
         // convert params to a name:value map
-        List<ParameterElement> params = payloadType.getChildElements(ParameterElement.class);
+        List<Parameter> params = payloadType.getChildElements(Parameter.class);
         Map<String, String> paramsMap = new HashMap<>();
         Map<String, String> advancedMap = new HashMap<>();
 
-        for (ParameterElement param : params) {
+        for (Parameter param : params) {
             String paramName = param.getName();
             if ("imageattr".equals(paramName))
                 advancedMap.put(paramName, param.getValue());
@@ -196,10 +198,10 @@ public class JingleUtils
      * {@link RTPExtension}s
      * @param extMap a reference to the <code>DynamicRTPExtensionsRegistry</code> where we should be
      * registering newly added extension mappings.
+     *
      * @return a <code>List</code> of {@link RTPExtension}s advertised in the <code>mediaDesc</code> description.
      */
-    public static List<RTPExtension> extractRTPExtensions(RtpDescription desc, DynamicRTPExtensionsRegistry extMap)
-    {
+    public static List<RTPExtension> extractRTPExtensions(RtpDescription desc, DynamicRTPExtensionsRegistry extMap) {
         List<RTPExtension> extensionsList = new ArrayList<>();
         if (desc == null) {
             return extensionsList;
@@ -227,11 +229,11 @@ public class JingleUtils
      * @param direction the {@link MediaDirection} that we'd like to translate.
      * @param initiatorPerspective <code>true</code> if the <code>direction</code> param is to be considered from the initiator's
      * perspective and <code>false</code> otherwise.
+     *
      * @return one of the <code>MediaDirection</code> values indicating the direction of the media steam
      * described by <code>content</code>.
      */
-    public static JingleContent.Senders getSenders(MediaDirection direction, boolean initiatorPerspective)
-    {
+    public static JingleContent.Senders getSenders(MediaDirection direction, boolean initiatorPerspective) {
         if (direction == MediaDirection.SENDRECV)
             return Senders.both;
         if (direction == MediaDirection.INACTIVE)
@@ -267,11 +269,11 @@ public class JingleUtils
      * @param content the description of the media stream whose direction we are trying to determine.
      * @param initiatorPerspective <code>true</code> if the senders argument is to be translated into a direction from the
      * initiator's perspective and <code>false</code> for the sender's.
+     *
      * @return one of the <code>MediaDirection</code> values indicating the direction of the media steam
      * described by <code>content</code>.
      */
-    public static MediaDirection getDirection(JingleContent content, boolean initiatorPerspective)
-    {
+    public static MediaDirection getDirection(JingleContent content, boolean initiatorPerspective) {
         Senders senders = content.getSenders();
         return getDirection(senders, initiatorPerspective);
     }
@@ -287,11 +289,11 @@ public class JingleUtils
      * @param senders senders direction
      * @param initiatorPerspective <code>true</code> if the senders argument is to be translated into a direction from the
      * initiator's perspective and <code>false</code> for the sender's.
+     *
      * @return one of the <code>MediaDirection</code> values indicating the direction of the media steam
      * described by <code>content</code>.
      */
-    public static MediaDirection getDirection(Senders senders, boolean initiatorPerspective)
-    {
+    public static MediaDirection getDirection(Senders senders, boolean initiatorPerspective) {
         if (senders == null)
             return MediaDirection.SENDRECV;
 
@@ -320,17 +322,16 @@ public class JingleUtils
      * before we've discovered the one that ICE would pick.
      *
      * @param content the stream whose default candidate we are looking for.
+     *
      * @return a {@link MediaStreamTarget} containing the default <code>candidate</code>s for the stream described in
      * <code>content</code> or <code>null</code>, if for some reason, the packet does not contain any candidates.
      */
-    public static MediaStreamTarget extractDefaultTarget(JingleContent content)
-    {
+    public static MediaStreamTarget extractDefaultTarget(JingleContent content) {
         IceUdpTransport transport = content.getFirstChildElement(IceUdpTransport.class);
         return (transport == null) ? null : extractDefaultTarget(transport);
     }
 
-    public static MediaStreamTarget extractDefaultTarget(IceUdpTransport transport)
-    {
+    public static MediaStreamTarget extractDefaultTarget(IceUdpTransport transport) {
         // extract the default rtp candidate:
         IceUdpTransportCandidate rtpCand = getFirstCandidate(transport, IceUdpTransportCandidate.RTP_COMPONENT_ID);
         if (rtpCand == null)
@@ -339,7 +340,8 @@ public class JingleUtils
         InetAddress rtpAddress;
         try {
             rtpAddress = NetworkUtils.getInetAddress(rtpCand.getIP());
-        } catch (UnknownHostException exc) {
+        }
+        catch (UnknownHostException exc) {
             throw new IllegalArgumentException("Failed to parse address " + rtpCand.getIP(), exc);
         }
 
@@ -358,7 +360,8 @@ public class JingleUtils
             InetAddress rtcpAddress;
             try {
                 rtcpAddress = NetworkUtils.getInetAddress(rtcpCand.getIP());
-            } catch (UnknownHostException exc) {
+            }
+            catch (UnknownHostException exc) {
                 throw new IllegalArgumentException("Failed to parse address " + rtcpCand.getIP(), exc);
             }
             // rtcp port
@@ -373,17 +376,16 @@ public class JingleUtils
      *
      * @param content the {@link JingleContent} that we'll be searching for a component.
      * @param componentID the id of the component that we are looking for (e.g. 1 for RTP, 2 for RTCP);
+     *
      * @return the first candidate for the specified <code>componentID</code> or null if no such component exists.
      */
-    public static IceUdpTransportCandidate getFirstCandidate(JingleContent content, int componentID)
-    {
+    public static IceUdpTransportCandidate getFirstCandidate(JingleContent content, int componentID) {
         // passing IceUdp would also return RawUdp transports as one extends the other.
         IceUdpTransport transport = content.getFirstChildElement(IceUdpTransport.class);
         return (transport == null) ? null : getFirstCandidate(transport, componentID);
     }
 
-    public static IceUdpTransportCandidate getFirstCandidate(IceUdpTransport transport, int componentID)
-    {
+    public static IceUdpTransportCandidate getFirstCandidate(IceUdpTransport transport, int componentID) {
         for (IceUdpTransportCandidate cand : transport.getCandidateList()) {
             // we don't care about remote candidates!
             if (!(cand instanceof IceUdpTransportRemoteCandidate) && (cand.getComponent() == componentID)) {
@@ -412,12 +414,12 @@ public class JingleUtils
      * that we should be using to lookup and register dynamic RTP mappings.
      * @param rtpExtensionsRegistry a reference to the <code>DynamicRTPExtensionRegistry</code>
      * that we should be using to lookup and register URN to ID mappings.
+     *
      * @return the newly create SDP <code>MediaDescription</code>.
      */
     public static JingleContent createDescription(Creator creator, String contentName, Senders senders,
             List<MediaFormat> formats, List<RTPExtension> rtpExtensions, DynamicPayloadTypeRegistry dynamicPayloadTypes,
-            DynamicRTPExtensionsRegistry rtpExtensionsRegistry, boolean rtcpmux, boolean imgattr)
-    {
+            DynamicRTPExtensionsRegistry rtpExtensionsRegistry, boolean rtcpmux, boolean imgattr) {
         JingleContent.Builder cBuilder = JingleContent.getBuilder()
                 .setCreator(creator)
                 .setName(contentName);
@@ -464,7 +466,7 @@ public class JingleUtils
          * https://xmpp.org/extensions/xep-0167.html#format
          */
         if (rtcpmux) {
-            rtpBuilder.addChildElement(RtcpMux.builder(RtpDescription.NAMESPACE).build());
+            rtpBuilder.addChildElement(RtcpMux.builder().build());
         }
 
         // RTP description
@@ -477,11 +479,11 @@ public class JingleUtils
      *
      * @param format the <code>MediaFormat</code> we'd like to convert.
      * @param ptRegistry the {@link DynamicPayloadTypeRegistry} to use for formats that don't have a static pt number.
+     *
      * @return the new <code>PayloadTypeExtensionElement</code> which contains <code>format</code>'s parameters.
      */
-    public static PayloadType formatToPayloadType(MediaFormat format, DynamicPayloadTypeRegistry ptRegistry)
-    {
-        PayloadType.Builder ptBuilder = PayloadType.builder(RtpDescription.NAMESPACE);
+    public static PayloadType formatToPayloadType(MediaFormat format, DynamicPayloadTypeRegistry ptRegistry) {
+        PayloadType.Builder ptBuilder = PayloadType.builder();
 
         int payloadType = format.getRTPPayloadType();
         if (payloadType == MediaFormat.RTP_PAYLOAD_TYPE_UNKNOWN)
@@ -499,13 +501,13 @@ public class JingleUtils
          * Add the format parameters and the advanced attributes (as parameter packet extensions).
          */
         for (Map.Entry<String, String> entry : format.getFormatParameters().entrySet()) {
-            ptBuilder.addParameter(ParameterElement.builder(RtpDescription.NAMESPACE)
+            ptBuilder.addParameter(Parameter.builder()
                     .setNameValue(entry.getKey(), entry.getValue())
                     .build());
         }
 
         for (Map.Entry<String, String> entry : format.getAdvancedAttributes().entrySet()) {
-            ptBuilder.addParameter(ParameterElement.builder(RtpDescription.NAMESPACE)
+            ptBuilder.addParameter(Parameter.builder()
                     .setNameValue(entry.getKey(), entry.getValue())
                     .build());
         }
@@ -517,11 +519,11 @@ public class JingleUtils
      * <code>description</code>, if any.
      *
      * @param content the content to return the <code>MediaType</code> of
+     *
      * @return the <code>MediaType</code> for <code>content</code> by looking for it in the <code>content</code>'s
      * <code>description</code>, if any. <code>contentName</code>
      */
-    public static MediaType getMediaType(JingleContent content)
-    {
+    public static MediaType getMediaType(JingleContent content) {
         if (content == null)
             return null;
 

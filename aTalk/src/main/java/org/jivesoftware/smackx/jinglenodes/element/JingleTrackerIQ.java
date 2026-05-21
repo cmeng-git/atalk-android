@@ -1,19 +1,20 @@
 package org.jivesoftware.smackx.jinglenodes.element;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jxmpp.jid.Jid;
-import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
-
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.jivesoftware.smack.packet.IQ;
+
+import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
+
+import org.jxmpp.jid.Jid;
 
 /**
  * Implementation of the XEP-0278: Jingle Relay Nodes #JIngle Tracker
  *
  * @see <a href="https://xmpp.org/extensions/xep-0278.html">XEP-0278: Jingle Relay Nodes</a>
  */
-public class JingleTrackerIQ extends IQ
-{
+public class JingleTrackerIQ extends IQ {
     public static final String ELEMENT = "services";
     public static final String NAMESPACE = "http://jabber.org/protocol/jinglenodes";
 
@@ -24,29 +25,24 @@ public class JingleTrackerIQ extends IQ
 
     private final ConcurrentHashMap<Jid, TrackerEntry> entries = new ConcurrentHashMap<>();
 
-    public JingleTrackerIQ()
-    {
+    public JingleTrackerIQ() {
         super(ELEMENT, NAMESPACE);
         this.setType(Type.get);
     }
 
-    public boolean isRequest()
-    {
+    public boolean isRequest() {
         return Type.get.equals(this.getType());
     }
 
-    public void addEntry(final TrackerEntry entry)
-    {
+    public void addEntry(final TrackerEntry entry) {
         entries.put(entry.getJid(), entry);
     }
 
-    public void removeEntry(final TrackerEntry entry)
-    {
+    public void removeEntry(final TrackerEntry entry) {
         entries.remove(entry.getJid());
     }
 
-    public Collection<TrackerEntry> getEntries()
-    {
+    public Collection<TrackerEntry> getEntries() {
         return entries.values();
     }
 
@@ -59,8 +55,7 @@ public class JingleTrackerIQ extends IQ
 //     * </services>
 //     */
     @Override
-    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
-    {
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.rightAngleBracket();
         for (final TrackerEntry entry : entries.values()) {
             xml.halfOpenElement(entry.getType().toString());

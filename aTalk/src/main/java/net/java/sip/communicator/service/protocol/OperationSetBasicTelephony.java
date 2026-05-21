@@ -5,12 +5,12 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.text.ParseException;
+import java.util.Iterator;
+
 import net.java.sip.communicator.service.protocol.event.CallListener;
 
 import org.atalk.service.neomedia.recording.Recorder;
-
-import java.text.ParseException;
-import java.util.Iterator;
 
 /**
  * An Operation Set defining all basic telephony operations such as conducting simple calls and etc.
@@ -19,12 +19,12 @@ import java.util.Iterator;
  *
  * @param <T> the provider extension class like for example <code>ProtocolProviderServiceSipImpl</code> or
  * <code>ProtocolProviderServiceJabberImpl</code>
+ *
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public interface OperationSetBasicTelephony<T extends ProtocolProviderService> extends OperationSet
-{
+public interface OperationSetBasicTelephony<T extends ProtocolProviderService> extends OperationSet {
     /**
      * The name of the property that contains the maximum port number that we'd like our RTP
      * managers to bind upon.
@@ -79,7 +79,12 @@ public interface OperationSetBasicTelephony<T extends ProtocolProviderService> e
     int HANGUP_REASON_NORMAL_CLEARING = 200;
 
     /**
-     * Reason code used to hangup peer when we wait for some event and it timeouted.
+     * Reason code used to hangup peer, indicates caller has retracted the call.
+     */
+    int HANGUP_REASON_CALL_RETRACT = 300;
+
+    /**
+     * Reason code used to hangup peer when we wait for some event and it timeout.
      */
     int HANGUP_REASON_TIMEOUT = 408;
 
@@ -114,23 +119,13 @@ public interface OperationSetBasicTelephony<T extends ProtocolProviderService> e
     void removeCallListener(CallListener listener);
 
     /**
-     * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> to it given by her <code>String</code> URI.
-     *
-     * @param uri the address of the callee who we should invite to a new <code>Call</code>
-     * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
-     * <code>Call</code> as a <code>CallPeer</code>
-     * @throws OperationFailedException with the corresponding code if we fail to create the call
-     * @throws ParseException if <code>callee</code> is not a valid SIP address <code>String</code>
-     */
-    Call createCall(String uri)
-            throws OperationFailedException, ParseException;
-
-    /**
      * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> to it given by her <code>Contact</code>.
      *
      * @param callee the address of the callee who we should invite to a new call
+     *
      * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
      * <code>Call</code> as a <code>CallPeer</code>
+     *
      * @throws OperationFailedException with the corresponding code if we fail to create the call
      */
     Call createCall(Contact callee)
@@ -140,43 +135,21 @@ public interface OperationSetBasicTelephony<T extends ProtocolProviderService> e
      * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> to it given by her <code>String</code> URI.
      *
      * @param uri the address of the callee who we should invite to a new <code>Call</code>
-     * @param conference the <code>CallConference</code> in which the newly-created <code>Call</code> is to participate
+     *
      * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
      * <code>Call</code> as a <code>CallPeer</code>
+     *
      * @throws OperationFailedException with the corresponding code if we fail to create the call
      * @throws ParseException if <code>callee</code> is not a valid SIP address <code>String</code>
      */
-    Call createCall(String uri, CallConference conference)
+    Call createCall(String uri)
             throws OperationFailedException, ParseException;
-
-    /**
-     * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> to it given by her <code>Contact</code>.
-     *
-     * @param callee the address of the callee who we should invite to a new call
-     * @param conference the <code>CallConference</code> in which the newly-created <code>Call</code> is to participate
-     * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
-     * <code>Call</code> as a <code>CallPeer</code>
-     * @throws OperationFailedException with the corresponding code if we fail to create the call
-     */
-    Call createCall(Contact callee, CallConference conference)
-            throws OperationFailedException;
-
-    /**
-     * Creates a new <code>Call</code> and sends an invite to the conference described in <code>cd</code>. A
-     * <code>CallPeer</code> corresponding the <code>cd</code> will be created and added to the returned <code>Call</code>
-     *
-     * @param cd the conference to send an invite to
-     * @param chatRoom the chat room associated with the call.
-     * @return a newly created <code>Call</code>, to which a <code>CallPeer</code> corresponding to
-     * <code>cd</code> has been added.
-     */
-    Call createCall(ConferenceDescription cd, ChatRoom chatRoom)
-            throws OperationFailedException;
 
     /**
      * Indicates a user request to answer an incoming call from the specified CallPeer.
      *
      * @param peer the call peer that we'd like to answer.
+     *
      * @throws OperationFailedException with the corresponding code if we encounter an error while performing this operation.
      */
     void answerCallPeer(CallPeer peer)
@@ -187,6 +160,7 @@ public interface OperationSetBasicTelephony<T extends ProtocolProviderService> e
      * outgoing media flows are either muted or stopped, without actually interrupting the session.
      *
      * @param peer the peer that we'd like to put on hold.
+     *
      * @throws OperationFailedException with the corresponding code if we encounter an error while performing this operation.
      */
     void putOnHold(CallPeer peer)
@@ -197,6 +171,7 @@ public interface OperationSetBasicTelephony<T extends ProtocolProviderService> e
      * "On Hold" at the time putOffHold is called, the method has no effect.
      *
      * @param peer the call peer to put on hold.
+     *
      * @throws OperationFailedException with the corresponding code if we encounter an error while performing this operation
      */
     void putOffHold(CallPeer peer)
@@ -206,6 +181,7 @@ public interface OperationSetBasicTelephony<T extends ProtocolProviderService> e
      * Indicates a user request to end a call with the specified call peer.
      *
      * @param peer the peer that we'd like to hang up on.
+     *
      * @throws OperationFailedException with the corresponding code if we encounter an error while performing this operation.
      */
     void hangupCallPeer(CallPeer peer)
@@ -219,6 +195,7 @@ public interface OperationSetBasicTelephony<T extends ProtocolProviderService> e
      * by the reason.
      * @param reason the reason of the hangup. If the hangup is due to a call failure, then this string
      * could indicate the reason of the failure
+     *
      * @throws OperationFailedException if we fail to terminate the call.
      */
     void hangupCallPeer(CallPeer peer, int reasonCode, String reason)
@@ -256,8 +233,10 @@ public interface OperationSetBasicTelephony<T extends ProtocolProviderService> e
      *
      * @param call the <code>Call</code> which is to be recorded by the returned <code>Recorder</code> when the
      * latter is started
+     *
      * @return a new <code>Recorder</code> which is to record the specified <code>call</code> (into a file
      * which is to be specified when starting the returned <code>Recorder</code>)
+     *
      * @throws OperationFailedException if anything goes wrong while creating the new <code>Recorder</code>
      * for the specified <code>call</code>
      */

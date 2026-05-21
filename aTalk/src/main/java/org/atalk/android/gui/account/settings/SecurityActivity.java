@@ -68,8 +68,6 @@ public class SecurityActivity extends BaseActivity implements SecurityProtocolsD
 
     private static final String PREF_KEY_SEC_PROTO_DIALOG = "pref_key_enc_protos_dialog";
 
-    private static final String PREF_KEY_SEC_SIPZRTP_ATTR = "pref_key_enc_sipzrtp_attr";
-
     private static final String PREF_KEY_SEC_CIPHER_SUITES = "pref_key_ecn_cipher_suites";
 
     private static final String PREF_KEY_SEC_SAVP_OPTION = "pref_key_enc_savp_option";
@@ -170,8 +168,6 @@ public class SecurityActivity extends BaseActivity implements SecurityProtocolsD
                 return true;
             });
 
-            CheckBoxPreference zrtpAttr = findPreference(PREF_KEY_SEC_SIPZRTP_ATTR);
-            zrtpAttr.setChecked(securityReg.isSipZrtpAttribute());
             initResetZID();
 
             // DTLS_SRTP
@@ -277,7 +273,6 @@ public class SecurityActivity extends BaseActivity implements SecurityProtocolsD
          */
         private void updatePreferences() {
             updateUsedProtocolsSummary();
-            updateZRTpOptionSummary();
             updateCipherSuitesSummary();
         }
 
@@ -308,20 +303,6 @@ public class SecurityActivity extends BaseActivity implements SecurityProtocolsD
 
             Preference preference = findPreference(PREF_KEY_SEC_PROTO_DIALOG);
             preference.setSummary(summaryStr);
-        }
-
-        /**
-         * Sets the ZRTP signaling preference summary
-         */
-        private void updateZRTpOptionSummary() {
-            Preference pref = findPreference(PREF_KEY_SEC_SIPZRTP_ATTR);
-            boolean isOn = pref.getSharedPreferences().getBoolean(PREF_KEY_SEC_SIPZRTP_ATTR, true);
-
-            String sumary = isOn
-                    ? aTalkApp.getResString(R.string.sec_zrtp_signalling_on)
-                    : aTalkApp.getResString(R.string.sec_zrtp_signalling_off);
-
-            pref.setSummary(sumary);
         }
 
         /**
@@ -369,10 +350,6 @@ public class SecurityActivity extends BaseActivity implements SecurityProtocolsD
             switch (key) {
                 case PREF_KEY_SEC_ENABLED:
                     securityReg.setCallEncryption(shPreferences.getBoolean(PREF_KEY_SEC_ENABLED, true));
-                    break;
-                case PREF_KEY_SEC_SIPZRTP_ATTR:
-                    updateZRTpOptionSummary();
-                    securityReg.setSipZrtpAttribute(shPreferences.getBoolean(key, true));
                     break;
                 case PREF_KEY_SEC_DTLS_CERT_SA: {
                     ListPreference lp = findPreference(key);

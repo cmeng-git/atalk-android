@@ -27,22 +27,22 @@ public class RetractItem extends NodeExtension {
 
     public static String ELE_ITEM = "item";
     public static String ATTR_ID = "id";
-    protected final String mItemId;
+    protected final String mId;
 
-    public RetractItem( String nodeName, String itemId) {
-        super(PubSubElementType.RETRACT, nodeName);
-        mItemId = itemId;
+    public RetractItem(String nodeId, String id) {
+        super(PubSubElementType.RETRACT, nodeId);
+        mId = id;
     }
 
-    public String getmItemId() {
-        return mItemId;
+    public String getId() {
+        return mId;
     }
 
     @Override
     protected void addXml(XmlStringBuilder xml) {
         xml.rightAngleBracket();
         xml.halfOpenElement(ELE_ITEM);
-        xml.attribute(ATTR_ID, getmItemId());
+        xml.attribute(ATTR_ID, getId());
         xml.closeEmptyElement();
         xml.closeElement(getElementName());
     }

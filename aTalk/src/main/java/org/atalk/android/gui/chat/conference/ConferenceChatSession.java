@@ -5,7 +5,6 @@
  */
 package org.atalk.android.gui.chat.conference;
 
-import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -19,11 +18,8 @@ import net.java.sip.communicator.service.muc.MUCService;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.ChatRoomConfigurationForm;
 import net.java.sip.communicator.service.protocol.ChatRoomMember;
-import net.java.sip.communicator.service.protocol.ConferenceDescription;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.event.ChatRoomConferencePublishedEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomConferencePublishedListener;
 import net.java.sip.communicator.service.protocol.event.ChatRoomLocalUserRoleListener;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceListener;
@@ -55,7 +51,7 @@ import org.atalk.android.util.AppImageUtil;
  * @author Eng Chong Meng
  */
 public class ConferenceChatSession extends ChatSession implements ChatRoomMemberPresenceListener,
-        ChatRoomPropertyChangeListener, ChatRoomConferencePublishedListener {
+        ChatRoomPropertyChangeListener {
     /**
      * The current chat transport used for messaging.
      */
@@ -93,7 +89,6 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         chatRoom.addMemberPresenceListener(this);
         chatRoom.addPropertyChangeListener(this);
-        chatRoom.addConferencePublishedListener(this);
     }
 
     /**
@@ -123,7 +118,6 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         chatRoom.removeMemberPresenceListener(this);
         chatRoom.removePropertyChangeListener(this);
-        chatRoom.removeConferencePublishedListener(this);
 
         if (ConfigurationUtils.isLeaveChatRoomOnWindowCloseEnabled()) {
             chatRoom.leave();
@@ -169,17 +163,6 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     @Override
     public ChatTransport getCurrentChatTransport() {
         return currentChatTransport;
-    }
-
-    /**
-     * Returns the default mobile number used to send sms-es in this session. In the case of
-     * conference this is for now null.
-     *
-     * @return the default mobile number used to send sms-es in this session.
-     */
-    @Override
-    public String getDefaultSmsNumber() {
-        return null;
     }
 
     /**
@@ -321,15 +304,6 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     }
 
     /**
-     * Sets the default mobile number used to send sms-es in this session.
-     *
-     * @param smsPhoneNumber The default mobile number used to send sms-es in this session.
-     */
-    @Override
-    public void setDefaultSmsNumber(String smsPhoneNumber) {
-    }
-
-    /**
      * Returns the <code>ChatSessionRenderer</code> that provides the connection between this chat
      * session and its UI.
      *
@@ -389,18 +363,18 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
                     || eventType.equals(ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED)
                     || eventType.equals(ChatRoomMemberPresenceChangeEvent.MEMBER_QUIT)) {
                 switch (eventType) {
-                    case ChatRoomMemberPresenceChangeEvent.MEMBER_LEFT:
-                        statusMessage = aTalkApp.getResString(
-                                R.string.chatroom_user_left, sourceChatRoom.getName());
-                        break;
-                    case ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED:
-                        statusMessage = aTalkApp.getResString(
-                                R.string.chatroom_user_kicked, sourceChatRoom.getName());
-                        break;
-                    case ChatRoomMemberPresenceChangeEvent.MEMBER_QUIT:
-                        statusMessage = aTalkApp.getResString(
-                                R.string.chatroom_user_quit, sourceChatRoom.getName());
-                        break;
+                case ChatRoomMemberPresenceChangeEvent.MEMBER_LEFT:
+                    statusMessage = aTalkApp.getResString(
+                            R.string.chatroom_user_left, sourceChatRoom.getName());
+                    break;
+                case ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED:
+                    statusMessage = aTalkApp.getResString(
+                            R.string.chatroom_user_kicked, sourceChatRoom.getName());
+                    break;
+                case ChatRoomMemberPresenceChangeEvent.MEMBER_QUIT:
+                    statusMessage = aTalkApp.getResString(
+                            R.string.chatroom_user_quit, sourceChatRoom.getName());
+                    break;
                 }
 
                 ChatContact<?> contact = null;
@@ -564,64 +538,5 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      */
     public void removeLocalUserRoleListener(ChatRoomLocalUserRoleListener l) {
         chatRoomWrapper.getChatRoom().removeLocalUserRoleListener(l);
-    }
-
-    /**
-     * Acts upon a <code>ChatRoomConferencePublishedEvent</code>, dispatched when a member of a chat
-     * room publishes a <code>ConferenceDescription</code>.
-     *
-     * @param evt the event received, which contains the <code>ChatRoom</code>, <code>ChatRoomMember</code> and
-     * <code>ConferenceDescription</code> involved.
-     */
-    public void conferencePublished(final ChatRoomConferencePublishedEvent evt) {
-        (new Activity()).runOnUiThread(() -> {
-            ChatRoom room = evt.getChatRoom();
-            if (!room.equals(chatRoomWrapper.getChatRoom()))
-                return;
-
-            ConferenceDescription cd = evt.getConferenceDescription();
-            if (evt.getType() == ChatRoomConferencePublishedEvent.CONFERENCE_DESCRIPTION_SENT) {
-                // sessionRenderer.chatConferenceDescriptionSent(cd);
-            }
-            else if (evt.getType() == ChatRoomConferencePublishedEvent.CONFERENCE_DESCRIPTION_RECEIVED) {
-                updateChatConferences(room, evt.getMember(), cd, room.getCachedConferenceDescriptionSize());
-            }
-        });
-    }
-
-    /**
-     * Adds/Removes the announced conference to the interface.
-     *
-     * @param chatRoom the chat room where the conference is announced.
-     * @param chatRoomMember the chat room member who announced the conference.
-     * @param cd the <code>ConferenceDescription</code> instance which represents the conference.
-     */
-    private void updateChatConferences(ChatRoom chatRoom, ChatRoomMember chatRoomMember,
-            ConferenceDescription cd, int activeConferencesCount) {
-        boolean isAvailable = cd.isAvailable();
-        for (ChatContact<?> chatContact : chatParticipants) {
-            if (chatContact.getDescriptor().equals(chatRoomMember)) {
-                /*
-                 * TODO: we want more things to happen, e.g. the ConferenceDescription being added to a list in the GUI
-                 * TODO: i13ze the string, if we decide to keep it at all
-                 */
-                sessionRenderer.updateChatContactStatus(chatContact,
-                        (isAvailable ? "published" : "removed") + " a conference " + cd);
-                break;
-            }
-        }
-
-        if (isAvailable) {
-            // sessionRenderer.addChatConferenceCall(cd);
-            if (activeConferencesCount == 1) {
-                // sessionRenderer.setConferencesPanelVisible(true);
-            }
-        }
-        else {
-            // sessionRenderer.removeChatConferenceCall(cd);
-            if (activeConferencesCount == 0) {
-                // sessionRenderer.setConferencesPanelVisible(false);
-            }
-        }
     }
 }

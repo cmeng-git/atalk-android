@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.jinglenodes.element;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jxmpp.jid.Jid;
 
 /**
@@ -25,8 +26,7 @@ import org.jxmpp.jid.Jid;
  *
  * @see <a href="https://xmpp.org/extensions/xep-0278.html">XEP-0278: Jingle Relay Nodes</a>
  */
-public class JingleEventIQ extends IQ
-{
+public class JingleEventIQ extends IQ {
     public static final String ELEMENT = "channel";
     public static final String NAMESPACE = "http://jabber.org/protocol/jinglenodes#event";
 
@@ -40,64 +40,52 @@ public class JingleEventIQ extends IQ
     private String mChannelId;
     private int mTime;
 
-    public JingleEventIQ()
-    {
+    public JingleEventIQ() {
         super(ELEMENT, NAMESPACE);
         setType(Type.get);
     }
 
-    public boolean isRequest()
-    {
+    public boolean isRequest() {
         return Type.get.equals(this.getType());
     }
 
-    public String getChannelId()
-    {
+    public String getChannelId() {
         return mChannelId;
     }
 
-    public void setChannelId(String channelId)
-    {
+    public void setChannelId(String channelId) {
         mChannelId = channelId;
     }
 
-    public String getEvent()
-    {
+    public String getEvent() {
         return mEvent;
     }
 
-    public void setEvent(String event)
-    {
+    public void setEvent(String event) {
         mEvent = event;
     }
 
-    public int getTime()
-    {
+    public int getTime() {
         return mTime;
     }
 
-    public void setTime(int time)
-    {
+    public void setTime(int time) {
         mTime = time;
     }
 
-    public static IQ createEmptyResult(IQ iq)
-    {
+    public static IQ createEmptyResult(IQ iq) {
         return createIQ(iq.getStanzaId(), iq.getFrom(), iq.getTo(), Type.result);
     }
 
-    public static IQ createEmptyError(IQ iq)
-    {
+    public static IQ createEmptyError(IQ iq) {
         return createIQ(iq.getStanzaId(), iq.getFrom(), iq.getTo(), Type.error);
     }
 
-    public static IQ createEmptyError()
-    {
+    public static IQ createEmptyError() {
         return createIQ(null, null, null, Type.error);
     }
 
-    public static IQ createIQ(String id, Jid to, Jid from, Type type)
-    {
+    public static IQ createIQ(String id, Jid to, Jid from, Type type) {
         IQ iqPacket = new JingleEventIQ();
         iqPacket.setStanzaId(id);
         iqPacket.setTo(to);
@@ -112,8 +100,7 @@ public class JingleEventIQ extends IQ
      * </iq>
      */
     @Override
-    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
-    {
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.attribute(ATTR_KILLED, mEvent);
         xml.attribute(ATTR_ID, mChannelId);
         if (mTime > 0) {

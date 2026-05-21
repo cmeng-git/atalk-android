@@ -31,18 +31,13 @@ import android.widget.TextView;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
@@ -51,24 +46,21 @@ import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.AccountsListActivity;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
-import org.atalk.android.gui.chat.conference.ConferenceCallInviteDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomBookmarksDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomCreateDialog;
 import org.atalk.android.gui.contactlist.AddContactActivity;
 import org.atalk.android.gui.contactlist.ContactBlockListActivity;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
-import org.atalk.android.gui.dialogs.ProgressDialog;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.plugin.geolocation.GeoLocationActivity;
 import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.android.plugin.textspeech.TTSActivity;
 import org.atalk.impl.osgi.framework.BundleImpl;
+
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
-
-import timber.log.Timber;
 
 /**
  * The main options menu. Every <code>Activity</code> that desires to have the general options menu
@@ -86,12 +78,6 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     protected MenuItem mOnOffLine;
     protected TelephonyFragment mTelephony = null;
 
-    /**
-     * Video bridge conference call menu. In the case of more than one account.
-     */
-    private final MenuItem videoBridgeMenuItem = null;
-    private VideoBridgeProviderMenuItem menuVbItem = null;
-
     private static boolean done = false;
     public Context mContext;
 
@@ -102,7 +88,6 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
      */
     // private final CallConference callConference = null;
     // private ProtocolProviderService preselectedProvider = null;
-    // private List<ProtocolProviderService> videoBridgeProviders = null;
 
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
@@ -122,9 +107,6 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         super.onResume();
         if (AppGUIActivator.bundleContext != null) {
             AppGUIActivator.bundleContext.addServiceListener(this);
-            if (menuVbItem == null) {
-                initVideoBridge();
-            }
         }
     }
 
@@ -160,12 +142,6 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
             textView.setHint(R.string.enter_name_or_number);
         }
 
-        // cmeng: 20191220 <= disable videoBridge until implementation
-        // this.videoBridgeMenuItem = menu.findItem(R.id.create_videobridge);
-        /* Need this on first start up */
-        // initVideoBridge();
-        // videoBridgeMenuItem.setEnabled(true);
-
         mShowHideOffline = menu.findItem(R.id.show_hide_offline);
         int itemId = ConfigurationUtils.isShowOffline()
                 ? R.string.contact_offline_hide
@@ -181,81 +157,6 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         // Adds exit option from super class
         super.onCreateOptionsMenu(menu);
         return true;
-    }
-
-    /**
-     * Put initVideoBridge as separate task as it takes time to filtered server advertised
-     * features/info (long list)
-     * TODO: cmeng: Need more works for multiple accounts where not all servers support videoBridge
-     */
-    private void initVideoBridge_task() {
-        final boolean enableMenu;
-        if (menuVbItem == null)
-            this.menuVbItem = new VideoBridgeProviderMenuItem();
-
-        List<ProtocolProviderService> videoBridgeProviders = getVideoBridgeProviders();
-        int videoBridgeProviderCount = videoBridgeProviders.size();
-        if (videoBridgeProviderCount >= 1) {
-            enableMenu = true;
-            if (videoBridgeProviderCount == 1) {
-                menuVbItem.setPreselectedProvider(videoBridgeProviders.get(0));
-            }
-            else {
-                menuVbItem.setPreselectedProvider(null);
-                menuVbItem.setVideoBridgeProviders(videoBridgeProviders);
-            }
-        }
-        else
-            enableMenu = false;
-
-        if (videoBridgeMenuItem != null) {
-            runOnUiThread(() -> {
-                // videoBridgeMenuItem is always enabled - allow user to re-trigger if earlier init failed
-                videoBridgeMenuItem.setEnabled(true);
-
-                if (enableMenu) {
-                    videoBridgeMenuItem.getIcon().setAlpha(255);
-                }
-                else {
-                    videoBridgeMenuItem.getIcon().setAlpha(80);
-                    menuVbItem = null;
-                }
-            });
-        }
-    }
-
-    /**
-     * Progressing dialog to inform user while fetching xmpp server advertised features.
-     * May takes time as some servers have many features & slow response.
-     * Auto cancel after menu is displayed - end of fetching cycle
-     */
-    private void initVideoBridge() {
-        if (disableMediaServiceOnFault || (videoBridgeMenuItem == null))
-            return;
-
-        final long pDialogId;
-        if (!done) {
-            pDialogId = ProgressDialog.show(MainMenuActivity.this,
-                    getString(R.string.please_wait),
-                    getString(R.string.server_info_fetching), true);
-        }
-        else {
-            pDialogId = -1;
-        }
-
-        new Thread(() -> {
-            try {
-                initVideoBridge_task();
-                Thread.sleep(100);
-            }
-            catch (Exception ex) {
-                Timber.e("Init VideoBridge: %s ", ex.getMessage());
-            }
-            if (ProgressDialog.isShowing(pDialogId)) {
-                ProgressDialog.dismiss(pDialogId);
-                done = true;
-            }
-        }).start();
     }
 
     public MenuItem getMenuItemOnOffLine() {
@@ -276,13 +177,6 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         case R.id.add_chat_room:
             ChatRoomCreateDialog chatRoomCreateDialog = new ChatRoomCreateDialog(this);
             chatRoomCreateDialog.show();
-            break;
-        case R.id.create_videobridge:
-            if (menuVbItem == null) {
-                initVideoBridge();
-            }
-            else
-                menuVbItem.actionPerformed();
             break;
         case R.id.show_location:
             Intent intent = new Intent(this, GeoLocationActivity.class);
@@ -364,66 +258,6 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     //========================================================
 
     /**
-     * The <code>VideoBridgeProviderMenuItem</code> for each protocol provider.
-     */
-    private class VideoBridgeProviderMenuItem {
-        private ProtocolProviderService preselectedProvider;
-        private List<ProtocolProviderService> videoBridgeProviders;
-
-        /**
-         * Creates an instance of <code>VideoBridgeProviderMenuItem</code>
-         * <p>
-         * // @param preselectedProvider the <code>ProtocolProviderService</code> that provides the video bridge
-         */
-        public VideoBridgeProviderMenuItem() {
-            preselectedProvider = null;
-            videoBridgeProviders = null;
-        }
-
-        /**
-         * Opens a conference invite dialog when this menu is selected.
-         */
-        public void actionPerformed() {
-            ConferenceCallInviteDialog inviteDialog = null;
-            if (preselectedProvider != null)
-                inviteDialog = new ConferenceCallInviteDialog(mContext, preselectedProvider, true);
-            else if (videoBridgeProviders != null)
-                inviteDialog = new ConferenceCallInviteDialog(mContext, videoBridgeProviders, true);
-
-            if (inviteDialog != null)
-                inviteDialog.show();
-        }
-
-        public void setPreselectedProvider(ProtocolProviderService protocolProvider) {
-            this.preselectedProvider = protocolProvider;
-        }
-
-        public void setVideoBridgeProviders(List<ProtocolProviderService> videoBridgeProviders) {
-            this.videoBridgeProviders = videoBridgeProviders;
-        }
-    }
-
-    /**
-     * Returns a list of all available video bridge providers.
-     *
-     * @return a list of all available video bridge providers
-     */
-    private List<ProtocolProviderService> getVideoBridgeProviders() {
-        List<ProtocolProviderService> activeBridgeProviders = new ArrayList<>();
-
-        for (ProtocolProviderService videoBridgeProvider
-                : AccountUtils.getRegisteredProviders(OperationSetVideoBridge.class)) {
-            OperationSetVideoBridge videoBridgeOpSet
-                    = videoBridgeProvider.getOperationSet(OperationSetVideoBridge.class);
-
-            // Check if the video bridge is actually active before adding it to the list of active providers.
-            if (videoBridgeOpSet.isActive())
-                activeBridgeProviders.add(videoBridgeProvider);
-        }
-        return activeBridgeProviders;
-    }
-
-    /**
      * Implements the <code>ServiceListener</code> method. Verifies whether the passed event concerns
      * a <code>ProtocolProviderService</code> and adds the corresponding UI controls in the menu.
      *
@@ -447,9 +281,6 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         switch (event.getType()) {
         case ServiceEvent.REGISTERED:
         case ServiceEvent.UNREGISTERING:
-            if (videoBridgeMenuItem != null) {
-                BaseActivity.uiHandler.post(this::initVideoBridge);
-            }
             break;
         }
     }
@@ -459,7 +290,6 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         // cmeng - how to add the listener onResume - multiple protocol providers???
         BaseActivity.uiHandler.post(() -> {
             Contact sourceContact = evt.getSourceContact();
-            initVideoBridge();
         });
     }
 }

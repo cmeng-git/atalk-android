@@ -79,7 +79,7 @@
     <string name="call_transfer">Prenos</string>
     <string name="call_transfer_failed">Prepojenie hovoru zlyhalo: %1$s &#8674; %2$s\n%3$s</string>
     <string name="call_transfer_hint">Vyberte názov kontaktu, ktorý si želáte preniesť a kliknite na "Preniesť"</string>
-    <string name="call_transfer_msg">%1$s presmerovanie hovoru na&#8230; %2$s</string>
+    <string name="call_transfer_msg">%1$s presmerovanie hovoru na %2$s</string>
 
     <string name="attach_picture">Obrázky</string>
     <string name="attach_take_picture">Vyfotiť obrázok</string>
@@ -154,7 +154,8 @@
     <string name="call_audio">Zvukový hovor</string>
     <string name="call_answered">%1$s Používateľ prijal hovor.</string>
     <string name="call_disable_on_fault">aTalk sa nepodarilo inicializovať %1$s\n Všetky mediálne hovory/služby budú vypnuté.\n %2$s</string>
-    <string name="call_ended">Diaľkový volajúci hovor ukončil: %1$s</string>
+    <string name="call_ended">Hovor ukončený</string>
+    <string name="call_ended_by_remote">Diaľkový volajúci hovor ukončil: %1$s</string>
     <string name="call_error">Vzdialená strana vracia chybu: %1$s</string>
     <string name="call_failed">Hovor zlyhal</string>
     <string name="call_history_remove_before_date_warning">Naozaj chcete vymazať všetky záznamy hovorov pred dátumom?: %1$s?</string>
@@ -340,10 +341,6 @@
     <string name="refresh_store_omemo">XEP-0384: OMEMO Encryption</string>
 
     <string name="unregistered_message">Prihlásenie k účtu zlyhalo:\nUžívateľské meno: %1$s\nServer Name: %2$s\nÚčet je odpojený.</string>
-    <string name="create_videoBridge">Vytvoriť video most&#8230;</string>
-    <string name="create_videoBridge_menu">Vytvoriť video most</string>
-    <string name="create_join_video_conference">Vytvoriť / Pripojiť sa k videokonferencii</string>
-    <string name="create_video_conference">Vytvorte novú videokonferenciu pre túto diskusnú miestnosť</string>
     <string name="video_format_not_supported">Nepodarilo sa nastaviť ukážku kamery na: %1$s; Výnimka: %2$s.</string>
     <string name="disconnected">Odpojený</string>
     <string name="disconnecting_">Odpojuje sa %1$s</string>
@@ -684,7 +681,6 @@
     <string name="callinfo_call_information">Informácie o hovoroch</string>
     <string name="callinfo_call_transport">Doprava signalizačného hovoru:</string>
     <string name="callinfo_codec">Codec / Frekvencia:</string>
-    <string name="callinfo_conference_focus">Zameranie konferencie:</string>
     <string name="callinfo_default_encrypted">Šifrovanie povolené:</string>
     <string name="callinfo_jitter">Jitter:</string>
     <string name="callinfo_key_exchange_protocol">Protokol výmeny kľúčov</string>
@@ -694,7 +690,6 @@
     <string name="callinfo_media_srtp">SRTP:</string>
     <string name="callinfo_media_stream_transport_protocol">Protokol prenosu mediálneho toku:</string>
     <string name="callinfo_na">N.A.</string>
-    <string name="callinfo_peer_count">Počet účastníkov:</string>
     <string name="callinfo_remote_ip">Vzdialená IP adresa / port:</string>
     <string name="callinfo_rtt">RTT:</string>
     <string name="callinfo_details">Podrobnosti o telefonických informáciách</string>
@@ -1058,8 +1053,6 @@
     <string name="sec_protocols_title">Bezpečnostné protokoly</string>
     <string name="sec_protocols_message">Vyberte požadované protokoly v poradí</string>
     <string name="discard">Zrušiť</string>
-    <string name="sec_zrtp_signalling_on">Oznamovať ZRTP pomocou signalizačného protokolu</string>
-    <string name="sec_zrtp_signalling_off">Neoznamovať ZRTP</string>
 
     <!-- STUN/Jingle Nodes list -->
     <string name="service_gui_SERVERS_LIST_ADD_SERVER">Pridať server</string>
@@ -1087,7 +1080,6 @@
     <string name="security_sdes_dlg_title">Vyberte požadované sady šifry</string>
     <string name="security_sdes_title">Šifrovacie sady SDES</string>
     <string name="security_zrtp_options">Možnosti ZRTP</string>
-    <string name="security_zrtp_signalling">Signalizácia ZRTP</string>
 
     <!-- Common preferences -->
     <string name="audio_encoding">Audio kódovanie</string>

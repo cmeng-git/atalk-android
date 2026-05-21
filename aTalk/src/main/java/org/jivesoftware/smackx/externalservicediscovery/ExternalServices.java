@@ -35,7 +35,6 @@ public class ExternalServices extends AbstractXmlElement {
      * The XML name of the <code>services</code> element.
      */
     public static final String ELEMENT = "services";
-
     public static final String NAMESPACE = "urn:xmpp:extdisco:2";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
@@ -73,6 +72,7 @@ public class ExternalServices extends AbstractXmlElement {
      * Gets the services that have the given transport type.
      *
      * @param transport the transport type to find.
+     *
      * @return list of ServiceElement that support the given transport
      */
     public List<ServiceElement> getServiceType(String transport) {
@@ -106,6 +106,7 @@ public class ExternalServices extends AbstractXmlElement {
          * Adds a specific serviceElement to this element.
          *
          * @param serviceElement the <code>ServiceElement</code> to add to this element
+         *
          * @return builder instance
          */
         public Builder addService(ServiceElement serviceElement) {

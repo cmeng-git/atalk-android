@@ -12,6 +12,7 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.resources.ResourceManagementService;
+
 import org.osgi.framework.BundleContext;
 
 import timber.log.Timber;
@@ -42,8 +43,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class LibJitsi
-{
+public abstract class LibJitsi {
     /**
      * The <code>LibJitsi</code> instance which is provides the implementation of the <code>getXXXService</code> methods.
      */
@@ -58,8 +58,7 @@ public abstract class LibJitsi
      * @return the <code>AudioNotifierService</code> instance known to the library
      * or <code>null</code> if no <code>AudioNotifierService</code> instance is known to the library
      */
-    public static AudioNotifierService getAudioNotifierService()
-    {
+    public static AudioNotifierService getAudioNotifierService() {
         return invokeGetServiceOnImpl(AudioNotifierService.class);
     }
 
@@ -72,8 +71,7 @@ public abstract class LibJitsi
      * @return the <code>ConfigurationService</code> instance known to the library
      * or <code>null</code> if no <code>ConfigurationService</code> instance is known to the library
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         return invokeGetServiceOnImpl(ConfigurationService.class);
     }
 
@@ -86,8 +84,7 @@ public abstract class LibJitsi
      * @return the <code>FileAccessService</code> instance known to the library or
      * <code>null</code> if no <code>FileAccessService</code> instance is known to the library
      */
-    public static FileAccessService getFileAccessService()
-    {
+    public static FileAccessService getFileAccessService() {
         return invokeGetServiceOnImpl(FileAccessService.class);
     }
 
@@ -100,8 +97,7 @@ public abstract class LibJitsi
      * @return the <code>MediaService</code> instance known to the library or
      * <code>null</code> if no <code>MediaService</code> instance is known to the library
      */
-    public static MediaService getMediaService()
-    {
+    public static MediaService getMediaService() {
         return invokeGetServiceOnImpl(MediaService.class);
     }
 
@@ -115,8 +111,7 @@ public abstract class LibJitsi
      * library or <code>null</code> if no <code>ResourceManagementService</code>
      * instance is known to the library.
      */
-    public static ResourceManagementService getResourceManagementService()
-    {
+    public static ResourceManagementService getResourceManagementService() {
         return invokeGetServiceOnImpl(ResourceManagementService.class);
     }
 
@@ -124,11 +119,12 @@ public abstract class LibJitsi
      * Invokes {@link #getService(Class)} on {@link #impl}.
      *
      * @param serviceClass the class of the service to be retrieved.
+     *
      * @return a service of the specified type if such a service is associated with the library.
+     *
      * @throws IllegalStateException if the library is not currently initialized.
      */
-    private static <T> T invokeGetServiceOnImpl(Class<T> serviceClass)
-    {
+    private static <T> T invokeGetServiceOnImpl(Class<T> serviceClass) {
         LibJitsi impl = LibJitsi.impl;
         if (impl == null)
             throw new IllegalStateException("impl");
@@ -139,8 +135,7 @@ public abstract class LibJitsi
     /**
      * Starts/initializes the use of the <code>libjitsi</code> library.
      */
-    public static void start()
-    {
+    public static void start() {
         start(null);
     }
 
@@ -149,8 +144,7 @@ public abstract class LibJitsi
      *
      * @param context an OSGi {@link BundleContext}.
      */
-    static LibJitsi start(BundleContext context)
-    {
+    static LibJitsi start(BundleContext context) {
         if (null != LibJitsi.impl) {
             Timber.d("LibJitsi already started, using as implementation: %s",
                     impl.getClass().getCanonicalName());
@@ -175,22 +169,21 @@ public abstract class LibJitsi
     /**
      * Stops/uninitializes the use of the <code>libjitsi</code> library.
      */
-    public static void stop()
-    {
+    public static void stop() {
         impl = null;
     }
 
     /**
      * Initializes a new <code>LibJitsi</code> instance.
      */
-    protected LibJitsi()
-    {
+    protected LibJitsi() {
     }
 
     /**
      * Gets a service of a specific type associated with this implementation of the <code>libjitsi</code> library.
      *
      * @param serviceClass the type of the service to be retrieved
+     *
      * @return a service of the specified type if there is such an association
      * known to this implementation of the <code>libjitsi</code> library; otherwise, <code>null</code>
      */

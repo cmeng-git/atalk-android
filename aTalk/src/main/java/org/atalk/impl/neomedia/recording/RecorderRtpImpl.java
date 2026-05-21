@@ -5,41 +5,6 @@
  */
 package org.atalk.impl.neomedia.recording;
 
-import com.sun.media.util.Registry;
-
-import org.atalk.impl.neomedia.audiolevel.AudioLevelEffect;
-import org.atalk.impl.neomedia.codec.SilenceEffect;
-import org.atalk.impl.neomedia.device.MediaDeviceImpl;
-import org.atalk.impl.neomedia.rtp.StreamRTPManager;
-import org.atalk.impl.neomedia.rtp.translator.RTCPFeedbackMessageSender;
-import org.atalk.impl.neomedia.rtp.translator.RTPTranslatorImpl;
-import org.atalk.impl.neomedia.transform.PacketTransformer;
-import org.atalk.impl.neomedia.transform.REDTransformEngine;
-import org.atalk.impl.neomedia.transform.SinglePacketTransformer;
-import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
-import org.atalk.impl.neomedia.transform.TransformEngine;
-import org.atalk.impl.neomedia.transform.TransformEngineChain;
-import org.atalk.impl.neomedia.transform.fec.FECTransformEngine;
-import org.atalk.impl.neomedia.transform.rtcp.CompoundPacketEngine;
-import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.MediaException;
-import org.atalk.service.neomedia.MediaService;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.RTPTranslator;
-import org.atalk.service.neomedia.RawPacket;
-import org.atalk.service.neomedia.codec.Constants;
-import org.atalk.service.neomedia.control.FlushableControl;
-import org.atalk.service.neomedia.control.KeyFrameControlAdapter;
-import org.atalk.service.neomedia.recording.Recorder;
-import org.atalk.service.neomedia.recording.RecorderEvent;
-import org.atalk.service.neomedia.recording.RecorderEventHandler;
-import org.atalk.service.neomedia.recording.Synchronizer;
-import org.atalk.util.MediaType;
-import org.atalk.util.dsi.ActiveSpeakerChangedListener;
-import org.atalk.util.dsi.ActiveSpeakerDetector;
-import org.atalk.util.dsi.DominantSpeakerIdentification;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -82,6 +47,41 @@ import javax.media.rtp.event.NewReceiveStreamEvent;
 import javax.media.rtp.event.ReceiveStreamEvent;
 import javax.media.rtp.event.TimeoutEvent;
 
+import com.sun.media.util.Registry;
+
+import org.atalk.impl.neomedia.audiolevel.AudioLevelEffect;
+import org.atalk.impl.neomedia.codec.SilenceEffect;
+import org.atalk.impl.neomedia.device.MediaDeviceImpl;
+import org.atalk.impl.neomedia.rtp.StreamRTPManager;
+import org.atalk.impl.neomedia.rtp.translator.RTCPFeedbackMessageSender;
+import org.atalk.impl.neomedia.rtp.translator.RTPTranslatorImpl;
+import org.atalk.impl.neomedia.transform.PacketTransformer;
+import org.atalk.impl.neomedia.transform.REDTransformEngine;
+import org.atalk.impl.neomedia.transform.SinglePacketTransformer;
+import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
+import org.atalk.impl.neomedia.transform.TransformEngine;
+import org.atalk.impl.neomedia.transform.TransformEngineChain;
+import org.atalk.impl.neomedia.transform.fec.FECTransformEngine;
+import org.atalk.impl.neomedia.transform.rtcp.CompoundPacketEngine;
+import org.atalk.service.configuration.ConfigurationService;
+import org.atalk.service.libjitsi.LibJitsi;
+import org.atalk.service.neomedia.MediaException;
+import org.atalk.service.neomedia.MediaService;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.RTPTranslator;
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.service.neomedia.codec.Constants;
+import org.atalk.service.neomedia.control.FlushableControl;
+import org.atalk.service.neomedia.control.KeyFrameControlAdapter;
+import org.atalk.service.neomedia.recording.Recorder;
+import org.atalk.service.neomedia.recording.RecorderEvent;
+import org.atalk.service.neomedia.recording.RecorderEventHandler;
+import org.atalk.service.neomedia.recording.Synchronizer;
+import org.atalk.util.MediaType;
+import org.atalk.util.dsi.ActiveSpeakerChangedListener;
+import org.atalk.util.dsi.ActiveSpeakerDetector;
+import org.atalk.util.dsi.DominantSpeakerIdentification;
+
 import timber.log.Timber;
 
 /**
@@ -92,8 +92,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
-        ActiveSpeakerChangedListener, ControllerListener
-{
+        ActiveSpeakerChangedListener, ControllerListener {
     /**
      * The <code>ConfigurationService</code> used to load recorder configuration.
      */
@@ -235,8 +234,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * @param translator the <code>RTPTranslator</code> to which this instance will attach in order to record
      * media.
      */
-    public RecorderRtpImpl(RTPTranslator translator)
-    {
+    public RecorderRtpImpl(RTPTranslator translator) {
         this.translator = (RTPTranslatorImpl) translator;
 
         boolean performActiveSpeakerDetection = false;
@@ -259,24 +257,21 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * Implements {@link Recorder#addListener(Recorder.Listener)}.
      */
     @Override
-    public void addListener(Listener listener)
-    {
+    public void addListener(Listener listener) {
     }
 
     /**
      * Implements {@link Recorder#removeListener(Recorder.Listener)}.
      */
     @Override
-    public void removeListener(Listener listener)
-    {
+    public void removeListener(Listener listener) {
     }
 
     /**
      * Implements {@link Recorder#getSupportedFormats()}.
      */
     @Override
-    public List<String> getSupportedFormats()
-    {
+    public List<String> getSupportedFormats() {
         return null;
     }
 
@@ -284,8 +279,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * Implements {@link Recorder#setMute(boolean)}.
      */
     @Override
-    public void setMute(boolean mute)
-    {
+    public void setMute(boolean mute) {
     }
 
     /**
@@ -293,8 +287,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * have a (single) associated filename.
      */
     @Override
-    public String getFilename()
-    {
+    public String getFilename() {
         return null;
     }
 
@@ -302,8 +295,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * Sets the instance which should be notified when events related to
      * recordings (such as the start or end of a recording) occur.
      */
-    public void setEventHandler(RecorderEventHandler eventHandler)
-    {
+    public void setEventHandler(RecorderEventHandler eventHandler) {
         if (this.eventHandler == null
                 || (this.eventHandler != eventHandler
                 && this.eventHandler.handler != eventHandler)) {
@@ -322,8 +314,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      */
     @Override
     public void start(String format, String dirname)
-            throws IOException, MediaException
-    {
+            throws IOException, MediaException {
         Timber.i("Starting, format = %s %s", format, hashCode());
         path = dirname;
 
@@ -378,14 +369,12 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     /**
      * {@inheritDoc}
      */
-    public MediaStream getMediaStream()
-    {
+    public MediaStream getMediaStream() {
         return mediaStream;
     }
 
     @Override
-    public void stop()
-    {
+    public void stop() {
         if (started) {
             Timber.d("Stopping %s", this);
 
@@ -420,8 +409,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * {@link #rtpManager} will use this to notify us of <code>ReceiveStreamEvent</code>s.
      */
     @Override
-    public void update(ReceiveStreamEvent event)
-    {
+    public void update(ReceiveStreamEvent event) {
         if (event == null)
             return;
         ReceiveStream receiveStream = event.getReceiveStream();
@@ -478,7 +466,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             Processor processor;
             try {
                 processor = Manager.createProcessor(receiveStream.getDataSource());
-            } catch (NoProcessorException | IOException npe) {
+            }
+            catch (NoProcessorException | IOException npe) {
                 Timber.e(npe, "Failed to create Processor.");
                 return;
             }
@@ -501,11 +490,9 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
              */
             if (receiveStreamDesc.format instanceof AudioFormat) {
                 final Processor p = processor;
-                new Thread()
-                {
+                new Thread() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         // delay configuring the processors for the different audio streams to
                         // decrease the probability that they run together.
                         try {
@@ -513,7 +500,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                             Timber.w("Sleeping for %d ms before configuring processor for SSRC = %d %d",
                                     ms, ssrc, System.currentTimeMillis());
                             Thread.sleep(ms);
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex) {
                             ex.printStackTrace();
                         }
                         p.configure();
@@ -548,8 +536,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         }
     }
 
-    private void removeReceiveStream(ReceiveStreamDesc receiveStream, boolean emptyJB)
-    {
+    private void removeReceiveStream(ReceiveStreamDesc receiveStream, boolean emptyJB) {
         long ssrc = receiveStream.ssrc;
         if (receiveStream.format instanceof VideoFormat) {
             // Don't accept packets with this SSRC
@@ -571,7 +558,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         if (receiveStream.dataSink != null) {
             try {
                 receiveStream.dataSink.stop();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Timber.e("Failed to stop DataSink %s", e.getMessage());
             }
 
@@ -587,7 +575,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         if (dataSource != null) {
             try {
                 dataSource.stop();
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe) {
                 Timber.w("Failed to stop DataSource");
             }
             dataSource.disconnect();
@@ -608,8 +597,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      *
      * @param ev the event to handle.
      */
-    public void controllerUpdate(ControllerEvent ev)
-    {
+    public void controllerUpdate(ControllerEvent ev) {
         if (ev == null || ev.getSourceController() == null) {
             return;
         }
@@ -655,13 +643,11 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                         silenceEffect = new SilenceEffect();
                     }
 
-                    silenceEffect.setListener(new SilenceEffect.Listener()
-                    {
+                    silenceEffect.setListener(new SilenceEffect.Listener() {
                         boolean first = true;
 
                         @Override
-                        public void onSilenceNotInserted(long timestamp)
-                        {
+                        public void onSilenceNotInserted(long timestamp) {
                             if (first) {
                                 first = false;
                                 // send event only
@@ -688,7 +674,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                     try {
                         // We add an effect, which will insert "silence" in place of lost packets.
                         track.setCodecChain(codecList.toArray(new Codec[codecList.size()]));
-                    } catch (UnsupportedPlugInException upie) {
+                    }
+                    catch (UnsupportedPlugInException upie) {
                         Timber.w("Failed to insert silence effect: %s", upie.getMessage());
                         // But do go on, a recording without extra silence is better than nothing
                     }
@@ -723,7 +710,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                 try {
                     dataSink = Manager.createDataSink(desc.dataSource,
                             new MediaLocator("file:" + filename));
-                } catch (NoDataSinkException ndse) {
+                }
+                catch (NoDataSinkException ndse) {
                     Timber.e("Could not create DataSink: %s", ndse.getMessage());
                     removeReceiveStream(desc, false);
                     return;
@@ -737,7 +725,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             Timber.i("Created DataSink (%s) for SSRC: %s. Output filename: %s", dataSink, ssrc, filename);
             try {
                 dataSink.open();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Timber.i("Failed to open DataSink (%s) for SSRC = %s: %s", dataSink, ssrc, e.getMessage());
                 removeReceiveStream(desc, false);
                 return;
@@ -747,11 +736,9 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                 final WebmDataSink webmDataSink = (WebmDataSink) dataSink;
                 webmDataSink.setSsrc(ssrc);
                 webmDataSink.setEventHandler(eventHandler);
-                webmDataSink.setKeyFrameControl(new KeyFrameControlAdapter()
-                {
+                webmDataSink.setKeyFrameControl(new KeyFrameControlAdapter() {
                     @Override
-                    public boolean requestKeyFrame(boolean urgent)
-                    {
+                    public boolean requestKeyFrame(boolean urgent) {
                         return requestFIR(webmDataSink);
                     }
                 });
@@ -759,7 +746,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
             try {
                 dataSink.start();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Timber.e("Failed to start DataSink (%s) for SSRC = %s. %s", dataSink, ssrc, e.getMessage());
                 removeReceiveStream(desc, false);
                 return;
@@ -780,8 +768,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      *
      * @param ssrc the SSRC for which to restart recording. RTP packet of the new recording).
      */
-    private void resetRecording(long ssrc, long timestamp)
-    {
+    private void resetRecording(long ssrc, long timestamp) {
         ReceiveStreamDesc receiveStream = findReceiveStream(ssrc);
 
         // we only restart audio recordings
@@ -811,7 +798,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             try {
                 receiveStream.dataSink = Manager.createDataSink(receiveStream.dataSource,
                         new MediaLocator("file:" + newFilename));
-            } catch (NoDataSinkException ndse) {
+            }
+            catch (NoDataSinkException ndse) {
                 Timber.w("Could not reset recording for SSRC=%s: %s", ssrc, ndse.getMessage());
                 removeReceiveStream(receiveStream, false);
             }
@@ -819,7 +807,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             try {
                 receiveStream.dataSink.open();
                 receiveStream.dataSink.start();
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe) {
                 Timber.w("Could not reset recording for SSRC=%s: %s", ssrc, ioe.getMessage());
                 removeReceiveStream(receiveStream, false);
             }
@@ -827,8 +816,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         }
     }
 
-    private void audioRecordingStarted(long ssrc, long timestamp)
-    {
+    private void audioRecordingStarted(long ssrc, long timestamp) {
         ReceiveStreamDesc desc = findReceiveStream(ssrc);
         if (desc == null)
             return;
@@ -849,10 +837,10 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * feedback FIR message to the media source.
      *
      * @param dataSink the <code>DataSink</code> which requests that a keyframe be requested with a FIR message.
+     *
      * @return <code>true</code> if a keyframe was successfully requested, <code>false</code> otherwise
      */
-    private boolean requestFIR(WebmDataSink dataSink)
-    {
+    private boolean requestFIR(WebmDataSink dataSink) {
         ReceiveStreamDesc desc = findReceiveStream(dataSink);
         if (desc != null && rtcpFeedbackSender != null) {
             return rtcpFeedbackSender.sendFIR((int) desc.ssrc);
@@ -867,10 +855,10 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      *
      * @param prefix
      * @param suffix
+     *
      * @return
      */
-    private String getNextFilename(String prefix, String suffix)
-    {
+    private String getNextFilename(String prefix, String suffix) {
         if (!new File(prefix + suffix).exists())
             return prefix + suffix;
 
@@ -890,12 +878,12 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * Finds the <code>ReceiveStreamDesc</code> with a particular <code>Processor</code>
      *
      * @param processor The <code>Processor</code> to match.
+     *
      * @return the <code>ReceiveStreamDesc</code> with a particular <code>Processor</code>, or
      * <code>null</code>
      * .
      */
-    private ReceiveStreamDesc findReceiveStream(Processor processor)
-    {
+    private ReceiveStreamDesc findReceiveStream(Processor processor) {
         if (processor == null)
             return null;
 
@@ -911,11 +899,11 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * Finds the <code>ReceiveStreamDesc</code> with a particular <code>DataSink</code>
      *
      * @param dataSink The <code>DataSink</code> to match.
+     *
      * @return the <code>ReceiveStreamDesc</code> with a particular <code>DataSink</code>, or
      * <code>null</code>.
      */
-    private ReceiveStreamDesc findReceiveStream(DataSink dataSink)
-    {
+    private ReceiveStreamDesc findReceiveStream(DataSink dataSink) {
         if (dataSink == null)
             return null;
 
@@ -931,10 +919,10 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * Finds the <code>ReceiveStreamDesc</code> with a particular SSRC.
      *
      * @param ssrc The SSRC to match.
+     *
      * @return the <code>ReceiveStreamDesc</code> with a particular SSRC, or <code>null</code>.
      */
-    private ReceiveStreamDesc findReceiveStream(long ssrc)
-    {
+    private ReceiveStreamDesc findReceiveStream(long ssrc) {
         synchronized (receiveStreams) {
             for (ReceiveStreamDesc r : receiveStreams)
                 if (ssrc == r.ssrc)
@@ -953,10 +941,10 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * So do the conversion here.
      *
      * @param receiveStream the <code>ReceiveStream</code> for which to get the SSRC.
+     *
      * @return the SSRC of <code>receiveStream</code> an a (non-negative) <code>long</code>.
      */
-    private long getReceiveStreamSSRC(ReceiveStream receiveStream)
-    {
+    private long getReceiveStreamSSRC(ReceiveStream receiveStream) {
         return 0xffffffffL & receiveStream.getSSRC();
     }
 
@@ -968,8 +956,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * @param ssrc the SSRC of the new active stream.
      */
     @Override
-    public void activeSpeakerChanged(long ssrc)
-    {
+    public void activeSpeakerChanged(long ssrc) {
         if (performActiveSpeakerDetection) {
             if (eventHandler != null) {
                 RecorderEvent e = new RecorderEvent();
@@ -983,8 +970,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         }
     }
 
-    private void handleRtpPacket(RawPacket pkt)
-    {
+    private void handleRtpPacket(RawPacket pkt) {
         if (pkt != null && pkt.getPayloadType() == vp8PayloadType) {
             long ssrc = pkt.getSSRCAsLong();
             if (!activeVideoSsrcs.contains(ssrc)) {
@@ -998,42 +984,38 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         }
     }
 
-    private void handleRtcpPacket(RawPacket pkt)
-    {
+    private void handleRtcpPacket(RawPacket pkt) {
         getSynchronizer().addRTCPPacket(pkt);
         eventHandler.nudge();
     }
 
-    public SynchronizerImpl getSynchronizer()
-    {
+    public SynchronizerImpl getSynchronizer() {
         if (synchronizer == null)
             synchronizer = new SynchronizerImpl();
         return synchronizer;
     }
 
-    public void setSynchronizer(Synchronizer synchronizer)
-    {
+    public void setSynchronizer(Synchronizer synchronizer) {
         if (synchronizer instanceof SynchronizerImpl) {
             this.synchronizer = (SynchronizerImpl) synchronizer;
         }
     }
 
-    public void connect(Recorder recorder)
-    {
+    public void connect(Recorder recorder) {
         if (!(recorder instanceof RecorderRtpImpl))
             return;
 
         ((RecorderRtpImpl) recorder).setSynchronizer(getSynchronizer());
     }
 
-    private void emptyPacketBuffer(long ssrc)
-    {
+    private void emptyPacketBuffer(long ssrc) {
         RawPacket[] pkts = rtpConnector.packetBuffer.emptyBuffer(ssrc);
         RTPConnectorImpl.OutputDataStreamImpl dataStream;
 
         try {
             dataStream = rtpConnector.getDataOutputStream();
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             Timber.e("Failed to empty packet buffer for SSRC=%s: %s", ssrc, ioe.getMessage());
             return;
         }
@@ -1052,8 +1034,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     /**
      * The <code>RTPConnector</code> implementation used by this <code>RecorderRtpImpl</code>.
      */
-    private class RTPConnectorImpl implements RTPConnector
-    {
+    private class RTPConnectorImpl implements RTPConnector {
         private PushSourceStreamImpl controlInputStream;
         private OutputDataStreamImpl controlOutputStream;
 
@@ -1074,11 +1055,10 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
          */
         private PacketBuffer packetBuffer;
 
-        private RTPConnectorImpl(byte redPT, byte ulpfecPT)
-        {
+        private RTPConnectorImpl(byte redPT, byte ulpfecPT) {
             packetBuffer = new PacketBuffer();
             // The chain of transformers will be applied in reverse order for incoming packets.
-            TransformEngine transformEngine = new TransformEngineChain(new TransformEngine[]{
+            TransformEngine transformEngine = new TransformEngineChain(new TransformEngine[] {
                     packetBuffer,
                     new TransformEngineImpl(),
                     new CompoundPacketEngine(),
@@ -1091,27 +1071,25 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             rtcpPacketTransformer = transformEngine.getRTCPTransformer();
         }
 
-        private RTPConnectorImpl()
-        {
+        private RTPConnectorImpl() {
         }
 
         @Override
-        public void close()
-        {
+        public void close() {
             try {
                 if (dataOutputStream != null)
                     dataOutputStream.close();
                 if (controlOutputStream != null)
                     controlOutputStream.close();
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe) {
                 throw new UndeclaredThrowableException(ioe);
             }
         }
 
         @Override
         public PushSourceStream getControlInputStream()
-                throws IOException
-        {
+                throws IOException {
             if (controlInputStream == null) {
                 controlInputStream = new PushSourceStreamImpl(true);
             }
@@ -1121,8 +1099,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
         @Override
         public OutputDataStream getControlOutputStream()
-                throws IOException
-        {
+                throws IOException {
             if (controlOutputStream == null) {
                 controlOutputStream = new OutputDataStreamImpl(true);
             }
@@ -1132,8 +1109,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
         @Override
         public PushSourceStream getDataInputStream()
-                throws IOException
-        {
+                throws IOException {
             if (dataInputStream == null) {
                 dataInputStream = new PushSourceStreamImpl(false);
             }
@@ -1143,8 +1119,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
         @Override
         public OutputDataStreamImpl getDataOutputStream()
-                throws IOException
-        {
+                throws IOException {
             if (dataOutputStream == null) {
                 dataOutputStream = new OutputDataStreamImpl(false);
             }
@@ -1153,63 +1128,53 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         }
 
         @Override
-        public double getRTCPBandwidthFraction()
-        {
+        public double getRTCPBandwidthFraction() {
             return -1;
         }
 
         @Override
-        public double getRTCPSenderBandwidthFraction()
-        {
+        public double getRTCPSenderBandwidthFraction() {
             return -1;
         }
 
         @Override
-        public int getReceiveBufferSize()
-        {
+        public int getReceiveBufferSize() {
             // TODO Auto-generated method stub
             return 0;
         }
 
         @Override
-        public int getSendBufferSize()
-        {
+        public int getSendBufferSize() {
             // TODO Auto-generated method stub
             return 0;
         }
 
         @Override
         public void setReceiveBufferSize(int arg0)
-                throws IOException
-        {
+                throws IOException {
             // TODO Auto-generated method stub
 
         }
 
         @Override
         public void setSendBufferSize(int arg0)
-                throws IOException
-        {
+                throws IOException {
             // TODO Auto-generated method stub
         }
 
-        private class OutputDataStreamImpl implements OutputDataStream
-        {
+        private class OutputDataStreamImpl implements OutputDataStream {
             boolean isControlStream;
             private RawPacket[] rawPacketArray = new RawPacket[1];
 
-            public OutputDataStreamImpl(boolean isControlStream)
-            {
+            public OutputDataStreamImpl(boolean isControlStream) {
                 this.isControlStream = isControlStream;
             }
 
-            public synchronized int write(byte[] buffer, int offset, int length)
-            {
+            public synchronized int write(byte[] buffer, int offset, int length) {
                 return write(buffer, offset, length, true);
             }
 
-            public synchronized int write(byte[] buffer, int offset, int length, boolean transform)
-            {
+            public synchronized int write(byte[] buffer, int offset, int length, boolean transform) {
                 RawPacket pkt = rawPacketArray[0];
                 if (pkt == null)
                     pkt = new RawPacket();
@@ -1243,7 +1208,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                         transferHandler = dataTransferHandler;
                         pushSourceStream = getDataInputStream();
                     }
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     throw new UndeclaredThrowableException(ioe);
                 }
 
@@ -1269,8 +1235,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             }
 
             public void close()
-                    throws IOException
-            {
+                    throws IOException {
             }
         }
 
@@ -1279,13 +1244,11 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
          *
          * @author Vladimir Marinov
          */
-        private class PushSourceStreamImpl implements PushSourceStream
-        {
+        private class PushSourceStreamImpl implements PushSourceStream {
 
             private boolean isControlStream = false;
 
-            public PushSourceStreamImpl(boolean isControlStream)
-            {
+            public PushSourceStreamImpl(boolean isControlStream) {
                 this.isControlStream = isControlStream;
             }
 
@@ -1293,8 +1256,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
              * Not implemented because there are currently no uses of the underlying functionality.
              */
             @Override
-            public boolean endOfStream()
-            {
+            public boolean endOfStream() {
                 return false;
             }
 
@@ -1302,8 +1264,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
              * Not implemented because there are currently no uses of the underlying functionality.
              */
             @Override
-            public ContentDescriptor getContentDescriptor()
-            {
+            public ContentDescriptor getContentDescriptor() {
                 return null;
             }
 
@@ -1311,8 +1272,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
              * Not implemented because there are currently no uses of the underlying functionality.
              */
             @Override
-            public long getContentLength()
-            {
+            public long getContentLength() {
                 return 0;
             }
 
@@ -1320,8 +1280,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
              * Not implemented because there are currently no uses of the underlying functionality.
              */
             @Override
-            public Object getControl(String arg0)
-            {
+            public Object getControl(String arg0) {
                 return null;
             }
 
@@ -1329,8 +1288,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
              * Not implemented because there are currently no uses of the underlying functionality.
              */
             @Override
-            public Object[] getControls()
-            {
+            public Object[] getControls() {
                 return null;
             }
 
@@ -1338,8 +1296,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
              * Not implemented because there are currently no uses of the underlying functionality.
              */
             @Override
-            public int getMinimumTransferSize()
-            {
+            public int getMinimumTransferSize() {
                 if (isControlStream) {
                     if (pendingControlPacket.getBuffer() != null) {
                         return pendingControlPacket.getLength();
@@ -1356,8 +1313,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
             @Override
             public int read(byte[] buffer, int offset, int length)
-                    throws IOException
-            {
+                    throws IOException {
 
                 RawPacket pendingPacket;
                 if (isControlStream) {
@@ -1387,8 +1343,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
              * See {@link RecorderRtpImpl#start(String, String)}
              */
             @Override
-            public void setTransferHandler(SourceTransferHandler transferHandler)
-            {
+            public void setTransferHandler(SourceTransferHandler transferHandler) {
                 if (isControlStream) {
                     if (RTPConnectorImpl.this.controlTransferHandler == null) {
                         RTPConnectorImpl.this.controlTransferHandler = transferHandler;
@@ -1407,29 +1362,23 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
          * and RTCP packets in.
          */
         private class TransformEngineImpl
-                implements TransformEngine
-        {
-            SinglePacketTransformer rtpTransformer = new SinglePacketTransformerAdapter()
-            {
+                implements TransformEngine {
+            SinglePacketTransformer rtpTransformer = new SinglePacketTransformerAdapter() {
                 @Override
-                public RawPacket reverseTransform(RawPacket pkt)
-                {
+                public RawPacket reverseTransform(RawPacket pkt) {
                     RecorderRtpImpl.this.handleRtpPacket(pkt);
                     return pkt;
                 }
 
                 @Override
-                public void close()
-                {
+                public void close() {
                 }
             };
 
             SinglePacketTransformer rtcpTransformer
-                    = new SinglePacketTransformerAdapter()
-            {
+                    = new SinglePacketTransformerAdapter() {
                 @Override
-                public RawPacket reverseTransform(RawPacket pkt)
-                {
+                public RawPacket reverseTransform(RawPacket pkt) {
                     RecorderRtpImpl.this.handleRtcpPacket(pkt);
                     if (pkt != null && pkt.getRTCPPacketType() == 203) {
                         // An RTCP BYE packet. Remove the receive stream before it gets to FMJ,
@@ -1451,38 +1400,32 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                 }
 
                 @Override
-                public void close()
-                {
+                public void close() {
                 }
             };
 
             @Override
-            public PacketTransformer getRTPTransformer()
-            {
+            public PacketTransformer getRTPTransformer() {
                 return rtpTransformer;
             }
 
             @Override
-            public PacketTransformer getRTCPTransformer()
-            {
+            public PacketTransformer getRTCPTransformer() {
                 return rtcpTransformer;
             }
         }
     }
 
-    private class RecorderEventHandlerImpl implements RecorderEventHandler
-    {
+    private class RecorderEventHandlerImpl implements RecorderEventHandler {
         private RecorderEventHandler handler;
         private final Set<RecorderEvent> pendingEvents = new HashSet<>();
 
-        private RecorderEventHandlerImpl(RecorderEventHandler handler)
-        {
+        private RecorderEventHandlerImpl(RecorderEventHandler handler) {
             this.handler = handler;
         }
 
         @Override
-        public boolean handleEvent(RecorderEvent ev)
-        {
+        public boolean handleEvent(RecorderEvent ev) {
             if (ev == null)
                 return true;
             if (RecorderEvent.Type.RECORDING_STARTED.equals(ev.getType())) {
@@ -1499,8 +1442,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             return handler.handleEvent(ev);
         }
 
-        private void nudge()
-        {
+        private void nudge() {
             for (Iterator<RecorderEvent> iter = pendingEvents.iterator(); iter.hasNext(); ) {
                 RecorderEvent ev = iter.next();
                 long instant = getSynchronizer().getLocalTime(ev.getSsrc(), ev.getRtpTimestamp());
@@ -1513,8 +1455,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         }
 
         @Override
-        public void close()
-        {
+        public void close() {
             for (RecorderEvent ev : pendingEvents)
                 handler.handleEvent(ev);
         }
@@ -1523,8 +1464,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     /**
      * Represents a <code>ReceiveStream</code> for the purposes of this <code>RecorderRtpImpl</code>.
      */
-    private class ReceiveStreamDesc
-    {
+    private class ReceiveStreamDesc {
         /**
          * The actual <code>ReceiveStream</code> which is represented by this
          * <code>ReceiveStreamDesc</code>.
@@ -1568,8 +1508,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
          */
         private SilenceEffect silenceEffect;
 
-        private ReceiveStreamDesc(ReceiveStream receiveStream)
-        {
+        private ReceiveStreamDesc(ReceiveStream receiveStream) {
             this.receiveStream = receiveStream;
             this.ssrc = getReceiveStreamSSRC(receiveStream);
         }

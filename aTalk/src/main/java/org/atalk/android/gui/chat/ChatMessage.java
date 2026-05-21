@@ -128,16 +128,6 @@ public interface ChatMessage {
     int MESSAGE_STEALTH_IN = 31;
 
     /**
-     * The message type representing sms messages.
-     */
-    int MESSAGE_SMS_OUT = 40;
-
-    /**
-     * an event type indicating that the message being received is an SMS message.
-     */
-    int MESSAGE_SMS_IN = 41;
-
-    /**
      * The file transfer message type.
      */
     int MESSAGE_FILE_TRANSFER_SEND = 50;

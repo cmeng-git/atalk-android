@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractElement;
 
 /**
  * A representation of the <code>bandwidth</code> element used in RTP <code>description</code> elements.
@@ -29,16 +29,8 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class SdpBandwidth extends AbstractXmlElement {
-    /**
-     * The name of the "bandwidth" element.
-     */
+public class SdpBandwidth extends AbstractElement {
     public static final String ELEMENT = "bandwidth";
-
-    /**
-     * The name of the "bandwidth" element.
-     */
-    public static final String NAMESPACE = RtpDescription.NAMESPACE;
 
     /**
      * The name of the type argument.
@@ -46,14 +38,14 @@ public class SdpBandwidth extends AbstractXmlElement {
     public static final String ATTR_TYPE = "type";
 
     /**
-     * <code>SdpBandwidth</code> default constructor; use in DefaultXmlElementProvider, and newInstance() etc.
+     * <code>SdpBandwidth</code> default constructor; use in DefaultElementProvider, and newInstance() etc.
      */
     public SdpBandwidth() {
         super(getBuilder());
     }
 
     /**
-     * Initializes a new <code>SdpBandwidth</code> instance.; required by DefaultXmlElementProvider().
+     * Initializes a new <code>SdpBandwidth</code> instance.; required by DefaultElementProvider().
      *
      * @param builder Builder instance
      */
@@ -80,16 +72,16 @@ public class SdpBandwidth extends AbstractXmlElement {
     }
 
     public static Builder getBuilder() {
-        return new Builder(ELEMENT, NAMESPACE);
+        return new Builder(ELEMENT);
     }
 
     /**
-     * Builder for SdpBandwidth. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
+     * Builder for SdpBandwidth. Use {@link AbstractElement.Builder#Builder(String)}
      * to obtain a new instance and {@link #build} to build the SdpBandwidth.
      */
-    public static class Builder extends AbstractXmlElement.Builder<Builder, SdpBandwidth> {
-        protected Builder(String element, String namespace) {
-            super(element, namespace);
+    public static class Builder extends AbstractElement.Builder<SdpBandwidth> {
+        protected Builder(String element) {
+            super(element);
         }
 
         /**

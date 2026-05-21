@@ -34,7 +34,6 @@ import net.java.sip.communicator.service.notification.NotificationService;
 import net.java.sip.communicator.service.notification.SoundNotificationAction;
 import net.java.sip.communicator.service.protocol.AdHocChatRoom;
 import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.ChatRoom;
@@ -49,7 +48,6 @@ import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
 import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
 import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
 import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetSmsMessaging;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.AdHocChatRoomMessageDeliveredEvent;
@@ -61,8 +59,6 @@ import net.java.sip.communicator.service.protocol.event.CallChangeListener;
 import net.java.sip.communicator.service.protocol.event.CallEvent;
 import net.java.sip.communicator.service.protocol.event.CallListener;
 import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerConferenceEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerConferenceListener;
 import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
 import net.java.sip.communicator.service.protocol.event.CallPeerListener;
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityListener;
@@ -70,7 +66,6 @@ import net.java.sip.communicator.service.protocol.event.CallPeerSecurityMessageE
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityNegotiationStartedEvent;
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOffEvent;
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOnEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityStatusEvent;
 import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutEvent;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveredEvent;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveryFailedEvent;
@@ -91,7 +86,6 @@ import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
 import net.java.sip.communicator.service.protocol.event.ScFileTransferListener;
 import net.java.sip.communicator.service.systray.SystrayService;
 
-import org.apache.commons.text.StringEscapeUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AppGUIActivator;
@@ -108,12 +102,15 @@ import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.service.neomedia.recording.Recorder;
-import org.jivesoftware.smackx.chatstates.ChatState;
+
+import org.apache.commons.text.StringEscapeUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
+
+import org.jivesoftware.smackx.chatstates.ChatState;
 
 import timber.log.Timber;
 
@@ -127,8 +124,8 @@ import timber.log.Timber;
  * @see #registerDefaultNotifications
  * This is where all the events actions e.g. notification popup, vibrate and alert are defined for each notification
  */
-public class NotificationManager implements CallChangeListener, CallListener, CallPeerConferenceListener,
-        CallPeerListener, CallPeerSecurityListener, ChatRoomMessageListener, LocalUserChatRoomPresenceListener,
+public class NotificationManager implements CallChangeListener, CallListener, CallPeerListener,
+        CallPeerSecurityListener, ChatRoomMessageListener, LocalUserChatRoomPresenceListener,
         AdHocChatRoomMessageListener, LocalUserAdHocChatRoomPresenceListener,
         ScFileTransferListener, MessageListener, Recorder.Listener, ServiceListener, ChatStateNotificationsListener {
     /**
@@ -367,7 +364,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             // get all registered provider factories
             serRefs = NotificationWiringActivator.bundleContext
                     .getServiceReferences(ProtocolProviderFactory.class.getName(), null);
-        } catch (InvalidSyntaxException e) {
+        }
+        catch (InvalidSyntaxException e) {
             Timber.e("NotificationManager : %s", e.getMessage());
         }
 
@@ -393,7 +391,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             // get all registered provider factories
             serRefs = NotificationWiringActivator.bundleContext
                     .getServiceReferences(ProtocolProviderService.class.getName(), null);
-        } catch (InvalidSyntaxException e) {
+        }
+        catch (InvalidSyntaxException e) {
             Timber.e("NotificationManager : %s", e.getMessage());
         }
 
@@ -450,37 +449,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         if (call == null)
             return false;
 
-        CallConference conference = call.getConference();
-        if (conference == null)
-            return false;
-
         boolean play = false;
-
-        for (Call aCall : conference.getCalls()) {
-            Iterator<? extends CallPeer> peerIter = aCall.getCallPeers();
-
-            while (peerIter.hasNext()) {
-                CallPeer aPeer = peerIter.next();
-
-                // The peer is still in a call/telephony conference so the DIALING sound may need to be played.
-                if (peer == aPeer)
-                    play = true;
-
-                CallPeerState state = peer.getState();
-                if (CallPeerState.INITIATING_CALL.equals(state) || CallPeerState.CONNECTING.equals(state)) {
-                    // The DIALING sound should be played for the first CallPeer only.
-                    if (peer != aPeer)
-                        return false;
-                }
-                else {
-                    /*
-                     * The DIALING sound should not be played if there is a CallPeer which does
-                     * not require the DIALING sound to be played.
-                     */
-                    return false;
-                }
-            }
-        }
         return play;
     }
 
@@ -499,7 +468,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             // Play the hangup sound - Let peerStateChanged() fire HANG_UP; else double firing
             // fireNotification(HANG_UP);
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
@@ -520,7 +490,6 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
         peer.addCallPeerListener(this);
         peer.addCallPeerSecurityListener(this);
-        peer.addCallPeerConferenceListener(this);
     }
 
     /**
@@ -535,7 +504,6 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
         peer.removeCallPeerListener(this);
         peer.removeCallPeerSecurityListener(this);
-        peer.addCallPeerConferenceListener(this);
     }
 
     /**
@@ -544,51 +512,6 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * Not used.
      */
     public void callStateChanged(CallChangeEvent evt) {
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Not used.
-     */
-    public void conferenceFocusChanged(CallPeerConferenceEvent evt) {
-    }
-
-    /**
-     * Indicates that the given conference member has been added to the given peer.
-     *
-     * @param conferenceEvent the event
-     */
-    public void conferenceMemberAdded(CallPeerConferenceEvent conferenceEvent) {
-        try {
-            CallPeer peer = conferenceEvent.getConferenceMember().getConferenceFocusCallPeer();
-            if (peer.getConferenceMemberCount() > 0) {
-                CallPeerSecurityStatusEvent securityEvent = peer.getCurrentSecuritySettings();
-                if (securityEvent instanceof CallPeerSecurityOnEvent)
-                    fireNotification(CALL_SECURITY_ON);
-            }
-        } catch (Throwable t) {
-            if (t instanceof ThreadDeath)
-                throw (ThreadDeath) t;
-            else
-                Timber.e(t, "Error notifying for secured call member");
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Not used.
-     */
-    public void conferenceMemberErrorReceived(CallPeerConferenceEvent evt) {
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Not used.
-     */
-    public void conferenceMemberRemoved(CallPeerConferenceEvent evt) {
     }
 
     /**
@@ -624,7 +547,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             String title = aTalkApp.getResString(R.string.file_receive_from,
                     sourceContact.getDisplayName());
             fireChatNotification(sourceContact, INCOMING_FILE, title, message, request.getId());
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             Timber.e(t, "Error notifying for file transfer request received");
         }
     }
@@ -656,14 +580,6 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                     = (OperationSetBasicInstantMessaging) supportedOperationSets.get(imOpSetClassName);
             if (im != null)
                 im.addMessageListener(this);
-        }
-
-        // Obtain the sms messaging operation set.
-        String smsOpSetClassName = OperationSetSmsMessaging.class.getName();
-        if (supportedOperationSets.containsKey(smsOpSetClassName)) {
-            OperationSetSmsMessaging sms = (OperationSetSmsMessaging) supportedOperationSets.get(smsOpSetClassName);
-            if (sms != null)
-                sms.addMessageListener(this);
         }
 
         // Obtain the chat state notifications operation set.
@@ -782,13 +698,13 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * Implements CallListener.incomingCallReceived. Upon received a call, plays the phone ring tone to the user
      * and gathers caller information that may be used by a user-specified command (incomingCall event trigger).
      *
-     * @param evt the <code>CallEvent</code>
+     * @param event the <code>CallEvent</code>
      */
-    public void incomingCallReceived(CallEvent evt) {
+    public void incomingCallReceived(CallEvent event) {
         try {
             Map<String, String> peerInfo = new HashMap<>();
 
-            Call call = evt.getSourceCall();
+            Call call = event.getSourceCall();
             CallPeer peer = call.getCallPeers().next();
             String peerName = peer.getDisplayName();
 
@@ -804,27 +720,34 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
              */
             final WeakReference<Call> weakCall = new WeakReference<>(call);
 
-            NotificationData notification = fireNotification(INCOMING_CALL, "",
-                    aTalkApp.getResString(R.string.call_incoming, peerName), peerInfo, () -> {
-                        Call call1 = weakCall.get();
-                        if (call1 == null)
-                            return false;
+            NotificationData notification = null;
+            // Do not fire Incoming Call notification if the call was received via JingleMessage.
+            if (CallEvent.CALL_RECEIVED == event.getEventId()) {
+                notification = fireNotification(INCOMING_CALL, "",
+                        aTalkApp.getResString(R.string.call_incoming, peerName), peerInfo, new Callable<Boolean>() {
+                            @Override
+                            public Boolean call() throws Exception {
+                                Call call1 = weakCall.get();
+                                if (call1 == null)
+                                    return false;
 
-                        /*
-                         * INCOMING_CALL should be played for a Call only while there is a
-                         * CallPeer in the INCOMING_CALL state.
-                         */
-                        Iterator<? extends CallPeer> peerIter = call1.getCallPeers();
-                        boolean loop = false;
-                        while (peerIter.hasNext()) {
-                            CallPeer peer1 = peerIter.next();
-                            if (CallPeerState.INCOMING_CALL.equals(peer1.getState())) {
-                                loop = true;
-                                break;
+                                /*
+                                 * INCOMING_CALL should be played for a Call only while there is a
+                                 * CallPeer in the INCOMING_CALL state.
+                                 */
+                                Iterator<? extends CallPeer> peerIter = call1.getCallPeers();
+                                boolean loop = false;
+                                while (peerIter.hasNext()) {
+                                    CallPeer peer1 = peerIter.next();
+                                    if (CallPeerState.INCOMING_CALL.equals(peer1.getState())) {
+                                        loop = true;
+                                        break;
+                                    }
+                                }
+                                return loop;
                             }
-                        }
-                        return loop;
-                    });
+                        });
+            }
 
             if (notification != null)
                 callNotifications.put(call, notification);
@@ -832,8 +755,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             call.addCallChangeListener(this);
             peer.addCallPeerListener(this);
             peer.addCallPeerSecurityListener(this);
-            peer.addCallPeerConferenceListener(this);
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
@@ -862,35 +785,6 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         }
         else
             mediaServiceImpl.addRecorderListener(this);
-    }
-
-    /**
-     * Checks if the contained call is a conference call.
-     *
-     * @param call the call to check
-     *
-     * @return {@code true} if the contained <code>Call</code> is a conference call, otherwise returns {@code false}.
-     */
-    public boolean isConference(Call call) {
-        // If we're the focus of the conference.
-        if (call.isConferenceFocus())
-            return true;
-
-        // If one of our peers is a conference focus, we're in a conference call.
-        Iterator<? extends CallPeer> callPeers = call.getCallPeers();
-
-        while (callPeers.hasNext()) {
-            CallPeer callPeer = callPeers.next();
-            if (callPeer.isConferenceFocus())
-                return true;
-        }
-
-        // the call can have two peers at the same time and there is no one is conference focus.
-        // This is situation when some one has made an attended transfer and has transferred us. We
-        // have one call with two peers the one we are talking to and the one we have been
-        // transferred to. And the first one is been hangup and so the call passes through
-        // conference call for a moment and than go again to one to one call.
-        return call.getCallPeerCount() > 1;
     }
 
     /**
@@ -1141,7 +1035,6 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             CallPeer peer = call.getCallPeers().next();
             peer.addCallPeerListener(this);
             peer.addCallPeerSecurityListener(this);
-            peer.addCallPeerConferenceListener(this);
         }
     }
 
@@ -1224,20 +1117,19 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             }
             else if (newState == CallPeerState.BUSY) {
                 // We start the busy sound only if we're in a simple call.
-                if (!isConference(call)) {
-                    final WeakReference<CallPeer> weakPeer = new WeakReference<>(peer);
-                    NotificationData notification = fireNotification(BUSY_CALL, () -> {
-                        CallPeer peer12 = weakPeer.get();
-                        return (peer12 != null) && CallPeerState.BUSY.equals(peer12.getState());
-                    });
-                    if (notification != null)
-                        callNotifications.put(call, notification);
-                }
+                final WeakReference<CallPeer> weakPeer = new WeakReference<>(peer);
+                NotificationData notification = fireNotification(BUSY_CALL, () -> {
+                    CallPeer peer12 = weakPeer.get();
+                    return (peer12 != null) && CallPeerState.BUSY.equals(peer12.getState());
+                });
+                if (notification != null)
+                    callNotifications.put(call, notification);
             }
             else if ((newState == CallPeerState.DISCONNECTED) || (newState == CallPeerState.FAILED)) {
                 fireNotification(HANG_UP);
             }
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
@@ -1265,7 +1157,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             fireNotification(CALL_SAVED, SystrayService.NONE_MESSAGE_TYPE,
                     aTalkApp.getResString(R.string.callrecordingconfig_call_saved),
                     aTalkApp.getResString(R.string.callrecordingconfig_call_saved_to, recorder.getFilename()));
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
@@ -1357,34 +1250,35 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             String message = Html.fromHtml(evt.getI18nMessage(), Html.FROM_HTML_MODE_LEGACY).toString();
 
             switch (evt.getEventSeverity()) {
-                // Don't play alert sound for Info or warning.
-                case SrtpListener.INFORMATION:
-                    messageTitleKey = R.string.security_info;
-                    aTalkApp.showToastMessage(message);
-                    return;
+            // Don't play alert sound for Info or warning.
+            case SrtpListener.INFORMATION:
+                messageTitleKey = R.string.security_info;
+                aTalkApp.showToastMessage(message);
+                return;
 
-                case SrtpListener.WARNING:
-                    messageTitleKey = R.string.security_warning;
-                    break;
+            case SrtpListener.WARNING:
+                messageTitleKey = R.string.security_warning;
+                break;
 
-                // Security cannot be established! Play an alert sound and popup message
-                case SrtpListener.SEVERE:
-                case SrtpListener.ERROR:
-                    messageTitleKey = R.string.security_error;
-                    fireNotification(CALL_SECURITY_ERROR, SystrayService.WARNING_MESSAGE_TYPE,
-                            aTalkApp.getResString(messageTitleKey), message);
-                    return;
+            // Security cannot be established! Play an alert sound and popup message
+            case SrtpListener.SEVERE:
+            case SrtpListener.ERROR:
+                messageTitleKey = R.string.security_error;
+                fireNotification(CALL_SECURITY_ERROR, SystrayService.WARNING_MESSAGE_TYPE,
+                        aTalkApp.getResString(messageTitleKey), message);
+                return;
 
-                default:
-                    // Whatever other severity there is or will be, we do not know how to react to it yet.
-                    messageTitleKey = -1;
+            default:
+                // Whatever other severity there is or will be, we do not know how to react to it yet.
+                messageTitleKey = -1;
             }
 
             if (messageTitleKey != -1) {
                 fireNotification(SECURITY_MESSAGE, SystrayService.INFORMATION_MESSAGE_TYPE,
                         aTalkApp.getResString(messageTitleKey), message);
             }
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
@@ -1423,7 +1317,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                     || peer.getProtocolProvider().isSignalingTransportSecure()) {
                 fireNotification(CALL_SECURITY_ON);
             }
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
@@ -1459,12 +1354,12 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         // we don't care if the source service is not a protocol provider
         if (service instanceof ProtocolProviderService) {
             switch (event.getType()) {
-                case ServiceEvent.REGISTERED:
-                    handleProviderAdded((ProtocolProviderService) service);
-                    break;
-                case ServiceEvent.UNREGISTERING:
-                    handleProviderRemoved((ProtocolProviderService) service);
-                    break;
+            case ServiceEvent.REGISTERED:
+                handleProviderAdded((ProtocolProviderService) service);
+                break;
+            case ServiceEvent.UNREGISTERING:
+                handleProviderRemoved((ProtocolProviderService) service);
+                break;
             }
         }
     }
@@ -1482,7 +1377,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             NotificationService notificationService = NotificationWiringActivator.getNotificationService();
             if (notificationService != null)
                 notificationService.stopNotification(data);
-        } finally {
+        }
+        finally {
             /*
              * The field callNotifications associates a Call with a NotificationData for the
              * purposes of the stopSound method so the stopSound method should dissociate them
@@ -1552,7 +1448,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             proactiveTimer.put(chatDescriptor, currentTime);
             String chatState = aTalkApp.getResString(R.string.proactive_notification, evt.getChatState());
             fireChatNotification(chatDescriptor, PROACTIVE_NOTIFICATION, fromJid, chatState, null);
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {

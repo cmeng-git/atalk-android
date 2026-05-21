@@ -168,6 +168,7 @@ public class Registration extends IQ {
     public static final class Feature implements XmlElement {
         public static final String ELEMENT = "register";
         public static final String NAMESPACE = "http://jabber.org/features/iq-register";
+
         public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         public static final Feature INSTANCE = new Registration.Feature();

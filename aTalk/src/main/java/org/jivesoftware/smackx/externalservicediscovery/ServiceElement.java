@@ -28,9 +28,6 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @see <a href="https://xmpp.org/extensions/xep-0215.html">XEP-0215: External Service Discovery</a>
  */
 public class ServiceElement extends AbstractXmlElement {
-    /**
-     * The name of the ServiceElement.
-     */
     public static final String ELEMENT = "service";
 
     public static final QName QNAME = new QName(ExternalServices.NAMESPACE, ELEMENT);

@@ -447,19 +447,21 @@ public class VideoHandlerFragment extends BaseFragment implements MenuProvider, 
      * Initialize the Call Video Button to its proper state
      */
     private void initLocalVideoState(boolean isVideoEnable) {
-        setLocalVideoEnabled(isVideoEnable);
-        if (!isCameraEnable) {
-            mCallVideoButton.setImageResource(R.drawable.call_video_no_dark);
-            mCallVideoButton.setBackgroundColor(android.graphics.Color.TRANSPARENT);
-        }
-        else if (isVideoEnable) {
-            mCallVideoButton.setImageResource(R.drawable.call_video_record_dark);
-            mCallVideoButton.setBackgroundColor(0x50000000);
-        }
-        else {
-            mCallVideoButton.setImageResource(R.drawable.call_video_dark);
-            mCallVideoButton.setBackgroundColor(android.graphics.Color.TRANSPARENT);
-        }
+        runOnUiThread(() -> {
+            setLocalVideoEnabled(isVideoEnable);
+            if (!isCameraEnable) {
+                mCallVideoButton.setImageResource(R.drawable.call_video_no_dark);
+                mCallVideoButton.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+            }
+            else if (isVideoEnable) {
+                mCallVideoButton.setImageResource(R.drawable.call_video_record_dark);
+                mCallVideoButton.setBackgroundColor(0x50000000);
+            }
+            else {
+                mCallVideoButton.setImageResource(R.drawable.call_video_dark);
+                mCallVideoButton.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+            }
+        });
     }
 
     /**

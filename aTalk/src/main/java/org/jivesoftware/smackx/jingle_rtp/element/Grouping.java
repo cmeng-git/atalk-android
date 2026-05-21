@@ -31,14 +31,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @see <a href="https://xmpp.org/extensions/xep-0338.html">XEP-0338: Jingle Grouping Framework 1.0.0 (2020-07-21)</a>
  */
 public class Grouping extends AbstractXmlElement {
-    /**
-     * The name of the "group" element.
-     */
     public static final String ELEMENT = "group";
-
-    /**
-     * The namespace for the "grouping" element.
-     */
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:grouping:0";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);

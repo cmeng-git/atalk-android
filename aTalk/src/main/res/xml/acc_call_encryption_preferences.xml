@@ -16,10 +16,6 @@
     <PreferenceCategory
         android:key="pref.cat.security.zrtp"
         android:title="@string/security_zrtp_options">
-        <CheckBoxPreference
-            android:dependency="pref_key_enable_encryption"
-            android:key="pref_key_enc_sipzrtp_attr"
-            android:title="@string/security_zrtp_signalling" />
         <!-- Reset ZID -->
         <PreferenceScreen
             android:key="pref.key.zid.reset"

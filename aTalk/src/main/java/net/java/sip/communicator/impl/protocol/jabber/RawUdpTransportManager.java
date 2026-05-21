@@ -17,12 +17,12 @@ import net.java.sip.communicator.service.protocol.OperationFailedException;
 import org.atalk.service.neomedia.MediaStreamTarget;
 import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.util.MediaType;
+
 import org.jivesoftware.smack.packet.XmlElement;
-import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
+
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle_rtp.CandidateType;
 import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
-import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportCandidate;
 import org.jivesoftware.smackx.jingle_rtp.element.RawUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
@@ -128,45 +128,15 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl {
      */
     @Override
     public MediaStreamTarget getStreamTarget(MediaType mediaType) {
-        ColibriConferenceIQ.Channel channel = getColibriChannel(mediaType, true /* local */);
         MediaStreamTarget streamTarget = null;
+        String media = mediaType.toString();
 
-        if (channel == null) {
-            String media = mediaType.toString();
-
-            for (Iterable<JingleContent> remote : remotes) {
-                for (JingleContent content : remote) {
-                    RtpDescription rtpDescription
-                            = content.getFirstChildElement(RtpDescription.class);
-
-                    if (media.equals(rtpDescription.getMedia())) {
-                        streamTarget = JingleUtils.extractDefaultTarget(content);
-                        break;
-                    }
-                }
-            }
-        }
-        else {
-            IceUdpTransport transport = channel.getTransport();
-
-            if (transport != null)
-                streamTarget = JingleUtils.extractDefaultTarget(transport);
-            if (streamTarget == null) {
-                /*
-                 * For the purposes of compatibility with legacy Jitsi Videobridge, support the
-                 * channel attributes host, rtpPort and rtcpPort.
-                 */
-                @SuppressWarnings("deprecation")
-                String host = channel.getHost();
-
-                if (host != null) {
-                    @SuppressWarnings("deprecation")
-                    int rtpPort = channel.getRTPPort();
-                    @SuppressWarnings("deprecation")
-                    int rtcpPort = channel.getRTCPPort();
-
-                    streamTarget = new MediaStreamTarget(new InetSocketAddress(host, rtpPort),
-                            new InetSocketAddress(host, rtcpPort));
+        for (Iterable<JingleContent> remote : remotes) {
+            for (JingleContent content : remote) {
+                RtpDescription rtpDescription = content.getFirstChildElement(RtpDescription.class);
+                if (media.equals(rtpDescription.getMedia())) {
+                    streamTarget = JingleUtils.extractDefaultTarget(content);
+                    break;
                 }
             }
         }

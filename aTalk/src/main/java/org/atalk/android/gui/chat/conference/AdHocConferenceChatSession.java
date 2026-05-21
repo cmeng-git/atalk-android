@@ -140,18 +140,6 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
     }
 
     /**
-     * Returns the default mobile number used to send sms-es in this session. In the case of
-     * conference this is for now null.
-     *
-     * @return the default mobile number used to send sms-es in this session.
-     */
-    @Override
-    public String getDefaultSmsNumber()
-    {
-        return null;
-    }
-
-    /**
      * Returns a collection of the last N number of messages given by count.
      *
      * @param count The number of messages from history to return.
@@ -290,16 +278,6 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
     public void setCurrentChatTransport(ChatTransport chatTransport)
     {
         this.currentChatTransport = chatTransport;
-    }
-
-    /**
-     * Sets the default mobile number used to send sms-es in this session.
-     *
-     * @param smsPhoneNumber The default mobile number used to send sms-es in this session.
-     */
-    @Override
-    public void setDefaultSmsNumber(String smsPhoneNumber)
-    {
     }
 
     /**

@@ -45,7 +45,7 @@
             android:title="@string/omemo2_access_mode" />
 
         <Preference
-            android:key="pref_key_enable_encryption"
+            android:key="pref_key_call_encryption"
             android:title="@string/call_encryption" />
 
         <Preference

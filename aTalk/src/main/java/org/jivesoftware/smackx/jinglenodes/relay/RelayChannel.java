@@ -1,13 +1,12 @@
 package org.jivesoftware.smackx.jinglenodes.relay;
 
-import org.jivesoftware.smackx.jinglenodes.nio.SelDatagramChannel;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
-public class RelayChannel
-{
+import org.jivesoftware.smackx.jinglenodes.nio.SelDatagramChannel;
+
+public class RelayChannel {
     private final SelDatagramChannel channelA;
     private final SelDatagramChannel channelB;
     private final SocketAddress addressA;
@@ -26,8 +25,7 @@ public class RelayChannel
     private String channelId;
 
     public static RelayChannel createLocalRelayChannel(final String host, final int minPort, final int maxPort)
-            throws IOException
-    {
+            throws IOException {
         int range = maxPort - minPort;
         IOException be = null;
 
@@ -36,7 +34,8 @@ public class RelayChannel
                 int a = Math.round((int) (Math.random() * range)) + minPort;
                 a = a % 2 == 0 ? a : a + 1;
                 return new RelayChannel(host, a);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 be = e;
             }
         }
@@ -44,8 +43,7 @@ public class RelayChannel
     }
 
     public RelayChannel(final String host, final int portA)
-            throws IOException
-    {
+            throws IOException {
         final int portB = portA + 2;
 
         addressA = new InetSocketAddress(host, portA);
@@ -62,7 +60,8 @@ public class RelayChannel
                 try {
                     buffer.flip();
                     channelB.send(buffer, lastReceivedB);
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -75,7 +74,8 @@ public class RelayChannel
                 try {
                     buffer.flip();
                     channelA.send(buffer, lastReceivedA);
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -98,7 +98,8 @@ public class RelayChannel
                 try {
                     buffer.flip();
                     channelB_.send(buffer, lastReceivedB_);
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -110,7 +111,8 @@ public class RelayChannel
                 try {
                     buffer.flip();
                     channelA_.send(buffer, lastReceivedA_);
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -118,92 +120,82 @@ public class RelayChannel
         this.ip = host;
     }
 
-    public SocketAddress getAddressA()
-    {
+    public SocketAddress getAddressA() {
         return addressA;
     }
 
-    public SocketAddress getAddressB()
-    {
+    public SocketAddress getAddressB() {
         return addressB;
     }
 
-    public int getPortA()
-    {
+    public int getPortA() {
         return portA;
     }
 
-    public int getPortB()
-    {
+    public int getPortB() {
         return portB;
     }
 
-    public String getIp()
-    {
+    public String getIp() {
         return ip;
     }
 
-    public long getLastReceivedTimeA()
-    {
+    public long getLastReceivedTimeA() {
         return lastReceivedTimeA;
     }
 
-    public long getLastReceivedTimeB()
-    {
+    public long getLastReceivedTimeB() {
         return lastReceivedTimeB;
     }
 
-    public String getChannelId()
-    {
+    public String getChannelId() {
         return channelId;
     }
 
-    public void setChannelId(String cId)
-    {
+    public void setChannelId(String cId) {
         this.channelId = cId;
     }
 
-    public void close()
-    {
+    public void close() {
         try {
             channelA.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
         try {
             channelB.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
         try {
             channelA_.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
         try {
             channelB_.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public SelDatagramChannel getChannelA()
-    {
+    public SelDatagramChannel getChannelA() {
         return channelA;
     }
 
-    public SelDatagramChannel getChannelB()
-    {
+    public SelDatagramChannel getChannelB() {
         return channelB;
     }
 
-    public SelDatagramChannel getChannelA_()
-    {
+    public SelDatagramChannel getChannelA_() {
         return channelA_;
     }
 
-    public SelDatagramChannel getChannelB_()
-    {
+    public SelDatagramChannel getChannelB_() {
         return channelB_;
     }
 }

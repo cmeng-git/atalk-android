@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
- * Implements <code>AbstractExtensionElement</code> for the <code>source</code> element defined below.
+ * Implements <code>AbstractXmlElement</code> for the <code>source</code> element defined below.
  * @see <a href="https://xmpp.org/extensions/xep-0339.html">XEP-0339: Source-Specific Media Attributes in Jingle 1.0.1 (2021-10-23)</a>
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc5576">Source-Specific Media Attributes in the Session Description Protocol (SDP)</a>
  *
@@ -32,26 +32,18 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Eng Chong Meng
  */
 public class SdpSource extends AbstractXmlElement {
-    /**
-     * The XML name of the <code>setup</code> element defined by Source-Specific Media Attributes in Jingle.
-     */
     public static final String ELEMENT = "source";
-
-    /**
-     * The XML namespace of the <code>setup</code> element defined by Source-Specific Media Attributes in Jingle.
-     */
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:ssma:0";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
-    /**
-     * The XML name of the attribute which corresponds to the <code>rid</code> attribute in SDP.
-     */
-    public static final String ATTR_RID = "rid";
+    // Parameter attributes.
+    public static final String ATTR_CNAME = "cname";
+    public static final String ATTR_MSID = "msid";
 
     /**
-     * The XML name of the <code>setup</code> element's attribute which corresponds to the <code>ssrc</code>
-     * media attribute in SDP.
+     * The XML name of the <code>setup</code> element's attribute which corresponds
+     * to the <code>ssrc</code> media attribute in SDP.
      */
     public static final String ATTR_SSRC = "ssrc";
 
@@ -76,8 +68,8 @@ public class SdpSource extends AbstractXmlElement {
      *
      * @return the <code>ParameterExtensionElement</code>s of this source
      */
-    public List<ParameterElement> getParameters() {
-        return getChildElements(ParameterElement.class);
+    public List<Parameter> getParameters() {
+        return getChildElements(Parameter.class);
     }
 
     /**
@@ -87,7 +79,7 @@ public class SdpSource extends AbstractXmlElement {
      * @return value of SSRC parameter
      */
     public String getParameter(String name) {
-        for (ParameterElement param : getParameters()) {
+        for (Parameter param : getParameters()) {
             if (name.equals(param.getName()))
                 return param.getValue();
         }
@@ -101,7 +93,6 @@ public class SdpSource extends AbstractXmlElement {
      */
     public long getSSRC() {
         String s = getAttributeValue(ATTR_SSRC);
-
         return (s == null) ? -1 : Long.parseLong(s);
     }
 
@@ -112,24 +103,6 @@ public class SdpSource extends AbstractXmlElement {
      */
     public boolean hasSSRC() {
         return getAttributeValue(ATTR_SSRC) != null;
-    }
-
-    /**
-     * Gets the rid of this source, if it has one.
-     *
-     * @return the rid of the source or null
-     */
-    public String getRid() {
-        return getAttributeValue(ATTR_RID);
-    }
-
-    /**
-     * Check if this source has an rid.
-     *
-     * @return true if it has an rid, false otherwise
-     */
-    public boolean hasRid() {
-        return getAttributeValue(ATTR_RID) != null;
     }
 
     /**
@@ -144,8 +117,6 @@ public class SdpSource extends AbstractXmlElement {
     public boolean sourceEquals(SdpSource other) {
         if (hasSSRC() && other.hasSSRC()) {
             return getSSRC() == other.getSSRC();
-        } else if (hasRid() && other.hasRid()) {
-            return getRid().equals(other.getRid());
         }
         return false;
     }
@@ -166,10 +137,10 @@ public class SdpSource extends AbstractXmlElement {
         /**
          * Adds a specific parameter (as defined by Source-Specific Media Attributes in Jingle) to this source.
          *
-         * @param parameter the <code>ParameterElement</code> to add to this source
+         * @param parameter the <code>Parameter</code> to add to this source
          * @return builder instance
          */
-        public Builder addParameter(ParameterElement parameter) {
+        public Builder addParameter(Parameter parameter) {
             addChildElement(parameter);
             return this;
         }
@@ -185,21 +156,6 @@ public class SdpSource extends AbstractXmlElement {
                 removeAttribute(ATTR_SSRC);
             } else {
                 addAttribute(ATTR_SSRC, Long.toString(0xffffffffL & ssrc));
-            }
-            return this;
-        }
-
-        /**
-         * Sets the rid of this source.
-         *
-         * @param rid the rid to be set (or null to clear the existing rid)
-         * @return builder instance
-         */
-        public Builder setRid(String rid) {
-            if (rid == null) {
-                removeAttribute(ATTR_RID);
-            } else {
-                addAttribute(ATTR_RID, rid);
             }
             return this;
         }

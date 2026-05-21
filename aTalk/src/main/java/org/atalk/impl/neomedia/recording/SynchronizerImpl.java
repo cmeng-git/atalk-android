@@ -1,41 +1,40 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.recording;
-
-import org.atalk.service.neomedia.RawPacket;
-import org.atalk.service.neomedia.recording.Synchronizer;
-import org.atalk.util.RTPUtils;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.service.neomedia.recording.Synchronizer;
+import org.atalk.util.RTPUtils;
+
 /**
  * @author Boris Grozev
  */
-public class SynchronizerImpl implements Synchronizer
-{
-	/**
-	 * Whether the CNAME identifier from RTCP SDES packets should be use as an endpoint identifier.
-	 *
-	 * If set to true, RTCP SDES packets fed through {@link #addRTCPPacket(RawPacket)} will be
-	 * searched for CNAME items, and the values will be used as endpoint identifiers.
-	 */
-	private static final boolean USE_CNAME_AS_ENDPOINT_ID = false;
+public class SynchronizerImpl implements Synchronizer {
+    /**
+     * Whether the CNAME identifier from RTCP SDES packets should be use as an endpoint identifier.
+     *
+     * If set to true, RTCP SDES packets fed through {@link #addRTCPPacket(RawPacket)} will be
+     * searched for CNAME items, and the values will be used as endpoint identifiers.
+     */
+    private static final boolean USE_CNAME_AS_ENDPOINT_ID = false;
 
-	/**
-	 * The RTCP Sender Report packet type.
-	 */
-	private static final int PT_SENDER_REPORT = 200;
+    /**
+     * The RTCP Sender Report packet type.
+     */
+    private static final int PT_SENDER_REPORT = 200;
 
-	/**
-	 * The RTCP SDES packet type.
-	 */
-	private static final int PT_SDES = 202;
+    /**
+     * The RTCP SDES packet type.
+     */
+    private static final int PT_SDES = 202;
 
     /**
      * Maps an SSRC to the <code>SSRCDesc</code> structure containing information
@@ -49,233 +48,215 @@ public class SynchronizerImpl implements Synchronizer
      */
     private final Map<String, Endpoint> endpoints = new ConcurrentHashMap<>();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setRtpClockRate(long ssrc, long clockRate)
-	{
-		SSRCDesc ssrcDesc = getSSRCDesc(ssrc);
-		if (ssrcDesc.clockRate == -1) {
-			synchronized (ssrcDesc) {
-				if (ssrcDesc.clockRate == -1)
-					ssrcDesc.clockRate = clockRate;
-				else if (ssrcDesc.clockRate != clockRate) {
-					// this shouldn't happen...but if the clock rate really
-					// changed for some reason, out timings are now irrelevant.
-					ssrcDesc.clockRate = clockRate;
-					ssrcDesc.ntpTime = -1.0;
-					ssrcDesc.rtpTime = -1;
-				}
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setRtpClockRate(long ssrc, long clockRate) {
+        SSRCDesc ssrcDesc = getSSRCDesc(ssrc);
+        if (ssrcDesc.clockRate == -1) {
+            synchronized (ssrcDesc) {
+                if (ssrcDesc.clockRate == -1)
+                    ssrcDesc.clockRate = clockRate;
+                else if (ssrcDesc.clockRate != clockRate) {
+                    // this shouldn't happen...but if the clock rate really
+                    // changed for some reason, out timings are now irrelevant.
+                    ssrcDesc.clockRate = clockRate;
+                    ssrcDesc.ntpTime = -1.0;
+                    ssrcDesc.rtpTime = -1;
+                }
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setEndpoint(long ssrc, String endpointId)
-	{
-		SSRCDesc ssrcDesc = getSSRCDesc(ssrc);
-		synchronized (ssrcDesc) {
-			ssrcDesc.endpointId = endpointId;
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void setEndpoint(long ssrc, String endpointId) {
+        SSRCDesc ssrcDesc = getSSRCDesc(ssrc);
+        synchronized (ssrcDesc) {
+            ssrcDesc.endpointId = endpointId;
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void mapRtpToNtp(long ssrc, long rtpTime, double ntpTime)
-	{
-		SSRCDesc ssrcDesc = getSSRCDesc(ssrc);
+    /**
+     * {@inheritDoc}
+     */
+    public void mapRtpToNtp(long ssrc, long rtpTime, double ntpTime) {
+        SSRCDesc ssrcDesc = getSSRCDesc(ssrc);
 
-		if (rtpTime != -1 && ntpTime != -1.0) // have valid values to update
-		{
-			if (ssrcDesc.rtpTime == -1 || ssrcDesc.ntpTime == -1.0) {
-				synchronized (ssrcDesc) {
-					if (ssrcDesc.rtpTime == -1 || ssrcDesc.ntpTime == -1.0) {
-						ssrcDesc.rtpTime = rtpTime;
-						ssrcDesc.ntpTime = ntpTime;
-					}
-				}
-			}
-		}
-	}
+        if (rtpTime != -1 && ntpTime != -1.0) // have valid values to update
+        {
+            if (ssrcDesc.rtpTime == -1 || ssrcDesc.ntpTime == -1.0) {
+                synchronized (ssrcDesc) {
+                    if (ssrcDesc.rtpTime == -1 || ssrcDesc.ntpTime == -1.0) {
+                        ssrcDesc.rtpTime = rtpTime;
+                        ssrcDesc.ntpTime = ntpTime;
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void mapLocalToNtp(long ssrc, long localTime, double ntpTime)
-	{
-		SSRCDesc ssrcDesc = getSSRCDesc(ssrc);
+    /**
+     * {@inheritDoc}
+     */
+    public void mapLocalToNtp(long ssrc, long localTime, double ntpTime) {
+        SSRCDesc ssrcDesc = getSSRCDesc(ssrc);
 
-		if (localTime != -1 && ntpTime != -1.0 && ssrcDesc.endpointId != null) {
-			Endpoint endpoint = getEndpoint(ssrcDesc.endpointId);
-			if (endpoint.localTime == -1 || endpoint.ntpTime == -1.0) {
-				synchronized (endpoint) {
-					if (endpoint.localTime == -1 || endpoint.ntpTime == -1.0) {
-						endpoint.localTime = localTime;
-						endpoint.ntpTime = ntpTime;
-					}
-				}
-			}
-		}
-	}
+        if (localTime != -1 && ntpTime != -1.0 && ssrcDesc.endpointId != null) {
+            Endpoint endpoint = getEndpoint(ssrcDesc.endpointId);
+            if (endpoint.localTime == -1 || endpoint.ntpTime == -1.0) {
+                synchronized (endpoint) {
+                    if (endpoint.localTime == -1 || endpoint.ntpTime == -1.0) {
+                        endpoint.localTime = localTime;
+                        endpoint.ntpTime = ntpTime;
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public long getLocalTime(long ssrc, long rtp0)
-	{
-		// don't use getSSRCDesc, because we don't want to create an instance
-		SSRCDesc ssrcDesc = ssrcs.get(ssrc);
-		if (ssrcDesc == null) {
-			return -1;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public long getLocalTime(long ssrc, long rtp0) {
+        // don't use getSSRCDesc, because we don't want to create an instance
+        SSRCDesc ssrcDesc = ssrcs.get(ssrc);
+        if (ssrcDesc == null) {
+            return -1;
+        }
 
-		// get all required times
-		long clockRate; // the clock rate for the RTP clock for the given SSRC
-		long rtp1; // some time X in the RTP clock for the given SSRC
-		double ntp1; // the same time X in the source's wallclock
-		String endpointId;
-		synchronized (ssrcDesc) {
-			clockRate = ssrcDesc.clockRate;
-			rtp1 = ssrcDesc.rtpTime;
-			ntp1 = ssrcDesc.ntpTime;
-			endpointId = ssrcDesc.endpointId;
-		}
+        // get all required times
+        long clockRate; // the clock rate for the RTP clock for the given SSRC
+        long rtp1; // some time X in the RTP clock for the given SSRC
+        double ntp1; // the same time X in the source's wallclock
+        String endpointId;
+        synchronized (ssrcDesc) {
+            clockRate = ssrcDesc.clockRate;
+            rtp1 = ssrcDesc.rtpTime;
+            ntp1 = ssrcDesc.ntpTime;
+            endpointId = ssrcDesc.endpointId;
+        }
 
-		// if something is missing, we can't calculate the time
-		if (clockRate == -1 || rtp1 == -1 || ntp1 == -1.0 || endpointId == null) {
-			return -1;
-		}
+        // if something is missing, we can't calculate the time
+        if (clockRate == -1 || rtp1 == -1 || ntp1 == -1.0 || endpointId == null) {
+            return -1;
+        }
 
-		Endpoint endpoint = endpoints.get(ssrcDesc.endpointId);
-		if (endpoint == null) {
-			return -1;
-		}
+        Endpoint endpoint = endpoints.get(ssrcDesc.endpointId);
+        if (endpoint == null) {
+            return -1;
+        }
 
-		double ntp2; // some time Y in the source's wallclock (same clock as for
-						// ntp1)
-		long local2; // the same time Y in the local clock
-		synchronized (endpoint) {
-			ntp2 = endpoint.ntpTime;
-			local2 = endpoint.localTime;
-		}
+        double ntp2; // some time Y in the source's wallclock (same clock as for
+        // ntp1)
+        long local2; // the same time Y in the local clock
+        synchronized (endpoint) {
+            ntp2 = endpoint.ntpTime;
+            local2 = endpoint.localTime;
+        }
 
-		if (ntp2 == -1.0 || local2 == -1) {
-			return -1;
-		}
+        if (ntp2 == -1.0 || local2 == -1) {
+            return -1;
+        }
 
-		// crunch the numbers. we're looking for 'local0',
-		// the local time corresponding to 'rtp0'
-		long local0;
+        // crunch the numbers. we're looking for 'local0',
+        // the local time corresponding to 'rtp0'
+        long local0;
 
-		double diff1S = ntp1 - ntp2;
+        double diff1S = ntp1 - ntp2;
         double diff2S = ((double) RTPUtils.rtpTimestampDiff(rtp0, rtp1)) / clockRate;
 
-		long diffMs = Math.round((diff1S + diff2S) * 1000);
+        long diffMs = Math.round((diff1S + diff2S) * 1000);
 
-		local0 = local2 + diffMs;
+        local0 = local2 + diffMs;
 
-		return local0;
-	}
+        return local0;
+    }
 
-	/**
-	 * Adds an RTCP packet to this instance. Time mappings are extracted and used by this instance.
-	 * 
-	 * @param pkt
-	 *        the packet to add.
-	 */
-	void addRTCPPacket(RawPacket pkt)
-	{
-		addRTCPPacket(pkt, System.currentTimeMillis());
-	}
+    /**
+     * Adds an RTCP packet to this instance. Time mappings are extracted and used by this instance.
+     *
+     * @param pkt the packet to add.
+     */
+    void addRTCPPacket(RawPacket pkt) {
+        addRTCPPacket(pkt, System.currentTimeMillis());
+    }
 
-	/**
-	 * Adds an RTCP packet to this instance. Time mappings are extracted and used by this instance.
-	 * 
-	 * @param pkt
-	 *        the packet to add.
-	 * @param localTime
-	 *        the local time of reception of the packet.
-	 */
-	void addRTCPPacket(RawPacket pkt, long localTime)
-	{
-		if (!isValidRTCP(pkt)) {
-			return;
-		}
+    /**
+     * Adds an RTCP packet to this instance. Time mappings are extracted and used by this instance.
+     *
+     * @param pkt the packet to add.
+     * @param localTime the local time of reception of the packet.
+     */
+    void addRTCPPacket(RawPacket pkt, long localTime) {
+        if (!isValidRTCP(pkt)) {
+            return;
+        }
 
-		switch (getPacketType(pkt)) {
-			case PT_SENDER_REPORT:
-				addSR(pkt, localTime);
-				break;
-			case PT_SDES:
-				addSDES(pkt);
-				break;
-		}
-	}
+        switch (getPacketType(pkt)) {
+        case PT_SENDER_REPORT:
+            addSR(pkt, localTime);
+            break;
+        case PT_SDES:
+            addSDES(pkt);
+            break;
+        }
+    }
 
-	/**
-	 * Handles and RTCP SDES packet.
-	 * 
-	 * @param pkt
-	 *        the packet to handle.
-	 */
-	private void addSDES(RawPacket pkt)
-	{
-		if (USE_CNAME_AS_ENDPOINT_ID) {
-			for (CNAMEItem item : getCnameItems(pkt)) {
-				SSRCDesc ssrc = getSSRCDesc(item.ssrc);
-				if (ssrc.endpointId == null) {
-					synchronized (ssrc) {
-						if (ssrc.endpointId == null)
-							ssrc.endpointId = item.cname;
-					}
-				}
-			}
-		}
-	}
+    /**
+     * Handles and RTCP SDES packet.
+     *
+     * @param pkt the packet to handle.
+     */
+    private void addSDES(RawPacket pkt) {
+        if (USE_CNAME_AS_ENDPOINT_ID) {
+            for (CNAMEItem item : getCnameItems(pkt)) {
+                SSRCDesc ssrc = getSSRCDesc(item.ssrc);
+                if (ssrc.endpointId == null) {
+                    synchronized (ssrc) {
+                        if (ssrc.endpointId == null)
+                            ssrc.endpointId = item.cname;
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * Handles an RTCP Sender Report packet.
-	 * 
-	 * @param pkt
-	 *        the packet to handle.
-	 * @param localTime
-	 *        the local time of reception of the packet.
-	 */
-	private void addSR(RawPacket pkt, long localTime)
-	{
+    /**
+     * Handles an RTCP Sender Report packet.
+     *
+     * @param pkt the packet to handle.
+     * @param localTime the local time of reception of the packet.
+     */
+    private void addSR(RawPacket pkt, long localTime) {
         long ssrc = pkt.getRTCPSSRC();
         long rtpTime = pkt.readUint32AsLong(16);
 
         long sec = pkt.readUint32AsLong(8);
         long fract = pkt.readUint32AsLong(12);
-		double ntpTime = sec + (((double) fract) / (1L << 32));
+        double ntpTime = sec + (((double) fract) / (1L << 32));
 
-		if (localTime != -1 && ntpTime != -1.0)
-			mapLocalToNtp(ssrc, localTime, ntpTime);
+        if (localTime != -1 && ntpTime != -1.0)
+            mapLocalToNtp(ssrc, localTime, ntpTime);
 
-		if (rtpTime != -1 && ntpTime != -1.0)
-			mapRtpToNtp(ssrc, rtpTime, ntpTime);
-	}
+        if (rtpTime != -1 && ntpTime != -1.0)
+            mapRtpToNtp(ssrc, rtpTime, ntpTime);
+    }
 
-	/**
-	 * Returns the <code>SSRCDesc</code> instance mapped to the SSRC <code>ssrc</code>. If no instance is
-	 * mapped to <code>ssrc</code>, create one and inserts it in the map. Always returns non-null.
-	 * 
-	 * @param ssrc
-	 *        the ssrc to get the <code>SSRCDesc</code> for.
-	 * @return the <code>SSRCDesc</code> instance mapped to the SSRC <code>ssrc</code>.
-	 */
-	private SSRCDesc getSSRCDesc(long ssrc)
-	{
-        synchronized (ssrcs)
-        {
+    /**
+     * Returns the <code>SSRCDesc</code> instance mapped to the SSRC <code>ssrc</code>. If no instance is
+     * mapped to <code>ssrc</code>, create one and inserts it in the map. Always returns non-null.
+     *
+     * @param ssrc the ssrc to get the <code>SSRCDesc</code> for.
+     *
+     * @return the <code>SSRCDesc</code> instance mapped to the SSRC <code>ssrc</code>.
+     */
+    private SSRCDesc getSSRCDesc(long ssrc) {
+        synchronized (ssrcs) {
             SSRCDesc ssrcDesc = ssrcs.get(ssrc);
-            if (ssrcDesc == null)
-            {
+            if (ssrcDesc == null) {
                 ssrcDesc = new SSRCDesc();
                 ssrcs.put(ssrc, ssrcDesc);
             }
@@ -283,22 +264,19 @@ public class SynchronizerImpl implements Synchronizer
         }
     }
 
-	/**
-	 * Returns the <code>Endpoint</code> with id <code>endpointId</code>. Creates an <code>Endpoint</code> if
-	 * necessary. Always returns non-null.
-	 * 
-	 * @param endpointId
-	 *        the string identifying the endpoint.
-	 * @return the <code>Endpoint</code> with id <code>endpointId</code>. Creates an <code>Endpoint</code> if
-	 *         necessary.
-	 */
-	private Endpoint getEndpoint(String endpointId)
-	{
-        synchronized (endpoints)
-        {
+    /**
+     * Returns the <code>Endpoint</code> with id <code>endpointId</code>. Creates an <code>Endpoint</code> if
+     * necessary. Always returns non-null.
+     *
+     * @param endpointId the string identifying the endpoint.
+     *
+     * @return the <code>Endpoint</code> with id <code>endpointId</code>. Creates an <code>Endpoint</code> if
+     * necessary.
+     */
+    private Endpoint getEndpoint(String endpointId) {
+        synchronized (endpoints) {
             Endpoint endpoint = endpoints.get(endpointId);
-            if (endpoint == null)
-            {
+            if (endpoint == null) {
                 endpoint = new Endpoint();
                 endpoints.put(endpointId, endpoint);
             }
@@ -306,185 +284,173 @@ public class SynchronizerImpl implements Synchronizer
         }
     }
 
-	/**
-	 * Return a set of all items with type CNAME from the RTCP SDES packet <code>pkt</code>.
-	 * 
-	 * @param pkt
-	 *        the packet to parse for CNAME items.
-	 * @retur a set of all items with type CNAME from the RTCP SDES packet <code>pkt</code>.
-	 */
-	private Set<CNAMEItem> getCnameItems(RawPacket pkt)
-	{
-		Set<CNAMEItem> ret = new HashSet<>();
+    /**
+     * Return a set of all items with type CNAME from the RTCP SDES packet <code>pkt</code>.
+     *
+     * @param pkt the packet to parse for CNAME items.
+     *
+     * @retur a set of all items with type CNAME from the RTCP SDES packet <code>pkt</code>.
+     */
+    private Set<CNAMEItem> getCnameItems(RawPacket pkt) {
+        Set<CNAMEItem> ret = new HashSet<>();
 
-		byte[] buf = pkt.getBuffer();
-		int off = pkt.getOffset();
-		int len = pkt.getLength();
+        byte[] buf = pkt.getBuffer();
+        int off = pkt.getOffset();
+        int len = pkt.getLength();
 
-		// first item
-		int ptr = 4;
+        // first item
+        int ptr = 4;
 
-		while (ptr + 6 < len) // an item is at least 6B: 4B ssrc, 1B type, 1B len
-		{
-			int type = buf[off + ptr + 4];
-			int len2 = buf[off + ptr + 5];
-			if (ptr + 6 + len2 >= len) // not enough buffer for the whole item
-				break;
+        while (ptr + 6 < len) // an item is at least 6B: 4B ssrc, 1B type, 1B len
+        {
+            int type = buf[off + ptr + 4];
+            int len2 = buf[off + ptr + 5];
+            if (ptr + 6 + len2 >= len) // not enough buffer for the whole item
+                break;
 
-			if (type == 1) // CNAME
-			{
-				CNAMEItem item = new CNAMEItem();
-				item.ssrc = readUnsignedIntAsLong(buf, off + ptr);
-				item.cname = readString(buf, off + ptr + 6, len2);
-				ret.add(item);
-			}
+            if (type == 1) // CNAME
+            {
+                CNAMEItem item = new CNAMEItem();
+                item.ssrc = readUnsignedIntAsLong(buf, off + ptr);
+                item.cname = readString(buf, off + ptr + 6, len2);
+                ret.add(item);
+            }
 
-			ptr += 6 + len2;
-		}
+            ptr += 6 + len2;
+        }
 
-		return ret;
-	}
+        return ret;
+    }
 
-	/**
-	 * Reads a portion of a byte array as a string.
-	 * 
-	 * @return the string with length <code>len</code>read from <code>buf</code> at offset <code>off</code>.
-	 */
-	private String readString(byte[] buf, int off, int len)
-	{
-		String ret = "";
-		for (int i = off; i < off + len; i++) {
-			ret += (char) buf[i];
-		}
-		return ret;
-	}
+    /**
+     * Reads a portion of a byte array as a string.
+     *
+     * @return the string with length <code>len</code>read from <code>buf</code> at offset <code>off</code>.
+     */
+    private String readString(byte[] buf, int off, int len) {
+        String ret = "";
+        for (int i = off; i < off + len; i++) {
+            ret += (char) buf[i];
+        }
+        return ret;
+    }
 
-	/**
-	 * Read an unsigned integer as long at specified offset
-	 *
-	 * @param off
-	 *        start offset of this unsigned integer
-	 * @return unsigned integer as long at offset
-	 */
-	public long readUnsignedIntAsLong(byte[] buf, int off)
-	{
-		int b0 = (0x000000FF & (buf[off + 0]));
-		int b1 = (0x000000FF & (buf[off + 1]));
-		int b2 = (0x000000FF & (buf[off + 2]));
-		int b3 = (0x000000FF & (buf[off + 3]));
+    /**
+     * Read an unsigned integer as long at specified offset
+     *
+     * @param off start offset of this unsigned integer
+     *
+     * @return unsigned integer as long at offset
+     */
+    public long readUnsignedIntAsLong(byte[] buf, int off) {
+        int b0 = (0x000000FF & (buf[off + 0]));
+        int b1 = (0x000000FF & (buf[off + 1]));
+        int b2 = (0x000000FF & (buf[off + 2]));
+        int b3 = (0x000000FF & (buf[off + 3]));
 
-		return ((b0 << 24 | b1 << 16 | b2 << 8 | b3)) & 0xFFFFFFFFL;
-	}
+        return ((b0 << 24 | b1 << 16 | b2 << 8 | b3)) & 0xFFFFFFFFL;
+    }
 
-	/**
-	 * Checks whether <code>pkt</code> looks like a valid RTCP packet.
-	 * 
-	 * @param pkt
-	 *        the packet to check.
-	 * @return <code>true</code> if <code>pkt</code> seems to be a valid RTCP packet.
-	 */
-	private boolean isValidRTCP(RawPacket pkt)
-	{
-		byte[] buf = pkt.getBuffer();
-		int off = pkt.getOffset();
-		int len = pkt.getLength();
+    /**
+     * Checks whether <code>pkt</code> looks like a valid RTCP packet.
+     *
+     * @param pkt the packet to check.
+     *
+     * @return <code>true</code> if <code>pkt</code> seems to be a valid RTCP packet.
+     */
+    private boolean isValidRTCP(RawPacket pkt) {
+        byte[] buf = pkt.getBuffer();
+        int off = pkt.getOffset();
+        int len = pkt.getLength();
 
-		if (len < 4)
-			return false;
+        if (len < 4)
+            return false;
 
-		int v = (buf[off] & 0xc0) >>> 6;
-		if (v != 2)
-			return false;
+        int v = (buf[off] & 0xc0) >>> 6;
+        if (v != 2)
+            return false;
 
         int lengthInWords = (buf[off + 2] & 0xFF) << 8 | (buf[off + 3] & 0xFF);
         int lengthInBytes = (lengthInWords + 1) * 4;
         if (len < lengthInBytes)
             return false;
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Returns the value of the packet type field from the RTCP header of <code>pkt</code>. Assumes that
-	 * <code>pkt</code> is a valid RTCP packet (at least as reported by {@link #isValidRTCP(RawPacket)}).
-	 * 
-	 * @param pkt
-	 *        the packet to get the packet type of.
-	 * @return the value of the packet type field from the RTCP header of <code>pkt</code>.
-	 */
-	private int getPacketType(RawPacket pkt)
-	{
-		return pkt.getBuffer()[pkt.getOffset() + 1] & 0xff;
-	}
+    /**
+     * Returns the value of the packet type field from the RTCP header of <code>pkt</code>. Assumes that
+     * <code>pkt</code> is a valid RTCP packet (at least as reported by {@link #isValidRTCP(RawPacket)}).
+     *
+     * @param pkt the packet to get the packet type of.
+     *
+     * @return the value of the packet type field from the RTCP header of <code>pkt</code>.
+     */
+    private int getPacketType(RawPacket pkt) {
+        return pkt.getBuffer()[pkt.getOffset() + 1] & 0xff;
+    }
 
-	/**
-	 * Removes the RTP-NTP mapping for a given SSRC.
-	 *
-	 * @param ssrc
-	 *        the SSRC for which to remove the RTP-NTP mapping
-	 */
-	void removeMapping(long ssrc)
-	{
+    /**
+     * Removes the RTP-NTP mapping for a given SSRC.
+     *
+     * @param ssrc the SSRC for which to remove the RTP-NTP mapping
+     */
+    void removeMapping(long ssrc) {
         SSRCDesc ssrcDesc = ssrcs.get(ssrc);
-        if (ssrcDesc != null)
-        {
-            synchronized (ssrcDesc)
-            {
+        if (ssrcDesc != null) {
+            synchronized (ssrcDesc) {
                 ssrcDesc.ntpTime = -1.0;
                 ssrcDesc.rtpTime = -1;
             }
         }
     }
 
-	/**
-	 * Represents an SSRC for the purpose of this <code>Synchronizer</code>.
-	 */
-	private static class SSRCDesc
-	{
-		/**
-		 * The string identifying the endpoint associated with this SSRC.
-		 */
-		String endpointId = null;
+    /**
+     * Represents an SSRC for the purpose of this <code>Synchronizer</code>.
+     */
+    private static class SSRCDesc {
+        /**
+         * The string identifying the endpoint associated with this SSRC.
+         */
+        String endpointId = null;
 
-		/**
-		 * The RTP clock rate for this SSRC.
-		 */
-		long clockRate = -1;
+        /**
+         * The RTP clock rate for this SSRC.
+         */
+        long clockRate = -1;
 
-		double ntpTime = -1.0;
-		long rtpTime = -1;
-	}
+        double ntpTime = -1.0;
+        long rtpTime = -1;
+    }
 
-	/**
-	 * A class used to identify an "endpoint" or "source". Contains a mapping between a wallclock at
-	 * the endpoint and a time we chose on the local system clock to correcpond to it.
-	 */
-	private static class Endpoint
-	{
-		/**
-		 * The time in seconds on the "endpoint"'s clock.
-		 */
-		double ntpTime = -1.0;
+    /**
+     * A class used to identify an "endpoint" or "source". Contains a mapping between a wallclock at
+     * the endpoint and a time we chose on the local system clock to correcpond to it.
+     */
+    private static class Endpoint {
+        /**
+         * The time in seconds on the "endpoint"'s clock.
+         */
+        double ntpTime = -1.0;
 
-		/**
-		 * The local time.
-		 */
-		long localTime = -1;
-	}
+        /**
+         * The local time.
+         */
+        long localTime = -1;
+    }
 
-	/**
-	 * Represents an item of type CNAME from an RTCP SDES packet.
-	 */
-	private static class CNAMEItem
-	{
-		/**
-		 * The SSRC of the item.
-		 */
-		long ssrc;
+    /**
+     * Represents an item of type CNAME from an RTCP SDES packet.
+     */
+    private static class CNAMEItem {
+        /**
+         * The SSRC of the item.
+         */
+        long ssrc;
 
-		/**
-		 * The CNAME value.
-		 */
-		String cname;
-	}
+        /**
+         * The CNAME value.
+         */
+        String cname;
+    }
 }

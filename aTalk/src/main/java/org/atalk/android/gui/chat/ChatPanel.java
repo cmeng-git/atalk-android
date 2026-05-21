@@ -241,7 +241,6 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         if (mChatSession != null) {
             // remove any old listener if present.
             mCurrentChatTransport.removeInstantMessageListener(this);
-            mCurrentChatTransport.removeSmsMessageListener(this);
             mMHS.removeMessageReceiptListener(this);
         }
 
@@ -249,7 +248,6 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         mChatId = chatSession.getChatId();
         mCurrentChatTransport = mChatSession.getCurrentChatTransport();
         mCurrentChatTransport.addInstantMessageListener(this);
-        mCurrentChatTransport.addSmsMessageListener(this);
 
         // only metaContact chatSession supports Receipt status
         // && mCurrentChatTransport.allowsMessageDeliveryReceipt()) is true only a few ms later; so cannot check
@@ -357,7 +355,6 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      */
     public void dispose() {
         mCurrentChatTransport.removeInstantMessageListener(this);
-        mCurrentChatTransport.removeSmsMessageListener(this);
         mMHS.removeMessageReceiptListener(this);
 
         mChatSession.dispose();

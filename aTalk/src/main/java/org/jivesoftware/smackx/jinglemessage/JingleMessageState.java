@@ -22,7 +22,6 @@ package org.jivesoftware.smackx.jinglemessage;
  *
  * @author Eng Chong Meng
  */
-
 public enum JingleMessageState {
     initial,
     finish,

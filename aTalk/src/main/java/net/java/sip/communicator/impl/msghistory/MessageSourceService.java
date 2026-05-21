@@ -111,11 +111,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      */
     private static final String VER_OF_RECENT_MSGS_PROP = "msghistory.contactsrc.MSG_VER";
     /**
-     * Property to control messages type. Can query for message sub type.
-     */
-    private static final String IS_MESSAGE_SUBTYPE_SMS_PROP = "msghistory.contactsrc.IS_SMS_ENABLED";
-
-    /**
      * Sort database message records by TimeStamp in ASC
      */
     private static final String ORDER_ASC = MessageSourceService.TIME_STAMP + " ASC";
@@ -151,10 +146,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      */
     private MessageSourceContactQuery recentQuery = null;
     /**
-     * The message subtype if any.
-     */
-    private boolean isSMSEnabled = false;
-    /**
      * Message history service that has created us.
      */
     private final MessageHistoryServiceImpl messageHistoryService;
@@ -176,10 +167,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         }
 
         numberOfMessages = conf.getInt(NUMBER_OF_RECENT_MSGS_PROP, numberOfMessages);
-        isSMSEnabled = conf.getBoolean(IS_MESSAGE_SUBTYPE_SMS_PROP, isSMSEnabled);
         RECENT_MSGS_VER = conf.getString(VER_OF_RECENT_MSGS_PROP, RECENT_MSGS_VER);
-        MessageSourceContactPresenceStatus.MSG_SRC_CONTACT_ONLINE.setStatusIcon(
-                MessageHistoryActivator.getResources().getImageInBytes("sms_status_icon"));
     }
 
     @Override
@@ -217,7 +205,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
             if (cachedRecentMessages.isEmpty()) {
                 // there is no cached history for this, let's check and load it not from cache, but do a local search
                 Collection<EventObject> res = messageHistoryService.findRecentMessagesPerContact(numberOfMessages,
-                        provider.getAccountID().getAccountUid(), null, isSMSEnabled);
+                        provider.getAccountID().getAccountUid(), null);
 
                 List<ComparableEvtObj> newMsc = new ArrayList<>();
                 processEventObjects(res, newMsc, isStatusChanged);
@@ -362,8 +350,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         List<ComparableEvtObj> cachedRecentMessages = new ArrayList<>();
         for (String contactId : recentMessagesContactIDs) {
             try {
-                res = messageHistoryService.findRecentMessagesPerContact(numberOfMessages,
-                        accountId, contactId, isSMSEnabled);
+                res = messageHistoryService.findRecentMessagesPerContact(numberOfMessages, accountId, contactId);
                 processEventObjects(res, cachedRecentMessages, isStatusChanged);
             } catch (Exception e) { // IndexOutOfBound
                 Timber.w("Get cache recent message exception for: %s => %s", contactId, e.getMessage());
@@ -415,15 +402,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
                 cachedRecentMessages.add(oldMsg);
             }
         }
-    }
-
-    /**
-     * Access for source contacts impl.
-     *
-     * @return isSMSEnabled
-     */
-    boolean isSMSEnabled() {
-        return isSMSEnabled;
     }
 
     /**
@@ -570,17 +548,11 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 
     @Override
     public void messageReceived(MessageReceivedEvent evt) {
-        if (isSMSEnabled && (evt.getEventType() != ChatMessage.MESSAGE_SMS_IN)) {
-            return;
-        }
         handle(evt, evt.getSourceContact().getProtocolProvider(), evt.getSourceContact().getAddress());
     }
 
     @Override
     public void messageDelivered(MessageDeliveredEvent evt) {
-        if (isSMSEnabled && !evt.isSmsMessage())
-            return;
-
         handle(evt, evt.getContact().getProtocolProvider(), evt.getContact().getAddress());
     }
 
@@ -593,9 +565,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 
     @Override
     public void messageReceived(ChatRoomMessageReceivedEvent evt) {
-        if (isSMSEnabled)
-            return;
-
         // ignore non conversation messages
         if (evt.getEventType() != ChatMessage.MESSAGE_IN)
             return;
@@ -605,9 +574,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 
     @Override
     public void messageDelivered(ChatRoomMessageDeliveredEvent evt) {
-        if (isSMSEnabled)
-            return;
-
         handle(evt, evt.getSourceChatRoom().getParentProvider(), evt.getSourceChatRoom().getName());
     }
 

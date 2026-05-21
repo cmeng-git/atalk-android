@@ -52,11 +52,6 @@ public class MessageDeliveredEvent extends EventObject {
     private String correctedMessageUID;
 
     /**
-     * Whether the delivered message is a sms message.
-     */
-    private boolean smsMessage = false;
-
-    /**
      * Whether the delivered message is encrypted or not.
      */
     private boolean isMessageEncrypted = false;
@@ -147,7 +142,7 @@ public class MessageDeliveredEvent extends EventObject {
      * @return one of the XXX_MESSAGE_DELIVERED fields of this class indicating the type of this event.
      */
     public int getEventType() {
-        return isSmsMessage() ? ChatMessage.MESSAGE_SMS_OUT : ChatMessage.MESSAGE_OUT;
+        return ChatMessage.MESSAGE_OUT;
     }
 
     /**
@@ -168,24 +163,6 @@ public class MessageDeliveredEvent extends EventObject {
      */
     public void setCorrectedMessageUID(String correctedMessageUID) {
         this.correctedMessageUID = correctedMessageUID;
-    }
-
-    /**
-     * Sets whether the message is a sms one.
-     *
-     * @param smsMessage whether it is a sms one.
-     */
-    public void setSmsMessage(boolean smsMessage) {
-        this.smsMessage = smsMessage;
-    }
-
-    /**
-     * Returns whether the delivered message is a sms one.
-     *
-     * @return whether the delivered message is a sms one.
-     */
-    public boolean isSmsMessage() {
-        return smsMessage;
     }
 
     /**

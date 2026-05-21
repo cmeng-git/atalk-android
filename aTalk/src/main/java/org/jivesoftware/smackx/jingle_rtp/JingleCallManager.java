@@ -24,11 +24,6 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.Async;
 
-import org.jivesoftware.smackx.DefaultExtensionElementProvider;
-import org.jivesoftware.smackx.coin.CoinExtension;
-import org.jivesoftware.smackx.colibri.WebSocketExtension;
-import org.jivesoftware.smackx.confdesc.CallIdExtension;
-import org.jivesoftware.smackx.confdesc.ConferenceDescriptionExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.jingle.JingleHandler;
 import org.jivesoftware.smackx.jingle.JingleManager;
@@ -40,7 +35,7 @@ import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportCandidate;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportRemoteCandidate;
 import org.jivesoftware.smackx.jingle_rtp.element.InputEvent;
-import org.jivesoftware.smackx.jingle_rtp.element.ParameterElement;
+import org.jivesoftware.smackx.jingle_rtp.element.Parameter;
 import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
 import org.jivesoftware.smackx.jingle_rtp.element.RawUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.RtcpFb;
@@ -48,17 +43,20 @@ import org.jivesoftware.smackx.jingle_rtp.element.RtcpMux;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpExtmap;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpHeader;
+import org.jivesoftware.smackx.jingle_rtp.element.SctpMap;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpBandwidth;
 import org.jivesoftware.smackx.jingle_rtp.element.SdpCrypto;
 import org.jivesoftware.smackx.jingle_rtp.element.SdpSource;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpSourceGroup;
 import org.jivesoftware.smackx.jingle_rtp.element.SdpTransfer;
 import org.jivesoftware.smackx.jingle_rtp.element.SdpTransferred;
 import org.jivesoftware.smackx.jingle_rtp.element.SrtpEncryption;
 import org.jivesoftware.smackx.jingle_rtp.element.SrtpFingerprint;
 import org.jivesoftware.smackx.jingle_rtp.element.ZrtpHash;
 import org.jivesoftware.smackx.jingle_rtp.provider.JingleRTPDescriptionProvider;
+import org.jivesoftware.smackx.jingle_rtp.provider.JingleRTPRawTransportProvider;
 import org.jivesoftware.smackx.jingle_rtp.provider.JingleRTPTransportProvider;
-import org.jivesoftware.smackx.jitsimeet.BundleExtension;
-import org.jivesoftware.smackx.jitsimeet.SSRCInfoExtension;
+
 import org.jxmpp.jid.FullJid;
 
 /**
@@ -94,150 +92,126 @@ public final class JingleCallManager extends Manager implements JingleHandler {
         JingleManager jingleManager = JingleManager.getInstanceFor(connection);
         jingleManager.registerDescriptionHandler(getNamespace(), this);
 
-        JingleContentProviderManager.addJingleContentDescriptionProvider(RtpDescription.NAMESPACE, new JingleRTPDescriptionProvider());
-        JingleContentProviderManager.addJingleContentTransportProvider(IceUdpTransport.NAMESPACE, new JingleRTPTransportProvider());
-
         /*
          * Register all jingle related extension providers for the RTP media call support.
          * It is the responsibility of the application to register the <code>JingleProvider</code> itself.
          *
          * Note: All sub Elements without its own NAMESPACE use their parent NAMESPACE for provider support (Parser implementation)
          */
-        // <payload-type/> provider
-        ProviderManager.addExtensionProvider(
-                PayloadType.ELEMENT, RtpDescription.NAMESPACE,
-                new DefaultXmlElementProvider<>(PayloadType.class, RtpDescription.NAMESPACE));
-
-        // <parameter/> provider - RtpDescription
-        ProviderManager.addExtensionProvider(
-                ParameterElement.ELEMENT, RtpDescription.NAMESPACE,
-                new DefaultXmlElementProvider<>(ParameterElement.class, RtpDescription.NAMESPACE));
-
-        // <parameter/> provider - RtpHeader
-        ProviderManager.addExtensionProvider(
-                ParameterElement.ELEMENT, RtpHeader.NAMESPACE,
-                new DefaultXmlElementProvider<>(ParameterElement.class, RtpHeader.NAMESPACE));
-
-        // <parameter/> provider - SdpSource
-        ProviderManager.addExtensionProvider(
-                ParameterElement.ELEMENT, SdpSource.NAMESPACE,
-                new DefaultXmlElementProvider<>(ParameterElement.class, SdpSource.NAMESPACE));
-
-        // <rtp-hdrext/> provider
-        ProviderManager.addExtensionProvider(
-                RtpHeader.ELEMENT, RtpHeader.NAMESPACE,
-                new DefaultXmlElementProvider<>(RtpHeader.class));
-
-        // <extmap-allow-mixed/> provider
-        ProviderManager.addExtensionProvider(
-                RtpExtmap.ELEMENT, RtpExtmap.NAMESPACE,
-                new DefaultXmlElementProvider<>(RtpExtmap.class));
-
-        // <raw-udp/> provider - RawUdpTransport
-        ProviderManager.addExtensionProvider(
-                IceUdpTransport.ELEMENT, RawUdpTransport.NAMESPACE,
-                new DefaultXmlElementProvider<>(RawUdpTransport.class));
-
-        // ice-udp <candidate/> provider - IceUdpTransportCandidate
-        ProviderManager.addExtensionProvider(
-                IceUdpTransportCandidate.ELEMENT, IceUdpTransportCandidate.NAMESPACE,
-                new DefaultXmlElementProvider<>(IceUdpTransportCandidate.class));
-
-        // raw-udp <candidate/> provider - RawUdpTransport
-        ProviderManager.addExtensionProvider(
-                IceUdpTransportCandidate.ELEMENT, RawUdpTransport.NAMESPACE,
-                new DefaultXmlElementProvider<>(IceUdpTransportCandidate.class));
-
-        // ice-udp <remote-candidate/> provider - IceUdpTransportRemoteCandidate
-        ProviderManager.addExtensionProvider(
-                IceUdpTransportRemoteCandidate.ELEMENT, IceUdpTransportRemoteCandidate.NAMESPACE,
-                new DefaultXmlElementProvider<>(IceUdpTransportRemoteCandidate.class));
-
-        // rtcp-mux => XEP-0167: Jingle RTP Sessions
-        ProviderManager.addExtensionProvider(
-                RtcpMux.ELEMENT, RtpDescription.NAMESPACE,
-                new DefaultXmlElementProvider<>(RtcpMux.class, RtpDescription.NAMESPACE));
-
-        // rtcp-mux =>  Multiplexing RTP Data and Control Packets on a Single Port (April 2010)
-        // https://tools.ietf.org/html/rfc5761#section-5.1.3 (5.1.3. Interactions with ICE)
-        ProviderManager.addExtensionProvider(
-                RtcpMux.ELEMENT, IceUdpTransport.NAMESPACE,
-                new DefaultXmlElementProvider<>(RtcpMux.class, IceUdpTransport.NAMESPACE));
-
-        // <encryption/> provider
-        ProviderManager.addExtensionProvider(
-                SrtpEncryption.ELEMENT, SrtpEncryption.NAMESPACE,
-                new DefaultXmlElementProvider<>(SrtpEncryption.class));
-
-        // <zrtp-hash/> provider
-        ProviderManager.addExtensionProvider(
-                ZrtpHash.ELEMENT, ZrtpHash.NAMESPACE,
-                new DefaultXmlElementProvider<>(ZrtpHash.class));
-
-        // <crypto/> provider
-        ProviderManager.addExtensionProvider(
-                SdpCrypto.ELEMENT, RtpDescription.NAMESPACE,
-                new DefaultXmlElementProvider<>(SdpCrypto.class));
+        JingleContentProviderManager.addJingleContentDescriptionProvider(
+                RtpDescription.NAMESPACE, new JingleRTPDescriptionProvider());
+        JingleContentProviderManager.addJingleContentTransportProvider(
+                IceUdpTransport.NAMESPACE, new JingleRTPTransportProvider());
+        JingleContentProviderManager.addJingleContentTransportProvider(
+                RawUdpTransport.NAMESPACE, new JingleRTPRawTransportProvider());
 
         // Jingle Grouping provider: use default instead of new JingleGroupingProvider());
         ProviderManager.addExtensionProvider(
                 Grouping.ELEMENT, Grouping.NAMESPACE,
-                new DefaultXmlElementProvider<>(Grouping.class));
-                // new JingleGroupingProvider());
+                new DefaultXmlElementProvider<>(Grouping.class, Grouping.NAMESPACE));
+
+        // <raw-udp/> provider - RawUdpTransport
+        ProviderManager.addExtensionProvider(
+                IceUdpTransport.ELEMENT, RawUdpTransport.NAMESPACE,
+                new DefaultXmlElementProvider<>(RawUdpTransport.class, RawUdpTransport.NAMESPACE));
+
+        // inputevent <inputevt/> provider
+        ProviderManager.addExtensionProvider(
+                InputEvent.ELEMENT, InputEvent.NAMESPACE,
+                new DefaultXmlElementProvider<>(InputEvent.class, InputEvent.NAMESPACE));
 
         // <group/> sub-element <content/>
         ProviderManager.addExtensionProvider(
-                JingleContent.ELEMENT, Grouping.NAMESPACE,
-                new DefaultXmlElementProvider<>(JingleContent.class));
+                JingleContent.ELEMENT, Grouping.NAMESPACE, new DefaultXmlElementProvider<>(JingleContent.class));
 
-        // Jitsi inputevent <inputevt/> provider
+        // <extmap-allow-mixed/> provider
         ProviderManager.addExtensionProvider(
-                InputEvent.ELEMENT, InputEvent.NAMESPACE,
-                new DefaultXmlElementProvider<>(InputEvent.class));
-
-        // DTLS-SRTP
-        ProviderManager.addExtensionProvider(
-                SrtpFingerprint.ELEMENT, SrtpFingerprint.NAMESPACE,
-                new DefaultXmlElementProvider<>(SrtpFingerprint.class));
-
-        // XEP-0251: Jingle Session Transfer <transfer/> and <transferred> providers
-        ProviderManager.addExtensionProvider(
-                SdpTransfer.ELEMENT, SdpTransfer.NAMESPACE,
-                new DefaultXmlElementProvider<>(SdpTransfer.class));
-
-        ProviderManager.addExtensionProvider(
-                SdpTransferred.ELEMENT, SdpTransferred.NAMESPACE,
-                new DefaultXmlElementProvider<>(SdpTransferred.class));
+                RtpExtmap.ELEMENT, RtpExtmap.NAMESPACE,
+                new DefaultXmlElementProvider<>(RtpExtmap.class, RtpExtmap.NAMESPACE));
 
         // rtcp-fb
         ProviderManager.addExtensionProvider(
                 RtcpFb.ELEMENT, RtcpFb.NAMESPACE,
-                new DefaultXmlElementProvider<>(RtcpFb.class));
+                new DefaultXmlElementProvider<>(RtcpFb.class, RtcpFb.NAMESPACE));
 
-        // <bundle/> provider (jitsi-specific)
+        // <rtp-hdrext/> provider
         ProviderManager.addExtensionProvider(
-                BundleExtension.ELEMENT, BundleExtension.NAMESPACE,
-                new DefaultXmlElementProvider<>(BundleExtension.class));
+                RtpHeader.ELEMENT, RtpHeader.NAMESPACE,
+                new DefaultXmlElementProvider<>(RtpHeader.class, RtpHeader.NAMESPACE));
 
-        // web-socket
+        // SctpMap
         ProviderManager.addExtensionProvider(
-                WebSocketExtension.ELEMENT, WebSocketExtension.NAMESPACE,
-                new DefaultXmlElementProvider<>(WebSocketExtension.class));
+                SctpMap.ELEMENT, SctpMap.NAMESPACE,
+                new DefaultXmlElementProvider<>(SctpMap.class, SctpMap.NAMESPACE));
+        ProviderManager.addExtensionProvider(
+                SdpSource.ELEMENT, SdpSource.NAMESPACE,
+                new DefaultXmlElementProvider<>(SdpSource.class, SdpSource.NAMESPACE));
 
-        // coin <conference-info/> provider
         ProviderManager.addExtensionProvider(
-                CoinExtension.ELEMENT, CoinExtension.NAMESPACE,
-                new DefaultXmlElementProvider<>(CoinExtension.class));
+                SdpSourceGroup.ELEMENT, SdpSourceGroup.NAMESPACE,
+                new DefaultXmlElementProvider<>(SdpSourceGroup.class, SdpSourceGroup.NAMESPACE));
 
-        // conference description <callid/> provider (jitsi-specific)
+        // <parameter/> provider - SdpSource
         ProviderManager.addExtensionProvider(
-                CallIdExtension.ELEMENT, ConferenceDescriptionExtension.NAMESPACE,
-                new DefaultExtensionElementProvider<>(CallIdExtension.class));
+                SdpSource.ELEMENT, SdpSource.NAMESPACE,
+                new DefaultXmlElementProvider<>(SdpSource.class, SdpSource.NAMESPACE));
 
-        // ssrcInfo (jitsimeet-specific)
+        // <zrtp-hash/> provider
         ProviderManager.addExtensionProvider(
-                SSRCInfoExtension.ELEMENT, SSRCInfoExtension.NAMESPACE,
-                new DefaultExtensionElementProvider<>(SSRCInfoExtension.class));
+                ZrtpHash.ELEMENT, ZrtpHash.NAMESPACE,
+                new DefaultXmlElementProvider<>(ZrtpHash.class, ZrtpHash.NAMESPACE));
+
+        // XEP-0251: Jingle Session Transfer <transfer/> and <transferred> providers
+        ProviderManager.addExtensionProvider(
+                SdpTransfer.ELEMENT, SdpTransfer.NAMESPACE,
+                new DefaultXmlElementProvider<>(SdpTransfer.class, SdpTransfer.NAMESPACE));
+
+        ProviderManager.addExtensionProvider(
+                SdpTransferred.ELEMENT, SdpTransferred.NAMESPACE,
+                new DefaultXmlElementProvider<>(SdpTransferred.class, SdpTransferred.NAMESPACE));
+
+        // DTLS-SRTP
+        ProviderManager.addExtensionProvider(
+                SrtpFingerprint.ELEMENT, SrtpFingerprint.NAMESPACE,
+                new DefaultXmlElementProvider<>(SrtpFingerprint.class, SrtpFingerprint.NAMESPACE));
+
+        // ============ NamedElement Provider ===================== //
+        // ice-udp <candidate/> provider - IceUdpTransportCandidate
+        JingleContentProviderManager.addJingleContentELementProvider(IceUdpTransportCandidate.ELEMENT,
+                new DefaultElementProvider<>(IceUdpTransportCandidate.class, IceUdpTransportCandidate.ELEMENT));
+
+        // ice-udp <remote-candidate/> provider - IceUdpTransportRemoteCandidate
+        JingleContentProviderManager.addJingleContentELementProvider(IceUdpTransportRemoteCandidate.ELEMENT,
+                new DefaultElementProvider<>(IceUdpTransportRemoteCandidate.class, IceUdpTransportRemoteCandidate.ELEMENT));
+
+        // <parameter/> provider
+        JingleContentProviderManager.addJingleContentELementProvider(Parameter.ELEMENT,
+                new DefaultElementProvider<>(Parameter.class, Parameter.ELEMENT));
+
+        JingleContentProviderManager.addJingleContentELementProvider(PayloadType.ELEMENT,
+                new DefaultElementProvider<>(PayloadType.class, PayloadType.ELEMENT));
+
+        // raw-udp <candidate/> provider - RawUdpTransport
+        // JingleContentProviderManager.addJingleContentELementProvider(
+        //        RawUdpTransport.ELEMENT, new DefaultElementProvider<>(IceUdpTransportCandidate.class));
+
+        // rtcp-mux => XEP-0167: Jingle RTP Sessions
+        // Multiplexing RTP Data and Control Packets on a Single Port (April 2010)
+        // https://tools.ietf.org/html/rfc5761#section-5.1.3 (5.1.3. Interactions with ICE)
+        JingleContentProviderManager.addJingleContentELementProvider(RtcpMux.ELEMENT,
+                new DefaultElementProvider<>(RtcpMux.class, RtcpMux.ELEMENT));
+
+        // SdpBandwidth
+        JingleContentProviderManager.addJingleContentELementProvider(SdpBandwidth.ELEMENT,
+                new DefaultElementProvider<>(SdpBandwidth.class, SdpBandwidth.ELEMENT));
+
+        // <crypto/> provider
+        JingleContentProviderManager.addJingleContentELementProvider(SdpCrypto.ELEMENT,
+                new DefaultElementProvider<>(SdpCrypto.class, SdpCrypto.ELEMENT));
+
+        // <encryption/> provider
+        JingleContentProviderManager.addJingleContentELementProvider(SrtpEncryption.ELEMENT,
+                new DefaultElementProvider<>(SrtpEncryption.class, SrtpEncryption.ELEMENT));
     }
 
     /**
@@ -246,6 +220,7 @@ public final class JingleCallManager extends Manager implements JingleHandler {
      * Media call <code>transfer</code> is handled via this callback
      *
      * @param jingle Jingle session-initiate
+     *
      * @return IQ.Result for ack
      */
     @Override
@@ -258,7 +233,7 @@ public final class JingleCallManager extends Manager implements JingleHandler {
         }
         final JingleCallSessionImpl session = new JingleCallSessionImpl(connection(), initiator, jingle.getSid(),
                 jingle.getContents(), mBasicTelephony);
-        Async.go(() -> mBasicTelephony.handleJingleSession(session, jingle));
+        Async.go(() -> mBasicTelephony.handleJingleCallSession(session, jingle));
         return IQ.createResultIQ(jingle);
     }
 

@@ -45,9 +45,9 @@ import org.jxmpp.jid.DomainBareJid;
 
 /**
  * A manager for XEP-0215: External Service Discovery.
+ * @see <a href="https://xmpp.org/extensions/xep-0215.html">XEP-0215: External Service Discovery</a>
  *
  * @author Eng Chong Meng
- * @see <a href="https://xmpp.org/extensions/xep-0215.html">XEP-0215: External Service Discovery</a>
  */
 public final class ExternalServiceDiscoveryManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(ExternalServiceDiscoveryManager.class.getName());

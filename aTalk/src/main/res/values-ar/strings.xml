@@ -130,7 +130,8 @@
     <string name="call_audio">مكالمة صوتية</string>
     <string name="call_answered">أجاب %1$s على المكالمة.</string>
     <string name="call_disable_on_fault">فشل aTalk في تهيئة %1$s\nسيتم تعطيل جميع مكالمات/خدمات الوسائط.\n%2$s</string>
-    <string name="call_ended">أنهى الطرف البعيد المكالمة: %1$s</string>
+    <string name="call_ended">انتهت المكالمة</string>
+    <string name="call_ended_by_remote">أنهى الطرف البعيد المكالمة: %1$s</string>
     <string name="call_error">أعاد الطرف البعيد خطأ: %1$s</string>
     <string name="call_failed">فشلت المكالمة</string>
     <string name="call_history_name">سجل المكالمات</string>
@@ -315,10 +316,6 @@
     <string name="refresh_store_omemo">XEP-0384: تشفير OMEMO</string>
 
     <string name="unregistered_message">فشل تسجيل الدخول للاتصال بالحساب:\nاسم المستخدم: %1$s\nاسم الخادم: %2$s\nالحساب غير متصل.</string>
-    <string name="create_videoBridge">إنشاء جسر فيديو…</string>
-    <string name="create_videoBridge_menu">إنشاء جسر فيديو</string>
-    <string name="create_join_video_conference">إنشاء / الانضمام إلى مؤتمر فيديو</string>
-    <string name="create_video_conference">إنشاء مؤتمر فيديو جديد لغرفة الدردشة هذه</string>
     <string name="video_format_not_supported">فشل في تعيين معاينة كاميرا الجهاز إلى: %1$s؛ استثناء: %2$s.</string>
     <string name="disconnected">غير متصل</string>
     <string name="disconnecting_">جارٍ قطع الاتصال بـ %1$s</string>
@@ -656,7 +653,6 @@
     <string name="callinfo_call_information">معلومات المكالمة</string>
     <string name="callinfo_call_transport">نقل إشارة المكالمة:</string>
     <string name="callinfo_codec">الترميز/التردد:</string>
-    <string name="callinfo_conference_focus">مركز المؤتمر:</string>
     <string name="callinfo_default_encrypted">التشفير مفعل:</string>
     <string name="callinfo_jitter">التقطع:</string>
     <string name="callinfo_key_exchange_protocol">بروتوكول تبادل المفاتيح</string>
@@ -666,7 +662,6 @@
     <string name="callinfo_media_srtp">SRTP:</string>
     <string name="callinfo_media_stream_transport_protocol">بروتوكول نقل تيار الوسائط:</string>
     <string name="callinfo_na">غير متاح</string>
-    <string name="callinfo_peer_count">عدد المشاركين:</string>
     <string name="callinfo_remote_ip">IP/منفذ بعيد:</string>
     <string name="callinfo_rtt">RTT:</string>
     <string name="callinfo_details">تفاصيل معلومات المكالمة</string>
@@ -1003,7 +998,6 @@
     <string name="sec_protocols_title">بروتوكولات الأمان</string>
     <string name="sec_protocols_message">يرجى اختيار ترتيب البروتوكولات المطلوب</string>
     <string name="discard">تجاهل</string>
-    <string name="sec_zrtp_signalling_off">لن يكون هناك إعلان عن ZRTP</string>
 
     <!-- STUN/Jingle Nodes list -->
     <string name="service_gui_SERVERS_LIST_ADD_SERVER">إضافة خادم</string>
@@ -1031,7 +1025,6 @@
     <string name="security_sdes_dlg_title">اختر مجموعات التشفير المطلوبة</string>
     <string name="security_sdes_title">مجموعات تشفير SDES</string>
     <string name="security_zrtp_options">خيارات ZRTP</string>
-    <string name="security_zrtp_signalling">إشارة ZRTP</string>
 
     <!-- Common preferences -->
     <string name="audio_encoding">ترميز الصوت</string>

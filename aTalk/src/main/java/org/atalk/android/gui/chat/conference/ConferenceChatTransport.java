@@ -15,7 +15,6 @@ import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.OperationNotSupportedException;
 import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
 import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
-import net.java.sip.communicator.service.protocol.OperationSetSmsMessaging;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
@@ -142,17 +141,6 @@ public class ConferenceChatTransport implements ChatTransport {
     }
 
     /**
-     * Returns {@code true} if this chat transport supports sms messaging,
-     * otherwise returns {@code false}.
-     *
-     * @return {@code true} if this chat transport supports sms messaging,
-     * otherwise returns {@code false}.
-     */
-    public boolean allowsSmsMessage() {
-        return false;
-    }
-
-    /**
      * Returns {@code true} if this chat transport supports message delivery receipts,
      * otherwise returns {@code false}.
      *
@@ -244,28 +232,6 @@ public class ConferenceChatTransport implements ChatTransport {
     }
 
     /**
-     * Sending sms messages is not supported by this chat transport implementation.
-     */
-    public void sendSmsMessage(String phoneNumber, String message)
-            throws Exception {
-    }
-
-    /**
-     * Sending sms messages is not supported by this chat transport implementation.
-     */
-    public void sendSmsMessage(String message)
-            throws Exception {
-    }
-
-    /**
-     * Sending file in sms messages is not supported by this chat transport implementation.
-     */
-    public FileTransfer sendMultimediaFile(File file)
-            throws Exception {
-        return null;
-    }
-
-    /**
      * Sends the given sticker through this chat transport file will always use http file upload
      *
      * @param file the file to send
@@ -279,15 +245,6 @@ public class ConferenceChatTransport implements ChatTransport {
     public Object sendSticker(File file, int chatType, FileSendConversation xferCon)
             throws Exception {
         return sendFile(file, chatType, xferCon);
-    }
-
-    /**
-     * Not used.
-     *
-     * @return status
-     */
-    public boolean askForSMSNumber() {
-        return false;
     }
 
     /**
@@ -408,20 +365,6 @@ public class ConferenceChatTransport implements ChatTransport {
     }
 
     /**
-     * Adds an sms message listener to this chat transport.
-     *
-     * @param l The message listener to add.
-     */
-    public void addSmsMessageListener(MessageListener l) {
-        // If this chat transport does not support sms messaging we do nothing here.
-        if (!allowsSmsMessage())
-            return;
-
-        OperationSetSmsMessaging smsOpSet = mPPS.getOperationSet(OperationSetSmsMessaging.class);
-        smsOpSet.addMessageListener(l);
-    }
-
-    /**
      * Adds an instant message listener to this chat transport.
      *
      * @param l The message listener to add.
@@ -433,20 +376,6 @@ public class ConferenceChatTransport implements ChatTransport {
 
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
         imOpSet.addMessageListener(l);
-    }
-
-    /**
-     * Removes the given sms message listener from this chat transport.
-     *
-     * @param l The message listener to remove.
-     */
-    public void removeSmsMessageListener(MessageListener l) {
-        // If this chat transport does not support sms messaging we do nothing here.
-        if (!allowsSmsMessage())
-            return;
-
-        OperationSetSmsMessaging smsOpSet = mPPS.getOperationSet(OperationSetSmsMessaging.class);
-        smsOpSet.removeMessageListener(l);
     }
 
     /**

@@ -261,11 +261,6 @@ public abstract class ProtocolProviderFactory
      */
     public static final String ENCRYPTION_PROTOCOL_STATUS = "ENCRYPTION_PROTOCOL_STATUS";
 
-    /**
-     * The name of the property which defines if to include the ZRTP attribute to SIP/SDP
-     */
-    public static final String DEFAULT_SIPZRTP_ATTRIBUTE = "DEFAULT_SIPZRTP_ATTRIBUTE";
-
     /*
      * DTLS-SRTP TLS certificate signature algorithm e.g. SHA256withECDSA, SHA256withRSA
      */
@@ -494,11 +489,6 @@ public abstract class ProtocolProviderFactory
      * Indicates if desktop remote control is disabled for a certain account.
      */
     public static final String IS_DESKTOP_REMOTE_CONTROL_DISABLED = "DESKTOP_REMOTE_CONTROL_DISABLED";
-
-    /**
-     * The sms default server address.
-     */
-    public static final String SMS_SERVER_ADDRESS = "SMS_SERVER_ADDRESS";
 
     /**
      * Keep-alive method used by the protocol.

@@ -32,6 +32,7 @@
     <string name="encryption_omemo">OMEMO</string>
     <string name="aTalk_account_type">org.atalk.android.account</string>
     <string name="url_media_share">&lt;html>&lt;a href=\'%3$s\'>&lt;img src=\'%1$s\' alt=\'url image\'/>&lt;/a>&lt;br/>%2$s&lt;br/>&lt;a href=\'%3$s\'>%3$s&lt;/a>&lt;/html></string>
+    <string name="string_holder">%1$s</string>
 
     <!-- Conference Chat -->
     <string name="chat_reply_quote">&lt;blockquote>&lt;small>

@@ -79,7 +79,7 @@
     <string name="call_transfer">转接</string>
     <string name="call_transfer_failed">无法继续呼叫转移：%1$s ⇢ %2$s\n%3$s</string>
     <string name="call_transfer_hint">选择您要转接到的联系人的姓名，然后点击转接。</string>
-    <string name="call_transfer_msg">%1$s 呼叫转移到… %2$s</string>
+    <string name="call_transfer_msg">%1$s 呼叫转移到 %2$s</string>
 
     <string name="attach_picture">图片</string>
     <string name="attach_take_picture">拍照</string>
@@ -155,7 +155,8 @@
     <string name="call_audio">启动语音通话</string>
     <string name="call_answered">%1$s 已接听电话。</string>
     <string name="call_disable_on_fault">aTalk 未能初始化 %1$s\n所有媒体通话/服务将被禁用。\n%2$s</string>
-    <string name="call_ended">远程调用者已结束通话：%1$s</string>
+    <string name="call_ended">通话结束</string>
+    <string name="call_ended_by_remote">远程调用者已结束通话：%1$s</string>
     <string name="call_error">远程方返回错误：%1$s</string>
     <string name="call_failed">调用失败</string>
     <string name="call_history_name">通话记录</string>
@@ -342,10 +343,6 @@
     <string name="refresh_store_omemo">XEP-0384：OMEMO 加密</string>
 
     <string name="unregistered_message">账户连接登录失败：\n用户名：%1$s\n服务器名：%2$s\n账户离线。</string>
-    <string name="create_videoBridge">创建视频桥接…</string>
-    <string name="create_videoBridge_menu">创建视频桥</string>
-    <string name="create_join_video_conference">创建/加入视频会议</string>
-    <string name="create_video_conference">为此聊天室创建一个新的视频会议</string>
     <string name="video_format_not_supported">无法将设备相机预览设置为：%1$s； 异常：%2$s.</string>
     <string name="disconnected">断开连接</string>
     <string name="disconnecting_">正在断开 %1$s</string>
@@ -686,7 +683,6 @@
     <string name="callinfo_call_information">通话信息</string>
     <string name="callinfo_call_transport">信令呼叫传输：</string>
     <string name="callinfo_codec">编解码器/频率：</string>
-    <string name="callinfo_conference_focus">会议焦点：</string>
     <string name="callinfo_default_encrypted">启用加密：</string>
     <string name="callinfo_jitter">抖动：</string>
     <string name="callinfo_key_exchange_protocol">密钥交换协议</string>
@@ -696,7 +692,6 @@
     <string name="callinfo_media_srtp">SRTP:</string>
     <string name="callinfo_media_stream_transport_protocol">媒体流传输协议：</string>
     <string name="callinfo_na">不适用</string>
-    <string name="callinfo_peer_count">参与人数：</string>
     <string name="callinfo_remote_ip">远程IP/端口：</string>
     <string name="callinfo_rtt">RTT:</string>
     <string name="callinfo_details">通话信息详情</string>
@@ -1061,8 +1056,6 @@
     <string name="sec_protocols_title">安全协议</string>
     <string name="sec_protocols_message">请选择所需的协议顺序</string>
     <string name="discard">丢弃</string>
-    <string name="sec_zrtp_signalling_on">ZRTP 将通过信令协议发布</string>
-    <string name="sec_zrtp_signalling_off">不会有ZRTP广告</string>
 
     <!-- STUN/Jingle Nodes list -->
     <string name="service_gui_SERVERS_LIST_ADD_SERVER">添加服务器</string>
@@ -1090,7 +1083,6 @@
     <string name="security_sdes_dlg_title">选择所需的密码套件</string>
     <string name="security_sdes_title">SDES 密码套件</string>
     <string name="security_zrtp_options">ZRTP 选项</string>
-    <string name="security_zrtp_signalling">ZRTP 信号</string>
 
     <!-- Common preferences -->
     <string name="audio_encoding">音频编码</string>

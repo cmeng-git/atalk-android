@@ -134,6 +134,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     private final List<SrtpControlType> advertisedEncryptionMethods = new ArrayList<>();
 
     /**
+     * List of supported encryption methods by remote that overlapped with advertisedEncryptionMethods;
+     */
+    private final List<SrtpControlType> supportedEncryptionMethods = new ArrayList<>();
+
+    /**
      * Determines whether or not streaming local audio is currently enabled.
      */
     private MediaDirection audioDirectionUserPreference = MediaDirection.SENDRECV;
@@ -329,6 +334,38 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     }
 
     /**
+     * Returns the advertised methods for securing the call, this are the methods like SDES, ZRTP
+     * that are indicated in the initial session initialization. Missing here doesn't mean the
+     * other party don't support it.
+     *
+     * @return the advertised encryption methods.
+     */
+    public SrtpControlType[] getAdvertisedEncryptionMethods() {
+        return advertisedEncryptionMethods.toArray(new SrtpControlType[0]);
+    }
+
+    /**
+     * Adds encryption method to the list of remote supported secure methods, overlapping with advertisedEncryptionMethods.
+     *
+     * @param encryptionMethod the method to add.
+     */
+    public void addSupportedEncryptionMethod(SrtpControlType encryptionMethod) {
+        if (!supportedEncryptionMethods.contains(encryptionMethod))
+            supportedEncryptionMethods.add(encryptionMethod);
+    }
+
+    /**
+     * Returns the supported methods for securing the call, this are the methods like SDES, ZRTP
+     * that are indicated in the created initial session initialization. Missing here doesn't mean the
+     * other party don't support it.
+     *
+     * @return the supported encryption methods.
+     */
+    public SrtpControlType[] getSupportedEncryptionMethods() {
+        return supportedEncryptionMethods.toArray(new SrtpControlType[0]);
+    }
+
+    /**
      * Registers a specific <code>VideoListener</code> with this instance so that it starts receiving
      * notifications from it about changes in the availability of visual <code>Component</code>s displaying video.
      *
@@ -500,17 +537,6 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     }
 
     /**
-     * Returns the advertised methods for securing the call, this are the methods like SDES, ZRTP
-     * that are indicated in the initial session initialization. Missing here doesn't mean the
-     * other party don't support it.
-     *
-     * @return the advertised encryption methods.
-     */
-    public SrtpControlType[] getAdvertisedEncryptionMethods() {
-        return advertisedEncryptionMethods.toArray(new SrtpControlType[0]);
-    }
-
-    /**
      * Gets a <code>MediaDevice</code> which is capable of capture and/or playback media of the
      * specified <code>MediaType</code>, is the default choice of the user for a <code>MediaDevice</code>
      * with the specified <code>MediaType</code> and is appropriate for the current states of the
@@ -531,7 +557,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         // cmeng (20210504): Call with/initiated by Conversation may get terminated abruptly, when h264 video codec is used
         if (mPeer.getCall() == null) {
             Timber.w("Get default device with null call: %s %s", mPeer, mediaType);
-            aTalkApp.showToastMessage(R.string.call_ended, mPeer.getEntity());
+            aTalkApp.showToastMessage(R.string.call_ended_by_remote, mPeer.getEntity());
             return null;
         }
 
@@ -761,7 +787,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
             }
         }
 
-        if (supportFormats.size() == 0) {
+        if (supportFormats.isEmpty()) {
             DialogActivity.showDialog(aTalkApp.getInstance(),
                     R.string.call_audio, R.string.call_no_device_codec_H,
                     (mediaDevice != null) ? mediaDevice.getMediaType().toString() : "Unknown");
@@ -1198,7 +1224,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      */
     public boolean isRTPTranslationEnabled(MediaType mediaType) {
         MediaAwareCall<?, ?, ?> call = mPeer.getCall();
-        if ((call != null) && call.isConferenceFocus() && !call.isLocalVideoStreaming()) {
+        if (call != null && !call.isLocalVideoStreaming()) {
             Iterator<?> callPeerIt = call.getCallPeers();
 
             while (callPeerIt.hasNext()) {
@@ -1374,8 +1400,8 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         // On hold.
         if (locallyOnHold) {
             MediaStream audioStream = getStream(MediaType.AUDIO);
-            MediaDirection direction = (mPeer.getCall().isConferenceFocus() || audioStream == null)
-                    ? MediaDirection.INACTIVE : audioStream.getDirection().and(MediaDirection.SENDONLY);
+            MediaDirection direction = (audioStream == null) ?
+                    MediaDirection.INACTIVE : audioStream.getDirection().and(MediaDirection.SENDONLY);
 
             // the direction in situation where audioStream is null is ignored (just avoiding NPE)
             if (audioStream != null) {
@@ -1385,8 +1411,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
 
             MediaStream videoStream = getStream(MediaType.VIDEO);
             if (videoStream != null) {
-                direction = mPeer.getCall().isConferenceFocus()
-                        ? MediaDirection.INACTIVE : videoStream.getDirection().and(MediaDirection.SENDONLY);
+                direction = videoStream.getDirection().and(MediaDirection.SENDONLY);
                 videoStream.setDirection(direction);
                 videoStream.setMute(true);
             }
@@ -1646,15 +1671,6 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      */
     public String getLabel(MediaType mediaType) {
         return mediaType.toString() + hashCode();
-    }
-
-    /**
-     * Returns the value to use for the 'mslabel' source-specific SDP media attribute (RFC5576).
-     *
-     * @return the value to use for the 'mslabel' source-specific SDP media attribute (RFC5576).
-     */
-    public String getMsLabel() {
-        return msLabel;
     }
 
     /**
