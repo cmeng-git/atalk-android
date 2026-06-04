@@ -412,6 +412,10 @@ dependencies {
             transitive = false
         }
 
+        // Add support XEP-0424: Message Retraction
+        classDelete 'org.jivesoftware.smackx.fallback_indication.**'
+        classDelete 'org.jivesoftware.smackx.message_retraction.**'
+
         // Add support for media file sharing
         classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
         classDelete 'org.jivesoftware.smackx.jingle_filetransfer.JingleFileTransferManager**'
