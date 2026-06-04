@@ -12,8 +12,7 @@ package net.java.sip.communicator.service.notification;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public interface SoundNotificationHandler extends NotificationHandler
-{
+public interface SoundNotificationHandler extends NotificationHandler {
     /**
      * Start playing the sound pointed by <code>getDescriotor</code>. This method should check the
      * loopInterval value to distinguish whether to play a simple sound or to play it in loop.

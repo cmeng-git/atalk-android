@@ -5,16 +5,16 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.service.neomedia.control.FECDecoderControl;
-
 import java.awt.Component;
 
 import javax.media.Buffer;
 import javax.media.Format;
 import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
+
+import org.atalk.impl.neomedia.codec.AbstractCodec2;
+import org.atalk.impl.timberlog.TimberLog;
+import org.atalk.service.neomedia.control.FECDecoderControl;
 
 import timber.log.Timber;
 
@@ -26,21 +26,18 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class JavaDecoder extends AbstractCodec2
-{
+public class JavaDecoder extends AbstractCodec2 {
     /**
      * A private class, an instance of which is registered via <code>addControl</code>. This instance
      * will be used by outside classes to access decoder statistics.
      */
-    private class Stats implements FECDecoderControl
-    {
+    private class Stats implements FECDecoderControl {
         /**
          * Returns the number packets for which FEC data was decoded in <code>JavaDecoder.this</code>
          *
          * @return Returns the number packets for which FEC data was decoded in <code>JavaDecoder.this</code>
          */
-        public int fecPacketsDecoded()
-        {
+        public int fecPacketsDecoded() {
             return nbFECDecoded;
         }
 
@@ -49,8 +46,7 @@ public class JavaDecoder extends AbstractCodec2
          *
          * @return <code>null</code>
          */
-        public Component getControlComponent()
-        {
+        public Component getControlComponent() {
             return null;
         }
     }
@@ -141,8 +137,7 @@ public class JavaDecoder extends AbstractCodec2
     /**
      * Initializes a new <code>JavaDecoder</code> instance.
      */
-    public JavaDecoder()
-    {
+    public JavaDecoder() {
         super("SILK Decoder", AudioFormat.class, SUPPORTED_OUTPUT_FORMATS);
 
         features = BUFFER_FLAG_FEC | BUFFER_FLAG_PLC;
@@ -152,8 +147,7 @@ public class JavaDecoder extends AbstractCodec2
     }
 
     @Override
-    protected void doClose()
-    {
+    protected void doClose() {
         Timber.d("Packets decoded normally: %s\nPackets decoded with FEC: %s", nbPacketsDecoded, nbFECDecoded);
         Timber.d("Packets lost (subsequent missing):%s\nPackets lost (no FEC in subsequent): %s", nbPacketsLost, nbFECNotDecoded);
 
@@ -163,8 +157,7 @@ public class JavaDecoder extends AbstractCodec2
 
     @Override
     protected void doOpen()
-            throws ResourceUnavailableException
-    {
+            throws ResourceUnavailableException {
         decState = new SKP_Silk_decoder_state();
         if (DecAPI.SKP_Silk_SDK_InitDecoder(decState) != 0) {
             throw new ResourceUnavailableException("DecAPI.SKP_Silk_SDK_InitDecoder");
@@ -182,8 +175,7 @@ public class JavaDecoder extends AbstractCodec2
     }
 
     @Override
-    protected int doProcess(Buffer inBuf, Buffer outBuf)
-    {
+    protected int doProcess(Buffer inBuf, Buffer outBuf) {
         long seqNo = inBuf.getSequenceNumber();
 
         /*
@@ -313,12 +305,13 @@ public class JavaDecoder extends AbstractCodec2
      * Get the output formats matching a specific input format.
      *
      * @param inputFormat the input format to get the matching output formats of
+     *
      * @return the output formats matching the specified input format
+     *
      * @see AbstractCodec2#getMatchingOutputFormats(Format)
      */
     @Override
-    protected Format[] getMatchingOutputFormats(Format inputFormat)
-    {
+    protected Format[] getMatchingOutputFormats(Format inputFormat) {
         return JavaEncoder.getMatchingOutputFormats(inputFormat, SUPPORTED_INPUT_FORMATS, SUPPORTED_OUTPUT_FORMATS);
     }
 }

@@ -5,12 +5,6 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
-import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.resources.ResourceManagementService;
-import org.atalk.util.MediaType;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -26,6 +20,12 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
+import org.atalk.service.configuration.ConfigurationService;
+import org.atalk.service.libjitsi.LibJitsi;
+import org.atalk.service.resources.ResourceManagementService;
+import org.atalk.util.MediaType;
+
 import timber.log.Timber;
 
 /**
@@ -37,16 +37,14 @@ import timber.log.Timber;
  * @author Timothy Price
  * @author Eng Chong Meng
  */
-public abstract class AudioSystem extends DeviceSystem
-{
+public abstract class AudioSystem extends DeviceSystem {
     /**
      * Enumerates the different types of media data flow of <code>CaptureDeviceInfo2</code>s contributed
      * by an <code>AudioSystem</code>.
      *
      * @author Lyubomir Marinov
      */
-    public enum DataFlow
-    {
+    public enum DataFlow {
         CAPTURE, NOTIFY, PLAYBACK
     }
 
@@ -116,8 +114,7 @@ public abstract class AudioSystem extends DeviceSystem
      */
     protected static final String PNAME_ECHOCANCEL = "echocancel";
 
-    public static AudioSystem getAudioSystem(String locatorProtocol)
-    {
+    public static AudioSystem getAudioSystem(String locatorProtocol) {
         AudioSystem[] audioSystems = getAudioSystems();
         AudioSystem audioSystemWithLocatorProtocol = null;
 
@@ -132,8 +129,7 @@ public abstract class AudioSystem extends DeviceSystem
         return audioSystemWithLocatorProtocol;
     }
 
-    public static AudioSystem[] getAudioSystems()
-    {
+    public static AudioSystem[] getAudioSystems() {
         DeviceSystem[] deviceSystems = getDeviceSystems(MediaType.AUDIO);
         List<AudioSystem> audioSystems;
 
@@ -156,14 +152,12 @@ public abstract class AudioSystem extends DeviceSystem
     private Devices[] devices;
 
     protected AudioSystem(String locatorProtocol)
-            throws Exception
-    {
+            throws Exception {
         this(locatorProtocol, 0);
     }
 
     protected AudioSystem(String locatorProtocol, int features)
-            throws Exception
-    {
+            throws Exception {
         super(MediaType.AUDIO, locatorProtocol, features);
     }
 
@@ -173,8 +167,7 @@ public abstract class AudioSystem extends DeviceSystem
      * Delegates to {@link #createRenderer(boolean)} with the value of the <code>playback</code> argument set to true.
      */
     @Override
-    public Renderer createRenderer()
-    {
+    public Renderer createRenderer() {
         return createRenderer(true);
     }
 
@@ -186,11 +179,11 @@ public abstract class AudioSystem extends DeviceSystem
      *
      * @param playback <code>true</code> if the new instance is to perform playback or <code>false</code> if the new
      * instance is to sound a notification
+     *
      * @return a new <code>Renderer</code> instance which is to either perform playback on or sound a
      * notification through a device contributed by this system
      */
-    public Renderer createRenderer(boolean playback)
-    {
+    public Renderer createRenderer(boolean playback) {
         String className = getRendererClassName();
         Renderer renderer;
 
@@ -205,7 +198,8 @@ public abstract class AudioSystem extends DeviceSystem
             Class<?> clazz;
             try {
                 clazz = Class.forName(className);
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 if (t instanceof ThreadDeath)
                     throw (ThreadDeath) t;
                 else {
@@ -234,19 +228,22 @@ public abstract class AudioSystem extends DeviceSystem
 
                     try {
                         constructor = clazz.getConstructor(boolean.class);
-                    } catch (NoSuchMethodException nsme) {
+                    }
+                    catch (NoSuchMethodException nsme) {
                         /*
                          * Such a constructor is optional; so the failure to get it will be allowed,
                          * and the super's createRenderer() will be invoked.
                          */
-                    } catch (SecurityException se) {
+                    }
+                    catch (SecurityException se) {
                         Timber.e(se, "SecurityException: Failed to initialize %s instance", className);
                     }
                     if ((constructor != null)) {
                         superCreateRenderer = false;
                         try {
                             renderer = (Renderer) constructor.newInstance(playback);
-                        } catch (Throwable t) {
+                        }
+                        catch (Throwable t) {
                             if (t instanceof ThreadDeath)
                                 throw (ThreadDeath) t;
                             else {
@@ -301,12 +298,13 @@ public abstract class AudioSystem extends DeviceSystem
      * Obtains an audio input stream from the URL provided.
      *
      * @param uri a valid uri to a sound resource.
+     *
      * @return the input stream to audio data.
+     *
      * @throws IOException if an I/O exception occurs
      */
     public InputStream getAudioInputStream(String uri)
-            throws IOException
-    {
+            throws IOException {
         ResourceManagementService resources = LibJitsi.getResourceManagementService();
         URL url = (resources == null) ? null : resources.getSoundURLForPath(uri);
 
@@ -316,9 +314,11 @@ public abstract class AudioSystem extends DeviceSystem
             if (url == null)
                 url = new URL(uri);
             audioStream = javax.sound.sampled.AudioSystem.getAudioInputStream(url);
-        } catch (MalformedURLException murle) {
+        }
+        catch (MalformedURLException murle) {
             // Do nothing, the value of audioStream will remain equal to null.
-        } catch (UnsupportedAudioFileException uafe) {
+        }
+        catch (UnsupportedAudioFileException uafe) {
             Timber.e(uafe, "Unsupported format of audio stream %s", url);
         }
         return audioStream;
@@ -331,11 +331,11 @@ public abstract class AudioSystem extends DeviceSystem
      *
      * @param dataFlow the flow of the media data supported by the <code>CaptureDeviceInfo2</code> to be returned
      * @param locator the <code>MediaLocator</code> of the <code>CaptureDeviceInfo2</code> to be returned
+     *
      * @return a <code>CaptureDeviceInfo2</code> which has been contributed by this instance, supports
      * the specified <code>dataFlow</code> and is identified by the specified <code>locator</code>
      */
-    public CaptureDeviceInfo2 getDevice(DataFlow dataFlow, MediaLocator locator)
-    {
+    public CaptureDeviceInfo2 getDevice(DataFlow dataFlow, MediaLocator locator) {
         return devices[dataFlow.ordinal()].getDevice(locator);
     }
 
@@ -343,10 +343,10 @@ public abstract class AudioSystem extends DeviceSystem
      * Gets the list of devices with a specific data flow: capture, notify or playback.
      *
      * @param dataFlow the data flow of the devices to retrieve: capture, notify or playback
+     *
      * @return the list of devices with the specified <code>dataFlow</code>
      */
-    public List<CaptureDeviceInfo2> getDevices(DataFlow dataFlow)
-    {
+    public List<CaptureDeviceInfo2> getDevices(DataFlow dataFlow) {
         return devices[dataFlow.ordinal()].getDevices();
     }
 
@@ -354,11 +354,11 @@ public abstract class AudioSystem extends DeviceSystem
      * Returns the FMJ format of a specific <code>InputStream</code> providing audio media.
      *
      * @param audioInputStream the <code>InputStream</code> providing audio media to determine the FMJ format of
+     *
      * @return the FMJ format of the specified <code>audioInputStream</code> or <code>null</code> if such an
      * FMJ format could not be determined
      */
-    public javax.media.format.AudioFormat getFormat(InputStream audioInputStream)
-    {
+    public javax.media.format.AudioFormat getFormat(InputStream audioInputStream) {
         if ((audioInputStream instanceof AudioInputStream)) {
             AudioFormat af = ((AudioInputStream) audioInputStream).getFormat();
 
@@ -374,11 +374,11 @@ public abstract class AudioSystem extends DeviceSystem
      *
      * @param basePropertyName the (base) <code>AudioSystem</code>-specific property name of which the associated (full)
      * <code>ConfigurationService</code> property name is to be returned
+     *
      * @return the (full) name of the <code>ConfigurationService</code> property which is associated
      * with the (base) <code>AudioSystem</code> -specific property name
      */
-    protected String getPropertyName(String basePropertyName)
-    {
+    protected String getPropertyName(String basePropertyName) {
         return DeviceConfiguration.PROP_AUDIO_SYSTEM + "." + getLocatorProtocol() + "." + basePropertyName;
     }
 
@@ -386,10 +386,10 @@ public abstract class AudioSystem extends DeviceSystem
      * Gets the selected device for a specific data flow: capture, notify or playback.
      *
      * @param dataFlow the data flow of the selected device to retrieve: capture, notify or playback.
+     *
      * @return the selected device for the specified <code>dataFlow</code>
      */
-    public CaptureDeviceInfo2 getSelectedDevice(DataFlow dataFlow)
-    {
+    public CaptureDeviceInfo2 getSelectedDevice(DataFlow dataFlow) {
         return devices[dataFlow.ordinal()].getSelectedDevice(getDevices(dataFlow));
     }
 
@@ -400,8 +400,7 @@ public abstract class AudioSystem extends DeviceSystem
      * @return <code>true</code> if automatic gain control (AGC) is to be performed for captured audio;
      * otherwise, <code>false</code>
      */
-    public boolean isAutomaticGainControl()
-    {
+    public boolean isAutomaticGainControl() {
         ConfigurationService cfg = LibJitsi.getConfigurationService();
         boolean value = ((getFeatures() & FEATURE_AGC) == FEATURE_AGC);
 
@@ -417,8 +416,7 @@ public abstract class AudioSystem extends DeviceSystem
      * @return <code>true</code> if noise suppression is to be performed for captured audio; otherwise,
      * <code>false</code>
      */
-    public boolean isDenoise()
-    {
+    public boolean isDenoise() {
         ConfigurationService cfg = LibJitsi.getConfigurationService();
         boolean value = ((getFeatures() & FEATURE_DENOISE) == FEATURE_DENOISE);
 
@@ -434,8 +432,7 @@ public abstract class AudioSystem extends DeviceSystem
      * @return <code>true</code> if echo cancellation is to be performed for captured audio; otherwise,
      * <code>false</code>
      */
-    public boolean isEchoCancel()
-    {
+    public boolean isEchoCancel() {
         ConfigurationService cfg = LibJitsi.getConfigurationService();
         boolean value = ((getFeatures() & FEATURE_ECHO_CANCELLATION) == FEATURE_ECHO_CANCELLATION);
 
@@ -453,21 +450,23 @@ public abstract class AudioSystem extends DeviceSystem
      */
     @Override
     protected void postInitialize()
-            throws Exception
-    {
+            throws Exception {
         try {
             try {
                 postInitializeSpecificDevices(DataFlow.CAPTURE);
-            } finally {
+            }
+            finally {
                 if ((FEATURE_NOTIFY_AND_PLAYBACK_DEVICES & getFeatures()) != 0) {
                     try {
                         postInitializeSpecificDevices(DataFlow.NOTIFY);
-                    } finally {
+                    }
+                    finally {
                         postInitializeSpecificDevices(DataFlow.PLAYBACK);
                     }
                 }
             }
-        } finally {
+        }
+        finally {
             super.postInitialize();
         }
     }
@@ -478,8 +477,7 @@ public abstract class AudioSystem extends DeviceSystem
      *
      * @param dataFlow the data flow of the devices to perform post-initialization on
      */
-    protected void postInitializeSpecificDevices(DataFlow dataFlow)
-    {
+    protected void postInitializeSpecificDevices(DataFlow dataFlow) {
         // Gets all current active devices.
         List<CaptureDeviceInfo2> activeDevices = getDevices(dataFlow);
         // Gets the default device.
@@ -504,8 +502,7 @@ public abstract class AudioSystem extends DeviceSystem
      */
     @Override
     protected void preInitialize()
-            throws Exception
-    {
+            throws Exception {
         super.preInitialize();
 
         if (devices == null) {
@@ -528,8 +525,7 @@ public abstract class AudioSystem extends DeviceSystem
      * @param oldValue the value of the property with the specified name before the change
      * @param newValue the value of the property with the specified name after the change
      */
-    void propertyChange(String property, Object oldValue, Object newValue)
-    {
+    void propertyChange(String property, Object oldValue, Object newValue) {
         firePropertyChange(property, oldValue, newValue);
     }
 
@@ -540,8 +536,7 @@ public abstract class AudioSystem extends DeviceSystem
      * @param automaticGainControl <code>true</code> if automatic gain control (AGC) is to be performed for captured audio;
      * otherwise, <code>false</code>
      */
-    public void setAutomaticGainControl(boolean automaticGainControl)
-    {
+    public void setAutomaticGainControl(boolean automaticGainControl) {
         ConfigurationService cfg = LibJitsi.getConfigurationService();
         if (cfg != null)
             cfg.setProperty(getPropertyName(PNAME_AGC), automaticGainControl);
@@ -552,8 +547,7 @@ public abstract class AudioSystem extends DeviceSystem
      *
      * @param captureDevices The list of a kind of devices: capture, notify or playback.
      */
-    protected void setCaptureDevices(List<CaptureDeviceInfo2> captureDevices)
-    {
+    protected void setCaptureDevices(List<CaptureDeviceInfo2> captureDevices) {
         devices[DataFlow.CAPTURE.ordinal()].setDevices(captureDevices);
     }
 
@@ -564,8 +558,7 @@ public abstract class AudioSystem extends DeviceSystem
      * @param denoise <code>true</code> if noise suppression is to be performed for captured audio; otherwise,
      * <code>false</code>
      */
-    public void setDenoise(boolean denoise)
-    {
+    public void setDenoise(boolean denoise) {
         ConfigurationService cfg = LibJitsi.getConfigurationService();
         if (cfg != null)
             cfg.setProperty(getPropertyName(PNAME_DENOISE), denoise);
@@ -578,8 +571,7 @@ public abstract class AudioSystem extends DeviceSystem
      * @param device The selected active device.
      * @param save Flag set to true in order to save this choice in the configuration. False otherwise.
      */
-    public void setDevice(DataFlow dataFlow, CaptureDeviceInfo2 device, boolean save)
-    {
+    public void setDevice(DataFlow dataFlow, CaptureDeviceInfo2 device, boolean save) {
         devices[dataFlow.ordinal()].setDevice(device, save);
     }
 
@@ -590,8 +582,7 @@ public abstract class AudioSystem extends DeviceSystem
      * @param echoCancel <code>true</code> if echo cancellation is to be performed for captured audio; otherwise,
      * <code>false</code>
      */
-    public void setEchoCancel(boolean echoCancel)
-    {
+    public void setEchoCancel(boolean echoCancel) {
         ConfigurationService cfg = LibJitsi.getConfigurationService();
         if (cfg != null)
             cfg.setProperty(getPropertyName(PNAME_ECHOCANCEL), echoCancel);
@@ -602,8 +593,7 @@ public abstract class AudioSystem extends DeviceSystem
      *
      * @param playbackDevices The list of the active devices.
      */
-    protected void setPlaybackDevices(List<CaptureDeviceInfo2> playbackDevices)
-    {
+    protected void setPlaybackDevices(List<CaptureDeviceInfo2> playbackDevices) {
         devices[DataFlow.PLAYBACK.ordinal()].setDevices(playbackDevices);
         // The notify devices are the same as the playback devices.
         devices[DataFlow.NOTIFY.ordinal()].setDevices(playbackDevices);

@@ -90,7 +90,7 @@ public class CallManager {
         String key = call.getCallId();
         if (TextUtils.isEmpty(key)) {
             key = JingleManager.randomUuid();
-            Timber.e("CallId is not initialized with jingle sid: %s", key);
+            Timber.w("CallId is not initialized with jingle sid: %s", key);
         }
         synchronized (activeCalls) {
             activeCalls.put(key, call);

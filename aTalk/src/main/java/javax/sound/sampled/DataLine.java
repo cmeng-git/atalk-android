@@ -50,8 +50,6 @@ import java.util.Arrays;
  * @since 1.3
  */
 public interface DataLine extends Line {
-
-
     /**
      * Drains queued data from the line by continuing data I/O until the
      * data line's internal buffer has been emptied.

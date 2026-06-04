@@ -68,6 +68,11 @@
     <string name="chat_message_long_press_hint">تجنب النقر داخل منطقة الرسالة لعملية اختيار متعدد العناصر</string>
     <string name="quote">اقتباس</string>
     <string name="reply">رد</string>
+    <string name="retract">التراجع</string>
+    <string name="retract_menu">سحب الرسائل</string>
+    <string name="retract_message_prompt">هل أنت متأكد من رغبتك في سحب جميع الرسائل الصادرة المحددة من %1$s؟</string>
+    <string name="retract_own">لقد حذفت هذه الرسالة.</string>
+    <string name="retract_remote">تم حذف هذه الرسالة.</string>
     <string name="select_all">تحديد الكل</string>
     <string name="subject">الموضوع</string>
     <string name="settings">الإعدادات</string>
@@ -326,7 +331,6 @@
     <string name="duration">المدة</string>
 
     <string name="edit_status_message_tip">تعيين رسالة الحالة</string>
-    <string name="edited">تم التعديل</string>
     <string name="enter_name_or_number">أدخل الاسم أو الرقم</string>
     <string name="error">خطأ</string>
     <string name="error_was_">كان الخطأ: %1$s</string>
@@ -383,7 +387,7 @@
     <string name="history_erase_all">محو تاريخ الدردشة لجميع جهات الاتصال</string>
     <string name="history_purge_for_contact_warning">هل أنت متأكد من أنك تريد حذف جميع الرسائل المحددة لـ %1$s؟</string>
     <string name="history_purge_all_warning">هل أنت متأكد من أنك تريد حذف جميع الرسائل لجميع الكيانات؟</string>
-    <string name="history_purge_count">عدد سجلات التاريخ المحذوفة: %1$s</string>
+    <string name="history_purge_count">عدد سجلات التاريخ المتأثرة: %1$s</string>
     <string name="history_purge_error">خطأ في إزالة الرسائل المخزنة محليًا لـ %1$s.</string>
     <string name="history_purge_media">حذف الوسائط من هاتفي</string>
     <string name="history_offline_warning">أغلق وافتح جلسة الدردشة هذه لعرض رسائل MAM والرسائل غير المتصلة عندما تكون متصلاً</string>
@@ -1067,6 +1071,7 @@
     <string name="jbr_server_port">منفذ الخادم</string>
     <string name="jbr_priority">الأولوية (النطاق: -128~127)</string>
     <string name="jbr_resource_auto_gen">إنشاء المورد تلقائيًا</string>
+    <string name="jbr_resource_auto_summary">يرجى تحديد اسم المورد بوضوح حتى يتم تفعيل هذا الإجراء.</string>
     <string name="jbr_resource_id">معرف Jabber</string>
     <string name="jbr_resource_name">اسم المورد</string>
     <string name="jbr_server_ip">IP خادم الاتصال</string>

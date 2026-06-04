@@ -165,7 +165,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
             listeners = new ArrayList<>(callPeerListeners).iterator();
         }
 
-        Timber.d("Dispatching CallPeerChangeEvent (%s): %s; Events: %s", callPeerListeners.size(), callPeerListeners, evt);
+        Timber.d("Dispatching CallPeerChangeEvent; %s;\n%s Listeners: %s;", evt, callPeerListeners.size(), callPeerListeners);
         while (listeners.hasNext()) {
             CallPeerListener listener = listeners.next();
             // catch any possible errors, so we are sure we dispatch events to all listeners

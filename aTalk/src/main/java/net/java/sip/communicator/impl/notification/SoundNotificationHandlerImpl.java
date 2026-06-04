@@ -5,19 +5,6 @@
  */
 package net.java.sip.communicator.impl.notification;
 
-import net.java.sip.communicator.service.gui.UIService;
-import net.java.sip.communicator.service.notification.NotificationAction;
-import net.java.sip.communicator.service.notification.NotificationData;
-import net.java.sip.communicator.service.notification.SoundNotificationAction;
-import net.java.sip.communicator.service.notification.SoundNotificationHandler;
-
-import org.apache.commons.lang3.StringUtils;
-import org.atalk.service.audionotifier.AbstractSCAudioClip;
-import org.atalk.service.audionotifier.AudioNotifierService;
-import org.atalk.service.audionotifier.SCAudioClip;
-import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.util.OSUtils;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,6 +12,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
+
+import net.java.sip.communicator.service.gui.UIService;
+import net.java.sip.communicator.service.notification.NotificationAction;
+import net.java.sip.communicator.service.notification.NotificationData;
+import net.java.sip.communicator.service.notification.SoundNotificationAction;
+import net.java.sip.communicator.service.notification.SoundNotificationHandler;
+
+import org.atalk.service.audionotifier.AbstractSCAudioClip;
+import org.atalk.service.audionotifier.AudioNotifierService;
+import org.atalk.service.audionotifier.SCAudioClip;
+import org.atalk.service.configuration.ConfigurationService;
+import org.atalk.util.OSUtils;
+
+import org.apache.commons.lang3.StringUtils;
 
 import timber.log.Timber;
 
@@ -34,8 +35,7 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class SoundNotificationHandlerImpl implements SoundNotificationHandler
-{
+public class SoundNotificationHandlerImpl implements SoundNotificationHandler {
     /**
      * The indicator which determines whether this <code>SoundNotificationHandler</code> is currently muted
      * i.e. the sounds are off.
@@ -52,8 +52,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
     /**
      * {@inheritDoc}
      */
-    public String getActionType()
-    {
+    public String getActionType() {
         return NotificationAction.ACTION_SOUND;
     }
 
@@ -62,8 +61,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
      *
      * @return TRUE if currently the sound is off, FALSE otherwise
      */
-    public boolean isMute()
-    {
+    public boolean isMute() {
         return mute;
     }
 
@@ -75,8 +73,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
      * @param data Additional data for the event.
      * @param device Audio clip playback device
      */
-    private void play(SoundNotificationAction action, NotificationData data, SCAudioClipDevice device)
-    {
+    private void play(SoundNotificationAction action, NotificationData data, SCAudioClipDevice device) {
         AudioNotifierService audioNotifService = NotificationActivator.getAudioNotifier();
         if ((audioNotifService == null) || StringUtils.isBlank(action.getDescriptor()))
             return;
@@ -96,15 +93,16 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
 
         SCAudioClip audio = null;
         switch (device) {
-            case NOTIFICATION:
-            case PLAYBACK:
-                audio = audioNotifService.createAudio(action.getDescriptor(), SCAudioClipDevice.PLAYBACK.equals(device));
-                break;
+        case NOTIFICATION:
+        case PLAYBACK:
+            // Timber.d("NotificationData: %s: %s", data.getEventType(), action.getDescriptor());
+            audio = audioNotifService.createAudio(action.getDescriptor(), SCAudioClipDevice.PLAYBACK.equals(device));
+            break;
 
-            case PC_SPEAKER:
-                if (!OSUtils.IS_ANDROID)
-                    audio = new PCSpeakerClip();
-                break;
+        case PC_SPEAKER:
+            if (!OSUtils.IS_ANDROID)
+                audio = new PCSpeakerClip();
+            break;
         }
 
         // it is possible that audio cannot be created
@@ -122,7 +120,8 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
                     = (Callable<Boolean>) data.getExtra(NotificationData.SOUND_NOTIFICATION_HANDLER_LOOP_CONDITION_EXTRA);
             audio.play(action.getLoopInterval(), loopCondition);
             played = true;
-        } finally {
+        }
+        finally {
             synchronized (playedClips) {
                 if (!played)
                     playedClips.remove(audio);
@@ -135,8 +134,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
      *
      * @param mute mute or not currently playing sounds
      */
-    public void setMute(boolean mute)
-    {
+    public void setMute(boolean mute) {
         this.mute = mute;
         if (mute) {
             AudioNotifierService ans = NotificationActivator.getAudioNotifier();
@@ -152,8 +150,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
      * @param action The action to act upon.
      * @param data Additional data for the event.
      */
-    public void start(SoundNotificationAction action, NotificationData data)
-    {
+    public void start(SoundNotificationAction action, NotificationData data) {
         if (isMute())
             return;
 
@@ -184,8 +181,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
      *
      * @param data Additional data for the event.
      */
-    public void stop(NotificationData data)
-    {
+    public void stop(NotificationData data) {
         AudioNotifierService audioNotifService = NotificationActivator.getAudioNotifier();
 
         if (audioNotifService != null) {
@@ -207,7 +203,8 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
             for (SCAudioClip clip : clipsToStop) {
                 try {
                     clip.stop();
-                } catch (Throwable t) {
+                }
+                catch (Throwable t) {
                     Timber.e(t, "Error stopping audio clip");
                 }
             }
@@ -219,8 +216,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
      *
      * @param data Additional data for the event.
      */
-    public boolean isPlaying(NotificationData data)
-    {
+    public boolean isPlaying(NotificationData data) {
         AudioNotifierService audioNotifService = NotificationActivator.getAudioNotifier();
 
         if (audioNotifService != null) {
@@ -239,8 +235,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
     /**
      * Beeps the PC speaker.
      */
-    private static class PCSpeakerClip extends AbstractSCAudioClip
-    {
+    private static class PCSpeakerClip extends AbstractSCAudioClip {
         /**
          * The beep method.
          */
@@ -254,8 +249,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
         /**
          * Initializes a new <code>PCSpeakerClip</code> instance.
          */
-        public PCSpeakerClip()
-        {
+        public PCSpeakerClip() {
             super(null, NotificationActivator.getAudioNotifier());
 
             // load the method java.awt.Toolkit.getDefaultToolkit().beep();
@@ -264,7 +258,8 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
                 Method defaultToolkit = Class.forName("java.awt.Toolkit").getMethod("getDefaultToolkit");
                 toolkit = defaultToolkit.invoke(null);
                 beepMethod = toolkit.getClass().getMethod("beep");
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 Timber.e(t, "Cannot load awt.Toolkit");
             }
         }
@@ -275,14 +270,14 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
          * @return <code>true</code> if the playback was successful; otherwise, <code>false</code>
          */
         @Override
-        protected boolean runOnceInPlayThread()
-        {
+        protected boolean runOnceInPlayThread() {
             try {
                 if (beepMethod != null)
                     beepMethod.invoke(toolkit);
 
                 return true;
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 if (t instanceof ThreadDeath)
                     throw (ThreadDeath) t;
                 else
@@ -294,8 +289,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
     /**
      * Enumerates the types of devices on which <code>SCAudioClip</code>s may be played back.
      */
-    private enum SCAudioClipDevice
-    {
+    private enum SCAudioClipDevice {
         NOTIFICATION, PC_SPEAKER, PLAYBACK
     }
 }

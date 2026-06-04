@@ -827,7 +827,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         ChatRoomJabberImpl chatRoom = getChatRoom(muc.getRoom());
         ChatRoomMemberJabberImpl member = chatRoom.findMemberFromParticipant(message.getFrom());
 
-        String msgID = message.getStanzaId();
+        String msgId = message.getStanzaId();
         int encType = IMessage.ENCRYPTION_OMEMO;
         String msgBody = decryptedOmemoMessage.getBody();
 
@@ -838,7 +838,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         else {
             encType |= IMessage.ENCODE_PLAIN;
         }
-        IMessage newMessage = new MessageJabberImpl(msgBody, encType, null, msgID);
+        IMessage newMessage = new MessageJabberImpl(msgBody, encType, null, msgId);
 
         // check if the message is available in xhtml
         String xhtmString = XhtmlUtil.getXhtmlExtension(message);
@@ -849,14 +849,14 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
 
                 OmemoMessage.Received xhtmlMessage = mOmemoManager.decrypt(sender, omemoElement);
                 encType |= IMessage.ENCODE_HTML;
-                newMessage = new MessageJabberImpl(xhtmlMessage.getBody(), encType, null, msgID);
+                newMessage = new MessageJabberImpl(xhtmlMessage.getBody(), encType, null, msgId);
             } catch (SmackException.NotLoggedInException | IOException | CorruptedOmemoKeyException
                      | NoRawSessionException | CryptoFailedException | XmlPullParserException |
                      SmackParsingException e) {
                 Timber.e("Error decrypting xhtmlExtension message %s:", e.getMessage());
             }
         }
-        newMessage.setRemoteMsgId(msgID);
+        newMessage.setRemoteMsgId(msgId);
 
         ChatRoomMessageReceivedEvent msgReceivedEvt
                 = new ChatRoomMessageReceivedEvent(chatRoom, member, timeStamp, newMessage, ChatMessage.MESSAGE_MUC_IN);

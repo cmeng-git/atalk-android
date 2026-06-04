@@ -42,15 +42,15 @@ public class FileHistoryConversation extends FileTransferConversation {
     private FileRecord fileRecord;
     private ChatMessage chatMessage;
 
-    private FileHistoryConversation(ChatFragment cPanel, String dir) {
-        super(cPanel, dir);
-    }
-
-    public static FileHistoryConversation newInstance(ChatFragment cPanel, FileRecord fileRecord, ChatMessage msg) {
-        FileHistoryConversation fragmentFHC = new FileHistoryConversation(cPanel, fileRecord.getDirection());
+    public static FileHistoryConversation newInstance(ChatFragment chatFragment, FileRecord fileRecord, ChatMessage msg) {
+        FileHistoryConversation fragmentFHC = new FileHistoryConversation(chatFragment, fileRecord.getDirection());
         fragmentFHC.fileRecord = fileRecord;
         fragmentFHC.chatMessage = msg;
         return fragmentFHC;
+    }
+
+    private FileHistoryConversation(ChatFragment cPanel, String dir) {
+        super(cPanel, dir);
     }
 
     public View FileHistoryConversationForm(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,

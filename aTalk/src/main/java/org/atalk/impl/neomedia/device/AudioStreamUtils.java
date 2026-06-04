@@ -8,6 +8,8 @@ package org.atalk.impl.neomedia.device;
 import android.content.Context;
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -31,37 +33,38 @@ public class AudioStreamUtils {
      * @param uri a valid url to a sound resource.
      *
      * @return the input stream to audio data.
-     *
-     * @throws java.io.IOException if an I/O exception occurs
      */
     public static InputStream getAudioInputStream(String uri) {
-        Timber.e("getAudioInputStream: %s", uri);
         InputStream audioStream = null;
         try {
-            // Context context = ServiceUtils.getService(NeomediaActivator.getBundleContext(), OSGiService.class);
             Context context = aTalkApp.getInstance();
-
-            // As Android resources don't use file extensions, remove it if there is one.
-            int lastPathSeparator = uri.lastIndexOf('/');
-            int extensionStartIx;
-            String resourceUri;
-
-            if ((lastPathSeparator > -1)
-                    && ((extensionStartIx = uri.lastIndexOf('.')) > lastPathSeparator))
-                resourceUri = uri.substring(0, extensionStartIx);
-            else
-                resourceUri = uri;
-
-            // Must convert to proper androidResource for content access to aTalk raw/*.wav
-            if (uri.startsWith(AppResourceServiceImpl.PROTOCOL)) {
-                resourceUri = "android.resource://" + context.getPackageName() + "/" + resourceUri;
-            }
+            String resourceUri = getResourceUri(context, uri);
             audioStream = context.getContentResolver().openInputStream(Uri.parse(resourceUri));
         }
         catch (FileNotFoundException t) {
             Timber.e(t, "Error opening file: %s", uri);
         }
         return audioStream;
+    }
+
+    @NonNull
+    private static String getResourceUri(Context context, String uri) {
+        // Android resources don't use file extensions, remove if there is one.
+        int lastPathSeparator = uri.lastIndexOf('/');
+        int extensionStartIx;
+        String resourceUri;
+
+        if ((lastPathSeparator > -1)
+                && ((extensionStartIx = uri.lastIndexOf('.')) > lastPathSeparator))
+            resourceUri = uri.substring(0, extensionStartIx);
+        else
+            resourceUri = uri;
+
+        // Must convert to proper androidResource for content access to aTalk raw/*.wav
+        if (uri.startsWith(AppResourceServiceImpl.PROTOCOL)) {
+            resourceUri = "android.resource://" + context.getPackageName() + "/" + resourceUri;
+        }
+        return resourceUri;
     }
 
     /**

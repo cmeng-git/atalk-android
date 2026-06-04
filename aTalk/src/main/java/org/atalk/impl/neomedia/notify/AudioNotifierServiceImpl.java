@@ -5,13 +5,6 @@
  */
 package org.atalk.impl.neomedia.notify;
 
-import org.atalk.impl.neomedia.NeomediaServiceUtils;
-import org.atalk.impl.neomedia.device.AudioSystem;
-import org.atalk.impl.neomedia.device.DeviceConfiguration;
-import org.atalk.impl.neomedia.device.NoneAudioSystem;
-import org.atalk.service.audionotifier.AudioNotifierService;
-import org.atalk.service.audionotifier.SCAudioClip;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
@@ -20,14 +13,20 @@ import java.util.concurrent.Callable;
 
 import javax.media.CaptureDeviceInfo;
 
+import org.atalk.impl.neomedia.NeomediaServiceUtils;
+import org.atalk.impl.neomedia.device.AudioSystem;
+import org.atalk.impl.neomedia.device.DeviceConfiguration;
+import org.atalk.impl.neomedia.device.NoneAudioSystem;
+import org.atalk.service.audionotifier.AudioNotifierService;
+import org.atalk.service.audionotifier.SCAudioClip;
+
 /**
  * The implementation of <code>AudioNotifierService</code>.
  *
  * @author Yana Stamcheva
  * @author Lyubomir Marinov
  */
-public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyChangeListener
-{
+public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyChangeListener {
     /**
      * The cache of <code>SCAudioClip</code> instances which we may reuse. The reuse is complex because
      * a <code>SCAudioClip</code> may be used by a single user at a time.
@@ -54,8 +53,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
     /**
      * Initializes a new <code>AudioNotifierServiceImpl</code> instance.
      */
-    public AudioNotifierServiceImpl()
-    {
+    public AudioNotifierServiceImpl() {
         this.deviceConfiguration = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration();
         this.deviceConfiguration.addPropertyChangeListener(this);
     }
@@ -65,8 +63,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
      *
      * @return are audio out and notifications using the same device.
      */
-    public boolean audioOutAndNotificationsShareSameDevice()
-    {
+    public boolean audioOutAndNotificationsShareSameDevice() {
         AudioSystem audioSystem = getDeviceConfiguration().getAudioSystem();
         CaptureDeviceInfo notify = audioSystem.getSelectedDevice(AudioSystem.DataFlow.NOTIFY);
         CaptureDeviceInfo playback = audioSystem.getSelectedDevice(AudioSystem.DataFlow.PLAYBACK);
@@ -86,10 +83,10 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
      * Uses notification device if any.
      *
      * @param uri the path where the audio file could be found
+     *
      * @return a newly created <code>SCAudioClip</code> from <code>uri</code>
      */
-    public SCAudioClip createAudio(String uri)
-    {
+    public SCAudioClip createAudio(String uri) {
         return createAudio(uri, false);
     }
 
@@ -98,10 +95,10 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
      *
      * @param uri the path where the audio file could be found
      * @param playback use or not the playback device.
+     *
      * @return a newly created <code>SCAudioClip</code> from <code>uri</code>
      */
-    public SCAudioClip createAudio(String uri, boolean playback)
-    {
+    public SCAudioClip createAudio(String uri, boolean playback) {
         SCAudioClip audio;
         synchronized (audiosSyncRoot) {
             final AudioKey key = new AudioKey(uri, playback);
@@ -124,7 +121,8 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                     else {
                         audio = new AudioSystemClipImpl(uri, this, audioSystem, playback);
                     }
-                } catch (Throwable t) {
+                }
+                catch (Throwable t) {
                     if (t instanceof ThreadDeath)
                         throw (ThreadDeath) t;
                     else {
@@ -150,8 +148,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                 final Map<AudioKey, SCAudioClip> finalAudios = audioClips;
                 final SCAudioClip finalAudio = audio;
 
-                audio = new SCAudioClip()
-                {
+                audio = new SCAudioClip() {
                     /**
                      * Evaluates a specific <code>loopCondition</code> as defined by
                      * {@link SCAudioClip#play(int, Callable)}.
@@ -163,8 +160,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                      * @throws Exception if the specified <code>loopCondition</code> throws an <code>Exception</code>
                      */
                     private Boolean evaluateLoopCondition(Callable<Boolean> loopCondition)
-                            throws Exception
-                    {
+                            throws Exception {
                         /*
                          * SCAudioClip.play(int,Callable<Boolean>) is documented to play the
                          * SCAudioClip once only if the loopCondition is null. The same will be
@@ -181,19 +177,18 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                      */
                     @Override
                     protected void finalize()
-                            throws Throwable
-                    {
+                            throws Throwable {
                         try {
                             synchronized (audioClips) {
                                 finalAudios.put(key, finalAudio);
                             }
-                        } finally {
+                        }
+                        finally {
                             super.finalize();
                         }
                     }
 
-                    public void play()
-                    {
+                    public void play() {
                         /*
                          * SCAudioClip.play() is documented to behave as if loopInterval is
                          * negative and/or loopCondition is null. We have to take care that this
@@ -204,8 +199,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                         play(-1, null);
                     }
 
-                    public void play(int loopInterval, final Callable<Boolean> finalLoopCondition)
-                    {
+                    public void play(int loopInterval, final Callable<Boolean> finalLoopCondition) {
                         /*
                          * We have to make sure that this instance does not get garbage collected
                          * before the finalAudio finishes playing. The argument loopCondition of
@@ -217,8 +211,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                         finalAudio.play(loopInterval, loopCondition);
                     }
 
-                    public void stop()
-                    {
+                    public void stop() {
                         finalAudio.stop();
                     }
 
@@ -228,8 +221,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                      *
                      * @return <code>true</code> if this audio is started; otherwise, <code>false</code>
                      */
-                    public boolean isStarted()
-                    {
+                    public boolean isStarted() {
                         return finalAudio.isStarted();
                     }
                 };
@@ -243,8 +235,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
      *
      * @return the deviceConfiguration
      */
-    public DeviceConfiguration getDeviceConfiguration()
-    {
+    public DeviceConfiguration getDeviceConfiguration() {
         return deviceConfiguration;
     }
 
@@ -253,8 +244,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
      *
      * @return <code>true</code> if the sound is currently disabled; <code>false</code>, otherwise
      */
-    public boolean isMute()
-    {
+    public boolean isMute() {
         return mute;
     }
 
@@ -263,8 +253,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
      *
      * @param ev the event that notify device has changed.
      */
-    public void propertyChange(PropertyChangeEvent ev)
-    {
+    public void propertyChange(PropertyChangeEvent ev) {
         String propertyName = ev.getPropertyName();
 
         if (DeviceConfiguration.AUDIO_NOTIFY_DEVICE.equals(propertyName)
@@ -284,8 +273,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
      *
      * @param mute when <code>true</code> disables the sound; otherwise, enables the sound.
      */
-    public void setMute(boolean mute)
-    {
+    public void setMute(boolean mute) {
         // TODO Auto-generated method stub
         this.mute = mute;
     }
@@ -295,8 +283,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
      * the <code>SCAudioClip</code> with the indicator which determines whether the
      * <code>SCAudioClip</code> in question uses the playback or the notify audio device.
      */
-    private static class AudioKey
-    {
+    private static class AudioKey {
         /**
          * Is it playback?
          */
@@ -313,8 +300,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
          * @param uri
          * @param playback
          */
-        private AudioKey(String uri, boolean playback)
-        {
+        private AudioKey(String uri, boolean playback) {
             this.uri = uri;
             this.playback = playback;
         }
@@ -323,8 +309,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
          * {@inheritDoc}
          */
         @Override
-        public boolean equals(Object o)
-        {
+        public boolean equals(Object o) {
             if (o == this)
                 return true;
             if (!(o instanceof AudioKey))
@@ -339,8 +324,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
          * {@inheritDoc}
          */
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return ((uri == null) ? 0 : uri.hashCode()) + (playback ? 1 : 0);
         }
     }

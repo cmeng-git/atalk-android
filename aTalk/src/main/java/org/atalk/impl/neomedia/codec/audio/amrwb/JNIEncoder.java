@@ -15,21 +15,20 @@
  */
 package org.atalk.impl.neomedia.codec.audio.amrwb;
 
-import org.atalk.impl.neomedia.codec.FFmpeg;
-import org.atalk.impl.neomedia.codec.audio.FFmpegAudioEncoder;
-import org.atalk.service.neomedia.codec.Constants;
-
 import javax.media.Buffer;
 import javax.media.Format;
 import javax.media.format.AudioFormat;
+
+import org.atalk.impl.neomedia.codec.FFmpeg;
+import org.atalk.impl.neomedia.codec.audio.FFmpegAudioEncoder;
+import org.atalk.service.neomedia.codec.Constants;
 
 /**
  * Implements an Adaptive Multi-Rate Wideband (AMR-WB) encoder using FFmpeg.
  *
  * @author Lyubomir Marinov
  */
-public class JNIEncoder extends FFmpegAudioEncoder
-{
+public class JNIEncoder extends FFmpegAudioEncoder {
     static {
         assertFindAVCodec(FFmpeg.CODEC_ID_AMR_WB);
     }
@@ -104,8 +103,7 @@ public class JNIEncoder extends FFmpegAudioEncoder
     /**
      * Initializes a new <tt>JNIEncoder</tt> instance.
      */
-    public JNIEncoder()
-    {
+    public JNIEncoder() {
         super("AMR-WB JNI Encoder",
                 FFmpeg.CODEC_ID_AMR_WB,
                 SUPPORTED_OUTPUT_FORMATS);
@@ -117,8 +115,7 @@ public class JNIEncoder extends FFmpegAudioEncoder
      * {@inheritDoc}
      */
     @Override
-    protected void configureAVCodecContext(long avctx, AudioFormat format)
-    {
+    protected void configureAVCodecContext(long avctx, AudioFormat format) {
         super.configureAVCodecContext(avctx, format);
 
         FFmpeg.avcodeccontext_set_bit_rate(avctx, bitRate);
@@ -136,8 +133,7 @@ public class JNIEncoder extends FFmpegAudioEncoder
      * {@inheritDoc}
      */
     @Override
-    protected int doProcess(Buffer inBuf, Buffer outBuf)
-    {
+    protected int doProcess(Buffer inBuf, Buffer outBuf) {
         int doProcess = super.doProcess(inBuf, outBuf);
 
         if (this.packetize
@@ -158,10 +154,10 @@ public class JNIEncoder extends FFmpegAudioEncoder
      * Packetizes a specific <tt>Buffer</tt> for RTP.
      *
      * @param buf the <tt>Buffer</tt> to packetize for RTP
+     *
      * @return
      */
-    private int packetize(Buffer buf)
-    {
+    private int packetize(Buffer buf) {
         byte[] src = (byte[]) buf.getData();
         int srcLen = buf.getLength();
         int srcOff = buf.getOffset();
@@ -215,8 +211,7 @@ public class JNIEncoder extends FFmpegAudioEncoder
      * Additionally, determines whether this <tt>JNIEncoder</tt> is to perform RTP packetization.
      */
     @Override
-    public Format setOutputFormat(Format format)
-    {
+    public Format setOutputFormat(Format format) {
         format = super.setOutputFormat(format);
         if (format != null) {
             String encoding = format.getEncoding();
@@ -230,12 +225,12 @@ public class JNIEncoder extends FFmpegAudioEncoder
      * Gets the <tt>Format</tt> of the media output by this <tt>Codec</tt>.
      *
      * @return the <tt>Format</tt> of the media output by this <tt>Codec</tt>
+     *
      * @see net.sf.fmj.media.AbstractCodec#getOutputFormat()
      */
     @Override
     @SuppressWarnings("serial") /* copied from Speex and Opus Codec */
-    public Format getOutputFormat()
-    {
+    public Format getOutputFormat() {
         Format f = super.getOutputFormat();
 
         if ((f != null) && (f.getClass() == AudioFormat.class)) {
@@ -251,11 +246,9 @@ public class JNIEncoder extends FFmpegAudioEncoder
                             af.getSigned(),
                             af.getFrameSizeInBits(),
                             af.getFrameRate(),
-                            af.getDataType())
-                    {
+                            af.getDataType()) {
                         @Override
-                        public long computeDuration(long length)
-                        {
+                        public long computeDuration(long length) {
                             return durationNanos;
                         }
                     });

@@ -17,10 +17,10 @@
 package net.java.sip.communicator.service.protocol.event;
 
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jxmpp.jid.Jid;
 
-public interface MessageReceiptListener
-{
+public interface MessageReceiptListener {
     /**
      * Callback invoked when a new receipt got received.
      *

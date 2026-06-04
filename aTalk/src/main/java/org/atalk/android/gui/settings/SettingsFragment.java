@@ -72,7 +72,6 @@ public class SettingsFragment extends BasePreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     // PreferenceScreen and PreferenceCategories
     private static final String P_KEY_MEDIA_CALL = "pref.cat.settings.media_call";
-    private static final String P_KEY_CALL = "pref.cat.settings.call";
 
     // Advance video/audio & Provisioning preference settings
     private static final String P_KEY_ADVANCED = ExpertSettingsFragment.P_KEY_ADVANCED;
@@ -423,14 +422,10 @@ public class SettingsFragment extends BasePreferenceFragment
         if (myPrefCat != null)
             mPreferenceScreen.removePreference(myPrefCat);
 
-        myPrefCat = findPreference(P_KEY_CALL);
-        if (myPrefCat != null)
-            mPreferenceScreen.removePreference(myPrefCat);
-
         // disable Expert setting if media call is disable
-        myPrefCat = findPreference(P_KEY_ADVANCED);
-        if (myPrefCat != null) {
-            mPreferenceScreen.removePreference(myPrefCat);
+        Preference myPref = findPreference(P_KEY_ADVANCED);
+        if (myPref != null) {
+            mPreferenceScreen.removePreference(myPref);
         }
     }
 

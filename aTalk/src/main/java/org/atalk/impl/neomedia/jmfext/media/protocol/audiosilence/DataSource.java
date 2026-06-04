@@ -5,11 +5,6 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.audiosilence;
 
-import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
-import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
-import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +16,11 @@ import javax.media.control.FormatControl;
 import javax.media.format.AudioFormat;
 import javax.media.protocol.BufferTransferHandler;
 
+import org.atalk.impl.neomedia.codec.AbstractCodec2;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
+import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
+
 import timber.log.Timber;
 
 /**
@@ -30,8 +30,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class DataSource extends AbstractPushBufferCaptureDevice
-{
+public class DataSource extends AbstractPushBufferCaptureDevice {
     /**
      * The compile-time flag which determines whether <code>AudioSilenceCaptureDevice</code> and, more
      * specifically, <code>AudioSilenceStream</code> are to be used by <code>AudioMixer</code> for the mere
@@ -62,7 +61,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     /**
      * The list of <code>Format</code>s supported by the <code>AudioSilenceCaptureDevice</code> instances.
      */
-    public static final Format[] SUPPORTED_FORMATS = new Format[]{
+    public static final Format[] SUPPORTED_FORMATS = new Format[] {
             new AudioFormat(
                     AudioFormat.LINEAR,
                     48000,
@@ -81,8 +80,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
      * Implements {@link AbstractPushBufferCaptureDevice#createStream(int, FormatControl)}.
      */
     @Override
-    protected AudioSilenceStream createStream(int streamIndex, FormatControl formatControl)
-    {
+    protected AudioSilenceStream createStream(int streamIndex, FormatControl formatControl) {
         return new AudioSilenceStream(
                 this,
                 formatControl,
@@ -97,8 +95,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
      * <code>CaptureDeviceInfo</code> and this instance does not have one.
      */
     @Override
-    protected Format[] getSupportedFormats(int streamIndex)
-    {
+    protected Format[] getSupportedFormats(int streamIndex) {
         return SUPPORTED_FORMATS.clone();
     }
 
@@ -106,8 +103,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
      * Implements a <code>PushBufferStream</code> which provides silence in the form of audio media.
      */
     private static class AudioSilenceStream extends AbstractPushBufferStream<DataSource>
-            implements Runnable
-    {
+            implements Runnable {
         /**
          * The indicator which determines whether {@link #start()} has been invoked on this instance
          * without an intervening {@link #stop()}.
@@ -145,8 +141,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
          * {@code BufferTransferHandler.transferData(PushBufferStream)} and,
          * thus, tick the media clock that it represents; otherwise, {@code false}.
          */
-        public AudioSilenceStream(DataSource dataSource, FormatControl formatControl, boolean transferData)
-        {
+        public AudioSilenceStream(DataSource dataSource, FormatControl formatControl, boolean transferData) {
             super(dataSource, formatControl);
             this.transferData = transferData;
         }
@@ -155,13 +150,13 @@ public class DataSource extends AbstractPushBufferCaptureDevice
          * Reads available media data from this instance into a specific <code>Buffer</code>.
          *
          * @param buffer the <code>Buffer</code> to write the available media data into
+         *
          * @throws IOException if an I/O error has prevented the reading of available media data from this
          * instance into the specified <code>buffer</code>
          */
         @Override
         public void read(Buffer buffer)
-                throws IOException
-        {
+                throws IOException {
             if (CLOCK_ONLY) {
                 buffer.setLength(0);
             }
@@ -184,8 +179,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
          * consumer i.e. <code>BufferTransferHandler</code>.
          */
         @Override
-        public void run()
-        {
+        public void run() {
             try {
                 /*
                  * Make sure that the current thread which implements the actual ticking of the
@@ -223,7 +217,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                          */
                         try {
                             Thread.sleep(sleepInterval);
-                        } catch (InterruptedException ie) {
+                        }
+                        catch (InterruptedException ie) {
                             Thread.currentThread().interrupt();
                         }
                         /*
@@ -249,7 +244,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                         if (transferHandler != null) {
                             try {
                                 transferHandler.transferData(this);
-                            } catch (Throwable t) {
+                            }
+                            catch (Throwable t) {
                                 if (t instanceof ThreadDeath)
                                     throw (ThreadDeath) t;
                                 else {
@@ -259,7 +255,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                         }
                     }
                 }
-            } finally {
+            }
+            finally {
                 synchronized (this) {
                     if (thread == Thread.currentThread()) {
                         thread = null;
@@ -277,8 +274,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
          */
         @Override
         public synchronized void start()
-                throws IOException
-        {
+                throws IOException {
             if (!transferData) {
                 // Skip creating the thread that will invoke transferData.
                 this.started = true;
@@ -295,7 +291,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 try {
                     thread.start();
                     started = true;
-                } finally {
+                }
+                finally {
                     this.started = started;
                     if (!started) {
                         thread = null;
@@ -313,8 +310,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
          */
         @Override
         public synchronized void stop()
-                throws IOException
-        {
+                throws IOException {
             this.started = false;
             notifyAll();
 
@@ -335,7 +331,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 try {
                     wait(WAIT_TIMEOUT);
                     waited = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started) >= WAIT_TIMEOUT;
-                } catch (InterruptedException ie) {
+                }
+                catch (InterruptedException ie) {
                     interrupted = true;
                 }
             }

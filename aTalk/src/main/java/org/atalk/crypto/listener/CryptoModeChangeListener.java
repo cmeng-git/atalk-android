@@ -23,8 +23,7 @@ import org.jivesoftware.smackx.omemo.OmemoManager;
  *
  * @author Eng Chong Meng
  */
-public interface CryptoModeChangeListener
-{
+public interface CryptoModeChangeListener {
     /**
      * Get called, whenever an there is a change in the cryptoMode.
      */

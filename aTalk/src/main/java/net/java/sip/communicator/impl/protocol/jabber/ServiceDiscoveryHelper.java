@@ -154,7 +154,7 @@ public class ServiceDiscoveryHelper {
         }
 
         // Start retriever to request for discoInfo. Saved in nonCapsCache for later retrieval, else endless loop.
-        Timber.e("Retrieve nonCap discoInfo for Jid: %s", entityJid);
+        Timber.d("Retrieve nonCap discoInfo for Jid: %s", entityJid);
         retriever.addEntityForRetrieve(entityJid);
         return null;
     }

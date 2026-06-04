@@ -7,6 +7,38 @@
 -->
 
 <changelog>
+    <release version="6.1.0 (06/04/2026)" versioncode="601000">
+        <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>Make call transfer via JingleMessage if the intended transferred callee supports it.</change>
+        <change>Add 'Retract Message' option in chat session. Recipient must be online for 'Retract message' to take effect.
+            Feature similar to Whatsapp 'Delete for All' option.</change>
+        <change>XEP-0424: Message Retraction document does not provide any form of positive feedback from recipient;
+            aTalk uses XEP-0184: Message Delivery Receipts for acknowledgement.</change>
+        <change>Remove support merging of multiple messages in chat window. It limits user usage in, and
+            complicates messages handling for retract, delete, correction and delivery receipt etc.</change>
+        <change>When update the content of the modified (retracted &amp; corrected) chat message in ChatFragment:</change>
+        <change>a. Must update the viewHolder Text when chat is in view/focus for immediate view change.</change>
+        <change>b. ChatPanel#msgCache if not already done in ChatPanel, msgCache info is retrieved in loadHistory when chat onResume.
+            This happen when user closes/reopens the chat window, and close active chat and reopen.</change>
+        <change>c. MessageDisplay#ChatMessage bodyText. BaseAdapter retrieves this info when user scroll the chat window.</change>
+        <change>ChatSessionListener in ChatFragment must remain active and registered with ChatPanel, at all times even when
+            chat fragment window is closed/detached. Otherwise incoming Retract and Correction messages may not be updated properly.</change>
+        <change>Extend Last Message Correction support to all other outgoing messages, and not just the last sent message.</change>
+        <change>Keep the original created message time stamp for Message Correction, so sent/received messages chronological are maintained.</change>
+        <change>Retain the messageUuid of the edited message when doing Last Message Correction;
+            else 'Retract Message' of the edited message will fail.</change>
+        <change>Android does not refresh the local displayed view content changed during message retract/correction;
+            fixed by 1000ms delay the mode.finish() and setText after edited text is sent.</change>
+        <change>Revert message sending to use 'CTRL-ENTER' from physical keyboard; leave 'ENTER' to append newline in chat text entry.</change>
+        <change>Define actionModeStyle and actionModeCloseDrawable in Theme, required on some android devices to ensure ActionMode style is set properly.</change>
+        <change>ChatRoom message sent wrongly converted to message received, if user re-login from terminated app; user resource changes under this case.</change>
+        <change>Ensure auto generated resource name remains unchanged even when aTalk re-login after app is terminated.</change>
+        <change>Fix incorrect cast of Expert Settings to PreferenceCategory class and crashes aTalk.</change>
+        <change>FileTransferConversation getContext() returns null when page sliding chat Windows. Override getContent() in aTalk BaseFragment to fix.</change>
+        <change>Must OperationSetBasicTelephonyJabberImpl#addAsyncStanzaListener(this, RESPONDER_ERROR_FILTER) @ RegistrationState.REGISTERED state, else mConnector.getUser == null.</change>
+        <change>Bug fixes and enhancements.</change>
+    </release>
+
     <release version="6.0.0 (05/21/2026)" versioncode="600000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
         <change>aTalk UI does not support SMS text and multimedia features, hence remove all source support i.e. OperationSetSmsMessaging class and all SMS utilities.</change>

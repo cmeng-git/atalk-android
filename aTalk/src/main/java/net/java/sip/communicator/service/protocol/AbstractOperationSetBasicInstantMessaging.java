@@ -101,7 +101,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      *
      * @return IMessage the newly created message
      */
-    public IMessage createMessageWithUID(String messageText, int encType, String messageUID) {
+    public IMessage createMessageWithUid(String messageText, int encType, String messageUID) {
         return createMessage(messageText);
     }
 

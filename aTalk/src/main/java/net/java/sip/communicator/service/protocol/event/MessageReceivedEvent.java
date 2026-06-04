@@ -76,6 +76,8 @@ public class MessageReceivedEvent extends EventObject {
      */
     private final ChatRoom privateMessagingContactRoom;
 
+    private boolean isRetractMessage = false;
+
     /**
      * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
      * received from the specified <code>from</code> contact.
@@ -234,4 +236,11 @@ public class MessageReceivedEvent extends EventObject {
         return isPrivateMessaging;
     }
 
+    public void setRetractMessage(boolean state) {
+        isRetractMessage = state;
+    }
+
+    public boolean isRetractMessage() {
+        return isRetractMessage;
+    }
 }

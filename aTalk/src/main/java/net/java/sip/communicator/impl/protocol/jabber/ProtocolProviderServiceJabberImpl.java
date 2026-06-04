@@ -9,6 +9,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.text.TextUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -178,6 +179,8 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.externalservicediscovery.ExternalServiceDiscoveryManager;
 import org.jivesoftware.smackx.externalservicediscovery.ExternalServiceDiscoveryProvider;
 import org.jivesoftware.smackx.externalservicediscovery.ExternalServices;
+import org.jivesoftware.smackx.fallback_indication.element.FallbackIndicationElement;
+import org.jivesoftware.smackx.fallback_indication.provider.FallbackIndicationElementProvider;
 import org.jivesoftware.smackx.filetransfer.FileTransferNegotiator;
 import org.jivesoftware.smackx.httpauthorizationrequest.HttpAuthorizationRequestListener;
 import org.jivesoftware.smackx.httpauthorizationrequest.HttpAuthorizationRequestManager;
@@ -210,6 +213,10 @@ import org.jivesoftware.smackx.json.provider.JsonMessageProvider;
 import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
+import org.jivesoftware.smackx.message_retraction.element.RetractElement;
+import org.jivesoftware.smackx.message_retraction.element.RetractedElement;
+import org.jivesoftware.smackx.message_retraction.provider.RetractElementProvider;
+import org.jivesoftware.smackx.message_retraction.provider.RetractedElementProvider;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.nick.packet.Nick;
 import org.jivesoftware.smackx.nick.provider.NickProvider;
@@ -397,8 +404,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Indicates if user search is disabled.
      */
     private static final String IS_USER_SEARCH_ENABLED_PROPERTY = "USER_SEARCH_ENABLED";
-
-    private static final String DEFAULT_RESOURCE = "atalk";
 
     /**
      * Used to connect to a XMPP server.
@@ -898,11 +903,12 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         if (mResource != null)
             return;
 
-        String sResource = mAccountID.getAccountPropertyString(ProtocolProviderFactory.RESOURCE, DEFAULT_RESOURCE);
+        String sResource = mAccountID.getAccountPropertyString(ProtocolProviderFactory.RESOURCE, "");
         boolean autoGenRes = mAccountID.getAccountPropertyBoolean(ProtocolProviderFactory.AUTO_GENERATE_RESOURCE, true);
-        if (autoGenRes) {
+        if (autoGenRes && (sResource.length() < 10)) {
             SecureRandom random = new SecureRandom();
             sResource += "-" + new BigInteger(32, random).toString(32);
+            mAccountID.setResource(sResource);
         }
         try {
             mResource = Resourcepart.from(sResource);
@@ -2306,6 +2312,13 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             // XEP-0420 v4.1.0 Stanza Content Encryption
             ProviderManager.addExtensionProvider(EnvelopeElement.ELEMENT, EnvelopeElement.NAMESPACE, new EnvelopeElementProvider());
             ProviderManager.addExtensionProvider(OmemoOptOutElement.ELEMENT, OmemoOptOutElement.NAMESPACE, new OmemoOptOutProvider());
+
+            // XEP-0424: Message Retraction
+            ProviderManager.addExtensionProvider(RetractElement.ELEMENT, RetractElement.NAMESPACE, new RetractElementProvider());
+            ProviderManager.addExtensionProvider(RetractedElement.ELEMENT, RetractedElement.NAMESPACE, new RetractedElementProvider());
+
+            // XEP-0428: Fallback Indication; already defined in smack
+            // ProviderManager.addExtensionProvider(FallbackIndicationElement.ELEMENT, FallbackIndicationElement.NAMESPACE, new FallbackIndicationElementProvider());
 
             // in case of modified account, we clear list of supported features and all state
             // change listeners, otherwise we can have two OperationSet for same feature and it

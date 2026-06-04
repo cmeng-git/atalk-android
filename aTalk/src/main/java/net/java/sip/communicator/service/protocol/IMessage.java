@@ -81,11 +81,11 @@ public interface IMessage {
     /**
      * Returns the Http File Download status
      *
-     * @return the file xfer status
+     * @return the message status or file xfer status
      */
-    int getXferStatus();
+    int getStatus();
 
-    // void setXferStatus(int status);
+    void setStatus(int status);
 
     /**
      * Returns the message delivery receipt status
@@ -163,5 +163,5 @@ public interface IMessage {
      */
     String getMessageUID();
 
-    void setMessageUID(String msgUid);
+    void setMessageUid(String msgUid);
 }

@@ -5,11 +5,11 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
+import java.beans.PropertyChangeEvent;
+
 import net.java.sip.communicator.service.protocol.Call;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.beans.PropertyChangeEvent;
 
 /**
  * CallChangeEvent-s are triggered whenever a change occurs in a Call. Dispatched events may be of
@@ -17,12 +17,10 @@ import java.beans.PropertyChangeEvent;
  *
  * CALL_STATE_CHANGE - indicates a change in the state of a Call.
  *
- *
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class CallChangeEvent extends PropertyChangeEvent
-{
+public class CallChangeEvent extends PropertyChangeEvent {
     /**
      * The type of <code>CallChangeEvent</code> which indicates that the state of the associated
      * <code>Call</code> has changed.
@@ -55,8 +53,7 @@ public class CallChangeEvent extends PropertyChangeEvent
      * @param oldValue the value of the changed property before the event occurred
      * @param newValue current value of the changed property.
      */
-    public CallChangeEvent(Call source, String type, Object oldValue, Object newValue)
-    {
+    public CallChangeEvent(Call source, String type, Object oldValue, Object newValue) {
         this(source, type, oldValue, newValue, null);
     }
 
@@ -69,8 +66,7 @@ public class CallChangeEvent extends PropertyChangeEvent
      * @param newValue current value of the changed property.
      * @param cause the event that causes this event, if any(null otherwise).
      */
-    public CallChangeEvent(Call source, String type, Object oldValue, Object newValue, CallPeerChangeEvent cause)
-    {
+    public CallChangeEvent(Call source, String type, Object oldValue, Object newValue, CallPeerChangeEvent cause) {
         super(source, type, oldValue, newValue);
         this.cause = cause;
     }
@@ -81,8 +77,7 @@ public class CallChangeEvent extends PropertyChangeEvent
      *
      * @return <code>CallPeerChangeEvent</code> that represents the cause
      */
-    public CallPeerChangeEvent getCause()
-    {
+    public CallPeerChangeEvent getCause() {
         return cause;
     }
 
@@ -91,9 +86,14 @@ public class CallChangeEvent extends PropertyChangeEvent
      *
      * @return a string containing the name of the property whose change this event is reflecting.
      */
-    public String getEventType()
-    {
+    public String getEventType() {
         return getPropertyName();
+    }
+
+    private static String getCallChangeState(Object typeObj) {
+        String typeStr = typeObj.toString();
+        typeStr = typeStr.substring(typeStr.lastIndexOf("CallState"));
+        return typeStr;
     }
 
     /**
@@ -101,8 +101,7 @@ public class CallChangeEvent extends PropertyChangeEvent
      *
      * @return The Call on which the event has occurred.
      */
-    public Call getSourceCall()
-    {
+    public Call getSourceCall() {
         return (Call) getSource();
     }
 
@@ -113,8 +112,8 @@ public class CallChangeEvent extends PropertyChangeEvent
      */
     @NotNull
     @Override
-    public String toString()
-    {
-        return "CallChangeEvent: type=" + getEventType() + " oldV=" + getOldValue() + " newV=" + getNewValue();
-    }
+    public String toString() {
+        return "EventType: " + getEventType() + "; "
+                + getCallChangeState(getOldValue()) + " => " + getCallChangeState(getNewValue());
+   }
 }

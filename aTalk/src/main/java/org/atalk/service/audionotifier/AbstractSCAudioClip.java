@@ -11,12 +11,12 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 
-import org.atalk.android.aTalkApp;
-import org.atalk.impl.androidresources.AppResourceServiceImpl;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.atalk.android.aTalkApp;
+import org.atalk.impl.androidresources.AppResourceServiceImpl;
 
 import timber.log.Timber;
 
@@ -29,8 +29,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class AbstractSCAudioClip implements SCAudioClip
-{
+public abstract class AbstractSCAudioClip implements SCAudioClip {
     /**
      * The thread pool used by the <code>AbstractSCAudioClip</code> instances in order to reduce the
      * impact of thread creation/initialization.
@@ -91,11 +90,9 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
 
     // private int currentVolume;
 
-    protected AbstractSCAudioClip(String uri, AudioNotifierService audioNotifier)
-    {
+    protected AbstractSCAudioClip(String uri, AudioNotifierService audioNotifier) {
         this.uri = uri;
         this.audioNotifier = audioNotifier;
-        // Timber.e(new Exception("AbstractSCAudioClip Init: " + uri));
     }
 
     /**
@@ -106,8 +103,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * initialization before this audio starts playing. The <code>AbstractSCAudioClip</code>
      * implementation does nothing.
      */
-    protected void enterRunInPlayThread()
-    {
+    protected void enterRunInPlayThread() {
     }
 
     /**
@@ -117,8 +113,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * in order to allow extenders/implementers to perform one-time cleanup after this audio
      * stops playing. The <code>AbstractSCAudioClip</code> implementation does nothing.
      */
-    protected void exitRunInPlayThread()
-    {
+    protected void exitRunInPlayThread() {
     }
 
     /**
@@ -128,8 +123,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * Allows extenders/implementers to perform per-loop iteration initialization. The
      * <code>AbstractSCAudioClip</code> implementation does nothing.
      */
-    private void enterRunOnceInPlayThread()
-    {
+    private void enterRunOnceInPlayThread() {
     }
 
     /**
@@ -139,8 +133,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * extenders/implementers to perform per-loop iteration cleanup. The
      * <code>AbstractSCAudioClip</code> implementation does nothing.
      */
-    protected void exitRunOnceInPlayThread()
-    {
+    protected void exitRunOnceInPlayThread() {
     }
 
     /**
@@ -161,16 +154,14 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * <code>loopCondition</code> <code>null</code> in order to conform with the contract for the
      * behavior of this method specified by the interface <code>SCAudioClip</code>.
      */
-    public void play()
-    {
+    public void play() {
         play(-1, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void play(int loopInterval, final Callable<Boolean> loopCondition)
-    {
+    public void play(int loopInterval, final Callable<Boolean> loopCondition) {
         // Timber.w(new Exception("Ring tone playing start"));
         if ((loopInterval >= 0) && (loopCondition == null))
             loopInterval = -1;
@@ -197,10 +188,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
 
             try {
                 started = false;
-                command = new Runnable()
-                {
-                    public void run()
-                    {
+                command = new Runnable() {
+                    public void run() {
                         try {
                             synchronized (sync) {
                                 /*
@@ -219,7 +208,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                             else {
                                 runInPlayRingtoneThread(loopCondition);
                             }
-                        } finally {
+                        }
+                        finally {
                             synchronized (sync) {
                                 if (equals(command)) {
                                     command = null;
@@ -232,7 +222,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                 };
                 executorService.execute(command);
                 started = true;
-            } finally {
+            }
+            finally {
                 if (!started)
                     command = null;
                 sync.notifyAll();
@@ -246,8 +237,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      *
      * @return <code>true</code> if this audio is started; otherwise, <code>false</code>
      */
-    public boolean isStarted()
-    {
+    public boolean isStarted() {
         synchronized (sync) {
             return started;
         }
@@ -261,8 +251,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * audio will play more than once. If <code>null</code>, this audio will play once only. If an invocation of
      * <code>loopCondition</code> throws a <code>Throwable</code>, this audio will discontinue playing.
      */
-    private void runInPlayThread(Callable<Boolean> loopCondition)
-    {
+    private void runInPlayThread(Callable<Boolean> loopCondition) {
         enterRunInPlayThread();
         try {
             boolean interrupted = false;
@@ -276,7 +265,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                     synchronized (sync) {
                         try {
                             sync.wait(500);
-                        } catch (InterruptedException ie) {
+                        }
+                        catch (InterruptedException ie) {
                             interrupted = true;
                         }
                     }
@@ -286,7 +276,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                     try {
                         if (!runOnceInPlayThread())
                             break;
-                    } finally {
+                    }
+                    finally {
                         exitRunOnceInPlayThread();
                     }
                 }
@@ -311,7 +302,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                         if (loopInterval > 0)
                             sync.wait(loopInterval);
 
-                    } catch (InterruptedException ie) {
+                    }
+                    catch (InterruptedException ie) {
                         interrupted = true;
                     }
                 }
@@ -339,7 +331,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                 boolean loop = false;
                 try {
                     loop = loopCondition.call();
-                } catch (Throwable t) {
+                }
+                catch (Throwable t) {
                     if (t instanceof ThreadDeath)
                         throw (ThreadDeath) t;
                     /*
@@ -360,7 +353,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
             }
             if (interrupted)
                 Thread.currentThread().interrupt();
-        } finally {
+        }
+        finally {
             exitRunInPlayThread();
         }
     }
@@ -389,8 +383,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * audio will play more than once. If <code>null</code>, this audio will play once only. If an invocation of
      * <code>loopCondition</code> throws a <code>Throwable</code>, this audio will discontinue playing.
      */
-    private void runInPlayRingtoneThread(Callable<Boolean> loopCondition)
-    {
+    private void runInPlayRingtoneThread(Callable<Boolean> loopCondition) {
         try {
             boolean interrupted = false;
 
@@ -403,7 +396,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                     synchronized (sync) {
                         try {
                             sync.wait(500);
-                        } catch (InterruptedException ie) {
+                        }
+                        catch (InterruptedException ie) {
                             interrupted = true;
                         }
                     }
@@ -413,7 +407,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                         try {
                             if (!ringTonePlayBack(loopCondition))
                                 break;
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex) {
                             break;
                         }
                     }
@@ -436,7 +431,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                      */
                     try {
                         sync.wait(3000);
-                    } catch (InterruptedException ie) {
+                    }
+                    catch (InterruptedException ie) {
                         interrupted = true;
                     }
                 }
@@ -464,7 +460,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                 try {
                     if (!loopCondition.call())
                         break;
-                } catch (Exception t) {
+                }
+                catch (Exception t) {
                     /*
                      * If loopCondition fails to successfully and explicitly evaluate to true,
                      * this audio should cease to play in a loop. Otherwise, there is a risk that
@@ -476,7 +473,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
             }
             if (interrupted)
                 Thread.currentThread().interrupt();
-        } finally {
+        }
+        finally {
             ringToneStop();
         }
     }
@@ -488,14 +486,14 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * @param loopCondition check for loop
      */
     private boolean ringTonePlayBack(Callable<Boolean> loopCondition)
-            throws Exception
-    {
+            throws Exception {
         // stop previously play ringTone if any and create new ringTone
         if (ringtone != null) {
             try {
                 ringtone.stop();
                 ringtone = null;
-            } catch (IllegalStateException ex) {
+            }
+            catch (IllegalStateException ex) {
                 // just ignore any ringtone stop exception
                 Timber.w("End existing ringtone error: %s", ex.getMessage());
             }
@@ -530,15 +528,15 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
         return true;
     }
 
-    private void ringToneStop()
-    {
+    private void ringToneStop() {
         if (!uri.startsWith(AppResourceServiceImpl.PROTOCOL)) {
             if (ringtone != null) {
                 // Timber.d("Ring tone playback stopping: %s = %s", ringtone.getTitle(aTalkApp.getInstance()), uri);
                 try {
                     ringtone.stop();
                     ringtone = null;
-                } catch (IllegalStateException ex) {
+                }
+                catch (IllegalStateException ex) {
                     Timber.w("Ringtone stopping exception %s", ex.getMessage());
                 }
             }
@@ -556,8 +554,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      *
      * @return <code>true</code> if this instance is invalid; otherwise, <code>false</code>
      */
-    public boolean isInvalid()
-    {
+    public boolean isInvalid() {
         return invalid;
     }
 
@@ -570,8 +567,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      *
      * @param invalid <code>true</code> to mark this instance invalid or <code>false</code> to mark it valid
      */
-    public void setInvalid(boolean invalid)
-    {
+    public void setInvalid(boolean invalid) {
         this.invalid = invalid;
     }
 
@@ -580,8 +576,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      *
      * @return <code>true</code> if this instance plays the audio it represents in a loop; <code>false</code>, otherwise
      */
-    public boolean isLooping()
-    {
+    public boolean isLooping() {
         return looping;
     }
 
@@ -594,8 +589,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * @param looping <code>true</code> to mark this instance that it should play the audio it represents in a
      * loop; otherwise, <code>false</code>
      */
-    public void setLooping(boolean looping)
-    {
+    public void setLooping(boolean looping) {
         synchronized (sync) {
             if (this.looping != looping) {
                 this.looping = looping;
@@ -610,8 +604,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * @return the interval of time in milliseconds between consecutive plays of this audio. If
      * negative, this audio will not be played in a loop and will be played once only.
      */
-    private int getLoopInterval()
-    {
+    private int getLoopInterval() {
         return loopInterval;
     }
 
@@ -624,8 +617,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * @param loopInterval the interval of time in milliseconds between consecutive plays of this audio in a loop
      * to be set on this instance
      */
-    private void setLoopInterval(int loopInterval)
-    {
+    private void setLoopInterval(int loopInterval) {
         synchronized (sync) {
             if (this.loopInterval != loopInterval) {
                 this.loopInterval = loopInterval;
@@ -637,8 +629,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     /**
      * {@inheritDoc}
      */
-    public void stop()
-    {
+    public void stop() {
         ringToneStop();
         internalStop();
         setLooping(false);
@@ -649,8 +640,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * AudioNotifier uses this method to stop the audio when setMute(true) is invoked. This
      * allows us to restore all looping audios when the sound is restored by calling setMute(false).
      */
-    protected void internalStop()
-    {
+    protected void internalStop() {
         boolean interrupted = false;
 
         synchronized (sync) {
@@ -664,7 +654,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                      * then we will likely already be in trouble. Anyway, use a timeout just in case.
                      */
                     sync.wait(500);
-                } catch (InterruptedException ie) {
+                }
+                catch (InterruptedException ie) {
                     interrupted = true;
                 }
             }

@@ -294,7 +294,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
          */
 
         // Just show the pass in error message if false
-        boolean mergeMessage = true;
+        boolean mergeErrorMessage = true;
         boolean resendLastMessage = true;
         String errorMsg;
         String reason = evt.getReason();
@@ -325,7 +325,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         case MessageDeliveryFailedEvent.OMEMO_SEND_ERROR:
         case MessageDeliveryFailedEvent.NOT_ACCEPTABLE:
             errorMsg = evt.getReason();
-            mergeMessage = false;
+            mergeErrorMessage = false;
             break;
 
         case MessageDeliveryFailedEvent.SYSTEM_ERROR_MESSAGE:
@@ -335,11 +335,11 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 errorMsg = aTalkApp.getResString(R.string.message_delivery_unknown_error);
             else {
                 errorMsg = reason;
-                mergeMessage = false;
+                mergeErrorMessage = false;
             }
         }
 
-        if (!TextUtils.isEmpty(reason) && mergeMessage)
+        if (!TextUtils.isEmpty(reason) && mergeErrorMessage)
             errorMsg += " " + aTalkApp.getResString(R.string.error_was_, reason);
 
         // Error message sent from conference has no nickName i.e. contains ""

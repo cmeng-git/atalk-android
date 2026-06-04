@@ -57,8 +57,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 600000
-        versionName "6.0.0"
+        versionCode 601000
+        versionName "6.1.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk

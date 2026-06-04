@@ -5,29 +5,6 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import org.atalk.android.aTalkApp;
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.impl.neomedia.MediaStreamImpl;
-import org.atalk.impl.neomedia.ProcessorUtility;
-import org.atalk.impl.neomedia.control.AbstractControls;
-import org.atalk.impl.neomedia.format.MediaFormatImpl;
-import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
-import org.atalk.impl.neomedia.protocol.InbandDTMFDataSource;
-import org.atalk.impl.neomedia.protocol.MuteDataSource;
-import org.atalk.impl.neomedia.protocol.RewritablePullBufferDataSource;
-import org.atalk.impl.neomedia.protocol.RewritablePushBufferDataSource;
-import org.atalk.impl.neomedia.protocol.TranscodingDataSource;
-import org.atalk.service.neomedia.DTMFInbandTone;
-import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.codec.Constants;
-import org.atalk.service.neomedia.control.AdvancedAttributesAwareCodec;
-import org.atalk.service.neomedia.control.FormatParametersAwareCodec;
-import org.atalk.service.neomedia.device.MediaDevice;
-import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.MediaType;
-import org.atalk.util.OSUtils;
-import org.atalk.util.event.PropertyChangeNotifier;
-
 import java.awt.Dimension;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,6 +43,29 @@ import javax.media.protocol.PullBufferDataSource;
 import javax.media.protocol.PushBufferDataSource;
 import javax.media.rtp.ReceiveStream;
 
+import org.atalk.android.aTalkApp;
+import org.atalk.impl.neomedia.MediaStreamImpl;
+import org.atalk.impl.neomedia.ProcessorUtility;
+import org.atalk.impl.neomedia.control.AbstractControls;
+import org.atalk.impl.neomedia.format.MediaFormatImpl;
+import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
+import org.atalk.impl.neomedia.protocol.InbandDTMFDataSource;
+import org.atalk.impl.neomedia.protocol.MuteDataSource;
+import org.atalk.impl.neomedia.protocol.RewritablePullBufferDataSource;
+import org.atalk.impl.neomedia.protocol.RewritablePushBufferDataSource;
+import org.atalk.impl.neomedia.protocol.TranscodingDataSource;
+import org.atalk.impl.timberlog.TimberLog;
+import org.atalk.service.neomedia.DTMFInbandTone;
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.service.neomedia.codec.Constants;
+import org.atalk.service.neomedia.control.AdvancedAttributesAwareCodec;
+import org.atalk.service.neomedia.control.FormatParametersAwareCodec;
+import org.atalk.service.neomedia.device.MediaDevice;
+import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.MediaType;
+import org.atalk.util.OSUtils;
+import org.atalk.util.event.PropertyChangeNotifier;
+
 import timber.log.Timber;
 
 /**
@@ -77,8 +77,7 @@ import timber.log.Timber;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class MediaDeviceSession extends PropertyChangeNotifier
-{
+public class MediaDeviceSession extends PropertyChangeNotifier {
     /**
      * The name of the <code>MediaDeviceSession</code> instance property the value of which represents
      * the output <code>DataSource</code> of the <code>MediaDeviceSession</code> instance which provides
@@ -142,8 +141,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * The <code>ControllerListener</code> which listens to the <code>Player</code>s of
      * {@link #playbacks} for <code>ControllerEvent</code>s.
      */
-    private final ControllerListener playerControllerListener = new ControllerListener()
-    {
+    private final ControllerListener playerControllerListener = new ControllerListener() {
         /**
          * Notifies this <code>ControllerListener</code> that the <code>Controller</code> which it is
          * registered with has generated an event.
@@ -152,8 +150,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
          * the source of the event, and the very type of the event.
          * @see ControllerListener#controllerUpdate(ControllerEvent)
          */
-        public void controllerUpdate(ControllerEvent ev)
-        {
+        public void controllerUpdate(ControllerEvent ev) {
             // Timber.w("Media device session controller updated: %s", ev.getSource());
             playerControllerUpdate(ev);
         }
@@ -218,8 +215,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param device the <code>MediaDevice</code> the use of which by a <code>MediaStream</code> is to be
      * represented by the new instance
      */
-    protected MediaDeviceSession(AbstractMediaDevice device)
-    {
+    protected MediaDeviceSession(AbstractMediaDevice device) {
         checkDevice(device);
         this.device = device;
     }
@@ -231,8 +227,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param disposePlayerOnClose <code>true</code> to have this instance dispose of its associated player upon closing;
      * otherwise, <code>false</code>
      */
-    public void setDisposePlayerOnClose(boolean disposePlayerOnClose)
-    {
+    public void setDisposePlayerOnClose(boolean disposePlayerOnClose) {
         this.disposePlayerOnClose = disposePlayerOnClose;
     }
 
@@ -246,11 +241,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param ssrc the new SSRC identifier that we'd like to add to the array of <code>ssrc</code>
      * identifiers stored by this session.
      */
-    protected void addSSRC(long ssrc)
-    {
+    protected void addSSRC(long ssrc) {
         // init if necessary
         if (ssrcList == null) {
-            setSsrcList(new long[]{ssrc});
+            setSsrcList(new long[] {ssrc});
             return;
         }
 
@@ -273,10 +267,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * checking here to make sure they are of the right sizes.
      *
      * @param sourceFormat the original format to check the size of
+     *
      * @return the modified <code>VideoFormat</code> set to the size we support
      */
-    private static VideoFormat assertSize(VideoFormat sourceFormat)
-    {
+    private static VideoFormat assertSize(VideoFormat sourceFormat) {
         int width, height;
 
         // JPEG
@@ -308,8 +302,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param device the <code>MediaDevice</code> to be checked for suitability to become the
      * <code>MediaDevice</code> of this instance
      */
-    protected void checkDevice(AbstractMediaDevice device)
-    {
+    protected void checkDevice(AbstractMediaDevice device) {
     }
 
     /**
@@ -319,11 +312,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * cmeng: should close only the required direction e.g. toggle camera should not close remote video
      * Need to clean up this section
      */
-    public void close(MediaDirection direction)
-    {
+    public void close(MediaDirection direction) {
         try {
             stop(direction);
-        } finally {
+        }
+        finally {
             /*
              * XXX The order of stopping the playback and capture is important here because when we
              * use echo cancellation the capture accesses data from the playback and thus there is
@@ -347,8 +340,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     /**
      * Makes sure {@link #processor} is closed.
      */
-    private void closeProcessor()
-    {
+    private void closeProcessor() {
         if (processor != null) {
             if (processorControllerListener != null)
                 processor.removeControllerListener(processorControllerListener);
@@ -361,7 +353,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
 
                 try {
                     dataOutput = processor.getDataOutput();
-                } catch (NotRealizedError nre) {
+                }
+                catch (NotRealizedError nre) {
                     dataOutput = null;
                 }
                 if (dataOutput != null)
@@ -384,8 +377,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @return the <code>DataSource</code> that this instance is to read captured media from
      */
-    protected DataSource createCaptureDevice()
-    {
+    protected DataSource createCaptureDevice() {
         DataSource captureDevice = getDevice().createOutputDataSource();
         if (captureDevice != null) {
             MuteDataSource muteDataSource = AbstractControls.queryInterface(captureDevice, MuteDataSource.class);
@@ -410,16 +402,17 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * back on the <code>MediaDevice</code> represented by this instance.
      *
      * @param dataSource the <code>DataSource</code> to create a new <code>Player</code> for
+     *
      * @return a new <code>Player</code> for the specified <code>dataSource</code>
      */
-    protected Player createPlayer(DataSource dataSource)
-    {
+    protected Player createPlayer(DataSource dataSource) {
         Processor player = null;
         Throwable exception = null;
 
         try {
             player = getDevice().createPlayer(dataSource);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             exception = ex;
         }
         if (exception != null) {
@@ -447,8 +440,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @return a new FMJ <code>Processor</code> which is to transcode <code>captureDevice</code> into the
      * format of this instance
      */
-    protected Processor createProcessor()
-    {
+    protected Processor createProcessor() {
         DataSource captureDevice = getConnectedCaptureDevice();
         if (captureDevice != null) {
             Processor processor = null;
@@ -456,7 +448,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
 
             try {
                 processor = Manager.createProcessor(captureDevice);
-            } catch (IOException | NoProcessorException ioe) {
+            }
+            catch (IOException | NoProcessorException ioe) {
                 exception = ioe;
             }
 
@@ -464,8 +457,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 Timber.e(exception, "Failed to create Processor for %s", captureDevice);
             else {
                 if (processorControllerListener == null) {
-                    processorControllerListener = new ControllerListener()
-                    {
+                    processorControllerListener = new ControllerListener() {
                         /**
                          * Notifies this <code>ControllerListener</code> that the <code>Controller</code>
                          * which it is registered with has generated an event.
@@ -475,8 +467,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                          *        which is the source of the event and the very type of the event
                          * @see ControllerListener#controllerUpdate(ControllerEvent)
                          */
-                        public void controllerUpdate(ControllerEvent event)
-                        {
+                        public void controllerUpdate(ControllerEvent event) {
                             processorControllerUpdate(event);
                         }
                     };
@@ -504,11 +495,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @param processor the <code>Processor</code> of captured media to be sent to the remote peer which is to
      * have its <code>contentDescriptor</code> set to the returned <code>ContentDescriptor</code>
+     *
      * @return a <code>ContentDescriptor</code> to be set on the specified <code>processor</code> of
      * captured media to be sent to the remote peer
      */
-    protected ContentDescriptor createProcessorContentDescriptor(Processor processor)
-    {
+    protected ContentDescriptor createProcessorContentDescriptor(Processor processor) {
         return (contentDescriptor == null) ? new ContentDescriptor(ContentDescriptor.RAW_RTP)
                 : contentDescriptor;
     }
@@ -522,27 +513,27 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param player the <code>Player</code> which is to utilize the initialized/returned <code>Renderer</code>
      * @param trackControl the <code>TrackControl</code> which represents the media to be played back (and,
      * technically, on which the initialized/returned <code>Renderer</code> is to be set)
+     *
      * @return the <code>Renderer</code> which is to be set on the specified <code>trackControl</code>. If
      * <code>null</code>, {@link TrackControl#setRenderer(Renderer)} is not invoked on the
      * specified <code>trackControl</code>.
      */
-    protected Renderer createRenderer(Player player, TrackControl trackControl)
-    {
+    protected Renderer createRenderer(Player player, TrackControl trackControl) {
         return getDevice().createRenderer();
     }
 
     /**
      * Makes sure {@link #captureDevice} is disconnected.
      */
-    private void disconnectCaptureDevice()
-    {
+    private void disconnectCaptureDevice() {
         if (captureDevice != null) {
             /*
              * As reported by Carlos Alexandre, stopping before disconnecting resolves a slow disconnect on Linux.
              */
             try {
                 captureDevice.stop();
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe) {
                 /*
                  * We cannot do much about the exception because we're not really interested in the
                  * stopping but rather in calling DataSource#disconnect() anyway.
@@ -558,8 +549,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * Releases the resources allocated by the <code>Player</code>s of {@link #playbacks} in the course
      * of their execution and prepares them to be garbage collected.
      */
-    private void disposePlayer()
-    {
+    private void disposePlayer() {
         Lock writeLock = playbacksLock.writeLock();
         writeLock.lock();
         try {
@@ -569,7 +559,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                     playback.player = null;
                 }
             }
-        } finally {
+        }
+        finally {
             writeLock.unlock();
         }
     }
@@ -581,8 +572,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @param player the <code>Player</code> to dispose of
      */
-    protected void disposePlayer(Player player)
-    {
+    protected void disposePlayer(Player player) {
         player.removeControllerListener(playerControllerListener);
         player.stop();
         player.deallocate();
@@ -596,10 +586,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @param formats the array of <code>Format</code>s to be searched for a match to the specified <code>format</code>
      * @param format the <code>Format</code> to search for a match in the specified <code>formats</code>
+     *
      * @return the first element of <code>formats</code> which matches <code>format</code> i.e. is of the same encoding
      */
-    private static Format findFirstMatchingFormat(Format[] formats, Format format)
-    {
+    private static Format findFirstMatchingFormat(Format[] formats, Format format) {
         double formatSampleRate = (format instanceof AudioFormat) ?
                 ((AudioFormat) format).getSampleRate() : Format.NOT_SPECIFIED;
         ParameterizedVideoFormat parameterizedVideoFormat = (format instanceof ParameterizedVideoFormat)
@@ -640,8 +630,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @return the <code>DataSource</code> that this instance uses to read captured media from
      */
-    public synchronized DataSource getCaptureDevice()
-    {
+    public synchronized DataSource getCaptureDevice() {
         if (captureDevice == null)
             captureDevice = createCaptureDevice();
         return captureDevice;
@@ -655,8 +644,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @return {@link #captureDevice} in a connected state; <code>null</code> if this instance fails to
      * create <code>captureDevice</code> or to connect to it
      */
-    protected DataSource getConnectedCaptureDevice()
-    {
+    protected DataSource getConnectedCaptureDevice() {
         DataSource captureDevice = getCaptureDevice();
         if ((captureDevice != null) && !captureDeviceIsConnected) {
             /*
@@ -666,14 +654,16 @@ public class MediaDeviceSession extends PropertyChangeNotifier
             try {
                 if (this.format != null)
                     setCaptureDeviceFormat(captureDevice, this.format);
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 Timber.w(t, "Failed to setup an optimized media codec chain by setting the output Format on the input CaptureDevice");
             }
             Throwable exception = null;
 
             try {
                 getDevice().connect(captureDevice);
-            } catch (IOException ioex) {
+            }
+            catch (IOException ioex) {
                 exception = ioex;
             }
 
@@ -694,8 +684,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @return the <code>MediaDevice</code> associated with this instance and the work of a
      * <code>MediaStream</code> with which is represented by it
      */
-    public AbstractMediaDevice getDevice()
-    {
+    public AbstractMediaDevice getDevice() {
         return device;
     }
 
@@ -704,8 +693,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @return the JMF <code>Format</code> in which this instance captures media.
      */
-    public Format getProcessorFormat()
-    {
+    public Format getProcessorFormat() {
         Processor processor = getProcessor();
         if ((processor != null) && (this.processor == processor)
                 && !processorIsPrematurelyClosed) {
@@ -729,8 +717,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @return the <code>MediaFormat</code> in which this instance captures media from its associated <code>MediaDevice</code>
      */
-    public MediaFormatImpl<? extends Format> getFormat()
-    {
+    public MediaFormatImpl<? extends Format> getFormat() {
         /*
          * If the Format of the processor is different than the format of this MediaDeviceSession,
          * we'll likely run into unexpected issues so debug whether there are such cases.
@@ -756,8 +743,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @return the <code>MediaType</code> of the media captured and played back by this instance as
      * reported by {@link MediaDevice#getMediaType()} of its associated <code>MediaDevice</code>
      */
-    private MediaType getMediaType()
-    {
+    private MediaType getMediaType() {
         return getDevice().getMediaType();
     }
 
@@ -768,8 +754,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @return the output <code>DataSource</code> of this instance which provides the captured (RTP)
      * data to be sent by <code>MediaStream</code> to <code>MediaStreamTarget</code>
      */
-    public DataSource getOutputDataSource()
-    {
+    public DataSource getOutputDataSource() {
         Processor processor = getProcessor();
         DataSource outputDataSource;
         if ((processor == null)
@@ -796,11 +781,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * <code>MediaDevice</code> represented by this <code>MediaDeviceSession</code>.
      *
      * @param dataSource the <code>DataSource</code> to get the information related to the playback of
+     *
      * @return the information related to the playback of the specified <code>DataSource</code> on the
      * <code>MediaDevice</code> represented by this <code>MediaDeviceSession</code>
      */
-    private Playback getPlayback(DataSource dataSource)
-    {
+    private Playback getPlayback(DataSource dataSource) {
         Lock readLock = playbacksLock.readLock();
         readLock.lock();
         try {
@@ -808,7 +793,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 if (playback.dataSource == dataSource)
                     return playback;
             }
-        } finally {
+        }
+        finally {
             readLock.unlock();
         }
         return null;
@@ -819,11 +805,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * <code>MediaDevice</code> represented by this <code>MediaDeviceSession</code>.
      *
      * @param receiveStream the <code>ReceiveStream</code> to get the information related to the playback of
+     *
      * @return the information related to the playback of the specified <code>ReceiveStream</code> on
      * the <code>MediaDevice</code> represented by this <code>MediaDeviceSession</code>
      */
-    private Playback getPlayback(ReceiveStream receiveStream)
-    {
+    private Playback getPlayback(ReceiveStream receiveStream) {
         Lock readLock = playbacksLock.readLock();
         readLock.lock();
         try {
@@ -831,7 +817,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 if (playback.receiveStream == receiveStream)
                     return playback;
             }
-        } finally {
+        }
+        finally {
             readLock.unlock();
         }
         return null;
@@ -841,10 +828,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * Gets the <code>Player</code> rendering the <code>ReceiveStream</code> with a specific SSRC.
      *
      * @param ssrc the SSRC of the <code>ReceiveStream</code> to get the rendering the <code>Player</code> of
+     *
      * @return the <code>Player</code> rendering the <code>ReceiveStream</code> with the specified <code>ssrc</code>
      */
-    protected Player getPlayer(long ssrc)
-    {
+    protected Player getPlayer(long ssrc) {
         Lock readLock = playbacksLock.readLock();
         readLock.lock();
         try {
@@ -853,7 +840,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 if (playbackSSRC == ssrc)
                     return playback.player;
             }
-        } finally {
+        }
+        finally {
             readLock.unlock();
         }
         return null;
@@ -866,8 +854,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @return the <code>Player</code>s rendering the <code>ReceiveStream</code>s of this instance on its
      * associated <code>MediaDevice</code>
      */
-    protected List<Player> getPlayers()
-    {
+    protected List<Player> getPlayers() {
         Lock readLock = playbacksLock.readLock();
         List<Player> players;
 
@@ -878,7 +865,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 if (playback.player != null)
                     players.add(playback.player);
             }
-        } finally {
+        }
+        finally {
             readLock.unlock();
         }
         return players;
@@ -900,8 +888,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @return the JMF <code>Processor</code> which transcodes the <code>MediaDevice</code> of this
      * instance into the format of this instance
      */
-    private Processor getProcessor()
-    {
+    private Processor getProcessor() {
         if (processor == null)
             processor = createProcessor();
         return processor;
@@ -914,8 +901,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @return a list of <code>ReceiveStream</code>s being played back on the <code>MediaDevice</code>
      * represented by this instance
      */
-    public List<ReceiveStream> getReceiveStreams()
-    {
+    public List<ReceiveStream> getReceiveStreams() {
         Lock readLock = playbacksLock.readLock();
         List<ReceiveStream> receiveStreams;
 
@@ -926,7 +912,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 if (playback.receiveStream != null)
                     receiveStreams.add(playback.receiveStream);
             }
-        } finally {
+        }
+        finally {
             readLock.unlock();
         }
         return receiveStreams;
@@ -941,8 +928,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @return a <code>long[]</code> array of SSRC identifiers that this device session is handling streams from.
      */
-    public long[] getRemoteSSRCList()
-    {
+    public long[] getRemoteSSRCList() {
         return ssrcList;
     }
 
@@ -953,8 +939,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @return the <code>MediaDirection</code> in which this instance has been started
      */
-    public MediaDirection getStartedDirection()
-    {
+    public MediaDirection getStartedDirection() {
         return startedDirection;
     }
 
@@ -965,8 +950,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @return a new list of <code>MediaFormat</code>s in which this instance is capable of capturing
      * media from its associated <code>MediaDevice</code>
      */
-    public List<MediaFormat> getSupportedFormats()
-    {
+    public List<MediaFormat> getSupportedFormats() {
         Processor processor = getProcessor();
         Set<Format> supportedFormats = new HashSet<>();
 
@@ -980,18 +964,18 @@ public class MediaDeviceSession extends PropertyChangeNotifier
 
                 for (Format supportedFormat : trackControl.getSupportedFormats()) {
                     switch (mediaType) {
-                        case AUDIO:
-                            if (supportedFormat instanceof AudioFormat)
-                                supportedFormats.add(supportedFormat);
-                            break;
-                        case VIDEO:
-                            if (supportedFormat instanceof VideoFormat)
-                                supportedFormats.add(supportedFormat);
-                            break;
-                        default:
-                            // FMJ and LibJitsi handle audio and video only and it seems unlikely
-                            // that support for any other types of media will be added here.
-                            break;
+                    case AUDIO:
+                        if (supportedFormat instanceof AudioFormat)
+                            supportedFormats.add(supportedFormat);
+                        break;
+                    case VIDEO:
+                        if (supportedFormat instanceof VideoFormat)
+                            supportedFormats.add(supportedFormat);
+                        break;
+                    default:
+                        // FMJ and LibJitsi handle audio and video only and it seems unlikely
+                        // that support for any other types of media will be added here.
+                        break;
                     }
                 }
             }
@@ -1010,8 +994,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @return <code>true</code> if this <code>MediaDeviceSession</code> is set to output "silence" instead
      * of the actual media fed from its <code>CaptureDevice</code>; otherwise, <code>false</code>
      */
-    public boolean isMute()
-    {
+    public boolean isMute() {
         DataSource captureDevice = this.captureDevice;
         if (captureDevice == null)
             return mute;
@@ -1027,8 +1010,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param playbackDataSource the <code>DataSource</code> which has been added for playback on the represented
      * <code>MediaDevice</code>
      */
-    protected void playbackDataSourceAdded(DataSource playbackDataSource)
-    {
+    protected void playbackDataSourceAdded(DataSource playbackDataSource) {
     }
 
     /**
@@ -1038,8 +1020,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param playbackDataSource the <code>DataSource</code> which has been removed from playback on the represented
      * <code>MediaDevice</code>
      */
-    protected void playbackDataSourceRemoved(DataSource playbackDataSource)
-    {
+    protected void playbackDataSourceRemoved(DataSource playbackDataSource) {
     }
 
     /**
@@ -1049,8 +1030,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param playbackDataSource the <code>DataSource</code> which has been added for playback on the represented
      * <code>MediaDevice</code>
      */
-    protected void playbackDataSourceUpdated(DataSource playbackDataSource)
-    {
+    protected void playbackDataSourceUpdated(DataSource playbackDataSource) {
     }
 
     /**
@@ -1060,8 +1040,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param playbackDataSource the <code>DataSource</code> which has been added for playback on the represented
      * <code>MediaDevice</code>
      */
-    public void playbackDataSourceChanged(DataSource playbackDataSource)
-    {
+    public void playbackDataSourceChanged(DataSource playbackDataSource) {
         playbackDataSourceUpdated(playbackDataSource);
     }
 
@@ -1071,8 +1050,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @param player the <code>Player</code> which is the source of a <code>ConfigureCompleteEvent</code>
      */
-    protected void playerConfigureComplete(Processor player)
-    {
+    protected void playerConfigureComplete(Processor player) {
         TrackControl[] tcs = player.getTrackControls();
 
         if ((tcs != null) && (tcs.length != 0)) {
@@ -1083,7 +1061,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 if (renderer != null) {
                     try {
                         tc.setRenderer(renderer);
-                    } catch (UnsupportedPlugInException upie) {
+                    }
+                    catch (UnsupportedPlugInException upie) {
                         Timber.w(upie, "Failed to set %s renderer on track %s", renderer.getClass().getName(), i);
                     }
                 }
@@ -1102,8 +1081,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param ev the <code>ControllerEvent</code> specifying the <code>Controller</code> which is the source of
      * the event and the very type of the event
      */
-    protected void playerControllerUpdate(ControllerEvent ev)
-    {
+    protected void playerControllerUpdate(ControllerEvent ev) {
         if (ev instanceof ConfigureCompleteEvent) {
             Processor player = (Processor) ev.getSourceController();
             if (player != null) {
@@ -1114,7 +1092,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                  */
                 try {
                     player.setContentDescriptor(null);
-                } catch (NotConfiguredError nce) {
+                }
+                catch (NotConfiguredError nce) {
                     Timber.e(nce, "Failed to set ContentDescriptor to Player.");
                     return;
                 }
@@ -1137,8 +1116,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @param player the <code>Player</code> which is the source of a <code>RealizeCompleteEvent</code>
      */
-    protected void playerRealizeComplete(Processor player)
-    {
+    protected void playerRealizeComplete(Processor player) {
     }
 
     /**
@@ -1147,14 +1125,14 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param ev the <code>ControllerEvent</code> specifying the <code>Controller</code> which is the source of
      * the event and the very type of the event
      */
-    protected void processorControllerUpdate(ControllerEvent ev)
-    {
+    protected void processorControllerUpdate(ControllerEvent ev) {
         if (ev instanceof ConfigureCompleteEvent) {
             Processor processor = (Processor) ev.getSourceController();
             if (processor != null) {
                 try {
                     processor.setContentDescriptor(createProcessorContentDescriptor(processor));
-                } catch (NotConfiguredError nce) {
+                }
+                catch (NotConfiguredError nce) {
                     Timber.e(nce, "Failed to set ContentDescriptor to Processor.");
                 }
                 if (format != null)
@@ -1201,8 +1179,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param ssrc the SSRC identifier that we'd like to remove from the array of <code>ssrc</code>
      * identifiers stored by this session.
      */
-    protected void removeSSRC(long ssrc)
-    {
+    protected void removeSSRC(long ssrc) {
         // find the ssrc
         int index = -1;
         if ((ssrcList == null) || (ssrcList.length == 0)) {
@@ -1246,8 +1223,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * <code>ReceiveStream</code>s and/or <code>DataSource</code> s performed by respective
      * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
      */
-    protected void receiveStreamAdded(ReceiveStream receiveStream)
-    {
+    protected void receiveStreamAdded(ReceiveStream receiveStream) {
     }
 
     /**
@@ -1259,12 +1235,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective
      * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
      */
-    protected void receiveStreamRemoved(ReceiveStream receiveStream)
-    {
+    protected void receiveStreamRemoved(ReceiveStream receiveStream) {
     }
 
-    protected void setCaptureDeviceFormat(DataSource captureDevice, MediaFormatImpl<? extends Format> mediaFormat)
-    {
+    protected void setCaptureDeviceFormat(DataSource captureDevice, MediaFormatImpl<? extends Format> mediaFormat) {
         Format format = mediaFormat.getFormat();
         if (format instanceof AudioFormat) {
             AudioFormat audioFormat = (AudioFormat) format;
@@ -1322,8 +1296,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param contentDescriptor the <code>ContentDescriptor</code> which specifies the content type in which this
      * <code>MediaDeviceSession</code> is to output the media captured by its <code>MediaDevice</code>
      */
-    public void setContentDescriptor(ContentDescriptor contentDescriptor)
-    {
+    public void setContentDescriptor(ContentDescriptor contentDescriptor) {
         if (contentDescriptor == null)
             throw new NullPointerException("contentDescriptor");
         this.contentDescriptor = contentDescriptor;
@@ -1336,8 +1309,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param format the <code>MediaFormat</code> in which this <code>MediaDeviceSession</code> is to output the
      * media captured by its <code>MediaDevice</code>
      */
-    public void setFormat(MediaFormat format)
-    {
+    public void setFormat(MediaFormat format) {
         if (!getMediaType().equals(format.getMediaType()))
             throw new IllegalArgumentException("format");
 
@@ -1377,8 +1349,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param processor the <code>Processor</code> to set the output <code>MediaFormatImpl</code> of
      * @param mediaFormat the <code>MediaFormatImpl</code> to set on <code>processor</code>
      */
-    protected void setProcessorFormat(Processor processor, MediaFormatImpl<? extends Format> mediaFormat)
-    {
+    protected void setProcessorFormat(Processor processor, MediaFormatImpl<? extends Format> mediaFormat) {
         TrackControl[] trackControls = processor.getTrackControls();
         MediaType mediaType = getMediaType();
         Format format = mediaFormat.getFormat();
@@ -1396,36 +1367,36 @@ public class MediaDeviceSession extends PropertyChangeNotifier
 
             Format supportedFormat = null;
             switch (mediaType) {
-                case AUDIO:
-                    if (supportedFormats[0] instanceof AudioFormat) {
-                        supportedFormat = findFirstMatchingFormat(supportedFormats, format);
+            case AUDIO:
+                if (supportedFormats[0] instanceof AudioFormat) {
+                    supportedFormat = findFirstMatchingFormat(supportedFormats, format);
 
-                        /*
-                         * We've failed to find a supported format so try to use whatever we've
-                         * been told and, if it fails, the caller will at least know why.
-                         */
-                        if (supportedFormat == null)
-                            supportedFormat = format;
-                    }
-                    break;
-                case VIDEO:
-                    if (supportedFormats[0] instanceof VideoFormat) {
-                        supportedFormat = findFirstMatchingFormat(supportedFormats, format);
+                    /*
+                     * We've failed to find a supported format so try to use whatever we've
+                     * been told and, if it fails, the caller will at least know why.
+                     */
+                    if (supportedFormat == null)
+                        supportedFormat = format;
+                }
+                break;
+            case VIDEO:
+                if (supportedFormats[0] instanceof VideoFormat) {
+                    supportedFormat = findFirstMatchingFormat(supportedFormats, format);
 
-                        /*
-                         * We've failed to find a supported format so try to use whatever we've
-                         * been told and, if it fails, the caller will at least know why.
-                         */
-                        if (supportedFormat == null)
-                            supportedFormat = format;
-                        if (supportedFormat != null)
-                            supportedFormat = assertSize((VideoFormat) supportedFormat);
-                    }
-                    break;
-                default:
-                    // FMJ and LibJitsi handle audio and video only and it seems unlikely
-                    // that support for any other types of media will be added here.
-                    break;
+                    /*
+                     * We've failed to find a supported format so try to use whatever we've
+                     * been told and, if it fails, the caller will at least know why.
+                     */
+                    if (supportedFormat == null)
+                        supportedFormat = format;
+                    if (supportedFormat != null)
+                        supportedFormat = assertSize((VideoFormat) supportedFormat);
+                }
+                break;
+            default:
+                // FMJ and LibJitsi handle audio and video only and it seems unlikely
+                // that support for any other types of media will be added here.
+                break;
             }
 
             if (supportedFormat == null)
@@ -1461,13 +1432,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * <code>mediaFormat</code> encapsulates a JMF <code>Format</code>, the specified <code>format</code>
      * is to be set on the specified <code>trackControl</code> because it may be more specific
      * than the JMF <code>Format</code> of the <code>mediaFormat</code>
+     *
      * @return the JMF <code>Format</code> set on <code>TrackControl</code> after the attempt to set the
      * specified <code>format</code> or <code>null</code> if the specified <code>format</code> was found
      * to be incompatible with <code>trackControl</code>
      */
     protected Format setProcessorFormat(TrackControl trackControl,
-            MediaFormatImpl<? extends Format> mediaFormat, Format format)
-    {
+            MediaFormatImpl<? extends Format> mediaFormat, Format format) {
         return trackControl.setFormat(format);
     }
 
@@ -1478,8 +1449,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param mute <code>true</code> to set this <code>MediaDeviceSession</code> to output "silence" instead of
      * the actual media fed from its <code>CaptureDevice</code>; otherwise, <code>false</code>
      */
-    public void setMute(boolean mute)
-    {
+    public void setMute(boolean mute) {
         if (this.mute != mute) {
             this.mute = mute;
             MuteDataSource muteDataSource = AbstractControls.queryInterface(captureDevice, MuteDataSource.class);
@@ -1493,8 +1463,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @param tone the DTMF tone to send.
      */
-    public void addDTMF(DTMFInbandTone tone)
-    {
+    public void addDTMF(DTMFInbandTone tone) {
         InbandDTMFDataSource inbandDTMFDataSource
                 = AbstractControls.queryInterface(captureDevice, InbandDTMFDataSource.class);
         if (inbandDTMFDataSource != null)
@@ -1510,8 +1479,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective
      * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
      */
-    public void addPlaybackDataSource(DataSource playbackDataSource)
-    {
+    public void addPlaybackDataSource(DataSource playbackDataSource) {
         Lock writeLock = playbacksLock.writeLock();
         Lock readLock = playbacksLock.readLock();
         boolean added = false;
@@ -1537,13 +1505,15 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 readLock.lock();
                 added = true;
             }
-        } finally {
+        }
+        finally {
             writeLock.unlock();
         }
         if (added) {
             try {
                 playbackDataSourceAdded(playbackDataSource);
-            } finally {
+            }
+            finally {
                 readLock.unlock();
             }
         }
@@ -1558,8 +1528,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective
      * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
      */
-    public void removePlaybackDataSource(DataSource playbackDataSource)
-    {
+    public void removePlaybackDataSource(DataSource playbackDataSource) {
         Lock writeLock = playbacksLock.writeLock();
         Lock readLock = playbacksLock.readLock();
         boolean removed = false;
@@ -1581,13 +1550,15 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 readLock.lock();
                 removed = true;
             }
-        } finally {
+        }
+        finally {
             writeLock.unlock();
         }
         if (removed) {
             try {
                 playbackDataSourceRemoved(playbackDataSource);
-            } finally {
+            }
+            finally {
                 readLock.unlock();
             }
         }
@@ -1600,8 +1571,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param processor the JMF <code>Processor</code> which is to transcode {@link #captureDevice} into the
      * format of this instance
      */
-    private void setProcessor(Processor processor)
-    {
+    private void setProcessor(Processor processor) {
         if (this.processor != processor) {
             closeProcessor();
             this.processor = processor;
@@ -1622,8 +1592,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective
      * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
      */
-    public void addReceiveStream(ReceiveStream receiveStream)
-    {
+    public void addReceiveStream(ReceiveStream receiveStream) {
         Lock writeLock = playbacksLock.writeLock();
         Lock readLock = playbacksLock.readLock();
         boolean added = false;
@@ -1652,13 +1621,15 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 readLock.lock();
                 added = true;
             }
-        } finally {
+        }
+        finally {
             writeLock.unlock();
         }
         if (added) {
             try {
                 receiveStreamAdded(receiveStream);
-            } finally {
+            }
+            finally {
                 readLock.unlock();
             }
         }
@@ -1673,8 +1644,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective
      * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
      */
-    public void removeReceiveStream(ReceiveStream receiveStream)
-    {
+    public void removeReceiveStream(ReceiveStream receiveStream) {
         Lock writeLock = playbacksLock.writeLock();
         Lock readLock = playbacksLock.readLock();
         boolean removed = false;
@@ -1696,13 +1666,15 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 readLock.lock();
                 removed = true;
             }
-        } finally {
+        }
+        finally {
             writeLock.unlock();
         }
         if (removed) {
             try {
                 receiveStreamRemoved(receiveStream);
-            } finally {
+            }
+            finally {
                 readLock.unlock();
             }
         }
@@ -1714,8 +1686,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @param newSsrcList that SSRC array that we'd like to replace the existing SSRC list with.
      */
-    private void setSsrcList(long[] newSsrcList)
-    {
+    private void setSsrcList(long[] newSsrcList) {
         // use getRemoteSSRCList() instead of direct access to ssrcList as the extender may
         // override it
         long[] oldSsrcList = getRemoteSSRCList();
@@ -1732,8 +1703,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * capture and playback of media in this instance or {@link MediaDirection#SENDONLY} to
      * only start the capture of media in this instance
      */
-    public void start(MediaDirection direction)
-    {
+    public void start(MediaDirection direction) {
         if (direction == null)
             throw new NullPointerException("direction");
 
@@ -1754,8 +1724,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param newValue the <code>MediaDirection</code> which is the value of the <code>startedDirection</code>
      * property of this instance
      */
-    protected void startedDirectionChanged(MediaDirection oldValue, MediaDirection newValue)
-    {
+    protected void startedDirectionChanged(MediaDirection oldValue, MediaDirection newValue) {
         if (newValue.allowsSending()) {
             Processor processor = getProcessor();
             if (processor != null)
@@ -1774,8 +1743,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @param processor the <code>Processor</code> to start
      */
-    protected void startProcessorInAccordWithDirection(Processor processor)
-    {
+    protected void startProcessorInAccordWithDirection(Processor processor) {
         if (startedDirection.allowsSending() && (processor.getState() != Processor.Started)) {
             processor.start();
             Timber.log(TimberLog.FINER, "Started Processor with hashCode %s", processor.hashCode());
@@ -1790,36 +1758,35 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * and playback of media in this instance or {@link MediaDirection#SENDONLY} to only stop
      * the capture of media in this instance
      */
-    public void stop(MediaDirection direction)
-    {
+    public void stop(MediaDirection direction) {
         if (direction == null)
             throw new NullPointerException("direction");
 
         MediaDirection oldValue = startedDirection;
         switch (startedDirection) {
-            case SENDRECV:
-                if (direction.equals(startedDirection))
-                    startedDirection = MediaDirection.INACTIVE;
-                else if (direction.allowsReceiving())
-                    startedDirection = MediaDirection.SENDONLY;
-                else if (direction.allowsSending())
-                    startedDirection = MediaDirection.RECVONLY;
-                break;
-            case SENDONLY:
-                if (direction.allowsSending())
-                    startedDirection = MediaDirection.INACTIVE;
-                break;
-            case RECVONLY:
-                if (direction.allowsReceiving())
-                    startedDirection = MediaDirection.INACTIVE;
-                break;
-            case INACTIVE:
-                /*
-                 * This MediaDeviceSession is already inactive so there's nothing to stop.
-                 */
-                break;
-            default:
-                throw new IllegalArgumentException("direction");
+        case SENDRECV:
+            if (direction.equals(startedDirection))
+                startedDirection = MediaDirection.INACTIVE;
+            else if (direction.allowsReceiving())
+                startedDirection = MediaDirection.SENDONLY;
+            else if (direction.allowsSending())
+                startedDirection = MediaDirection.RECVONLY;
+            break;
+        case SENDONLY:
+            if (direction.allowsSending())
+                startedDirection = MediaDirection.INACTIVE;
+            break;
+        case RECVONLY:
+            if (direction.allowsReceiving())
+                startedDirection = MediaDirection.INACTIVE;
+            break;
+        case INACTIVE:
+            /*
+             * This MediaDeviceSession is already inactive so there's nothing to stop.
+             */
+            break;
+        default:
+            throw new IllegalArgumentException("direction");
         }
         if (!oldValue.equals(startedDirection))
             startedDirectionChanged(oldValue, startedDirection);
@@ -1833,10 +1800,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param processor the JMF <code>Processor</code> to wait on
      * @param state the state as defined by the respective <code>Processor</code> state constants to wait
      * <code>processor</code> to enter
+     *
      * @return <code>true</code> if <code>processor</code> has successfully entered <code>state</code>; otherwise, <code>false</code>
      */
-    private static boolean waitForState(Processor processor, int state)
-    {
+    private static boolean waitForState(Processor processor, int state) {
         return new ProcessorUtility().waitForState(processor, state);
     }
 
@@ -1845,8 +1812,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @param deviceSession the <code>MediaDeviceSession</code> to copy the playback part of into this instance
      */
-    public void copyPlayback(MediaDeviceSession deviceSession)
-    {
+    public void copyPlayback(MediaDeviceSession deviceSession) {
         if (deviceSession.disposePlayerOnClose) {
             Timber.e("Cannot copy playback if MediaDeviceSession has closed it");
         }
@@ -1866,8 +1832,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * <code>MediaDevice</code> represented by a <code>MediaDeviceSession</code>. The <code>DataSource</code>
      * may have an associated <code>ReceiveStream</code>.
      */
-    private static class Playback
-    {
+    private static class Playback {
         /**
          * The <code>DataSource</code> the information related to the playback of which is represented
          * by this instance and which is associated with {@link #receiveStream}.
@@ -1892,8 +1857,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
          * @param dataSource the <code>DataSource</code> the information related to the playback of which is to be
          * represented by the new instance
          */
-        public Playback(DataSource dataSource)
-        {
+        public Playback(DataSource dataSource) {
             this.dataSource = dataSource;
         }
 
@@ -1904,8 +1868,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
          * @param receiveStream the <code>ReceiveStream</code> the information related to the playback of which is to
          * be represented by the new instance
          */
-        public Playback(ReceiveStream receiveStream)
-        {
+        public Playback(ReceiveStream receiveStream) {
             this.receiveStream = receiveStream;
         }
 
@@ -1915,10 +1878,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * Returns the <code>TranscodingDataSource</code> associated with <code>receiveStream</code>.
      *
      * @param receiveStream the <code>ReceiveStream</code> to use
+     *
      * @return the <code>TranscodingDataSource</code> associated with <code>receiveStream</code>.
      */
-    public TranscodingDataSource getTranscodingDataSource(ReceiveStream receiveStream)
-    {
+    public TranscodingDataSource getTranscodingDataSource(ReceiveStream receiveStream) {
         TranscodingDataSource transcodingDataSource = null;
         if (device instanceof AudioMixerMediaDevice) {
             transcodingDataSource
@@ -1934,10 +1897,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * always non-null.
      *
      * @param controlType the name of the class to search for.
+     *
      * @return A non-null <code>Set</code> of all <code>controlType</code>s found.
      */
-    public <T> Set<T> getEncoderControls(Class<T> controlType)
-    {
+    public <T> Set<T> getEncoderControls(Class<T> controlType) {
         return getAllTrackControls(controlType, this.processor);
     }
 
@@ -1949,10 +1912,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param receiveStream the <code>ReceiveStream</code> whose <code>Processor</code>'s <code>TrackControl</code>s are to be
      * searched.
      * @param controlType the name of the class to search for.
+     *
      * @return A non-null <code>Set</code> of all <code>controlType</code>s found.
      */
-    public <T> Set<T> getDecoderControls(ReceiveStream receiveStream, Class<T> controlType)
-    {
+    public <T> Set<T> getDecoderControls(ReceiveStream receiveStream, Class<T> controlType) {
         TranscodingDataSource transcodingDataSource = getTranscodingDataSource(receiveStream);
         if (transcodingDataSource == null)
             return Collections.emptySet();
@@ -1967,10 +1930,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @param controlType the name of the class to search for.
      * @param processor the <code>Processor</code> whose <code>TrackControls</code>s will be searched.
+     *
      * @return A non-null <code>Set</code> of all <code>controlType</code>s found.
      */
-    private <T> Set<T> getAllTrackControls(Class<T> controlType, Processor processor)
-    {
+    private <T> Set<T> getAllTrackControls(Class<T> controlType, Processor processor) {
         Set<T> controls = null;
         if ((processor != null) && (processor.getState() >= Processor.Realized)) {
             TrackControl[] trackControls = processor.getTrackControls();
@@ -2001,8 +1964,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      *
      * @param useTranslator whether this device session is used by a <code>MediaStream</code> that is having a translator.
      */
-    public void setUseTranslator(boolean useTranslator)
-    {
+    public void setUseTranslator(boolean useTranslator) {
         this.useTranslator = useTranslator;
     }
 }

@@ -145,17 +145,18 @@ public class OperationSetBasicTelephonyJabberImpl
         RegistrationState registrationState = evt.getNewState();
         if (registrationState == RegistrationState.CONNECTED) {
             mConnection = mPPS.getConnection();
-
             JingleCallManager.getInstanceFor(mConnection, this);
-            // Start up the JingleMessageManager and JingleMessage for incoming JingleMessage events handling.
+            // Must start up the JingleMessageManager in RegistrationState.CONNECTED to addFeature JM.
             mJingleMessageManager = JingleMessageManager.getInstanceFor(mConnection);
-
+        }
+        else if (registrationState == RegistrationState.REGISTERED) {
+            // Note: RegistrationState.CONNECTED => mConnection.getUser() == null
             StanzaFilter RESPONDER_ERROR_FILTER
                     = new AndFilter(IQTypeFilter.ERROR, ToMatchesFilter.createFull(mConnection.getUser()));
             mConnection.removeAsyncStanzaListener(this);
             mConnection.addAsyncStanzaListener(this, RESPONDER_ERROR_FILTER);
-        }
-        else if (registrationState == RegistrationState.REGISTERED) {
+
+            // Start up JingleMessageSession for incoming JingleMessage events handling.
             mJingleMessageSessionImpl = new JingleMessageSessionImpl(mPPS, mJingleMessageManager);
         }
         else if (registrationState == RegistrationState.UNREGISTERED) {
@@ -716,30 +717,11 @@ public class OperationSetBasicTelephonyJabberImpl
         switch (action) {
         case session_initiate:
             // Initiator attribute is RECOMMENDED but not REQUIRED attribute for Jingle "session-initiate".
-            // When Initiator attribute is not present copy the value from IQ "from" attribute. Allow per XEP-0166
+            // see XEP-0166 https://xmpp.org/extensions/xep-0166.html#def.
+            // When Initiator attribute is not present copy the value from IQ "from" attribute.
             if (jingleIQ.getInitiator() == null) {
                 jingleIQ.setInitiator(jingleIQ.getFrom().asEntityFullJidIfPossible());
             }
-
-//                StartMutedExtension startMutedExt = jingle.getExtension(StartMutedExtension.class);
-//                if (startMutedExt != null) {
-//                    OperationSetJitsiMeetToolsJabberImpl operationSetJitsiMeetTools
-//                            = (OperationSetJitsiMeetToolsJabberImpl) mPPS.getOperationSet(OperationSetJitsiMeetTools.class);
-//
-//                    if (operationSetJitsiMeetTools != null) {
-//                        boolean[] startMutedFlags = {
-//                                Boolean.parseBoolean(startMutedExt.getAttributeValue(
-//                                        StartMutedExtension.AUDIO_ATTRIBUTE_NAME)),
-//
-//                                Boolean.parseBoolean(startMutedExt.getAttributeValue(
-//                                        StartMutedExtension.VIDEO_ATTRIBUTE_NAME))
-//                        };
-//                        operationSetJitsiMeetTools.notifySessionStartMuted(startMutedFlags);
-//                    }
-//                    else {
-//                        Timber.w("StartMutedPacketExtension not handled! OperationSetJitsiMeetTools not available.");
-//                    }
-//                }
 
             CallJabberImpl call = null;
             // check to see if this session-initiate is for call <transfer/>
@@ -767,7 +749,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
             /*
              * cmeng: 20220504;
-             * Below problem is resolved via jingleMessage support in normal call; what about call transfer???
+             * Below problem is resolved via jingleMessage support in normal call.
              *
              * cmeng: 20200622;
              * Must deployed method synchronized and update the new callPeer to activeCallsRepository asap;
@@ -960,6 +942,7 @@ public class OperationSetBasicTelephonyJabberImpl
         // boolean isVideoCall = false;
         // for (JingleContent jingleContent : jingle.getContents()) {
         //     isVideoCall = "video".equalsIgnoreCase(((RtpDescription) jingleContent.getDescription()).getMedia());
+        //     break;
         // }
 
         // Check for resource permission before proceed; mic must be enabled at a minimum.

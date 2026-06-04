@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.net.URL;
 
 import net.java.sip.communicator.service.protocol.AdHocChatRoom;
-import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.OperationNotSupportedException;
 import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
@@ -27,11 +26,14 @@ import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.ChatTransport;
 import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
+
 import org.jxmpp.jid.EntityBareJid;
 
 /**
@@ -142,9 +144,11 @@ public class AdHocConferenceChatTransport implements ChatTransport {
     }
 
     /**
-     * Returns {@code true} if this chat transport supports chat state notifications, otherwise returns {@code false}.
+     * Returns {@code true} if this chat transport supports chat state notifications,
+     * otherwise returns {@code false}.
      *
-     * @return {@code true} if this chat transport supports chat state notifications, otherwise returns {@code false}.
+     * @return {@code true} if this chat transport supports chat state notifications,
+     * otherwise returns {@code false}.
      */
     public boolean allowsChatStateNotifications() {
         Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
@@ -154,23 +158,15 @@ public class AdHocConferenceChatTransport implements ChatTransport {
     }
 
     /**
-     * Sends the given instant message trough this chat transport, by specifying the mime type (html or plain text).
-     *
-     * @param messageText The message to send.
-     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
-     */
-    public void sendInstantMessage(String messageText, int encType) {
-        sendInstantFTMessage(messageText, encType, null);
-    }
-
-    /**
-     * Sends the given instant message trough this chat transport, by specifying the mime type (html or plain text).
+     * Sends the given instant message trough this chat transport, by specifying the mime type
+     * (html or plain text).
      *
      * @param messageText The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param msgId The message Id when provided is used in sending the message.
      */
-    public void sendInstantFTMessage(String messageText, int encType, String msgId) {
+    @Override
+    public void sendInstantMessage(String messageText, int encType, String msgId) {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
             aTalkApp.showToastMessage(R.string.send_message_not_supported, getName());
@@ -197,7 +193,13 @@ public class AdHocConferenceChatTransport implements ChatTransport {
      *
      * @see ChatMessage Encryption Type
      */
-    public void sendInstantMessage(String message, int encType, String correctedMessageUID) {
+    @Override
+    public void sendInstantMessageCorrection(String message, int encType, String correctedMessageUID) {
+    }
+
+    @Override
+    public void retractMessage(String retractUid) {
+        // ((ChatRoomJabberImpl) chatRoom).sendRetractMessage(retractUid);
     }
 
     /**
@@ -256,6 +258,14 @@ public class AdHocConferenceChatTransport implements ChatTransport {
 
     /**
      * Http file upload if supported by the server
+     *
+     * @param file the file to send
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon an instance of FileSendConversation
+     *
+     * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
+     *
+     * @throws Exception if anything goes wrong
      */
     private Object httpFileUpload(File file, int chatType, FileSendConversation xferCon)
             throws Exception {
@@ -273,7 +283,8 @@ public class AdHocConferenceChatTransport implements ChatTransport {
                 }
                 xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, adHocChatRoom, encryption, null);
                 return url;
-            } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
+            }
+            catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
                 throw new OperationNotSupportedException(e.getMessage());
             }
         }

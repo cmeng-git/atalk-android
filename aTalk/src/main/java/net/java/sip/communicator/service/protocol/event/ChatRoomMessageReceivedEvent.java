@@ -66,6 +66,8 @@ public class ChatRoomMessageReceivedEvent extends EventObject {
 
     private final boolean isAutoJoin;
 
+    private boolean isRetractMessage = false;
+
     /**
      * Indicates whether the message is important or not.
      */
@@ -191,5 +193,13 @@ public class ChatRoomMessageReceivedEvent extends EventObject {
      */
     public boolean isImportantMessage() {
         return isImportantMessage;
+    }
+
+    public void setRetractMessage(boolean state) {
+        isRetractMessage = state;
+    }
+
+    public boolean isRetractMessage() {
+        return isRetractMessage;
     }
 }

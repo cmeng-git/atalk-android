@@ -166,7 +166,6 @@ public abstract class DeviceSystem extends PropertyChangeNotifier {
                 classNames = new String[]{
                         ".AudioRecordSystem",
                         ".OpenSLESSystem",
-                        // ".AudioSilenceSystem",
                         ".NoneAudioSystem"
                 };
                 break;

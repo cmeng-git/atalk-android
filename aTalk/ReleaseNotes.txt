@@ -1,5 +1,43 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        6.1.0 (601000)
+Release Date:   06/04/2026
+Author:         cmeng
+- Make call transfer via JingleMessage if the intended transferred callee supports it.
+- Add 'Retract Message' option in chat session. Recipient must be online for 'Retract message' to take effect.
+  Feature similar to Whatsapp 'Delete for All' option.
+- XEP-0424: Message Retraction document does not provide any form of positive feedback from Recipient;
+  aTalk uses XEP-0184: Message Delivery Receipts for acknowledgement.
+- Remove support merging of multiple messages in chat window. It limits user usage in, and
+  complicates messages handling for retract, delete, correction and delivery receipt etc.
+- When update the content of the modified (retracted & corrected) chat message in ChatFragment:
+  * Must update the viewHolder Text when chat is in view/focus for immediate view change.
+  * ChatPanel#msgCache if not already done in ChatPanel, msgCache info is retrieved in loadHistory when chat onResume.
+    This happen when user closes/reopens the chat window, and close active chat and reopen.
+  * MessageDisplay#ChatMessage bodyText. BaseAdapter retrieves this info when user scroll the chat window.
+- ChatSessionListener in ChatFragment must remain active and registered with ChatPanel, at all times even when
+  chat fragment window is closed/detached. Otherwise incoming Retract and Correction messages may not be updated properly.
+  It is not always guaranteed that android will call ChatFragment#onCreateView when chat is opened.
+- Extend Last Message Correction support to all other outgoing messages, and not just the last sent message.
+- Keep the original created message time stamp for Message Correction, so sent/received messages chronological are maintained.
+- Retain the messageUuid of the edited message when doing Last Message Correction;
+  else 'Retract Message' of the edited message will fail.
+- Android does not refresh the local displayed view content changed during message retract/correction;
+  fixed by 1000ms delay the mode.finish() and setText after edited text is sent.
+- Revert message sending to use 'CTRL-ENTER' from physical keyboard; leave 'ENTER' to append newline in chat text entry.
+- Define actionModeStyle and actionModeCloseDrawable in Theme, required on some android devices to ensure ActionMode style is set properly.
+- ChatRoom message sent wrongly converted to message received, if user re-login from terminated app; user resource changes under this case.
+- Ensure auto generated resource name remains unchanged even when aTalk re-login after app is terminated.
+- Fix incorrect cast of Expert Settings to PreferenceCategory class and crashes aTalk.
+- FileTransferConversation getContext() returns null when page sliding chat Windows. Override getContent() in aTalk BaseFragment to fix.
+- Must OperationSetBasicTelephonyJabberImpl#addAsyncStanzaListener(this, RESPONDER_ERROR_FILTER) @ RegistrationState.REGISTERED state, else mConnector.getUser == null.
+
+*** Observation ***
+- android weired behavior on TextView update (Delay the mode.finish() 1000ms after the edited text sent):
+  a. The display content on sender does not get change; even with .requestFocus(); .invalidate(); .requestLayout();
+  b. This view will change when user long clicks on the view to select, or scroll out of view.
+
+=========================================================================
 Version:        6.0.0 (600000)
 Release Date:   05/21/2026
 Author:         cmeng

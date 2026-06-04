@@ -93,6 +93,11 @@
     <string name="chat_message_long_press_hint">Vyhnite sa klikaniu v oblasti správ pre výber viacerých položiek</string>
     <string name="quote">Citovať</string>
     <string name="reply">Odpovedať</string>
+    <string name="retract">Zatiahnuť</string>
+    <string name="retract_menu">Stiahnuť správu</string>
+    <string name="retract_own">Túto správu ste odstránili.</string>
+    <string name="retract_message_prompt">Naozaj chcete stiahnuť všetky vybraté odoslané správy od %1$s?</string>
+    <string name="retract_remote">Táto správa bola vymazaná.</string>
     <string name="select_all">Vybrať všetko</string>
     <string name="subject">Predmet</string>
     <string name="settings">Nastavenie</string>
@@ -351,7 +356,6 @@
     <string name="duration">trvanie</string>
 
     <string name="edit_status_message_tip">Nastaviť stavovú správu</string>
-    <string name="edited">upravená</string>
     <string name="enter_name_or_number">Zadajte meno alebo číslo</string>
     <string name="error">Chyba</string>
     <string name="error_was_">Chyba bola: %1$s</string>
@@ -408,7 +412,7 @@
     <string name="history_erase_all">Vymazať históriu rozhovorov všetkých kontaktov</string>
     <string name="history_purge_for_contact_warning">Naozaj chcete vymazať všetky vybraté správy pre %1$s?</string>
     <string name="history_purge_all_warning">Naozaj chcete vymazať všetky správy od všetkých entity?</string>
-    <string name="history_purge_count">Počet odstránených záznamov histórie: %1$s</string>
+    <string name="history_purge_count">Počet ovplyvnených záznamov histórie: %1$s</string>
     <string name="history_purge_error">Chyba pri odstraňovaní lokálne uložených správ pre %1$s.</string>
     <string name="history_purge_media">Odstrániť médiá z môjho telefónu</string>
     <string name="history_offline_warning">Zatvorte a otvorte túto reláciu rozhovoru, aby ste si mohli prezerať správy MAM a offline, keď ste online</string>
@@ -1122,6 +1126,7 @@
     <string name="jbr_server_port">Port servera</string>
     <string name="jbr_priority">Priorita (rozsah: -128 ~ 127)</string>
     <string name="jbr_resource_auto_gen">Automatické generovanie zdrojov</string>
+    <string name="jbr_resource_auto_summary">Vymažte názov zdroja, aby sa táto zmena prejavila</string>
     <string name="jbr_resource_id">Zdroj Jabber ID</string>
     <string name="jbr_resource_name">Názov zdroja</string>
     <string name="jbr_server_ip">Pripojte IP servera</string>

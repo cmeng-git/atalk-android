@@ -129,7 +129,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
          * Must check current file transfer status before send FileTransfer request; Android will redraw UI
          * on listView scrolling (manual or auto) e.g. when send multiple files, new message sent or received.
          * UI refresh during multiple files transfer will cause it to resend some of the fileSend requests.
-         * Note: getXferStatus() will be UNKNOWN on first init of the FileSendConversion UI.
+         * Note: getStatus() will be UNKNOWN on first init of the FileSendConversion UI.
          */
         int status = getXferStatus();
         if (status == FileTransferStatusChangeEvent.UNKNOWN) {

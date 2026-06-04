@@ -22,8 +22,7 @@ import java.util.EventListener;
  * @author Valentin Martinet
  * @author Eng Chong Meng
  */
-public interface AdHocChatRoomMessageListener extends EventListener
-{
+public interface AdHocChatRoomMessageListener extends EventListener {
     /**
      * Called when a new incoming <code>IMessage</code> has been received.
      *

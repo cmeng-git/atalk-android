@@ -21,8 +21,7 @@ import java.util.EventListener;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public interface MessageListener extends EventListener
-{
+public interface MessageListener extends EventListener {
     /**
      * Called when a new incoming <code>IMessage</code> has been received.
      *

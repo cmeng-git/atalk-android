@@ -403,7 +403,7 @@ public class VideoHandlerFragment extends BaseFragment implements MenuProvider, 
 
         final AndroidCamera newDevice;
 
-        String back = getString(R.string.settings_use_back_camera);
+        String back = mContext.getString(R.string.settings_use_back_camera);
         if (item.getTitle().equals(back)) {
             // Switch to back camera and toggle item name
             newDevice = AndroidCamera.getCameraFromCurrentDeviceSystem(LENS_FACING_BACK);

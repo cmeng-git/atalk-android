@@ -518,13 +518,6 @@ class NotificationServiceImpl implements NotificationService {
             boolean isEventActive = isEnabled(eventTypeRootPropName + ".active");
             String eventType = configService.getString(eventTypeRootPropName);
 
-            // cmeng: Patch to purge old eventType "missed_call" which has been replaced with MissedCall;
-            // Will be removed in future aTalk releases > e.g. v2.1.0
-            if ("missed_call".equals(eventType)) {
-                configService.removeProperty(eventTypeRootPropName);
-                continue;
-            }
-
             List<String> actions
                     = configService.getPropertyNamesByPrefix(eventTypeRootPropName + ".actions", true);
             for (String actionPropName : actions) {

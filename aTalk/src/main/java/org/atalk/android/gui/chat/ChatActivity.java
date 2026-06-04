@@ -786,10 +786,9 @@ public class ChatActivity extends BaseActivity
         }
         else if (EntityListHelper.ALL_ENTITY == eraseMode) {
             onOptionsItemSelected(mMenu.findItem(R.id.close_all_active_chats));
-            // selectedSession.msgListeners.notifyDataSetChanged(); // all registered contact chart
         }
-        else {
-            aTalkApp.showToastMessage(R.string.history_purge_error);
+        else if (EntityListHelper.SINGLE_RETRACT != eraseMode) {
+            aTalkApp.showToastMessage(R.string.history_purge_error, mRecipient.getAddress());
         }
     }
 

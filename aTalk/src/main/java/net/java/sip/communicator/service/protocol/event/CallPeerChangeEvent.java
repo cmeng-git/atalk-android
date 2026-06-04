@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
+import java.beans.PropertyChangeEvent;
+
 import net.java.sip.communicator.service.protocol.CallPeer;
 
 /**
@@ -20,7 +22,7 @@ import net.java.sip.communicator.service.protocol.CallPeer;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent {
+public class CallPeerChangeEvent extends PropertyChangeEvent {
     /**
      * Serial version UID.
      */
@@ -117,6 +119,11 @@ public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent {
     public String getEventType() {
         return getPropertyName();
     }
+    private static String getCallPeerState(Object typeObj) {
+        String typeStr = typeObj.toString();
+        typeStr = typeStr.substring(typeStr.lastIndexOf("CallPeerState"));
+        return typeStr;
+    }
 
     /**
      * Returns a String representation of this CallPeerChangeEvent.
@@ -125,8 +132,8 @@ public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent {
      */
     @Override
     public String toString() {
-        return "CallPeerChangeEvent: type=" + getEventType() + " oldV=" + getOldValue() + " newV="
-                + getNewValue() + " for peer=" + getSourceCallPeer();
+        return "EventType: " + getEventType()  + " for peer: " + getSourceCallPeer().getPeerJid()
+                + "\n" + getCallPeerState(getOldValue()) + " => " + getCallPeerState(getNewValue());
     }
 
     /**

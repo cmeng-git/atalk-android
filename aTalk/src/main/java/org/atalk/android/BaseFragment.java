@@ -42,6 +42,11 @@ public class BaseFragment extends Fragment {
         mFragmentActivity = getActivity();
     }
 
+    @Override
+    public Context getContext() {
+        return mContext;
+    }
+
     /**
      * Convenience method for running code on UI thread looper(instead of getActivity().runOnUIThread()).
      * It is never guaranteed that <code>getActivity()</code> will return not <code>null</code> value,

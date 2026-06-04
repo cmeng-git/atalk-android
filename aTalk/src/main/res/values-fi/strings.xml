@@ -68,6 +68,11 @@
     <string name="chat_message_long_press_hint">Vältä viestialueen sisällä klikkaamista valittaessa useaa kohdetta</string>
     <string name="quote">Lainaus</string>
     <string name="reply">Vastaa</string>
+    <string name="retract">Peruuta</string>
+    <string name="retract_menu">Peruuta viesti</string>
+    <string name="retract_message_prompt">Haluatko varmasti peruuttaa kaikki valitut lähtevät viestit käyttäjältä %1$s?</string>
+    <string name="retract_own">Poistit tämän viestin.</string>
+    <string name="retract_remote">Tämä viesti poistettiin.</string>
     <string name="select_all">Valitse kaikki</string>
     <string name="subject">Aihe</string>
     <string name="settings">Asetukset</string>
@@ -326,7 +331,6 @@
     <string name="duration">kesto</string>
 
     <string name="edit_status_message_tip">Aseta tilaviesti</string>
-    <string name="edited">muokattu</string>
     <string name="enter_name_or_number">Syötä nimi tai numero</string>
     <string name="error">Virhe</string>
     <string name="error_was_">Virhe oli: %1$s</string>
@@ -383,7 +387,7 @@
     <string name="history_erase_all">Pyyhi keskusteluhistoria kaikille yhteystiedoille</string>
     <string name="history_purge_for_contact_warning">Oletko varma että haluat tyhjentää kaikki valitut viestit kohteelle %1$s?</string>
     <string name="history_purge_all_warning">Oletko varma että haluat tyhjentää kaikki viestit kaikille yksiköille?</string>
-    <string name="history_purge_count">Poistettujen historiatietojen määrä: %1$s</string>
+    <string name="history_purge_count">Vaikuttavien historiatietojen määrä: %1$s</string>
     <string name="history_purge_error">Virhe poistaessa paikallisesti talletettuja viestejä kohteelle %1$s.</string>
     <string name="history_purge_media">Poista kaikki media puhelimestani</string>
     <string name="history_offline_warning">Sulje ja avaa tämä keskusteluistunto nähdäksesi MAM sekä Offline-viestit ollessasi online-tilassa</string>
@@ -1071,6 +1075,7 @@
     <string name="jbr_server_port">Palvelimen Portti</string>
     <string name="jbr_priority">Prioriteetti (-128~127 välillä)</string>
     <string name="jbr_resource_auto_gen">Generoi resurssi automaattisesti</string>
+    <string name="jbr_resource_auto_summary">Poista resurssin nimi, jotta tämä tulee voimaan</string>
     <string name="jbr_resource_id">Jabber ID-Resurssi</string>
     <string name="jbr_resource_name">Resurssin nimi</string>
     <string name="jbr_server_ip">Yhdistettävän Palvelimen IP</string>

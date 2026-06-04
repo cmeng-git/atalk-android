@@ -13,11 +13,11 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.IMessage;
-
 import java.util.Date;
 import java.util.EventObject;
+
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.IMessage;
 
 /**
  * <code>MessageDeliveredEvent</code>s confirm successful delivery of an instant message.
@@ -26,8 +26,7 @@ import java.util.EventObject;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class ChatRoomMessageDeliveredEvent extends EventObject
-{
+public class ChatRoomMessageDeliveredEvent extends EventObject {
     /**
      * Serial version UID.
      */
@@ -53,6 +52,8 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      */
     private boolean mHistoryMessage = false;
 
+    private boolean isRetractMessage = false;
+
     /**
      * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code> message
      * to the specified <code>to</code> contact.
@@ -63,8 +64,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      * @param eventType indicating the type of the delivered event.
      * It is either an ACTION_MESSAGE_DELIVERED or a CONVERSATION_MESSAGE_DELIVERED.
      */
-    public ChatRoomMessageDeliveredEvent(ChatRoom source, Date timestamp, IMessage message, int eventType)
-    {
+    public ChatRoomMessageDeliveredEvent(ChatRoom source, Date timestamp, IMessage message, int eventType) {
         super(source);
         mTimestamp = timestamp;
         mMessage = message;
@@ -76,8 +76,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      *
      * @return the <code>IMessage</code> that triggered this event.
      */
-    public IMessage getMessage()
-    {
+    public IMessage getMessage() {
         return mMessage;
     }
 
@@ -86,8 +85,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      *
      * @return a Date indicating when the event occurred.
      */
-    public Date getTimestamp()
-    {
+    public Date getTimestamp() {
         return mTimestamp;
     }
 
@@ -96,8 +94,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      *
      * @return the <code>ChatRoom</code> that triggered this event.
      */
-    public ChatRoom getSourceChatRoom()
-    {
+    public ChatRoom getSourceChatRoom() {
         return (ChatRoom) getSource();
     }
 
@@ -107,8 +104,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      *
      * @return one of the XXX_MESSAGE_DELIVERED fields of this class indicating the type of this event.
      */
-    public int getEventType()
-    {
+    public int getEventType() {
         return mEventType;
     }
 
@@ -117,8 +113,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      *
      * @return is current event for history message.
      */
-    public boolean isHistoryMessage()
-    {
+    public boolean isHistoryMessage() {
         return mHistoryMessage;
     }
 
@@ -127,8 +122,15 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      *
      * @param historyMessage whether its event for history message.
      */
-    public void setHistoryMessage(boolean historyMessage)
-    {
+    public void setHistoryMessage(boolean historyMessage) {
         mHistoryMessage = historyMessage;
+    }
+
+    public void setRetractMessage(boolean state) {
+        isRetractMessage = state;
+    }
+
+    public boolean isRetractMessage() {
+        return isRetractMessage;
     }
 }

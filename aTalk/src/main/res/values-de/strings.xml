@@ -93,6 +93,11 @@
     <string name="chat_message_long_press_hint">Vermeide bitte in den Textbereich zu klicken um mehrere Objekte zu markieren.</string>
     <string name="quote">Zitat</string>
     <string name="reply">Antworten</string>
+    <string name="retract">Einfahren</string>
+    <string name="retract_menu">Nachricht zurückziehen</string>
+    <string name="retract_message_prompt">Möchten Sie wirklich alle ausgewählten ausgehenden Nachrichten von %1$s zurückziehen?</string>
+    <string name="retract_own">Du hast diese Nachricht gelöscht.</string>
+    <string name="retract_remote">Diese Nachricht wurde gelöscht.</string>
     <string name="select_all">Alle auswählen</string>
     <string name="subject">Betreff</string>
     <string name="settings">Einstellungen</string>
@@ -351,7 +356,6 @@
     <string name="duration">Dauer</string>
 
     <string name="edit_status_message_tip">Statusmeldung festlegen</string>
-    <string name="edited">Bearbeitet</string>
     <string name="enter_name_or_number">Namen oder Nummer eingeben</string>
     <string name="error">Error</string>
     <string name="error_was_">Error war: %1$s</string>
@@ -408,7 +412,7 @@
     <string name="history_erase_all">Alle Chatverlaufe löschen</string>
     <string name="history_purge_for_contact_warning">Möchten Sie wirklich alle ausgewählten Nachrichten für %1$s löschen?</string>
     <string name="history_purge_all_warning">Willst du wirklich alle Nachrichten von allen Kontakten Entitäten?</string>
-    <string name="history_purge_count">Anzahl der gelöschten Verlaufsdatensätze: %1$s</string>
+    <string name="history_purge_count">Anzahl der betroffenen historischen Datensätze: %1$s</string>
     <string name="history_purge_error">Fehler beim Löschen der Nachrichten von %1$s.</string>
     <string name="history_purge_media">Löschen Sie Medien von meinem Telefon</string>
     <string name="history_offline_warning">Schließen und öffnen Sie diese Chatsitzung, um MAM- und Offline-Nachrichten anzuzeigen, wenn Sie online sind</string>
@@ -1102,6 +1106,7 @@
     <string name="jbr_server_port">Server-Port</string>
     <string name="jbr_priority">Priorität (Bereich: -128~127)</string>
     <string name="jbr_resource_auto_gen">Resource automatisch generieren</string>
+    <string name="jbr_resource_auto_summary">Geben Sie einen klaren Ressourcennamen an, damit dies wirksam wird.</string>
     <string name="jbr_resource_id">Jabber-ID-Resource</string>
     <string name="jbr_resource_name">Resourcenname</string>
     <string name="jbr_server_ip">IP-Adresse des Verbindungsservers</string>

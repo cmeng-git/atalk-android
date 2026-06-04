@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.util.Iterator;
+
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.AddressDetail;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.BirthDateDetail;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.DisplayNameDetail;
@@ -16,8 +18,6 @@ import net.java.sip.communicator.service.protocol.ServerStoredDetails.ImageDetai
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.LastNameDetail;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkAddressDetail;
 
-import java.util.Iterator;
-
 /**
  * Utility class that would give to interested parties an easy access to some of most popular
  * account details, like : first name, last name, birth date, image, etc.
@@ -25,16 +25,15 @@ import java.util.Iterator;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class AccountInfoUtils
-{
+public class AccountInfoUtils {
     /**
      * Returns the first name of the account, to which the given accountInfoOpSet belongs.
      *
      * @param accountInfoOpSet The account info operation set corresponding to the searched account.
+     *
      * @return the first name of the account, to which the given accountInfoOpSet belongs.
      */
-    public static String getFirstName(OperationSetServerStoredAccountInfo accountInfoOpSet)
-    {
+    public static String getFirstName(OperationSetServerStoredAccountInfo accountInfoOpSet) {
         FirstNameDetail firstName = null;
         Iterator<GenericDetail> firstNameDetails = accountInfoOpSet.getDetails(FirstNameDetail.class);
 
@@ -48,10 +47,10 @@ public class AccountInfoUtils
      * Returns the last name of the account, to which the given accountInfoOpSet belongs.
      *
      * @param accountInfoOpSet The account info operation set corresponding to the searched account.
+     *
      * @return the last name of the account, to which the given accountInfoOpSet belongs.
      */
-    public static String getLastName(OperationSetServerStoredAccountInfo accountInfoOpSet)
-    {
+    public static String getLastName(OperationSetServerStoredAccountInfo accountInfoOpSet) {
         LastNameDetail lastName = null;
         Iterator<GenericDetail> lastNameDetails = accountInfoOpSet.getDetails(LastNameDetail.class);
 
@@ -65,10 +64,10 @@ public class AccountInfoUtils
      * Returns the display name of the account, to which the given accountInfoOpSet belongs.
      *
      * @param accountInfoOpSet The account info operation set corresponding to the searched account.
+     *
      * @return the display name of the account, to which the given accountInfoOpSet belongs.
      */
-    public static String getDisplayName(OperationSetServerStoredAccountInfo accountInfoOpSet)
-    {
+    public static String getDisplayName(OperationSetServerStoredAccountInfo accountInfoOpSet) {
         DisplayNameDetail displayName = null;
         Iterator<GenericDetail> displayNameDetails = accountInfoOpSet.getDetails(DisplayNameDetail.class);
 
@@ -82,10 +81,10 @@ public class AccountInfoUtils
      * Returns the image of the account, to which the given accountInfoOpSet belongs.
      *
      * @param accountInfoOpSet The account info operation set corresponding to the searched account.
+     *
      * @return the image of the account, to which the given accountInfoOpSet belongs.
      */
-    public static byte[] getImage(OperationSetServerStoredAccountInfo accountInfoOpSet)
-    {
+    public static byte[] getImage(OperationSetServerStoredAccountInfo accountInfoOpSet) {
         ImageDetail image = null;
         Iterator<GenericDetail> imageDetails = accountInfoOpSet.getDetails(ImageDetail.class);
 
@@ -98,10 +97,10 @@ public class AccountInfoUtils
      * Returns the birth date of the account, to which the given accountInfoOpSet belongs.
      *
      * @param accountInfoOpSet The account info operation set corresponding to the searched account.
+     *
      * @return the birth date of the account, to which the given accountInfoOpSet belongs.
      */
-    public static Object getBirthDate(OperationSetServerStoredAccountInfo accountInfoOpSet)
-    {
+    public static Object getBirthDate(OperationSetServerStoredAccountInfo accountInfoOpSet) {
         BirthDateDetail date = null;
         Iterator<GenericDetail> dateDetails = accountInfoOpSet.getDetails(BirthDateDetail.class);
         if ((dateDetails != null) && dateDetails.hasNext())
@@ -114,10 +113,10 @@ public class AccountInfoUtils
      * Returns the gender of the account, to which the given accountInfoOpSet belongs.
      *
      * @param accountInfoOpSet The account info operation set corresponding to the searched account.
+     *
      * @return the gender of the account, to which the given accountInfoOpSet belongs.
      */
-    public static String getGender(OperationSetServerStoredAccountInfo accountInfoOpSet)
-    {
+    public static String getGender(OperationSetServerStoredAccountInfo accountInfoOpSet) {
         GenderDetail gender = null;
         Iterator<GenericDetail> genderDetails = accountInfoOpSet.getDetails(GenderDetail.class);
 
@@ -131,10 +130,10 @@ public class AccountInfoUtils
      * Returns the address of the account, to which the given accountInfoOpSet belongs.
      *
      * @param accountInfoOpSet The account info operation set corresponding to the searched account.
+     *
      * @return the address of the account, to which the given accountInfoOpSet belongs.
      */
-    public static String getAddress(OperationSetServerStoredAccountInfo accountInfoOpSet)
-    {
+    public static String getAddress(OperationSetServerStoredAccountInfo accountInfoOpSet) {
         AddressDetail address = null;
         Iterator<GenericDetail> addressDetails = accountInfoOpSet.getDetails(AddressDetail.class);
 
@@ -148,10 +147,10 @@ public class AccountInfoUtils
      * Returns the work address of the account, to which the given accountInfoOpSet belongs.
      *
      * @param accountInfoOpSet The account info operation set corresponding to the searched account.
+     *
      * @return the work address of the account, to which the given accountInfoOpSet belongs.
      */
-    public static String getWorkAddress(OperationSetServerStoredAccountInfo accountInfoOpSet)
-    {
+    public static String getWorkAddress(OperationSetServerStoredAccountInfo accountInfoOpSet) {
         WorkAddressDetail address = null;
         Iterator<GenericDetail> addressDetails
                 = accountInfoOpSet.getDetails(WorkAddressDetail.class);
@@ -166,10 +165,10 @@ public class AccountInfoUtils
      * Returns the email address of the account, to which the given accountInfoOpSet belongs.
      *
      * @param accountInfoOpSet The account info operation set corresponding to the searched account.
+     *
      * @return the email address of the account, to which the given accountInfoOpSet belongs.
      */
-    public static String getEmailAddress(OperationSetServerStoredAccountInfo accountInfoOpSet)
-    {
+    public static String getEmailAddress(OperationSetServerStoredAccountInfo accountInfoOpSet) {
         EmailAddressDetail address = null;
         Iterator<GenericDetail> addressDetails
                 = accountInfoOpSet.getDetails(EmailAddressDetail.class);

@@ -9,9 +9,6 @@ import android.media.audiofx.AcousticEchoCanceler;
 import android.media.audiofx.AutomaticGainControl;
 import android.media.audiofx.NoiseSuppressor;
 
-import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AudioTrackRenderer;
-import org.atalk.service.neomedia.codec.Constants;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -22,6 +19,9 @@ import javax.media.MediaLocator;
 import javax.media.Renderer;
 import javax.media.format.AudioFormat;
 
+import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AudioTrackRenderer;
+import org.atalk.service.neomedia.codec.Constants;
+
 /**
  * Discovers and registers {@link android.media.AudioRecord} capture devices with FMJ.
  *
@@ -29,8 +29,7 @@ import javax.media.format.AudioFormat;
  * @author Eng Chong Meng
  */
 @SuppressWarnings("unused")
-public class AudioRecordSystem extends AudioSystem
-{
+public class AudioRecordSystem extends AudioSystem {
     /**
      * Initializes a new <code>AudioRecordSystem</code> instance which discovers and registers
      * <code>AudioRecord</code> capture devices with FMJ.
@@ -39,8 +38,7 @@ public class AudioRecordSystem extends AudioSystem
      * capture devices with FMJ
      */
     public AudioRecordSystem()
-            throws Exception
-    {
+            throws Exception {
         super(LOCATOR_PROTOCOL_AUDIORECORD, getFeatureSet());
     }
 
@@ -51,8 +49,7 @@ public class AudioRecordSystem extends AudioSystem
      *
      * @return feature set for current device.
      */
-    public static int getFeatureSet()
-    {
+    public static int getFeatureSet() {
         int featureSet = FEATURE_NOTIFY_AND_PLAYBACK_DEVICES;
         if (AcousticEchoCanceler.isAvailable()) {
             featureSet |= FEATURE_ECHO_CANCELLATION;
@@ -67,14 +64,12 @@ public class AudioRecordSystem extends AudioSystem
     }
 
     @Override
-    public Renderer createRenderer(boolean playback)
-    {
+    public Renderer createRenderer(boolean playback) {
         return new AudioTrackRenderer(playback);
     }
 
     protected void doInitialize()
-            throws Exception
-    {
+            throws Exception {
         List<Format> formats = new ArrayList<>();
         for (int i = 0; i < Constants.AUDIO_SAMPLE_RATES.length; i++) {
             double sampleRate = Constants.AUDIO_SAMPLE_RATES[i];
@@ -123,12 +118,13 @@ public class AudioRecordSystem extends AudioSystem
      * Obtains an audio input stream from the URL provided.
      *
      * @param url a valid url to a sound resource.
+     *
      * @return the input stream to audio data.
+     *
      * @throws java.io.IOException if an I/O exception occurs
      */
     public InputStream getAudioInputStream(String url)
-            throws IOException
-    {
+            throws IOException {
         return AudioStreamUtils.getAudioInputStream(url);
     }
 
@@ -137,10 +133,10 @@ public class AudioRecordSystem extends AudioSystem
      * Support only Wave format in current implementation.
      *
      * @param audioInputStream the input stream.
+     *
      * @return the format of the audio stream.
      */
-    public AudioFormat getFormat(InputStream audioInputStream)
-    {
+    public AudioFormat getFormat(InputStream audioInputStream) {
         return AudioStreamUtils.getFormat(audioInputStream);
     }
 }

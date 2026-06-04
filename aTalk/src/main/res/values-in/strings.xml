@@ -93,6 +93,11 @@
     <string name="chat_message_long_press_hint">Hindari mengklik dalam area pesan untuk operasi pemilihan multi-item</string>
     <string name="quote">Mengutip</string>
     <string name="reply">Jawab</string>
+    <string name="retract">Menarik</string>
+    <string name="retract_menu">Tarik kembali pesan</string>
+    <string name="retract_message_prompt">Apakah Anda yakin ingin menarik kembali semua pesan keluar yang dipilih dari %1$s?</string>
+    <string name="retract_own">Anda telah menghapus pesan ini.</string>
+    <string name="retract_remote">Pesan ini telah dihapus.</string>
     <string name="select_all">Pilih semua</string>
     <string name="subject">Subjek</string>
     <string name="settings">Pengaturan</string>
@@ -352,7 +357,6 @@
     <string name="duration">durasi</string>
 
     <string name="edit_status_message_tip">Setel status pesan</string>
-    <string name="edited">meredaksi</string>
     <string name="enter_name_or_number">Masukkan nama atau nomor</string>
     <string name="error">Kesalahan</string>
     <string name="error_was_">Kesalahannya adalah: %1$s</string>
@@ -409,7 +413,7 @@
     <string name="history_erase_all">Hapus semua riwayat obrolan kontak</string>
     <string name="history_purge_for_contact_warning">Anda yakin ingin menghapus semua pesan yang dipilih selama %1$s?</string>
     <string name="history_purge_all_warning">Anda yakin ingin menghapus semua pesan untuk semua entitas?</string>
-    <string name="history_purge_count">Jumlah catatan sejarah yang dihapus: %1$s</string>
+    <string name="history_purge_count">Jumlah catatan riwayat yang terpengaruh: %1$s</string>
     <string name="history_purge_error">Kesalahan menghapus pesan yang disimpan secara lokal untuk %1$s.</string>
     <string name="history_purge_media">Hapus media dari ponsel saya</string>
     <string name="history_offline_warning">Tutup dan buka sesi obrolan ini untuk melihat pesan MAM dan Offline saat online</string>
@@ -1116,6 +1120,7 @@
     <string name="jbr_server_port">Server Port</string>
     <string name="jbr_priority">Prioritas (rentang: -128~127)</string>
     <string name="jbr_resource_auto_gen">Menghasilkan sumber daya otomatis</string>
+    <string name="jbr_resource_auto_summary">Hapus nama sumber daya agar perubahan ini berlaku</string>
     <string name="jbr_resource_id">Sumber Daya Jabber ID</string>
     <string name="jbr_resource_name">Nama sumber daya</string>
     <string name="jbr_server_ip">Hubungkan Server IP</string>

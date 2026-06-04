@@ -35,7 +35,7 @@ import org.atalk.android.R;
  * @author Eng Chong Meng
  */
 public class NotificationHelper extends ContextWrapper {
-    private NotificationManager notificationManager = null;
+    private final NotificationManager notificationManager;
 
     private static final int LED_COLOR = 0xff00ff00;
 

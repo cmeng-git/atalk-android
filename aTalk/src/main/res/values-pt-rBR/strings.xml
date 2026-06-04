@@ -93,6 +93,11 @@
     <string name="chat_message_long_press_hint">Evite clicar dentro da área de mensagens para selecionar vários itens</string>
     <string name="quote">Citação</string>
     <string name="reply">Responder</string>
+    <string name="retract">Retrair</string>
+    <string name="retract_menu">Retirar mensagem</string>
+    <string name="retract_message_prompt">Tem certeza de que deseja cancelar todas as mensagens de saída selecionadas de %1$s?</string>
+    <string name="retract_own">Você apagou esta mensagem.</string>
+    <string name="retract_remote">Esta mensagem foi apagada.</string>
     <string name="select_all">Selecionar tudo</string>
     <string name="subject">Asunto</string>
     <string name="settings">Configurações</string>
@@ -351,7 +356,6 @@
     <string name="duration">duração</string>
 
     <string name="edit_status_message_tip">Definir mensagem de status</string>
-    <string name="edited">editado</string>
     <string name="enter_name_or_number">Digite um nome ou número</string>
     <string name="error">Erro</string>
     <string name="error_was_">Erro foi: %1$s</string>
@@ -408,7 +412,7 @@
     <string name="history_erase_all">Excluir histórico de conversa para todos os contatos</string>
     <string name="history_purge_for_contact_warning">Tem certeza de que deseja limpar todas as mensagens selecionadas para %1$s?</string>
     <string name="history_purge_all_warning">Tem certeza de que quer excluir todas as mensagens de todos?</string>
-    <string name="history_purge_count">Número de registros do histórico excluídos: %1$s</string>
+    <string name="history_purge_count">Número de registros históricos afetados: %1$s</string>
     <string name="history_purge_error">Falha ao excluir mensagens armazenadas localmente para %1$s.</string>
     <string name="history_purge_media">Excluir mídia do meu aparelho</string>
     <string name="history_offline_warning">Feche e abra esta sessão de bate-papo para visualizar MAM e mensagens off-line quando estiver on-line</string>
@@ -1124,6 +1128,7 @@
     <string name="jbr_server_port">Porta do servidor</string>
     <string name="jbr_priority">Prioridade (faixa:-128~127)</string>
     <string name="jbr_resource_auto_gen">Geração automática de recursos</string>
+    <string name="jbr_resource_auto_summary">Limpe o nome do recurso para que isso tenha efeito</string>
     <string name="jbr_resource_id">Recurso do Jabber ID</string>
     <string name="jbr_resource_name">Nome de recurso</string>
     <string name="jbr_server_ip">Conectar IP do servidor</string>

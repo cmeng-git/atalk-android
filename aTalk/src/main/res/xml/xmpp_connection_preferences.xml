@@ -73,6 +73,7 @@
         <CheckBoxPreference
             android:disableDependentsState="true"
             android:key="pref_key_auto_gen_resource"
+            android:summary="@string/jbr_resource_auto_summary"
             android:title="@string/jbr_resource_auto_gen" />
         <EditTextPreference
             android:dependency="pref_key_auto_gen_resource"

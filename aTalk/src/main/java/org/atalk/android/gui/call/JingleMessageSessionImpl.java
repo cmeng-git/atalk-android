@@ -263,6 +263,15 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
         String sid = jingleMessage.getId();
         Jid jidFrom = message.getFrom();
 
+        media.clear();
+        List<NamedElement> elements = jingleMessage.getElements(RtpDescription.ELEMENT);
+        if (elements != null) {
+            for (NamedElement element : elements) {
+                media.add(((RtpDescription) element).getMedia());
+            }
+        }
+        isVideoCall = media.contains("video");
+
         // Take action on new incoming call while another call is in progress e.g tie-break.
         if (mSid != null) {
             // Use this check to handle call migration handling.
@@ -317,7 +326,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
                     mRemote2 = jidFrom;
                     mSid2 = sid;
                     // Secondary call will force to audio call only.
-                    AppCallListener.startIncomingCallNotification(jidFrom, sid, SystrayService.JINGLE_MESSAGE_PROPOSE, false);
+                    AppCallListener.startIncomingCallNotification(jidFrom, sid, SystrayService.JINGLE_MESSAGE_PROPOSE, isVideoCall);
                     sendJingleMessageRinging(jidFrom.asFullJidIfPossible(), sid);
                     return;
                 }
@@ -326,15 +335,6 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
 
         mRemote = jidFrom;
         mSid = sid;
-
-        media.clear();
-        List<NamedElement> elements = jingleMessage.getElements(RtpDescription.ELEMENT);
-        if (elements != null) {
-            for (NamedElement element : elements) {
-                media.add(((RtpDescription) element).getMedia());
-            }
-        }
-        isVideoCall = media.contains("video");
 
         // Check for resource permission before proceed, if mic permission is granted at a minimum
         Timber.d("Starting incoming call notification: %s", sid);

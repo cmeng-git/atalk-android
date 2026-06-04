@@ -10,6 +10,7 @@ import android.text.Html;
 import android.text.TextUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -40,7 +41,6 @@ import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeE
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
@@ -48,6 +48,10 @@ import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.util.XhtmlUtil;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.atalk.impl.timberlog.TimberLog;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -64,6 +68,7 @@ import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
@@ -75,13 +80,19 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.carbons.CarbonCopyReceivedListener;
 import org.jivesoftware.smackx.carbons.CarbonManager;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
+import org.jivesoftware.smackx.fallback_indication.FallbackIndicationManager;
+import org.jivesoftware.smackx.fallback_indication.element.FallbackIndicationElement;
+import org.jivesoftware.smackx.hints.element.StoreHint;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
+import org.jivesoftware.smackx.message_retraction.MessageRetractionManager;
+import org.jivesoftware.smackx.message_retraction.element.RetractElement;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoMessage;
@@ -96,11 +107,13 @@ import org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider;
 import org.jivesoftware.smackx.omemo.provider.OmemoVOmemoProvider;
 import org.jivesoftware.smackx.omemo.util.OmemoOptOutUtil;
 import org.jivesoftware.smackx.oob.packet.OutOfBandData;
+import org.jivesoftware.smackx.receipts.DeliveryReceiptRequest;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.EnvelopeElement;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
@@ -137,6 +150,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      */
     private CarbonManager mCarbonManager = null;
     private ChatManager mChatManager = null;
+    private MessageRetractionManager mRetractManager = null;
+    private FallbackIndicationManager mFallbackManager = null;
     MessageHistoryServiceImpl mMHS = MessageHistoryActivator.getMessageHistoryService();
 
     /**
@@ -227,12 +242,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @param messageText the string content of the message.
      * @param encType the encryption type for the <code>content</code>
-     * @param messageUID the unique identifier of this message.
+     * @param msgUid the unique identifier of this message.
      *
      * @return IMessage the newly created message
      */
-    public IMessage createMessageWithUID(String messageText, int encType, String messageUID) {
-        return new MessageJabberImpl(messageText, encType, null, messageUID);
+    public IMessage createMessageWithUid(String messageText, int encType, String msgUid) {
+        return new MessageJabberImpl(messageText, encType, null, msgUid);
     }
 
     /**
@@ -312,7 +327,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Remove from our <code>jidThreads</code> map all entries that have not seen any activity
      * (i.e. neither outgoing nor incoming messages) for more than JID_INACTIVITY_TIMEOUT.
      * Note that this method is not synchronous and that it is only meant for use by the
-     * {@link #getThreadIDForAddress(BareJid, boolean)} and {@link #putJidForAddress(Jid, String)}
+     * {@link #getThreadIdForAddress(BareJid, boolean)} and {@link #putJidForAddress(Jid, String)}
      */
     private void purgeOldJidThreads() {
         long currentTime = System.currentTimeMillis();
@@ -351,7 +366,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * us from OR <code>null</code> if we don't have a jid for the specified <code>address</code> and
      * <code>generateNewIfNoExist</code> is false.
      */
-    public String getThreadIDForAddress(BareJid bareJid, boolean generateNewIfNoExist) {
+    public String getThreadIdForAddress(BareJid bareJid, boolean generateNewIfNoExist) {
         synchronized (jidThreads) {
             purgeOldJidThreads();
             StoredThreadID ta = jidThreads.get(bareJid);
@@ -425,8 +440,17 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
         EntityBareJid toJid = to.getJid().asEntityBareJidIfPossible();
         mChat = mChatManager.chatWith(toJid);
-        String threadID = getThreadIDForAddress(toJid, true);
+        String threadID = getThreadIdForAddress(toJid, true);
+
+        // Use the original message timeStamp for Last Message Correction to keep message sent/received chronicle order.
         Date timeStamp = new Date();
+        for (XmlElement xmlElement : extElements) {
+            if (xmlElement instanceof MessageCorrectExtension) {
+                String msgUid = ((MessageCorrectExtension) xmlElement).getIdInitialMessage();
+                timeStamp = mMHS.getMessageDateForUuid(msgUid);
+                break;
+            }
+        }
 
         MessageBuilder messageBuilder = StanzaBuilder.buildMessage(message.getMessageUID())
                 .ofType(Message.Type.chat)
@@ -542,8 +566,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param correctedMessageUID The ID of the message being replaced.
      */
     public void correctMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID) {
-        Collection<XmlElement> extElements
-                = Collections.singletonList(new MessageCorrectExtension(correctedMessageUID));
+        Collection<XmlElement> extElements = Collections.singletonList(new MessageCorrectExtension(correctedMessageUID));
 
         MessageDeliveredEvent msgDelivered = sendMessage(to, resource, message, extElements);
         if (msgDelivered != null) {
@@ -552,8 +575,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         }
     }
 
-    public void sendInstantMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID,
-            final OmemoManager omemoManager) {
+    public void sendInstantMessage(Contact to, ContactResource resource, IMessage message,
+            String correctedMessageUID, final OmemoManager omemoManager) {
         BareJid bareJid = to.getJid().asBareJid();
         String msgContent = message.getContent();
         String errMessage = null;
@@ -620,6 +643,21 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         }
     }
 
+    public void sendRetractMessage(Contact to, String retractUid) {
+        EntityBareJid entityBareJid = to.getJid().asEntityBareJidIfPossible();
+        String thread = getThreadIdForAddress(entityBareJid, true);
+
+        MessageBuilder messageBuilder = StanzaBuilder.buildMessage(retractUid)
+                .ofType(Message.Type.chat)
+                .setThread(thread);
+        try {
+            mRetractManager.retractMessage(entityBareJid, retractUid, messageBuilder);
+        }
+        catch (NotConnectedException | InterruptedException e) {
+            Timber.e("Retract Message: %s", e.getMessage());
+        }
+    }
+
     /**
      * Omemo listener callback on user authentication for undecided omemoDevices
      */
@@ -627,22 +665,22 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         Contact to;
         ContactResource resource;
         IMessage message;
-        String correctedMessageUID;
+        String correctedMessageUid;
         OmemoManager omemoManager;
 
-        OmemoAuthenticateListener(Contact to, ContactResource resource, IMessage message, String correctedMessageUID,
+        OmemoAuthenticateListener(Contact to, ContactResource resource, IMessage message, String correctedMessageUid,
                 OmemoManager omemoManager) {
             this.to = to;
             this.resource = resource;
             this.message = message;
-            this.correctedMessageUID = correctedMessageUID;
+            this.correctedMessageUid = correctedMessageUid;
             this.omemoManager = omemoManager;
         }
 
         @Override
         public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices) {
             if (allTrusted) {
-                sendInstantMessage(to, resource, message, correctedMessageUID, omemoManager);
+                sendInstantMessage(to, resource, message, correctedMessageUid, omemoManager);
             }
             else {
                 String errMessage = aTalkApp.getResString(R.string.omemo_send_error,
@@ -693,6 +731,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             mChatManager = ChatManager.getInstanceFor(connection);
             mChatManager.addIncomingListener(this);
 
+            mRetractManager = MessageRetractionManager.getInstanceFor(connection);
+            mFallbackManager = FallbackIndicationManager.getInstanceFor(connection);
         }
         else if (evt.getNewState() == RegistrationState.REGISTERED) {
             EntityFullJid userJid = connection.getUser();
@@ -717,6 +757,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 mChatManager.removeIncomingListener(this);
                 mChatManager = null;
             }
+            mRetractManager = null;
+            mFallbackManager = null;
 
             if (mCarbonManager != null) {
                 isCarbonEnabled = false;
@@ -727,13 +769,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     }
 
     /**
-     * The listener that we use in order to handle incoming server messages currently not supported by smack
+     * The listener to handle incoming server messages currently not supported by smack
+     * Handles incoming messages and dispatches whatever events that are necessary.
+     * @see #INCOMING_SVR_MESSAGE_FILTER filter settings
      *
      * @param stanza the packet that we need to handle (if it is a message).
-     *
-     * @see #INCOMING_SVR_MESSAGE_FILTER filter settings
-     * <p>
-     * Handles incoming messages and dispatches whatever events that are necessary.
      */
     @Override
     public void processStanza(Stanza stanza)
@@ -757,7 +797,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 stanzaId = orgStanzaElement.getId();
             }
         }
-        IMessage newMessage = createMessageWithUID(content, encType, stanzaId);
+        IMessage newMessage = createMessageWithUid(content, encType, stanzaId);
         newMessage.setRemoteMsgId(stanzaId);
 
         // createVolatileContact will check before create
@@ -830,21 +870,23 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         if (Message.Type.groupchat == message.getType())
             return;
 
+        // Process retract message request; abd halt all other message processing.
+        if (message.hasExtension(RetractElement.QNAME)) {
+            onReceivedRetractMessage(message);
+            return;
+        }
+
         // Check for empty msgBody, and can be receipt status
         String msgBody = message.getBody();
         if (msgBody == null)
             return;
-
-        // Timber.d("Received from %s the message %s", userBareID, message.toString());
-        String msgId = message.getStanzaId();
-        String correctedMessageUID = getCorrectionMessageId(message);
 
         if (mMHS.isUnexpectedDelayMessage(message)) {
             return;
         }
 
         Jid userFullJId = isForwardedSentMessage ? message.getTo() : message.getFrom();
-        BareJid userBareID = userFullJId.asBareJid();
+        BareJid userBareJid = userFullJId.asBareJid();
 
         ChatRoomJabberImpl privateContactRoom = null;
         boolean isPrivateMessaging = message.hasExtension(MUCUser.QNAME);
@@ -852,7 +894,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             OperationSetMultiUserChatJabberImpl mucOpSet
                     = (OperationSetMultiUserChatJabberImpl) mPPS.getOperationSet(OperationSetMultiUserChat.class);
             if (mucOpSet != null) {
-                privateContactRoom = mucOpSet.getChatRoom(userBareID);
+                privateContactRoom = mucOpSet.getChatRoom(userBareJid);
                 userFullJId = privateContactRoom.findMemberFromParticipant(userFullJId).getJabberId();
             }
         }
@@ -869,18 +911,24 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         if (chat == null && isCarbon) {
             encType |= IMessage.FLAG_IS_CARBON;
         }
-        IMessage newMessage = createMessageWithUID(msgBody, encType, msgId);
+        String msgId = message.getStanzaId();
+        IMessage newMessage = createMessageWithUid(msgBody, encType, msgId);
+
+        String correctedMessageUID = getCorrectionMessageId(message);
+        if (correctedMessageUID != null) {
+            newMessage.setStatus(ChatMessage.STATUS_EDITED);
+        }
 
         // check if the message is available in xhtml
         String xhtmString = XhtmlUtil.getXhtmlExtension(message);
         if (xhtmString != null) {
             encType |= IMessage.ENCODE_HTML;
-            newMessage = createMessageWithUID(xhtmString, encType, msgId);
+            newMessage = createMessageWithUid(xhtmString, encType, msgId);
         }
         newMessage.setRemoteMsgId(message.getStanzaId());
 
         // cmeng: source contact will have contact Jid if isPrivateMessaging.
-        Contact sourceContact = opSetPersPresence.findContactByJid(isPrivateMessaging ? userFullJId : userBareID);
+        Contact sourceContact = opSetPersPresence.findContactByJid(isPrivateMessaging ? userFullJId : userBareJid);
         if (message.getType() == Message.Type.error) {
             // error which is multi-chat and we don't know about the contact is a muc message
             // error which is missing muc extension and is coming from the room, when we try
@@ -900,7 +948,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 return;
             }
 
-            Timber.i("Message error received from %s", userBareID);
+            Timber.i("Message error received from %s", userBareJid);
             if (error != null) {
                 Condition errorCondition = error.getCondition();
                 if (Condition.service_unavailable == errorCondition) {
@@ -923,7 +971,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         // In the second condition we filter all group chat messages, because they are managed
         // by the multi user chat operation set.
         if (sourceContact == null) {
-            Timber.d("received a message from an unknown contact: %s", userBareID);
+            Timber.d("received a message from an unknown contact: %s", userBareJid);
             // create the volatile contact
             sourceContact = opSetPersPresence.createVolatileContact(userFullJId, isPrivateMessaging);
         }
@@ -949,6 +997,26 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             ChatSessionManager.createChatForContact(sourceContact);
         }
         fireMessageEvent(msgEvt);
+    }
+
+    /**
+     * Handler for the incoming Retract Message.
+     * @param message Incoming message
+     */
+    private void onReceivedRetractMessage(Message message) {
+        RetractElement retractElement = message.getExtension(RetractElement.class);
+        String retractId = retractElement.getId();
+        if (StringUtils.isNotEmpty(retractId)) {
+            MessageHistoryServiceImpl mhs = MessageHistoryActivator.getMessageHistoryService();
+            mhs.retractStoredHistory(retractId, aTalkApp.getResString(R.string.retract_remote));
+
+            Contact contact = opSetPersPresence.findContactByJid(message.getFrom());
+            MessageReceivedEvent msgEvt = (MessageReceivedEvent) mhs.getEventObject(contact, retractId);
+            if (msgEvt != null) {
+                msgEvt.setRetractMessage(true);
+                fireMessageEvent(msgEvt);
+            }
+        }
     }
 
     /**
@@ -1007,15 +1075,15 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @return the correct message timeStamp
      */
     private Date getTimeStamp(Message message) {
-        Date timeStamp;
+        MessageCorrectExtension correctExtension = message.getExtension(MessageCorrectExtension.class);
+        if (correctExtension != null) {
+            return mMHS.getMessageDateForUuid(correctExtension.getIdInitialMessage());
+        }
         DelayInformation delayInfo = message.getExtension(DelayInformation.class);
         if (delayInfo != null) {
-            timeStamp = delayInfo.getStamp();
+            return delayInfo.getStamp();
         }
-        else {
-            timeStamp = new Date();
-        }
-        return timeStamp;
+        return new Date();
     }
 
     /**
@@ -1093,7 +1161,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         else if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
             encType |= IMessage.ENCODE_HTML;
         }
-        IMessage newMessage = createMessageWithUID(msgBody, encType, msgId);
+        IMessage newMessage = createMessageWithUid(msgBody, encType, msgId);
 
         // check if the message is available in xhtml
         String xhtmString = XhtmlUtil.getXhtmlExtension(message);
@@ -1109,7 +1177,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
                 OmemoMessage.Received xhtmlMessage = mOmemoManager.decrypt(userBareJid, omemoElement);
                 encType |= IMessage.ENCODE_HTML;
-                newMessage = createMessageWithUID(xhtmlMessage.getBody(), encType, msgId);
+                newMessage = createMessageWithUid(xhtmlMessage.getBody(), encType, msgId);
             }
             catch (SmackException.NotLoggedInException | IOException | CorruptedOmemoKeyException
                    | NoRawSessionException | CryptoFailedException

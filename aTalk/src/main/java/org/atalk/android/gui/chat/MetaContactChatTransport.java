@@ -89,11 +89,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     private final OperationSetFileTransferJabberImpl ftOpSet;
 
     /**
-     * The associated protocol <code>Contact</code>.
-     */
-    private final Contact mContact;
-
-    /**
      * The associated protocol provider service for the <code>Contact</code>.
      */
     private final ProtocolProviderService mPPS;
@@ -105,8 +100,9 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     private JetManager jetManager;
 
     /**
-     * The resource associated with this contact.
+     * The associated protocol <code>Contact</code> and its resource.
      */
+    private final Contact mContact;
     private final ContactResource mContactResource;
 
     /**
@@ -399,17 +395,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Sends the given instant message through this chat transport, by specifying the mime type
-     * (html or plain text).
-     *
-     * @param message The message to send.
-     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
-     */
-    public void sendInstantMessage(String message, int encType) {
-        sendInstantFTMessage(message, encType, null);
-    }
-
-    /**
      * Sends the given instant message through this chat transport, by specifying the mime type (html or plain text).
      * Use by Http file upload to send message to recipient with specified msgId.
      *
@@ -417,7 +402,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly etc
      * @param msgId The message Id used in sending the message.
      */
-    public void sendInstantFTMessage(String message, int encType, String msgId) {
+    @Override
+    public void sendInstantMessage(String message, int encType, String msgId) {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
             aTalkApp.showToastMessage(R.string.send_message_not_supported, getName());
@@ -427,7 +413,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         // Strip HTML flag if ENCODE_HTML not supported by the send message operation.
         if (!imOpSet.isContentTypeSupported(IMessage.ENCODE_HTML))
             encType = encType & ~IMessage.ENCODE_HTML;
-        IMessage imsg = imOpSet.createMessageWithUID(message, encType, msgId);
+        IMessage imsg = imOpSet.createMessageWithUid(message, encType, msgId);
 
         ContactResource toResource = (mContactResource != null) ? mContactResource : ContactResource.BASE_RESOURCE;
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
@@ -440,15 +426,15 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Sends <code>message</code> as a message correction through this transport, specifying the mime
-     * type (html or plain text) and the id of the message to replace.
+     * Sends <code>message</code> as a message correction through this transport,
+     * specifying the mime type (html or plain text) and the id of the message to replace.
      *
      * @param message The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly etc
      * @param correctedMessageUID The ID of the message being corrected by this message.
      */
     @Override
-    public void sendInstantMessage(String message, int encType, String correctedMessageUID) {
+    public void sendInstantMessageCorrection(String message, int encType, String correctedMessageUID) {
         if (!allowsMessageCorrections()) {
             return;
         }
@@ -456,7 +442,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         OperationSetMessageCorrection mcOpSet = mPPS.getOperationSet(OperationSetMessageCorrection.class);
         if (!mcOpSet.isContentTypeSupported(IMessage.ENCODE_HTML))
             encType = encType & ~IMessage.ENCODE_HTML;
-        IMessage msg = mcOpSet.createMessage(message, encType, "");
+        IMessage msg = mcOpSet.createMessageWithUid(message, encType, correctedMessageUID);
+        msg.setStatus(ChatMessage.STATUS_EDITED);
 
         ContactResource toResource = (mContactResource != null) ? mContactResource : ContactResource.BASE_RESOURCE;
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
@@ -466,6 +453,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         else {
             mcOpSet.correctMessage(mContact, toResource, msg, correctedMessageUID);
         }
+    }
+
+    @Override
+    public void retractMessage(String retractUid) {
+        imOpSet.sendRetractMessage(mContact, retractUid);
     }
 
     /**

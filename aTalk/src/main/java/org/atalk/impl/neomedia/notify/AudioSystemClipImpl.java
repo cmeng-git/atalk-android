@@ -5,11 +5,6 @@
  */
 package org.atalk.impl.neomedia.notify;
 
-import org.atalk.impl.neomedia.codec.audio.speex.SpeexResampler;
-import org.atalk.impl.neomedia.device.AudioSystem;
-import org.atalk.service.audionotifier.AbstractSCAudioClip;
-import org.atalk.service.audionotifier.AudioNotifierService;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -20,6 +15,11 @@ import javax.media.Renderer;
 import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
+import org.atalk.impl.neomedia.codec.audio.speex.SpeexResampler;
+import org.atalk.impl.neomedia.device.AudioSystem;
+import org.atalk.service.audionotifier.AbstractSCAudioClip;
+import org.atalk.service.audionotifier.AudioNotifierService;
+
 import timber.log.Timber;
 
 /**
@@ -29,8 +29,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class AudioSystemClipImpl extends AbstractSCAudioClip
-{
+public class AudioSystemClipImpl extends AbstractSCAudioClip {
     /**
      * The default length of {@link #bufferData}.
      */
@@ -58,11 +57,11 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
      * @param url the URL pointing to the audio file
      * @param audioNotifier the audio notify service
      * @param playback to use playback or notification device
+     *
      * @throws IOException cannot audio clip with supplied URL.
      */
     public AudioSystemClipImpl(String url, AudioNotifierService audioNotifier, AudioSystem audioSystem, boolean playback)
-            throws IOException
-    {
+            throws IOException {
         super(url, audioNotifier);
         this.audioSystem = audioSystem;
         this.playback = playback;
@@ -72,8 +71,7 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
      * {@inheritDoc}
      */
     @Override
-    protected void enterRunInPlayThread()
-    {
+    protected void enterRunInPlayThread() {
         buffer = new Buffer();
         bufferData = new byte[DEFAULT_BUFFER_DATA_LENGTH];
         buffer.setData(bufferData);
@@ -84,8 +82,7 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
      * {@inheritDoc}
      */
     @Override
-    protected void exitRunInPlayThread()
-    {
+    protected void exitRunInPlayThread() {
         buffer = null;
         bufferData = null;
         renderer = null;
@@ -95,11 +92,11 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
      * {@inheritDoc}
      */
     @Override
-    protected void exitRunOnceInPlayThread()
-    {
+    protected void exitRunOnceInPlayThread() {
         try {
             renderer.stop();
-        } finally {
+        }
+        finally {
             renderer.close();
         }
     }
@@ -107,8 +104,7 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
     /**
      * {@inheritDoc}
      */
-    protected boolean runOnceInPlayThread()
-    {
+    protected boolean runOnceInPlayThread() {
         if (renderer == null || buffer == null) {
             return false;
         }
@@ -116,7 +112,8 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
         InputStream audioStream = null;
         try {
             audioStream = audioSystem.getAudioInputStream(uri);
-        } catch (IOException ioex) {
+        }
+        catch (IOException ioex) {
             Timber.e(ioex, "Failed to get audio stream %s", uri);
         }
         if (audioStream == null)
@@ -207,22 +204,27 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
                     while ((rendererProcess & Renderer.INPUT_BUFFER_NOT_CONSUMED)
                             == Renderer.INPUT_BUFFER_NOT_CONSUMED);
                 }
-            } catch (IOException ioex) {
+            }
+            catch (IOException ioex) {
                 Timber.e(ioex, "Failed to read from audio stream %s", uri);
                 success = false;
-            } catch (ResourceUnavailableException ruex) {
+            }
+            catch (ResourceUnavailableException ruex) {
                 Timber.e(ruex, "Failed to open %s", renderer.getClass().getName());
                 success = false;
             }
-        } catch (ResourceUnavailableException ruex) {
+        }
+        catch (ResourceUnavailableException ruex) {
             if (resampler != null) {
                 Timber.e("ruex, Failed to open %s", resampler.getClass().getName());
                 success = false;
             }
-        } finally {
+        }
+        finally {
             try {
                 audioStream.close();
-            } catch (IOException ioex) {
+            }
+            catch (IOException ioex) {
                 /*
                  * The audio stream failed to close but it doesn't mean the URL will fail to open
                  * again so ignore the exception.
@@ -257,7 +259,8 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
                             else {
                                 try {
                                     sync.wait(timeout);
-                                } catch (InterruptedException ie) {
+                                }
+                                catch (InterruptedException ie) {
                                     interrupted = true;
                                 }
                             }

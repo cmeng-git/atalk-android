@@ -46,7 +46,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      * @param messageUID the unique identifier of this message.
      * @return IMessage the newly created message
      */
-    IMessage createMessageWithUID(String messageText, int encType, String messageUID);
+    IMessage createMessageWithUid(String messageText, int encType, String messageUID);
 
     /**
      * Sends the <code>message</code> to the destination indicated by the <code>to</code> contact.
@@ -73,6 +73,8 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
 
     void sendInstantMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID,
             OmemoManager omemoManager);
+
+    void sendRetractMessage(Contact to, String retractUid);
 
     /**
      * Registers a <code>MessageListener</code> with this operation set so that it gets notifications of

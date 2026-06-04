@@ -724,6 +724,26 @@
             </xmpp:SupportedXep>
         </implements>
 
+        <!-- XEP-0424: Message Retraction -->
+        <implements>
+            <xmpp:SupportedXep>
+                <xmpp:xep rdf:resource='https://xmpp.org/extensions/xep-0424.html'/>
+                <xmpp:status>complete</xmpp:status>
+                <xmpp:version>0.4.2</xmpp:version>
+                <xmpp:since>6.1.0</xmpp:since>
+            </xmpp:SupportedXep>
+        </implements>
+
+        <!-- XEP-0428: Fallback Indication -->
+        <implements>
+            <xmpp:SupportedXep>
+                <xmpp:xep rdf:resource='https://xmpp.org/extensions/xep-0428.html'/>
+                <xmpp:status>complete</xmpp:status>
+                <xmpp:version>0.2.1</xmpp:version>
+                <xmpp:since>6.1.0</xmpp:since>
+            </xmpp:SupportedXep>
+        </implements>
+
         <!-- XEP-0441: Message Archive Management Preferences -->
         <implements>
             <xmpp:SupportedXep>

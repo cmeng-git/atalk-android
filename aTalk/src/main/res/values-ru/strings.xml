@@ -93,6 +93,11 @@
     <string name="chat_message_long_press_hint">Не нажимайте в области сообщений для операции выбора нескольких элементов</string>
     <string name="quote">Цитировать</string>
     <string name="reply">Ответ</string>
+    <string name="retract">Отозвать</string>
+    <string name="retract_menu">Отозвать сообщение</string>
+    <string name="retract_own">Вы удалили это сообщение.</string>
+    <string name="retract_message_prompt">Вы уверены, что хотите отозвать все выбранные исходящие сообщения из %1$s?</string>
+    <string name="retract_remote">Это сообщение было удалено.</string>
     <string name="select_all">Выбрать все</string>
     <string name="subject">Тема</string>
     <string name="settings">Настройки</string>
@@ -351,7 +356,6 @@
     <string name="duration">длительность</string>
 
     <string name="edit_status_message_tip">Установить сообщение о статусе</string>
-    <string name="edited">Отредактировано</string>
     <string name="enter_name_or_number">Введите имя или номер</string>
     <string name="error">Ошибка</string>
     <string name="error_was_">Ошибка: %1$s</string>
@@ -408,7 +412,7 @@
     <string name="history_erase_all">Удалить все истории чатов контактов</string>
     <string name="history_purge_for_contact_warning">Вы уверены, что хотите удалить все выбранные сообщения для %1$s?</string>
     <string name="history_purge_all_warning">Вы действительно хотите очистить все сообщения отовсюду?</string>
-    <string name="history_purge_count">Количество удалённых записей истории: %1$s</string>
+    <string name="history_purge_count">Количество затронутых исторических записей: %1$s</string>
     <string name="history_purge_error">Ошибка удаления локально сохранённых сообщений для %1$s.</string>
     <string name="history_purge_media">Удалить медиа с моего телефона</string>
     <string name="history_offline_warning">Закройте и откройте этот сеанс чата, чтобы сохранять сообщения MAM когда не в сети а затем и когда в сети</string>
@@ -1110,6 +1114,7 @@
     <string name="jbr_server_port">Порт сервера</string>
     <string name="jbr_priority">Приоритет (диапазон: -128~127)</string>
     <string name="jbr_resource_auto_gen">Автоматическое создание ресурса</string>
+    <string name="jbr_resource_auto_summary">Удалите имя ресурса, чтобы это вступило в силу</string>
     <string name="jbr_resource_id">Ресурс идентификатора Jabber</string>
     <string name="jbr_resource_name">Имя ресурса</string>
     <string name="jbr_server_ip">Подключение IP-адреса сервера</string>

@@ -9,6 +9,7 @@ import net.java.sip.communicator.service.protocol.media.AbstractQualityControlWr
 
 import org.atalk.service.neomedia.QualityControl;
 import org.atalk.service.neomedia.QualityPreset;
+
 import org.jivesoftware.smack.SmackException;
 
 import timber.log.Timber;
@@ -20,15 +21,13 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class QualityControlWrapper extends AbstractQualityControlWrapper<CallPeerJabberImpl>
-{
+public class QualityControlWrapper extends AbstractQualityControlWrapper<CallPeerJabberImpl> {
     /**
      * Creates quality control for peer.
      *
      * @param peer peer
      */
-    QualityControlWrapper(CallPeerJabberImpl peer)
-    {
+    QualityControlWrapper(CallPeerJabberImpl peer) {
         super(peer);
     }
 
@@ -39,8 +38,7 @@ public class QualityControlWrapper extends AbstractQualityControlWrapper<CallPee
      * @param preset the desired video settings
      */
     @Override
-    public void setPreferredRemoteSendMaxPreset(QualityPreset preset)
-    {
+    public void setPreferredRemoteSendMaxPreset(QualityPreset preset) {
         QualityControl qControls = getMediaQualityControl();
 
         if (qControls != null) {
@@ -49,7 +47,8 @@ public class QualityControlWrapper extends AbstractQualityControlWrapper<CallPee
             // re-invites the peer with the new settings
             try {
                 peer.sendModifyVideoResolutionContent();
-            } catch (SmackException.NotConnectedException | InterruptedException e) {
+            }
+            catch (SmackException.NotConnectedException | InterruptedException e) {
                 Timber.e(e, "Could not send modify video resolution of peer");
             }
         }

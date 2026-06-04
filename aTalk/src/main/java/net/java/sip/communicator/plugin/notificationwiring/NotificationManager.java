@@ -445,12 +445,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         if (peer == null)
             return false;
 
-        Call call = peer.getCall();
-        if (call == null)
-            return false;
-
-        boolean play = false;
-        return play;
+        return peer.getCall() != null;
     }
 
     /**
@@ -1098,6 +1093,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             }
             else {
                 NotificationData notification = callNotifications.get(call);
+                // Timber.d("Stop incoming call alert on connected: %s => %s", evt.toString(), notification);
                 if (notification != null)
                     stopSound(notification);
             }

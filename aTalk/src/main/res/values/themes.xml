@@ -49,6 +49,9 @@
         <item name="iconCryptoOmemo">@drawable/crypto_omemo_dark</item>
         <item name="iconFolder">@drawable/ic_folder_dark</item>
 
+        <item name="actionModeStyle">@style/ActionMode</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_menu_back</item>
+
         <!--item name="android:textColor">@color/color_text_white_std</item>
         <item name="MainGroup">@style/RosterGroupName.Dark</item>
         <item name="MainChild">@style/RosterGroupItem.Dark</item>
@@ -101,7 +104,7 @@
         <item name="actionOverflowButtonStyle">@style/actionOverflowButtonStyle</item>
 
         <item name="actionModeStyle">@style/ActionMode</item>
-        <item name="actionModeCloseDrawable">@drawable/ic_cab_done_holo_dark</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_menu_back</item>
 
         <!--item name="android:listSeparatorTextViewStyle">@style/PreferenceListHeader</item-->
 

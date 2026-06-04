@@ -13,10 +13,9 @@ import org.atalk.service.resources.ResourceManagementService;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public final class SoundProperties
-{
+public final class SoundProperties {
     /**
-     * The incoming message sound id.
+     * The incoming message sound id resolved to wav file in raw resouce directory.
      */
     public static final String INCOMING_MESSAGE;
 
@@ -82,46 +81,46 @@ public final class SoundProperties
         INCOMING_CALL = resources.getSoundPath("INCOMING_CALL");
         OUTGOING_CALL = resources.getSoundPath("OUTGOING_CALL");
         BUSY = resources.getSoundPath("BUSY");
-        DIALING = resources.getSoundPath("DIAL");
+        DIALING = resources.getSoundPath("DIALING");
         HANG_UP = resources.getSoundPath("HANG_UP");
         CALL_SECURITY_ON = resources.getSoundPath("CALL_SECURITY_ON");
         CALL_SECURITY_ERROR = resources.getSoundPath("CALL_SECURITY_ERROR");
     }
 
-    private SoundProperties()
-    {
+    private SoundProperties() {
     }
 
     /**
      * Get the aTalk default sound descriptor - for ringtone user default selection
+     *
      * @param eventType sound event type
+     *
      * @return the default aTalk sound descriptor
      */
-    public static String getSoundDescriptor(String eventType)
-    {
+    public static String getSoundDescriptor(String eventType) {
         switch (eventType) {
-            case NotificationManager.INCOMING_FILE:
-                return INCOMING_FILE;
-            case NotificationManager.INCOMING_INVITATION:
-                return INCOMING_INVITATION;
-            case NotificationManager.INCOMING_MESSAGE:
-                return INCOMING_MESSAGE;
-            case NotificationManager.INCOMING_CALL:
-                return INCOMING_CALL;
-            case NotificationManager.OUTGOING_CALL:
-                return OUTGOING_CALL;
-            case NotificationManager.BUSY_CALL:
-                return BUSY;
-            case NotificationManager.DIALING:
-                return DIALING;
-            case NotificationManager.HANG_UP:
-                return HANG_UP;
-            case NotificationManager.CALL_SECURITY_ON:
-                return CALL_SECURITY_ON;
-            case NotificationManager.CALL_SECURITY_ERROR:
-                return CALL_SECURITY_ERROR;
-            default:
-                return null;
+        case NotificationManager.INCOMING_FILE:
+            return INCOMING_FILE;
+        case NotificationManager.INCOMING_INVITATION:
+            return INCOMING_INVITATION;
+        case NotificationManager.INCOMING_MESSAGE:
+            return INCOMING_MESSAGE;
+        case NotificationManager.INCOMING_CALL:
+            return INCOMING_CALL;
+        case NotificationManager.OUTGOING_CALL:
+            return OUTGOING_CALL;
+        case NotificationManager.BUSY_CALL:
+            return BUSY;
+        case NotificationManager.DIALING:
+            return DIALING;
+        case NotificationManager.HANG_UP:
+            return HANG_UP;
+        case NotificationManager.CALL_SECURITY_ON:
+            return CALL_SECURITY_ON;
+        case NotificationManager.CALL_SECURITY_ERROR:
+            return CALL_SECURITY_ERROR;
+        default:
+            return null;
         }
     }
 }

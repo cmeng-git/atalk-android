@@ -90,9 +90,14 @@
     <string name="delete">删除</string>
     <string name="edit">编辑</string>
     <string name="forward">转发…</string>
-    <string name="chat_message_long_press_hint">多选操作避免在消息区域内点击</string>
+    <string name="chat_message_long_press_hint">多选操作避免在信息区域内点击</string>
     <string name="quote">引用</string>
     <string name="reply">回复</string>
+    <string name="retract">撤回</string>
+    <string name="retract_menu">撤回信息</string>
+    <string name="retract_own">您已删除此信息。</string>
+    <string name="retract_message_prompt">您确定要撤回 %1$s 中所有选定的外发信息吗？</string>
+    <string name="retract_remote">此信息已被删除。</string>
     <string name="select_all">全选</string>
     <string name="subject">主题</string>
     <string name="settings">设置</string>
@@ -353,7 +358,6 @@
     <string name="duration">持续时间</string>
 
     <string name="edit_status_message_tip">设置状态信息</string>
-    <string name="edited">已编辑</string>
     <string name="enter_name_or_number">输入姓名或号码</string>
     <string name="error">错误</string>
     <string name="error_was_">错误为：%1$s</string>
@@ -410,7 +414,7 @@
     <string name="history_erase_all">删除所有联系人聊天记录</string>
     <string name="history_purge_for_contact_warning">您确定要删除 %1$s 的所有选定短信吗？</string>
     <string name="history_purge_all_warning">您确定要删除所有实体的所有短信吗？</string>
-    <string name="history_purge_count">删除历史记录条数：%1$s</string>
+    <string name="history_purge_count">受影响的历史记录数条：%1$s</string>
     <string name="history_purge_error">删除 %1$s 的本地存储短信时出错。</string>
     <string name="history_purge_media">从我的手机中删除媒体</string>
     <string name="history_offline_warning">在线时关闭并打开此聊天会话以查看 MAM 和离线短信</string>
@@ -1125,6 +1129,7 @@
     <string name="jbr_server_port">服务器端口</string>
     <string name="jbr_priority">优先级（范围：-128~127）</string>
     <string name="jbr_resource_auto_gen">自动生成资源</string>
+    <string name="jbr_resource_auto_summary">清除资源名称以使此操作生效</string>
     <string name="jbr_resource_id">Jabber ID 资源</string>
     <string name="jbr_resource_name">资源名称</string>
     <string name="jbr_server_ip">连接服务器IP</string>

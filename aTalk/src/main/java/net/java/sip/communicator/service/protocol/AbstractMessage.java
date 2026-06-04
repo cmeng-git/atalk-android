@@ -27,9 +27,9 @@ public abstract class AbstractMessage implements IMessage {
     private final boolean isCarbon;
     private final boolean isMessageOob;
 
-    private final int mXferStatus;
+    private int mStatus = -1;
     private int mReceiptStatus;
-    private String mMessageUID;
+    private String mMessageUid;
     private String mServerMessageId;
     private String mRemoteMessageId;
 
@@ -45,8 +45,8 @@ public abstract class AbstractMessage implements IMessage {
      * @param encType contains both mime and encryption types @see ChatMessage.ENC_TYPE definition
      * @param subject the subject of the message or null for empty.
      */
-    protected AbstractMessage(String content, int encType, String subject, String messageUID) {
-        this(content, encType, subject, messageUID, FileRecord.STATUS_UNKNOWN,
+    protected AbstractMessage(String content, int encType, String subject, String messageUid) {
+        this(content, encType, subject, messageUid, ChatMessage.STATUS_UNKNOWN,
                 ChatMessage.MESSAGE_DELIVERY_NONE, null, null);
     }
 
@@ -54,9 +54,10 @@ public abstract class AbstractMessage implements IMessage {
      * @param content the text content of the message.
      * @param encType contains both flags, mime and encryption types @see ChatMessage.ENC_TYPE definition and other flags
      * @param subject the subject of the message or null for empty.
-     * @param messageUID @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
+     * @param messageUid @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
+     * @param status denote file transfer status or message status @see ChatMessage#STATUS_XXX
      */
-    protected AbstractMessage(String content, int encType, String subject, String messageUID, int xferStatus,
+    protected AbstractMessage(String content, int encType, String subject, String messageUid, int status,
             int receiptStatus, String serverMessageId, String remoteMessageId) {
         mEncType = encType;
         mEncryption = encType & ENCRYPTION_MASK;
@@ -67,9 +68,9 @@ public abstract class AbstractMessage implements IMessage {
         mSubject = subject;
 
         setContent(content);
-        mMessageUID = messageUID == null ? createMessageUID() : messageUID;
+        mMessageUid = messageUid == null ? createMessageUID() : messageUid;
 
-        mXferStatus = xferStatus;
+        mStatus = status;
         mReceiptStatus = receiptStatus;
         mServerMessageId = serverMessageId;
         mRemoteMessageId = remoteMessageId;
@@ -117,11 +118,16 @@ public abstract class AbstractMessage implements IMessage {
     }
 
     /**
-     * @return the file transfer status for HTTP File Download message
+     * @return the ChatMessage#STATUS_xxx or file transfer status for HTTP File Download message
      */
     @Override
-    public int getXferStatus() {
-        return mXferStatus;
+    public int getStatus() {
+        return mStatus;
+    }
+
+    @Override
+    public void setStatus(int status) {
+        mStatus = status;
     }
 
     /**
@@ -188,11 +194,11 @@ public abstract class AbstractMessage implements IMessage {
      * @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
      */
     public String getMessageUID() {
-        return mMessageUID;
+        return mMessageUid;
     }
 
-    public void setMessageUID(String msgUid) {
-        mMessageUID = msgUid;
+    public void setMessageUid(String msgUid) {
+        mMessageUid = msgUid;
     }
 
     /*

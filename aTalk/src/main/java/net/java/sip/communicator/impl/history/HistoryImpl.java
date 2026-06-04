@@ -299,7 +299,7 @@ public class HistoryImpl implements History {
                 }
             }
         } catch (Exception ex1) {
-            Timber.e("File cannot be fixed. Erro reading! %s", ex1.getLocalizedMessage());
+            Timber.e("File cannot be fixed. Error reading! %s", ex1.getLocalizedMessage());
         }
 
         resultDocStr.append("</history>");
@@ -357,7 +357,7 @@ public class HistoryImpl implements History {
         try {
             this.historyServiceImpl.parse(new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception ex) {
-            Timber.e("not valid xml %s: %s", str, ex.getMessage());
+            Timber.e("Not valid xml %s: %s", str, ex.getMessage());
             return false;
         }
 

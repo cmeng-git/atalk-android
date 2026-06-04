@@ -32,7 +32,6 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -202,10 +201,10 @@ public abstract class FileTransferConversation extends BaseFragment
 
     protected ChatFragment.MessageViewHolder messageViewHolder;
 
-    protected FileTransferConversation(ChatFragment cPanel, String dir) {
-        mChatFragment = cPanel;
-        mChatActivity = (ChatActivity) cPanel.getActivity();
-        mConnection = cPanel.getChatPanel().getProtocolProvider().getConnection();
+    protected FileTransferConversation(ChatFragment chatFragment, String dir) {
+        mChatFragment = chatFragment;
+        mChatActivity = (ChatActivity) chatFragment.getContext();
+        mConnection = chatFragment.getChatPanel().getProtocolProvider().getConnection();
         mDir = dir;
     }
 
@@ -672,7 +671,7 @@ public abstract class FileTransferConversation extends BaseFragment
      * @return the current status of the file transfer
      */
     protected int getXferStatus() {
-        return mChatFragment.getChatListAdapter().getXferStatus(msgViewId);
+        return mChatFragment.getChatListAdapter().getStatus(msgViewId);
     }
 
     /**

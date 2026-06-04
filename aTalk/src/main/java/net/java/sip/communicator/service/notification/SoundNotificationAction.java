@@ -11,8 +11,7 @@ package net.java.sip.communicator.service.notification;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class SoundNotificationAction extends NotificationAction
-{
+public class SoundNotificationAction extends NotificationAction {
     /**
      * Interval of milliseconds to wait before repeating the sound. -1 means no repetition.
      */
@@ -45,8 +44,7 @@ public class SoundNotificationAction extends NotificationAction
      * @param soundDescriptor the sound file descriptor
      * @param loopInterval the loop interval
      */
-    public SoundNotificationAction(String soundDescriptor, int loopInterval)
-    {
+    public SoundNotificationAction(String soundDescriptor, int loopInterval) {
         this(soundDescriptor, loopInterval, false, false, false);
     }
 
@@ -60,8 +58,7 @@ public class SoundNotificationAction extends NotificationAction
      * @param isSoundPCSpeakerEnabled True if this sound is activated. False Otherwise.
      */
     public SoundNotificationAction(String soundDescriptor, int loopInterval, boolean isSoundNotificationEnabled,
-            boolean isSoundPlaybackEnabled, boolean isSoundPCSpeakerEnabled)
-    {
+            boolean isSoundPlaybackEnabled, boolean isSoundPCSpeakerEnabled) {
         super(NotificationAction.ACTION_SOUND);
         this.soundFileDescriptor = soundDescriptor;
         this.loopInterval = loopInterval;
@@ -76,8 +73,7 @@ public class SoundNotificationAction extends NotificationAction
      *
      * @return the loop interval
      */
-    public int getLoopInterval()
-    {
+    public int getLoopInterval() {
         return loopInterval;
     }
 
@@ -87,8 +83,7 @@ public class SoundNotificationAction extends NotificationAction
      *
      * @param loopInterval the loop interval
      */
-    public void setLoopInterval(int loopInterval)
-    {
+    public void setLoopInterval(int loopInterval) {
         this.loopInterval = loopInterval;
     }
 
@@ -97,8 +92,7 @@ public class SoundNotificationAction extends NotificationAction
      *
      * @return the descriptor pointing to the sound to be played.
      */
-    public String getDescriptor()
-    {
+    public String getDescriptor() {
         return soundFileDescriptor;
     }
 
@@ -107,8 +101,7 @@ public class SoundNotificationAction extends NotificationAction
      *
      * @param soundFileDescriptor the descriptor pointing to the sound to be played
      */
-    public void setDescriptor(String soundFileDescriptor)
-    {
+    public void setDescriptor(String soundFileDescriptor) {
         this.soundFileDescriptor = soundFileDescriptor;
     }
 
@@ -117,8 +110,7 @@ public class SoundNotificationAction extends NotificationAction
      *
      * @return True if this sound is played on notification device. False Otherwise.
      */
-    public boolean isSoundNotificationEnabled()
-    {
+    public boolean isSoundNotificationEnabled() {
         return isSoundNotificationEnabled;
     }
 
@@ -127,8 +119,7 @@ public class SoundNotificationAction extends NotificationAction
      *
      * @param isSoundEnabled True if this sound is played on notification device. False Otherwise.
      */
-    public void setSoundNotificationEnabled(boolean isSoundEnabled)
-    {
+    public void setSoundNotificationEnabled(boolean isSoundEnabled) {
         this.isSoundNotificationEnabled = isSoundEnabled;
     }
 
@@ -137,8 +128,7 @@ public class SoundNotificationAction extends NotificationAction
      *
      * @return True if this sound is played on playback device. False Otherwise.
      */
-    public boolean isSoundPlaybackEnabled()
-    {
+    public boolean isSoundPlaybackEnabled() {
         return isSoundPlaybackEnabled;
     }
 
@@ -147,8 +137,7 @@ public class SoundNotificationAction extends NotificationAction
      *
      * @param isSoundEnabled True if this sound is played on playback device. False Otherwise.
      */
-    public void setSoundPlaybackEnabled(boolean isSoundEnabled)
-    {
+    public void setSoundPlaybackEnabled(boolean isSoundEnabled) {
         this.isSoundPlaybackEnabled = isSoundEnabled;
     }
 
@@ -157,8 +146,7 @@ public class SoundNotificationAction extends NotificationAction
      *
      * @return True if this sound is played on pc speaker device. False Otherwise.
      */
-    public boolean isSoundPCSpeakerEnabled()
-    {
+    public boolean isSoundPCSpeakerEnabled() {
         return isSoundPCSpeakerEnabled;
     }
 
@@ -167,8 +155,7 @@ public class SoundNotificationAction extends NotificationAction
      *
      * @param isSoundEnabled True if this sound is played on speaker device. False Otherwise.
      */
-    public void setSoundPCSpeakerEnabled(boolean isSoundEnabled)
-    {
+    public void setSoundPCSpeakerEnabled(boolean isSoundEnabled) {
         this.isSoundPCSpeakerEnabled = isSoundEnabled;
     }
 }

@@ -9,8 +9,8 @@ package org.atalk.android.gui.chat.conference;
 import java.io.File;
 import java.io.IOException;
 
+import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.OperationNotSupportedException;
 import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
@@ -27,11 +27,14 @@ import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.ChatTransport;
 import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
+
 import org.jxmpp.jid.EntityBareJid;
 
 import timber.log.Timber;
@@ -174,21 +177,10 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @param messageText The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
-     */
-    public void sendInstantMessage(String messageText, int encType)
-            throws Exception {
-        sendInstantFTMessage(messageText, encType, null);
-    }
-
-    /**
-     * Sends the given instant message trough this chat transport, by specifying the mime type
-     * (html or plain text).
-     *
-     * @param messageText The message to send.
-     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param msgId The message Id when provided is used in sending the message.
      */
-    public void sendInstantFTMessage(String messageText, int encType, String msgId)
+    @Override
+    public void sendInstantMessage(String messageText, int encType, String msgId)
             throws Exception {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
@@ -216,7 +208,13 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @see ChatMessage Encryption Type
      */
-    public void sendInstantMessage(String message, int encType, String correctedMessageUID) {
+    @Override
+    public void sendInstantMessageCorrection(String message, int encType, String correctedMessageUID) {
+    }
+
+    @Override
+    public void retractMessage(String retractUid) {
+        ((ChatRoomJabberImpl) chatRoom).sendRetractMessage(retractUid);
     }
 
     /**
@@ -258,7 +256,8 @@ public class ConferenceChatTransport implements ChatTransport {
                     = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
             try {
                 tnOperationSet.sendChatStateNotification(chatRoom, chatState);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 Timber.e("Failed to send chat state notifications for %s: %s", chatRoom, ex.getMessage());
             }
         }
@@ -312,7 +311,8 @@ public class ConferenceChatTransport implements ChatTransport {
                 }
                 xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, chatRoom, encryption, "HTTP File Upload");
                 return url;
-            } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
+            }
+            catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
                 throw new OperationNotSupportedException(e.getMessage());
             }
         }
@@ -349,7 +349,8 @@ public class ConferenceChatTransport implements ChatTransport {
         if (chatRoom != null)
             try {
                 chatRoom.invite(contactAddress, reason);
-            } catch (SmackException.NotConnectedException | InterruptedException e) {
+            }
+            catch (SmackException.NotConnectedException | InterruptedException e) {
                 Timber.w("Invite chat contact exception: %s", e.getMessage());
             }
     }

@@ -49,6 +49,8 @@ import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.ChatSessionManager;
+import org.atalk.android.gui.chat.ChatTransport;
+import org.atalk.android.gui.chat.MetaContactChatTransport;
 import org.atalk.android.gui.chat.chatsession.ChatSessionRecord;
 import org.atalk.android.gui.dialogs.CustomDialogCbox;
 import org.atalk.android.gui.dialogs.DialogActivity;
@@ -68,6 +70,7 @@ import timber.log.Timber;
 public class EntityListHelper {
     public static final int SINGLE_ENTITY = 1;
     public static final int ALL_ENTITY = 2;
+    public static final int SINGLE_RETRACT = 3;
 
     /**
      * Set the contact blocking status with option apply to all contacts on domain
@@ -354,6 +357,66 @@ public class EntityListHelper {
                 }
             }
             return msgCount;
+        }
+    }
+
+    /**
+     * Erase chat history for either MetaContact, ChatRoomWrapper or ChatSessionRecord.
+     *
+     * @param caller the listener to callback with result.
+     * @param chatTransport chat Transport instance.
+     * @param msgUUIDs list of message UID to be deleted. null to delete all for the specified desc
+     */
+    public static void retractEntityChatHistory(final TaskCompleteListener caller,
+            final ChatTransport chatTransport, final List<String> msgUUIDs) {
+
+        Context ctx = aTalkApp.getInstance();
+        String message = ctx.getString(R.string.retract_message_prompt, chatTransport.getName());
+
+        DialogActivity.showConfirmDialog(ctx, ctx.getString(R.string.retract_menu), message, ctx.getString(R.string.retract),
+                new DialogActivity.DialogListener() {
+                    @Override
+                    public boolean onConfirmClicked(DialogActivity dialog) {
+                        new doRetractEntityChatHistory(caller, msgUUIDs).execute(chatTransport);
+                        return true;
+                    }
+
+                    @Override
+                    public void onDialogCancelled(DialogActivity dialog) {
+                    }
+                });
+    }
+
+    /**
+     * Perform history message deletion in background.
+     * Purge all history messages for the descriptor if messageUUIDs is null
+     * Note: if the sender deletes the media content immediately after sending, only the tmp copy is deleted
+     */
+    private static class doRetractEntityChatHistory {
+        private final TaskCompleteListener mCallback;
+        private final List<String> msgUUIDs;
+
+        private doRetractEntityChatHistory(TaskCompleteListener caller, List<String> msgUUIDs) {
+            this.mCallback = caller;
+            this.msgUUIDs = msgUUIDs;
+        }
+
+        public void execute(ChatTransport chatTransport) {
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            eService.execute(() -> {
+                doInBackground(chatTransport);
+
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    mCallback.onTaskComplete(msgUUIDs.size(), msgUUIDs);
+                });
+            });
+            eService.shutdown();
+        }
+
+        private void doInBackground(ChatTransport chatTransport) {
+                for (String msgUid : msgUUIDs) {
+                    chatTransport.retractMessage(msgUid);
+                }
         }
     }
 

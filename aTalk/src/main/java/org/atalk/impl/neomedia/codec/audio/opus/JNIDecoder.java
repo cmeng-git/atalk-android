@@ -5,13 +5,6 @@
  */
 package org.atalk.impl.neomedia.codec.audio.opus;
 
-import net.sf.fmj.media.AbstractCodec;
-
-import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
-import org.atalk.service.neomedia.codec.Constants;
-import org.atalk.service.neomedia.control.FECDecoderControl;
-
 import java.awt.Component;
 
 import javax.media.Buffer;
@@ -20,6 +13,13 @@ import javax.media.Format;
 import javax.media.PlugIn;
 import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
+
+import net.sf.fmj.media.AbstractCodec;
+
+import org.atalk.impl.neomedia.codec.AbstractCodec2;
+import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
+import org.atalk.service.neomedia.codec.Constants;
+import org.atalk.service.neomedia.control.FECDecoderControl;
 
 import timber.log.Timber;
 
@@ -30,18 +30,17 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
-{
+public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl {
     /**
      * The list of <code>Format</code>s of audio data supported as input by <code>JNIDecoder</code> instances.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS
-            = new Format[]{new AudioFormat(Constants.OPUS_RTP)};
+            = new Format[] {new AudioFormat(Constants.OPUS_RTP)};
 
     /**
      * The list of <code>Format</code>s of audio data supported as output by <code>JNIDecoder</code> instances.
      */
-    private static final Format[] SUPPORTED_OUTPUT_FORMATS = new Format[]{new AudioFormat(
+    private static final Format[] SUPPORTED_OUTPUT_FORMATS = new Format[] {new AudioFormat(
             AudioFormat.LINEAR,
             48000,
             16,
@@ -102,8 +101,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
     /**
      * Initializes a new <code>JNIDecoder</code> instance.
      */
-    public JNIDecoder()
-    {
+    public JNIDecoder() {
         super("Opus JNI Decoder", AudioFormat.class, SUPPORTED_OUTPUT_FORMATS);
 
         features = BUFFER_FLAG_FEC | BUFFER_FLAG_PLC;
@@ -115,8 +113,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
      * @see AbstractCodec2#doClose()
      */
     @Override
-    protected void doClose()
-    {
+    protected void doClose() {
         if (decoder != 0) {
             Opus.decoder_destroy(decoder);
             decoder = 0;
@@ -134,8 +131,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
      */
     @Override
     protected void doOpen()
-            throws ResourceUnavailableException
-    {
+            throws ResourceUnavailableException {
         if (decoder == 0) {
             decoder = Opus.decoder_create(outputSampleRate, channels);
             if (decoder == 0)
@@ -152,8 +148,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
      * Decodes an Opus packet.
      */
     @Override
-    protected int doProcess(Buffer inBuf, Buffer outBuf)
-    {
+    protected int doProcess(Buffer inBuf, Buffer outBuf) {
         Format inFormat = inBuf.getFormat();
 
         if ((inFormat != null) && (inFormat != this.inputFormat)
@@ -199,7 +194,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
             byte[] out = validateByteArraySize(outBuf, outOffset + lastFrameSizeInSamplesPerChannel
                     * outputFrameSize, outOffset != 0);
             int frameSizeInSamplesPerChannel = Opus.decode(decoder, in, inOffset, inLength, out,
-                    outOffset, lastFrameSizeInSamplesPerChannel,1);
+                    outOffset, lastFrameSizeInSamplesPerChannel, 1);
 
             if (frameSizeInSamplesPerChannel > 0) {
                 int frameSizeInBytes = frameSizeInSamplesPerChannel * outputFrameSize;
@@ -273,8 +268,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
      * @return the number of packets decoded with FEC
      */
     @Override
-    public int fecPacketsDecoded()
-    {
+    public int fecPacketsDecoded() {
         return nbDecodedFec;
     }
 
@@ -284,8 +278,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
      * @return <code>null</code> to signify that <code>JNIDecoder</code> does not provide user interface of its own
      */
     @Override
-    public Component getControlComponent()
-    {
+    public Component getControlComponent() {
         return null;
     }
 
@@ -293,11 +286,10 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
      * {@inheritDoc}
      */
     @Override
-    protected Format[] getMatchingOutputFormats(Format inputFormat)
-    {
+    protected Format[] getMatchingOutputFormats(Format inputFormat) {
         AudioFormat af = (AudioFormat) inputFormat;
 
-        return new Format[]{new AudioFormat(
+        return new Format[] {new AudioFormat(
                 AudioFormat.LINEAR,
                 af.getSampleRate(),
                 16,
@@ -316,8 +308,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
      * <code>inputFormat</code> of this instance.
      */
     @Override
-    public Format setInputFormat(Format format)
-    {
+    public Format setInputFormat(Format format) {
         Format inFormat = super.setInputFormat(format);
 
         if ((inFormat != null) && (outputFormat == null))
@@ -329,8 +320,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
      * {@inheritDoc}
      */
     @Override
-    public Format setOutputFormat(Format format)
-    {
+    public Format setOutputFormat(Format format) {
         Format setOutputFormat = super.setOutputFormat(format);
 
         if (setOutputFormat != null) {

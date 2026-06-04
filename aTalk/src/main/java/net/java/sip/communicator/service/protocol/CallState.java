@@ -8,9 +8,8 @@ package net.java.sip.communicator.service.protocol;
 /**
  * The CallState class reflects the current state of a call. Compared to the state of a single call
  * peer, a call itself has a more limited amount of sets which follow the following cycle:
- *
  * CALL_INITIALIZATION -> CALL_IN_PROGRESS -> CALL_ENDED
- *
+ * <p>
  * When you start calling someone or receive a call alert, the call that is automatically created is
  * in the CALL_INITIALIZATION_PHASE. As soon as one of the peers passes into a CONNECTED call peer
  * state, the call would enter the CALL_IN_PROGRESS state. When the last call peer enters a DISCONNECTED
@@ -19,8 +18,7 @@ package net.java.sip.communicator.service.protocol;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class CallState
-{
+public class CallState {
     /**
      * This constant containing a String representation of the CALL_INITIALIZATION state.
      */
@@ -64,15 +62,14 @@ public class CallState
     /**
      * A string representation of this Call State. Could be _CALL_INITIALIZATION, _CALL_IN_PROGRESS, CALL_ENDED.
      */
-    private String callStateStr;
+    private final String callStateStr;
 
     /**
      * Create a call state object with a value corresponding to the specified string.
      *
      * @param callState a string representation of the state.
      */
-    private CallState(String callState)
-    {
+    private CallState(String callState) {
         this.callStateStr = callState;
     }
 
@@ -81,8 +78,7 @@ public class CallState
      *
      * @return a string value (one of the _CALL_XXX constants) representing this call state).
      */
-    public String getStateString()
-    {
+    public String getStateString() {
         return callStateStr;
     }
 
@@ -94,8 +90,7 @@ public class CallState
      * @return a string representation of this object.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getClass().getName() + ":" + getStateString();
     }
 }

@@ -93,6 +93,11 @@
     <string name="chat_message_long_press_hint">Avoid clicking within the message area for multi-item selection operation</string>
     <string name="quote">Quote</string>
     <string name="reply">Reply</string>
+    <string name="retract">Retract</string>
+    <string name="retract_menu">Retract Message</string>
+    <string name="retract_message_prompt">Are you sure you want to retract all the selected outgoing messages from %1$s?</string>
+    <string name="retract_own">You deleted this message.</string>
+    <string name="retract_remote">This message was deleted.</string>
     <string name="select_all">Select all</string>
     <string name="subject">Subject</string>
     <string name="settings">Settings</string>
@@ -352,7 +357,6 @@
     <string name="duration">duration</string>
 
     <string name="edit_status_message_tip">Set status message</string>
-    <string name="edited">edited</string>
     <string name="enter_name_or_number">Enter name or number</string>
     <string name="error">Error</string>
     <string name="error_was_">Error was: %1$s</string>
@@ -409,7 +413,7 @@
     <string name="history_erase_all">Erase all contacts chat history</string>
     <string name="history_purge_for_contact_warning">Are you sure you want to purge all selected messages for %1$s?</string>
     <string name="history_purge_all_warning">Are you sure you want to purge all messages for all the entities?</string>
-    <string name="history_purge_count">Number of history records deleted: %1$s</string>
+    <string name="history_purge_count">Number of history records affected: %1$s</string>
     <string name="history_purge_error">Error removing locally stored messages for %1$s.</string>
     <string name="history_purge_media">Delete media from my phone</string>
     <string name="history_offline_warning">Close and open this chat session to view MAM and Offline messages when online</string>
@@ -1123,6 +1127,7 @@
     <string name="jbr_server_port">Server Port</string>
     <string name="jbr_priority">Priority (range:-128~127)</string>
     <string name="jbr_resource_auto_gen">Auto generate resource</string>
+    <string name="jbr_resource_auto_summary">Clear Resource name for this to take effect</string>
     <string name="jbr_resource_id">Jabber ID Resource</string>
     <string name="jbr_resource_name">Resource name</string>
     <string name="jbr_server_ip">Connect Server IP</string>
