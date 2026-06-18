@@ -49,7 +49,9 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 
+import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.chatstates.ChatState;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.hashes.HashManager;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.jet.JetManager;
@@ -58,6 +60,8 @@ import org.jivesoftware.smackx.jingle_filetransfer.JingleFileTransferManager;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFile;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransferImpl;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
+import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
+import org.jivesoftware.smackx.message_retraction.MessageRetractionManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
@@ -322,7 +326,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @return {@code true} if this chat transport supports instant
      * messaging, otherwise returns {@code false}.
      */
-    public boolean allowsInstantMessage() {
+    public boolean allowInstantMessage() {
         // First try to ask the capabilities operation set if such is available.
         if (capOpSet != null) {
             if (mContact.getJid().asEntityBareJidIfPossible() == null) {
@@ -340,7 +344,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return {@code true} if this chat transport supports message corrections and false otherwise.
      */
-    public boolean allowsMessageCorrections() {
+    public boolean allowMessageCorrection() {
         OperationSetContactCapabilities capOpSet
                 = getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
         if (capOpSet != null) {
@@ -349,6 +353,30 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         else {
             return mPPS.getOperationSet(OperationSetMessageCorrection.class) != null;
         }
+    }
+
+    // This will return false when buddy is offline.
+    public boolean contactSupportsMessageCorrection(Jid jid) {
+        Roster roster = Roster.getInstanceFor(mPPS.getConnection());
+        List<Presence> presences = roster.getAvailablePresences(jid.asBareJid());
+        for (Presence presence : presences) {
+            DiscoverInfo featureInfo = EntityCapsManager.getDiscoverInfoByUser(presence.getFrom());
+            if (featureInfo != null && featureInfo.containsFeature(MessageCorrectExtension.NAMESPACE)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if this chat transport supports message retraction; offline contact default to true.
+     *
+     * @return {@code true} if this chat transport supports message retraction and false otherwise.
+     */
+    public boolean allowMessageRetract() {
+        MessageRetractionManager manager = MessageRetractionManager.getInstanceFor(mPPS.getConnection());
+        return manager.contactSupportsMessageRetraction(mContact.getJid())
+                || !mContact.getPresenceStatus().isOnline();
     }
 
     /**
@@ -371,7 +399,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return {@code true} if this chat transport supports chat state notifications, otherwise returns {@code false}.
      */
-    public boolean allowsChatStateNotifications() {
+    public boolean allowChatStateNotifications() {
         return isChatStateSupported;
 
     }
@@ -405,7 +433,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     @Override
     public void sendInstantMessage(String message, int encType, String msgId) {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowsInstantMessage()) {
+        if (!allowInstantMessage()) {
             aTalkApp.showToastMessage(R.string.send_message_not_supported, getName());
             return;
         }
@@ -431,32 +459,37 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @param message The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly etc
-     * @param correctedMessageUID The ID of the message being corrected by this message.
+     * @param correctionUid The ID of the message being corrected by this message.
      */
     @Override
-    public void sendInstantMessageCorrection(String message, int encType, String correctedMessageUID) {
-        if (!allowsMessageCorrections()) {
+    public void sendInstantMessageCorrection(String message, int encType, String correctionUid) {
+        if (!allowMessageCorrection()) {
+            aTalkApp.showToastMessage(R.string.lmc_not_supported);
             return;
         }
 
         OperationSetMessageCorrection mcOpSet = mPPS.getOperationSet(OperationSetMessageCorrection.class);
         if (!mcOpSet.isContentTypeSupported(IMessage.ENCODE_HTML))
             encType = encType & ~IMessage.ENCODE_HTML;
-        IMessage msg = mcOpSet.createMessageWithUid(message, encType, correctedMessageUID);
+        IMessage msg = mcOpSet.createMessageWithUid(message, encType, correctionUid);
         msg.setStatus(ChatMessage.STATUS_EDITED);
 
         ContactResource toResource = (mContactResource != null) ? mContactResource : ContactResource.BASE_RESOURCE;
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
-            mcOpSet.sendInstantMessage(mContact, toResource, msg, correctedMessageUID, omemoManager);
+            mcOpSet.sendInstantMessage(mContact, toResource, msg, correctionUid, omemoManager);
         }
         else {
-            mcOpSet.correctMessage(mContact, toResource, msg, correctedMessageUID);
+            mcOpSet.correctMessage(mContact, toResource, msg, correctionUid);
         }
     }
 
     @Override
     public void retractMessage(String retractUid) {
+        if (!allowMessageRetract()) {
+            aTalkApp.showToastMessage(R.string.retract_not_supported);
+            return;
+        }
         imOpSet.sendRetractMessage(mContact, retractUid);
     }
 
@@ -478,7 +511,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public void sendChatStateNotification(ChatState chatState) {
         // If this chat transport does not allow chat state notification then just return
-        if (allowsChatStateNotifications()) {
+        if (allowChatStateNotifications()) {
             // if protocol is not registered or contact is offline don't try to send chat state notifications
             if (mPPS.isRegistered()
                     && (mContact.getPresenceStatus().getStatus() >= PresenceStatus.ONLINE_THRESHOLD)) {
@@ -772,7 +805,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     @Override
     public void addInstantMessageListener(MessageListener l) {
-        if (allowsInstantMessage() || (mContact.getJid() instanceof DomainBareJid))
+        if (allowInstantMessage() || (mContact.getJid() instanceof DomainBareJid))
             imOpSet.addMessageListener(l);
     }
 
@@ -783,7 +816,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     @Override
     public void removeInstantMessageListener(MessageListener l) {
-        if (allowsInstantMessage() || (mContact.getJid() instanceof DomainBareJid))
+        if (allowInstantMessage() || (mContact.getJid() instanceof DomainBareJid))
             imOpSet.removeMessageListener(l);
     }
 

@@ -29,6 +29,19 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="pref_cat_translate"
+        android:title="@string/translation">
+
+        <ListPreference
+            android:key="translate_send"
+            android:title="@string/translation_sent" />
+
+        <ListPreference
+            android:key="translate_receive"
+            android:title="@string/translation_received" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="pref.cat.jbr.advanced"
         android:title="@string/advanced">
 

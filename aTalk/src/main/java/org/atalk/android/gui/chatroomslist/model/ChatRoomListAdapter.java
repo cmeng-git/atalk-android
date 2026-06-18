@@ -561,7 +561,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
         if (TextUtils.isEmpty(query))
             return true;
 
-        String chatRoomID = chatRoomWrapper.getChatRoomID();
+        String chatRoomID = chatRoomWrapper.getChatRoomId();
         Pattern queryPattern = Pattern.compile(query, Pattern.CASE_INSENSITIVE | Pattern.LITERAL);
         return (queryPattern.matcher(chatRoomID).find());
     }
@@ -663,7 +663,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
             case ChatRoomListChangeEvent.CHAT_ROOM_REMOVED:
                 removeChatRoom(chatRoomWrapper.getParentProvider(), chatRoomWrapper);
                 aTalkApp.showToastMessage(R.string.chatroom_destroy_successful,
-                        chatRoomWrapper.getChatRoomID());
+                        chatRoomWrapper.getChatRoomId());
                 break;
 
             case ChatRoomListChangeEvent.CHAT_ROOM_CHANGED:

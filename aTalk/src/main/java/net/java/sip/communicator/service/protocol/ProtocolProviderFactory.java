@@ -362,6 +362,12 @@ public abstract class ProtocolProviderFactory
     public static final String ACCOUNT_READ_ONLY_GROUPS = "READ_ONLY_GROUPS";
 
     /**
+     * Indicates Translation Language for send/receive to be used.
+     */
+    public static final String TRANSLATION_SEND = "TRANSLATION_SEND";
+    public static final String TRANSLATION_RECEIVE = "TRANSLATION_RECEIVE";
+
+    /**
      * Indicates if ICE should be used.
      */
     public static final String IS_USE_ICE = "ICE_ENABLED";

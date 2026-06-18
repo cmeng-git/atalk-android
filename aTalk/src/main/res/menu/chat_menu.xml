@@ -26,6 +26,14 @@
         android:title="@string/tts_enable">
     </item>
     <item
+        android:id="@+id/chat_translate_send"
+        android:title="@string/translation_sent_disable">
+    </item>
+    <item
+        android:id="@+id/chat_translate_receive"
+        android:title="@string/translation_receive_disable">
+    </item>
+    <item
         android:id="@+id/call_contact_audio"
         android:icon="@drawable/chatcall_dark"
         android:title="@string/call_audio" />

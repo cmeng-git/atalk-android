@@ -170,6 +170,8 @@ public class ChatActivity extends BaseActivity
     private MenuItem mSendLocation;
     private MenuItem mSendOptOut;
     private MenuItem mTtsEnable;
+    private MenuItem mTranslateReceive;
+    private MenuItem mTranslateSend;
     private MenuItem mStatusEnable;
     private MenuItem mRoomInvite;
     private MenuItem mLeaveChatRoom;
@@ -389,6 +391,15 @@ public class ChatActivity extends BaseActivity
         return editText;
     }
 
+    public Object getRecipient() {
+        ChatSession chatSession = selectedChatPanel.getChatSession();
+        if (chatSession instanceof MetaContactChatSession) {
+            return mRecipient;
+        } else {
+           return chatSession.getDescriptor();
+        }
+    }
+
     /**
      * Set current chat id handled for this instance.
      *
@@ -470,6 +481,8 @@ public class ChatActivity extends BaseActivity
         mSendLocation = mMenu.findItem(R.id.share_location);
         mSendOptOut = mMenu.findItem(R.id.send_optout);
         mTtsEnable = mMenu.findItem(R.id.chat_tts_enable);
+        mTranslateReceive = mMenu.findItem(R.id.chat_translate_receive);
+        mTranslateSend = mMenu.findItem(R.id.chat_translate_send);
         mStatusEnable = mMenu.findItem(R.id.room_status_enable);
         mHistoryErase = mMenu.findItem(R.id.erase_chat_history);
         mRoomInvite = mMenu.findItem(R.id.muc_invite);
@@ -522,6 +535,16 @@ public class ChatActivity extends BaseActivity
                 mTtsEnable.setTitle((mRecipient != null) && mRecipient.isTtsEnable()
                         ? R.string.tts_disable : R.string.tts_enable);
 
+                // update Language Translate Send enable option item title for the contact only if not DomainJid
+                mTranslateSend.setVisible(!isDomainJid);
+                mTranslateSend.setTitle(mRecipient != null && mRecipient.isTranslateSend()
+                        ? R.string.translation_sent_disable : R.string.translation_sent_enable);
+
+                // update Language Translate Receive enable option item title for the contact only if not DomainJid
+                mTranslateReceive.setVisible(!isDomainJid);
+                mTranslateReceive.setTitle(mRecipient != null && mRecipient.isTranslateReceive()
+                        ? R.string.translation_receive_disable : R.string.translation_receive_enable);
+
                 mStatusEnable.setVisible(false);
                 mRoomInvite.setVisible(!isDomainJid);
                 mChatRoomInfo.setVisible(false);
@@ -559,6 +582,16 @@ public class ChatActivity extends BaseActivity
             mTtsEnable.setVisible(isJoined);
             mTtsEnable.setTitle(chatRoomWrapper.isTtsEnable()
                     ? R.string.tts_disable : R.string.tts_enable);
+
+            // update Language Translate Send enable option item title for the contact only if not DomainJid
+            mTranslateSend.setVisible(isJoined);
+            mTranslateSend.setTitle(chatRoomWrapper.isTranslateSend()
+                    ? R.string.translation_sent_disable : R.string.translation_sent_enable);
+
+            // update Language Translate Receive enable option item title for the contact only if not DomainJid
+            mTranslateReceive.setVisible(isJoined);
+            mTranslateReceive.setTitle(chatRoomWrapper.isTranslateReceive()
+                    ? R.string.translation_receive_disable : R.string.translation_receive_enable);
 
             mStatusEnable.setVisible(true);
             boolean roomStatusEnable = chatRoomWrapper.isRoomStatusEnable();
@@ -660,15 +693,24 @@ public class ChatActivity extends BaseActivity
 
             switch (item.getItemId()) {
             case R.id.chat_tts_enable:
-                if (chatRoomWrapper.isTtsEnable()) {
-                    chatRoomWrapper.setTtsEnable(false);
-                    mTtsEnable.setTitle(R.string.tts_enable);
-                }
-                else {
-                    chatRoomWrapper.setTtsEnable(true);
-                    mTtsEnable.setTitle(R.string.tts_disable);
-                }
+                boolean isTtsEnable = chatRoomWrapper.isTtsEnable();
+                chatRoomWrapper.setTtsEnable(!isTtsEnable);
+                mTtsEnable.setTitle(isTtsEnable ? R.string.tts_enable : R.string.tts_disable);
                 selectedChatPanel.updateChatTtsOption();
+                return true;
+
+            case R.id.chat_translate_send:
+                boolean isTranslateSend = chatRoomWrapper.isTranslateSend();
+                chatRoomWrapper.setTranslateSend(!isTranslateSend);
+                mTranslateSend.setTitle(isTranslateSend ?
+                        R.string.translation_sent_enable : R.string.translation_sent_disable);
+                return true;
+
+            case R.id.chat_translate_receive:
+                boolean isTranslateReceive = chatRoomWrapper.isTranslateReceive();
+                chatRoomWrapper.setTranslateReceive(!isTranslateReceive);
+                mTranslateReceive.setTitle(isTranslateReceive ?
+                        R.string.translation_receive_enable : R.string.translation_receive_disable);
                 return true;
 
             case R.id.leave_chat_room:
@@ -745,15 +787,25 @@ public class ChatActivity extends BaseActivity
 
             switch (item.getItemId()) {
             case R.id.chat_tts_enable:
-                if (mRecipient.isTtsEnable()) {
-                    mRecipient.setTtsEnable(false);
-                    mTtsEnable.setTitle(R.string.tts_enable);
-                }
-                else {
-                    mRecipient.setTtsEnable(true);
-                    mTtsEnable.setTitle(R.string.tts_disable);
-                }
+                boolean isTtsEnable = mRecipient.isTtsEnable();
+                mRecipient.setTtsEnable(!isTtsEnable);
+                mTtsEnable.setTitle(isTtsEnable ? R.string.tts_enable : R.string.tts_disable);
                 selectedChatPanel.updateChatTtsOption();
+                return true;
+
+            case R.id.chat_translate_send:
+                boolean isTranslateSend = mRecipient.isTranslateSend();
+                mRecipient.setTranslateSend(!isTranslateSend);
+                mTranslateSend.setTitle(isTranslateSend ?
+                        R.string.translation_sent_enable : R.string.translation_sent_disable);
+                // chatPanel.updateChatTtsOption();
+                return true;
+
+            case R.id.chat_translate_receive:
+                boolean isTranslateReceive = mRecipient.isTranslateReceive();
+                mRecipient.setTranslateReceive(!isTranslateReceive);
+                mTranslateReceive.setTitle(isTranslateReceive ?
+                        R.string.translation_receive_enable : R.string.translation_receive_disable);
                 return true;
 
             case R.id.call_contact_audio: // start audio call

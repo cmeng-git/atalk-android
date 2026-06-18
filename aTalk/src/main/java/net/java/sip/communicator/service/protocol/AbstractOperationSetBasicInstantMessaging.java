@@ -91,17 +91,17 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
     public abstract IMessage createMessage(String content, int encType, String subject);
 
     /**
-     * Create a IMessage instance with the specified UID, content type and a default encoding. This
-     * method can be useful when message correction is required. One can construct the corrected
-     * message to have the same UID as the message before correction.
+     * Create a IMessage instance with the specified UID, content type and a default encoding.
+     * This method can be useful when message correction is required. One can construct
+     * the corrected message to have the same UID as the message before correction.
      *
      * @param messageText the string content of the message.
      * @param encType the mime and encryption type for the <code>content</code>
-     * @param messageUID the unique identifier of this message.
+     * @param messageUid the unique identifier of this message.
      *
      * @return IMessage the newly created message
      */
-    public IMessage createMessageWithUid(String messageText, int encType, String messageUID) {
+    public IMessage createMessageWithUid(String messageText, int encType, String messageUid) {
         return createMessage(messageText);
     }
 

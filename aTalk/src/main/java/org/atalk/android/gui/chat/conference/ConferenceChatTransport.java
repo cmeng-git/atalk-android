@@ -12,9 +12,11 @@ import java.io.IOException;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationNotSupportedException;
 import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
 import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
+import net.java.sip.communicator.service.protocol.OperationSetMessageCorrection;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
@@ -33,6 +35,7 @@ import org.jivesoftware.smack.XMPPException;
 
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
+import org.jivesoftware.smackx.message_retraction.MessageRetractionManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 
 import org.jxmpp.jid.EntityBareJid;
@@ -139,7 +142,7 @@ public class ConferenceChatTransport implements ChatTransport {
      * @return {@code true} if this chat transport supports instant messaging,
      * otherwise returns {@code false}.
      */
-    public boolean allowsInstantMessage() {
+    public boolean allowInstantMessage() {
         return chatRoom.isJoined();
     }
 
@@ -161,7 +164,7 @@ public class ConferenceChatTransport implements ChatTransport {
      * @return {@code true} if this chat transport supports chat state notifications,
      * otherwise returns {@code false}.
      */
-    public boolean allowsChatStateNotifications() {
+    public boolean allowChatStateNotifications() {
         // Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
         // return ((tnOpSet != null) && isChatStateSupported);
         return isChatStateSupported;
@@ -183,7 +186,7 @@ public class ConferenceChatTransport implements ChatTransport {
     public void sendInstantMessage(String messageText, int encType, String msgId)
             throws Exception {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowsInstantMessage()) {
+        if (!allowInstantMessage()) {
             aTalkApp.showToastMessage(R.string.chatroom_not_joined);
             return;
         }
@@ -191,7 +194,7 @@ public class ConferenceChatTransport implements ChatTransport {
         IMessage message = chatRoom.createMessage(messageText, encType, null, msgId);
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
-            chatRoom.sendMessage(message, omemoManager);
+            chatRoom.sendMessage(message, null, omemoManager);
         }
         else {
             chatRoom.sendMessage(message);
@@ -202,18 +205,47 @@ public class ConferenceChatTransport implements ChatTransport {
      * Sends <code>message</code> as a message correction through this transport, specifying the
      * mime type (html or plain text) and the id of the message to replace.
      *
-     * @param message The message to send.
+     * @param messageText The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
-     * @param correctedMessageUID The ID of the message being corrected by this message.
+     * @param correctionUid The ID of the message being corrected by this message.
      *
      * @see ChatMessage Encryption Type
      */
     @Override
-    public void sendInstantMessageCorrection(String message, int encType, String correctedMessageUID) {
+    public void sendInstantMessageCorrection(String messageText, int encType, String correctionUid) {
+        if (!allowMessageCorrection()) {
+            aTalkApp.showToastMessage(R.string.chatroom_not_joined);
+            return;
+        }
+
+        OperationSetMessageCorrection mcOpSet = mPPS.getOperationSet(OperationSetMessageCorrection.class);
+        if (!mcOpSet.isContentTypeSupported(IMessage.ENCODE_HTML))
+            encType = encType & ~IMessage.ENCODE_HTML;
+
+        IMessage message = chatRoom.createMessage(messageText, encType, null, correctionUid);
+        message.setStatus(ChatMessage.STATUS_EDITED);
+
+        if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
+            OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
+            chatRoom.sendMessage(message, correctionUid, omemoManager);
+        }
+        else {
+            try {
+                chatRoom.correctMessage(message, correctionUid);
+            }
+            catch (OperationFailedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
     public void retractMessage(String retractUid) {
+        if (!allowMessageRetract()) {
+            aTalkApp.showToastMessage(R.string.retract_not_supported);
+            return;
+        }
+
         ((ChatRoomJabberImpl) chatRoom).sendRetractMessage(retractUid);
     }
 
@@ -250,7 +282,7 @@ public class ConferenceChatTransport implements ChatTransport {
      */
     public void sendChatStateNotification(ChatState chatState) {
         // Proceed only if this chat transport allows chat state notification
-        if (mPPS.isRegistered() && allowsChatStateNotifications() && allowsInstantMessage()) {
+        if (mPPS.isRegistered() && allowChatStateNotifications() && allowInstantMessage()) {
 
             OperationSetChatStateNotifications tnOperationSet
                     = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
@@ -372,7 +404,7 @@ public class ConferenceChatTransport implements ChatTransport {
      */
     public void addInstantMessageListener(MessageListener l) {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowsInstantMessage())
+        if (!allowInstantMessage())
             return;
 
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
@@ -386,7 +418,7 @@ public class ConferenceChatTransport implements ChatTransport {
      */
     public void removeInstantMessageListener(MessageListener l) {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowsInstantMessage())
+        if (!allowInstantMessage())
             return;
 
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
@@ -410,7 +442,11 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @return <code>true</code> if this chat transport supports message corrections and false otherwise.
      */
-    public boolean allowsMessageCorrections() {
-        return false;
+    public boolean allowMessageCorrection() {
+        return chatRoom.isJoined();
+    }
+
+    public boolean allowMessageRetract() {
+        return chatRoom.isJoined();
     }
 }

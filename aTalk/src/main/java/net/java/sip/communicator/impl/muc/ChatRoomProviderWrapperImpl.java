@@ -165,10 +165,10 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper {
      *
      * @return the chat room wrapper contained in this provider that corresponds to the given chat room id.
      */
-    public ChatRoomWrapper findChatRoomWrapperForChatRoomID(String chatRoomID) {
+    public ChatRoomWrapper findChatRoomWrapperForChatRoomID(String chatRoomId) {
         // Compare ids, cause saved chatRooms don't have ChatRoom object but Id's are the same.
         for (ChatRoomWrapper chatRoomWrapper : chatRoomsOrderedCopy) {
-            if (chatRoomWrapper.getChatRoomID().equals(chatRoomID)) {
+            if (chatRoomWrapper.getChatRoomId().equals(chatRoomId)) {
                 return chatRoomWrapper;
             }
         }

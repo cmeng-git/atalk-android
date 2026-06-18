@@ -1,5 +1,27 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        6.2.0 (602000)
+Release Date:   06/18/2026
+Author:         cmeng
+- Support Language Translation for sent/received messages in chat/multi-user chat sessions.
+- Translation Language Server may use aTalk default or user defined URL if so required.
+- Translation Language used in sent/received messages is defined per user account.
+- Translation option can be enabled/disabled per contact chat/multi-user chat session.
+- Fix Message Retraction feature not properly added to the service discovery information.
+- Make 'Message Retraction' independent of 'Message Delivery Receipts', instead fallback on contactSupportsMessageRetraction check.
+- Hide 'Last Message Correction' and/or 'Message Retraction' options in chat session if they are not supported by the recipient.
+- Ensure ChatListAdapter#getView() uses the 'Last Message Correction' and 'Message Retraction' new content for view update/display.
+- Extend support of 'Last Message Correction' in multi-user chat session.
+- Fix error in mamQuery to get mamDate 7 days earlier.
+- Fix new line ENTER is shown as <br/>.
+
+*** Observation ***
+- ChatMessage in ChatPanel#msgCache and ChatFragment.ChatListAdapter#msgDisplays, seem refer to the same instance.
+  So any update to the msgCache#ChatMessage also affect the ChatListAdapter#msgDisplays instance.
+- In LMC and MC, must set msgBody = null; so setSpannedInView() will rebuild the spanned Text with the new content.
+  Otherwise chatListAdapter.notifyDataSetChanged() will use the old content.
+
+=========================================================================
 Version:        6.1.0 (601000)
 Release Date:   06/04/2026
 Author:         cmeng

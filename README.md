@@ -26,58 +26,38 @@
 
 ## Features
 aTalk is an xmpp client designed for android and supports the following features:
-* Instant messaging in plain text and End-to-End encryption with [OMEMO](https://conversations.im/omemo/)
-* SSL Certificate authentication, DNSSEC and DANE Security implementation for enhanced secure Connection Establishment
-* OMEMO encryption in group chat session enhancing privacy and security
-* OMEMO Media File Sharing for all files including Stickers, Bitmoji and Emoji rich contents
-* Support http file upload for file sharing with offline contact and in group chat
-* Support Stickers, Bitmoji and Emoji rich content sharing via Google Gboard
-* Send and receive files for all document types and images with thumbnail preview and gif animation
-* Auto accept file transfer with max file size option
-* Implement fault-tolerance file transfer algorithm, via HttpFileUpload, Jingle File Transfer, and Legacy In-Band/SOCK5 Bytestreams protocols to ease and enhance file sharing reliability
-* Support secured file transfer via HttpFileUpload using aesgcm://, or via Jingle Encrypted Transport (JET)
-* Enhance and harmonize UI for file sharing in chat and chatRoom
-* Support share, quote and forward of messages and media with previews prior to sending
-* Support multi-instances of audio media player with functions: Play, Pause, Resume, Stop and Seek
-* Support unread message badges in contact and chatRoom list views
-* User selectable option for heads-up notification and quiet hours
-* Share of social media links are tagged with thumbnail and title
-* Support Text to Speech and speech recognition UI with enable option per chat session (contact and group chat)
-* XEP-0012: Last Activity time associated with contacts
-* XEP-0048: Bookmarks for conference room and autoJoin on login
-* XEP-0070: Verifying HTTP Requests via XMPP entity for user authentication without password entry
-* XEP-0071: XHTML-IM Support chat messages containing lightweight text markup
-* XEP-0085: Chat State Notifications
-* XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH) with Proxy support
-* XEP-0178: Use of SASL EXTERNAL with TLS Certificates for client authentication
-* XEP-0184: Message Delivery Receipts with user enable/disable option
-* XEP-0215: External Service Discovery
-* XEP-0251: Jingle Session Transfer: Support both Unattended and Attended call transfer
-* XEP-0313: Message Archive Management
-* XEP-0391: Jingle Encrypted Transports for OMEMO encrypted media file sharing
-* Implement call waiting to accept a second incoming call by placing the in-progress call on hold; and allow switching between calls
-* Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway
-* Join or create room with full room configuration support for owner
-* Integrated captcha protected room user interface with retry on failure
-* Support both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
-* ZRTP crypto algorithms uses SHA-2 384, 256bit ciphers AES256 & TWOFISH-256, enabling elliptic with Curve 25519
-* SDES encryption with AES256 and AES192, acceleration using OpenSSL
-* Support simultaneous media call and message chat sessions
-* Unique GPS-Location implementation as standalone tool, send locations to your desired buddy for real-time tracking or playback animation
-* A 360° street view of your current location use for self-guided tour. The street view tracks and follows your direction of sight
-* Built-in demo for GPS-Location features
-* Integrated photo editor with zooming and cropping, user can update the avatar with ease
-* Last message correction, message carbons and offline messages (OMEMO)
-* Stream Management and mobile network ping interval self-tune optimization support
-* In-Band Registration with captcha option support
-* Multiple accounts creation
-* User selectable Themes support
-* Multi-language UI support (Arabic, Bahasa Indonesia, Chinese Simplified, English, Finnish, German, Portuguese (Brazil), Russian, Slovak and Spanish)
-
-## XMPP Standards Implemented
-
-aTalk works seamlessly with almost every XMPP servers available on network, limited only by servers features supported. 
-See [atalk.doap](https://xmpp.org/doap/atalk.doap) for list of supported XEP's, standards for XMPP clients.
+* See <a href="https://xmpp.org/doap/atalk.doap">atalk.doap</a> for list of XEP's standards supported by aTalk XMPP client.
+* Instant messaging via End-to-End [OMEMO](https://conversations.im/omemo/) encryption.
+* SSL Certificate authentication, DNSSEC and DANE Security implementation for enhanced secure Connection Establishment.
+* OMEMO encryption in chat or multi-user chat session enhancing privacy and security.
+* Support Stickers, Bitmoji and Emoji rich contents sending via Google Gboard.
+* Support secured file sharing via HttpFileUpload, or via Jingle Encrypted Transport (JET).
+* Fault-tolerance file transfer algorithm, via HttpFileUpload, Jingle File Transfer, and Legacy In-Band/SOCK5 Bytestreams protocols.
+* Auto accept file transfer with max file size option.
+* Support share, quote and forward of messages and media with previews prior to sending.
+* Support multi-instances of audio media player with functions: Play, Pause, Resume, Stop and Seek.
+* Support unread message badges in contact and chatroom list views.
+* User selectable option for heads-up notification, and user defined quiet hours.
+* Support Text to Speech and speech recognition UI with enable option per chat session (contact and group chat).
+* Support 50 Languages Translation for sent/received messages in chat/multi-user chat sessions.
+* Language Translation server may use aTalk default or user defined URL.
+* Support Call transfer, and call waiting to hold or answer second incoming call.
+* Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway.
+* Support video media call with SDES, DTLS SRTP, and ZRTP crypto algorithms using SHA-2 384, 256bit ciphers encryptions.
+* Media call setup via either XEP-0353: Jingle Message Initiation, or XEP-0167:  Jingle RTP Sessions protocol.
+* Message Archive Management, and Message Carbons synchronizing chat history across all instances of the account.
+* GPS-Location implementation as standalone tool, send locations to buddy for real-time tracking or playback animation.
+* A 360° street view of your current location use for self-guided tour. The street view tracks and follows your direction of sight.
+* Update user avatar with integrated photo editor, zooming and cropping with ease. 
+* Support both XEP-0153: vCard-Based Avatar, and XEP-0084: User Avatar protocol Implementations.
+* Support XEP-0048: Bookmarks for multi-user chatroom.
+* Support XEP-0070: Verifying HTTP Requests via XMPP.
+* Retract of sent messages, and Last message correction in chat/multi-user chat sessions.
+* Multiple accounts creation, server registration via XMPP or BOSH protocol.
+* In-Band Registration with CAPTCHA option; needs support from server.
+* Support for XEP-0191: Blocking Command to block communications with a specific contact and domain
+* Stream Management and mobile network ping interval self-tune optimization support.
+* Multi-language UI support (Arabic, Indonesian, Chinese, English, Finnish, German, Portuguese (Brazil), Russian, Slovak and Spanish).
 
 
 ## Acknowledgements
@@ -85,39 +65,45 @@ See [atalk.doap](https://xmpp.org/doap/atalk.doap) for list of supported XEP's, 
 Libraries used in this project:
 
 * [Android Support Library](https://developer.android.com/topic/libraries/support-library/index.html)
-* [android-betterpickers](https://github.com/code-troopers/android-betterpickers)
 * [Android-EasyLocation](https://github.com/akhgupta/Android-EasyLocation)
 * [android-youtube-player](https://github.com/PierfrancescoSoffritti/android-youtube-player)
-* [annotations-java5](https://mvnrepository.com/artifact/org.jetbrains/annotations)
 * [apache-mime4j-core](https://github.com/apache/james-mime4j)
+* [Argos Translate](https://github.com/argosopentech/argos-translate)
+* [bcg729](https://github.com/BelledonneCommunications/bcg729)
 * [bouncycastle](https://github.com/bcgit/bc-java)
 * [ckChangeLog](https://github.com/cketti/ckChangeLog)
+* [commons-codec](https://github.com/apache/commons-codec)
 * [commons-text](https://commons.apache.org/proper/commons-text/)
 * [Dexter](https://github.com/Karumi/Dexter)
-* [ExoPlayer](https://github.com/google/ExoPlayer)
 * [FFmpeg](https://github.com/FFmpeg/FFmpeg)
+* [fmj-jitsi](https://github.com/jitsi/fmj)
 * [glide](https://github.com/bumptech/glide)
 * [Google Play Services](https://developers.google.com/android/guides/overview)
 * [httpcore](https://hc.apache.org/httpcomponents-client-4.5.x/)
 * [IPAddress](https://github.com/seancfoley/IPAddress)
 * [ice4j](https://github.com/jitsi/ice4j)
+* [jbosh](https://github.com/igniterealtime/jbosh)
 * [jitsi](https://github.com/jitsi/jitsi)
 * [jitsi-android](https://github.com/jitsi/jitsi-android)
 * [jmdns](https://github.com/jmdns/jmdns)
-* [js-evaluator-for-android](https://github.com/evgenyneu/js-evaluator-for-android)
 * [jxmpp-jid](https://github.com/igniterealtime/jxmpp)
 * [libjitsi](https://github.com/jitsi/libjitsi)
+* [LibreTranslate Java Restful Client](https://github.com/stokito/libretranslate-java)
 * [libvpx](https://github.com/webmproject/libvpx)
+* [media3-exoplayer](https://github.com/androidx/media)
+* [Mime4j](https://james.apache.org/mime4j/)
 * [miniDNS](https://github.com/MiniDNS/minidns)
 * [Noembed](https://noembed.com/)
-* [osmdroid](https://github.com/osmdroid/osmdroid)
+* [okhttp"](https://github.com/square/okhttp)
 * [opensles](https://github.com/openssl/openssl )
 * [openSSL](https://www.openssl.org/source/)
 * [Opus](https://opus-codec.org/)
 * [osgi.core](http://grepcode.com/snapshot/repo1.maven.org/maven2/org.osgi/org.osgi.core/6.0.0)
+* [osmdroid](https://github.com/osmdroid/osmdroid)
 * [sdes4j](https://github.com/ibauersachs/sdes4j)
 * [sdp-api](https://mvnrepository.com/artifact/org.opentelecoms.sdp/sdp-api)
-* [Smack](https://github.com/igniterealtime/Smack)
+* [signal-protocol-java](https://github.com/signalapp/libsignal-protocol-java)
+* [smack](https://github.com/igniterealtime/Smack)
 * [speex](https://github.com/xiph/speex)
 * [Timber](https://github.com/JakeWharton/timber)
 * [TokenAutoComplete](https://github.com/splitwise/TokenAutoComplete)

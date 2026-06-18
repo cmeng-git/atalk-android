@@ -107,7 +107,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * @return the chat identifier
      */
     public String getChatId() {
-        return chatRoomWrapper.getChatRoomID();
+        return chatRoomWrapper.getChatRoomId();
     }
 
     /**

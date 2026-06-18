@@ -64,7 +64,7 @@ public class MessageReceivedEvent extends EventObject {
     /**
      * The ID of the message being corrected, or null if this is a new message and not a correction.
      */
-    private String correctedMessageUID = null;
+    private String correctionUid = null;
 
     /**
      * Indicates whether this is private messaging event or not.
@@ -87,13 +87,13 @@ public class MessageReceivedEvent extends EventObject {
      * @param contactResource the <code>ContactResource</code>, from which this message was sent.
      * @param sender the fullJid from which this message was sent
      * @param timestamp the exact date when the event occurred.
-     * @param correctedMessageUID The ID of the message being corrected, or null if this
+     * @param correctionUid The ID of the message being corrected, or null if this
      * is a new message and not a correction.
      */
     public MessageReceivedEvent(IMessage source, Contact contact, ContactResource contactResource,
-            String sender, Date timestamp, String correctedMessageUID) {
+            String sender, Date timestamp, String correctionUid) {
         this(source, contact, contactResource, sender, timestamp, false, null);
-        this.correctedMessageUID = correctedMessageUID;
+        this.correctionUid = correctionUid;
     }
 
     /**
@@ -105,16 +105,16 @@ public class MessageReceivedEvent extends EventObject {
      * @param contactResource the <code>ContactResource</code>, from which this message was sent
      * @param sender the fullJid from which this message was sent
      * @param timestamp the exact date when the event occurred.
-     * @param correctedMessageUID The ID of the message being corrected, or null if this is a new message and not a
+     * @param correctionUid The ID of the message being corrected, or null if this is a new message and not a
      * correction.
      * @param isPrivateMessaging indicates whether the this is private messaging event or not.
      * @param privateContactRoom the chat room associated with the contact.
      */
     public MessageReceivedEvent(IMessage source, Contact contact, ContactResource contactResource,
-            String sender, Date timestamp, String correctedMessageUID, boolean isPrivateMessaging,
+            String sender, Date timestamp, String correctionUid, boolean isPrivateMessaging,
             ChatRoom privateContactRoom) {
         this(source, contact, contactResource, sender, timestamp, isPrivateMessaging, privateContactRoom);
-        this.correctedMessageUID = correctedMessageUID;
+        this.correctionUid = correctionUid;
     }
 
     /**
@@ -212,8 +212,8 @@ public class MessageReceivedEvent extends EventObject {
      * @return the correctedMessageUID The ID of the message being corrected, or null if this is a
      * new message and not a correction.
      */
-    public String getCorrectedMessageUID() {
-        return correctedMessageUID;
+    public String getCorrectedMessageUid() {
+        return correctionUid;
     }
 
     /**

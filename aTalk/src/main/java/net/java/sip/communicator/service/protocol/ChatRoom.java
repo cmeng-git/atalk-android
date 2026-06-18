@@ -355,7 +355,10 @@ public interface ChatRoom {
     void sendMessage(IMessage message)
             throws OperationFailedException;
 
-    void sendMessage(IMessage message, OmemoManager omemoManager);
+    void correctMessage(IMessage message, String correctionUid)
+            throws OperationFailedException;
+
+    void sendMessage(IMessage message, String correctionUid, OmemoManager omemoManager);
 
     /**
      * Returns a reference to the provider that created this room.

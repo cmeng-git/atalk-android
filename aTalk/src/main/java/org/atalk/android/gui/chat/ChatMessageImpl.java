@@ -23,13 +23,9 @@ import net.java.sip.communicator.service.protocol.event.ChatRoomMessageReceivedE
 import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
 import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AppGUIActivator;
 
 import org.apache.commons.text.StringEscapeUtils;
-
-import timber.log.Timber;
 
 /**
  * The <code>ChatMessageImpl</code> class encapsulates message information in order to provide a
@@ -107,7 +103,7 @@ public class ChatMessageImpl implements ChatMessage {
      * The unique identifier of the last message that this message should replace,
      * or <code>null</code> if this is a new message.
      */
-    private final String correctedMessageUid;
+    private final String correctionUid;
 
     /**
      * The sent message stanza Id.
@@ -145,9 +141,9 @@ public class ChatMessageImpl implements ChatMessage {
     /*
      * ChatMessageImpl with enclosed IMessage as content
      */
-    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, IMessage msg, String correctedMessageUid, String direction) {
+    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, IMessage msg, String correctionUid, String direction) {
         this(sender, senderName, date, messageType, msg.getMimeType(), msg.getContent(),
-                msg.getEncryptionType(), msg.getMessageUID(), correctedMessageUid, direction,
+                msg.getEncryptionType(), msg.getMessageUid(), correctionUid, direction,
                 msg.getStatus(), msg.getReceiptStatus(), msg.getServerMsgId(), msg.getRemoteMsgId(), null, null, null);
     }
 
@@ -176,7 +172,7 @@ public class ChatMessageImpl implements ChatMessage {
      * @param content the message content
      * @param encryptionType the message original encryption type
      * @param messageUid The ID of the message.
-     * @param correctedMessageUid The ID of the message being replaced.
+     * @param correctionUid The ID of the message being replaced.
      * @param status The ChatMessage#STATUS_xxx or file transfer status.
      * @param receiptStatus The message delivery receipt status.
      * @param serverMsgId The sent message stanza Id.
@@ -186,7 +182,7 @@ public class ChatMessageImpl implements ChatMessage {
      * @param fileRecord The history file record.
      */
     public ChatMessageImpl(String sender, String senderName, Date date, int messageType, int mimeType,
-            String content, int encryptionType, String messageUid, String correctedMessageUid,
+            String content, int encryptionType, String messageUid, String correctionUid,
             String direction, int status, int receiptStatus, String serverMsgId, String remoteMsgId,
             OperationSetFileTransfer opSet, Object request, FileRecord fileRecord) {
         this.mSender = sender;
@@ -197,7 +193,7 @@ public class ChatMessageImpl implements ChatMessage {
         this.messageBody = content;
         this.encryptionType = encryptionType;
         this.messageUid = messageUid;
-        this.correctedMessageUid = correctedMessageUid;
+        this.correctionUid = correctionUid;
         this.mDirection = direction;
 
         this.mStatus = status;
@@ -297,9 +293,10 @@ public class ChatMessageImpl implements ChatMessage {
         output = StringEscapeUtils.unescapeXml(output);
 
         // Apply the "edited at" tag for corrected message
-        if (ChatMessage.STATUS_EDITED == mStatus || correctedMessageUid != null) {
+        if (ChatMessage.STATUS_EDITED == mStatus || correctionUid != null) {
             output = "&#x270E " + output;
-        } else if (ChatMessage.STATUS_DELETED == mStatus) {
+        }
+        else if (ChatMessage.STATUS_DELETED == mStatus) {
             output = "&#x2612 " + output;
         }
         cachedOutput = output;
@@ -478,6 +475,7 @@ public class ChatMessageImpl implements ChatMessage {
      *
      * @return the UID of this message.
      */
+    @Override
     public String getMessageUid() {
         return messageUid;
     }
@@ -487,6 +485,7 @@ public class ChatMessageImpl implements ChatMessage {
      *
      * @return the direction of this message.
      */
+    @Override
     public String getMessageDir() {
         return mDirection;
     }
@@ -496,8 +495,9 @@ public class ChatMessageImpl implements ChatMessage {
      *
      * @return the UID of the message that this message replaces, or <code>null</code> if this is a new message.
      */
+    @Override
     public String getCorrectedMessageUid() {
-        return correctedMessageUid;
+        return correctionUid;
     }
 
     static public ChatMessageImpl getMsgForEvent(MessageDeliveredEvent evt) {
@@ -506,7 +506,7 @@ public class ChatMessageImpl implements ChatMessage {
         final String senderName = evt.getSender().isEmpty() ? sender : evt.getSender();
 
         return new ChatMessageImpl(sender, senderName, evt.getTimestamp(),
-                ChatMessage.MESSAGE_OUT, imessage, evt.getCorrectedMessageUID(), ChatMessage.DIR_OUT);
+                ChatMessage.MESSAGE_OUT, imessage, evt.getCorrectedMessageUid(), ChatMessage.DIR_OUT);
     }
 
     static public ChatMessageImpl getMsgForEvent(final MessageReceivedEvent evt) {
@@ -516,7 +516,7 @@ public class ChatMessageImpl implements ChatMessage {
                 : AppGUIActivator.getContactListService().findMetaContactByContact(contact).getDisplayName();
 
         return new ChatMessageImpl(contact.getAddress(), sender,
-                evt.getTimestamp(), evt.getEventType(), imessage, evt.getCorrectedMessageUID(), ChatMessage.DIR_IN);
+                evt.getTimestamp(), evt.getEventType(), imessage, evt.getCorrectedMessageUid(), ChatMessage.DIR_IN);
     }
 
     static public ChatMessageImpl getMsgForEvent(final ChatRoomMessageDeliveredEvent evt) {

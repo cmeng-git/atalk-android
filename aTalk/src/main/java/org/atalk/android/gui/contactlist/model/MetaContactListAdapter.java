@@ -459,6 +459,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void metaContactAdded(MetaContactEvent evt) {
         Timber.d("CONTACT ADDED: %s", evt.getSourceMetaContact());
         BaseActivity.uiHandler.post(() -> {
@@ -472,6 +473,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void metaContactModified(MetaContactModifiedEvent evt) {
         Timber.d("META CONTACT MODIFIED: %s", evt.getSourceMetaContact());
         invalidateViews();
@@ -482,6 +484,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void metaContactRemoved(MetaContactEvent evt) {
         Timber.d("CONTACT REMOVED: %s", evt.getSourceMetaContact());
         BaseActivity.uiHandler.post(() -> {
@@ -495,6 +498,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void metaContactMoved(MetaContactMovedEvent evt) {
         final MetaContactGroup oldParent = evt.getOldParent();
         final MetaContactGroup newParent = evt.getNewParent();
@@ -559,6 +563,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void metaContactRenamed(final MetaContactRenamedEvent evt) {
         Timber.d("CONTACT RENAMED: %s", evt.getSourceMetaContact());
         BaseActivity.uiHandler.post(() -> updateDisplayName(evt.getSourceMetaContact()));
@@ -569,6 +574,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void protoContactAdded(final ProtoContactEvent evt) {
         Timber.d("PROTO CONTACT ADDED: %s", evt.getNewParent());
         BaseActivity.uiHandler.post(() -> updateStatus(evt.getNewParent()));
@@ -579,6 +585,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void protoContactRenamed(ProtoContactEvent evt) {
         Timber.d("PROTO CONTACT RENAMED: %s", evt.getProtoContact().getAddress());
         invalidateViews();
@@ -589,6 +596,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void protoContactModified(ProtoContactEvent evt) {
         Timber.d("PROTO CONTACT MODIFIED: %s", evt.getProtoContact().getAddress());
         invalidateViews();
@@ -599,6 +607,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void protoContactRemoved(final ProtoContactEvent evt) {
         Timber.d("PROTO CONTACT REMOVED: %s", evt.getProtoContact().getAddress());
         BaseActivity.uiHandler.post(() -> updateStatus(evt.getOldParent()));
@@ -609,6 +618,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void protoContactMoved(final ProtoContactEvent evt) {
         Timber.d("PROTO CONTACT MOVED: %s", evt.getProtoContact().getAddress());
         BaseActivity.uiHandler.post(() -> {
@@ -626,6 +636,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @see #metaContactMoved(MetaContactMovedEvent)
      */
+    @Override
     public void metaContactGroupAdded(MetaContactGroupEvent evt) {
         MetaContactGroup metaGroup = evt.getSourceMetaContactGroup();
         Timber.d("META CONTACT GROUP ADDED: %s", metaGroup);
@@ -640,6 +651,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void metaContactGroupModified(MetaContactGroupEvent evt) {
         Timber.d("META CONTACT GROUP MODIFIED: %s", evt.getSourceMetaContactGroup());
         invalidateViews();
@@ -650,6 +662,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void metaContactGroupRemoved(MetaContactGroupEvent evt) {
         Timber.d("META CONTACT GROUP REMOVED: %s", evt.getSourceMetaContactGroup());
         BaseActivity.uiHandler.post(() -> {
@@ -666,6 +679,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void childContactsReordered(MetaContactGroupEvent evt) {
         // Timber.d("Child contacts reordered");
         BaseActivity.uiHandler.post(() -> {
@@ -705,6 +719,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
+    @Override
     public void metaContactAvatarUpdated(final MetaContactAvatarUpdateEvent evt) {
         Timber.log(TimberLog.FINER, "metaContact avatar updated: %s", evt.getSourceMetaContact());
         BaseActivity.uiHandler.post(() -> updateAvatar(evt.getSourceMetaContact()));
@@ -757,6 +772,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param query the query we'd like to match
      */
+    @Override
     public void filterData(String query) {
         BaseActivity.uiHandler.post(() -> {
             currentFilterQuery = query.toLowerCase(Locale.US);
@@ -874,7 +890,6 @@ public class MetaContactListAdapter extends BaseContactListAdapter
             Iterator<MetaContact> contacts = metaGroup.getChildContacts();
             while (contacts.hasNext()) {
                 MetaContact metaContact = contacts.next();
-
                 if (isMatching(metaContact, query))
                     return true;
             }

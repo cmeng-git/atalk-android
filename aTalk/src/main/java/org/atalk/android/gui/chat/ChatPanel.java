@@ -183,7 +183,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
     private boolean mamChecked = false;
 
     /**
-     * Blocked caching of the next new message if sent via normal sendMessage().
+     * Blocked caching of the next new message if sent via normal correctMessage().
      * Otherwise there will have duplicated display messages
      */
     private boolean cacheBlocked = false;
@@ -643,9 +643,9 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         }
         // Must use a valid mamDate in memQuery; default to fetch last 7 days if none found
         if (mamDate == null) {
-            Calendar c = Calendar.getInstance(TimeZone.getDefault());
-            c.set(Calendar.DAY_OF_MONTH, -7);
-            mamDate = c.getTime();
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -7);
+            mamDate = cal.getTime();
         }
         // set mamDate to a valid date in chatSession record.
         mMHS.setMamDate(sessionUuid, mamDate);
@@ -696,7 +696,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         int cacheIdx = msgCache.size() - 1;
         while (cacheIdx >= 0) {
             ChatMessageImpl cacheMsg = (ChatMessageImpl) msgCache.get(cacheIdx);
-            // 20220709: cacheMsg.getMessageUID() can be null
+            // 20220709: cacheMsg.getMessageUid() can be null
             if (msgUuid.equals(cacheMsg.getMessageUid())) {
                 cacheMsg.updateFTStatus(mDescriptor, msgUuid, status, fileName, encType, recordType, cacheMsg.getMessageDir());
                 // Timber.d("updateCacheFTRecord msgUid: %s => %s (%s)", msgUuid, status, recordType );
@@ -831,27 +831,28 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      *
      * @param contactName the name of the contact sending the message
      * @param date the time at which the message is sent or received
-     * @param messageType the type of the message
+     * @param msgType the type of the message e.g. ChatMessage.MESSAGE_OUT etc
      * @param encType the content encode type i.e plain or html
      * @param content the message text
      */
     @Override
-    public void addMessage(String contactName, Date date, int messageType, int encType, String content) {
-        addMessage(new ChatMessageImpl(contactName, contactName, date, messageType, encType, content, null, ChatMessage.DIR_IN));
+    public void addMessage(String contactName, Date date, int msgType, int encType, String content) {
+        String dir = ChatMessage.MESSAGE_MUC_OUT == msgType ? ChatMessage.DIR_OUT : ChatMessage.DIR_IN;
+        addMessage(new ChatMessageImpl(contactName, contactName, date, msgType, encType, content, null, dir));
     }
 
     /**
-     * Add a message to this <code>Chat</code> by conference session.
+     * Add a message to this <code>Chat</code> by conference send/receive session.
      *
      * @param contactName the name of the contact sending the message
      * @param displayName the display name of the contact
      * @param date the time at which the message is sent or received
-     * @param chatMsgType the type of the message. See ChatMessage
+     * @param msgType the type of the message. See ChatMessage
      * @param message the IMessage.
      */
-    public void addMessage(String contactName, String displayName, Date date, int chatMsgType,
-            IMessage message, String correctedMessageUID) {
-        addMessage(new ChatMessageImpl(contactName, displayName, date, chatMsgType, message, correctedMessageUID, ChatMessage.DIR_IN));
+    public void addMessage(String contactName, String displayName, Date date, int msgType, IMessage message, String correctionUid) {
+        String dir = ChatMessage.MESSAGE_MUC_OUT == msgType ? ChatMessage.DIR_OUT : ChatMessage.DIR_IN;
+        addMessage(new ChatMessageImpl(contactName, displayName, date, msgType, message, correctionUid, dir));
     }
 
     /**
@@ -861,15 +862,23 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      * @param chatMessage the ChatMessage.
      */
     public void addMessage(ChatMessageImpl chatMessage) {
-        // Do nothing if the MESSAGE_STATUS is disabled
+        // Do nothing if show chatroom status is disabled
         if (ChatMessage.MESSAGE_STATUS == chatMessage.getMessageType()) {
             Object descriptor = mChatSession.getDescriptor();
             if ((descriptor instanceof ChatRoomWrapper) &&
                     !((ChatRoomWrapper) descriptor).isRoomStatusEnable())
                 return;
         }
+        String correctionId = chatMessage.getCorrectedMessageUid();
+        String msgContent = chatMessage.getMessageContent();
 
-        if (!(cacheNextMsg(chatMessage))) {
+        if (ChatMessage.STATUS_DELETED == chatMessage.getStatus()) {
+            updateCacheMessage(chatMessage.getMessageUid(), msgContent, ChatMessage.STATUS_DELETED);
+        }
+        else if (correctionId != null) {
+            updateCacheMessage(correctionId, msgContent, ChatMessage.STATUS_EDITED);
+        }
+        else if (!(cacheNextMsg(chatMessage))) {
             Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, chatMessage.getMessageUid());
         }
         messageSpeak(chatMessage, 2 * ttsDelay);  // for chatRoom
@@ -886,7 +895,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
     }
 
     /**
-     * Caches next message when chat is not in focus and it is not being blocked via sendMessage().
+     * Caches next message when chat is not in focus and it is not being blocked via correctMessage().
      * Otherwise duplicated messages when share link
      *
      * @param newMsg the next message to cache.
@@ -1070,18 +1079,20 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         if ((mMetaContact != null) && mMetaContact.containsContact(protocolContact)) {
             ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent(messageReceivedEvent);
             String correctionId = chatMessage.getCorrectedMessageUid();
+
             if (!mamChecked || isMessageNew(chatMessage) || messageReceivedEvent.isRetractMessage() || correctionId != null) {
-                String msgBody = chatMessage.getMessageBody();
+                String msgContent = chatMessage.getMessageContent();
+                String msgUid = chatMessage.getMessageUid();
+
                 // Must update cache messages for both retract and correction here. ChatFragment may not in focus.
                 if (messageReceivedEvent.isRetractMessage()) {
-                    String msgRid = chatMessage.getMessageUid();
-                    updateCacheMessage(msgRid, msgBody, ChatMessage.STATUS_DELETED);
+                    updateCacheMessage(msgUid, msgContent, ChatMessage.STATUS_DELETED);
                 }
                 else if (correctionId != null) {
-                    updateCacheMessage(correctionId, msgBody, ChatMessage.STATUS_EDITED);
+                    updateCacheMessage(correctionId, msgContent, ChatMessage.STATUS_EDITED);
                 }
                 else if (!cacheNextMsg(chatMessage)) {
-                    Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, chatMessage.getMessageUid());
+                    Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, msgUid);
                 }
 
                 for (ChatSessionListener l : sessionsListeners) {
@@ -1108,13 +1119,18 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
                 return;
 
             ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent(messageDeliveredEvent);
-            String msgBody = chatMessage.getMessageBody();
+            String msgContent = chatMessage.getMessageContent();
+            String msgUid = chatMessage.getMessageUid();
             String correctionId = chatMessage.getCorrectedMessageUid();
-            if (correctionId != null) {
-                updateCacheMessage(correctionId, msgBody, ChatMessage.STATUS_EDITED);
+
+            if (messageDeliveredEvent.isRetractMessage()) {
+                updateCacheMessage(msgUid, msgContent, ChatMessage.STATUS_DELETED);
+            }
+            else if (correctionId != null) {
+                updateCacheMessage(correctionId, msgContent, ChatMessage.STATUS_EDITED);
             }
             else if (!cacheNextMsg(chatMessage)) {
-                Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, chatMessage.getMessageUid());
+                Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, msgUid);
             }
             for (ChatSessionListener l : sessionsListeners) {
                 l.messageDelivered(messageDeliveredEvent);

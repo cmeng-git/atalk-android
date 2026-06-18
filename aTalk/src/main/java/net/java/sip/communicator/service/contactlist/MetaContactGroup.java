@@ -17,10 +17,10 @@ package net.java.sip.communicator.service.contactlist;
 
 import androidx.annotation.NonNull;
 
+import java.util.Iterator;
+
 import net.java.sip.communicator.service.protocol.ContactGroup;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-
-import java.util.Iterator;
 
 /**
  * <code>MetaContactGroup</code>s are used to merge groups (often originating in different protocols).
@@ -32,8 +32,7 @@ import java.util.Iterator;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public interface MetaContactGroup extends Comparable<MetaContactGroup>
-{
+public interface MetaContactGroup extends Comparable<MetaContactGroup> {
     String TABLE_NAME = "metaContactGroup";
 
     String ID = "id";
@@ -78,6 +77,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      *
      * @param provider a reference to the <code>ProtocolProviderService</code>
      * whose ContactGroups we'd like to get.
+     *
      * @return an <code>Iterator</code> over all contacts encapsulated in this
      * <code>MetaContact</code> and originating from the specified provider.
      */
@@ -96,6 +96,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * *
      *
      * @param accountID the id of the account whose contact groups we'd like to retrieve.
+     *
      * @return an <code>Iterator</code> over all contacts encapsulated in this
      * <code>MetaContact</code> and originating from the provider with the specified account id.
      */
@@ -105,6 +106,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * Returns true if and only if <code>contact</code> is a direct child of this group.
      *
      * @param contact the <code>MetaContact</code> whose relation to this group we'd like to determine.
+     *
      * @return <code>true</code> if <code>contact</code> is a direct child of this group and <code>false</code> otherwise.
      */
     boolean contains(MetaContact contact);
@@ -113,6 +115,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * Returns true if and only if <code>group</code> is a direct subgroup of this <code>MetaContactGroup</code>.
      *
      * @param group the <code>MetaContactGroup</code> whose relation to this group we'd like to determine.
+     *
      * @return <code>true</code> if <code>group</code> is a direct child of this
      * <code>MetaContactGroup</code> and <code>false</code> otherwise.
      */
@@ -125,6 +128,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * @param groupName the name of the contact group who we're looking for.
      * @param ownerProvider a reference to the ProtocolProviderService that
      * the contact we're looking for belongs to.
+     *
      * @return a reference to a <code>ContactGroup</code>, encapsulated by this
      * MetaContactGroup, carrying the specified name and originating from the specified ownerProvider.
      */
@@ -204,6 +208,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * @param provider the ProtocolProviderService that the specified <code>contactID</code> is pertaining to.
      * @param contactID a String identifier of the protocol specific contact
      * whose container meta contact we're looking for.
+     *
      * @return the <code>MetaContact</code> with the specified identifier.
      */
     MetaContact getMetaContact(ProtocolProviderService provider, String contactID);
@@ -212,6 +217,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * Returns the contact with the specified identifier
      *
      * @param metaUID a String identifier obtained through the <code>MetaContact.getMetaUID()</code> method.
+     *
      * @return the <code>MetaContact</code> with the specified identifier.
      */
     MetaContact getMetaContact(String metaUID);
@@ -223,6 +229,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * has changed its status and hence - position. In such a case a REORDERED event is fired.
      *
      * @param metaContact the <code>MetaContact</code> whose index we're looking for.
+     *
      * @return the index of <code>metaContact</code> in the list of child contacts or -1 if <code>metaContact</code>.
      */
     int indexOf(MetaContact metaContact);
@@ -234,6 +241,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * removed or renamed In such a case a REORDERED event is fired.
      *
      * @param metaContactGroup the <code>MetaContactGroup</code> whose index we're looking for.
+     *
      * @return the index of <code>metaContactGroup</code> in the list of child
      * contacts or -1 if <code>metaContact</code>.
      */
@@ -243,7 +251,9 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * Returns the meta contact on the specified index.
      *
      * @param index the index of the meta contact to return.
+     *
      * @return the MetaContact with the specified index,
+     *
      * @throws java.lang.IndexOutOfBoundsException in case <code>index</code> is
      * not a valid index for this group.
      */
@@ -261,6 +271,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * Returns the <code>MetaContactGroup</code> with the specified name.
      *
      * @param groupName the name of the group to return.
+     *
      * @return the <code>MetaContactGroup</code> with the specified name or null
      * if no such group exists.
      */
@@ -270,7 +281,9 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * Returns the <code>MetaContactGroup</code> with the specified index.
      *
      * @param index the index of the group to return.
+     *
      * @return the <code>MetaContactGroup</code> with the specified index.
+     *
      * @throws java.lang.IndexOutOfBoundsException if <code>index</code> is not a valid index.
      */
     MetaContactGroup getMetaContactSubgroup(int index)
@@ -307,6 +320,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * Gets the user data associated with this instance and a specific key.
      *
      * @param key the key of the user data associated with this instance to be retrieved
+     *
      * @return an {@code Object} which represents the value associated with
      * this instance and the specified {@code key}; <code>null</code>
      * if no association with the specified {@code key} exists in this instance

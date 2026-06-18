@@ -1693,7 +1693,7 @@ public class OperationSetPersistentPresenceJabberImpl
                 }
             }
         }
-        Timber.d("Process Jids blocking state completed: %s => %s", blockState, domainJid);
+        Timber.d("Process EntityJid blocking state completed: %s => %s", blockState, domainJid);
     }
 
     private void onBcStatusChange(Contact contact, boolean blockState) {

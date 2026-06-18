@@ -38,6 +38,11 @@ public class ChatRoomMessageDeliveredEvent extends EventObject {
     private final Date mTimestamp;
 
     /**
+     * The ID of the message being corrected, or null if this was a new message and not a message correction.
+     */
+    private String mCorrectionUid;
+
+    /**
      * The received <code>IMessage</code>.
      */
     private final IMessage mMessage;
@@ -62,12 +67,13 @@ public class ChatRoomMessageDeliveredEvent extends EventObject {
      * @param timestamp a date indicating the exact moment when the event occurred
      * @param message the message that triggered this event.
      * @param eventType indicating the type of the delivered event.
-     * It is either an ACTION_MESSAGE_DELIVERED or a CONVERSATION_MESSAGE_DELIVERED.
+     * i.e. It is either an ACTION_MESSAGE_DELIVERED or a CONVERSATION_MESSAGE_DELIVERED.
      */
-    public ChatRoomMessageDeliveredEvent(ChatRoom source, Date timestamp, IMessage message, int eventType) {
+    public ChatRoomMessageDeliveredEvent(ChatRoom source, Date timestamp, IMessage message, String correctionUid, int eventType) {
         super(source);
         mTimestamp = timestamp;
         mMessage = message;
+        mCorrectionUid = correctionUid;
         mEventType = eventType;
     }
 
@@ -124,6 +130,17 @@ public class ChatRoomMessageDeliveredEvent extends EventObject {
      */
     public void setHistoryMessage(boolean historyMessage) {
         mHistoryMessage = historyMessage;
+    }
+
+    /**
+     * Returns the ID of the message being corrected, or null if this was a new message and not a
+     * message correction.
+     *
+     * @return the ID of the message being corrected, or null if this was a new message and not a
+     * message correction.
+     */
+    public String getCorrectedMessageUid() {
+        return mCorrectionUid;
     }
 
     public void setRetractMessage(boolean state) {

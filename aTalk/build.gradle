@@ -26,6 +26,10 @@ repositories {
         // Git project library as local library project (ucrop) - see https://jitpack.io/docs/
         url = 'https://jitpack.io'
     }
+//    maven {
+//        name = "dynomakeRepository"
+//        url = uri("https://maven.dynomake.it/releases")
+//    }
 }
 
 configurations {
@@ -57,8 +61,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 601000
-        versionName "6.1.0"
+        versionCode 602000
+        versionName "6.2.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -213,6 +217,7 @@ dependencies {
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
     // implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    // v1.19.0 required API-37 or later
     implementation 'androidx.core:core-ktx:1.18.0'
 
     implementation 'androidx.activity:activity-ktx:1.13.0'
@@ -241,7 +246,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.14.0'
 
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta05'
-    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
+    implementation 'com.squareup.okhttp3:okhttp:5.4.0'
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
     // implementation 'com.github.cketti:ckchangelog-core:2.0.0-beta02'
 
@@ -313,7 +318,13 @@ dependencies {
     // 1.1.0: Method entityFullFrom(CharSequence) cannot accept String. Ok for 4.5.0
     implementation 'org.jxmpp:jxmpp-jid:1.1.0'
     implementation 'org.osgi:osgi.core:8.0.0'
+
+    // implementation 'org.projectlombok:lombok:1.18.46'
     implementation 'org.whispersystems:signal-protocol-java:2.8.1'
+
+    // implementation "space.dynomake:libretranslate-java:1.0.7"
+    // implementation 'net.clojars.dulouser:libretranslate-java:1.0.7'
+    implementation 'com.github.stokito:libretranslate-java:v1.2.2'
 
     // playStore version use google map services
     playstoreImplementation "com.google.android.gms:play-services-maps:20.0.0"

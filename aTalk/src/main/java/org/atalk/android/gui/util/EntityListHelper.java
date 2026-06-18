@@ -50,7 +50,6 @@ import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chat.ChatTransport;
-import org.atalk.android.gui.chat.MetaContactChatTransport;
 import org.atalk.android.gui.chat.chatsession.ChatSessionRecord;
 import org.atalk.android.gui.dialogs.CustomDialogCbox;
 import org.atalk.android.gui.dialogs.DialogActivity;
@@ -252,7 +251,7 @@ public class EntityListHelper {
         if (obj instanceof MetaContact)
             entityJid = ((MetaContact) obj).getDisplayName();
         else if (obj instanceof ChatRoomWrapper)
-            entityJid = XmppStringUtils.parseLocalpart(((ChatRoomWrapper) obj).getChatRoomID());
+            entityJid = XmppStringUtils.parseLocalpart(((ChatRoomWrapper) obj).getChatRoomId());
         else if (obj instanceof ChatSessionRecord) {
             entityJid = ((ChatSessionRecord) obj).getEntityId();
         }

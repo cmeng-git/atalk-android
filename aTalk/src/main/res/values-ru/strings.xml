@@ -95,8 +95,9 @@
     <string name="reply">Ответ</string>
     <string name="retract">Отозвать</string>
     <string name="retract_menu">Отозвать сообщение</string>
-    <string name="retract_own">Вы удалили это сообщение.</string>
     <string name="retract_message_prompt">Вы уверены, что хотите отозвать все выбранные исходящие сообщения из %1$s?</string>
+    <string name="retract_not_supported">Получатель не поддерживает отзыв сообщения.</string>
+    <string name="retract_own">Вы удалили это сообщение</string>
     <string name="retract_remote">Это сообщение было удалено.</string>
     <string name="select_all">Выбрать все</string>
     <string name="subject">Тема</string>
@@ -513,6 +514,7 @@
     <string name="kick_failed_not_enough_permission">Не удалось нажать %1$s. У вас недостаточно прав для этого.</string>
     <string name="last">Последняя</string>
     <string name="last_message_correction">Коррекция последнего сообщения</string>
+    <string name="lmc_not_supported">Получатель не поддерживает функцию исправления последнего сообщения.</string>
     <string name="last_name">Фамилия</string>
     <string name="last_seen">сегодня:%1$s</string>
     <string name="leave">Покинуть</string>
@@ -1370,6 +1372,16 @@
     <string name="crypto_fingerprint_copy">Отпечаток скопирован в буфер обмена!</string>
     <string name="crypto_omemo_distrust_messaging_stop">Остановить дальнейшую отправку сообщения OMEMO другу: %1$s</string>
     <string name="crypto_omemo_trust_messaging_resume">Возобновить отправку сообщения OMEMO собеседнику: %1$s</string>
+
+    <!-- Language Translation settings -->
+    <string name="translation">Языковой перевод</string>
+    <string name="translation_received">Перевести полученное сообщение</string>
+    <string name="translation_receive_disable">Перевод, прием, отключение</string>
+    <string name="translation_receive_enable">Перевод включить прием</string>
+    <string name="translation_sent">Перевести сообщение отправить</string>
+    <string name="translation_sent_disable">Перевод отправить отключить</string>
+    <string name="translation_sent_enable">Включить отправку перевода</string>
+    <string name="translation_server">URL сервера перевода</string>
 
     <!-- Advanced settings category -->
     <string name="advanced">Дополнительно</string>

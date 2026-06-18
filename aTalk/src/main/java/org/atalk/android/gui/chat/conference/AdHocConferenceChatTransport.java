@@ -48,7 +48,7 @@ public class AdHocConferenceChatTransport implements ChatTransport {
 
     private final AdHocChatRoom adHocChatRoom;
     private final ProtocolProviderService mPPS;
-    private HttpFileUploadManager httpFileUploadManager;
+    private final HttpFileUploadManager httpFileUploadManager;
 
     private static URL mURL = null;
 
@@ -128,7 +128,7 @@ public class AdHocConferenceChatTransport implements ChatTransport {
      * @return {@code true} if this chat transport supports instant messaging,
      * otherwise returns {@code false}.
      */
-    public boolean allowsInstantMessage() {
+    public boolean allowInstantMessage() {
         return true;
     }
 
@@ -150,7 +150,7 @@ public class AdHocConferenceChatTransport implements ChatTransport {
      * @return {@code true} if this chat transport supports chat state notifications,
      * otherwise returns {@code false}.
      */
-    public boolean allowsChatStateNotifications() {
+    public boolean allowChatStateNotifications() {
         Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
         // isJoined as one of the condition???
         return tnOpSet != null;
@@ -168,7 +168,7 @@ public class AdHocConferenceChatTransport implements ChatTransport {
     @Override
     public void sendInstantMessage(String messageText, int encType, String msgId) {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowsInstantMessage()) {
+        if (!allowInstantMessage()) {
             aTalkApp.showToastMessage(R.string.send_message_not_supported, getName());
             return;
         }
@@ -189,12 +189,12 @@ public class AdHocConferenceChatTransport implements ChatTransport {
      *
      * @param message The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
-     * @param correctedMessageUID The ID of the message being corrected by this message.
+     * @param correctionUid The ID of the message being corrected by this message.
      *
      * @see ChatMessage Encryption Type
      */
     @Override
-    public void sendInstantMessageCorrection(String message, int encType, String correctedMessageUID) {
+    public void sendInstantMessageCorrection(String message, int encType, String correctionUid) {
     }
 
     @Override
@@ -339,7 +339,7 @@ public class AdHocConferenceChatTransport implements ChatTransport {
      */
     public void addInstantMessageListener(MessageListener l) {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowsInstantMessage())
+        if (!allowInstantMessage())
             return;
 
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
@@ -353,7 +353,7 @@ public class AdHocConferenceChatTransport implements ChatTransport {
      */
     public void removeInstantMessageListener(MessageListener l) {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowsInstantMessage())
+        if (!allowInstantMessage())
             return;
 
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
@@ -377,7 +377,10 @@ public class AdHocConferenceChatTransport implements ChatTransport {
      *
      * @return <code>true</code> if this chat transport supports message corrections and false otherwise.
      */
-    public boolean allowsMessageCorrections() {
+    public boolean allowMessageCorrection() {
+        return false;
+    }
+    public boolean allowMessageRetract() {
         return false;
     }
 }

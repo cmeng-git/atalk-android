@@ -42,7 +42,16 @@
             android:key="pref.key.theme"
             android:persistent="false"
             android:title="@string/settings_theme" />
+    </PreferenceCategory>
 
+    <!-- Translation Server Setting -->
+    <PreferenceCategory
+        android:key="pref_cat_translate"
+        android:title="@string/translation">
+
+        <EditTextPreference
+            android:key="translate_server"
+            android:title="@string/translation_server" />
     </PreferenceCategory>
 
     <!-- Chat Security Settings -->
@@ -69,7 +78,6 @@
                 android:targetClass="org.atalk.impl.appcertdialog.ConnectionInfo"
                 android:targetPackage="org.atalk.android" />
         </Preference>
-
     </PreferenceCategory>
 
     <!-- Message settings -->
@@ -234,9 +242,7 @@
     </PreferenceCategory>
 
     <!-- Advanced Settings -->
-    <PreferenceCategory
-        android:title="@string/advanced">
-
+    <PreferenceCategory android:title="@string/advanced">
         <Preference
             android:key="pref.key.settings.advanced"
             android:summary="@string/settings_expert_summary"
@@ -246,7 +252,7 @@
         <Preference
             android:key="pref.key.provisioning"
             android:summary="@string/provisioning_summary"
-            android:title="@string/provisioning" >
+            android:title="@string/provisioning">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetClass="org.atalk.android.gui.settings.ProvisioningSettings"

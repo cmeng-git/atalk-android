@@ -59,6 +59,7 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
+import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.muc.HostedRoom;
 import org.jivesoftware.smackx.muc.InvitationListener;
 import org.jivesoftware.smackx.muc.InvitationRejectionListener;
@@ -857,9 +858,14 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
             }
         }
         newMessage.setRemoteMsgId(msgId);
+        MessageCorrectExtension xmlElement = message.getExtension(MessageCorrectExtension.class);
+        String correctionUid = null;
+        if (xmlElement != null) {
+            correctionUid = xmlElement.getIdInitialMessage();
+        }
 
         ChatRoomMessageReceivedEvent msgReceivedEvt
-                = new ChatRoomMessageReceivedEvent(chatRoom, member, timeStamp, newMessage, ChatMessage.MESSAGE_MUC_IN);
+                = new ChatRoomMessageReceivedEvent(chatRoom, member, timeStamp, newMessage, correctionUid, ChatMessage.MESSAGE_MUC_IN);
         chatRoom.fireMessageEvent(msgReceivedEvt);
     }
 }

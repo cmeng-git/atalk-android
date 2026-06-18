@@ -22,7 +22,7 @@ public class MessageJabberImpl extends AbstractMessage {
      * @param content the text content of the message.
      * @param encType contains both mime and encryption types etc @see ChatMessage.ENC_TYPE definition
      * @param subject the subject of the message or null for empty.
-     * @param messageUid @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
+     * @param messageUid @see net.java.sip.communicator.service.protocol.IMessage#getMessageUid()
      */
     public MessageJabberImpl(String content, int encType, String subject, String messageUid) {
         super(content, encType, subject, messageUid);

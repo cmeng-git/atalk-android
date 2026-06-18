@@ -37,7 +37,6 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatFragment;
@@ -51,6 +50,8 @@ import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.util.MediaType;
+
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osgi.framework.ServiceReference;
@@ -65,6 +66,8 @@ import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 
 import org.jxmpp.jid.Jid;
 
+import space.dynomake.libretranslate.ApiProviders;
+import space.dynomake.libretranslate.Translator;
 import timber.log.Timber;
 
 /**
@@ -99,6 +102,11 @@ public class ConfigurationUtils {
      * The Web View access page
      */
     private static String mWebPage;
+
+    /**
+     * The Translation Server url.
+     */
+    private static String mTranslateServer;
 
     /**
      * Indicates if the call panel is shown.
@@ -456,6 +464,7 @@ public class ConfigurationUtils {
     public static final String pTTSDelay = "gui.TTS_DELAY";
     private static final String pTypingNotification = "gui.SEND_TYPING_NOTIFICATIONS_ENABLED";
     public static final String pWebPage = "gui.WEB_PAGE_ACCESS";
+    public static final String pTranslateUrl = "gui.TRANSLATE_URL";
     private static final String pWindowTransparency = "gui.WINDOW_TRANSPARENCY";
     private static final String pHeadsUpEnable = P_KEY_HEADS_UP_ENABLE;
 
@@ -1510,6 +1519,22 @@ public class ConfigurationUtils {
     public static void setWebPage(String webPage) {
         mWebPage = StringUtils.isEmpty(webPage) ? webPage : webPage.trim();
         mConfigService.setProperty(pWebPage, webPage);
+    }
+
+    /**
+     * Updates the "translateUrl" property via the <code>ConfigurationService</code>.
+     *
+     * @param url the server url providing the translation service.
+     */
+    public static void setTranslateServerUrl(String url) {
+        String URL = StringUtils.isEmpty(url) ? ApiProviders.API_URL_FEDILAB : url;
+        mConfigService.setProperty(pTranslateUrl, URL);
+        mTranslateServer = URL;
+        Translator.setUrlApi(URL);
+    }
+
+    public static String getTranslateServerUrl() {
+        return StringUtils.isEmpty(mTranslateServer) ? ApiProviders.API_URL_FEDILAB : mTranslateServer;
     }
 
     /**

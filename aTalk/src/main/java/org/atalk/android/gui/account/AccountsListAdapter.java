@@ -14,6 +14,9 @@ import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import net.java.sip.communicator.impl.configuration.ConfigurationActivator;
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
@@ -22,13 +25,11 @@ import org.atalk.android.R;
 import org.atalk.android.gui.util.CollectionAdapter;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.service.osgi.OSGiActivity;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 import timber.log.Timber;
 
@@ -48,8 +49,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class AccountsListAdapter extends CollectionAdapter<Account>
-        implements EventListener<AccountEvent>, ServiceListener
-{
+        implements EventListener<AccountEvent>, ServiceListener {
     /**
      * The {@link View} resources ID describing list's row
      */
@@ -78,8 +78,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      * @param filterDisabledAccounts flag indicates if disabled accounts should be filtered out from the list
      */
     public AccountsListAdapter(Activity parent, int listRowResourceID, int dropDownRowResourceID,
-            Collection<AccountID> accounts, boolean filterDisabledAccounts)
-    {
+            Collection<AccountID> accounts, boolean filterDisabledAccounts) {
         super(parent);
         this.filterDisabledAccounts = filterDisabledAccounts;
 
@@ -96,8 +95,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      *
      * @param collection set of {@link AccountID} that will be displayed
      */
-    private void initAccounts(Collection<AccountID> collection)
-    {
+    private void initAccounts(Collection<AccountID> collection) {
         ArrayList<Account> accounts = new ArrayList<>();
         for (AccountID acc : collection) {
             Account account = new Account(acc, bundleContext, getParentActivity());
@@ -114,8 +112,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
         setList(accounts);
     }
 
-    public void serviceChanged(ServiceEvent event)
-    {
+    public void serviceChanged(ServiceEvent event) {
         // if the event is caused by a bundle being stopped, we don't want to know
         if (event.getServiceReference().getBundle().getState() == Bundle.STOPPING) {
             return;
@@ -153,8 +150,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
     /**
      * Unregisters status update listeners for accounts
      */
-    void deinitStatusListeners()
-    {
+    void deinitStatusListeners() {
         for (int accIdx = 0; accIdx < getCount(); accIdx++) {
             Account account = getObject(accIdx);
             account.destroy();
@@ -165,8 +161,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      * {@inheritDoc}
      */
     @Override
-    protected View getView(boolean isDropDown, Account account, ViewGroup parent, LayoutInflater inflater)
-    {
+    protected View getView(boolean isDropDown, Account account, ViewGroup parent, LayoutInflater inflater) {
         int rowResID = listRowResourceID;
 
         if (isDropDown && dropDownRowResourceID != -1) {
@@ -206,10 +201,10 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      * Check if given <code>account</code> exists on the list
      *
      * @param account {@link AccountID} that has to be found on the list
+     *
      * @return <code>true</code> if account is on the list
      */
-    private Account findAccountID(AccountID account)
-    {
+    private Account findAccountID(AccountID account) {
         for (int i = 0; i < getCount(); i++) {
             Account acc = getObject(i);
             if (acc.getAccountID().equals(account))
@@ -223,8 +218,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      *
      * @param account {@link Account} that will be added to the list
      */
-    private void addAccount(Account account)
-    {
+    private void addAccount(Account account) {
         if (filterDisabledAccounts && !account.isEnabled())
             return;
 
@@ -241,8 +235,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      *
      * @param account the {@link Account} that will be removed from the list
      */
-    private void removeAccount(Account account)
-    {
+    private void removeAccount(Account account) {
         if (account != null) {
             Timber.d("Account removed: %s", account.getUserID());
             account.removeAccountEventListener(this);
@@ -255,8 +248,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      *
      * @param accountEvent the {@link AccountEvent} that caused the change event
      */
-    public void onChangeEvent(AccountEvent accountEvent)
-    {
+    public void onChangeEvent(AccountEvent accountEvent) {
         // Timber.log(TimberLog.FINE, "Not an Error! Received accountEvent update for: "
         //		+ accountEvent.getSource().getAccountName() + " "
         //		+ accountEvent.toString(), new Throwable());

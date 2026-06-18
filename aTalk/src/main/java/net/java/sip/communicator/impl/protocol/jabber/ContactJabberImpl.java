@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import android.text.TextUtils;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,11 +23,14 @@ import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEn
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jivesoftware.smack.roster.RosterEntry;
-import org.jivesoftware.smackx.blocking.BlockingCommandManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import org.jivesoftware.smack.roster.RosterEntry;
+
+import org.jivesoftware.smackx.blocking.BlockingCommandManager;
+
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
@@ -42,12 +45,14 @@ import timber.log.Timber;
  */
 public class ContactJabberImpl extends AbstractContact {
     private static final String PGP_KEY_ID = "pgp_keyid";
-
     private static final String TTS_ENABLE = "tts_enable";
-
-    private Boolean isContactBlock = false;
+    private static final String TRANSLATE_SEND_ENABLE = "translate_send_enable";
+    private static final String TRANSLATE_RECEIVE_ENABLE = "translate_receive_enable";
 
     private Boolean isTtsEnable = null;
+    private Boolean translateSend = null;
+    private Boolean translateReceive = null;
+    private Boolean isContactBlock = false;
 
     /**
      * A reference to the ServerStoredContactListImpl instance that created us.
@@ -286,6 +291,7 @@ public class ContactJabberImpl extends AbstractContact {
      *
      * @return a string representation of this contact.
      */
+    @NonNull
     @Override
     public String toString() {
         StringBuilder buff = new StringBuilder()
@@ -569,11 +575,12 @@ public class ContactJabberImpl extends AbstractContact {
     }
 
     public long getPgpKeyId() {
-        synchronized (this.keys) {
-            if (this.keys.has(PGP_KEY_ID)) {
+        synchronized (keys) {
+            if (keys.has(PGP_KEY_ID)) {
                 try {
-                    return this.keys.getLong(PGP_KEY_ID);
-                } catch (JSONException e) {
+                    return keys.getLong(PGP_KEY_ID);
+                }
+                catch (JSONException e) {
                     return 0;
                 }
             }
@@ -584,10 +591,11 @@ public class ContactJabberImpl extends AbstractContact {
     }
 
     public void setPgpKeyId(long keyId) {
-        synchronized (this.keys) {
+        synchronized (keys) {
             try {
-                this.keys.put(PGP_KEY_ID, keyId);
-            } catch (final JSONException ex) {
+                keys.put(PGP_KEY_ID, keyId);
+            }
+            catch (final JSONException ex) {
                 ex.printStackTrace();
             }
         }
@@ -622,7 +630,7 @@ public class ContactJabberImpl extends AbstractContact {
         if (isTtsEnable == null) {
             String val = ConfigurationUtils.getContactProperty(getJid(), TTS_ENABLE);
             // Null value in DB is considered as false
-            isTtsEnable = !TextUtils.isEmpty(val) && Boolean.parseBoolean(val);
+            isTtsEnable = StringUtils.isNotEmpty(val) && Boolean.parseBoolean(val);
         }
         return isTtsEnable;
     }
@@ -641,9 +649,73 @@ public class ContactJabberImpl extends AbstractContact {
     }
 
     /**
+     * Check this contact Language Translate send status
+     * When access on start-up, return translation_send_enable may be null.
+     * Null value in DB is considered as false
+     *
+     * @return true if contact Language Translation send is enable.
+     */
+    public boolean isTranslateSend() {
+        if (translateSend == null) {
+            String val = ConfigurationUtils.getContactProperty(getJid(), TRANSLATE_SEND_ENABLE);
+            translateSend = StringUtils.isNotEmpty(val) && Boolean.parseBoolean(val);
+        }
+        return translateSend;
+    }
+
+    /**
+     * Set contact Language Translate send status
+     *
+     * @param value Language Translation status.
+     */
+    public void setTranslateSend(boolean value) {
+        if (translateSend != value) {
+            translateSend = value;
+            if (value) {
+                ConfigurationUtils.updateContactProperty(getJid(), TRANSLATE_SEND_ENABLE, Boolean.toString(true));
+            }
+            else {
+                ConfigurationUtils.updateContactProperty(getJid(), TRANSLATE_SEND_ENABLE, null);
+            }
+        }
+    }
+
+    /**
+     * Check this contact Language Translate receive status
+     * When access on start-up, return translation_receive_enable may be null.
+     * Null value in DB is considered as false
+     *
+     * @return true if contact Language Translation receive is enable.
+     */
+    public boolean isTranslateReceive() {
+        if (translateReceive == null) {
+            String val = ConfigurationUtils.getContactProperty(getJid(), TRANSLATE_RECEIVE_ENABLE);
+            translateReceive = StringUtils.isNotEmpty(val) && Boolean.parseBoolean(val);
+        }
+        return translateReceive;
+    }
+
+    /**
+     * Set contact Language Translate receive status
+     *
+     * @param value Language Translation status.
+     */
+    public void setTranslateReceive(boolean value) {
+        if (translateReceive != value) {
+            translateReceive = value;
+            if (value) {
+                ConfigurationUtils.updateContactProperty(getJid(), TRANSLATE_RECEIVE_ENABLE, Boolean.toString(true));
+            }
+            else {
+                ConfigurationUtils.updateContactProperty(getJid(), TRANSLATE_RECEIVE_ENABLE, null);
+            }
+        }
+    }
+
+    /**
      * Unused method, need to clean up if required
      *
-     * @param option
+     * @param option contact option flag
      */
     public void setOption(int option) {
         this.subscription |= 1 << option;

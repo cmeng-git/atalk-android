@@ -129,7 +129,7 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
      *
      * @return the identifier of the chat room
      */
-    String getChatRoomID();
+    String getChatRoomId();
 
     /**
      * Returns the parent protocol provider.
@@ -254,6 +254,34 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
      * @param value change of tts enable property.
      */
     void setTtsEnable(boolean value);
+
+    /**
+     * Check this chatroom Language Translate send status.
+     *
+     * @return true if chatroom Language Translation send is enabled.
+     */
+    boolean isTranslateSend();
+
+    /**
+     * Set chatroom Language Translate send status
+     *
+     * @param value Language Translation status.
+     */
+    void setTranslateSend(boolean value);
+
+    /**
+     * Check this chatroom Language Translate receive status
+     *
+     * @return true if chatroom Language Translation receive status is enabled.
+     */
+    boolean isTranslateReceive();
+
+    /**
+     * Set chatroom Language Translate receive status
+     *
+     * @param value Language Translation status.
+     */
+    void setTranslateReceive(boolean value);
 
     /**
      * When access on start-up, return value may be null. Null value in DB is considered as true

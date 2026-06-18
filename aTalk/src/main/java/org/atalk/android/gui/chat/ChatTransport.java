@@ -41,14 +41,21 @@ public interface ChatTransport {
      * @return {@code true} if this chat transport supports instant
      * messaging, otherwise returns {@code false}
      */
-    boolean allowsInstantMessage();
+    boolean allowInstantMessage();
 
     /**
-     * Returns <code>true</code> if this chat transport supports message corrections and false otherwise.
+     * Returns <code>true</code> if this chat transport supports message correction and false otherwise.
      *
-     * @return {@code true} if this chat transport supports message corrections and false otherwise.
+     * @return {@code true} if this chat transport supports message correction and false otherwise.
      */
-    boolean allowsMessageCorrections();
+    boolean allowMessageCorrection();
+
+    /**
+     * Returns <code>true</code> if this chat transport supports message retraction and false otherwise.
+     *
+     * @return {@code true} if this chat transport supports message retraction and false otherwise.
+     */
+    boolean allowMessageRetract();
 
     /**
      * Returns {@code true} if this chat transport supports message delivery receipts,
@@ -66,7 +73,7 @@ public interface ChatTransport {
      * @return {@code true} if this chat transport supports chat state
      * notifications, otherwise returns {@code false}
      */
-    boolean allowsChatStateNotifications();
+    boolean allowChatStateNotifications();
 
     /**
      * Returns the name of this chat transport. This is for example the name of the
@@ -133,9 +140,9 @@ public interface ChatTransport {
      *
      * @param message The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
-     * @param correctedMessageUID The ID of the message being corrected by this message.
+     * @param correctionUid The ID of the message being corrected by this message.
      */
-    void sendInstantMessageCorrection(String message, int encType, String correctedMessageUID);
+    void sendInstantMessageCorrection(String message, int encType, String correctionUid);
 
     void retractMessage(String retractUid);
 

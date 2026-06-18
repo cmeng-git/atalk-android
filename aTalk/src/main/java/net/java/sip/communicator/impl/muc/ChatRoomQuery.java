@@ -149,7 +149,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
         for (int i = 0; i < provider.countChatRooms(); i++) {
             ChatRoomWrapper chatRoom = provider.getChatRoom(i);
             addChatRoom(provider.getProtocolProvider(), chatRoom.getChatRoomName(),
-                    chatRoom.getChatRoomID(), addQueryResult, chatRoom.isAutoJoin());
+                    chatRoom.getChatRoomId(), addQueryResult, chatRoom.isAutoJoin());
         }
     }
 
@@ -347,7 +347,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      */
     private boolean contactEqualsChatRoom(final ChatRoomSourceContact contact, final ChatRoomWrapper chatRoomWrapper) {
         return contact.getProvider() == chatRoomWrapper.getProtocolProvider()
-                && contact.getContactAddress().equals(chatRoomWrapper.getChatRoomID());
+                && contact.getContactAddress().equals(chatRoomWrapper.getChatRoomId());
     }
 
     /**

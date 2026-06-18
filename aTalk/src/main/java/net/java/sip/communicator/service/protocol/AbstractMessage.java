@@ -54,7 +54,7 @@ public abstract class AbstractMessage implements IMessage {
      * @param content the text content of the message.
      * @param encType contains both flags, mime and encryption types @see ChatMessage.ENC_TYPE definition and other flags
      * @param subject the subject of the message or null for empty.
-     * @param messageUid @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
+     * @param messageUid @see net.java.sip.communicator.service.protocol.IMessage#getMessageUid()
      * @param status denote file transfer status or message status @see ChatMessage#STATUS_XXX
      */
     protected AbstractMessage(String content, int encType, String subject, String messageUid, int status,
@@ -91,6 +91,13 @@ public abstract class AbstractMessage implements IMessage {
     @Override
     public final String getContent() {
         return mContent;
+    }
+
+    public void setContent(String content) {
+        if (!equals(mContent, content)) {
+            mContent = content;
+            rawData = null;
+        }
     }
 
     /**
@@ -191,9 +198,9 @@ public abstract class AbstractMessage implements IMessage {
     /*
      * (non-Javadoc)
      *
-     * @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
+     * @see net.java.sip.communicator.service.protocol.IMessage#getMessageUid()
      */
-    public String getMessageUID() {
+    public String getMessageUid() {
         return mMessageUid;
     }
 
@@ -230,13 +237,6 @@ public abstract class AbstractMessage implements IMessage {
      */
     public String getSubject() {
         return mSubject;
-    }
-
-    protected void setContent(String content) {
-        if (!equals(mContent, content)) {
-            mContent = content;
-            rawData = null;
-        }
     }
 
     private static boolean equals(String a, String b) {

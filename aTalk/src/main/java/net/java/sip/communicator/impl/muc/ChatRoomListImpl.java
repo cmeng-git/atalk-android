@@ -246,7 +246,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
 
         if (chatRoomWrapper.isPersistent()) {
             ConfigurationUtils.saveChatRoom(chatRoomProvider.getProtocolProvider(),
-                    chatRoomWrapper.getChatRoomID(), chatRoomWrapper.getChatRoomID());
+                    chatRoomWrapper.getChatRoomId(), chatRoomWrapper.getChatRoomId());
         }
         fireChatRoomListChangedEvent(chatRoomWrapper, ChatRoomListChangeEvent.CHAT_ROOM_ADDED);
     }
@@ -274,7 +274,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
             }
 
             chatRoomProvider.removeChatRoom(chatRoomWrapper);
-            ConfigurationUtils.removeChatRoom(pps, chatRoomWrapper.getChatRoomID());
+            ConfigurationUtils.removeChatRoom(pps, chatRoomWrapper.getChatRoomId());
 
             chatRoomWrapper.removeListeners();
             fireChatRoomListChangedEvent(chatRoomWrapper, ChatRoomListChangeEvent.CHAT_ROOM_REMOVED);

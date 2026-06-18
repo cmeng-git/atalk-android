@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import net.java.sip.communicator.util.ConfigurationUtils;
+
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.actionbar.ActionBarStatusFragment;
@@ -56,6 +58,7 @@ import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.BundleContext;
 
 import de.cketti.library.changelog.ChangeLog;
+import space.dynomake.libretranslate.Translator;
 import timber.log.Timber;
 
 /**
@@ -170,6 +173,8 @@ public class aTalk extends MainMenuActivity {
      */
     private void handleIntent(Intent intent, Bundle instanceState) {
         mInstances.add(this);
+        // Setup Language Translation server uri base on the default or user defined translation server url.
+        Translator.setUrlApi(ConfigurationUtils.getTranslateServerUrl());
 
         String action = intent.getAction();
         if (Intent.ACTION_SEARCH.equals(action)) {

@@ -36,12 +36,12 @@ import org.atalk.android.gui.chat.ChatSessionManager;
 public class ChatRoomRenderer implements UIChatRoomRenderer {
     @Override
     public boolean isSelected(Object chatRoomWrapper) {
-        return ChatRoomListAdapter.isChatRoomWrapperSelected(((ChatRoomWrapper) chatRoomWrapper).getChatRoomID());
+        return ChatRoomListAdapter.isChatRoomWrapperSelected(((ChatRoomWrapper) chatRoomWrapper).getChatRoomId());
     }
 
     @Override
     public String getDisplayName(Object chatRoomWrapper) {
-        return ((ChatRoomWrapper) chatRoomWrapper).getChatRoomID();
+        return ((ChatRoomWrapper) chatRoomWrapper).getChatRoomId();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ChatRoomRenderer implements UIChatRoomRenderer {
     @Override
     public boolean isDisplayBold(Object crWrapper) {
         ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) crWrapper;
-        ChatPanel chatPanel = ChatSessionManager.getActiveChat(chatRoomWrapper.getChatRoomID());
+        ChatPanel chatPanel = ChatSessionManager.getActiveChat(chatRoomWrapper.getChatRoomId());
 
         if (chatPanel != null) {
             if (chatRoomWrapper.getChatRoom().isJoined())
@@ -76,7 +76,7 @@ public class ChatRoomRenderer implements UIChatRoomRenderer {
 
     @Override
     public String getChatRoomID(Object chatRoomWrapper) {
-        return ((ChatRoomWrapper) chatRoomWrapper).getChatRoomID();
+        return ((ChatRoomWrapper) chatRoomWrapper).getChatRoomId();
     }
 
     @Override

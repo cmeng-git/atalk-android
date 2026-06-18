@@ -71,7 +71,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      */
     void sendInstantMessage(Contact to, ContactResource toResource, IMessage message);
 
-    void sendInstantMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID,
+    void sendInstantMessage(Contact to, ContactResource resource, IMessage message, String correctionUid,
             OmemoManager omemoManager);
 
     void sendRetractMessage(Contact to, String retractUid);
@@ -99,7 +99,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      * protocol to support these messages and yet have a particular account that does not (i.e.
      * feature not enabled on the protocol server). In cases like this it is possible for this
      * method to return <code>true</code> even when offline messaging is not supported, and then have
-     * the sendMessage method throw an <code>OperationFailedException</code> with code
+     * the correctMessage method throw an <code>OperationFailedException</code> with code
      * OFFLINE_MESSAGES_NOT_SUPPORTED.
      *
      * @return <code>true</code> if the protocol supports offline messages and <code>false</code> otherwise.

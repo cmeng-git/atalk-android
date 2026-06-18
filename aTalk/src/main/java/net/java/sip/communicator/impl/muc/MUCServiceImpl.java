@@ -431,7 +431,7 @@ public class MUCServiceImpl extends MUCService {
         // We save the choice of the user, before the chat room is really joined, because even the
         // join fails we want the next time when we login to join this chat room automatically.
         ConfigurationUtils.updateChatRoomStatus(chatRoomWrapper.getProtocolProvider(),
-                chatRoomWrapper.getChatRoomID(), GlobalStatusEnum.OFFLINE_STATUS);
+                chatRoomWrapper.getChatRoomId(), GlobalStatusEnum.OFFLINE_STATUS);
         return existChatRoomWrapper;
     }
 
@@ -563,7 +563,7 @@ public class MUCServiceImpl extends MUCService {
          */
         private void done(String returnCode, String msg) {
             ConfigurationUtils.updateChatRoomStatus(chatRoomWrapper.getProtocolProvider(),
-                    chatRoomWrapper.getChatRoomID(), GlobalStatusEnum.ONLINE_STATUS);
+                    chatRoomWrapper.getChatRoomId(), GlobalStatusEnum.ONLINE_STATUS);
 
             String errMsg = null;
             switch (returnCode) {

@@ -97,6 +97,15 @@ public interface IMessage {
     void setReceiptStatus(int status);
 
     /**
+     * Returns a unique identifier of this message.
+     *
+     * @return a String that uniquely represents this message in the scope of this protocol.
+     */
+    String getMessageUid();
+
+    void setMessageUid(String msgUid);
+
+    /**
      * Returns the server message Id of the message sent - for tracking delivery receipt
      *
      * @return the server message Id of the message sent.
@@ -155,13 +164,4 @@ public interface IMessage {
      * @return an int indicating the number of bytes that this message contains.
      */
     int getSize();
-
-    /**
-     * Returns a unique identifier of this message.
-     *
-     * @return a String that uniquely represents this message in the scope of this protocol.
-     */
-    String getMessageUID();
-
-    void setMessageUid(String msgUid);
 }

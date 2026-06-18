@@ -414,8 +414,7 @@ public class TlsServerImpl extends DefaultTlsServer {
 
     /**
      * FIXME: If Client Hello does not include points format extensions then we will end up with
-     * alert 47 failure caused by NPE on serverECPointFormats. It was causing JitsiMeet to fail
-     * with Android version of Chrome.
+     * alert 47 failure caused by NPE on serverECPointFormats.
      * <p>
      * The fix has been posted upstream and this method should be removed once it is published.
      */

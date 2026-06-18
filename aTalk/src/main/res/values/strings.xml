@@ -96,8 +96,9 @@
     <string name="retract">Retract</string>
     <string name="retract_menu">Retract Message</string>
     <string name="retract_message_prompt">Are you sure you want to retract all the selected outgoing messages from %1$s?</string>
-    <string name="retract_own">You deleted this message.</string>
-    <string name="retract_remote">This message was deleted.</string>
+    <string name="retract_not_supported">The recipient does not support Message Retraction</string>
+    <string name="retract_own">You deleted this message</string>
+    <string name="retract_remote">This message was deleted</string>
     <string name="select_all">Select all</string>
     <string name="subject">Subject</string>
     <string name="settings">Settings</string>
@@ -514,6 +515,7 @@
     <string name="kick_failed_not_enough_permission">Failed to kick %1$s. You do not have enough privileges to do that.</string>
     <string name="last">Last</string>
     <string name="last_message_correction">Last message correction</string>
+    <string name="lmc_not_supported">The recipient does not support Last message correction</string>
     <string name="last_name">Last name</string>
     <string name="last_seen">Today:%1$s</string>
     <string name="leave">Leave</string>
@@ -1385,6 +1387,16 @@
     <string name="crypto_fingerprint_copy">Fingerprint copied to clipboard!</string>
     <string name="crypto_omemo_distrust_messaging_stop">Stop further sending OMEMO message to buddy: %1$s</string>
     <string name="crypto_omemo_trust_messaging_resume">Resume sending OMEMO message to buddy: %1$s</string>
+
+    <!-- Language Translation settings -->
+    <string name="translation">Language Translation</string>
+    <string name="translation_received">Translate message receive</string>
+    <string name="translation_receive_disable">Translate receive disable</string>
+    <string name="translation_receive_enable">Translate receive enable</string>
+    <string name="translation_sent">Translate message send</string>
+    <string name="translation_sent_disable">Translate send disable</string>
+    <string name="translation_sent_enable">Translate send enable</string>
+    <string name="translation_server">Translation Server URL</string>
 
     <!-- Advanced settings category -->
     <string name="advanced">Advanced</string>

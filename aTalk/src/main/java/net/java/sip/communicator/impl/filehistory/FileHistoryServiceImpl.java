@@ -265,8 +265,9 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     }
 
     /**
-     * Create new fileTransfer record in DB when file transfer has started
-     * Also use as conversion for http file upload link message to file transfer message
+     * Create new fileTransfer record in DB when file transfer has started.
+     * Also use as conversion for http file upload link message to file transfer message.
+     * setMamDate to prevent history message from re-trigger the file transfer on returning to chat session.
      *
      * @param evt FileTransferRequestEvent or FileTransferCreatedEvent
      * @param msgType file record message type i.e MESSAGE_FILE_TRANSFER_SEND, MESSAGE_FILE_TRANSFER_RECEIVE, MESSAGE_HTTP_FILE_DOWNLOAD

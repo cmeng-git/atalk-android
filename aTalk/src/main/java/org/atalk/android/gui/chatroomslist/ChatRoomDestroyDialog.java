@@ -76,7 +76,7 @@ public class ChatRoomDestroyDialog extends BaseFragment {
         chatPanel = cPanel;
 
         String msgWarn = context.getString(R.string.chatroom_destroy_prompt,
-                chatRoomWrapper.getUser(), chatRoomWrapper.getChatRoomID());
+                chatRoomWrapper.getUser(), chatRoomWrapper.getChatRoomId());
         Bundle fragmentBundle = new Bundle();
         fragmentBundle.putString(DialogActivity.EXTRA_MESSAGE, msgWarn);
 

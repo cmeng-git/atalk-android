@@ -95,6 +95,7 @@ import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.json.packet.JsonMessageExtension;
+import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.message_retraction.MessageRetractionManager;
 import org.jivesoftware.smackx.message_retraction.element.RetractElement;
 import org.jivesoftware.smackx.muc.Affiliate;
@@ -201,6 +202,8 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      * The operation set that created us.
      */
     private final OperationSetMultiUserChatJabberImpl opSetMuc;
+
+    private final MessageHistoryServiceImpl mMHS = MessageHistoryActivator.getMessageHistoryService();
 
     /**
      * The list of members of this chat room EntityFullJid
@@ -951,20 +954,6 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
                 reason, (alternateAddress != null) ? alternateAddress.toString() : null);
     }
 
-    public void sendRetractMessage(String retractUid) {
-        MessageRetractionManager mRetractManager = MessageRetractionManager.getInstanceFor(mPPS.getConnection());
-        EntityBareJid room = mMultiUserChat.getRoom();
-
-        MessageBuilder messageBuilder = StanzaBuilder.buildMessage(retractUid)
-                .ofType(Message.Type.groupchat);
-        try {
-            mRetractManager.retractMessage(room, retractUid, messageBuilder);
-        }
-        catch (NotConnectedException | InterruptedException e) {
-            Timber.e("Retract Message: %s", e.getMessage());
-        }
-    }
-
     /**
      * Construct the <code>message</code> for the required ENCODE mode for sending.
      *
@@ -972,11 +961,12 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @throws OperationFailedException if sending the message fails for some reason.
      */
+    @Override
     public void sendMessage(IMessage message)
             throws OperationFailedException {
         mEncType = message.getEncType();
         String content = message.getContent();
-        MessageBuilder messageBuilder = StanzaBuilder.buildMessage(message.getMessageUID());
+        MessageBuilder messageBuilder = StanzaBuilder.buildMessage(message.getMessageUid());
 
         // Add OOB extension if specified.
         if (message.isMessageOob()) {
@@ -1043,7 +1033,27 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
         }
     }
 
-    public void sendMessage(IMessage message, final OmemoManager omemoManager) {
+    /**
+     * Construct the <code>message</code> for the required ENCODE mode for sending.
+     *
+     * @param message the <code>IMessage</code> to send.
+     * @param correctionUid the correction message uid.
+     *
+     * @throws OperationFailedException if sending the message fails for some reason.
+     */
+    @Override
+    public void correctMessage(IMessage message, String correctionUid)
+            throws OperationFailedException {
+        String content = message.getContent();
+        XmlElement extElement = new MessageCorrectExtension(correctionUid);
+
+        MessageBuilder messageBuilder = StanzaBuilder.buildMessage(message.getMessageUid());
+        messageBuilder.addExtension(extElement);
+        messageBuilder.addBody(null, content);
+        sendMessage(messageBuilder);
+    }
+
+    public void sendMessage(IMessage message, String correctionUid, final OmemoManager omemoManager) {
         EntityBareJid entityBareJid = mMultiUserChat.getRoom();
         String msgContent = message.getContent();
         String errMessage = null;
@@ -1052,6 +1062,8 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
             OmemoMessage.Sent encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
 
             MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
+            if (correctionUid != null)
+                messageBuilder.addExtension(new MessageCorrectExtension(correctionUid));
             Message sendMessage = encryptedMessage.buildMessage(messageBuilder, entityBareJid, omemoManager.isOmemo2Enable());
 
             if (IMessage.ENCODE_HTML == message.getMimeType()) {
@@ -1065,24 +1077,28 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
                 encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
 
                 messageBuilder = StanzaBuilder.buildMessage();
+                messageBuilder = StanzaBuilder.buildMessage(message.getMessageUid());
+                if (correctionUid != null)
+                    messageBuilder.addExtension(new MessageCorrectExtension(correctionUid));
+
                 // Add the XHTML text to the message
                 XHTMLManager.addBody(messageBuilder, xhtmlText);
                 sendMessage = encryptedMessage.buildMessage(messageBuilder, entityBareJid, omemoManager.isOmemo2Enable());
             }
 
             // proceed to send message if no exceptions.
-            // sendMessage.setStanzaId(message.getMessageUID());
+            // correctMessage.setStanzaId(message.getMessageUid());
             mMultiUserChat.sendMessage(sendMessage.asBuilder());
 
             // Delivered message for own outgoing message view display
             message.setServerMsgId(sendMessage.getStanzaId());
             message.setReceiptStatus(ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT);
             ChatRoomMessageDeliveredEvent msgDeliveredEvt
-                    = new ChatRoomMessageDeliveredEvent(this, new Date(), message, ChatMessage.MESSAGE_MUC_OUT);
+                    = new ChatRoomMessageDeliveredEvent(this, new Date(), message, correctionUid, ChatMessage.MESSAGE_MUC_OUT);
             fireMessageEvent(msgDeliveredEvt);
         }
         catch (UndecidedOmemoIdentityException e) {
-            OmemoAuthenticateListener omemoAuthListener = new OmemoAuthenticateListener(message, omemoManager);
+            OmemoAuthenticateListener omemoAuthListener = new OmemoAuthenticateListener(message, correctionUid, omemoManager);
             Context ctx = aTalkApp.getInstance();
             ctx.startActivity(OmemoAuthenticateDialog.createIntent(ctx, omemoManager, e.getUndecidedDevices(), omemoAuthListener));
             return;
@@ -1110,18 +1126,20 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      * Omemo listener callback on user authentication for undecided omemoDevices
      */
     private class OmemoAuthenticateListener implements OmemoAuthenticateDialog.AuthenticateListener {
-        IMessage message;
-        OmemoManager omemoManager;
+        final IMessage message;
+        final String correctionUid;
+        final OmemoManager omemoManager;
 
-        OmemoAuthenticateListener(IMessage message, OmemoManager omemoManager) {
+        OmemoAuthenticateListener(IMessage message, String correctionUid, OmemoManager omemoManager) {
             this.message = message;
+            this.correctionUid = correctionUid;
             this.omemoManager = omemoManager;
         }
 
         @Override
         public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices) {
             if (allTrusted) {
-                sendMessage(message, omemoManager);
+                sendMessage(message, correctionUid, omemoManager);
             }
             else {
                 String errMessage = aTalkApp.getResString(R.string.omemo_send_error,
@@ -1976,11 +1994,9 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
             if (OmemoManager.isOmemoMessage(message))
                 return;
 
-            // Process retract message request; abd halt all other message processing.
+            // Process retract message request including delayed info; and halt all other message processing.
             if (message.hasExtension(RetractElement.QNAME)) {
-                if (!message.hasExtension(DelayInformation.QNAME)) {
-                    onReceivedRetractMessage(message);
-                }
+                onReceivedRetractMessage(message);
                 return;
             }
 
@@ -2003,11 +2019,9 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
             if (msgBody == null)
                 return;
 
-            Date timeStamp;
+            Date timeStamp = OperationSetBasicInstantMessagingJabberImpl.getTimeStamp(message);
             DelayInformation delayInfo = message.getExtension(DelayInformation.class);
-            if (delayInfo != null) {
-                timeStamp = delayInfo.getStamp();
-
+            if (message.hasExtension(DelayInformation.QNAME) && !message.hasExtension(MessageCorrectExtension.QNAME)) {
                 // This is a delayed chat room message, a history message for the room coming from server.
                 // Lets check have we already shown this message and if this is the case,
                 // skip it otherwise save it as last seen delayed message
@@ -2027,12 +2041,12 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
 
                 lsdMessageTime = timeStamp;
             }
-            else {
-                timeStamp = new Date();
+
+            // Save it in configuration for the last received message timeStamp (delayed or new message).
+            if (!message.hasExtension(MessageCorrectExtension.QNAME)) {
+                ConfigurationUtils.updateChatRoomProperty(mPPS, getName(),
+                        LAST_RECEIVED_MESSAGE_TS, String.valueOf(timeStamp.getTime()));
             }
-            // Save it in configuration for the last received message timeStamp (delayed or normal).
-            ConfigurationUtils.updateChatRoomProperty(mPPS, getName(),
-                    LAST_RECEIVED_MESSAGE_TS, String.valueOf(timeStamp.getTime()));
 
             // for delayed message only
             Jid fromJid = message.getFrom(); // chatRoom EntityFullJid
@@ -2102,7 +2116,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
                     errorReason = error.toString();
                 }
 
-                // Failed Event error.
+                // Failed Event.
                 int errorResultCode = (ChatMessage.MESSAGE_SYSTEM == messageReceivedEventType) ?
                         MessageDeliveryFailedEvent.SYSTEM_ERROR_MESSAGE : MessageDeliveryFailedEvent.UNKNOWN_ERROR;
 
@@ -2126,6 +2140,12 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
             // from the chaRoom server. Check using nick OR jid in case user join with a different nick.
             Resourcepart userNick = getUserNickname();
             Jid ourJid = mPPS.getOurJid();
+            MessageCorrectExtension xmlElement = message.getExtension(MessageCorrectExtension.class);
+            String correctionUid = null;
+            if (xmlElement != null) {
+                correctionUid = xmlElement.getIdInitialMessage();
+                newMessage.setStatus(ChatMessage.STATUS_EDITED);
+            }
             boolean isOutgoing = fromNick.equals(userNick) || ourJid.equals(memberJid);
 
             if (isOutgoing) {
@@ -2139,17 +2159,19 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
                 // message delivered for own outgoing message view display
                 newMessage.setServerMsgId(stanzaId);
                 newMessage.setReceiptStatus(ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT);
-                ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(
-                        ChatRoomJabberImpl.this, timeStamp, newMessage, ChatMessage.MESSAGE_MUC_OUT);
 
-                msgDeliveredEvt.setHistoryMessage(true);
+                ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(
+                        ChatRoomJabberImpl.this, timeStamp, newMessage, correctionUid, ChatMessage.MESSAGE_MUC_OUT);
+
+                // All chatRoom delivered message is history message except correction message.
+                msgDeliveredEvt.setHistoryMessage(correctionUid == null);
                 fireMessageEvent(msgDeliveredEvt);
             }
             else {
                 // Timber.d("Received incoming room message %s %s : %s", userNick, fromNick, msgBody);
                 // CONVERSATION_MESSAGE_RECEIVED or SYSTEM_MESSAGE_RECEIVED
                 ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(
-                        ChatRoomJabberImpl.this, member, timeStamp, newMessage, messageReceivedEventType);
+                        ChatRoomJabberImpl.this, member, timeStamp, newMessage, correctionUid, messageReceivedEventType);
 
                 if (messageReceivedEventType == ChatMessage.MESSAGE_MUC_IN
                         && newMessage.getContent().contains(getUserNickname() + ":")) {
@@ -2163,16 +2185,15 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
     }
 
     /**
-     * Handler for the incoming Retract Message.
+     * Handler for the chatroom delivered or received Retract Message.
      *
      * @param message Incoming message
      */
     private void onReceivedRetractMessage(Message message) {
         RetractElement retractElement = message.getExtension(RetractElement.class);
         String retractId = retractElement.getId();
-        if (StringUtils.isNotEmpty(retractId)) {
-            MessageHistoryServiceImpl mhs = MessageHistoryActivator.getMessageHistoryService();
 
+        if (StringUtils.isNotEmpty(retractId)) {
             Jid fromJid = message.getFrom(); // chatRoom EntityFullJid
             Resourcepart fromNick = fromJid.getResourceOrEmpty();
             ChatRoomMemberJabberImpl member = members.get(fromNick);
@@ -2184,10 +2205,10 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
             // Check received message for sent message: a incoming message
             // from the chaRoom server. Check using nick OR jid in case user join with a different nick.
             boolean isOutgoing = fromNick.equals(userNick) || ourJid.equals(memberJid);
-            mhs.retractStoredHistory(retractId,
+            mMHS.retractStoredHistory(retractId,
                     aTalkApp.getResString(isOutgoing ? R.string.retract_own : R.string.retract_remote));
 
-            EventObject msgEvt = mhs.getEventObject(ChatRoomJabberImpl.this, retractId);
+            EventObject msgEvt = mMHS.getEventObject(ChatRoomJabberImpl.this, retractId);
             if (msgEvt != null) {
                 if ((msgEvt instanceof ChatRoomMessageDeliveredEvent)) {
                     ((ChatRoomMessageDeliveredEvent) msgEvt).setRetractMessage(true);
@@ -2200,6 +2221,20 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
         }
     }
 
+    public void sendRetractMessage(String retractUid) {
+        MessageRetractionManager mRetractManager = MessageRetractionManager.getInstanceFor(mPPS.getConnection());
+        EntityBareJid room = mMultiUserChat.getRoom();
+
+        MessageBuilder messageBuilder = StanzaBuilder.buildMessage(retractUid)
+                .ofType(Message.Type.groupchat);
+        try {
+            mRetractManager.retractMessage(room, retractUid, messageBuilder);
+        }
+        catch (NotConnectedException | InterruptedException e) {
+            Timber.e("Retract Message: %s", e.getMessage());
+        }
+    }
+
     /**
      * Check if the received muc message is sent from me
      *
@@ -2208,7 +2243,6 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      * @return true is message is sent by me
      */
     public boolean isOwnSendChatMessage(Message message) {
-        Jid toJid = message.getTo();
         Jid fromJid = message.getFrom();
 
         Resourcepart fromNick = fromJid.getResourceOrNull();
@@ -2911,7 +2945,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
 
                 String msgBody = aTalkApp.getResString(R.string.invitation_rejected, invitee, reason);
                 ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(
-                        ChatRoomJabberImpl.this, member, new Date(), createMessage(msgBody), ChatMessage.MESSAGE_SYSTEM);
+                        ChatRoomJabberImpl.this, member, new Date(), createMessage(msgBody), null, ChatMessage.MESSAGE_SYSTEM);
                 fireMessageEvent(msgReceivedEvt);
             }
         }

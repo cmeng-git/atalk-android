@@ -90,14 +90,15 @@
     <string name="delete">Löschen</string>
     <string name="edit">Bearbeiten</string>
     <string name="forward">Vorwärts…</string>
-    <string name="chat_message_long_press_hint">Vermeide bitte in den Textbereich zu klicken um mehrere Objekte zu markieren.</string>
+    <string name="chat_message_long_press_hint">Vermeide bitte in den Textbereich zu klicken um mehrere Objekte zu markieren</string>
     <string name="quote">Zitat</string>
     <string name="reply">Antworten</string>
     <string name="retract">Einfahren</string>
     <string name="retract_menu">Nachricht zurückziehen</string>
     <string name="retract_message_prompt">Möchten Sie wirklich alle ausgewählten ausgehenden Nachrichten von %1$s zurückziehen?</string>
-    <string name="retract_own">Du hast diese Nachricht gelöscht.</string>
-    <string name="retract_remote">Diese Nachricht wurde gelöscht.</string>
+    <string name="retract_not_supported">Der Empfänger unterstützt keine Nachrichtenrücknahme</string>
+    <string name="retract_own">Du hast diese Nachricht gelöscht</string>
+    <string name="retract_remote">Diese Nachricht wurde gelöscht</string>
     <string name="select_all">Alle auswählen</string>
     <string name="subject">Betreff</string>
     <string name="settings">Einstellungen</string>
@@ -499,6 +500,7 @@
     <string name="kick_failed_not_enough_permission">Herauswurf von %1$s gescheitert: du hast nicht genügend Rechte.</string>
     <string name="last">Letzter</string>
     <string name="last_message_correction">Letzte Nachrichtenkorrektur</string>
+    <string name="lmc_not_supported">Der Empfänger unterstützt keine Korrektur der letzten Nachricht.</string>
     <string name="last_name">Letzter Name</string>
     <string name="last_seen">Heute:%1$s</string>
     <string name="leave">Verlassen</string>
@@ -1364,6 +1366,16 @@
     <string name="crypto_fingerprint_copy">Fingerprint in Zwischenablage kopiert!</string>
     <string name="crypto_omemo_distrust_messaging_stop">Stoppen von weiteren OMEMO-Nachrichten an Chatpartner:%1$s</string>
     <string name="crypto_omemo_trust_messaging_resume">Fortsetzen der OMEMO-Nachrichten an Chatparnter:%1$s</string>
+
+    <!-- Language Translation settings -->
+    <string name="translation">Sprachübersetzung</string>
+    <string name="translation_received">Nachricht übersetzen empfangen</string>
+    <string name="translation_receive_disable">Übersetzungsempfang deaktiviert</string>
+    <string name="translation_receive_enable">Übersetzungsempfang aktivieren</string>
+    <string name="translation_sent">Nachricht übersetzen senden</string>
+    <string name="translation_sent_disable">Senden von Übersetzungen deaktivieren</string>
+    <string name="translation_sent_enable">Senden übersetzen aktivieren</string>
+    <string name="translation_server">URL des Übersetzungsservers</string>
 
     <!-- Advanced settings category -->
     <string name="advanced">Erweitert</string>

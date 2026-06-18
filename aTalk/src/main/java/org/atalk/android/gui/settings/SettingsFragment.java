@@ -56,6 +56,7 @@ import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.service.configuration.ConfigurationService;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -81,6 +82,9 @@ public class SettingsFragment extends BasePreferenceFragment
     public static final String P_KEY_LOCALE = "pref.key.locale";
     public static final String P_KEY_THEME = "pref.key.theme";
     private static final String P_KEY_WEB_PAGE = "gui.WEB_PAGE_ACCESS";
+
+    // Translation Server
+    public static final String P_KEY_TRANSLATE_SERVER = "translate_server";
 
     // Message section
     private static final String P_KEY_AUTO_START = "org.atalk.android.auto_start";
@@ -153,6 +157,9 @@ public class SettingsFragment extends BasePreferenceFragment
         initTheme();
         initWebPagePreference();
 
+        // Translation Server
+        initTranslationPreference();
+
         // Messages section
         initMessagesPreferences();
 
@@ -224,6 +231,20 @@ public class SettingsFragment extends BasePreferenceFragment
     private void updateWebPageSummary() {
         EditTextPreference webPagePref = findPreference(P_KEY_WEB_PAGE);
         webPagePref.setSummary(ConfigurationUtils.getWebPage());
+    }
+
+    /**
+     * Initialize Language Translation server.
+     */
+    private void initTranslationPreference() {
+        EditTextPreference translationUrlPref = findPreference(P_KEY_TRANSLATE_SERVER);
+        translationUrlPref.setText(ConfigurationUtils.getTranslateServerUrl());
+        updateTranslationSummary();
+    }
+
+    private void updateTranslationSummary() {
+        EditTextPreference translationUrlPref = findPreference(P_KEY_TRANSLATE_SERVER);
+        translationUrlPref.setSummary(ConfigurationUtils.getTranslateServerUrl());
     }
 
     /**
@@ -310,6 +331,10 @@ public class SettingsFragment extends BasePreferenceFragment
             }
             return true;
         });
+    }
+
+    private void initTranslationServer() {
+
     }
 
     /**
@@ -550,82 +575,90 @@ public class SettingsFragment extends BasePreferenceFragment
             updateWebPageSummary();
             break;
 
-            case P_KEY_LOG_CHAT_HISTORY:
-                MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
-                boolean enable = false;
-                if (mhs != null) {
-                    enable = shPreferences.getBoolean(P_KEY_LOG_CHAT_HISTORY, mhs.isHistoryLoggingEnabled());
-                    mhs.setHistoryLoggingEnabled(enable);
-                }
-                enableMam(enable);
-                break;
-            case P_KEY_SHOW_HISTORY:
-                ConfigurationUtils.setHistoryShown(shPreferences.getBoolean(P_KEY_SHOW_HISTORY, ConfigurationUtils.isHistoryShown()));
-                break;
-            case P_KEY_HISTORY_SIZE:
-                String intStr = shPreferences.getString(P_KEY_HISTORY_SIZE, Integer.toString(ConfigurationUtils.getChatHistorySize()));
-                ConfigurationUtils.setChatHistorySize(Integer.parseInt(intStr));
-                updateHistorySizeSummary();
-                break;
+        case P_KEY_TRANSLATE_SERVER:
+            String translateUrl = shPreferences.getString(P_KEY_TRANSLATE_SERVER, ConfigurationUtils.getTranslateServerUrl());
+            ConfigurationUtils.setTranslateServerUrl(translateUrl);
+            updateTranslationSummary();
+            break;
 
-            case P_KEY_MESSAGE_DELIVERY_RECEIPT:
-                ConfigurationUtils.setSendMessageDeliveryReceipt(shPreferences.getBoolean(
-                        P_KEY_MESSAGE_DELIVERY_RECEIPT, ConfigurationUtils.isSendMessageDeliveryReceipt()));
-                break;
-            case P_KEY_CHAT_STATE_NOTIFICATIONS:
-                ConfigurationUtils.setSendChatStateNotifications(shPreferences.getBoolean(
-                        P_KEY_CHAT_STATE_NOTIFICATIONS, ConfigurationUtils.isSendChatStateNotifications()));
-                break;
-            case P_KEY_XFER_THUMBNAIL_PREVIEW:
-                ConfigurationUtils.setSendThumbnail(shPreferences.getBoolean(
-                        P_KEY_XFER_THUMBNAIL_PREVIEW, ConfigurationUtils.isSendThumbnail()));
-                break;
-            case P_KEY_PRESENCE_SUBSCRIBE_MODE:
-                ConfigurationUtils.setPresenceSubscribeAuto(shPreferences.getBoolean(
-                        P_KEY_PRESENCE_SUBSCRIBE_MODE, ConfigurationUtils.isPresenceSubscribeAuto()));
-                break;
+        case P_KEY_LOG_CHAT_HISTORY:
+            MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
+            boolean enable = false;
+            if (mhs != null) {
+                enable = shPreferences.getBoolean(P_KEY_LOG_CHAT_HISTORY, mhs.isHistoryLoggingEnabled());
+                mhs.setHistoryLoggingEnabled(enable);
+            }
+            enableMam(enable);
+            break;
 
-            /*
-             * Chat alerter is not implemented on Android
-             * else if(key.equals(P_KEY_CHAT_ALERTS)) {
-             *  ConfigurationUtils.setAlerterEnabled( shPreferences.getBoolean( P_KEY_CHAT_ALERTS,
-             *  ConfigurationUtils.isAlerterEnabled()));
-             * }
-             */
-            case P_KEY_POPUP_HANDLER:
-                String handler = shPreferences.getString(P_KEY_POPUP_HANDLER, "Auto");
-                SystrayService systray = AppGUIActivator.getSystrayService();
-                if ("Auto".equals(handler)) {
-                    // "Auto" selected. Delete the user's preference and select the best available handler.
-                    ConfigurationUtils.setPopupHandlerConfig(null);
-                    systray.selectBestPopupMessageHandler();
+        case P_KEY_SHOW_HISTORY:
+            ConfigurationUtils.setHistoryShown(shPreferences.getBoolean(P_KEY_SHOW_HISTORY, ConfigurationUtils.isHistoryShown()));
+            break;
+
+        case P_KEY_HISTORY_SIZE:
+            String intStr = shPreferences.getString(P_KEY_HISTORY_SIZE, Integer.toString(ConfigurationUtils.getChatHistorySize()));
+            ConfigurationUtils.setChatHistorySize(Integer.parseInt(intStr));
+            updateHistorySizeSummary();
+            break;
+
+        case P_KEY_MESSAGE_DELIVERY_RECEIPT:
+            ConfigurationUtils.setSendMessageDeliveryReceipt(shPreferences.getBoolean(
+                    P_KEY_MESSAGE_DELIVERY_RECEIPT, ConfigurationUtils.isSendMessageDeliveryReceipt()));
+            break;
+        case P_KEY_CHAT_STATE_NOTIFICATIONS:
+            ConfigurationUtils.setSendChatStateNotifications(shPreferences.getBoolean(
+                    P_KEY_CHAT_STATE_NOTIFICATIONS, ConfigurationUtils.isSendChatStateNotifications()));
+            break;
+        case P_KEY_XFER_THUMBNAIL_PREVIEW:
+            ConfigurationUtils.setSendThumbnail(shPreferences.getBoolean(
+                    P_KEY_XFER_THUMBNAIL_PREVIEW, ConfigurationUtils.isSendThumbnail()));
+            break;
+        case P_KEY_PRESENCE_SUBSCRIBE_MODE:
+            ConfigurationUtils.setPresenceSubscribeAuto(shPreferences.getBoolean(
+                    P_KEY_PRESENCE_SUBSCRIBE_MODE, ConfigurationUtils.isPresenceSubscribeAuto()));
+            break;
+
+        /*
+         * Chat alerter is not implemented on Android
+         * else if(key.equals(P_KEY_CHAT_ALERTS)) {
+         *  ConfigurationUtils.setAlerterEnabled( shPreferences.getBoolean( P_KEY_CHAT_ALERTS,
+         *  ConfigurationUtils.isAlerterEnabled()));
+         * }
+         */
+        case P_KEY_POPUP_HANDLER:
+            String handler = shPreferences.getString(P_KEY_POPUP_HANDLER, "Auto");
+            SystrayService systray = AppGUIActivator.getSystrayService();
+            if ("Auto".equals(handler)) {
+                // "Auto" selected. Delete the user's preference and select the best available handler.
+                ConfigurationUtils.setPopupHandlerConfig(null);
+                systray.selectBestPopupMessageHandler();
+            }
+            else {
+                ConfigurationUtils.setPopupHandlerConfig(handler);
+                PopupMessageHandler handlerInstance = getHandlerForClassName(handler);
+                if (handlerInstance == null) {
+                    Timber.w("No handler found for name: %s", handler);
                 }
                 else {
-                    ConfigurationUtils.setPopupHandlerConfig(handler);
-                    PopupMessageHandler handlerInstance = getHandlerForClassName(handler);
-                    if (handlerInstance == null) {
-                        Timber.w("No handler found for name: %s", handler);
-                    }
-                    else {
-                        systray.setActivePopupMessageHandler(handlerInstance);
-                    }
+                    systray.setActivePopupMessageHandler(handlerInstance);
                 }
-                break;
-            case P_KEY_HEADS_UP_ENABLE:
-                ConfigurationUtils.setHeadsUp(shPreferences.getBoolean(P_KEY_HEADS_UP_ENABLE, true));
-                break;
-            // Camera
-            case P_KEY_VIDEO_CAMERA:
-                String cameraName = shPreferences.getString(P_KEY_VIDEO_CAMERA, null);
-                AndroidCamera.setSelectedCamera(new MediaLocator(cameraName));
-                break;
-            // Video resolution
-            case P_KEY_VIDEO_RES:
-                String resStr = shPreferences.getString(P_KEY_VIDEO_RES, null);
-                Dimension videoRes = getResForStr(resStr);
-                mDeviceConfig.setVideoSize(videoRes);
-                resList.setValue(resToStr(mDeviceConfig.getVideoSize()));
-                break;
+            }
+            break;
+        case P_KEY_HEADS_UP_ENABLE:
+            ConfigurationUtils.setHeadsUp(shPreferences.getBoolean(P_KEY_HEADS_UP_ENABLE, true));
+            break;
+        // Camera
+        case P_KEY_VIDEO_CAMERA:
+            String cameraName = shPreferences.getString(P_KEY_VIDEO_CAMERA, null);
+            AndroidCamera.setSelectedCamera(new MediaLocator(cameraName));
+            break;
+        // Video resolution
+        case P_KEY_VIDEO_RES:
+            String resStr = shPreferences.getString(P_KEY_VIDEO_RES, null);
+            Dimension videoRes = getResForStr(resStr);
+            mDeviceConfig.setVideoSize(videoRes);
+            resList.setValue(resToStr(mDeviceConfig.getVideoSize()));
+            break;
         }
     }
 

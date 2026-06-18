@@ -146,6 +146,7 @@ public class OperationSetBasicTelephonyJabberImpl
         if (registrationState == RegistrationState.CONNECTED) {
             mConnection = mPPS.getConnection();
             JingleCallManager.getInstanceFor(mConnection, this);
+
             // Must start up the JingleMessageManager in RegistrationState.CONNECTED to addFeature JM.
             mJingleMessageManager = JingleMessageManager.getInstanceFor(mConnection);
         }
@@ -156,7 +157,7 @@ public class OperationSetBasicTelephonyJabberImpl
             mConnection.removeAsyncStanzaListener(this);
             mConnection.addAsyncStanzaListener(this, RESPONDER_ERROR_FILTER);
 
-            // Start up JingleMessageSession for incoming JingleMessage events handling.
+            // Start up JingleMessageSession for incoming JingleMessage events handling on REGISTERED.
             mJingleMessageSessionImpl = new JingleMessageSessionImpl(mPPS, mJingleMessageManager);
         }
         else if (registrationState == RegistrationState.UNREGISTERED) {

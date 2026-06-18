@@ -78,7 +78,6 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     protected MenuItem mOnOffLine;
     protected TelephonyFragment mTelephony = null;
 
-    private static boolean done = false;
     public Context mContext;
 
     public static boolean disableMediaServiceOnFault = false;

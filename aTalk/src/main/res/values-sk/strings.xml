@@ -95,9 +95,10 @@
     <string name="reply">Odpovedať</string>
     <string name="retract">Zatiahnuť</string>
     <string name="retract_menu">Stiahnuť správu</string>
-    <string name="retract_own">Túto správu ste odstránili.</string>
     <string name="retract_message_prompt">Naozaj chcete stiahnuť všetky vybraté odoslané správy od %1$s?</string>
-    <string name="retract_remote">Táto správa bola vymazaná.</string>
+    <string name="retract_not_supported">Príjemca nepodporuje stiahnutie správy</string>
+    <string name="retract_own">Túto správu ste odstránili</string>
+    <string name="retract_remote">Táto správa bola vymazaná</string>
     <string name="select_all">Vybrať všetko</string>
     <string name="subject">Predmet</string>
     <string name="settings">Nastavenie</string>
@@ -513,6 +514,7 @@
     <string name="kick_failed_not_enough_permission">Nepodarilo sa vykopnúť %1$s. Na to nemáte dostatočné privilégiá.</string>
     <string name="last">Posledná</string>
     <string name="last_message_correction">Oprava poslednej správy</string>
+    <string name="lmc_not_supported">Príjemca nepodporuje opravu poslednej správy</string>
     <string name="last_name">Priezvisko</string>
     <string name="last_seen">Dnes:%1$s</string>
     <string name="leave">Opustiť</string>
@@ -1385,6 +1387,16 @@
     <string name="crypto_fingerprint_copy">Odtlačok prsta bol skopírovaný do schránky!</string>
     <string name="crypto_omemo_distrust_messaging_stop">Prestaňte ďalej posielať správu OMEMO kamarátovi: %1$s</string>
     <string name="crypto_omemo_trust_messaging_resume">Pokračujte v odosielaní správy OMEMO kamarátovi: %1$s</string>
+
+    <!-- Language Translation settings -->
+    <string name="translation">Preklad jazyka</string>
+    <string name="translation_received">Preložiť prijatú správu</string>
+    <string name="translation_receive_disable">Preložiť prijímať zakázať</string>
+    <string name="translation_receive_enable">Povoliť príjem prekladu</string>
+    <string name="translation_sent">Preložiť odoslanú správu</string>
+    <string name="translation_sent_disable">Zakázať odoslanie prekladu</string>
+    <string name="translation_sent_enable">Povoliť odoslanie prekladu</string>
+    <string name="translation_server">URL adresa prekladového servera</string>
 
     <!-- Advanced settings category -->
     <string name="advanced">Pokročilé</string>

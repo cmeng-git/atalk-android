@@ -896,9 +896,9 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
         // first remove the meta contact from its current parent, then add to new metaGroup
         MetaContactGroupImpl currentParent = (MetaContactGroupImpl) findParentMetaContactGroup(metaContact);
-        if (currentParent != null)
+        if (currentParent != null) {
             currentParent.removeMetaContact(metaContactImpl);
-
+        }
         mcGroupImpl.addMetaContact(metaContactImpl);
 
         try {
@@ -929,7 +929,9 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
             // now move the contact to previous parent
             mcGroupImpl.removeMetaContact(metaContactImpl);
-            currentParent.addMetaContact(metaContactImpl);
+            if (currentParent != null) {
+                currentParent.addMetaContact(metaContactImpl);
+            }
             throw new MetaContactListException(ex.getMessage(), MetaContactListException.CODE_MOVE_CONTACT_ERROR);
         }
         // fire the move event.
@@ -1534,15 +1536,14 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      * @param group the group whose that we'd want out of the ignore list.
      * @param ownerProvider the provider that <code>group</code> belongs to.
      */
-    private void removeGroupFromEventIgnoreList(String group, ProtocolProviderService
-            ownerProvider) {
+    private void removeGroupFromEventIgnoreList(String group, ProtocolProviderService ownerProvider) {
         // first check whether the registration actually exists.
         if (!isGroupInEventIgnoreList(group, ownerProvider)) {
             return;
         }
 
         List<ProtocolProviderService> existingProvList = mGroupEventIgnoreList.get(group);
-        if (existingProvList.isEmpty()) {
+        if (existingProvList == null || existingProvList.isEmpty()) {
             mGroupEventIgnoreList.remove(group);
         }
         else {
@@ -1604,9 +1605,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
                 mContactEventIgnoreList.entrySet()) {
             String contactAddress = contactEventIgnoreEntry.getKey();
 
-            if (contact.getAddress().equals(contactAddress) || contact.equals(contactAddress)) {
+            if (contact.getAddress().equals(contactAddress)) {
                 List<ProtocolProviderService> existingProvList = contactEventIgnoreEntry.getValue();
-
                 return existingProvList != null && existingProvList.contains(ownerProvider);
             }
         }

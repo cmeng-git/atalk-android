@@ -60,6 +60,11 @@ public class ChatRoomMessageReceivedEvent extends EventObject {
     private final int mEventType;
 
     /**
+     * The ID of the message being corrected, or null if this is a new message and not a correction.
+     */
+    private String mCorrectionUid = null;
+
+    /**
      * Some services can fill our room with message history.
      */
     private boolean mHistoryMessage = false;
@@ -85,7 +90,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject {
      * (one of the XXX_MESSAGE_RECEIVED static fields).
      */
     public ChatRoomMessageReceivedEvent(ChatRoom source, ChatRoomMember from, Date timestamp,
-            IMessage message, int eventType) {
+            IMessage message, String correctionUid, int eventType) {
         super(source);
         // Convert to MESSAGE_HTTP_FILE_DOWNLOAD if it is http download link
         if (FileBackend.isHttpFileDnLink(message.getContent())) {
@@ -95,6 +100,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject {
         this.from = from;
         mTimestamp = timestamp;
         mMessage = message;
+        mCorrectionUid = correctionUid;
         mEventType = eventType;
 
         MUCServiceImpl mucService = MUCActivator.getMUCService();
@@ -193,6 +199,17 @@ public class ChatRoomMessageReceivedEvent extends EventObject {
      */
     public boolean isImportantMessage() {
         return isImportantMessage;
+    }
+
+    /**
+     * Returns the correctedMessageUID The ID of the message being corrected, or null if this is a
+     * new message and not a correction.
+     *
+     * @return the correctedMessageUID The ID of the message being corrected, or null if this is a
+     * new message and not a correction.
+     */
+    public String getCorrectedMessageUid() {
+        return mCorrectionUid;
     }
 
     public void setRetractMessage(boolean state) {

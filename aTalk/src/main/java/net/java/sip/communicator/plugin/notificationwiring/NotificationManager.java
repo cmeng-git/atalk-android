@@ -877,7 +877,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         String sourceParticipant = evt.getSourceChatRoomParticipant().getDisplayName();
         final IMessage message = evt.getMessage();
         String msgBody = message.getContent();
-        String msgUid = message.getMessageUID();
+        String msgUid = message.getMessageUid();
 
         if (ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD == evt.getEventType()) {
             String filePath = msgBody.split("#")[0];
@@ -896,7 +896,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                 if (!(IMessage.ENCODE_HTML == evt.getMessage().getMimeType())) {
                     msgBody = StringEscapeUtils.escapeHtml4(msgBody);
                 }
-                fireChatNotification(chatRoom, INCOMING_MESSAGE, title, msgBody, evt.getMessage().getMessageUID());
+                fireChatNotification(chatRoom, INCOMING_MESSAGE, title, msgBody, evt.getMessage().getMessageUid());
             }
         }
     }
@@ -913,7 +913,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         String nickName = evt.getSourceChatRoomMember().getNickName();  // sender
         final IMessage message = evt.getMessage();
         String msgBody = message.getContent();
-        String msgUid = message.getMessageUID();
+        String msgUid = message.getMessageUid();
 
         if (ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD == evt.getEventType()) {
             String filePath = msgBody.split("#")[0];
@@ -973,7 +973,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         Contact contact = evt.getSourceContact();
         final IMessage message = evt.getSourceMessage();
         String msgBody = message.getContent();
-        String msgUid = message.getMessageUID();
+        String msgUid = message.getMessageUid();
 
         if (ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD == evt.getEventType()) {
             String filePath = msgBody.split("#")[0];

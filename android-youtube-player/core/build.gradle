@@ -39,13 +39,14 @@ android {
 }
 
 dependencies {
+    // v1.19.0 required API-37 or later
     implementation 'androidx.core:core-ktx:1.18.0'
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation "androidx.test:runner:1.7.0"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.7.0"
 
     api "androidx.annotation:annotation:1.10.0"
-    api 'androidx.lifecycle:lifecycle-runtime-ktx:2.10.0'
+    api 'androidx.lifecycle:lifecycle-runtime-ktx:2.11.0'
 
     implementation "androidx.appcompat:appcompat:1.7.1"
     implementation 'androidx.recyclerview:recyclerview:1.4.0'

@@ -9,7 +9,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.text.TextUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,7 +66,6 @@ import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
 import net.java.sip.communicator.service.protocol.OperationSetIncomingDTMF;
 import net.java.sip.communicator.service.protocol.OperationSetInstantMessageTransform;
 import net.java.sip.communicator.service.protocol.OperationSetInstantMessageTransformImpl;
-import net.java.sip.communicator.service.protocol.OperationSetJitsiMeetTools;
 import net.java.sip.communicator.service.protocol.OperationSetMessageCorrection;
 import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
 import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
@@ -179,8 +177,6 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.externalservicediscovery.ExternalServiceDiscoveryManager;
 import org.jivesoftware.smackx.externalservicediscovery.ExternalServiceDiscoveryProvider;
 import org.jivesoftware.smackx.externalservicediscovery.ExternalServices;
-import org.jivesoftware.smackx.fallback_indication.element.FallbackIndicationElement;
-import org.jivesoftware.smackx.fallback_indication.provider.FallbackIndicationElementProvider;
 import org.jivesoftware.smackx.filetransfer.FileTransferNegotiator;
 import org.jivesoftware.smackx.httpauthorizationrequest.HttpAuthorizationRequestListener;
 import org.jivesoftware.smackx.httpauthorizationrequest.HttpAuthorizationRequestManager;
@@ -2375,9 +2371,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             // Initialize the multi-user chat operation set
             addSupportedOperationSet(OperationSetMultiUserChat.class,
                     new OperationSetMultiUserChatJabberImpl(this));
-
-            addSupportedOperationSet(OperationSetJitsiMeetTools.class,
-                    new OperationSetJitsiMeetToolsJabberImpl(this));
 
             addSupportedOperationSet(OperationSetServerStoredContactInfo.class,
                     new OperationSetServerStoredContactInfoJabberImpl(infoRetriever));

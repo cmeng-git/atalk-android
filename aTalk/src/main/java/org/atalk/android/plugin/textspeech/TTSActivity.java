@@ -33,12 +33,13 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.persistance.FileBackend;
+
 import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
 
-public class TTSActivity extends BaseActivity implements TextToSpeech.OnInitListener, View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener {
+public class TTSActivity extends BaseActivity implements TextToSpeech.OnInitListener,
+        View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     private static final String ACTION_TTS_SETTINGS = "com.android.settings.TTS_SETTINGS";
 
     private static final int ACT_CHECK_TTS_DATA = 1001;
@@ -104,7 +105,6 @@ public class TTSActivity extends BaseActivity implements TextToSpeech.OnInitList
 
         Button btnOK = findViewById(R.id.tts_ok);
         btnOK.setOnClickListener(this);
-
         initButton();
 
         // Perform the dynamic permission request
@@ -119,8 +119,8 @@ public class TTSActivity extends BaseActivity implements TextToSpeech.OnInitList
             requestCode = ACT_CHECK_TTS_DATA;
             // mGetTTSInfo.launch(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
             mStartForResult.launch(new Intent(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA));
-
-        } catch (ActivityNotFoundException ex) {
+        }
+        catch (ActivityNotFoundException ex) {
             aTalkApp.showToastMessage(ex.getMessage());
             finish();
         }
@@ -142,7 +142,8 @@ public class TTSActivity extends BaseActivity implements TextToSpeech.OnInitList
                 if (voice != null) {
                     return voice.getLocale();
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 cbTts.setEnabled(false);
                 String errMsg = "TTS get voice exception: " + e.getMessage();
                 mTtsLocale.setText(errMsg);
@@ -191,23 +192,23 @@ public class TTSActivity extends BaseActivity implements TextToSpeech.OnInitList
     public void onClick(View v) {
         String ttsText = ViewUtil.toString(mTtsText);
         switch (v.getId()) {
-            case R.id.tts_play:
-                if (ttsText != null) {
-                    Intent spkIntent = new Intent(this, TTSService.class);
-                    spkIntent.putExtra(TTSService.EXTRA_MESSAGE, ttsText);
-                    spkIntent.putExtra(TTSService.EXTRA_QMODE, false);
-                    startService(spkIntent);
-                }
-                break;
+        case R.id.tts_play:
+            if (ttsText != null) {
+                Intent spkIntent = new Intent(this, TTSService.class);
+                spkIntent.putExtra(TTSService.EXTRA_MESSAGE, ttsText);
+                spkIntent.putExtra(TTSService.EXTRA_QMODE, false);
+                startService(spkIntent);
+            }
+            break;
 
-            case R.id.tts_save:
-                if (ttsText != null)
-                    saveToAudioFile(ttsText);
-                break;
+        case R.id.tts_save:
+            if (ttsText != null)
+                saveToAudioFile(ttsText);
+            break;
 
-            case R.id.tts_ok:
-                finish();
-                break;
+        case R.id.tts_ok:
+            finish();
+            break;
         }
     }
 
@@ -218,47 +219,6 @@ public class TTSActivity extends BaseActivity implements TextToSpeech.OnInitList
         }
     }
 
-    /* Use standard ActivityResultContract instead */
-//    /**
-//     * GetTTSInfo class ActivityResultContract implementation.
-//     */
-//    public class GetTTSInfo extends ActivityResultContract<String, Integer>
-//    {
-//        @NonNull
-//        @Override
-//        public Intent createIntent(@NonNull Context context, @NonNull String action)
-//        {
-//            return new Intent(action);
-//        }
-//
-//        @Override
-//        public Integer parseResult(int resultCode, @Nullable Intent result)
-//        {
-//            if (((REQUEST_DEFAULT == requestCode) && resultCode != Activity.RESULT_OK || result == null)) {
-//                return null;
-//            }
-//            return resultCode;
-//        }
-//    }
-//
-//    /**
-//     * Handler for Activity Result callback
-//     */
-//    private ActivityResultLauncher<String> getTTSInfo()
-//    {
-//        return registerForActivityResult(new GetTTSInfo(), resultCode -> {
-//            switch (requestCode) {
-//                case ACT_CHECK_TTS_DATA:
-//                    onDataChecked(resultCode);
-//                    break;
-//
-//                case REQUEST_DEFAULT:
-//                    initializeEngine();
-//                    break;
-//            }
-//        });
-//    }
-
     /**
      * standard ActivityResultContract#StartActivityForResult
      **/
@@ -266,15 +226,15 @@ public class TTSActivity extends BaseActivity implements TextToSpeech.OnInitList
         int resultCode = result.getResultCode();
 
         switch (requestCode) {
-            case ACT_CHECK_TTS_DATA:
-                onDataChecked(resultCode);
-                break;
+        case ACT_CHECK_TTS_DATA:
+            onDataChecked(resultCode);
+            break;
 
-            case REQUEST_DEFAULT:
-                if (resultCode == Activity.RESULT_OK) {
-                    initializeEngine();
-                }
-                break;
+        case REQUEST_DEFAULT:
+            if (resultCode == Activity.RESULT_OK) {
+                initializeEngine();
+            }
+            break;
         }
     });
 
@@ -407,7 +367,8 @@ public class TTSActivity extends BaseActivity implements TextToSpeech.OnInitList
 
         try {
             ttsFile = File.createTempFile("tts_", ".wav", mediaDir);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Timber.d("Fail to create Media voice file!");
         }
         return ttsFile;

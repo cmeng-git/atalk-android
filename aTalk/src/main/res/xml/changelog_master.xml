@@ -7,8 +7,23 @@
 -->
 
 <changelog>
-    <release version="6.1.0 (06/04/2026)" versioncode="601000">
+    <release version="6.2.0 (06/18/2026)" versioncode="602000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>Support Language Translation for sent/received messages in chat/multi-user chat sessions.</change>
+        <change>Translation Language Server may use aTalk default or user defined URL if so required.</change>
+        <change>Translation Language used in sent/received messages is defined per user account.</change>
+        <change>Translation option can be enabled/disabled per contact chat/multi-user chat session.</change>
+        <change>Fix Message Retraction feature not properly added to the service discovery information.</change>
+        <change>Make 'Message Retraction' independent of 'Message Delivery Receipts', instead fallback on contactSupportsMessageRetraction check.</change>
+        <change>Hide 'Last Message Edit' and/or 'Message Retraction' options in chat session if they are not supported by the recipient.</change>
+        <change>Ensure ChatListAdapter#getView() uses the 'Last Message Correction' and 'Message Retraction' new content for view update/display.</change>
+        <change>Extend support of 'Last Message Correction' in multi-user chat session.</change>
+        <change>Fix error in mamQuery to get mamDate 7 days earlier.</change>
+        <change>Fix new line ENTER is shown as &lt;'br'/>.</change>
+        <change>Bug fixes and enhancements.</change>
+    </release>
+
+    <release version="6.1.0 (06/04/2026)" versioncode="601000">
         <change>Make call transfer via JingleMessage if the intended transferred callee supports it.</change>
         <change>Add 'Retract Message' option in chat session. Recipient must be online for 'Retract message' to take effect.
             Feature similar to Whatsapp 'Delete for All' option.</change>

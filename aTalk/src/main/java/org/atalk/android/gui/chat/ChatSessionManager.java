@@ -314,7 +314,7 @@ public class ChatSessionManager {
             }
         }
         else if (descriptor instanceof ChatRoomWrapper) {
-            chatId = ((ChatRoomWrapper) descriptor).getChatRoomID();
+            chatId = ((ChatRoomWrapper) descriptor).getChatRoomId();
             chatMode = MUC_CC;
         }
         else if (descriptor instanceof AdHocChatRoomWrapper) {

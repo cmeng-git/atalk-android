@@ -99,8 +99,9 @@
     <string name="retract">Retraer</string>
     <string name="retract_menu">Retractar mensaje</string>
     <string name="retract_message_prompt">¿Está seguro de que desea anular todos los mensajes salientes seleccionados de %1$s?</string>
-    <string name="retract_own">Has borrado este mensaje.</string>
-    <string name="retract_remote">Este mensaje fue eliminado.</string>
+    <string name="retract_not_supported">El destinatario no es compatible con la retracción de mensajes</string>
+    <string name="retract_own">Has borrado este mensaje</string>
+    <string name="retract_remote">Este mensaje fue eliminado</string>
     <string name="select_all">Seleccionar todo</string>
     <string name="subject">Asunto</string>
     <string name="settings">Ajustes</string>
@@ -517,6 +518,7 @@
     <string name="kick_failed_not_enough_permission">Error al expulsar a %1$s. No se tienen suficientes privilegios para hacerlo.</string>
     <string name="last">Último</string>
     <string name="last_message_correction">Correción del último mensaje</string>
+    <string name="lmc_not_supported">El destinatario no admite la corrección del último mensaje.</string>
     <string name="last_name">Apellido</string>
     <string name="last_seen">Hoy:%1$s</string>
     <string name="leave">Salir</string>
@@ -1398,6 +1400,16 @@
     <string name="crypto_fingerprint_copy">¡Huella digital copiada en el portapapeles!</string>
     <string name="crypto_omemo_distrust_messaging_stop">Dejar de enviar más mensajes OMEMO al amigo: %1$s</string>
     <string name="crypto_omemo_trust_messaging_resume">Reanudar el envío de mensajes OMEMO al amigo: %1$s</string>
+
+    <!-- Language Translation settings -->
+    <string name="translation">Traducción de idiomas</string>
+    <string name="translation_received">Traducir mensaje recibido</string>
+    <string name="translation_receive_disable">Traducir recibir deshabilitar</string>
+    <string name="translation_receive_enable">Traducir recibir habilitar</string>
+    <string name="translation_sent">Traducir mensaje enviar</string>
+    <string name="translation_sent_disable">Traducir enviar deshabilitar</string>
+    <string name="translation_sent_enable">Traducir enviar habilitar</string>
+    <string name="translation_server">URL del servidor de traducción</string>
 
     <!-- Advanced settings category -->
     <string name="advanced">Avanzado</string>

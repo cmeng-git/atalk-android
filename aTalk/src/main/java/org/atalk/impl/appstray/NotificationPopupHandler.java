@@ -387,7 +387,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                 ChatRoomWrapper chatRoomWrapper
                         = MUCActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, false);
                 if (chatRoomWrapper != null) {
-                    chatPanel = ChatSessionManager.getActiveChat(chatRoomWrapper.getChatRoomID());
+                    chatPanel = ChatSessionManager.getActiveChat(chatRoomWrapper.getChatRoomId());
                 }
             }
             if (chatPanel != null) {

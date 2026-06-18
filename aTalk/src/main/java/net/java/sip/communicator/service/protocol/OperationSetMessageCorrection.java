@@ -18,7 +18,7 @@ public interface OperationSetMessageCorrection extends OperationSetBasicInstantM
      * @param to The contact to send the message to.
      * @param resource The ContactResource to send the message to.
      * @param message The new message.
-     * @param correctedMessageUID The ID of the message being replaced.
+     * @param correctionUid The ID of the message being replaced.
      */
-    void correctMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID);
+    void correctMessage(Contact to, ContactResource resource, IMessage message, String correctionUid);
 }

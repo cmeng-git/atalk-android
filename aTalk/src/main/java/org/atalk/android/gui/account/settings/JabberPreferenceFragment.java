@@ -32,12 +32,13 @@ import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.util.MediaType;
 
+import space.dynomake.libretranslate.Language;
 import timber.log.Timber;
 
 /**
  * Preferences fragment for Jabber settings. It maps Jabber specific properties to the
  * {@link Preference}s. Reads from and stores them inside {@link JabberAccountRegistration}.
- *
+ * <p>
  * This is an instance of the accountID properties from Account Setting... preference editing. These changes
  * will be merged with the original mAccountProperties and saved to database in doCommitChanges()
  *
@@ -62,6 +63,9 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
 
     // Proxy
     private static final String P_KEY_PROXY_CONFIG = "Bosh_Configuration";
+    // Language Translation Settings
+    private static final String P_KEY_TRANSLATE_SEND = "translate_send";
+    private static final String P_KEY_TRANSLATE_RECEIVE = "translate_receive";
 
     /*
      * A new instance of AccountID and is not the same as accountID.
@@ -70,6 +74,9 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
     public static JabberAccountRegistration jbrReg;
 
     private ListPreference accessModels;
+
+    private ListPreference pTranslateSend;
+    private ListPreference pTranslateReceive;
 
     /**
      * Current user userName which is being edited.
@@ -139,6 +146,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
     protected void onPreferencesCreated() {
         dnssecModeLP = findPreference(P_KEY_DNSSEC_MODE);
         initOmemoAccessModel();
+        initLanguageTranslation();
 
         if (aTalk.disableMediaServiceOnFault) {
             findPreference(P_KEY_CALL_ENCRYPT).setEnabled(false);
@@ -193,6 +201,36 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
             accessModel = jbrReg.getOmemoAccessModel().name();
         accessModels.setValue(accessModel);
         accessModels.setSummary(accessModel);
+    }
+
+    protected void initLanguageTranslation() {
+        int langSize = Language.values().length;
+        String[] names = new String[langSize];
+        String[] codes = new String[langSize];
+
+        int i = 0;
+        for (Language language : Language.values()) {
+            names[i] = language.getName();
+            codes[i++] = language.getCode();
+        }
+
+        // Set up Send Translate Language parameters
+        pTranslateSend = findPreference(P_KEY_TRANSLATE_SEND);
+        pTranslateSend.setEntries(names);
+        pTranslateSend.setEntryValues(codes);
+
+        String code = jbrReg.getTranslationSend();
+        pTranslateSend.setValue(code);
+        pTranslateSend.setSummary(Language.fromCode(code).getName());
+
+        // Set up Receive Translate Language parameters
+        pTranslateReceive = findPreference(P_KEY_TRANSLATE_RECEIVE);
+        pTranslateReceive.setEntries(names);
+        pTranslateReceive.setEntryValues(codes);
+
+        code = jbrReg.getTranslationReceive();
+        pTranslateReceive.setValue(code);
+        pTranslateReceive.setSummary(Language.fromCode(code).getName());
     }
 
     /**
@@ -347,7 +385,22 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment {
             String accessModel = shPrefs.getString(P_KEY_OMEMO2_ACCESS_MODEL, "none");
             accessModels.setValue(accessModel);
             accessModels.setSummary(accessModel);
-            jbrReg.setOmemo2AccessModel(shPrefs.getString(P_KEY_OMEMO2_ACCESS_MODEL, accessModel));            break;
+            jbrReg.setOmemo2AccessModel(accessModel);
+            break;
+
+        case P_KEY_TRANSLATE_SEND:
+            String sCode = shPrefs.getString(P_KEY_TRANSLATE_SEND, Language.NONE.getCode());
+            pTranslateSend.setValue(sCode);
+            pTranslateSend.setSummary(Language.fromCode(sCode).getName());
+            jbrReg.setTranslationSend(sCode);
+            break;
+
+        case P_KEY_TRANSLATE_RECEIVE:
+            String rCode = shPrefs.getString(P_KEY_TRANSLATE_RECEIVE, Language.NONE.getCode());
+            pTranslateReceive.setValue(rCode);
+            pTranslateReceive.setSummary(Language.fromCode(rCode).getName());
+            jbrReg.setTranslationReceive(rCode);
+            break;
         }
     }
 

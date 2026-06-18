@@ -170,7 +170,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 
         if (chatRoomView != null) {
             ChatRoomWrapper crWrapper = (ChatRoomWrapper) getChild(groupIndex, chatRoomIndex);
-            ViewUtil.setTextViewValue(chatRoomView, R.id.displayName, crWrapper.getChatRoomID());
+            ViewUtil.setTextViewValue(chatRoomView, R.id.displayName, crWrapper.getChatRoomId());
         }
     }
 

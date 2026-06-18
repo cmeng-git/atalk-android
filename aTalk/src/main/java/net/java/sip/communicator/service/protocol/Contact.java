@@ -151,7 +151,6 @@ public interface Contact {
      */
     String getPersistentData();
 
-
     /**
      * When access on start-up, return contact block may be null.
      *
@@ -181,6 +180,34 @@ public interface Contact {
      * @param value change of tts enable property.
      */
     void setTtsEnable(boolean value);
+
+    /**
+     * Check this contact Language Translate send status.
+     *
+     * @return true if contact Language Translation send is enabled.
+     */
+    boolean isTranslateSend();
+
+    /**
+     * Set contact Language Translate send status.
+     *
+     * @param value Language Translation status.
+     */
+    void setTranslateSend(boolean value);
+
+    /**
+     * Check this contact Language Translate receive status.
+     *
+     * @return true if contact Language Translation receive is enabled.
+     */
+    boolean isTranslateReceive();
+
+    /**
+     * Set contact Language Translate receive status
+     *
+     * @param value Language Translation status.
+     */
+    void setTranslateReceive(boolean value);
 
     /**
      * Return the current status message of this contact.
@@ -230,5 +257,4 @@ public interface Contact {
      * @return whether contact is mobile one.
      */
     boolean isMobile();
-
 }

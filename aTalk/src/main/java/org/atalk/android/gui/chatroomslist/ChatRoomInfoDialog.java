@@ -179,7 +179,7 @@ public class ChatRoomInfoDialog extends BaseDialogFragment {
             }
             else {
                 TextView textView = contentView.findViewById(R.id.roominfo_name);
-                textView.setText(XmppStringUtils.parseLocalpart(mChatRoomWrapper.getChatRoomID()));
+                textView.setText(XmppStringUtils.parseLocalpart(mChatRoomWrapper.getChatRoomId()));
 
                 textView = contentView.findViewById(R.id.roominfo_subject);
                 // Must not use getResources.getColor()

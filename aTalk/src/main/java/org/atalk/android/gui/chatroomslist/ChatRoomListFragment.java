@@ -81,7 +81,9 @@ public class ChatRoomListFragment extends BaseFragment
     /**
      * ChatRoom TTS option item
      */
-    private MenuItem mChatRoomTtsEnable;
+    private MenuItem mChatroomTtsEnable;
+    private MenuItem mChatroomTranslateSend;
+    private MenuItem mChatroomTranslateReceive;
 
     /**
      * ChatRoom list data model.
@@ -304,9 +306,19 @@ public class ChatRoomListFragment extends BaseFragment
         // update contact TTS enable option title
         String tts_option = aTalkApp.getResString(crWrapper.isTtsEnable()
                 ? R.string.tts_disable : R.string.tts_enable);
-        mChatRoomTtsEnable = menu.findItem(R.id.chatroom_tts_enable);
-        mChatRoomTtsEnable.setTitle(tts_option);
-        mChatRoomTtsEnable.setVisible(ConfigurationUtils.isTtsEnable());
+        mChatroomTtsEnable = menu.findItem(R.id.chatroom_tts_enable);
+        mChatroomTtsEnable.setTitle(tts_option);
+        mChatroomTtsEnable.setVisible(ConfigurationUtils.isTtsEnable());
+
+        // update Language Translate Send enable option item title for the contact only if not DomainJid
+        mChatroomTranslateSend = menu.findItem(R.id.chatroom_translate_send);
+        mChatroomTranslateSend.setTitle(crWrapper.isTranslateSend()
+                ? R.string.translation_sent_disable : R.string.translation_sent_enable);
+
+        // update Language Translate Receive enable option item title for the contact only if not DomainJid
+        mChatroomTranslateReceive = menu.findItem(R.id.chatroom_translate_receive);
+        mChatroomTranslateReceive.setTitle(crWrapper.isTranslateReceive()
+                ? R.string.translation_receive_disable : R.string.translation_receive_enable);
 
         // Only room owner is allowed to destroy chatRoom, or non-joined room (un-deterministic)
         ChatRoomMemberRole role = mClickedChatRoom.getChatRoom().getUserRole();
@@ -314,7 +326,7 @@ public class ChatRoomListFragment extends BaseFragment
         menu.findItem(R.id.destroy_chatroom).setVisible(allowDestroy);
 
         // Checks if close chat option should be visible for this chatRoom
-        boolean closeChatVisible = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomID()) != null;
+        boolean closeChatVisible = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomId()) != null;
         menu.findItem(R.id.close_current_chat).setVisible(closeChatVisible);
 
         // Close all chats option should be visible if chatList is not empty
@@ -348,17 +360,31 @@ public class ChatRoomListFragment extends BaseFragment
                     if (mClickedChatRoom != null && chatPanel != null) {
                         if (mClickedChatRoom.isTtsEnable()) {
                             mClickedChatRoom.setTtsEnable(false);
-                            mChatRoomTtsEnable.setTitle(R.string.tts_enable);
+                            mChatroomTtsEnable.setTitle(R.string.tts_enable);
                         }
                         else {
                             mClickedChatRoom.setTtsEnable(true);
-                            mChatRoomTtsEnable.setTitle(R.string.tts_disable);
+                            mChatroomTtsEnable.setTitle(R.string.tts_disable);
                         }
                         chatPanel.updateChatTtsOption();
                     }
                     return true;
 
-                case R.id.close_current_chat:
+            case R.id.chatroom_translate_send:
+                boolean isTranslateSend = mClickedChatRoom.isTranslateSend();
+                mClickedChatRoom.setTranslateSend(!isTranslateSend);
+                mChatroomTranslateSend.setTitle(isTranslateSend ?
+                        R.string.translation_sent_enable : R.string.translation_sent_disable);
+                return true;
+
+            case R.id.chatroom_translate_receive:
+                boolean isTranslateReceive = mClickedChatRoom.isTranslateReceive();
+                mClickedChatRoom.setTranslateReceive(!isTranslateReceive);
+                mChatroomTranslateReceive.setTitle(isTranslateReceive ?
+                        R.string.translation_receive_enable : R.string.translation_receive_disable);
+                return true;
+
+            case R.id.close_current_chat:
                     if (chatPanel != null)
                         onCloseChat(chatPanel);
                     return true;
@@ -422,7 +448,7 @@ public class ChatRoomListFragment extends BaseFragment
     public void onTaskComplete(int msgCount, List<String> deletedUUIDs) {
         aTalkApp.showToastMessage(R.string.history_purge_count, msgCount);
         if (EntityListHelper.SINGLE_ENTITY == eraseMode) {
-            ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomID());
+            ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomId());
             if (chatPanel != null) {
                 onCloseChat(chatPanel);
             }
@@ -431,7 +457,7 @@ public class ChatRoomListFragment extends BaseFragment
             onCloseAllChats();
         }
         else { // failed
-            String errMsg = getString(R.string.history_purge_error, mClickedChatRoom.getChatRoomID());
+            String errMsg = getString(R.string.history_purge_error, mClickedChatRoom.getChatRoomId());
             aTalkApp.showToastMessage(errMsg);
         }
     }
@@ -564,7 +590,7 @@ public class ChatRoomListFragment extends BaseFragment
 
                 Fragment csf = aTalk.getFragment(aTalk.CHAT_SESSION_FRAGMENT);
                 if (csf instanceof ChatSessionFragment) {
-                    ((ChatSessionFragment) csf).updateUnreadCount(crWrapper.getChatRoomID(), unreadCount);
+                    ((ChatSessionFragment) csf).updateUnreadCount(crWrapper.getChatRoomId(), unreadCount);
                 }
             }
         });

@@ -96,8 +96,9 @@
     <string name="retract">Menarik</string>
     <string name="retract_menu">Tarik kembali pesan</string>
     <string name="retract_message_prompt">Apakah Anda yakin ingin menarik kembali semua pesan keluar yang dipilih dari %1$s?</string>
-    <string name="retract_own">Anda telah menghapus pesan ini.</string>
-    <string name="retract_remote">Pesan ini telah dihapus.</string>
+    <string name="retract_not_supported">Penerima tidak mendukung Penarikan Pesan</string>
+    <string name="retract_own">Anda telah menghapus pesan ini</string>
+    <string name="retract_remote">Pesan ini telah dihapus</string>
     <string name="select_all">Pilih semua</string>
     <string name="subject">Subjek</string>
     <string name="settings">Pengaturan</string>
@@ -500,7 +501,8 @@
 	<string name="kick_failed_not_enough_permission">Gagal menendang %1$s. Anda tidak memiliki cukup hak untuk melakukannya.</string>
 	<string name="last">Terakhir</string>
     <string name="last_message_correction">Koreksi pesan terakhir</string>
-	<string name="last_name">Nama belakang</string>
+    <string name="lmc_not_supported">Penerima tidak mendukung koreksi pesan terakhir</string>
+    <string name="last_name">Nama belakang</string>
     <string name="last_seen">Harini:%1$s</string>
 	<string name="leave">Tinggalkan</string>
     <string name="leave_chat_room">Tinggalkan chatRoom</string>
@@ -1379,6 +1381,16 @@
     <string name="crypto_fingerprint_copy">Sidik jari disalin ke papan klip!</string>
     <string name="crypto_omemo_distrust_messaging_stop">Hentikan pengiriman lebih lanjut pesan OMEMO ke teman: %1$s</string>
     <string name="crypto_omemo_trust_messaging_resume">Lanjutkan pengiriman pesan OMEMO ke teman: %1$s</string>
+
+    <!-- Language Translation settings -->
+    <string name="translation">Terjemahan Bahasa</string>
+    <string name="translation_received">Terjemahkan pesan yang diterima</string>
+    <string name="translation_receive_disable">Terjemahkan terima nonaktifkan</string>
+    <string name="translation_receive_enable">Terjemahkan terima aktifkan</string>
+    <string name="translation_sent">Terjemahkan pesan yang dikirim</string>
+    <string name="translation_sent_disable">Terjemahkan kirim nonaktifkan</string>
+    <string name="translation_sent_enable">Terjemahkan kirim aktifkan</string>
+    <string name="translation_server">URL Server Terjemahan</string>
 
     <!-- Advanced settings category -->
     <string name="advanced">Lanjutan</string>

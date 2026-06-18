@@ -17,15 +17,16 @@ package net.java.sip.communicator.service.gui;
 
 import android.content.Context;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.UtilActivator;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jxmpp.jid.Jid;
 
-import java.util.Iterator;
-import java.util.Map;
+import org.jxmpp.jid.Jid;
 
 /**
  * The <code>AccountRegistrationWizard</code> is meant to provide a wizard which will guide the user
@@ -43,8 +44,7 @@ import java.util.Map;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public abstract class AccountRegistrationWizard
-{
+public abstract class AccountRegistrationWizard {
     /**
      * Is current wizard run as modification of an existing account.
      */
@@ -127,6 +127,7 @@ public abstract class AccountRegistrationWizard
      * button.
      *
      * @return the created <code>ProtocolProviderService</code> corresponding to the new account
+     *
      * @throws OperationFailedException if the operation didn't succeed
      */
     public abstract ProtocolProviderService signin()
@@ -139,7 +140,9 @@ public abstract class AccountRegistrationWizard
      * @param userName the user name to sign in with
      * @param password the password to sign in with
      * @param accountProperties additional account parameter for login
+     *
      * @return the created <code>ProtocolProviderService</code> corresponding to the new account
+     *
      * @throws OperationFailedException if the operation didn't succeed
      */
     public abstract ProtocolProviderService signin(String userName, String password, Map<String, String> accountProperties)
@@ -150,8 +153,7 @@ public abstract class AccountRegistrationWizard
      *
      * @param protocolProvider the protocol provider that has been removed
      */
-    public void accountRemoved(ProtocolProviderService protocolProvider)
-    {
+    public void accountRemoved(ProtocolProviderService protocolProvider) {
     }
 
     /**
@@ -161,8 +163,7 @@ public abstract class AccountRegistrationWizard
      * @return <code>true</code> if the web sign up is supported by the current implementation,
      * <code>false</code> - otherwise
      */
-    public boolean isWebSignupSupported()
-    {
+    public boolean isWebSignupSupported() {
         return false;
     }
 
@@ -172,8 +173,7 @@ public abstract class AccountRegistrationWizard
      * @throws UnsupportedOperationException if the web sign up operation is not supported by the current implementation.
      */
     public void webSignup()
-            throws UnsupportedOperationException
-    {
+            throws UnsupportedOperationException {
     }
 
     /**
@@ -183,8 +183,7 @@ public abstract class AccountRegistrationWizard
      * @return <code>true</code> if the inBand registration is supported by the current
      * implementation, <code>false</code> - otherwise
      */
-    public boolean isInBandRegistrationSupported()
-    {
+    public boolean isInBandRegistrationSupported() {
         return false;
     }
 
@@ -196,13 +195,11 @@ public abstract class AccountRegistrationWizard
      *
      * @see TaskCompleted#onRegistrationCompleted(Boolean)
      */
-    public void registerAccount(Context context, Jid userJid, String password, String host, int port)
-    {
+    public void registerAccount(Context context, Jid userJid, String password, String host, int port) {
     }
 
     /* Define Result you would like to return from registerAccount ASyncTask completion */
-    public interface TaskCompleted
-    {
+    public interface TaskCompleted {
         void onRegistrationCompleted(Boolean result);
     }
 
@@ -211,8 +208,7 @@ public abstract class AccountRegistrationWizard
      *
      * @return the forgot password link name
      */
-    public String getForgotPasswordLinkName()
-    {
+    public String getForgotPasswordLinkName() {
         return null;
     }
 
@@ -221,8 +217,7 @@ public abstract class AccountRegistrationWizard
      *
      * @return the forgot password link
      */
-    public String getForgotPasswordLink()
-    {
+    public String getForgotPasswordLink() {
         return null;
     }
 
@@ -231,6 +226,7 @@ public abstract class AccountRegistrationWizard
      * Only if the user needs more settings she'll choose to open the advanced wizard, consisted by all pages.
      *
      * @param isCreateAccount indicates if the simple form should be opened as a create account form or as a login form
+     *
      * @return a simple account registration form
      */
     public abstract Object getSimpleForm(boolean isCreateAccount);
@@ -240,8 +236,7 @@ public abstract class AccountRegistrationWizard
      *
      * @param isModification indicates if this wizard is opened for modification or for creating a new account.
      */
-    public void setModification(boolean isModification)
-    {
+    public void setModification(boolean isModification) {
         this.isModification = isModification;
     }
 
@@ -251,8 +246,7 @@ public abstract class AccountRegistrationWizard
      * @return <code>true</code> to indicate that this wizard is currently in modification mode,
      * <code>false</code> - otherwise.
      */
-    public boolean isModification()
-    {
+    public boolean isModification() {
         return isModification;
     }
 
@@ -264,8 +258,7 @@ public abstract class AccountRegistrationWizard
      *
      * @return <code>true</code> if the simple "Sign in" form is enabled or <code>false</code> otherwise.
      */
-    public boolean isSimpleFormEnabled()
-    {
+    public boolean isSimpleFormEnabled() {
         return true;
     }
 
@@ -274,8 +267,7 @@ public abstract class AccountRegistrationWizard
      *
      * @return whether the advanced configuration is enabled.
      */
-    public boolean isAdvancedConfigurationEnabled()
-    {
+    public boolean isAdvancedConfigurationEnabled() {
         return true;
     }
 
@@ -284,8 +276,7 @@ public abstract class AccountRegistrationWizard
      *
      * @return <code>true</code> if this wizard corresponds to the preferred protocol, otherwise returns <code>false</code>
      */
-    public boolean isPreferredProtocol()
-    {
+    public boolean isPreferredProtocol() {
         // Check for preferred account through the PREFERRED_ACCOUNT_WIZARD property.
         String prefWName = UtilActivator.getResources().getSettingsString("gui.PREFERRED_ACCOUNT_WIZARD");
         return (StringUtils.isNotEmpty(prefWName) && prefWName.equals(this.getClass().getName()));
@@ -297,8 +288,7 @@ public abstract class AccountRegistrationWizard
      *
      * @return <code>true</code> to indicate that a wizard is hidden, <code>false</code> otherwise
      */
-    public boolean isHidden()
-    {
+    public boolean isHidden() {
         return false;
     }
 }

@@ -41,7 +41,6 @@ import net.java.sip.communicator.service.protocol.OperationSetExtendedAuthorizat
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -60,9 +59,15 @@ import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.ViewUtil;
+
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+
 import org.jivesoftware.smack.XMPPConnection;
+
 import org.jivesoftware.smackx.blocking.BlockingCommandManager;
+
+import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.DomainJid;
 import org.jxmpp.jid.Jid;
 
@@ -82,9 +87,15 @@ public class ContactListFragment extends BaseFragment
     private MenuItem mSearchItem;
 
     /**
-     * Contact TTS option item
+     * Contact TTS option.
      */
-    private MenuItem mContactTtsEnable;
+    private MenuItem mChatTtsEnable;
+
+    /**
+     * Contact Language Translation option.
+     */
+    private MenuItem mChatTranslateSend;
+    private MenuItem mChatTranslateReceive;
 
     /**
      * Contact list data model.
@@ -352,17 +363,24 @@ public class ContactListFragment extends BaseFragment
         }
 
         // update TTS enable option item title for the contact only if not DomainJid
-        mContactTtsEnable = menu.findItem(R.id.contact_tts_enable);
+        mChatTtsEnable = menu.findItem(R.id.contact_tts_enable);
         Jid contactJid = contact.getJid();
-        if ((contactJid == null) || contactJid instanceof DomainJid) {
-            mContactTtsEnable.setVisible(false);
-        }
-        else {
-            String tts_option = aTalkApp.getResString(contact.isTtsEnable()
-                    ? R.string.tts_disable : R.string.tts_enable);
-            mContactTtsEnable.setTitle(tts_option);
-            mContactTtsEnable.setVisible(ConfigurationUtils.isTtsEnable());
-        }
+        boolean isDomainJid = contactJid == null || contactJid instanceof DomainJid;
+        mChatTtsEnable.setVisible(!isDomainJid && ConfigurationUtils.isTtsEnable());
+        mChatTtsEnable.setTitle(contact.isTtsEnable()
+                ? R.string.tts_disable : R.string.tts_enable);
+
+        // update Language Translate Send enable option item title for the contact only if not DomainJid
+        mChatTranslateSend = menu.findItem(R.id.chat_translate_send);
+        mChatTranslateSend.setVisible(!isDomainJid);
+        mChatTranslateSend.setTitle(contact.isTranslateSend()
+                ? R.string.translation_sent_disable : R.string.translation_sent_enable);
+
+        // update Language Translate Receive enable option item title for the contact only if not DomainJid
+        mChatTranslateReceive = menu.findItem(R.id.chat_translate_receive);
+        mChatTranslateReceive.setVisible(!isDomainJid);
+        mChatTranslateReceive.setTitle(contact.isTranslateReceive()
+                ? R.string.translation_receive_disable : R.string.translation_receive_enable);
 
         ProtocolProviderService pps = contact.getProtocolProvider();
         if (pps == null) {
@@ -384,7 +402,8 @@ public class ContactListFragment extends BaseFragment
                 boolean isSupported = BlockingCommandManager.getInstanceFor(connection).isSupportedByServer();
                 miContactBlock.setVisible(isSupported);
 
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Timber.w("Blocking Command: %s", e.getMessage());
             }
         }
@@ -424,97 +443,106 @@ public class ContactListFragment extends BaseFragment
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             FragmentTransaction ft;
+            if (mClickedContact == null)
+                return false;
+
+            Contact mRecipient = mClickedContact.getDefaultContact();
+            boolean isDomainJid = (mRecipient == null) || (mRecipient.getJid() instanceof DomainBareJid);
             ChatPanel chatPanel = ChatSessionManager.createChatForChatId(mClickedContact.getMetaUID(),
                     ChatSessionManager.MC_CHAT);
+            if (chatPanel == null || isDomainJid) {
+                return false;
+            }
 
             switch (item.getItemId()) {
-                case R.id.close_chat:
-                    if (chatPanel != null)
-                        onCloseChat(chatPanel);
-                    return true;
+            case R.id.close_chat:
+                onCloseChat(chatPanel);
+                return true;
 
-                case R.id.close_all_chats:
-                    onCloseAllChats();
-                    return true;
+            case R.id.close_all_chats:
+                onCloseAllChats();
+                return true;
 
-                case R.id.erase_contact_chat_history:
-                    eraseMode = EntityListHelper.SINGLE_ENTITY;
-                    EntityListHelper.eraseEntityChatHistory(ContactListFragment.this, mClickedContact, null, null);
-                    return true;
+            case R.id.erase_contact_chat_history:
+                eraseMode = EntityListHelper.SINGLE_ENTITY;
+                EntityListHelper.eraseEntityChatHistory(ContactListFragment.this, mClickedContact, null, null);
+                return true;
 
-                case R.id.erase_all_contact_chat_history:
-                    eraseMode = EntityListHelper.ALL_ENTITY;
-                    EntityListHelper.eraseAllEntityHistory(ContactListFragment.this);
-                    return true;
+            case R.id.erase_all_contact_chat_history:
+                eraseMode = EntityListHelper.ALL_ENTITY;
+                EntityListHelper.eraseAllEntityHistory(ContactListFragment.this);
+                return true;
 
-                case R.id.contact_tts_enable:
-                    if (mClickedContact != null && chatPanel != null) {
-                        Contact contact = mClickedContact.getDefaultContact();
-                        if (contact.isTtsEnable()) {
-                            contact.setTtsEnable(false);
-                            mContactTtsEnable.setTitle(R.string.tts_enable);
-                        }
-                        else {
-                            contact.setTtsEnable(true);
-                            mContactTtsEnable.setTitle(R.string.tts_disable);
-                        }
-                        chatPanel.updateChatTtsOption();
-                    }
-                    return true;
+            case R.id.contact_tts_enable:
+                boolean isTtsEnable = mRecipient.isTtsEnable();
+                mRecipient.setTtsEnable(!isTtsEnable);
+                mChatTtsEnable.setTitle(isTtsEnable ? R.string.tts_enable : R.string.tts_disable);
+                chatPanel.updateChatTtsOption();
+                return true;
 
-                case R.id.rename_contact:
-                    // Show rename contact dialog
-                    ft = getParentFragmentManager().beginTransaction();
-                    ft.addToBackStack(null);
-                    DialogFragment renameFragment = ContactRenameDialog.getInstance(mClickedContact);
-                    renameFragment.show(ft, "renameDialog");
-                    return true;
+            case R.id.chat_translate_send:
+                boolean isTranslateSend = mRecipient.isTranslateSend();
+                mRecipient.setTranslateSend(!isTranslateSend);
+                mChatTranslateSend.setTitle(isTranslateSend ?
+                        R.string.translation_sent_enable : R.string.translation_sent_disable);
+                return true;
 
-                case R.id.contact_blocking:
-                    if (mClickedContact != null) {
-                        Contact contact = mClickedContact.getDefaultContact();
-                        EntityListHelper.setEntityBlockState(mContext, contact, !contact.isContactBlock());
-                    }
-                    return true;
+            case R.id.chat_translate_receive:
+                boolean isTranslateReceive = mRecipient.isTranslateReceive();
+                mRecipient.setTranslateReceive(!isTranslateReceive);
+                mChatTranslateReceive.setTitle(isTranslateReceive ?
+                        R.string.translation_receive_enable : R.string.translation_receive_disable);
+                return true;
 
-                case R.id.remove_contact:
-                    eraseMode = EntityListHelper.SINGLE_ENTITY;
-                    EntityListHelper.removeEntity(ContactListFragment.this, mClickedContact, chatPanel);
-                    return true;
+            case R.id.rename_contact:
+                // Show rename contact dialog
+                ft = getParentFragmentManager().beginTransaction();
+                ft.addToBackStack(null);
+                DialogFragment renameFragment = ContactRenameDialog.getInstance(mClickedContact);
+                renameFragment.show(ft, "renameDialog");
+                return true;
 
-                case R.id.move_contact:
-                    // Show move contact dialog
-                    ft = getParentFragmentManager().beginTransaction();
-                    ft.addToBackStack(null);
-                    DialogFragment newFragment = MoveToGroupDialog.getInstance(mClickedContact);
-                    newFragment.show(ft, "moveDialog");
-                    return true;
+            case R.id.contact_blocking:
+                EntityListHelper.setEntityBlockState(mContext, mRecipient, !mRecipient.isContactBlock());
+                return true;
 
-                case R.id.re_request_auth:
-                    if (mClickedContact != null)
-                        requestAuthorization(mClickedContact.getDefaultContact());
-                    return true;
+            case R.id.remove_contact:
+                eraseMode = EntityListHelper.SINGLE_ENTITY;
+                EntityListHelper.removeEntity(ContactListFragment.this, mClickedContact, chatPanel);
+                return true;
 
-                case R.id.send_contact_file:
-                    // ChatPanel clickedChat = ChatSessionManager.getActiveChat(clickedContact);
-                    // AttachOptionDialog attachOptionDialog = new AttachOptionDialog(mActivity,
-                    // clickedContact);
-                    // attachOptionDialog.show();
-                    return true;
+            case R.id.move_contact:
+                // Show move contact dialog
+                ft = getParentFragmentManager().beginTransaction();
+                ft.addToBackStack(null);
+                DialogFragment newFragment = MoveToGroupDialog.getInstance(mClickedContact);
+                newFragment.show(ft, "moveDialog");
+                return true;
 
-                case R.id.remove_group:
-                    EntityListHelper.removeMetaContactGroup(mClickedGroup);
-                    return true;
+            case R.id.re_request_auth:
+                requestAuthorization(mClickedContact.getDefaultContact());
+                return true;
 
-                case R.id.contact_info:
-                    startContactInfoActivity(mClickedContact);
-                    return true;
+            case R.id.send_contact_file:
+                // ChatPanel clickedChat = ChatSessionManager.getActiveChat(clickedContact);
+                // AttachOptionDialog attachOptionDialog = new AttachOptionDialog(mActivity,
+                // clickedContact);
+                // attachOptionDialog.show();
+                return true;
 
-                case R.id.contact_ctx_menu_exit:
-                    return true;
+            case R.id.remove_group:
+                EntityListHelper.removeMetaContactGroup(mClickedGroup);
+                return true;
 
-                default:
-                    return false;
+            case R.id.contact_info:
+                startContactInfoActivity(mClickedContact);
+                return true;
+
+            case R.id.contact_ctx_menu_exit:
+                return true;
+
+            default:
+                return false;
             }
         }
     }
@@ -579,7 +607,8 @@ public class ContactListFragment extends BaseFragment
 
                 try {
                     authOpSet.reRequestAuthorization(request, contact);
-                } catch (OperationFailedException e) {
+                }
+                catch (OperationFailedException e) {
                     Context ctx = aTalkApp.getInstance();
                     DialogActivity.showConfirmDialog(ctx, ctx.getString(R.string.request_authorization),
                             e.getMessage(), null, null);

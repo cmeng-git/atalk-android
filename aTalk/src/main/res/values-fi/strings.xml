@@ -71,8 +71,9 @@
     <string name="retract">Peruuta</string>
     <string name="retract_menu">Peruuta viesti</string>
     <string name="retract_message_prompt">Haluatko varmasti peruuttaa kaikki valitut lähtevät viestit käyttäjältä %1$s?</string>
-    <string name="retract_own">Poistit tämän viestin.</string>
-    <string name="retract_remote">Tämä viesti poistettiin.</string>
+    <string name="retract_not_supported">Vastaanottaja ei tue viestin peruuttamista</string>
+    <string name="retract_own">Poistit tämän viestin</string>
+    <string name="retract_remote">Tämä viesti poistettiin</string>
     <string name="select_all">Valitse kaikki</string>
     <string name="subject">Aihe</string>
     <string name="settings">Asetukset</string>
@@ -488,6 +489,7 @@
     <string name="kick_failed_general_error">Kohteen %1$s potkaiseminen epäonnistui. Tapahtui yleinen palvelinvirhe.</string>
     <string name="last">Viimeinen</string>
     <string name="last_message_correction">Viimeisimmän viestin korjaus</string>
+    <string name="lmc_not_supported">Vastaanottaja ei tue viimeisen viestin korjausta</string>
     <string name="last_name">Sukunimi</string>
     <string name="last_seen">Tänään:%1$s</string>
     <string name="leave">Lähde</string>
@@ -1332,6 +1334,16 @@
     <string name="crypto_fingerprint_copy">Sormenjälki kopioitu leikepöydälle!</string>
     <string name="crypto_omemo_distrust_messaging_stop">Lopeta OMEMO-viestien lähettäminen kaverille jatkossa: %1$s</string>
     <string name="crypto_omemo_trust_messaging_resume">Jatka OMEMO-viestien lähettämistä kaverille: %1$s</string>
+
+    <!-- Language Translation settings -->
+    <string name="translation">Kielen käännös</string>
+    <string name="translation_received">Käännä viesti</string>
+    <string name="translation_receive_disable">Käännetty vastaanotettu pois käytöstä</string>
+    <string name="translation_receive_enable">Käännä vastaanottotoiminto</string>
+    <string name="translation_sent">Käännä viesti lähetettynä</string>
+    <string name="translation_sent_disable">Käännä lähetys pois käytöstä</string>
+    <string name="translation_sent_enable">Käännä lähetystoiminto</string>
+    <string name="translation_server">Käännöspalvelimen URL-osoite</string>
 
     <!-- Advanced settings category -->
     <string name="advanced">Edistyneet</string>

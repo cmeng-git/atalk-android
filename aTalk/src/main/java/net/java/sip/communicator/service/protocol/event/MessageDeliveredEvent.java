@@ -49,12 +49,14 @@ public class MessageDeliveredEvent extends EventObject {
     /**
      * The ID of the message being corrected, or null if this was a new message and not a message correction.
      */
-    private String correctedMessageUID;
+    private String correctionUid;
 
     /**
      * Whether the delivered message is encrypted or not.
      */
     private boolean isMessageEncrypted = false;
+
+    private boolean isRetractMessage = false;
 
     /**
      * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code>
@@ -62,12 +64,12 @@ public class MessageDeliveredEvent extends EventObject {
      *
      * @param source the <code>IMessage</code> whose delivery this event represents.
      * @param contact the <code>Contact</code> that this message was sent to.
-     * @param correctedMessageUID The ID of the message being corrected.
+     * @param correctionUid The ID of the message being corrected.
      */
     public MessageDeliveredEvent(IMessage source, Contact contact, ContactResource contactResource,
-            String sender, String correctedMessageUID) {
+            String sender, String correctionUid) {
         this(source, contact, contactResource, sender, new Date());
-        this.correctedMessageUID = correctedMessageUID;
+        this.correctionUid = correctionUid;
     }
 
     /**
@@ -80,7 +82,8 @@ public class MessageDeliveredEvent extends EventObject {
      * @param sender the fullJid from which this message was sent
      * @param timestamp a date indicating the exact moment when the event occurred
      */
-    public MessageDeliveredEvent(IMessage source, Contact contact, ContactResource contactResource, String sender, Date timestamp) {
+    public MessageDeliveredEvent(IMessage source, Contact contact, ContactResource contactResource,
+            String sender, Date timestamp) {
         super(source);
         mContact = contact;
         mContactResource = contactResource;
@@ -152,17 +155,17 @@ public class MessageDeliveredEvent extends EventObject {
      * @return the ID of the message being corrected, or null if this was a new message and not a
      * message correction.
      */
-    public String getCorrectedMessageUID() {
-        return correctedMessageUID;
+    public String getCorrectedMessageUid() {
+        return correctionUid;
     }
 
     /**
      * Sets the ID of the message being corrected to the passed ID.
      *
-     * @param correctedMessageUID The ID of the message being corrected.
+     * @param correctionUid The ID of the message being corrected.
      */
-    public void setCorrectedMessageUID(String correctedMessageUID) {
-        this.correctedMessageUID = correctedMessageUID;
+    public void setCorrectedMessageUid(String correctionUid) {
+        this.correctionUid = correctionUid;
     }
 
     /**
@@ -181,5 +184,13 @@ public class MessageDeliveredEvent extends EventObject {
      */
     public void setMessageEncrypted(boolean isMessageEncrypted) {
         this.isMessageEncrypted = isMessageEncrypted;
+    }
+
+    public void setRetractMessage(boolean state) {
+        isRetractMessage = state;
+    }
+
+    public boolean isRetractMessage() {
+        return isRetractMessage;
     }
 }

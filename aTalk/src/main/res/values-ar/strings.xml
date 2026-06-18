@@ -71,8 +71,9 @@
     <string name="retract">التراجع</string>
     <string name="retract_menu">سحب الرسائل</string>
     <string name="retract_message_prompt">هل أنت متأكد من رغبتك في سحب جميع الرسائل الصادرة المحددة من %1$s؟</string>
-    <string name="retract_own">لقد حذفت هذه الرسالة.</string>
-    <string name="retract_remote">تم حذف هذه الرسالة.</string>
+    <string name="retract_not_supported">لا يدعم المستلم خاصية سحب الرسائل</string>
+    <string name="retract_own">لقد حذفت هذه الرسالة</string>
+    <string name="retract_remote">تم حذف هذه الرسالة</string>
     <string name="select_all">تحديد الكل</string>
     <string name="subject">الموضوع</string>
     <string name="settings">الإعدادات</string>
@@ -488,6 +489,7 @@
     <string name="kick_failed_not_enough_permission">فشل في طرد %1$s. ليس لديك امتيازات كافية للقيام بذلك.</string>
     <string name="last">الأخير</string>
     <string name="last_message_correction">تصحيح الرسالة الأخيرة</string>
+    <string name="lmc_not_supported">لا يدعم المستلم خاصية تصحيح الرسالة الأخيرة</string>
     <string name="last_name">الاسم الأخير</string>
     <string name="last_seen">اليوم:%1$s</string>
     <string name="leave">مغادرة</string>
@@ -1324,6 +1326,16 @@
     <string name="crypto_fingerprint_copy">تم نسخ البصمة إلى الحافظة!</string>
     <string name="crypto_omemo_distrust_messaging_stop">إيقاف إرسال رسائل OMEMO إلى الصديق: %1$s</string>
     <string name="crypto_omemo_trust_messaging_resume">استئناف إرسال رسائل OMEMO إلى الصديق: %1$s</string>
+
+    <!-- Language Translation settings -->
+    <string name="translation">ترجمة اللغة</string>
+    <string name="translation_received">ترجمة الرسائل الواردة</string>
+    <string name="translation_receive_disable">تعطيل استقبال الترجمة</string>
+    <string name="translation_receive_enable">تتيح الترجمة إمكانية الوصول</string>
+    <string name="translation_sent">ترجمة الرسائل المرسلة</string>
+    <string name="translation_sent_disable">تعطيل إرسال الترجمة</string>
+    <string name="translation_sent_enable">تفعيل إرسال الترجمة</string>
+    <string name="translation_server">رابط خادم الترجمة</string>
 
     <!-- Advanced settings category -->
     <string name="advanced">متقدم</string>

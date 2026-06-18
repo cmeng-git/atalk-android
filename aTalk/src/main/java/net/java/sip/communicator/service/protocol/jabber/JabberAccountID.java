@@ -5,8 +5,6 @@
  */
 package net.java.sip.communicator.service.protocol.jabber;
 
-import android.text.TextUtils;
-
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -31,6 +29,7 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 
+import space.dynomake.libretranslate.Language;
 import timber.log.Timber;
 
 /**
@@ -387,6 +386,42 @@ public class JabberAccountID extends AccountID {
      */
     public void setPriority(int priority) {
         putAccountProperty(ProtocolProviderFactory.RESOURCE_PRIORITY, priority);
+    }
+
+    /**
+     * Returns the Translation send language code property.
+     *
+     * @return the send language code
+     */
+    public String getTranslationSend() {
+        return getAccountPropertyString(ProtocolProviderFactory.TRANSLATION_SEND, Language.NONE.getCode());
+    }
+
+    /**
+     * Set the Translation send language code property.
+     *
+     * @param code the translation send language code to set
+     */
+    public void setTranslationSend(String code) {
+        putAccountProperty(ProtocolProviderFactory.TRANSLATION_SEND, code);
+    }
+
+    /**
+     * Returns the Translation send language code property.
+     *
+     * @return the send language code
+     */
+    public String getTranslationReceive() {
+        return getAccountPropertyString(ProtocolProviderFactory.TRANSLATION_RECEIVE, Language.NONE.getCode());
+    }
+
+    /**
+     * Set the Translation send language code property.
+     *
+     * @param code the translation send language code to set
+     */
+    public void setTranslationReceive(String code) {
+        putAccountProperty(ProtocolProviderFactory.TRANSLATION_RECEIVE, code);
     }
 
     /**

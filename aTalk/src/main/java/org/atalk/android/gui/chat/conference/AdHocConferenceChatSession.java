@@ -15,6 +15,10 @@
  */
 package org.atalk.android.gui.chat.conference;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+
 import net.java.sip.communicator.service.metahistory.MetaHistoryService;
 import net.java.sip.communicator.service.protocol.AdHocChatRoom;
 import net.java.sip.communicator.service.protocol.ChatRoomConfigurationForm;
@@ -37,18 +41,13 @@ import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.ChatSessionChangeListener;
 import org.atalk.android.gui.chat.ChatTransport;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-
 /**
  * An implementation of <code>ChatSession</code> for ad-hoc conference chatting.
  *
  * @author Valentin Martinet
  * @author Eng Chong Meng
  */
-public class AdHocConferenceChatSession extends ChatSession implements AdHocChatRoomParticipantPresenceListener
-{
+public class AdHocConferenceChatSession extends ChatSession implements AdHocChatRoomParticipantPresenceListener {
     private ChatTransport currentChatTransport;
     private final AdHocChatRoomWrapper chatRoomWrapper;
     private final ChatPanel sessionRenderer;
@@ -63,8 +62,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * @param sessionRenderer the renderer to be used for communication with the UI.
      * @param chatRoomWrapper the ad-hoc chat room corresponding to this conference session.
      */
-    public AdHocConferenceChatSession(ChatPanel sessionRenderer, AdHocChatRoomWrapper chatRoomWrapper)
-    {
+    public AdHocConferenceChatSession(ChatPanel sessionRenderer, AdHocChatRoomWrapper chatRoomWrapper) {
         this.sessionRenderer = sessionRenderer;
         this.chatRoomWrapper = chatRoomWrapper;
         chatRoom = chatRoomWrapper.getAdHocChatRoom();
@@ -81,8 +79,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * @return the descriptor of this chat session.
      */
     @Override
-    public Object getDescriptor()
-    {
+    public Object getDescriptor() {
         return chatRoomWrapper;
     }
 
@@ -91,8 +88,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      *
      * @return the chat identifier
      */
-    public String getChatId()
-    {
+    public String getChatId() {
         return chatRoomWrapper.getAdHocChatRoomID();
     }
 
@@ -100,8 +96,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * Disposes this chat session.
      */
     @Override
-    public void dispose()
-    {
+    public void dispose() {
         chatRoom.removeParticipantPresenceListener(this);
     }
 
@@ -111,8 +106,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * @return the entityJid of the ad-hoc chat room.
      */
     @Override
-    public String getChatEntity()
-    {
+    public String getChatEntity() {
         return chatRoomWrapper.getAdHocChatRoomName();
     }
 
@@ -120,11 +114,11 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * Returns the configuration form corresponding to the chat room.
      *
      * @return the configuration form corresponding to the chat room.
+     *
      * @throws OperationFailedException if no configuration form is available for the chat room.
      */
     public ChatRoomConfigurationForm getChatConfigurationForm()
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         return null;
     }
 
@@ -134,8 +128,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * @return the currently used transport for all operation within this chat session.
      */
     @Override
-    public ChatTransport getCurrentChatTransport()
-    {
+    public ChatTransport getCurrentChatTransport() {
         return currentChatTransport;
     }
 
@@ -143,11 +136,11 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * Returns a collection of the last N number of messages given by count.
      *
      * @param count The number of messages from history to return.
+     *
      * @return a collection of the last N number of messages given by count.
      */
     @Override
-    public Collection<Object> getHistory(int count)
-    {
+    public Collection<Object> getHistory(int count) {
         final MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
@@ -163,11 +156,11 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      *
      * @param date The date up to which we're looking for messages.
      * @param count The number of messages from history to return.
+     *
      * @return a collection of the last N number of messages given by count.
      */
     @Override
-    public Collection<Object> getHistoryBeforeDate(Date date, int count)
-    {
+    public Collection<Object> getHistoryBeforeDate(Date date, int count) {
         final MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
@@ -184,11 +177,11 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      *
      * @param date The date from which we're looking for messages.
      * @param count The number of messages from history to return.
+     *
      * @return a collection of the last N number of messages given by count.
      */
     @Override
-    public Collection<Object> getHistoryAfterDate(Date date, int count)
-    {
+    public Collection<Object> getHistoryAfterDate(Date date, int count) {
         final MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
@@ -206,8 +199,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * @return the start date of the history of this chat session.
      */
     @Override
-    public Date getHistoryStartDate()
-    {
+    public Date getHistoryStartDate() {
         MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
@@ -240,8 +232,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * @return the end date of the history of this chat session.
      */
     @Override
-    public Date getHistoryEndDate()
-    {
+    public Date getHistoryEndDate() {
         MetaHistoryService metaHistory = AppGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
@@ -275,8 +266,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * @param chatTransport The transport to set as a default transport for this session.
      */
     @Override
-    public void setCurrentChatTransport(ChatTransport chatTransport)
-    {
+    public void setCurrentChatTransport(ChatTransport chatTransport) {
         this.currentChatTransport = chatTransport;
     }
 
@@ -287,8 +277,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * @return The <code>ChatSessionRenderer</code>.
      */
     @Override
-    public ChatPanel getChatSessionRenderer()
-    {
+    public ChatPanel getChatSessionRenderer() {
         return sessionRenderer;
     }
 
@@ -300,8 +289,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * {@code false}.
      */
     @Override
-    public boolean isDescriptorPersistent()
-    {
+    public boolean isDescriptorPersistent() {
         return false;
     }
 
@@ -311,8 +299,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      *
      * @param chatRoom the <code>ChatRoom</code> to load
      */
-    public void loadChatRoom(AdHocChatRoom chatRoom)
-    {
+    public void loadChatRoom(AdHocChatRoom chatRoom) {
         for (Contact contact : chatRoom.getParticipants())
             // sessionRenderer.addChatContact(new AdHocConferenceChatContact(contact));
             chatRoom.addParticipantPresenceListener(this);
@@ -324,8 +311,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * @return the status icon corresponding to this ad-hoc chat room
      */
     @Override
-    public byte[] getChatStatusIcon()
-    {
+    public byte[] getChatStatusIcon() {
         PresenceStatus status = GlobalStatusEnum.OFFLINE;
         if (chatRoom != null)
             status = GlobalStatusEnum.ONLINE;
@@ -339,16 +325,14 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * @return the avatar icon of this chat session.
      */
     @Override
-    public byte[] getChatAvatar()
-    {
+    public byte[] getChatAvatar() {
         return null;
     }
 
     /**
      * Initializes the list of participants.
      */
-    private void initChatParticipants()
-    {
+    private void initChatParticipants() {
         if (chatRoom != null) {
             for (Contact contact : chatRoom.getParticipants()) {
                 chatParticipants.add(new AdHocConferenceChatContact(contact));
@@ -358,8 +342,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
 
     /* Implements ChatSession#isContactListSupported(). */
     @Override
-    public boolean isContactListSupported()
-    {
+    public boolean isContactListSupported() {
         return true;
     }
 
@@ -369,8 +352,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * participants on the right of the chat window. When a participant has left or quit it's
      * removed from the chat window.
      */
-    public void participantPresenceChanged(AdHocChatRoomParticipantPresenceChangeEvent evt)
-    {
+    public void participantPresenceChanged(AdHocChatRoomParticipantPresenceChangeEvent evt) {
         AdHocChatRoom sourceChatRoom = evt.getAdHocChatRoom();
         if (!sourceChatRoom.equals(chatRoomWrapper.getAdHocChatRoom()))
             return;
@@ -421,8 +403,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * Not implemented.
      */
     @Override
-    public void addChatTransportChangeListener(ChatSessionChangeListener l)
-    {
+    public void addChatTransportChangeListener(ChatSessionChangeListener l) {
     }
 
     /**
@@ -431,7 +412,6 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * Not implemented.
      */
     @Override
-    public void removeChatTransportChangeListener(ChatSessionChangeListener l)
-    {
+    public void removeChatTransportChangeListener(ChatSessionChangeListener l) {
     }
 }
