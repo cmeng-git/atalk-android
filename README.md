@@ -69,7 +69,6 @@ Libraries used in this project:
 * [android-youtube-player](https://github.com/PierfrancescoSoffritti/android-youtube-player)
 * [apache-mime4j-core](https://github.com/apache/james-mime4j)
 * [Argos Translate](https://github.com/argosopentech/argos-translate)
-* [bcg729](https://github.com/BelledonneCommunications/bcg729)
 * [bouncycastle](https://github.com/bcgit/bc-java)
 * [ckChangeLog](https://github.com/cketti/ckChangeLog)
 * [commons-codec](https://github.com/apache/commons-codec)

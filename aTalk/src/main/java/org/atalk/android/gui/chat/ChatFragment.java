@@ -72,17 +72,11 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 
 import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl;
-import net.java.sip.communicator.impl.protocol.jabber.JabberAccountIDImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
@@ -147,9 +141,6 @@ import org.jivesoftware.smackx.omemo_media_sharing.AesgcmUrl;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 
-import space.dynomake.libretranslate.Language;
-import space.dynomake.libretranslate.Translator;
-import space.dynomake.libretranslate.exception.BadTranslatorResponseException;
 import timber.log.Timber;
 
 /**
@@ -221,8 +212,6 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
      * Stores all active file transfer requests and effective MessageDisplay position.
      */
     private final Hashtable<String, Integer> activeMsgTransfers = new Hashtable<>();
-
-    private static final Map<String, ChatListAdapter> INSTANCES = new WeakHashMap<>();
 
     /**
      * Indicates that this fragment is the currently selected primary page. A primary page can
@@ -298,8 +287,6 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
     private Object mSVP = null;
     private SvpApiImpl svpApi = null;
 
-    private final List<String> msgUidRetract = new ArrayList<>();
-
     /**
      * {@inheritDoc}
      */
@@ -329,29 +316,20 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             return null;
         }
 
-        chatListAdapter = INSTANCES.get(chatId);
-        if (chatListAdapter == null) {
-            chatListAdapter = new ChatListAdapter();
-            INSTANCES.put(chatId, chatListAdapter);
-        }
-        /*
-         * Must always clear MessageDisplay in chatListAdapter and re-/register the listener.
-         * ChatPanel SessionListeners and historyLoaded flag are cleared, when Close active chat is executed.
-         */
-        chatListAdapter.clear();
-        mChatPanel.addSessionListener(chatListAdapter);
-
         mCFView = inflater.inflate(R.layout.chat_conversation, container, false);
+        chatStateView = mCFView.findViewById(R.id.chatStateView);
+
+        chatListAdapter = new ChatListAdapter();
         chatListView = mCFView.findViewById(R.id.chatListView);
+        chatListView.setAdapter(chatListAdapter);
+        chatListView.setSelector(R.drawable.list_selector_state);
 
         // Inflates and adds the header, hidden by default
         header = inflater.inflate(R.layout.progressbar, chatListView, false);
         header.setVisibility(View.GONE);
         chatListView.addHeaderView(header);
 
-        chatStateView = mCFView.findViewById(R.id.chatStateView);
-        chatListView.setAdapter(chatListAdapter);
-        chatListView.setSelector(R.drawable.list_selector_state);
+        mChatPanel.addSessionListener(chatListAdapter);
         initListViewListeners();
 
         // mChatMetaContact is null for conference
@@ -504,15 +482,11 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
         super.onDetach();
         mChatController = null;
 
-        /*
-         * ChatSessionListener in ChatFragment must remain active and registered with ChatPanel, at all times even when
-         * chat fragment window is closed/detached. Otherwise incoming Retract and Correction messages may not be updated properly.
-         * It is not always guaranteed that android will call ChatFragment#onCreateView when chat is opened.
-         */
-        // chatPanel.removeSessionListener(chatListAdapter);
-        // chatListAdapter.clear();
-        // chatListAdapter = null;
+        if (mChatPanel != null) {
+            mChatPanel.removeSessionListener(chatListAdapter);
+        }
 
+        chatListAdapter = null;
         if (loadHistoryTask != null) {
             // loadHistoryTask.cancel(true);
             loadHistoryTask = null;
@@ -826,8 +800,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 return true;
 
             case R.id.chat_message_del:
-                List<String> msgUidDel = new ArrayList<>();
-                List<File> msgFilesDel = new ArrayList<>();
+                final List<String> msgUidDel = new ArrayList<>();
+                final List<File> msgFilesDel = new ArrayList<>();
 
                 for (int i = 0; i < checkListSize; i++) {
                     if (checkedList.valueAt(i)) {
@@ -902,7 +876,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 return true;
 
             case R.id.chat_message_retract:
-                msgUidRetract.clear();
+                final List<String> msgUidRetract = new ArrayList<>();
 
                 for (int i = 0; i < checkListSize; i++) {
                     if (checkedList.valueAt(i)) {
@@ -1101,12 +1075,6 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
          */
         private final Html.ImageGetter imageGetter = new HtmlImageGetter();
 
-        public void clear() {
-            msgDisplays.clear();
-            msgUuid2Idx.clear();
-            viewHolders.clear();
-        }
-
         /**
          * {@inheritDoc}
          */
@@ -1295,10 +1263,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 String msgSid = chatMessage.getMessageUid();
 
                 if ((msgSid != null) && msgSid.equals(msgId)) {
-                    // ChatPanel#updateCacheMessage seems to update the same instance of chatMessage;
-                    // Update the content of the chatMessage embedded in MessageDisplay, and also cachedOutput = null.
-                    chatMessage.setMessageBody(message.getMessageContent());
-                    // clear msgBody so it can be rebuilt with the new message Content.
+                    // ChatPanel#updateCacheMessage also update the same instance of chatMessage in MessageDisplay;
+                    // clear msgBody so it can be rebuilt with the new chatMessage Content.
                     msgDisplays.get(index).initDMessageStatus();
 
                     runOnUiThread(() -> {
@@ -2167,16 +2133,17 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 return mdChatMessage.getFileRecord();
             }
 
-            private boolean isOlderThanOneDay(Date date) {
+            private boolean isLessThan3Day(Date date) {
                 Instant timestampInstant = Instant.ofEpochMilli(date.getTime());
-                Instant oneDayAgo = Instant.now().minus(1, ChronoUnit.DAYS);
-                return timestampInstant.isBefore(oneDayAgo);
+                Instant threeDayAgo = Instant.now().minus(3, ChronoUnit.DAYS);
+                return timestampInstant.isAfter(threeDayAgo);
             }
 
             /**
              * Process HTML tags with <img/> src, populate the given msgView;
              * async will update the text view image content, so just return null to caller.
              * Otherwise returns <code>Spanned</code> message body processed for HTML tags.
+             * Reuse msgBody if not null to avoid rebuilding process.
              *
              * @param msgView the message view container to be populated
              *
@@ -2184,16 +2151,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
              */
             public Spanned setSpannedInView(final TextView msgView) {
                 String body = mdChatMessage.getMessageBody();
-
                 if (msgBody == null && StringUtils.isNotEmpty(body)) {
                     if (!body.matches(ChatMessage.HTML_MARKUP)) {
-                        // Skip translation of any incoming message with MESSAGE_MUC_OUT type or older than one day.
-                        if (!(ChatMessage.MESSAGE_MUC_OUT == mdChatMessage.getMessageType()
-                                || isOlderThanOneDay(mdChatMessage.getDate()))) {
-                            // Translation will use the original message content.
-                            String aText = translateMessageReceive(mdChatMessage.getMessageContent());
-                            body = StringUtils.isEmpty(aText) ? body : body + "\n" + aText;
-                        }
                         // Then only replace single '<' to avoid fromHtml stripping off the following text string.
                         body = body.replaceAll("<", "&lt;");
                     }
@@ -2242,69 +2201,11 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                     }
                 }
                 else {
-                    // Must update with new body if there is no process done for html tags i.e. (msgBody != null)
-                    msgBody = Html.fromHtml(body, Html.FROM_HTML_MODE_LEGACY);
                     if (msgView != null) {
                         msgView.setText(msgBody);
                     }
                 }
                 return msgBody;
-            }
-
-            // Thread pool to handle background operations
-            private String translateMessageReceive(final String text) {
-                // Define a Callable task that returns a String
-                Callable<String> task = () -> {
-                    JabberAccountIDImpl accountId = (JabberAccountIDImpl) currentChatTransport.getProtocolProvider().getAccountID();
-                    Language language = Language.fromCode(accountId.getTranslationReceive());
-
-                    boolean isTranslateReceive = false;
-                    if (Language.NONE != language) {
-                        Object mRecipient = mChatActivity.getRecipient();
-                        if (mRecipient instanceof Contact) {
-                            isTranslateReceive = ((Contact) mRecipient).isTranslateReceive();
-                        }
-                        else {
-                            isTranslateReceive = ((ChatRoomWrapper) mRecipient).isTranslateReceive();
-                        }
-                    }
-
-                    String aText = null;
-                    if (isTranslateReceive) {
-                        try {
-                            aText = Translator.translate(language, text);
-                        }
-                        catch (Exception e) {
-                            String err = "Translation error: " + e.getMessage();
-                            if (e instanceof BadTranslatorResponseException) {
-                                String host = ((BadTranslatorResponseException) e).getHost();
-                                int code = ((BadTranslatorResponseException) e).getCode();
-                                err = "Translation error: (" + code + ") " + host;
-                            }
-                            Timber.w("Translate Message Receive: %s", err);
-                            aTalkApp.showToastMessage(err);
-                        }
-                    }
-                    return aText;
-                };
-
-                // Submit the task and get a Future object back
-                final ExecutorService eService = Executors.newSingleThreadExecutor();
-                Future<String> future = eService.submit(task);
-                String result = null;
-
-                // Block and wait for the thread to finish, then get the String
-                try {
-                    result = future.get();
-                }
-                catch (InterruptedException | ExecutionException e) {
-                    Timber.w("Translate Message Receive: %s", e.getMessage());
-                }
-                finally {
-                    // 5. Always remember to shut down the executor
-                    eService.shutdown();
-                }
-                return result;
             }
 
             protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan urlSpan) {

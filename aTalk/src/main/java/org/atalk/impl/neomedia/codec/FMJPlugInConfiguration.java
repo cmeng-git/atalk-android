@@ -68,10 +68,6 @@ public class FMJPlugInConfiguration
             "org.atalk.impl.neomedia.codec.audio.g722.JNIDecoder",
             "org.atalk.impl.neomedia.codec.audio.g722.JNIEncoder",
 
-            // g729
-            "org.atalk.impl.neomedia.codec.audio.g729.JNIDecoder",
-            "org.atalk.impl.neomedia.codec.audio.g729.JNIEncoder",
-
             // gsm
             "org.atalk.impl.neomedia.codec.audio.gsm.Decoder",
             "org.atalk.impl.neomedia.codec.audio.gsm.Encoder",

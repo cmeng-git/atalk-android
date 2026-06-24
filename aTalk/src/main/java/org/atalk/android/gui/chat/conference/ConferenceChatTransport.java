@@ -85,6 +85,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @return The contact address corresponding to this chat transport.
      */
+    @Override
     public String getName() {
         return chatRoom.getName();
     }
@@ -94,6 +95,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @return The display name corresponding to this chat transport.
      */
+    @Override
     public String getDisplayName() {
         return chatRoom.getName();
     }
@@ -104,6 +106,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @return The display name of this chat transport resource.
      */
+    @Override
     public String getResourceName() {
         return null;
     }
@@ -113,6 +116,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @return <code>true</code> if the display name shows only the resource, <code>false</code> - otherwise
      */
+    @Override
     public boolean isDisplayResourceOnly() {
         return false;
     }
@@ -122,6 +126,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @return the presence status of this transport.
      */
+    @Override
     public PresenceStatus getStatus() {
         return null;
     }
@@ -131,6 +136,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @return the <code>ProtocolProviderService</code>, corresponding to this chat transport.
      */
+    @Override
     public ProtocolProviderService getProtocolProvider() {
         return mPPS;
     }
@@ -142,6 +148,7 @@ public class ConferenceChatTransport implements ChatTransport {
      * @return {@code true} if this chat transport supports instant messaging,
      * otherwise returns {@code false}.
      */
+    @Override
     public boolean allowInstantMessage() {
         return chatRoom.isJoined();
     }
@@ -153,6 +160,7 @@ public class ConferenceChatTransport implements ChatTransport {
      * @return {@code true} if this chat transport supports message delivery receipts,
      * otherwise returns {@code false}
      */
+    @Override
     public boolean allowsMessageDeliveryReceipt() {
         return false;
     }
@@ -164,6 +172,7 @@ public class ConferenceChatTransport implements ChatTransport {
      * @return {@code true} if this chat transport supports chat state notifications,
      * otherwise returns {@code false}.
      */
+    @Override
     public boolean allowChatStateNotifications() {
         // Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
         // return ((tnOpSet != null) && isChatStateSupported);
@@ -256,6 +265,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @return <code>true</code> if the chat transport supports it and <code>false</code> otherwise.
      */
+    @Override
     public boolean isContentTypeSupported(int mimeType) {
         // we only support plain text for chat rooms for now
         return (IMessage.ENCODE_PLAIN == mimeType);
@@ -272,6 +282,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @throws Exception if anything goes wrong
      */
+    @Override
     public Object sendSticker(File file, int chatType, FileSendConversation xferCon)
             throws Exception {
         return sendFile(file, chatType, xferCon);
@@ -280,6 +291,7 @@ public class ConferenceChatTransport implements ChatTransport {
     /**
      * Sending chat state notifications for this chat transport.
      */
+    @Override
     public void sendChatStateNotification(ChatState chatState) {
         // Proceed only if this chat transport allows chat state notification
         if (mPPS.isRegistered() && allowChatStateNotifications() && allowInstantMessage()) {
@@ -306,6 +318,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @throws Exception if anything goes wrong
      */
+    @Override
     public Object sendFile(File file, int chatType, FileSendConversation xferCon)
             throws Exception {
         // If this chat transport does not support file transfer we do nothing and just return.
@@ -367,6 +380,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @return the file length that is supported.
      */
+    @Override
     public long getMaximumFileLength() {
         return (allowsFileTransfer()) ? httpFileUploadManager.getDefaultUploadService().getMaxFileSize() : 0;
     }
@@ -377,6 +391,7 @@ public class ConferenceChatTransport implements ChatTransport {
      * @param contactAddress the address of the contact to invite
      * @param reason the reason for the invitation
      */
+    @Override
     public void inviteChatContact(EntityBareJid contactAddress, String reason) {
         if (chatRoom != null)
             try {
@@ -393,6 +408,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @return the parent session of this chat transport
      */
+    @Override
     public ChatSession getParentChatSession() {
         return chatSession;
     }
@@ -402,6 +418,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @param l The message listener to add.
      */
+    @Override
     public void addInstantMessageListener(MessageListener l) {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowInstantMessage())
@@ -416,6 +433,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @param l The message listener to remove.
      */
+    @Override
     public void removeInstantMessageListener(MessageListener l) {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowInstantMessage())
@@ -425,6 +443,7 @@ public class ConferenceChatTransport implements ChatTransport {
         imOpSet.removeMessageListener(l);
     }
 
+    @Override
     public void dispose() {
     }
 
@@ -433,6 +452,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @return the descriptor of this chat transport
      */
+    @Override
     public Object getDescriptor() {
         return chatRoom;
     }
@@ -442,10 +462,12 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @return <code>true</code> if this chat transport supports message corrections and false otherwise.
      */
+    @Override
     public boolean allowMessageCorrection() {
         return chatRoom.isJoined();
     }
 
+    @Override
     public boolean allowMessageRetract() {
         return chatRoom.isJoined();
     }

@@ -38,6 +38,7 @@ import net.java.sip.communicator.service.protocol.event.SubscriptionMovedEvent;
 
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.util.XhtmlUtil;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -57,6 +58,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
@@ -78,6 +80,7 @@ import org.jivesoftware.smackx.omemo.listener.OmemoMucMessageListener;
 import org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider;
 import org.jivesoftware.smackx.xdata.form.FillableForm;
 import org.jivesoftware.smackx.xdata.form.Form;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -227,9 +230,11 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 // ths has pre-assigned owner; catch exception and ignore
                 Resourcepart nick = Resourcepart.from(XmppStringUtils.parseLocalpart(mPPS.getAccountID().getAccountJid()));
                 mucFormHandler = muc.create(nick);
-            } catch (MultiUserChatException.MissingMucCreationAcknowledgeException ignore) {
+            }
+            catch (MultiUserChatException.MissingMucCreationAcknowledgeException ignore) {
                 Timber.d("Missing Muc Creation Acknowledge Exception: %s", roomName);
-            } catch (XMPPException | SmackException | XmppStringprepException | InterruptedException ex) {
+            }
+            catch (XMPPException | SmackException | XmppStringprepException | InterruptedException ex) {
                 // throw new OperationFailedException("Failed to create chat room", OperationFailedException.GENERAL_ERROR, ex);
                 Timber.e("Failed to assigned owner %s", ex.getMessage());
             }
@@ -252,7 +257,8 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                         for (int i = 0; i < fields.length; i++) {
                             try {
                                 fillableForm.setAnswer(fields[i], values[i]);
-                            } catch (IllegalArgumentException ignore) {
+                            }
+                            catch (IllegalArgumentException ignore) {
                                 // Just ignore and continue for IllegalArgumentException variable
                                 Timber.w("Exception in setAnswer for field: %s = %s", fields[i], values[i]);
                             }
@@ -264,7 +270,8 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                     }
                     // We are creating the room hence the owner of it at least that's what MultiUserChat.create says
                     chatRoom.setLocalUserRole(ChatRoomMemberRole.OWNER);
-                } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException e) {
+                }
+                catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException e) {
                     Timber.w("Failed to submit room configuration form: %s", e.getMessage());
                 }
             }
@@ -394,7 +401,8 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
             try {
                 // serviceNames = MultiUserChat.getServiceNames(getXmppConnection()).iterator();
                 serviceNames = mMucMgr.getMucServiceDomains();
-            } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
+            }
+            catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
                 throw new OperationFailedException("Failed to retrieve Jabber conference service names",
                         OperationFailedException.GENERAL_ERROR, ex);
             }
@@ -405,8 +413,9 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 try {
                     Map<EntityBareJid, HostedRoom> hostedRooms = mMucMgr.getRoomsHostedBy(serviceName);
                     list.addAll(hostedRooms.keySet());
-                } catch (XMPPException | NoResponseException | NotConnectedException | IllegalArgumentException
-                         | MultiUserChatException.NotAMucServiceException | InterruptedException ex) {
+                }
+                catch (XMPPException | NoResponseException | NotConnectedException | IllegalArgumentException
+                       | MultiUserChatException.NotAMucServiceException | InterruptedException ex) {
                     Timber.e("Failed to retrieve room for %s : %s", serviceName, ex.getMessage());
                 }
             }
@@ -447,7 +456,8 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
             try {
                 mMucMgr.decline(JidCreate.entityBareFrom(invitation.getTargetChatRoom().getIdentifier()),
                         invitation.getInviter().asEntityBareJidIfPossible(), rejectReason);
-            } catch (NotConnectedException | InterruptedException | XmppStringprepException e) {
+            }
+            catch (NotConnectedException | InterruptedException | XmppStringprepException e) {
                 throw new OperationFailedException("Could not reject invitation",
                         OperationFailedException.GENERAL_ERROR, e);
             }
@@ -485,7 +495,8 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
             throws OperationFailedException {
         try {
             return JidCreate.entityBareFrom(roomName);
-        } catch (XmppStringprepException e) {
+        }
+        catch (XmppStringprepException e) {
             // try to append to domain part of our own JID
         }
 
@@ -493,7 +504,8 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         try {
             if (mMucMgr != null)
                 serviceNames = mMucMgr.getMucServiceDomains();
-        } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
+        }
+        catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
             AccountID accountId = mPPS.getAccountID();
             String errMsg = "Failed to retrieve conference service name for user: "
                     + accountId.getUserID() + " on server: " + accountId.getService();
@@ -504,7 +516,8 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         if ((serviceNames != null) && !serviceNames.isEmpty()) {
             try {
                 return JidCreate.entityBareFrom(Localpart.from(roomName), serviceNames.get(0));
-            } catch (XmppStringprepException e) {
+            }
+            catch (XmppStringprepException e) {
                 throw new OperationFailedException(roomName + " is not a valid JID local part",
                         OperationFailedException.GENERAL_ERROR, e
                 );
@@ -519,6 +532,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * Returns a reference to the chat room named <code>chatRoomName</code> or null if the room hasn't been cached yet.
      *
      * @param chatRoomName the name of the room we're looking for.
+     *
      * @return the <code>ChatRoomJabberImpl</code> instance that has been cached for
      * <code>chatRoomName</code> or null if no such room has been cached so far.
      */
@@ -546,8 +560,9 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                         : mMucMgr.getJoinedRooms(JidCreate.entityFullFrom(chatRoomMember.getContactAddress()))) {
                     joinedRooms.add(joinedRoom.toString());
                 }
-            } catch (NoResponseException | XMPPErrorException | NotConnectedException
-                     | XmppStringprepException | InterruptedException e) {
+            }
+            catch (NoResponseException | XMPPErrorException | NotConnectedException
+                   | XmppStringprepException | InterruptedException e) {
                 throw new OperationFailedException("Could not get list of joined rooms",
                         OperationFailedException.GENERAL_ERROR, e);
             }
@@ -763,7 +778,8 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 Resourcepart nick;
                 try {
                     nick = contact.getJid().getResourceOrThrow();
-                } catch (IllegalStateException e) {
+                }
+                catch (IllegalStateException e) {
                     continue;
                 }
 
@@ -839,7 +855,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         else {
             encType |= IMessage.ENCODE_PLAIN;
         }
-        IMessage newMessage = new MessageJabberImpl(msgBody, encType, null, msgId);
+        MessageJabberImpl newMessage = new MessageJabberImpl(msgBody, encType, null, msgId);
 
         // check if the message is available in xhtml
         String xhtmString = XhtmlUtil.getXhtmlExtension(message);
@@ -851,9 +867,10 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 OmemoMessage.Received xhtmlMessage = mOmemoManager.decrypt(sender, omemoElement);
                 encType |= IMessage.ENCODE_HTML;
                 newMessage = new MessageJabberImpl(xhtmlMessage.getBody(), encType, null, msgId);
-            } catch (SmackException.NotLoggedInException | IOException | CorruptedOmemoKeyException
-                     | NoRawSessionException | CryptoFailedException | XmlPullParserException |
-                     SmackParsingException e) {
+            }
+            catch (SmackException.NotLoggedInException | IOException | CorruptedOmemoKeyException
+                   | NoRawSessionException | CryptoFailedException | XmlPullParserException |
+                   SmackParsingException e) {
                 Timber.e("Error decrypting xhtmlExtension message %s:", e.getMessage());
             }
         }
@@ -863,6 +880,13 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         if (xmlElement != null) {
             correctionUid = xmlElement.getIdInitialMessage();
         }
+
+//        MUCServiceImpl mucService = MUCActivator.getMUCService();
+//        ChatRoomWrapper crWrapper = mucService.getChatRoomWrapperByChatRoom(chatRoom, false);
+//        if (crWrapper.isTranslateReceive()) {
+//            OperationSetBasicInstantMessagingJabberImpl imOpSet = (OperationSetBasicInstantMessagingJabberImpl) mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
+//            imOpSet.translate(newMessage);
+//        }
 
         ChatRoomMessageReceivedEvent msgReceivedEvt
                 = new ChatRoomMessageReceivedEvent(chatRoom, member, timeStamp, newMessage, correctionUid, ChatMessage.MESSAGE_MUC_IN);

@@ -416,6 +416,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      * @param listener the <code>ChatRoomChangeListener</code> that is to be registered for
      * <code>ChatRoomChangeEvent</code>-s.
      */
+    @Override
     public void addPropertyChangeListener(ChatRoomPropertyChangeListener listener) {
         synchronized (propertyChangeListeners) {
             if (!propertyChangeListeners.contains(listener))
@@ -428,6 +429,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @param listener the <code>ChatRoomChangeListener</code> to remove.
      */
+    @Override
     public void removePropertyChangeListener(ChatRoomPropertyChangeListener listener) {
         synchronized (propertyChangeListeners) {
             propertyChangeListeners.remove(listener);
@@ -441,6 +443,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      * @param listener the <code>ChatRoomMemberPropertyChangeListener</code> that is to be registered for
      * <code>ChatRoomMemberPropertyChangeEvent</code>s.
      */
+    @Override
     public void addMemberPropertyChangeListener(ChatRoomMemberPropertyChangeListener listener) {
         synchronized (memberPropChangeListeners) {
             if (!memberPropChangeListeners.contains(listener))
@@ -454,6 +457,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @param listener the <code>ChatRoomMemberPropertyChangeListener</code> to remove.
      */
+    @Override
     public void removeMemberPropertyChangeListener(ChatRoomMemberPropertyChangeListener listener) {
         synchronized (memberPropChangeListeners) {
             memberPropChangeListeners.remove(listener);
@@ -467,6 +471,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      * @param listener a <code>MessageListener</code> that would be notified every time a new message is received
      * on this chat room.
      */
+    @Override
     public void addMessageListener(ChatRoomMessageListener listener) {
         synchronized (messageListeners) {
             if (!messageListeners.contains(listener))
@@ -479,6 +484,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @param listener the <code>MessageListener</code> to remove from this room
      */
+    @Override
     public void removeMessageListener(ChatRoomMessageListener listener) {
         synchronized (messageListeners) {
             messageListeners.remove(listener);
@@ -491,6 +497,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @param listener a participant status listener.
      */
+    @Override
     public void addMemberPresenceListener(ChatRoomMemberPresenceListener listener) {
         synchronized (memberListeners) {
             if (!memberListeners.contains(listener))
@@ -504,6 +511,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @param listener a participant status listener.
      */
+    @Override
     public void removeMemberPresenceListener(ChatRoomMemberPresenceListener listener) {
         synchronized (memberListeners) {
             memberListeners.remove(listener);
@@ -521,7 +529,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      * @return the newly created message.
      */
     @Override
-    public IMessage createMessage(String content, int encType, String subject, String msgId) {
+    public MessageJabberImpl createMessage(String content, int encType, String subject, String msgId) {
         return new MessageJabberImpl(content, encType, subject, msgId);
     }
 
@@ -533,7 +541,8 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @return IMessage the newly created message
      */
-    public IMessage createMessage(String messageText) {
+    @Override
+    public MessageJabberImpl createMessage(String messageText) {
         return new MessageJabberImpl(messageText, IMessage.ENCODE_PLAIN, null, null);
     }
 
@@ -542,6 +551,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @return a List of <code>Member</code> corresponding to all room members.
      */
+    @Override
     public List<ChatRoomMember> getMembers() {
         synchronized (members) {
             return new LinkedList<>(members.values());
@@ -553,6 +563,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @return int the number of <code>Contact</code>s, currently participating in this room.
      */
+    @Override
     public int getMembersCount() {
         return mMultiUserChat.getOccupantsCount();
     }
@@ -562,6 +573,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @return a <code>String</code> containing the name of this <code>ChatRoom</code>.
      */
+    @Override
     public String getName() {
         return mMultiUserChat.getRoom().toString();
     }
@@ -571,6 +583,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @return a <code>EntityBareJid</code> containing the identifier of this <code>ChatRoom</code>.
      */
+    @Override
     public EntityBareJid getIdentifier() {
         return mMultiUserChat.getRoom();
     }
@@ -580,6 +593,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @return the nickname currently being used by the local user in the context of the local chat room.
      */
+    @Override
     public Resourcepart getUserNickname() {
         return mMultiUserChat.getNickname();
     }
@@ -621,6 +635,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      * @return the room subject or <code>null</code> if the user hasn't joined the room or the room
      * does not have a subject yet.
      */
+    @Override
     public String getSubject() {
         return mMultiUserChat.getSubject();
     }
@@ -631,6 +646,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      * @param userJid jid of the user to invite to the room.(one may also invite users not on their contact list).
      * @param reason a reason, subject, or welcome message that would tell the the user why they are being invited.
      */
+    @Override
     public void invite(EntityBareJid userJid, String reason)
             throws NotConnectedException, InterruptedException {
         if (StringUtils.isEmpty(XmppStringUtils.parseLocalpart(userJid.toString()))) {
@@ -657,6 +673,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
+    @Override
     public boolean join()
             throws OperationFailedException {
         return joinAs(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mPPS));
@@ -669,6 +686,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
+    @Override
     public boolean join(byte[] password)
             throws OperationFailedException {
         return joinAs(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mPPS), password);
@@ -682,6 +700,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
+    @Override
     public boolean joinAs(String nickname)
             throws OperationFailedException {
         return joinAs(nickname, null);
@@ -696,6 +715,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
+    @Override
     public boolean joinAs(final String nickname, final byte[] password)
             throws OperationFailedException {
         assertConnected();
@@ -889,6 +909,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @return <code>true</code> if the room is destroyed.
      */
+    @Override
     public boolean destroy(String reason, EntityBareJid roomName)
             throws XMPPException {
         try {
@@ -905,6 +926,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
     /**
      * Leave this chat room with no alternative room address to join.
      */
+    @Override
     public void leave() {
         this.leave(null, aTalkApp.getResString(R.string.leave_chat_room));
     }
@@ -1159,6 +1181,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @throws OperationFailedException throws Operation Failed Exception
      */
+    @Override
     public void setSubject(String subject)
             throws OperationFailedException {
         try {
@@ -1176,6 +1199,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @return a reference to the <code>ProtocolProviderService</code> instance that created this room.
      */
+    @Override
     public ProtocolProviderService getParentProvider() {
         return mPPS;
     }
@@ -1187,6 +1211,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @return ChatRoomMemberRole
      */
+    @Override
     public ChatRoomMemberRole getUserRole() {
         if (mUserRole == null) {
             // return role as GUEST if participant has not joined the chatRoom i.e. nickName == null
@@ -1213,6 +1238,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
      *
      * @param role the new mRole to be set for the local user
      */
+    @Override
     public void setLocalUserRole(ChatRoomMemberRole role) {
         setLocalUserRole(role, false);
     }
@@ -2097,7 +2123,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
                 remoteStanzaId = stanzaIdElement.getId();
             }
 
-            IMessage newMessage = createMessage(msgBody, encType, null, stanzaId);
+            MessageJabberImpl newMessage = createMessage(msgBody, encType, null, stanzaId);
             // check if the message is available in xhtml
             String xhtmString = XhtmlUtil.getXhtmlExtension(message);
             if (xhtmString != null) {
@@ -2140,14 +2166,15 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
             // from the chaRoom server. Check using nick OR jid in case user join with a different nick.
             Resourcepart userNick = getUserNickname();
             Jid ourJid = mPPS.getOurJid();
+
             MessageCorrectExtension xmlElement = message.getExtension(MessageCorrectExtension.class);
             String correctionUid = null;
             if (xmlElement != null) {
                 correctionUid = xmlElement.getIdInitialMessage();
                 newMessage.setStatus(ChatMessage.STATUS_EDITED);
             }
-            boolean isOutgoing = fromNick.equals(userNick) || ourJid.equals(memberJid);
 
+            boolean isOutgoing = fromNick.equals(userNick) || ourJid.equals(memberJid);
             if (isOutgoing) {
                 // Timber.d("Received delivered room message %s %s: %s", userNick, fromNick, msgBody);
                 // MUC received message may be relayed from server on message sent hence reCreate the message if required
@@ -2170,6 +2197,15 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
             else {
                 // Timber.d("Received incoming room message %s %s : %s", userNick, fromNick, msgBody);
                 // CONVERSATION_MESSAGE_RECEIVED or SYSTEM_MESSAGE_RECEIVED
+//                if (messageReceivedEventType == ChatMessage.MESSAGE_MUC_IN) {
+//                    MUCServiceImpl mucService = MUCActivator.getMUCService();
+//                    ChatRoomWrapper crWrapper = mucService.getChatRoomWrapperByChatRoom(ChatRoomJabberImpl.this, false);
+//                    if (crWrapper.isTranslateReceive()) {
+//                        OperationSetBasicInstantMessagingJabberImpl imOpSet = (OperationSetBasicInstantMessagingJabberImpl) mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
+//                        imOpSet.translate(newMessage);
+//                    }
+//                }
+
                 ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(
                         ChatRoomJabberImpl.this, member, timeStamp, newMessage, correctionUid, messageReceivedEventType);
 
@@ -2211,10 +2247,14 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
             EventObject msgEvt = mMHS.getEventObject(ChatRoomJabberImpl.this, retractId);
             if (msgEvt != null) {
                 if ((msgEvt instanceof ChatRoomMessageDeliveredEvent)) {
-                    ((ChatRoomMessageDeliveredEvent) msgEvt).setRetractMessage(true);
+                    ChatRoomMessageDeliveredEvent msgEvent = (ChatRoomMessageDeliveredEvent) msgEvt;
+                    msgEvent.setRetractMessage(true);
+                    msgEvent.setHistoryMessage(false);
                 }
                 else if ((msgEvt instanceof ChatRoomMessageReceivedEvent)) {
-                    ((ChatRoomMessageReceivedEvent) msgEvt).setRetractMessage(true);
+                    ChatRoomMessageReceivedEvent msgEvent = (ChatRoomMessageReceivedEvent) msgEvt;
+                    msgEvent.setRetractMessage(true);
+                    msgEvent.setHistoryMessage(false);
                 }
                 fireMessageEvent(msgEvt);
             }

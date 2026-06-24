@@ -152,52 +152,52 @@ public class FileSendConversation extends FileTransferConversation implements Fi
             createFileSendRecord();
 
         switch (status) {
-            case FileTransferStatusChangeEvent.PREPARING:
-                statusText = aTalkApp.getResString(R.string.file_transfer_preparing, mSendTo);
-                break;
+        case FileTransferStatusChangeEvent.PREPARING:
+            statusText = aTalkApp.getResString(R.string.file_transfer_preparing, mSendTo);
+            break;
 
-            case FileTransferStatusChangeEvent.WAITING:
-                statusText = aTalkApp.getResString(R.string.file_transfer_waiting_acceptance, mSendTo);
-                break;
+        case FileTransferStatusChangeEvent.WAITING:
+            statusText = aTalkApp.getResString(R.string.file_transfer_waiting_acceptance, mSendTo);
+            break;
 
-            case FileTransferStatusChangeEvent.ACCEPT:
-                statusText = aTalkApp.getResString(R.string.file_transfer_accepted);
-                break;
+        case FileTransferStatusChangeEvent.ACCEPT:
+            statusText = aTalkApp.getResString(R.string.file_transfer_accepted);
+            break;
 
-            case FileTransferStatusChangeEvent.IN_PROGRESS:
-                statusText = aTalkApp.getResString(R.string.file_sending_to, mSendTo);
-                break;
+        case FileTransferStatusChangeEvent.IN_PROGRESS:
+            statusText = aTalkApp.getResString(R.string.file_sending_to, mSendTo);
+            break;
 
-            case FileTransferStatusChangeEvent.COMPLETED:
-                statusText = aTalkApp.getResString(R.string.file_send_completed, mSendTo);
-                break;
+        case FileTransferStatusChangeEvent.COMPLETED:
+            statusText = aTalkApp.getResString(R.string.file_send_completed, mSendTo);
+            break;
 
-            // not offer to retry - smack replied as failed when recipient rejects on some devices
-            case FileTransferStatusChangeEvent.FAILED:
-                statusText = aTalkApp.getResString(R.string.file_transfer_send_error, mSendTo);
-                if (!TextUtils.isEmpty(reason)) {
-                    statusText += "\n" + reason;
-                }
-                break;
+        // not offer to retry - smack replied as failed when recipient rejects on some devices
+        case FileTransferStatusChangeEvent.FAILED:
+            statusText = aTalkApp.getResString(R.string.file_transfer_send_error, mSendTo);
+            if (!TextUtils.isEmpty(reason)) {
+                statusText += "\n" + reason;
+            }
+            break;
 
-            case FileTransferStatusChangeEvent.CANCELED:
-                // Inform remote user if sender canceled; not in standard legacy file xfer protocol event
-                statusText = aTalkApp.getResString(R.string.file_transfer_canceled);
-                if (!TextUtils.isEmpty(reason)) {
-                    statusText += ": " + reason;
-                }
+        case FileTransferStatusChangeEvent.CANCELED:
+            // Inform remote user if sender canceled; not in standard legacy file xfer protocol event
+            statusText = aTalkApp.getResString(R.string.file_transfer_canceled);
+            if (!TextUtils.isEmpty(reason)) {
+                statusText += ": " + reason;
+            }
 
-                if (mFileTransfer instanceof OutgoingFileTransferJabberImpl) {
-                    mChatFragment.getChatPanel().sendMessage(statusText,
-                            IMessage.FLAG_REMOTE_ONLY | IMessage.ENCODE_PLAIN);
-                }
-                // Must invalid view; else the progress and cancel buttons are still visible when user has canceled.
-                mChatFragment.getChatListAdapter().notifyDataSetInvalidated();
-                break;
+            if (mFileTransfer instanceof OutgoingFileTransferJabberImpl) {
+                mChatFragment.getChatPanel().sendMessage(statusText,
+                        IMessage.FLAG_REMOTE_ONLY | IMessage.ENCODE_PLAIN);
+            }
+            // Must invalid view; else the progress and cancel buttons are still visible when user has canceled.
+            mChatFragment.getChatListAdapter().notifyDataSetInvalidated();
+            break;
 
-            case FileTransferStatusChangeEvent.DECLINED:
-                statusText = aTalkApp.getResString(R.string.file_send_declined, mSendTo);
-                break;
+        case FileTransferStatusChangeEvent.DECLINED:
+            statusText = aTalkApp.getResString(R.string.file_send_declined, mSendTo);
+            break;
         }
         // Do here so newly created DB record is properly updated.
         updateFTStatus(status);

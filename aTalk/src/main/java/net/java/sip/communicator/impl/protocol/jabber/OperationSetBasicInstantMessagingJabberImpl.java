@@ -19,6 +19,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
@@ -114,6 +119,9 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 
+import space.dynomake.libretranslate.Language;
+import space.dynomake.libretranslate.Translator;
+import space.dynomake.libretranslate.exception.BadTranslatorResponseException;
 import timber.log.Timber;
 
 /**
@@ -242,7 +250,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @return IMessage the newly created message
      */
-    public IMessage createMessageWithUid(String messageText, int encType, String msgUid) {
+    @Override
+    public MessageJabberImpl createMessageWithUid(String messageText, int encType, String msgUid) {
         return new MessageJabberImpl(messageText, encType, null, msgUid);
     }
 
@@ -254,7 +263,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @return the newly created message.
      */
-    public IMessage createMessage(String content, int encType) {
+    public MessageJabberImpl createMessage(String content, int encType) {
         return createMessage(content, encType, null);
     }
 
@@ -268,7 +277,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @return the newly created message.
      */
     @Override
-    public IMessage createMessage(String content, int encType, String subject) {
+    public MessageJabberImpl createMessage(String content, int encType, String subject) {
         return new MessageJabberImpl(content, encType, subject, null);
     }
 
@@ -777,7 +786,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 stanzaId = orgStanzaElement.getId();
             }
         }
-        IMessage newMessage = createMessageWithUid(content, encType, stanzaId);
+        MessageJabberImpl newMessage = createMessageWithUid(content, encType, stanzaId);
         newMessage.setRemoteMsgId(stanzaId);
 
         // createVolatileContact will check before create
@@ -892,7 +901,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             encType |= IMessage.FLAG_IS_CARBON;
         }
         String msgId = message.getStanzaId();
-        IMessage newMessage = createMessageWithUid(msgBody, encType, msgId);
+        MessageJabberImpl newMessage = createMessageWithUid(msgBody, encType, msgId);
 
         String correctionUid = getCorrectionMessageId(message);
         if (correctionUid != null) {
@@ -967,6 +976,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             NotificationManager.updateUnreadCount(sourceContact);
         }
         else {
+//            Contact contact = opSetPersPresence.findContactByJid(message.getFrom());
+//            if (contact.isTranslateReceive()) {
+//                translate(newMessage);
+//            }
             msgEvt = new MessageReceivedEvent(newMessage, sourceContact, resource, sender, timestamp,
                     correctionUid, isPrivateMessaging, privateContactRoom);
         }
@@ -1164,7 +1177,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         else if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
             encType |= IMessage.ENCODE_HTML;
         }
-        IMessage newMessage = createMessageWithUid(msgBody, encType, msgId);
+        MessageJabberImpl newMessage = createMessageWithUid(msgBody, encType, msgId);
 
         // check if the message is available in xhtml
         String xhtmString = XhtmlUtil.getXhtmlExtension(message);
@@ -1198,6 +1211,9 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             NotificationManager.updateUnreadCount(contact);
         }
         else {
+//            if (contact.isTranslateReceive()) {
+//                translate(newMessage);
+//            }
             msgEvt = new MessageReceivedEvent(newMessage, contact, null, sender, timeStamp, correctedMsgID);
         }
 
@@ -1216,5 +1232,64 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
         // Need to reset isForwardedSentOmemoMessage to receive normal Omemo message
         isForwardedSentOmemoMessage = false;
+    }
+
+    public void translate(MessageJabberImpl chatMessage) {
+        String body = chatMessage.getContent();
+        if (StringUtils.isNotEmpty(body)) {
+            if (!body.matches(ChatMessage.HTML_MARKUP)) {
+                JabberAccountIDImpl accountId = (JabberAccountIDImpl) mPPS.getAccountID();
+                Language language = Language.fromCode(accountId.getTranslationReceive());
+
+                if (Language.NONE != language) {
+                    String aText = translateMessageReceive(language, body);
+                    if (StringUtils.isNotEmpty(aText) && !body.equalsIgnoreCase(aText)) {
+                        body += "\n" + aText;
+                        chatMessage.setContent(body);
+                    }
+                }
+            }
+        }
+    }
+
+    // Thread pool to handle background operations
+    private String translateMessageReceive(final Language language, final String text) {
+        // Define a Callable task that returns a String
+        Callable<String> task = () -> {
+
+            String aText = null;
+            try {
+                aText = Translator.translate(language, text);
+            }
+            catch (Exception e) {
+                String err = "Translation error: " + e.getMessage();
+                if (e instanceof BadTranslatorResponseException) {
+                    String host = ((BadTranslatorResponseException) e).getHost();
+                    int code = ((BadTranslatorResponseException) e).getCode();
+                    err = "Translation error: (" + code + ") " + host;
+                }
+                Timber.w("Translate Message Receive: %s", err);
+                aTalkApp.showToastMessage(err);
+            }
+            return aText;
+        };
+
+        // Submit the task and get a Future object back
+        final ExecutorService eService = Executors.newSingleThreadExecutor();
+        Future<String> future = eService.submit(task);
+        String result = null;
+
+        // Block and wait for the thread to finish, then get the String
+        try {
+            result = future.get();
+        }
+        catch (InterruptedException | ExecutionException e) {
+            Timber.w("Translate Message Receive: %s", e.getMessage());
+        }
+        finally {
+            // 5. Always remember to shut down the executor
+            eService.shutdown();
+        }
+        return result;
     }
 }

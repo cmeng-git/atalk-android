@@ -51,7 +51,6 @@ public class About extends BaseActivity implements View.OnClickListener {
             new String[]{"android-youtube-player","https://github.com/PierfrancescoSoffritti/android-youtube-player"},
             new String[]{"apache-mime4j-core", "https://james.apache.org/mime4j/"},
             new String[]{"Argos Translate", "https://github.com/argosopentech/argos-translate"},
-            new String[]{"bcg729", "https://github.com/BelledonneCommunications/bcg729"},
             new String[]{"bouncycastle", "https://github.com/bcgit/bc-java"},
             new String[]{"ckChangeLog", "https://github.com/cketti/ckChangeLog"},
             new String[]{"commons-codec", "https://github.com/apache/commons-codec"},

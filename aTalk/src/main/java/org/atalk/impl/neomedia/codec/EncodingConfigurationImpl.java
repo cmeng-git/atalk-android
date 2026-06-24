@@ -60,7 +60,6 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
         setEncodingPreference("G723", 8000, 150);
         setEncodingPreference("SILK", 12000, 0);
         setEncodingPreference("SILK", 8000, 0);
-        setEncodingPreference("G729", 8000, 0 /* proprietary */);
 
         // enables by default telephone event(DTMF rfc4733), with lowest
         // priority as it is not needed to order it with audio codecs

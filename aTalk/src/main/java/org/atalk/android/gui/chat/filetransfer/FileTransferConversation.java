@@ -203,7 +203,7 @@ public abstract class FileTransferConversation extends BaseFragment
 
     protected FileTransferConversation(ChatFragment chatFragment, String dir) {
         mChatFragment = chatFragment;
-        mChatActivity = (ChatActivity) chatFragment.getContext();
+        mChatActivity = (ChatActivity) chatFragment.getActivity();
         mConnection = chatFragment.getChatPanel().getProtocolProvider().getConnection();
         mDir = dir;
     }

@@ -63,7 +63,7 @@ public interface ChatMessage {
     String DIR_OUT = "out";
     String DIR_IN = "in";
 
-    /* chat message status or File transfer status - @see FileRecord.STATUS_XXX */
+    /* STATUS: chat message status or File transfer status - @see FileRecord.STATUS_XXX */
     int STATUS_SEND = 0;
     int STATUS_RECEIVED = 1;
     int STATUS_EDITED = 8;
@@ -176,6 +176,41 @@ public interface ChatMessage {
     int MESSAGE_MUC_IN = 81;
 
     /**
+     * Returns the UID of this message.
+     *
+     * @return the UID of this message.
+     */
+    String getMessageUid();
+
+    /**
+     * Returns the UID that should be used for matching correction messages.
+     *
+     * @return the UID that should be used for matching correction messages.
+     */
+    String getUidForCorrection();
+
+    /**
+     * Returns the UID of the message that this message replaces, or <code>null</code> if this is a new message.
+     *
+     * @return the UID of the message that this message replaces, or <code>null</code> if this is a new message.
+     */
+    String getCorrectedMessageUid();
+
+    /**
+     * Returns the server message Id of the message sent - for tracking delivery receipt
+     *
+     * @return the server message Id of the message sent.
+     */
+    String getServerMsgId();
+
+    /**
+     * Returns the remote message Id of the message received - for tracking delivery receipt
+     *
+     * @return the remote message Id of the message received.
+     */
+    String getRemoteMsgId();
+
+    /**
      * The display name of the message sender.
      * Returns the string Id of the message sender.
      * Actual value is pending on message type i.e.:
@@ -192,9 +227,9 @@ public interface ChatMessage {
     String getSender();
 
     /**
-     * Returns the display name of the message sender.
+     * Returns the display name of the entity sending the message.
      *
-     * @return the display name of the message sender
+     * @return the display name of the entity sending the message
      */
     String getSenderName();
 
@@ -254,26 +289,6 @@ public interface ChatMessage {
      */
     int getReceiptStatus();
 
-    /**
-     * Returns the server message Id of the message sent - for tracking delivery receipt
-     *
-     * @return the server message Id of the message sent.
-     */
-    String getServerMsgId();
-
-    /**
-     * Returns the remote message Id of the message received - for tracking delivery receipt
-     *
-     * @return the remote message Id of the message received.
-     */
-    String getRemoteMsgId();
-
-    /**
-     * Returns the UID of this message.
-     *
-     * @return the UID of this message.
-     */
-    String getMessageUid();
 
     /**
      * Returns the message direction i.e. in/put.
@@ -281,20 +296,6 @@ public interface ChatMessage {
      * @return the direction of this message.
      */
     String getMessageDir();
-
-    /**
-     * Returns the UID of the message that this message replaces, or <code>null</code> if this is a new message.
-     *
-     * @return the UID of the message that this message replaces, or <code>null</code> if this is a new message.
-     */
-    String getCorrectedMessageUid();
-
-    /**
-     * Returns the UID that should be used for matching correction messages.
-     *
-     * @return the UID that should be used for matching correction messages.
-     */
-    String getUidForCorrection();
 
     /**
      * Returns the OperationSetFileTransfer of this message.

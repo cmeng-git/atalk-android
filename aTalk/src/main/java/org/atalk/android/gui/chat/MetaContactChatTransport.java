@@ -254,6 +254,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return The contact address corresponding to this chat transport.
      */
+    @Override
     public String getName() {
         return mContact.getAddress();
     }
@@ -263,6 +264,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return The display name corresponding to this chat transport.
      */
+    @Override
     public String getDisplayName() {
         return mContact.getDisplayName();
     }
@@ -283,12 +285,14 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return The display name of this chat transport resource.
      */
+    @Override
     public String getResourceName() {
         if (mContactResource != null)
             return mContactResource.getResourceName();
         return null;
     }
 
+    @Override
     public boolean isDisplayResourceOnly() {
         return isDisplayResourceOnly;
     }
@@ -299,6 +303,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return the presence status of this transport.
      */
+    @Override
     public PresenceStatus getStatus() {
         PresenceStatus contactStatus = mContact.getPresenceStatus();
         if (mContactResource != null) {
@@ -315,6 +320,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return the <code>ProtocolProviderService</code>, corresponding to this chat transport.
      */
+    @Override
     public ProtocolProviderService getProtocolProvider() {
         return mPPS;
     }
@@ -326,6 +332,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @return {@code true} if this chat transport supports instant
      * messaging, otherwise returns {@code false}.
      */
+    @Override
     public boolean allowInstantMessage() {
         // First try to ask the capabilities operation set if such is available.
         if (capOpSet != null) {
@@ -344,6 +351,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return {@code true} if this chat transport supports message corrections and false otherwise.
      */
+    @Override
     public boolean allowMessageCorrection() {
         OperationSetContactCapabilities capOpSet
                 = getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
@@ -373,6 +381,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return {@code true} if this chat transport supports message retraction and false otherwise.
      */
+    @Override
     public boolean allowMessageRetract() {
         MessageRetractionManager manager = MessageRetractionManager.getInstanceFor(mPPS.getConnection());
         return manager.contactSupportsMessageRetraction(mContact.getJid())
@@ -388,6 +397,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @return {@code true} if this chat transport supports message delivery receipts,
      * otherwise returns {@code false}
      */
+    @Override
     public boolean allowsMessageDeliveryReceipt() {
         return isDeliveryReceiptSupported;
     }
@@ -399,6 +409,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return {@code true} if this chat transport supports chat state notifications, otherwise returns {@code false}.
      */
+    @Override
     public boolean allowChatStateNotifications() {
         return isChatStateSupported;
 
@@ -509,6 +520,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @param chatState the chat state notification to send
      */
+    @Override
     public void sendChatStateNotification(ChatState chatState) {
         // If this chat transport does not allow chat state notification then just return
         if (allowChatStateNotifications()) {
@@ -539,6 +551,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @throws Exception if anything goes wrong
      */
+    @Override
     public Object sendSticker(File file, int chatType, FileSendConversation xferCon)
             throws Exception {
         // If this chat transport does not support file transfer we do nothing and just return.
@@ -560,6 +573,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @throws Exception if anything goes wrong
      */
+    @Override
     public Object sendFile(File file, int chatType, FileSendConversation xferCon)
             throws Exception {
         // If this chat transport does not support file transfer we do nothing and just return.
@@ -780,10 +794,12 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return the file length that is supported.
      */
+    @Override
     public long getMaximumFileLength() {
         return ftOpSet.getMaximumFileLength();
     }
 
+    @Override
     public void inviteChatContact(EntityBareJid contactAddress, String reason) {
     }
 
@@ -793,6 +809,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return the parent session of this chat transport
      */
+    @Override
     public ChatSession getParentChatSession() {
         return parentChatSession;
     }
@@ -846,6 +863,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     /**
      * Removes all previously added listeners.
      */
+    @Override
     public void dispose() {
         if (presenceOpSet != null)
             presenceOpSet.removeContactPresenceStatusListener(this);
@@ -856,6 +874,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return the descriptor of this chat transport
      */
+    @Override
     public Object getDescriptor() {
         return mContact;
     }

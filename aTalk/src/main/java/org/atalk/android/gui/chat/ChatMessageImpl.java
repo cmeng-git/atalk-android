@@ -215,6 +215,53 @@ public class ChatMessageImpl implements ChatMessage {
     }
 
     /**
+     * Returns the UID of this message.
+     *
+     * @return the UID of this message.
+     */
+    @Override
+    public String getMessageUid() {
+        return messageUid;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getUidForCorrection() {
+        return messageUid;
+    }
+
+    /**
+     * Returns the UID of the message that this message replaces, or <code>null</code> if this is a new message.
+     *
+     * @return the UID of the message that this message replaces, or <code>null</code> if this is a new message.
+     */
+    @Override
+    public String getCorrectedMessageUid() {
+        return correctionUid;
+    }
+
+    /**
+     * Returns the server message Id of the message sent - for tracking delivery receipt
+     *
+     * @return the server message Id of the message sent.
+     */
+    @Override
+    public String getServerMsgId() {
+        return mServerMsgId;
+    }
+
+    /**
+     * Returns the remote message Id of the message received - for tracking delivery receipt
+     *
+     * @return the remote message Id of the message received.
+     */
+    public String getRemoteMsgId() {
+        return mRemoteMsgId;
+    }
+
+    /**
      * Returns the name of the entity sending the message.
      *
      * @return the name of the entity sending the message.
@@ -304,21 +351,21 @@ public class ChatMessageImpl implements ChatMessage {
     }
 
     /**
-     * Set the message content; clear cachedOutput so getMessageBody will regenerated content.
-     *
-     * @param content message content to be overwritten
-     */
-    public void setMessageBody(String content) {
-        messageBody = content;
-        cachedOutput = null;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public String getMessageContent() {
         return messageBody;
+    }
+
+    /**
+     * Set the message content; clear cachedOutput so getMessageBody will regenerated content.
+     *
+     * @param content message content to be overwritten
+     */
+    public void setMessageContent(String content) {
+        messageBody = content;
+        cachedOutput = null;
     }
 
     /**
@@ -354,22 +401,13 @@ public class ChatMessageImpl implements ChatMessage {
     }
 
     /**
-     * Returns the server message Id of the message sent - for tracking delivery receipt
+     * Returns the message direction i.e. in/put.
      *
-     * @return the server message Id of the message sent.
+     * @return the direction of this message.
      */
     @Override
-    public String getServerMsgId() {
-        return mServerMsgId;
-    }
-
-    /**
-     * Returns the remote message Id of the message received - for tracking delivery receipt
-     *
-     * @return the remote message Id of the message received.
-     */
-    public String getRemoteMsgId() {
-        return mRemoteMsgId;
+    public String getMessageDir() {
+        return mDirection;
     }
 
     /**
@@ -419,14 +457,6 @@ public class ChatMessageImpl implements ChatMessage {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getUidForCorrection() {
-        return messageUid;
-    }
-
-    /**
      * Returns the OperationSetFileTransfer of this message.
      *
      * @return the OperationSetFileTransfer of this message.
@@ -468,36 +498,6 @@ public class ChatMessageImpl implements ChatMessage {
     @Override
     public FileRecord getFileRecord() {
         return fileRecord;
-    }
-
-    /**
-     * Returns the UID of this message.
-     *
-     * @return the UID of this message.
-     */
-    @Override
-    public String getMessageUid() {
-        return messageUid;
-    }
-
-    /**
-     * Returns the message direction i.e. in/put.
-     *
-     * @return the direction of this message.
-     */
-    @Override
-    public String getMessageDir() {
-        return mDirection;
-    }
-
-    /**
-     * Returns the UID of the message that this message replaces, or <code>null</code> if this is a new message.
-     *
-     * @return the UID of the message that this message replaces, or <code>null</code> if this is a new message.
-     */
-    @Override
-    public String getCorrectedMessageUid() {
-        return correctionUid;
     }
 
     static public ChatMessageImpl getMsgForEvent(MessageDeliveredEvent evt) {

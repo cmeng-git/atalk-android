@@ -15,14 +15,14 @@ import org.jivesoftware.smackx.omemo.OmemoManager;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public interface OperationSetBasicInstantMessaging extends OperationSet
-{
+public interface OperationSetBasicInstantMessaging extends OperationSet {
     /**
      * Create a IMessage instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
      * @param encType the encryption type for the <code>content</code>
      * @param subject a <code>String</code> subject or <code>null</code> for now subject.
+     *
      * @return the newly created message.
      */
     IMessage createMessage(String content, int encType, String subject);
@@ -32,6 +32,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      * content type and encoding.
      *
      * @param messageText the string content of the message.
+     *
      * @return IMessage the newly created message
      */
     IMessage createMessage(String messageText);
@@ -44,6 +45,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      * @param messageText the string content of the message.
      * @param encType the mime and encryption type for the <code>content</code>
      * @param messageUID the unique identifier of this message.
+     *
      * @return IMessage the newly created message
      */
     IMessage createMessageWithUid(String messageText, int encType, String messageUID);
@@ -53,6 +55,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      *
      * @param to the <code>Contact</code> to send <code>message</code> to
      * @param message the <code>IMessage</code> to send.
+     *
      * @throws java.lang.IllegalStateException if the underlying ICQ stack is not registered and initialized.
      * @throws java.lang.IllegalArgumentException if <code>to</code> is not an instance belonging to the underlying implementation.
      */
@@ -66,6 +69,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      * @param to the <code>Contact</code> to send <code>message</code> to
      * @param toResource the resource to which the message should be send
      * @param message the <code>IMessage</code> to send.
+     *
      * @throws java.lang.IllegalStateException if the underlying ICQ stack is not registered and initialized.
      * @throws java.lang.IllegalArgumentException if <code>to</code> is not an instance belonging to the underlying implementation.
      */
@@ -110,6 +114,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      * Determines whether the protocol supports the supplied content type
      *
      * @param mimeType the mime type we want to check
+     *
      * @return <code>true</code> if the protocol supports it and <code>false</code> otherwise.
      */
     boolean isContentTypeSupported(int mimeType);
@@ -119,6 +124,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      *
      * @param mimeType the encode mode we want to check
      * @param contact contact which is checked for supported encType
+     *
      * @return <code>true</code> if the contact supports it and <code>false</code> otherwise.
      */
     boolean isContentTypeSupported(int mimeType, Contact contact);

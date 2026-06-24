@@ -49,8 +49,8 @@ public class FileHistoryConversation extends FileTransferConversation {
         return fragmentFHC;
     }
 
-    private FileHistoryConversation(ChatFragment cPanel, String dir) {
-        super(cPanel, dir);
+    private FileHistoryConversation(ChatFragment chatFragment, String dir) {
+        super(chatFragment, dir);
     }
 
     public View FileHistoryConversationForm(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,

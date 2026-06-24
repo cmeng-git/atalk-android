@@ -784,6 +784,13 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         return mDB.update(ChatSession.TABLE_NAME, contentValues, ChatSession.SESSION_UUID + "=?", args);
     }
 
+    /**
+     * Save all the new mam messages received, including multiple instaces of retracted or corrected of the same message.
+     *
+     * @param omemoManager Instance of OmemoManager
+     * @param chatPanel Caller
+     * @param forwardedList mam message received after the specific mamData.
+     */
     public void saveMamIfNotExit(OmemoManager omemoManager, ChatPanel chatPanel, List<Forwarded<Message>> forwardedList) {
         String chatId;
         Object descriptor = chatPanel.getDescriptor();
@@ -834,9 +841,10 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             int msgCount = cursor.getCount();
             cursor.close();
 
-            // Proceed only if mam message is not found in database.
-            // Timber.d("Received MAM: %s: %s", msgCount, message.getBody());
-            if (msgCount == 0) {
+            // Proceed only if mam message is not found in database, OR isRetract || isCorrection.
+            // Server keeps all instances of retracts and corrections on the same messages,\
+            // but in chronological order. So repeat until the final message.
+            if (msgCount == 0 || isRetract || isCorrection) {
                 MessageJabberImpl newMessage = null;
                 // mam messages always sent as <delay/>
                 timeStamp = forwarded.getDelayInformation().getStamp();
@@ -881,8 +889,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                             correctUid = replaceMessage.getIdInitialMessage();
                         }
                         String fromJid = sender.toString();
-                        chatPanel.cacheNextMsg(new ChatMessageImpl(fromJid, fromJid, timeStamp,
-                                msgType, newMessage, correctUid, direction));
+                        ChatMessageImpl chatMessage = new ChatMessageImpl(fromJid, fromJid, timeStamp, msgType, newMessage, correctUid, direction);
+                        chatPanel.updateOrCacheMessage(chatMessage);
                     }
                 }
             }
@@ -1553,7 +1561,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
     // //////////////////////////////////////////////////////////////////////////
     // ChatRoomMessageListener implementation methods for chatRoom
-
+    @Override
     public void messageReceived(ChatRoomMessageReceivedEvent evt) {
         int msgType = evt.getEventType();
 
@@ -1582,7 +1590,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                         hasMatch = true;
                         break;
                     }
-                    // also check and message content
+                    // also check message content
                     IMessage m1 = cev.getMessage();
                     IMessage m2 = evt.getMessage();
 
@@ -1609,6 +1617,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         writeMessage(sessionUuid, ChatMessage.DIR_IN, evt.getSourceChatRoomMember(), message, evt.getTimestamp(), msgType);
     }
 
+    @Override
     public void messageDelivered(ChatRoomMessageDeliveredEvent evt) {
         // return if logging is switched off for this particular chat room
         ChatRoom room = evt.getSourceChatRoom();
@@ -1660,6 +1669,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         writeMessage(sessionUuid, ChatMessage.DIR_OUT, room, message, evt.getTimestamp(), ChatMessage.MESSAGE_MUC_OUT);
     }
 
+    @Override
     public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt) {
         // nothing to do for the history service when delivery failed
     }
@@ -1667,6 +1677,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     // //////////////////////////////////////////////////////////////////////////
     // ChatRoomMessageListener implementation methods for AdHocChatRoom (for icq)
 
+    @Override
     public void messageReceived(AdHocChatRoomMessageReceivedEvent evt) {
         int msgType = evt.getEventType();
 
@@ -1682,6 +1693,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         writeMessage(sessionUuid, ChatMessage.DIR_IN, room, evt.getMessage(), evt.getTimestamp(), msgType);
     }
 
+    @Override
     public void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt) {
         // return if logging is switched off for this particular chat room
         AdHocChatRoom room = evt.getSourceChatRoom();
@@ -1695,6 +1707,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         writeMessage(sessionUuid, ChatMessage.DIR_OUT, room, evt.getMessage(), evt.getTimestamp(), evt.getEventType());
     }
 
+    @Override
     public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt) {
         // nothing to do for the history service when delivery failed
     }

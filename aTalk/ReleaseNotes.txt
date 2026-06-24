@@ -1,5 +1,30 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        6.3.0 (603000)
+Release Date:   06/24/2026
+Author:         cmeng
+- When Translate receive is enabled, aTalk performs translation on both sent/received messages when the chat session is refreshed.
+- Translate send/receive options are available only if their respective Translation Language are specified.
+- Incoming message translated content is only saved cache; not in DB as it is not part of the message received.
+  Note: there is a delay of 1s/message in translation.
+- Need to handle multiple instances of Retract/Correction of the same message during mam retrieval.
+  Server keeps every instances of user retract/correction actions on the same message.
+- Revert v6.1.0 changes i.e. ChatSessionListener in ChatFragment must remain active; ChatPanel#msgCache update is sufficient.
+  ChatMessage in ChatPanel#msgCache and ChatFragment.ChatListAdapter#msgDisplays, both refer to the same instance.
+  The implemented fix causes android arbitrary destroy processes, hence NPR during file send and view refresh.
+- Missing text after <' when chat view is refreshed, error reintroduced in 6.2.0.
+- Remove bcg729 jni library support.
+
+*** Observation ***
+- Incoming message language translated content is saved in DB; otherwise there is a delay of 1s/message when the chat is open.
+  Drop this implementation as saved content does not reflect actual received messages.
+  Instead only saved in cache; closing active chat will remove all translated text.
+- v6.1.0 changes cause major problem, and android seems to arbitrary destroy activities/process causing NPR in
+   a. FileTransferConversation chatFragment.getActivity() == null
+   b. ChatControl#sendMessage, mChatTransport.sendInstantMessage has NPR
+- On first join chatroom, the last received message get repeated - under investigation.
+
+=========================================================================
 Version:        6.2.0 (602000)
 Release Date:   06/18/2026
 Author:         cmeng

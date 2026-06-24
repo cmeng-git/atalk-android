@@ -61,8 +61,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 602000
-        versionName "6.2.0"
+        versionCode 603000
+        versionName "6.3.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -571,7 +571,7 @@ dependencies {
 }
 
 /*
- * This task downloads lib sources for vpx, opus, speex, and bcg729 per the specified version in the scripts.
+ * This task downloads lib sources for opus, and speex/ogg per the specified version in the scripts.
  * Build of the dynamic libraries *.so for vpx, openssl, ffmpeg and x264 etc are performed by android NDKBuild.
  * This task must be executed at least once prior to aTalk apk build process.
  * It is also being executed in buildJniStaticLibs(), and this task can be omitted.

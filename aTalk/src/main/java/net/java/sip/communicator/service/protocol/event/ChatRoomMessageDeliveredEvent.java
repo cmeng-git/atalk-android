@@ -40,7 +40,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject {
     /**
      * The ID of the message being corrected, or null if this was a new message and not a message correction.
      */
-    private String mCorrectionUid;
+    private final String mCorrectionUid;
 
     /**
      * The received <code>IMessage</code>.

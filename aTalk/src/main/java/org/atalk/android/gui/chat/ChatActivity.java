@@ -50,6 +50,7 @@ import java.util.concurrent.Executors;
 import net.java.sip.communicator.impl.muc.ChatRoomWrapperImpl;
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.JabberAccountIDImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ChatRoom;
@@ -59,6 +60,7 @@ import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceChangeEvent;
 import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
@@ -103,6 +105,7 @@ import org.json.JSONObject;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 
+import space.dynomake.libretranslate.Language;
 import timber.log.Timber;
 
 /**
@@ -191,6 +194,10 @@ public class ChatActivity extends BaseActivity
     private int eraseMode = -1;
     private ChatPanel selectedChatPanel;
     private static Contact mRecipient;
+
+    // Translate enable/disable visible only if the Translation Languages are defined.
+    boolean translateSendVisible = false;
+    boolean translateReceiveVisible = false;
 
     private ChatRoomConfiguration chatRoomConfig;
     private CryptoFragment cryptoFragment;
@@ -427,6 +434,11 @@ public class ChatActivity extends BaseActivity
             }
         }
 
+        ProtocolProviderService pps = selectedChatPanel.getProtocolProvider();
+        JabberAccountIDImpl accountId = (JabberAccountIDImpl) pps.getAccountID();
+        translateSendVisible = Language.NONE != Language.fromCode(accountId.getTranslationSend());
+        translateReceiveVisible = Language.NONE != Language.fromCode(accountId.getTranslationReceive());
+
         // Leave last chat intent by updating general notification
         AppUtils.clearGeneralNotification(aTalkApp.getInstance());
     }
@@ -536,12 +548,12 @@ public class ChatActivity extends BaseActivity
                         ? R.string.tts_disable : R.string.tts_enable);
 
                 // update Language Translate Send enable option item title for the contact only if not DomainJid
-                mTranslateSend.setVisible(!isDomainJid);
+                mTranslateSend.setVisible(translateSendVisible && !isDomainJid);
                 mTranslateSend.setTitle(mRecipient != null && mRecipient.isTranslateSend()
                         ? R.string.translation_sent_disable : R.string.translation_sent_enable);
 
                 // update Language Translate Receive enable option item title for the contact only if not DomainJid
-                mTranslateReceive.setVisible(!isDomainJid);
+                mTranslateReceive.setVisible(translateReceiveVisible && !isDomainJid);
                 mTranslateReceive.setTitle(mRecipient != null && mRecipient.isTranslateReceive()
                         ? R.string.translation_receive_disable : R.string.translation_receive_enable);
 
@@ -584,12 +596,12 @@ public class ChatActivity extends BaseActivity
                     ? R.string.tts_disable : R.string.tts_enable);
 
             // update Language Translate Send enable option item title for the contact only if not DomainJid
-            mTranslateSend.setVisible(isJoined);
+            mTranslateSend.setVisible(isJoined && translateSendVisible);
             mTranslateSend.setTitle(chatRoomWrapper.isTranslateSend()
                     ? R.string.translation_sent_disable : R.string.translation_sent_enable);
 
             // update Language Translate Receive enable option item title for the contact only if not DomainJid
-            mTranslateReceive.setVisible(isJoined);
+            mTranslateReceive.setVisible(isJoined && translateReceiveVisible);
             mTranslateReceive.setTitle(chatRoomWrapper.isTranslateReceive()
                     ? R.string.translation_receive_disable : R.string.translation_receive_enable);
 

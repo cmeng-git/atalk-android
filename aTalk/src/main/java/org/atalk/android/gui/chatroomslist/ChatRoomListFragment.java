@@ -39,6 +39,7 @@ import androidx.fragment.app.FragmentTransaction;
 import java.util.List;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
+import net.java.sip.communicator.impl.protocol.jabber.JabberAccountIDImpl;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
@@ -64,6 +65,7 @@ import org.atalk.android.gui.util.ViewUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jxmpp.util.XmppStringUtils;
 
+import space.dynomake.libretranslate.Language;
 import timber.log.Timber;
 
 /**
@@ -300,6 +302,11 @@ public class ChatRoomListFragment extends BaseFragment
         popup.getMenuInflater().inflate(R.menu.chatroom_ctx_menu, menu);
         popup.setOnMenuItemClickListener(new PopupMenuItemClick());
 
+        ProtocolProviderService pps = crWrapper.getProtocolProvider();
+        JabberAccountIDImpl accountId = (JabberAccountIDImpl) pps.getAccountID();
+        boolean translateSendVisible = Language.NONE != Language.fromCode(accountId.getTranslationSend());
+        boolean translateReceiveVisible = Language.NONE != Language.fromCode(accountId.getTranslationReceive());
+
         // Remember clicked chatRoomWrapper
         mClickedChatRoom = crWrapper;
 
@@ -314,11 +321,13 @@ public class ChatRoomListFragment extends BaseFragment
         mChatroomTranslateSend = menu.findItem(R.id.chatroom_translate_send);
         mChatroomTranslateSend.setTitle(crWrapper.isTranslateSend()
                 ? R.string.translation_sent_disable : R.string.translation_sent_enable);
+        mChatroomTranslateSend.setVisible(translateSendVisible);
 
         // update Language Translate Receive enable option item title for the contact only if not DomainJid
         mChatroomTranslateReceive = menu.findItem(R.id.chatroom_translate_receive);
         mChatroomTranslateReceive.setTitle(crWrapper.isTranslateReceive()
                 ? R.string.translation_receive_disable : R.string.translation_receive_enable);
+        mChatroomTranslateReceive.setVisible(translateReceiveVisible);
 
         // Only room owner is allowed to destroy chatRoom, or non-joined room (un-deterministic)
         ChatRoomMemberRole role = mClickedChatRoom.getChatRoom().getUserRole();

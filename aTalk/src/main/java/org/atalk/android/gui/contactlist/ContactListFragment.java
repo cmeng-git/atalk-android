@@ -29,6 +29,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import java.util.List;
 
+import net.java.sip.communicator.impl.protocol.jabber.JabberAccountIDImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.gui.Chat;
@@ -71,6 +72,7 @@ import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.DomainJid;
 import org.jxmpp.jid.Jid;
 
+import space.dynomake.libretranslate.Language;
 import timber.log.Timber;
 
 /**
@@ -342,6 +344,17 @@ public class ContactListFragment extends BaseFragment
 
         // Remembers clicked contact
         mClickedContact = metaContact;
+        // Checks if the re-request authorization item should be visible
+        Contact contact = mClickedContact.getDefaultContact();
+        if (contact == null) {
+            Timber.w("No default contact for: %s", mClickedContact);
+            return;
+        }
+        ProtocolProviderService pps = contact.getProtocolProvider();
+        if (pps == null) {
+            Timber.w("No protocol provider found for: %s", contact);
+            return;
+        }
 
         // Checks if close chat option should be visible for this contact
         boolean closeChatVisible = ChatSessionManager.getActiveChat(mClickedContact) != null;
@@ -355,13 +368,6 @@ public class ContactListFragment extends BaseFragment
         // Do not want to offer erase all contacts' chat history
         menu.findItem(R.id.erase_all_contact_chat_history).setVisible(false);
 
-        // Checks if the re-request authorization item should be visible
-        Contact contact = mClickedContact.getDefaultContact();
-        if (contact == null) {
-            Timber.w("No default contact for: %s", mClickedContact);
-            return;
-        }
-
         // update TTS enable option item title for the contact only if not DomainJid
         mChatTtsEnable = menu.findItem(R.id.contact_tts_enable);
         Jid contactJid = contact.getJid();
@@ -371,10 +377,14 @@ public class ContactListFragment extends BaseFragment
                 ? R.string.tts_disable : R.string.tts_enable);
 
         // update Language Translate Send enable option item title for the contact only if not DomainJid
+        JabberAccountIDImpl accountId = (JabberAccountIDImpl) pps.getAccountID();
         mChatTranslateSend = menu.findItem(R.id.chat_translate_send);
         mChatTranslateSend.setVisible(!isDomainJid);
         mChatTranslateSend.setTitle(contact.isTranslateSend()
                 ? R.string.translation_sent_disable : R.string.translation_sent_enable);
+
+        Language language = Language.fromCode(accountId.getTranslationSend());
+        mChatTranslateSend.setVisible(language != Language.NONE);
 
         // update Language Translate Receive enable option item title for the contact only if not DomainJid
         mChatTranslateReceive = menu.findItem(R.id.chat_translate_receive);
@@ -382,13 +392,10 @@ public class ContactListFragment extends BaseFragment
         mChatTranslateReceive.setTitle(contact.isTranslateReceive()
                 ? R.string.translation_receive_disable : R.string.translation_receive_enable);
 
-        ProtocolProviderService pps = contact.getProtocolProvider();
-        if (pps == null) {
-            Timber.w("No protocol provider found for: %s", contact);
-            return;
-        }
-        boolean isOnline = pps.isRegistered();
+        language = Language.fromCode(accountId.getTranslationReceive());
+        mChatTranslateReceive.setVisible(language != Language.NONE);
 
+        boolean isOnline = pps.isRegistered();
         MenuItem miContactBlock = menu.findItem(R.id.contact_blocking);
         if (isOnline) {
             XMPPConnection connection = pps.getConnection();

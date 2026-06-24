@@ -18,13 +18,18 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TimeZone;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.JabberAccountIDImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.gui.Chat;
@@ -82,6 +87,9 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
+import space.dynomake.libretranslate.Language;
+import space.dynomake.libretranslate.Translator;
+import space.dynomake.libretranslate.exception.BadTranslatorResponseException;
 import timber.log.Timber;
 
 /**
@@ -122,7 +130,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
     /**
      * The current chat transport.
      */
-    private ChatTransport mCurrentChatTransport;
+    private ChatTransport mChatTransport;
 
     /**
      * The chat history filter for retrieving history messages.
@@ -137,6 +145,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      * must kept up to date with the ChatSession UI messages.
      * <p>
      * Important: when historyLog is disabled i.e. all messages exchanges are only saved in msgCache.
+     * CLosing of chat will destroy all the cached contents.
      * <p>
      * Use CopyOnWriteArrayList instead to avoid ChatFragment#prependMessages ConcurrentModificationException
      */
@@ -245,17 +254,17 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
     public void setChatSession(ChatSession chatSession) {
         if (mChatSession != null) {
             // remove any old listener if present.
-            mCurrentChatTransport.removeInstantMessageListener(this);
+            mChatTransport.removeInstantMessageListener(this);
             mMHS.removeMessageReceiptListener(this);
         }
 
         mChatSession = chatSession;
         mChatId = chatSession.getChatId();
-        mCurrentChatTransport = mChatSession.getCurrentChatTransport();
-        mCurrentChatTransport.addInstantMessageListener(this);
+        mChatTransport = mChatSession.getCurrentChatTransport();
+        mChatTransport.addInstantMessageListener(this);
 
         // only metaContact chatSession supports Receipt status
-        // && mCurrentChatTransport.allowsMessageDeliveryReceipt()) is true only a few ms later; so cannot check
+        // && mChatTransport.allowsMessageDeliveryReceipt()) is true only a few ms later; so cannot check
         if (mMetaContact != null) {
             mMHS.addMessageReceiptListener(this);
         }
@@ -268,7 +277,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      * @return the protocolProvider associated with this chat panel.
      */
     public ProtocolProviderService getProtocolProvider() {
-        return mCurrentChatTransport.getProtocolProvider();
+        return mChatTransport.getProtocolProvider();
     }
 
     /**
@@ -359,9 +368,8 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      * model which operationally outlives this instance).
      */
     public void dispose() {
-        mCurrentChatTransport.removeInstantMessageListener(this);
+        mChatTransport.removeInstantMessageListener(this);
         mMHS.removeMessageReceiptListener(this);
-
         mChatSession.dispose();
     }
 
@@ -392,7 +400,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      */
     public void addChatStateListener(ChatStateNotificationsListener l) {
         OperationSetChatStateNotifications chatStateOpSet
-                = mCurrentChatTransport.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
+                = mChatTransport.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
 
         if (chatStateOpSet != null) {
             chatStateOpSet.addChatStateNotificationsListener(l);
@@ -406,7 +414,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      */
     public void removeChatStateListener(ChatStateNotificationsListener l) {
         OperationSetChatStateNotifications chatStateOpSet
-                = mCurrentChatTransport.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
+                = mChatTransport.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
 
         if (chatStateOpSet != null) {
             chatStateOpSet.removeChatStateNotificationsListener(l);
@@ -523,13 +531,19 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
                     msgHistory.add(ChatMessageImpl.getMsgForEvent((MessageDeliveredEvent) o));
                 }
                 else if (o instanceof MessageReceivedEvent) {
-                    msgHistory.add(ChatMessageImpl.getMsgForEvent((MessageReceivedEvent) o));
+                    ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent((MessageReceivedEvent) o);
+                    // Translate error code 429, too many requests; so skipp man and history translation.
+                    // translateIfRequire(chatMessage);
+                    msgHistory.add(chatMessage);
                 }
                 else if (o instanceof ChatRoomMessageDeliveredEvent) {
                     msgHistory.add(ChatMessageImpl.getMsgForEvent((ChatRoomMessageDeliveredEvent) o));
                 }
                 else if (o instanceof ChatRoomMessageReceivedEvent) {
-                    msgHistory.add(ChatMessageImpl.getMsgForEvent((ChatRoomMessageReceivedEvent) o));
+                    ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent((ChatRoomMessageReceivedEvent) o);
+                    // Translate error code 429, too many requests; so skipp man and history translation.
+                    // translateIfRequire(chatMessage);
+                    msgHistory.add(chatMessage);
                 }
                 else if (o instanceof FileRecord) {
                     msgHistory.add(ChatMessageImpl.getMsgForEvent((FileRecord) o));
@@ -584,14 +598,16 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         while (historyIdx >= 0 && cacheIdx >= 0) {
             ChatMessage historyMsg = msgHistory.get(historyIdx);
             ChatMessage cacheMsg = msgCache.get(cacheIdx);
+            Date historyDate = historyMsg.getDate();
+            Date cacheDate = cacheMsg.getDate();
 
-            if (historyMsg.getDate().after(cacheMsg.getDate())) {
+            if (historyDate.after(cacheDate)) {
                 mergedList.add(0, historyMsg);
-                historyIdx--;
+                    historyIdx--;
             }
-            else {
+            else if (historyDate.before(cacheDate)) {
                 mergedList.add(0, cacheMsg);
-                cacheIdx--;
+                    cacheIdx--;
             }
         }
 
@@ -637,10 +653,10 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         MessageHistoryServiceImpl mMHS = MessageHistoryActivator.getMessageHistoryService();
         Date lmrDate = mMHS.getLastMessageDateForSessionUuid(sessionUuid);
         Date mamDate = mMHS.getMamDate(sessionUuid);
-
         if ((lmrDate != null) && (mamDate != null) && mamDate.before(lmrDate)) {
             mamDate = lmrDate;
         }
+
         // Must use a valid mamDate in memQuery; default to fetch last 7 days if none found
         if (mamDate == null) {
             Calendar cal = Calendar.getInstance();
@@ -680,74 +696,6 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         mamDate = mMHS.getMamDate(sessionUuid);
         mamDateTS = mamDate.getTime();
         return true;
-    }
-
-    /**
-     * Update the file transfer status in the msgCache; must do this else file transfer
-     * will be reactivated onResume chat. Also important if historyLog is disabled.
-     * The function is called from FileConversation in chatFragment.
-     *
-     * @param msgUuid ChatMessage uuid
-     * @param status File transfer status
-     * @param fileName the downloaded fileName
-     * @param recordType File record type see ChatMessage MESSAGE_FILE_
-     */
-    public void updateCacheFTRecord(String msgUuid, int status, String fileName, int encType, int recordType) {
-        int cacheIdx = msgCache.size() - 1;
-        while (cacheIdx >= 0) {
-            ChatMessageImpl cacheMsg = (ChatMessageImpl) msgCache.get(cacheIdx);
-            // 20220709: cacheMsg.getMessageUid() can be null
-            if (msgUuid.equals(cacheMsg.getMessageUid())) {
-                cacheMsg.updateFTStatus(mDescriptor, msgUuid, status, fileName, encType, recordType, cacheMsg.getMessageDir());
-                // Timber.d("updateCacheFTRecord msgUid: %s => %s (%s)", msgUuid, status, recordType );
-                break;
-            }
-            cacheIdx--;
-        }
-    }
-
-    /**
-     * Update body text/status cached message of the given msgId.
-     * The update is for sent message only, and ServerMsgId is used for comparison with the msgId.
-     *
-     * @param msgId ChatMessage Id
-     * @param body message body text to status to update
-     * @param status message status e.g. deleted, edited etc
-     */
-    public void updateCacheMessage(String msgId, String body, int status) {
-        int cacheIdx = msgCache.size() - 1;
-        while (cacheIdx >= 0) {
-            ChatMessageImpl cacheMsg = (ChatMessageImpl) msgCache.get(cacheIdx);
-            if (msgId.equals(cacheMsg.getMessageUid())) {
-                cacheMsg.setMessageBody(body);
-                cacheMsg.setStatus(status);
-                break;
-            }
-            cacheIdx--;
-        }
-    }
-
-    /**
-     * Remove user deleted messages from msgCache specified deletedUUIDs.
-     * Null will clear every record in msgCache.
-     * It uses message UUID for both incoming and outgoing messages.
-     *
-     * @param deletedUUIDs List of ChatMessage uuid to be deleted. Null clear msgCache.
-     */
-    public void clearCacheMessage(List<String> deletedUUIDs) {
-        if (deletedUUIDs != null) {
-            int cacheIdx = msgCache.size() - 1;
-            while (cacheIdx >= 0) {
-                ChatMessageImpl cacheMsg = (ChatMessageImpl) msgCache.get(cacheIdx);
-                if (deletedUUIDs.contains(cacheMsg.getMessageUid())) {
-                    msgCache.remove(cacheIdx);
-                }
-                cacheIdx--;
-            }
-        }
-        else {
-            msgCache.clear();
-        }
     }
 
     /**
@@ -819,7 +767,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
             encryption = IMessage.ENCRYPTION_OMEMO;
 
         try {
-            mCurrentChatTransport.sendInstantMessage(message, encryption | encType, null);
+            mChatTransport.sendInstantMessage(message, encryption | encType, null);
         }
         catch (Exception ex) {
             aTalkApp.showToastMessage(ex.getMessage());
@@ -869,14 +817,11 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
                     !((ChatRoomWrapper) descriptor).isRoomStatusEnable())
                 return;
         }
-        String correctionId = chatMessage.getCorrectedMessageUid();
-        String msgContent = chatMessage.getMessageContent();
 
-        if (ChatMessage.STATUS_DELETED == chatMessage.getStatus()) {
-            updateCacheMessage(chatMessage.getMessageUid(), msgContent, ChatMessage.STATUS_DELETED);
-        }
-        else if (correctionId != null) {
-            updateCacheMessage(correctionId, msgContent, ChatMessage.STATUS_EDITED);
+        int msgStatus = chatMessage.getStatus();
+        boolean isUpdate = ChatMessage.STATUS_DELETED == msgStatus || ChatMessage.STATUS_EDITED == msgStatus;
+        if (isUpdate) {
+            updateOrCacheMessage(chatMessage);
         }
         else if (!(cacheNextMsg(chatMessage))) {
             Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, chatMessage.getMessageUid());
@@ -894,20 +839,95 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         }
     }
 
+
+    public void translateIfRequire(ChatMessageImpl chatMessage) {
+        String body = chatMessage.getMessageContent();
+        if (StringUtils.isNotEmpty(body)) {
+            if (!body.matches(ChatMessage.HTML_MARKUP)) {
+                int msgType = chatMessage.getMessageType();
+                // Proceed translate for incoming messages and not older than one day.
+                if (ChatMessage.MESSAGE_IN == msgType || ChatMessage.MESSAGE_MUC_IN == msgType) {
+                    // Translation will use the original message content.
+                    String aText = translateMessageReceive(body);
+                    if (StringUtils.isNotEmpty(aText) && !body.equalsIgnoreCase(aText)) {
+                        body += "\n" + aText;
+                        chatMessage.setMessageContent(body);
+                    }
+                }
+            }
+        }
+    }
+
+    // Thread pool to handle background operations
+    private String translateMessageReceive(final String text) {
+        // Define a Callable task that returns a String
+        Callable<String> task = () -> {
+            JabberAccountIDImpl accountId = (JabberAccountIDImpl) mChatTransport.getProtocolProvider().getAccountID();
+            Language language = Language.fromCode(accountId.getTranslationReceive());
+
+            boolean isTranslateReceive = false;
+            if (Language.NONE != language) {
+                if (mDescriptor instanceof MetaContact) {
+                    isTranslateReceive = ((MetaContact) mDescriptor).getDefaultContact().isTranslateReceive();
+                }
+                else {
+                    isTranslateReceive = ((ChatRoomWrapper) mDescriptor).isTranslateReceive();
+                }
+            }
+
+            String aText = null;
+            if (isTranslateReceive) {
+                try {
+                    aText = Translator.translate(language, text);
+                }
+                catch (Exception e) {
+                    String err = "Translation error: " + e.getMessage();
+                    if (e instanceof BadTranslatorResponseException) {
+                        String host = ((BadTranslatorResponseException) e).getHost();
+                        int code = ((BadTranslatorResponseException) e).getCode();
+                        err = "Translation error: (" + code + ") " + host;
+                    }
+                    aTalkApp.showToastMessage(err);
+                }
+            }
+            return aText;
+        };
+
+        // Submit the task and get a Future object back
+        final ExecutorService eService = Executors.newSingleThreadExecutor();
+        Future<String> future = eService.submit(task);
+        String result = null;
+
+        // Block and wait for the thread to finish, then get the String
+        try {
+            result = future.get();
+        }
+        catch (InterruptedException | ExecutionException e) {
+            Timber.w("Translate Message Receive: %s", e.getMessage());
+        }
+        finally {
+            // 5. Always remember to shut down the executor
+            eService.shutdown();
+        }
+        return result;
+    }
+
+
     /**
      * Caches next message when chat is not in focus and it is not being blocked via correctMessage().
      * Otherwise duplicated messages when share link
      *
-     * @param newMsg the next message to cache.
+     * @param chatMessage the next message to cache.
      *
      * @return true if newMsg added successfully to the msgCache
      */
-    public boolean cacheNextMsg(ChatMessageImpl newMsg) {
+    public boolean cacheNextMsg(ChatMessageImpl chatMessage) {
+        translateIfRequire(chatMessage);
         // Timber.d("Cache blocked is %s for: %s", cacheBlocked, newMsg.getMessageBody());
         if (!cacheBlocked) {
             // FFR: ANR synchronized (cacheLock); fixed with new msgCache merging optimization (20221229)
             synchronized (cacheLock) {
-                return (cacheUpdated = msgCache.add(newMsg));
+                return (cacheUpdated = msgCache.add(chatMessage));
             }
         }
         else {
@@ -915,6 +935,99 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
             cacheUpdated = null;
         }
         return false;
+    }
+
+    /**
+     * Update content/status cached message of the given msgId for Retraction and Correction Messages.
+     * The update content is also translated with the defined Language if enabled;
+     * but only for incoming messages.
+     *
+     * @param chatMessage an instance of ChatMessage
+     */
+    public boolean updateCacheMessage(ChatMessageImpl chatMessage) {
+        int msgType = chatMessage.getMessageType();
+        String msgContent = chatMessage.getMessageContent();
+        int msgStatus = chatMessage.getStatus();
+        String msgId = ChatMessage.STATUS_EDITED == msgStatus ?
+                chatMessage.getCorrectedMessageUid() : chatMessage.getMessageUid();
+
+        int cacheIdx = msgCache.size() - 1;
+        while (cacheIdx >= 0) {
+            ChatMessageImpl cachedMessage = (ChatMessageImpl) msgCache.get(cacheIdx);
+            if (msgId.equals(cachedMessage.getMessageUid())) {
+                if (!msgContent.matches(ChatMessage.HTML_MARKUP) &&
+                        (ChatMessage.MESSAGE_IN == msgType || ChatMessage.MESSAGE_MUC_IN == msgType)) {
+                    String aText = translateMessageReceive(msgContent);
+                    if (StringUtils.isNotEmpty(aText) && !msgContent.equalsIgnoreCase(aText)) {
+                        msgContent += "\n" + aText;
+                    }
+                }
+                cachedMessage.setMessageContent(msgContent);
+                cachedMessage.setStatus(msgStatus);
+                return true;
+            }
+            cacheIdx--;
+        }
+        return false;
+    }
+
+    /**
+     * Update cached message if found, else save a new copy in msgCache.
+     * use mainly by MessageHistoryServiceImpl in saveMamIfNotExit().
+     *
+     * @param chatMessage the new message to cache.
+     */
+    public void updateOrCacheMessage(ChatMessageImpl chatMessage) {
+        if (!updateCacheMessage(chatMessage)) {
+            cacheNextMsg(chatMessage);
+        }
+    }
+
+    /**
+     * Remove user deleted messages from msgCache specified deletedUUIDs.
+     * Null will clear every record in msgCache.
+     * It uses message UUID for both incoming and outgoing messages.
+     *
+     * @param deletedUUIDs List of ChatMessage uuid to be deleted. Null clear msgCache.
+     */
+    public void clearCacheMessage(List<String> deletedUUIDs) {
+        if (deletedUUIDs != null) {
+            int cacheIdx = msgCache.size() - 1;
+            while (cacheIdx >= 0) {
+                ChatMessageImpl cacheMsg = (ChatMessageImpl) msgCache.get(cacheIdx);
+                if (deletedUUIDs.contains(cacheMsg.getMessageUid())) {
+                    msgCache.remove(cacheIdx);
+                }
+                cacheIdx--;
+            }
+        }
+        else {
+            msgCache.clear();
+        }
+    }
+
+    /**
+     * Update the file transfer status in the msgCache; must do this else file transfer
+     * will be reactivated onResume chat. Also important if historyLog is disabled.
+     * The function is called from FileConversation in chatFragment.
+     *
+     * @param msgUuid ChatMessage uuid
+     * @param status File transfer status
+     * @param fileName the downloaded fileName
+     * @param recordType File record type see ChatMessage MESSAGE_FILE_
+     */
+    public void updateCacheFTRecord(String msgUuid, int status, String fileName, int encType, int recordType) {
+        int cacheIdx = msgCache.size() - 1;
+        while (cacheIdx >= 0) {
+            ChatMessageImpl cacheMsg = (ChatMessageImpl) msgCache.get(cacheIdx);
+            // 20220709: cacheMsg.getMessageUid() can be null
+            if (msgUuid.equals(cacheMsg.getMessageUid())) {
+                cacheMsg.updateFTStatus(mDescriptor, msgUuid, status, fileName, encType, recordType, cacheMsg.getMessageDir());
+                // Timber.d("updateCacheFTRecord msgUid: %s => %s (%s)", msgUuid, status, recordType );
+                break;
+            }
+            cacheIdx--;
+        }
     }
 
     public boolean isChatTtsEnable() {
@@ -983,7 +1096,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         // Create the new msg Uuid for record saved in dB
         String msgUuid = String.valueOf(System.currentTimeMillis()) + hashCode();
 
-        Object sender = mCurrentChatTransport.getDescriptor();
+        Object sender = mChatTransport.getDescriptor();
         if (sender instanceof Contact) {
             sendTo = ((Contact) sender).getAddress();
         }
@@ -1078,25 +1191,23 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         Contact protocolContact = messageReceivedEvent.getSourceContact();
         if ((mMetaContact != null) && mMetaContact.containsContact(protocolContact)) {
             ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent(messageReceivedEvent);
-            String correctionId = chatMessage.getCorrectedMessageUid();
+            int msgStatus = chatMessage.getStatus();
+            boolean isUpdate = ChatMessage.STATUS_DELETED == msgStatus || ChatMessage.STATUS_EDITED == msgStatus;
 
-            if (!mamChecked || isMessageNew(chatMessage) || messageReceivedEvent.isRetractMessage() || correctionId != null) {
-                String msgContent = chatMessage.getMessageContent();
-                String msgUid = chatMessage.getMessageUid();
-
+            // if (!mamChecked || isMessageNew(chatMessage) || messageReceivedEvent.isRetractMessage() || correctionId != null) {
+            if (!mamChecked || isMessageNew(chatMessage) || isUpdate) {
                 // Must update cache messages for both retract and correction here. ChatFragment may not in focus.
-                if (messageReceivedEvent.isRetractMessage()) {
-                    updateCacheMessage(msgUid, msgContent, ChatMessage.STATUS_DELETED);
-                }
-                else if (correctionId != null) {
-                    updateCacheMessage(correctionId, msgContent, ChatMessage.STATUS_EDITED);
+                if (isUpdate) {
+                    updateCacheMessage(chatMessage);
                 }
                 else if (!cacheNextMsg(chatMessage)) {
-                    Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, msgUid);
+                    Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, chatMessage.getMessageUid());
                 }
 
                 for (ChatSessionListener l : sessionsListeners) {
-                    l.messageReceived(messageReceivedEvent);
+                    // Send the translated chatMessage to chatFragment instead for messageReceived.
+                    // l.messageReceived(messageReceivedEvent);
+                    l.sessionMessageAdded(chatMessage);
                 }
                 messageSpeak(chatMessage, ttsDelay);
             }
@@ -1113,24 +1224,18 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
          * removed when the chat is closed. Only handle messageReceivedEvent belongs to this.metaContact
          */
         if ((mMetaContact != null) && mMetaContact.containsContact(messageDeliveredEvent.getContact())) {
-
             // return if delivered message does not required local display in chatWindow nor cached
             if (messageDeliveredEvent.getSourceMessage().isRemoteOnly())
                 return;
 
             ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent(messageDeliveredEvent);
-            String msgContent = chatMessage.getMessageContent();
-            String msgUid = chatMessage.getMessageUid();
-            String correctionId = chatMessage.getCorrectedMessageUid();
-
-            if (messageDeliveredEvent.isRetractMessage()) {
-                updateCacheMessage(msgUid, msgContent, ChatMessage.STATUS_DELETED);
-            }
-            else if (correctionId != null) {
-                updateCacheMessage(correctionId, msgContent, ChatMessage.STATUS_EDITED);
+            int msgStatus = chatMessage.getStatus();
+            boolean isUpdate = ChatMessage.STATUS_DELETED == msgStatus || ChatMessage.STATUS_EDITED == msgStatus;
+            if (isUpdate) {
+                updateCacheMessage(chatMessage);
             }
             else if (!cacheNextMsg(chatMessage)) {
-                Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, msgUid);
+                Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, chatMessage.getMessageUid());
             }
             for (ChatSessionListener l : sessionsListeners) {
                 l.messageDelivered(messageDeliveredEvent);
@@ -1222,7 +1327,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      *
      * @author Pawel Domas
      */
-    interface ChatSessionListener extends MessageListener {
+    public interface ChatSessionListener extends MessageListener {
         void sessionMessageAdded(ChatMessageImpl msg);
 
         void receiptReceived(Jid fromJid, Jid toJid, final String receiptId, Stanza receipt);
@@ -1320,12 +1425,12 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      * @return the first chat transport for the current chat session that supports group chat.
      */
     public ChatTransport findInviteChatTransport() {
-        ProtocolProviderService protocolProvider = mCurrentChatTransport.getProtocolProvider();
+        ProtocolProviderService protocolProvider = mChatTransport.getProtocolProvider();
 
         // We choose between OpSets for multi user chat...
         if (protocolProvider.getOperationSet(OperationSetMultiUserChat.class) != null
                 || protocolProvider.getOperationSet(OperationSetAdHocMultiUserChat.class) != null) {
-            return mCurrentChatTransport;
+            return mChatTransport;
         }
         else {
             Iterator<ChatTransport> chatTransportsIter = mChatSession.getChatTransports();
@@ -1382,7 +1487,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         else {
             for (String contactAddress : chatContacts) {
                 try {
-                    mCurrentChatTransport.inviteChatContact(JidCreate.entityBareFrom(contactAddress), reason);
+                    mChatTransport.inviteChatContact(JidCreate.entityBareFrom(contactAddress), reason);
                 }
                 catch (XmppStringprepException e) {
                     Timber.w("Group chat invitees Jid create error: %s, %s", contactAddress, e.getMessage());
