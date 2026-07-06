@@ -45,6 +45,10 @@
         app:showAsAction="ifRoom">
     </item>
     <item
+        android:id="@+id/chat_message_translate"
+        android:title="@string/translation_received">
+    </item>
+    <item
         android:id="@+id/select_all"
         android:icon="@drawable/ic_select_all_dark"
         android:title="@string/select_all"

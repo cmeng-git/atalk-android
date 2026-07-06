@@ -14,7 +14,7 @@
   Note: the patches defined in libopenssl_patch.sh are for libopenssl-1.0.2<br/>
 
 The ./build-openssl4android.sh script builds both the static libcrypto.a and libssl.a for the various architectures<br/>
-as defined in ./_settings.sh i.e. ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")<br/>
+as defined in ./_settings.sh i.e. ABIS=("armeabi-v7a" "arm64-v8a" "x86_64")<br/>
 All the built libxxx.a and *.h are installed in the ./jni/openssl/android/&lt;ABI>/lib and /include respectively
 
 ### Android libopenssl build instructions

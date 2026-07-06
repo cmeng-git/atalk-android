@@ -64,8 +64,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
 import java.io.File;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -622,6 +620,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
         MenuItem mRetract;
         MenuItem mShare;
         MenuItem mCopy;
+        MenuItem mTranslate;
         MenuItem mSelectAll;
 
         SparseBooleanArray checkedList;
@@ -699,6 +698,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                         MenuItem.SHOW_AS_ACTION_IF_ROOM : MenuItem.SHOW_AS_ACTION_ALWAYS);
             }
 
+            mTranslate.setVisible(mChatPanel.isTranslateReceive());
             mSelectAll.setVisible(chatListAdapter.getCount() > 1);
             mode.invalidate();
             chatListView.setSelection(position);
@@ -899,6 +899,20 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 mode.finish();
                 return true;
 
+            case R.id.chat_message_translate:
+                for (int i = 0; i < checkListSize; i++) {
+                    if (checkedList.valueAt(i)) {
+                        cPos = checkedList.keyAt(i) - headerCount;
+                        cType = chatListAdapter.getItemViewType(cPos);
+                        if (cType == ChatListAdapter.INCOMING_MESSAGE_VIEW) {
+                            chatMsg = chatListAdapter.getChatMessage(cPos);
+                            mChatPanel.addMessageForTranslate((ChatMessageImpl) chatMsg);
+                        }
+                    }
+                }
+                mode.finish();
+                return true;
+
             default:
                 return false;
             }
@@ -919,6 +933,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             mDelete = menu.findItem(R.id.chat_message_del);
             mShare = menu.findItem(R.id.chat_message_share);
             mCopy = menu.findItem(R.id.chat_message_copy);
+            mTranslate = menu.findItem(R.id.chat_message_translate);
             mSelectAll = menu.findItem(R.id.select_all);
 
             isMultiChoiceMode = true;
@@ -1255,7 +1270,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
          *
          * @param message Received message* @param isRetract Denote retracted chatMessage if true, LMC otherwise
          */
-        private void updateRetractCorrectMessage(ChatMessageImpl message) {
+        private void refreshMessageDisplay(ChatMessageImpl message) {
             String msgId = message.getMessageUid();
 
             for (int index = msgDisplays.size(); index-- > 0; ) {
@@ -1265,7 +1280,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 if ((msgSid != null) && msgSid.equals(msgId)) {
                     // ChatPanel#updateCacheMessage also update the same instance of chatMessage in MessageDisplay;
                     // clear msgBody so it can be rebuilt with the new chatMessage Content.
-                    msgDisplays.get(index).initDMessageStatus();
+                    msgDisplays.get(index).update(message);
 
                     runOnUiThread(() -> {
                         chatListAdapter.notifyDataSetInvalidated();
@@ -1663,7 +1678,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                     });
 
                     messageViewHolder.avatarView.setOnLongClickListener(v -> {
-                        showPopupMenuForContact(v, messageViewHolder.mSender);
+                        showPopupMenuForChatroom(v, messageViewHolder.mSender);
                         return true;
                     });
                 }
@@ -1696,22 +1711,21 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
         }
 
         /**
-         * Inflates chatRoom Item popup menu.
+         * Inflates chatRoom Item popup menu when long click on avatar view.
          * Avoid using android contextMenu (in fragment) - truncated menu list
          *
          * @param avatar click view.
          * @param contactJid an instance of ChatRoomWrapper.
          */
-        private void showPopupMenuForContact(View avatar, String contactJid) {
+        private void showPopupMenuForChatroom(View avatar, String contactJid) {
             if (contactJid == null)
                 return;
 
             String nickName = contactJid.replaceAll("(\\w+)[:|@].*", "$1");
             ChatRoom chatRoom = ((ChatRoomWrapper) mChatPanel.getDescriptor()).getChatRoom();
-
-            ChatRoomMember mOccupant = null;
             ChatRoomMemberRole mUserRole = chatRoom.getUserRole();
 
+            ChatRoomMember mOccupant = null;
             List<ChatRoomMember> occupants = chatRoom.getMembers();
             for (ChatRoomMember occupant : occupants) {
                 if (nickName.equals(occupant.getNickName())) {
@@ -1764,7 +1778,6 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 case R.id.chatroom_manage_privilege:
                     if (ChatRoomMemberRole.OWNER == finalOccupant.getRole()) {
                         chatRoom.revokeAdmin(contactJid);
-
                     }
                     else {
                         chatRoom.grantOwnership(contactJid);
@@ -1836,8 +1849,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
         @Override
         public void messageReceived(final MessageReceivedEvent evt) {
             final ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent(evt);
-            if (evt.isRetractMessage() || chatMessage.getCorrectedMessageUid() != null) {
-                updateRetractCorrectMessage(chatMessage);
+            if (ChatMessage.STATUS_RETRACTED == chatMessage.getStatus() || chatMessage.getCorrectedMessageUid() != null) {
+                refreshMessageDisplay(chatMessage);
             }
             else {
                 addMessageImpl(chatMessage);
@@ -1854,8 +1867,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             if ((metaContact != null) && metaContact.equals(mChatPanel.getMetaContact())) {
                 Timber.log(TimberLog.FINER, "MESSAGE DELIVERED: process message to chat for contact: %s MESSAGE: %s",
                         contact.getAddress(), chatMessage.getMessageBody());
-                if (evt.isRetractMessage() || chatMessage.getCorrectedMessageUid() != null) {
-                    updateRetractCorrectMessage(chatMessage);
+                if (ChatMessage.STATUS_RETRACTED == chatMessage.getStatus() || chatMessage.getCorrectedMessageUid() != null) {
+                    refreshMessageDisplay(chatMessage);
                 }
                 else {
                     addMessageImpl(chatMessage);
@@ -1868,12 +1881,13 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             // Do nothing, handled in ChatPanel
         }
 
-        // Add a new message directly without an event triggered; mainly used by chatRoom in/out messages,
+        // Add a new message directly without an event triggered;
+        // mainly used by chatRoom in/out messages,
         // including system message, FTSendRequest, and FTReceived etc.
         @Override
         public void sessionMessageAdded(ChatMessageImpl chatMessage) {
-            if (ChatMessage.STATUS_DELETED == chatMessage.getStatus() || chatMessage.getCorrectedMessageUid() != null) {
-                updateRetractCorrectMessage(chatMessage);
+            if (ChatMessage.STATUS_RETRACTED == chatMessage.getStatus() || chatMessage.getCorrectedMessageUid() != null) {
+                refreshMessageDisplay(chatMessage);
             }
             else {
                 addMessageImpl(chatMessage);
@@ -1884,6 +1898,12 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
         public void receiptReceived(Jid fromJid, Jid toJid, final String receiptId, Stanza receipt) {
             updateMessageDeliveryStatusForId(receiptId, ChatMessage.MESSAGE_DELIVERY_RECEIPT);
         }
+
+        @Override
+        public void updateMessageDisplay(ChatMessageImpl chatMessage) {
+            refreshMessageDisplay(chatMessage);
+        }
+
         // ========== End Implementation of ChatSessionListener ==========
 
         /**
@@ -1933,16 +1953,30 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             private final int rowIdx;
 
             /**
+             * The <code>ChatMessage</code> embedded in the DisplayMessage.
+             */
+            private final ChatMessage mdChatMessage;
+            private final String msgUuid;
+
+            /**
+             * Message Encryption Type.
+             */
+            private int mEncryption;
+
+            /**
              * Message Receipt Status.
              */
             private int receiptStatus;
 
             /**
-             * Message Encryption Type.
+             * Message body cache
              */
-            private final int encryption;
+            private Spanned msgBody;
 
-            private String msgUuid;
+            /**
+             * Date string cache
+             */
+            private String dateStr;
 
             /**
              * Incoming or outgoing File Transfer object
@@ -1954,21 +1988,6 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
              */
 
             private File sFile;
-
-            /**
-             * The <code>ChatMessage</code> embedded in the DisplayMessage.
-             */
-            private ChatMessage mdChatMessage;
-
-            /**
-             * Date string cache
-             */
-            private String dateStr;
-
-            /**
-             * Message body cache
-             */
-            private Spanned msgBody;
 
             /**
              * Incoming message has LatLng info
@@ -1992,7 +2011,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 msgBody = null;
                 fileXfer = null;
                 receiptStatus = msg.getReceiptStatus();
-                encryption = msg.getEncryptionType();
+                mEncryption = msg.getEncryptionType();
 
                 // All system messages do not have UUID i.e. null
                 msgUuid = msg.getMessageUid();
@@ -2102,7 +2121,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             }
 
             public int getEncryption() {
-                return encryption;
+                return mEncryption;
             }
 
             public String getMessageUuid() {
@@ -2133,16 +2152,10 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 return mdChatMessage.getFileRecord();
             }
 
-            private boolean isLessThan3Day(Date date) {
-                Instant timestampInstant = Instant.ofEpochMilli(date.getTime());
-                Instant threeDayAgo = Instant.now().minus(3, ChronoUnit.DAYS);
-                return timestampInstant.isAfter(threeDayAgo);
-            }
-
             /**
              * Process HTML tags with <img/> src, populate the given msgView;
              * async will update the text view image content, so just return null to caller.
-             * Otherwise returns <code>Spanned</code> message body processed for HTML tags.
+             * Otherwise, returns <code>Spanned</code> message body processed for HTML tags.
              * Reuse msgBody if not null to avoid rebuilding process.
              *
              * @param msgView the message view container to be populated
@@ -2222,17 +2235,21 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             }
 
             /**
-             * Updates this display instance with a new message.
-             * Both receiptStatus and serverMsgId of the message will use the new chatMessage
+             * Updates this display instance with a new chatMessage.
+             * Both mEncryption and receiptStatus are updated with the chatMessage
              *
              * @param chatMessage new message content
              */
             public void update(ChatMessage chatMessage) {
-                mdChatMessage = chatMessage;
-                initDMessageStatus();
+                // Following parameters must be set to null for any update to the ChatMessage.
+                // This is to allow rebuild for msgBody and dateStr for view holder display update
+                msgBody = null;
+                dateStr = null;
 
+                // Update message encryption and receiptStatus as user may change text encryption and receipt option
+                // ((ChatMessageImpl) getChatMessage()).setMessageContent(chatMessage.getMessageContent());
+                mEncryption = chatMessage.getEncryptionType();
                 receiptStatus = chatMessage.getReceiptStatus();
-                msgUuid = chatMessage.getMessageUid();
             }
 
             /**
@@ -2243,17 +2260,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
 
             public void updateDeliveryStatus(int deliveryStatus) {
                 ((ChatMessageImpl) mdChatMessage).setReceiptStatus(deliveryStatus);
-                initDMessageStatus();
                 receiptStatus = deliveryStatus;
-            }
-
-            /**
-             * Following parameters must be set to null for any update to the ChatMessage.
-             * This is to allow rebuild for msgBody and dateStr for view holder display update
-             */
-            private void initDMessageStatus() {
-                msgBody = null;
-                dateStr = null;
             }
         }
     }

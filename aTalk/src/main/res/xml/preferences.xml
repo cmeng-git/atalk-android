@@ -52,6 +52,11 @@
         <EditTextPreference
             android:key="translate_server"
             android:title="@string/translation_server" />
+
+        <EditTextPreference
+            android:key="translate_server_apikey"
+            android:title="@string/translation_server_apikey" />
+           android:hint="@string/translation_server_apikey_hint" />
     </PreferenceCategory>
 
     <!-- Chat Security Settings -->

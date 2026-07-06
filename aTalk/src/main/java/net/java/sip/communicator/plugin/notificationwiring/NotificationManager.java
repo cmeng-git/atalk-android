@@ -971,7 +971,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     public void messageReceived(MessageReceivedEvent evt) {
         // Fire notification as INCOMING_FILE is found
         Contact contact = evt.getSourceContact();
-        final IMessage message = evt.getSourceMessage();
+        final IMessage message = evt.getMessage();
         String msgBody = message.getContent();
         String msgUid = message.getMessageUid();
 

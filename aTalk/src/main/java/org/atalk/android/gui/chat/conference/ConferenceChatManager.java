@@ -238,7 +238,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         Date timestamp = evt.getTimestamp();
         IMessage message = evt.getMessage();
         int msgStatus = message.getStatus();
-        boolean skipCheck = ChatMessage.STATUS_DELETED == msgStatus || ChatMessage.STATUS_EDITED == msgStatus;
+        boolean skipCheck = ChatMessage.STATUS_RETRACTED == msgStatus || ChatMessage.STATUS_EDITED == msgStatus;
 
         // Timber.e("Message received skip: %s: %s; %s", skipCheck, msgStatus, message.getContent());
         // cmeng: need to check since the server always send history messages, when start muc session.

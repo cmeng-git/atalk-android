@@ -192,7 +192,7 @@ public class ChatActivity extends BaseActivity
     // Not implemented currently
     private int mCurrentChatType;
     private int eraseMode = -1;
-    private ChatPanel selectedChatPanel;
+    private ChatPanel mChatPanel;
     private static Contact mRecipient;
 
     // Translate enable/disable visible only if the Translation Languages are defined.
@@ -339,8 +339,8 @@ public class ChatActivity extends BaseActivity
     protected void onPause() {
         // Must reset unread message counter on chatSession closed
         // Otherwise, value not clear when user enter and exit chatSession without page slide
-        if (selectedChatPanel != null) {
-            Object descriptor = selectedChatPanel.getChatSession().getDescriptor();
+        if (mChatPanel != null) {
+            Object descriptor = mChatPanel.getChatSession().getDescriptor();
             if (descriptor instanceof MetaContact) {
                 ((MetaContact) descriptor).setUnreadCount(0);
             }
@@ -399,7 +399,7 @@ public class ChatActivity extends BaseActivity
     }
 
     public Object getRecipient() {
-        ChatSession chatSession = selectedChatPanel.getChatSession();
+        ChatSession chatSession = mChatPanel.getChatSession();
         if (chatSession instanceof MetaContactChatSession) {
             return mRecipient;
         } else {
@@ -416,25 +416,25 @@ public class ChatActivity extends BaseActivity
         currentChatId = chatId;
         ChatSessionManager.setCurrentChatId(chatId);
 
-        selectedChatPanel = ChatSessionManager.getActiveChat(chatId);
+        mChatPanel = ChatSessionManager.getActiveChat(chatId);
         // field feedback = can have null?
-        if (selectedChatPanel == null)
+        if (mChatPanel == null)
             return;
 
-        ChatSession chatSession = selectedChatPanel.getChatSession();
+        ChatSession chatSession = mChatPanel.getChatSession();
         if (chatSession instanceof MetaContactChatSession) {
-            mRecipient = selectedChatPanel.getMetaContact().getDefaultContact();
+            mRecipient = mChatPanel.getMetaContact().getDefaultContact();
         }
         else {
             // register for LocalUserChatRoomPresenceChangeEvent to update optionItem onJoin
             OperationSetMultiUserChat opSetMultiUChat
-                    = selectedChatPanel.getProtocolProvider().getOperationSet(OperationSetMultiUserChat.class);
+                    = mChatPanel.getProtocolProvider().getOperationSet(OperationSetMultiUserChat.class);
             if (opSetMultiUChat != null) {
                 opSetMultiUChat.addPresenceListener(this);
             }
         }
 
-        ProtocolProviderService pps = selectedChatPanel.getProtocolProvider();
+        ProtocolProviderService pps = mChatPanel.getProtocolProvider();
         JabberAccountIDImpl accountId = (JabberAccountIDImpl) pps.getAccountID();
         translateSendVisible = Language.NONE != Language.fromCode(accountId.getTranslationSend());
         translateReceiveVisible = Language.NONE != Language.fromCode(accountId.getTranslationReceive());
@@ -509,7 +509,7 @@ public class ChatActivity extends BaseActivity
     }
 
     private boolean hasUploadService() {
-        XMPPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
+        XMPPConnection connection = mChatPanel.getProtocolProvider().getConnection();
         if (connection != null) {
             HttpFileUploadManager httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
             return httpFileUploadManager.isUploadServiceDiscovered();
@@ -519,9 +519,9 @@ public class ChatActivity extends BaseActivity
 
     // Enable option items only applicable to the specific chatSession
     private void setOptionItem() {
-        if ((mMenu != null) && (selectedChatPanel != null)) {
+        if ((mMenu != null) && (mChatPanel != null)) {
             // Enable/disable certain menu items based on current transport type
-            ChatSession chatSession = selectedChatPanel.getChatSession();
+            ChatSession chatSession = mChatPanel.getChatSession();
             boolean contactSession = (chatSession instanceof MetaContactChatSession);
             if (contactSession) {
                 mLeaveChatRoom.setVisible(false);
@@ -573,8 +573,8 @@ public class ChatActivity extends BaseActivity
     }
 
     private void setupChatRoomOptionItem() {
-        if ((mMenu != null) && (selectedChatPanel != null)) {
-            ChatSession chatSession = selectedChatPanel.getChatSession();
+        if ((mMenu != null) && (mChatPanel != null)) {
+            ChatSession chatSession = mChatPanel.getChatSession();
             // Proceed only if it is an instance of ConferenceChatSession
             if (!(chatSession instanceof ConferenceChatSession))
                 return;
@@ -654,10 +654,10 @@ public class ChatActivity extends BaseActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // NPE from field
-        if ((selectedChatPanel == null) || (selectedChatPanel.getChatSession() == null))
+        if ((mChatPanel == null) || (mChatPanel.getChatSession() == null))
             return super.onOptionsItemSelected(item);
 
-        Object descriptor = selectedChatPanel.getChatSession().getDescriptor();
+        Object descriptor = mChatPanel.getChatSession().getDescriptor();
 
         // Common handler for both the ChatRoomWrapper and MetaContact
         switch (item.getItemId()) {
@@ -667,7 +667,7 @@ public class ChatActivity extends BaseActivity
             return true;
 
         case R.id.muc_invite:
-            ChatInviteDialog inviteDialog = new ChatInviteDialog(this, selectedChatPanel);
+            ChatInviteDialog inviteDialog = new ChatInviteDialog(this, mChatPanel);
             inviteDialog.show();
             return true;
 
@@ -683,7 +683,7 @@ public class ChatActivity extends BaseActivity
             return true;
 
         case R.id.send_optout:
-            XMPPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
+            XMPPConnection connection = mChatPanel.getProtocolProvider().getConnection();
             boolean isDomainJid = (mRecipient == null) || (mRecipient.getJid() instanceof DomainBareJid);
 
             if (connection != null && !isDomainJid) {
@@ -708,7 +708,7 @@ public class ChatActivity extends BaseActivity
                 boolean isTtsEnable = chatRoomWrapper.isTtsEnable();
                 chatRoomWrapper.setTtsEnable(!isTtsEnable);
                 mTtsEnable.setTitle(isTtsEnable ? R.string.tts_enable : R.string.tts_disable);
-                selectedChatPanel.updateChatTtsOption();
+                mChatPanel.updateChatTtsOption();
                 return true;
 
             case R.id.chat_translate_send:
@@ -732,14 +732,14 @@ public class ChatActivity extends BaseActivity
                         MUCActivator.getUIService().closeChatRoomWindow(leavedRoomWrapped);
                     }
                 }
-                ChatSessionManager.removeActiveChat(selectedChatPanel);
+                ChatSessionManager.removeActiveChat(mChatPanel);
                 MUCActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
                 MUCActivator.getMUCService().removeChatRoom(chatRoomWrapper);
                 finish();
                 return true;
 
             case R.id.destroy_chat_room:
-                new ChatRoomDestroyDialog().show(this, chatRoomWrapper, selectedChatPanel);
+                new ChatRoomDestroyDialog().show(this, chatRoomWrapper, mChatPanel);
                 // It is safer to just finish. see case R.id.close_chat:
                 finish();
                 return true;
@@ -788,7 +788,7 @@ public class ChatActivity extends BaseActivity
                     memberList.append(getString(R.string.none));
                 }
                 String user = chatRoomWrapper.getProtocolProvider().getAccountID().getUserID();
-                selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_HTML,
+                mChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_HTML,
                         memberList.toString());
                 return true;
             }
@@ -802,7 +802,7 @@ public class ChatActivity extends BaseActivity
                 boolean isTtsEnable = mRecipient.isTtsEnable();
                 mRecipient.setTtsEnable(!isTtsEnable);
                 mTtsEnable.setTitle(isTtsEnable ? R.string.tts_enable : R.string.tts_disable);
-                selectedChatPanel.updateChatTtsOption();
+                mChatPanel.updateChatTtsOption();
                 return true;
 
             case R.id.chat_translate_send:
@@ -831,7 +831,7 @@ public class ChatActivity extends BaseActivity
                 isAudioCall = true;  // fall through to start either audio / video call
 
             case R.id.call_contact_video:
-                AppCallUtil.createCall(this, selectedChatPanel.getMetaContact(), (isAudioCall == null), null);
+                AppCallUtil.createCall(this, mChatPanel.getMetaContact(), (isAudioCall == null), null);
                 return true;
             }
         }
@@ -1109,7 +1109,7 @@ public class ChatActivity extends BaseActivity
 
             case REQUEST_CODE_SHARE_WITH:
                 Timber.d("Share Intent with: REQUEST_CODE_SHARE_WITH");
-                selectedChatPanel.setEditedText(null);
+                mChatPanel.setEditedText(null);
                 if ("text/plain".equals(intent.getType())) {
                     String text = intent.getStringExtra(android.content.Intent.EXTRA_TEXT);
                     if (!TextUtils.isEmpty(text)) {
@@ -1119,7 +1119,7 @@ public class ChatActivity extends BaseActivity
                             break;
                         }
                         else {
-                            selectedChatPanel.setEditedText(text);
+                            mChatPanel.setEditedText(text);
                         }
                     }
                 }
@@ -1134,10 +1134,10 @@ public class ChatActivity extends BaseActivity
 
             case REQUEST_CODE_FORWARD:
                 Timber.d("Share Intent with: REQUEST_CODE_FORWARD");
-                selectedChatPanel.setEditedText(null);
+                mChatPanel.setEditedText(null);
                 String text = (intent.getCategories() == null) ? null : intent.getCategories().toString();
                 if (!TextUtils.isEmpty(text)) {
-                    selectedChatPanel.setEditedText(text);
+                    mChatPanel.setEditedText(text);
                 }
 
                 attachments = Attachment.extractAttachments(this, intent, Attachment.Type.IMAGE);
@@ -1161,7 +1161,7 @@ public class ChatActivity extends BaseActivity
     public void onResult(Location location, String locAddress) {
         String msg = String.format(Locale.US, "%s\ngeo: %s,%s,%.03fm", locAddress,
                 location.getLatitude(), location.getLongitude(), location.getAltitude());
-        selectedChatPanel.sendMessage(msg, IMessage.ENCODE_PLAIN);
+        mChatPanel.sendMessage(msg, IMessage.ENCODE_PLAIN);
     }
 
     /**
@@ -1323,7 +1323,7 @@ public class ChatActivity extends BaseActivity
                                     String imageUrl = attributes.getString("thumbnail_url");
 
                                     urlInfo = getString(R.string.url_media_share, imageUrl, title, mUrl);
-                                    selectedChatPanel.sendMessage(urlInfo, IMessage.ENCODE_HTML);
+                                    mChatPanel.sendMessage(urlInfo, IMessage.ENCODE_HTML);
                                 }
                                 catch (JSONException e) {
                                     Timber.w("Exception in JSONObject access: %s", result);
@@ -1333,7 +1333,7 @@ public class ChatActivity extends BaseActivity
                             // send mUrl instead fetch urlInfo failed
                             if (urlInfo == null) {
                                 // selectedChatPanel.setEditedText(mUrl); too late as controller msgEdit is already initialized
-                                selectedChatPanel.sendMessage(mUrl, IMessage.ENCODE_PLAIN);
+                                mChatPanel.sendMessage(mUrl, IMessage.ENCODE_PLAIN);
                             }
                         }
                 );

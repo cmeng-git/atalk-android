@@ -15,6 +15,11 @@
  */
 package net.java.sip.communicator.service.muc;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.contactsource.SourceContact;
 import net.java.sip.communicator.service.protocol.ChatRoom;
@@ -29,19 +34,13 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * The MUC service provides interface for the chat rooms. It connects the GUI with the protocol.
  *
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-public abstract class MUCService
-{
+public abstract class MUCService {
     /**
      * The configuration property to disable
      */
@@ -95,8 +94,7 @@ public abstract class MUCService
      * @param chatRoomId the chat room id
      * @param value the new value for the property
      */
-    public static void setChatRoomAutoOpenOption(ProtocolProviderService pps, String chatRoomId, String value)
-    {
+    public static void setChatRoomAutoOpenOption(ProtocolProviderService pps, String chatRoomId, String value) {
         ConfigurationUtils.updateChatRoomProperty(pps, chatRoomId, AUTO_OPEN_CONFIG_KEY, value);
     }
 
@@ -105,10 +103,10 @@ public abstract class MUCService
      *
      * @param pps the provider
      * @param chatRoomId the chat room id
+     *
      * @return the value of the chat room open automatically property
      */
-    public static String getChatRoomAutoOpenOption(ProtocolProviderService pps, String chatRoomId)
-    {
+    public static String getChatRoomAutoOpenOption(ProtocolProviderService pps, String chatRoomId) {
         return ConfigurationUtils.getChatRoomProperty(pps, chatRoomId, AUTO_OPEN_CONFIG_KEY);
     }
 
@@ -139,6 +137,7 @@ public abstract class MUCService
      * @param contacts the contacts invited when creating the chat room.
      * @param reason the reason to create
      * @param persistent is the room persistent
+     *
      * @return the <code>ChatRoomWrapper</code> corresponding to the created room
      */
     public abstract ChatRoomWrapper createPrivateChatRoom(ProtocolProviderService protocolProvider,
@@ -156,6 +155,7 @@ public abstract class MUCService
      * @param persistent whether the newly created room will be persistent.
      * @param isPrivate whether the room will be private or public.
      * @param onServerRoom whether the room is already in the server room list.
+     *
      * @return the <code>ChatRoomWrapper</code> corresponding to the created room or
      * <code>null</code> if the protocol failed to create the chat room
      */
@@ -175,6 +175,7 @@ public abstract class MUCService
      * Returns existing chat rooms for the given <code>chatRoomProvider</code>.
      *
      * @param chatRoomProvider the <code>ChatRoomProviderWrapper</code>, which chat rooms we're looking for
+     *
      * @return existing chat rooms for the given <code>chatRoomProvider</code>
      */
     public abstract List<String> getExistingChatRooms(ChatRoomProviderWrapper chatRoomProvider);
@@ -183,6 +184,7 @@ public abstract class MUCService
      * Returns existing chatRooms in store for the given <code>ProtocolProviderService</code>.
      *
      * @param pps the <code>ProtocolProviderService</code>, whom chatRooms we're looking for
+     *
      * @return existing chatRooms in store for the given <code>ProtocolProviderService</code>
      */
     public abstract List<String> getExistingChatRooms(ProtocolProviderService pps);
@@ -216,10 +218,10 @@ public abstract class MUCService
      * has only one <code>ChatRoomMember</code> who is not the local user.
      *
      * @param chatRoom the <code>ChatRoom</code> to be determined as private or not
+     *
      * @return <code>true</code> if the specified <code>ChatRoom</code> is private; otherwise, <code>false</code>
      */
-    public static boolean isPrivate(ChatRoom chatRoom)
-    {
+    public static boolean isPrivate(ChatRoom chatRoom) {
         if (!chatRoom.isSystem() && chatRoom.isJoined() && (chatRoom.getMembersCount() == 1)) {
             Resourcepart nickResource = chatRoom.getUserNickname();
 
@@ -238,6 +240,7 @@ public abstract class MUCService
      * Leaves the given chat room.
      *
      * @param chatRoomWrapper the chat room to leave.
+     *
      * @return <code>ChatRoomWrapper</code> instance associated with the chat room.
      */
     public abstract ChatRoomWrapper leaveChatRoom(ChatRoomWrapper chatRoomWrapper);
@@ -246,6 +249,7 @@ public abstract class MUCService
      * Finds <code>ChatRoomWrapper</code> instance associated with the given source contact.
      *
      * @param contact the contact.
+     *
      * @return <code>ChatRoomWrapper</code> instance associated with the given source contact.
      */
     public abstract ChatRoomWrapper findChatRoomWrapperFromSourceContact(SourceContact contact);
@@ -255,6 +259,7 @@ public abstract class MUCService
      *
      * @param chatRoom the chat room.
      * @param create if <code>true</code> and the chat room wrapper is not found new chatRoomWrapper is created.
+     *
      * @return found chat room wrapper or the created chat room wrapper.
      */
     public abstract ChatRoomWrapper getChatRoomWrapperByChatRoom(ChatRoom chatRoom, boolean create);
@@ -263,10 +268,10 @@ public abstract class MUCService
      * Returns the multi user chat operation set for the given protocol provider.
      *
      * @param protocolProvider The protocol provider for which the multi user chat operation set is about.
+     *
      * @return OperationSetMultiUserChat The telephony operation set for the given protocol provider.
      */
-    public static OperationSetMultiUserChat getMultiUserChatOpSet(ProtocolProviderService protocolProvider)
-    {
+    public static OperationSetMultiUserChat getMultiUserChatOpSet(ProtocolProviderService protocolProvider) {
         OperationSet opSet = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
         return (opSet != null) ? (OperationSetMultiUserChat) opSet : null;
     }
@@ -277,6 +282,7 @@ public abstract class MUCService
      *
      * @param chatRoomID the id of the chat room.
      * @param pps the provider of the chat room.
+     *
      * @return the <code>ChatRoomWrapper</code> instance.
      */
     public abstract ChatRoomWrapper findChatRoomWrapperFromChatRoomID(String chatRoomID, ProtocolProviderService pps);
@@ -336,6 +342,7 @@ public abstract class MUCService
      * corresponding wrapper - returns null.
      *
      * @param protocolProvider the protocol provider that we're looking for
+     *
      * @return the <code>ChatRoomProvider</code> object corresponding to
      * the given <code>ProtocolProviderService</code>
      */
@@ -346,6 +353,7 @@ public abstract class MUCService
      * of chat rooms doesn't contain a corresponding wrapper - returns null.
      *
      * @param chatRoom the <code>ChatRoom</code> that we're looking for
+     *
      * @return the <code>ChatRoomWrapper</code> object corresponding to the given <code>ChatRoom</code>
      */
     public abstract ChatRoomWrapper findChatRoomWrapperFromChatRoom(ChatRoom chatRoom);
@@ -368,6 +376,7 @@ public abstract class MUCService
      * Returns <code>true</code> if the contact is <code>ChatRoomSourceContact</code>
      *
      * @param contact the contact
+     *
      * @return <code>true</code> if the contact is <code>ChatRoomSourceContact</code>
      */
     public abstract boolean isMUCSourceContact(SourceContact contact);

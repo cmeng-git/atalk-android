@@ -1398,6 +1398,8 @@
     <string name="translation_sent">翻译信息发送</string>
     <string name="translation_sent_disable">翻译发送禁用</string>
     <string name="translation_sent_enable">翻译发送启用</string>
+    <string name="translation_server_apikey">翻译服务器 API 密钥</string>
+    <string name="translation_server_apikey_hint">仅在适用情况下输入</string>
     <string name="translation_server">翻译服务器 URL</string>
 
     <!-- Advanced settings category -->

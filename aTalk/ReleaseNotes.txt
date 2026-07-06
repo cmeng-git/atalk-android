@@ -1,5 +1,33 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        6.4.0 (604000)
+Release Date:   07/06/2026
+Author:         cmeng
+- Must start up contact chat session on incoming chat message received; this is to update or cache the message, and to translate if enabled.
+- When joining a chatRoom, includes element <history maxchars='0'/> in sent stanza to stop server from sending history messages;
+  chatRoom history messages are retrieved via mam query instead.
+- Implement background runnable thread to handle history messages translation; eliminate ~1s/message delay in translation and hang chat session UI.
+- aTalk default Translator server has rate limiting. Too many history messages translation will give raise to error code 429.
+  If required, user may use 'Translate message receive' option, to translate messages that have failed.
+- Support Translator API key entry for user if available.
+- Add 'before' option for the latest mam messages; fix incorrect setting in field 'with' of mamQuery stanza sent to chatRoom history retrieval.
+- Need to take care for retract and correction messages handling if remote messages have been deleted, and when history logging is disabled.
+- Perform stricter checks on mam retrieved forwarded message for retract and correction message.
+  Skip if the affected message previously has been deleted; use the correct timestamp when caching/saving the message.
+- Upgrade libvpx to 1.16.0. libvpx v1.16.0 removed support for 32-bit targets (armv7, armv7s, and i386).
+- aTalk jni library will support only arm64-v8a and x86_64 ABIS; drops armeabi-v7a and x86 ABI ABIS.
+- Upgrade aTalk to support Android-17.0 CinnamonBun (API-37).
+
+*** Observation ***
+- All offline messages sent to contact are streamed upon user registered with the server. Hance not all messages are translated due to Translator server overloaded.
+  Normally this will not happen, as aTalk should be active and registered with the server to receive incoming messages with translation.
+- All chatRoom history messages are streamed immediatly upon user joining the chatRoom, if history option is not disabled.
+- Update build environment to Android Studio Quail 1 | 2026.1.1 Patch 2.
+  Must keep 'com.android.tools.build:gradle:8.11.2' and not to use AGP 9.x.x.
+  Otherwise, this causes "constant expression required" errors for the generated R.id.xxx;
+  and gradle.properties#android.nonFinalResIds=false is ignored in AGP 9.x.x;
+
+=========================================================================
 Version:        6.3.0 (603000)
 Release Date:   06/24/2026
 Author:         cmeng

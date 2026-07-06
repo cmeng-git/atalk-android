@@ -1335,6 +1335,8 @@
     <string name="translation_sent">ترجمة الرسائل المرسلة</string>
     <string name="translation_sent_disable">تعطيل إرسال الترجمة</string>
     <string name="translation_sent_enable">تفعيل إرسال الترجمة</string>
+    <string name="translation_server_apikey">مفتاح واجهة برمجة تطبيقات خادم الترجمة</string>
+    <string name="translation_server_apikey_hint">أدخل فقط إذا كان ذلك ينطبق</string>
     <string name="translation_server">رابط خادم الترجمة</string>
 
     <!-- Advanced settings category -->

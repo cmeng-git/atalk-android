@@ -10,10 +10,12 @@ import java.io.File;
 import java.io.IOException;
 
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationNotSupportedException;
+import net.java.sip.communicator.service.protocol.OperationSet;
 import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
 import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
 import net.java.sip.communicator.service.protocol.OperationSetMessageCorrection;
@@ -35,7 +37,6 @@ import org.jivesoftware.smack.XMPPException;
 
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
-import org.jivesoftware.smackx.message_retraction.MessageRetractionManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 
 import org.jxmpp.jid.EntityBareJid;
@@ -57,9 +58,11 @@ public class ConferenceChatTransport implements ChatTransport {
      * <code>true</code> when a contact sends a message with XEP-0085 chat state notifications;
      * override contact disco#info no XEP-0085 feature advertised.
      */
-    private static boolean isChatStateSupported = false;
+    private boolean isChatStateSupported = false;
     private final ProtocolProviderService mPPS;
+    private final OperationSetBasicInstantMessaging imOpSet;
     private HttpFileUploadManager httpFileUploadManager;
+    private final OperationSetChatStateNotifications csOperationSet;
 
     /**
      * Creates an instance of <code>ConferenceChatTransport</code> by specifying the parent chat
@@ -72,10 +75,12 @@ public class ConferenceChatTransport implements ChatTransport {
         this.chatSession = chatSession;
         this.chatRoom = chatRoom;
         mPPS = chatRoom.getParentProvider();
+        imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
+        csOperationSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
+        isChatStateSupported = csOperationSet != null;
 
-        // mPPS.getConnection() == null from field FER
-        if ((mPPS != null) && (mPPS.getConnection() != null)) {
-            isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
+        // mPPS.getConnection() == null from field FER.
+        if (mPPS.getConnection() != null) {
             httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
         }
     }
@@ -174,18 +179,12 @@ public class ConferenceChatTransport implements ChatTransport {
      */
     @Override
     public boolean allowChatStateNotifications() {
-        // Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
-        // return ((tnOpSet != null) && isChatStateSupported);
         return isChatStateSupported;
-    }
-
-    public static void setChatStateSupport(boolean isEnable) {
-        isChatStateSupported = isEnable;
     }
 
     /**
      * Sends the given instant message trough this chat transport, by specifying the mime type
-     * (html or plain text).
+     * (HTML or plain text).
      *
      * @param messageText The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
@@ -200,7 +199,7 @@ public class ConferenceChatTransport implements ChatTransport {
             return;
         }
 
-        IMessage message = chatRoom.createMessage(messageText, encType, null, msgId);
+        MessageJabberImpl message = chatRoom.createMessage(messageText, encType, null, msgId);
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
             chatRoom.sendMessage(message, null, omemoManager);
@@ -231,7 +230,7 @@ public class ConferenceChatTransport implements ChatTransport {
         if (!mcOpSet.isContentTypeSupported(IMessage.ENCODE_HTML))
             encType = encType & ~IMessage.ENCODE_HTML;
 
-        IMessage message = chatRoom.createMessage(messageText, encType, null, correctionUid);
+        MessageJabberImpl message = chatRoom.createMessage(messageText, encType, null, correctionUid);
         message.setStatus(ChatMessage.STATUS_EDITED);
 
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
@@ -295,11 +294,8 @@ public class ConferenceChatTransport implements ChatTransport {
     public void sendChatStateNotification(ChatState chatState) {
         // Proceed only if this chat transport allows chat state notification
         if (mPPS.isRegistered() && allowChatStateNotifications() && allowInstantMessage()) {
-
-            OperationSetChatStateNotifications tnOperationSet
-                    = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
             try {
-                tnOperationSet.sendChatStateNotification(chatRoom, chatState);
+                csOperationSet.sendChatStateNotification(chatRoom, chatState);
             }
             catch (Exception ex) {
                 Timber.e("Failed to send chat state notifications for %s: %s", chatRoom, ex.getMessage());
@@ -421,11 +417,9 @@ public class ConferenceChatTransport implements ChatTransport {
     @Override
     public void addInstantMessageListener(MessageListener l) {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowInstantMessage())
-            return;
-
-        OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
-        imOpSet.addMessageListener(l);
+        if (allowInstantMessage()) {
+            imOpSet.addMessageListener(l);
+        }
     }
 
     /**
@@ -436,11 +430,9 @@ public class ConferenceChatTransport implements ChatTransport {
     @Override
     public void removeInstantMessageListener(MessageListener l) {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowInstantMessage())
-            return;
-
-        OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
-        imOpSet.removeMessageListener(l);
+        if (allowInstantMessage()) {
+            imOpSet.removeMessageListener(l);
+        }
     }
 
     @Override

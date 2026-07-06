@@ -30,7 +30,7 @@ ANDROID_API=24
 # Do not change naming convention of the ABIS; see:
 # https://developer.android.com/ndk/guides/abis.html#Native code in app packages
 # Android recommended architecture support; others are deprecated
-ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")
+ABIS=("arm64-v8a" "x86_64")
 
 BASEDIR=`pwd`
 

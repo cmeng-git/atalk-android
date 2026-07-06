@@ -13,10 +13,9 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
+import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.ContactResource;
-import net.java.sip.communicator.service.protocol.IMessage;
 
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.persistance.FileBackend;
@@ -40,11 +39,6 @@ public class MessageReceivedEvent extends EventObject {
      * The contact that has sent this message.
      */
     private final Contact mContact;
-
-    /**
-     * The <code>ContactResource</code>, from which the message was sent.
-     */
-    private final ContactResource mContactResource;
 
     /**
      * Message sender full jid
@@ -76,23 +70,20 @@ public class MessageReceivedEvent extends EventObject {
      */
     private final ChatRoom privateMessagingContactRoom;
 
-    private boolean isRetractMessage = false;
-
     /**
      * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
      * received from the specified <code>from</code> contact.
      *
      * @param source the <code>IMessage</code> whose reception this event represents.
      * @param contact the <code>Contact</code> that has sent this message.
-     * @param contactResource the <code>ContactResource</code>, from which this message was sent.
      * @param sender the fullJid from which this message was sent
      * @param timestamp the exact date when the event occurred.
      * @param correctionUid The ID of the message being corrected, or null if this
      * is a new message and not a correction.
      */
-    public MessageReceivedEvent(IMessage source, Contact contact, ContactResource contactResource,
-            String sender, Date timestamp, String correctionUid) {
-        this(source, contact, contactResource, sender, timestamp, false, null);
+    public MessageReceivedEvent(MessageJabberImpl source, Contact contact, String sender, Date timestamp,
+            String correctionUid) {
+        this(source, contact, sender, timestamp, false, null);
         this.correctionUid = correctionUid;
     }
 
@@ -102,18 +93,16 @@ public class MessageReceivedEvent extends EventObject {
      *
      * @param source the <code>IMessage</code> whose reception this event represents.
      * @param contact the <code>Contact</code> that has sent this message.
-     * @param contactResource the <code>ContactResource</code>, from which this message was sent
      * @param sender the fullJid from which this message was sent
      * @param timestamp the exact date when the event occurred.
      * @param correctionUid The ID of the message being corrected, or null if this is a new message and not a
      * correction.
-     * @param isPrivateMessaging indicates whether the this is private messaging event or not.
+     * @param isPrivateMessaging indicates whether this is private messaging event or not.
      * @param privateContactRoom the chat room associated with the contact.
      */
-    public MessageReceivedEvent(IMessage source, Contact contact, ContactResource contactResource,
-            String sender, Date timestamp, String correctionUid, boolean isPrivateMessaging,
-            ChatRoom privateContactRoom) {
-        this(source, contact, contactResource, sender, timestamp, isPrivateMessaging, privateContactRoom);
+    public MessageReceivedEvent(MessageJabberImpl source, Contact contact, String sender, Date timestamp,
+            String correctionUid, boolean isPrivateMessaging, ChatRoom privateContactRoom) {
+        this(source, contact, sender, timestamp, isPrivateMessaging, privateContactRoom);
         this.correctionUid = correctionUid;
     }
 
@@ -123,14 +112,13 @@ public class MessageReceivedEvent extends EventObject {
      *
      * @param source the <code>IMessage</code> whose reception this event represents.
      * @param contact the <code>Contact</code> that has sent this message.
-     * @param contactResource the <code>ContactResource</code>, from which this message was sent
      * @param sender the fullJid from which this message was sent
      * @param timestamp the exact date when the event occurred.
-     * @param isPrivateMessaging indicates whether the this is private messaging event or not.
+     * @param isPrivateMessaging indicates whether this is private messaging event or not.
      * @param privateContactRoom the chat room associated with the contact.
      */
-    public MessageReceivedEvent(IMessage source, Contact contact, ContactResource contactResource,
-            String sender, Date timestamp, boolean isPrivateMessaging, ChatRoom privateContactRoom) {
+    public MessageReceivedEvent(MessageJabberImpl source, Contact contact, String sender, Date timestamp,
+            boolean isPrivateMessaging, ChatRoom privateContactRoom) {
         super(source);
 
         // Use MESSAGE_HTTP_FILE_DOWNLOAD if it is http download link
@@ -139,7 +127,6 @@ public class MessageReceivedEvent extends EventObject {
                 ? ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD : ChatMessage.MESSAGE_IN;
 
         mContact = contact;
-        mContactResource = contactResource;
         mSender = sender;
         mTimestamp = timestamp;
         this.isPrivateMessaging = isPrivateMessaging;
@@ -158,17 +145,6 @@ public class MessageReceivedEvent extends EventObject {
     }
 
     /**
-     * Returns a reference to the <code>ContactResource</code> that has sent the <code>IMessage</code> whose
-     * reception this event represents.
-     *
-     * @return a reference to the <code>ContactResource</code> that has sent the <code>IMessage</code> whose
-     * reception this event represents.
-     */
-    public ContactResource getContactResource() {
-        return mContactResource;
-    }
-
-    /**
      * Get the message sender fullJid
      *
      * @return sender fullJid
@@ -182,8 +158,8 @@ public class MessageReceivedEvent extends EventObject {
      *
      * @return the <code>IMessage</code> that triggered this event.
      */
-    public IMessage getSourceMessage() {
-        return (IMessage) getSource();
+    public MessageJabberImpl getMessage() {
+        return (MessageJabberImpl) getSource();
     }
 
     /**
@@ -234,13 +210,5 @@ public class MessageReceivedEvent extends EventObject {
      */
     public boolean isPrivateMessaging() {
         return isPrivateMessaging;
-    }
-
-    public void setRetractMessage(boolean state) {
-        isRetractMessage = state;
-    }
-
-    public boolean isRetractMessage() {
-        return isRetractMessage;
     }
 }

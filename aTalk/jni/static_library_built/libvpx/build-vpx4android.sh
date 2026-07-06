@@ -20,7 +20,7 @@ set -u
 HOST_NUM_CORES=$(nproc)
 
 LIB_VPX="libvpx"
-LIB_GIT=v1.15.2
+LIB_GIT=v1.16.0
 echo -e "\n### Fetch and generate libs-xxx.mk files for vpx ${LIB_GIT} ###"
 
 # Auto fetch and unarchive libvpx from online repository

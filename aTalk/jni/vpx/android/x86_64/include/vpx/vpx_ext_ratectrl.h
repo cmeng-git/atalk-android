@@ -30,7 +30,7 @@ extern "C" {
  * types, removing or reassigning enums, adding/removing/rearranging
  * fields to structures.
  */
-#define VPX_EXT_RATECTRL_ABI_VERSION (6 + VPX_TPL_ABI_VERSION)
+#define VPX_EXT_RATECTRL_ABI_VERSION (7 + VPX_TPL_ABI_VERSION)
 
 /*!\brief Corresponds to MAX_STATIC_GF_GROUP_LENGTH defined in vp9_ratectrl.h
  */
@@ -132,14 +132,29 @@ typedef void *vpx_rc_model_t;
  */
 #define VPX_DEFAULT_RDMULT -1
 
+/*!\brief Superblock quantization parameters
+ * Store the superblock quantization parameters
+ */
+typedef struct sb_parameters {
+  int q_index; /**< Quantizer step index [0..255]*/
+  int rdmult;  /**< Superblock level Lagrangian multiplier*/
+} sb_params;
+
 /*!\brief Encode frame decision made by the external rate control model
  *
  * The encoder will receive the decision from the external rate control model
  * through vpx_rc_funcs_t::get_encodeframe_decision().
  */
 typedef struct vpx_rc_encodeframe_decision {
-  int q_index; /**< Quantizer step index [0..255]*/
-  int rdmult;  /**< Frame level Lagrangian multiplier*/
+  int q_index;    /**< Required: Quantizer step index [0..255]*/
+  int rdmult;     /**< Required: Frame level Lagrangian multiplier*/
+  int delta_q_uv; /**< Required: Delta QP for UV */
+  /*!
+   * Optional: Superblock quantization parameters
+   * It is zero initialized by default. It will be set for key and ARF frames
+   * but not leaf frames.
+   */
+  sb_params *sb_params_list;
 } vpx_rc_encodeframe_decision_t;
 
 /*!\brief Information for the frame to be encoded.

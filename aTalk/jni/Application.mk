@@ -14,7 +14,7 @@ APP_PLATFORM := android-24
 # arm64-v8a: ARMv8 AArch64
 # x86 x86_64: Intel Atom
 # mips mips64: MIPS.
-APP_ABI := armeabi-v7a arm64-v8a x86 x86_64
+APP_ABI := arm64-v8a x86_64
 
 # An application should not use more than one C++ runtime. The various STLs are not compatible with one another.
 # Note: The exception to this rule is that "no STL" does not count as an STL.

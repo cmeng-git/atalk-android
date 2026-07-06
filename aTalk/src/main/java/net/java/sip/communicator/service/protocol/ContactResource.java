@@ -10,8 +10,7 @@ package net.java.sip.communicator.service.protocol;
  *
  * @author Yana Stamcheva
  */
-public class ContactResource
-{
+public class ContactResource {
     /**
      * A static instance of this class representing the base resource. If this base resource is
      * passed as a parameter for any operation (send message, call) the operation should explicitly
@@ -48,8 +47,7 @@ public class ContactResource
     /**
      * Creates an empty instance of <code>ContactResource</code> representing the base resource.
      */
-    public ContactResource()
-    {
+    public ContactResource() {
     }
 
     /**
@@ -62,8 +60,7 @@ public class ContactResource
      * @param priority the priority of this resource
      */
     public ContactResource(Contact contact, String resourceName, PresenceStatus presenceStatus,
-            int priority, boolean mobile)
-    {
+            int priority, boolean mobile) {
         this.contact = contact;
         this.resourceName = resourceName;
         this.presenceStatus = presenceStatus;
@@ -76,8 +73,7 @@ public class ContactResource
      *
      * @return the <code>Contact</code>, this resources belongs to
      */
-    public Contact getContact()
-    {
+    public Contact getContact() {
         return contact;
     }
 
@@ -86,8 +82,7 @@ public class ContactResource
      *
      * @return the name of this resource
      */
-    public String getResourceName()
-    {
+    public String getResourceName() {
         return resourceName;
     }
 
@@ -96,8 +91,7 @@ public class ContactResource
      *
      * @return the presence status of this resource
      */
-    public PresenceStatus getPresenceStatus()
-    {
+    public PresenceStatus getPresenceStatus() {
         return presenceStatus;
     }
 
@@ -106,8 +100,7 @@ public class ContactResource
      *
      * @return the priority of this resource
      */
-    public int getPriority()
-    {
+    public int getPriority() {
         return priority;
     }
 
@@ -116,8 +109,7 @@ public class ContactResource
      *
      * @return whether contact is mobile one.
      */
-    public boolean isMobile()
-    {
+    public boolean isMobile() {
         return mobile;
     }
 }

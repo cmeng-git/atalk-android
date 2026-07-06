@@ -15,6 +15,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
+import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.service.protocol.AbstractOperationSetMultiUserChat;
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ChatRoom;
@@ -78,6 +80,7 @@ import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
 import org.jivesoftware.smackx.omemo.exceptions.NoRawSessionException;
 import org.jivesoftware.smackx.omemo.listener.OmemoMucMessageListener;
 import org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider;
+import org.jivesoftware.smackx.sid.element.OriginIdElement;
 import org.jivesoftware.smackx.xdata.form.FillableForm;
 import org.jivesoftware.smackx.xdata.form.Form;
 
@@ -107,17 +110,17 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * The currently valid Jabber protocol provider service implementation.
      */
     private final ProtocolProviderServiceJabberImpl mPPS;
-    private XMPPConnection mConnection = null;
-
-    private OmemoManager mOmemoManager;
 
     private final OmemoVAxolotlProvider omemoVAxolotlProvider = new OmemoVAxolotlProvider();
+    private final MessageHistoryServiceImpl mMHS = MessageHistoryActivator.getMessageHistoryService();
+
+    private XMPPConnection mConnection = null;
+    private OmemoManager mOmemoManager;
 
     /**
      * A reference of the MultiUserChatManager
      */
     private MultiUserChatManager mMucMgr = null;
-
     private SmackInvitationListener mInvitationListener;
 
     /**
@@ -792,25 +795,6 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         }
     }
 
-    /**
-     * Return XEP-0203 time-stamp of the message if present or current time;
-     *
-     * @param msg Message
-     *
-     * @return the correct message timeStamp
-     */
-    private Date getTimeStamp(Message msg) {
-        Date timeStamp;
-        DelayInformation delayInfo = msg.getExtension(DelayInformation.class);
-        if (delayInfo != null) {
-            timeStamp = delayInfo.getStamp();
-        }
-        else {
-            timeStamp = new Date();
-        }
-        return timeStamp;
-    }
-
     // =============== OMEMO message received =============== //
 
     public void registerOmemoMucListener(OmemoManager omemoManager) {
@@ -831,31 +815,44 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * @param decryptedOmemoMessage decrypted Omemo message
      */
     @Override
-    public void onOmemoMucMessageReceived(MultiUserChat muc, Stanza stanza,
-            OmemoMessage.Received decryptedOmemoMessage) {
+    public void onOmemoMucMessageReceived(MultiUserChat muc, Stanza stanza, OmemoMessage.Received decryptedOmemoMessage) {
         // Do not process if decryptedMessage isKeyTransportMessage i.e. msgBody == null
         if (decryptedOmemoMessage.isKeyTransportMessage())
             return;
 
         Message message = (Message) stanza;
-        Date timeStamp = getTimeStamp(message);
-        BareJid sender = decryptedOmemoMessage.getSenderDevice().getJid();
+        if (mMHS.isUnexpectedDelayMessage(message)) {
+            return;
+        }
 
+        // If Retract or LMC message is not found in record; skip further processing of message.
+        Date timeStamp = mMHS.getTimeStamp(message);
+        if (timeStamp == null) {
+            return;
+        }
+
+        BareJid sender = decryptedOmemoMessage.getSenderDevice().getJid();
         ChatRoomJabberImpl chatRoom = getChatRoom(muc.getRoom());
         ChatRoomMemberJabberImpl member = chatRoom.findMemberFromParticipant(message.getFrom());
 
-        String msgId = message.getStanzaId();
+        String stanzaId = message.getStanzaId();
+        if (org.apache.commons.lang3.StringUtils.isEmpty(stanzaId)) {
+            OriginIdElement orgStanzaElement = OriginIdElement.getOriginId(message);
+            if (orgStanzaElement != null) {
+                stanzaId = orgStanzaElement.getId();
+            }
+        }
+
+        String correctionUid = mMHS.getCorrectionUid(message);
+        String msgId = correctionUid != null ? correctionUid : stanzaId;
+
+        // aTalk OMEMO msgBody may contain markup text then set as ENCODE_HTML mode
         int encType = IMessage.ENCRYPTION_OMEMO;
         String msgBody = decryptedOmemoMessage.getBody();
-
-        // aTalk OMEMO msgBody may contains markup text then set as ENCODE_HTML mode
         if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
             encType |= IMessage.ENCODE_HTML;
         }
-        else {
-            encType |= IMessage.ENCODE_PLAIN;
-        }
-        MessageJabberImpl newMessage = new MessageJabberImpl(msgBody, encType, null, msgId);
+        MessageJabberImpl newMessage = new MessageJabberImpl(msgBody, encType, null, msgId, false);
 
         // check if the message is available in xhtml
         String xhtmString = XhtmlUtil.getXhtmlExtension(message);
@@ -866,7 +863,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
 
                 OmemoMessage.Received xhtmlMessage = mOmemoManager.decrypt(sender, omemoElement);
                 encType |= IMessage.ENCODE_HTML;
-                newMessage = new MessageJabberImpl(xhtmlMessage.getBody(), encType, null, msgId);
+                newMessage = new MessageJabberImpl(xhtmlMessage.getBody(), encType, null, msgId, false);
             }
             catch (SmackException.NotLoggedInException | IOException | CorruptedOmemoKeyException
                    | NoRawSessionException | CryptoFailedException | XmlPullParserException |
@@ -875,19 +872,6 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
             }
         }
         newMessage.setRemoteMsgId(msgId);
-        MessageCorrectExtension xmlElement = message.getExtension(MessageCorrectExtension.class);
-        String correctionUid = null;
-        if (xmlElement != null) {
-            correctionUid = xmlElement.getIdInitialMessage();
-        }
-
-//        MUCServiceImpl mucService = MUCActivator.getMUCService();
-//        ChatRoomWrapper crWrapper = mucService.getChatRoomWrapperByChatRoom(chatRoom, false);
-//        if (crWrapper.isTranslateReceive()) {
-//            OperationSetBasicInstantMessagingJabberImpl imOpSet = (OperationSetBasicInstantMessagingJabberImpl) mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
-//            imOpSet.translate(newMessage);
-//        }
-
         ChatRoomMessageReceivedEvent msgReceivedEvt
                 = new ChatRoomMessageReceivedEvent(chatRoom, member, timeStamp, newMessage, correctionUid, ChatMessage.MESSAGE_MUC_IN);
         chatRoom.fireMessageEvent(msgReceivedEvt);

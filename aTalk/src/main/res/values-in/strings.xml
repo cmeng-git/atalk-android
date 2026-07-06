@@ -1390,6 +1390,8 @@
     <string name="translation_sent">Terjemahkan pesan yang dikirim</string>
     <string name="translation_sent_disable">Terjemahkan kirim nonaktifkan</string>
     <string name="translation_sent_enable">Terjemahkan kirim aktifkan</string>
+    <string name="translation_server_apikey">Kunci API Server Terjemahan</string>
+    <string name="translation_server_apikey_hint">Masukkan hanya jika berlaku</string>
     <string name="translation_server">URL Server Terjemahan</string>
 
     <!-- Advanced settings category -->

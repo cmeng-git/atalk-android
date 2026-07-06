@@ -1375,6 +1375,8 @@
     <string name="translation_sent">Nachricht übersetzen senden</string>
     <string name="translation_sent_disable">Senden von Übersetzungen deaktivieren</string>
     <string name="translation_sent_enable">Senden übersetzen aktivieren</string>
+    <string name="translation_server_apikey">Übersetzungsserver-API-Schlüssel</string>
+    <string name="translation_server_apikey_hint">Nur eintragen, falls zutreffend</string>
     <string name="translation_server">URL des Übersetzungsservers</string>
 
     <!-- Advanced settings category -->

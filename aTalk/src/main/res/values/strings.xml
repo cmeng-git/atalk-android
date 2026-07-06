@@ -1396,6 +1396,8 @@
     <string name="translation_sent">Translate message send</string>
     <string name="translation_sent_disable">Translate send disable</string>
     <string name="translation_sent_enable">Translate send enable</string>
+    <string name="translation_server_apikey">Translation Server API Key</string>
+    <string name="translation_server_apikey_hint">Enter only if applicable</string>
     <string name="translation_server">Translation Server URL</string>
 
     <!-- Advanced settings category -->

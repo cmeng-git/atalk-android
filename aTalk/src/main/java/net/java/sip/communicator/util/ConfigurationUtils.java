@@ -107,6 +107,7 @@ public class ConfigurationUtils {
      * The Translation Server url.
      */
     private static String mTranslateServer;
+    private static String mTranslateServerApikey = null;
 
     /**
      * Indicates if the call panel is shown.
@@ -134,7 +135,7 @@ public class ConfigurationUtils {
     private static boolean isAutoStartOnBoot = true;
 
     /**
-     * Indicates if TTS is enable.
+     * Indicates if TTS is enabled.
      */
     private static boolean isTtsEnable = false;
 
@@ -465,6 +466,7 @@ public class ConfigurationUtils {
     private static final String pTypingNotification = "gui.SEND_TYPING_NOTIFICATIONS_ENABLED";
     public static final String pWebPage = "gui.WEB_PAGE_ACCESS";
     public static final String pTranslateUrl = "gui.TRANSLATE_URL";
+    public static final String pTranslateApikey = "gui.TRANSLATE_APIKEY";
     private static final String pWindowTransparency = "gui.WINDOW_TRANSPARENCY";
     private static final String pHeadsUpEnable = P_KEY_HEADS_UP_ENABLE;
 
@@ -520,6 +522,9 @@ public class ConfigurationUtils {
                 || mWebPage.equals(aTalkApp.getResString(R.string.settings_webView_summary_old))) {
             mWebPage = aTalkApp.getResString(R.string.settings_webView_summary);
         }
+
+        mTranslateServer = mConfigService.getString(pTranslateUrl);
+        mTranslateServerApikey = mConfigService.getString(pTranslateApikey);
 
         // Load the "auPopupNewMessage" property.
         String autoPopup = mConfigService.getString(pAutoPopupNewMessage);
@@ -1535,6 +1540,21 @@ public class ConfigurationUtils {
 
     public static String getTranslateServerUrl() {
         return StringUtils.isEmpty(mTranslateServer) ? ApiProviders.API_URL_FEDILAB : mTranslateServer;
+    }
+
+    /**
+     * Updates the "translateUrl" property via the <code>ConfigurationService</code>.
+     *
+     * @param apikey the apikey for the server providing the translation service.
+     */
+    public static void setTranslateServerApikey(String apikey) {
+        mConfigService.setProperty(pTranslateApikey, apikey);
+        mTranslateServerApikey = apikey;
+        Translator.setApiKey(apikey);
+    }
+
+    public static String getTranslateServerApikey() {
+        return StringUtils.isEmpty(mTranslateServerApikey) ? null : mTranslateServerApikey;
     }
 
     /**

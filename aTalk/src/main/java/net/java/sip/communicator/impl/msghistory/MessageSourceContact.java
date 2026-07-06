@@ -20,7 +20,6 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactsource.ContactDetail;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.contactsource.SourceContact;
-import net.java.sip.communicator.service.msghistory.MessageSourceContactPresenceStatus;
 import net.java.sip.communicator.service.muc.ChatRoomPresenceStatus;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.Contact;
@@ -177,7 +176,7 @@ public class MessageSourceContact extends DataObject
             this.ppService = contact.getProtocolProvider();
             this.image = contact.getImage(false);
             this.status = contact.getPresenceStatus();
-            this.messageContent = e.getSourceMessage().getContent();
+            this.messageContent = e.getMessage().getContent();
             this.timestamp = e.getTimestamp();
         }
         else if (source instanceof MessageReceivedEvent) {
@@ -189,7 +188,7 @@ public class MessageSourceContact extends DataObject
             this.ppService = contact.getProtocolProvider();
             this.image = contact.getImage(false);
             this.status = contact.getPresenceStatus();
-            this.messageContent = e.getSourceMessage().getContent();
+            this.messageContent = e.getMessage().getContent();
             this.timestamp = e.getTimestamp();
         }
         else if (source instanceof ChatRoomMessageDeliveredEvent) {

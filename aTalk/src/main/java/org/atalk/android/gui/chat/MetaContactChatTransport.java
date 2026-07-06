@@ -16,6 +16,7 @@ import java.util.Set;
 
 import javax.net.ssl.SSLHandshakeException;
 
+import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetFileTransferJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OutgoingFileOfferJingleImpl;
 import net.java.sip.communicator.service.protocol.Contact;
@@ -97,6 +98,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     private final ProtocolProviderService mPPS;
     private final OperationSetBasicInstantMessaging imOpSet;
+    private final OperationSetChatStateNotifications csOperationSet;
     private final OperationSetContactCapabilities capOpSet;
 
     private HttpFileUploadManager httpFileUploadManager;
@@ -161,15 +163,16 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
 
         mPPS = contact.getProtocolProvider();
         imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
+        csOperationSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
         capOpSet = mPPS.getOperationSet(OperationSetContactCapabilities.class);
         ftOpSet = (OperationSetFileTransferJabberImpl) mPPS.getOperationSet(OperationSetFileTransfer.class);
+
+        // Timber.d("Transport mContact: %s (%s)", mContact, mContact instanceof VolatileContactJabberImpl);
+        isChatStateSupported = csOperationSet != null;
 
         presenceOpSet = mPPS.getOperationSet(OperationSetPresence.class);
         if (presenceOpSet != null)
             presenceOpSet.addContactPresenceStatusListener(this);
-
-        // Timber.d("Transport mContact: %s (%s)", mContact, mContact instanceof VolatileContactJabberImpl);
-        isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
 
         // checking these can be slow so make sure they are run in new thread
         new Thread() {
@@ -267,16 +270,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     @Override
     public String getDisplayName() {
         return mContact.getDisplayName();
-    }
-
-    /**
-     * Returns the contact resource of this chat transport that encapsulate
-     * contact information of the contact who is logged.
-     *
-     * @return The display name of this chat transport resource.
-     */
-    public ContactResource getContactResource() {
-        return mContactResource;
     }
 
     /**
@@ -452,15 +445,14 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         // Strip HTML flag if ENCODE_HTML not supported by the send message operation.
         if (!imOpSet.isContentTypeSupported(IMessage.ENCODE_HTML))
             encType = encType & ~IMessage.ENCODE_HTML;
-        IMessage imsg = imOpSet.createMessageWithUid(message, encType, msgId);
+        MessageJabberImpl msg = imOpSet.createMessage(message, encType, msgId);
 
-        ContactResource toResource = (mContactResource != null) ? mContactResource : ContactResource.BASE_RESOURCE;
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
-            imOpSet.sendInstantMessage(mContact, toResource, imsg, null, omemoManager);
+            imOpSet.sendInstantMessage(mContact, msg, null, omemoManager);
         }
         else {
-            imOpSet.sendInstantMessage(mContact, toResource, imsg);
+            imOpSet.sendInstantMessage(mContact, msg);
         }
     }
 
@@ -482,16 +474,15 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         OperationSetMessageCorrection mcOpSet = mPPS.getOperationSet(OperationSetMessageCorrection.class);
         if (!mcOpSet.isContentTypeSupported(IMessage.ENCODE_HTML))
             encType = encType & ~IMessage.ENCODE_HTML;
-        IMessage msg = mcOpSet.createMessageWithUid(message, encType, correctionUid);
+        MessageJabberImpl msg = mcOpSet.createMessage(message, encType, correctionUid);
         msg.setStatus(ChatMessage.STATUS_EDITED);
 
-        ContactResource toResource = (mContactResource != null) ? mContactResource : ContactResource.BASE_RESOURCE;
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
-            mcOpSet.sendInstantMessage(mContact, toResource, msg, correctionUid, omemoManager);
+            mcOpSet.sendInstantMessage(mContact, msg, correctionUid, omemoManager);
         }
         else {
-            mcOpSet.correctMessage(mContact, toResource, msg, correctionUid);
+            mcOpSet.correctMessage(mContact, msg, correctionUid);
         }
     }
 
@@ -528,10 +519,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             if (mPPS.isRegistered()
                     && (mContact.getPresenceStatus().getStatus() >= PresenceStatus.ONLINE_THRESHOLD)) {
 
-                OperationSetChatStateNotifications tnOperationSet
-                        = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
                 try {
-                    tnOperationSet.sendChatStateNotification(mContact, chatState);
+                    csOperationSet.sendChatStateNotification(mContact, chatState);
                 }
                 catch (Exception ex) {
                     Timber.e(ex, "Failed to send chat state notifications.");

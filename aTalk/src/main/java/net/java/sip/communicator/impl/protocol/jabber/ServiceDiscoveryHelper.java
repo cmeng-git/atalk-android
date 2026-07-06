@@ -287,7 +287,7 @@ public class ServiceDiscoveryHelper {
     }
 
     /**
-     * Setup the EntityCapsCache store in mySql DB to support EntityCapsManager persistent
+     * Set up the EntityCapsCache store in mySql DB to support EntityCapsManager persistent
      * store for fast Entity Capabilities and bandwidth improvement.
      * First initialize in {@link ProtocolProviderServiceJabberImpl# initSmackDefaultSettings()}
      * to ensure Persistence store is setup before being access.

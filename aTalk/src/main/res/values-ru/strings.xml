@@ -1381,6 +1381,8 @@
     <string name="translation_sent">Перевести сообщение отправить</string>
     <string name="translation_sent_disable">Перевод отправить отключить</string>
     <string name="translation_sent_enable">Включить отправку перевода</string>
+    <string name="translation_server_apikey">Ключ API сервера перевода</string>
+    <string name="translation_server_apikey_hint">Вводить только при наличии соответствующей информации.</string>
     <string name="translation_server">URL сервера перевода</string>
 
     <!-- Advanced settings category -->

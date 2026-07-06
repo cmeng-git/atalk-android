@@ -90,7 +90,7 @@ public class ChatMessageImpl implements ChatMessage {
     private int receiptStatus;
 
     /**
-     * The encryption type of the message content.
+     * The encryption type of the message content e.g. IMessage.ENCRYPTION_OMEMO.
      */
     private final int encryptionType;
 
@@ -336,14 +336,14 @@ public class ChatMessageImpl implements ChatMessage {
         if (IMessage.ENCODE_HTML != getMimeType()) {
             output = StringEscapeUtils.escapeHtml4(messageBody);
         }
-        // Process replacements (cmeng - just do a direct unicode conversion for std emojis)
+        // Process replacements (cmeng - just do a direct Unicode conversion for std emojis)
         output = StringEscapeUtils.unescapeXml(output);
 
         // Apply the "edited at" tag for corrected message
         if (ChatMessage.STATUS_EDITED == mStatus || correctionUid != null) {
             output = "&#x270E " + output;
         }
-        else if (ChatMessage.STATUS_DELETED == mStatus) {
+        else if (ChatMessage.STATUS_RETRACTED == mStatus) {
             output = "&#x2612 " + output;
         }
         cachedOutput = output;
@@ -433,7 +433,7 @@ public class ChatMessageImpl implements ChatMessage {
      * @param recordType ChatMessage#Type
      * @param dir File received or send
      *
-     * @return True if found the a matching msgUuid for update
+     * @return True if found a matching msgUuid for update
      */
     public boolean updateFTStatus(Object descriptor, String msgUuid, int status, String fileName, int encType, int recordType, String dir) {
         if (messageUid.equals(msgUuid)) {
@@ -501,7 +501,7 @@ public class ChatMessageImpl implements ChatMessage {
     }
 
     static public ChatMessageImpl getMsgForEvent(MessageDeliveredEvent evt) {
-        final IMessage imessage = evt.getSourceMessage();
+        final IMessage imessage = evt.getMessage();
         final String sender = evt.getContact().getProtocolProvider().getAccountID().getAccountJid();
         final String senderName = evt.getSender().isEmpty() ? sender : evt.getSender();
 
@@ -510,7 +510,7 @@ public class ChatMessageImpl implements ChatMessage {
     }
 
     static public ChatMessageImpl getMsgForEvent(final MessageReceivedEvent evt) {
-        final IMessage imessage = evt.getSourceMessage();
+        final IMessage imessage = evt.getMessage();
         final Contact contact = evt.getSourceContact();
         final String sender = !evt.getSender().isEmpty() ? evt.getSender()
                 : AppGUIActivator.getContactListService().findMetaContactByContact(contact).getDisplayName();

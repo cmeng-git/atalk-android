@@ -96,16 +96,6 @@ public interface AdHocChatRoom {
     int getParticipantsCount();
 
     /**
-     * Create a <code>IMessage</code> instance for sending a simple text messages with default
-     * (text/plain) content type and encoding.
-     *
-     * @param messageText the string content of the message.
-     *
-     * @return IMessage the newly created message
-     */
-    IMessage createMessage(String messageText);
-
-    /**
      * Create a IMessage instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value

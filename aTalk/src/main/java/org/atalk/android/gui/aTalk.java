@@ -54,6 +54,7 @@ import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.DepthPageTransformer;
 import org.atalk.android.gui.webview.WebViewFragment;
 import org.atalk.service.osgi.OSGiService;
+
 import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.BundleContext;
 
@@ -173,8 +174,10 @@ public class aTalk extends MainMenuActivity {
      */
     private void handleIntent(Intent intent, Bundle instanceState) {
         mInstances.add(this);
-        // Setup Language Translation server uri base on the default or user defined translation server url.
+
+        // Setup Language Translation server uri/apikeyon for the default, or user defined translation server url.
         Translator.setUrlApi(ConfigurationUtils.getTranslateServerUrl());
+        Translator.setApiKey(ConfigurationUtils.getTranslateServerApikey());
 
         String action = intent.getAction();
         if (Intent.ACTION_SEARCH.equals(action)) {

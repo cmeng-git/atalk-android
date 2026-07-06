@@ -5,13 +5,13 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.ContactResourceEvent;
-import net.java.sip.communicator.service.protocol.event.ContactResourceListener;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
+
+import net.java.sip.communicator.service.protocol.event.ContactResourceEvent;
+import net.java.sip.communicator.service.protocol.event.ContactResourceListener;
 
 /**
  * An abstract base implementation of the {@link Contact} interface which is to aid implementers.
@@ -19,8 +19,7 @@ import java.util.Objects;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class AbstractContact implements Contact
-{
+public abstract class AbstractContact implements Contact {
     /**
      * The list of <code>ContactResourceListener</code>-s registered in this contact.
      */
@@ -33,8 +32,7 @@ public abstract class AbstractContact implements Contact
     private long mLastSeen = -1;
 
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (obj == null)
             return false;
         else if (obj == this)
@@ -58,8 +56,7 @@ public abstract class AbstractContact implements Contact
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hashCode = 0;
 
         ProtocolProviderService protocolProvider = getProtocolProvider();
@@ -80,8 +77,7 @@ public abstract class AbstractContact implements Contact
      *
      * @return <code>true</code> if this contact supports resources, <code>false</code> otherwise
      */
-    public boolean supportResources()
-    {
+    public boolean supportResources() {
         return false;
     }
 
@@ -92,8 +88,7 @@ public abstract class AbstractContact implements Contact
      *
      * @return a collection of resources supported by this contact or null if it doesn't support resources
      */
-    public Collection<ContactResource> getResources()
-    {
+    public Collection<ContactResource> getResources() {
         return null;
     }
 
@@ -102,8 +97,7 @@ public abstract class AbstractContact implements Contact
      *
      * @param l the <code>ContactResourceListener</code> to add
      */
-    public void addResourceListener(ContactResourceListener l)
-    {
+    public void addResourceListener(ContactResourceListener l) {
         synchronized (resourceListeners) {
             resourceListeners.add(l);
         }
@@ -114,8 +108,7 @@ public abstract class AbstractContact implements Contact
      *
      * @param l the <code>ContactResourceListener</code> to remove
      */
-    public void removeResourceListener(ContactResourceListener l)
-    {
+    public void removeResourceListener(ContactResourceListener l) {
         synchronized (resourceListeners) {
             resourceListeners.remove(l);
         }
@@ -126,8 +119,7 @@ public abstract class AbstractContact implements Contact
      *
      * @param event the <code>ContactResourceEvent</code> to fire notification for
      */
-    protected void fireContactResourceEvent(ContactResourceEvent event)
-    {
+    protected void fireContactResourceEvent(ContactResourceEvent event) {
         Collection<ContactResourceListener> listeners;
         synchronized (resourceListeners) {
             listeners = new ArrayList<>(resourceListeners);
@@ -149,8 +141,7 @@ public abstract class AbstractContact implements Contact
      *
      * @return the address of the contact.
      */
-    public String getPersistableAddress()
-    {
+    public String getPersistableAddress() {
         return getAddress();
     }
 
@@ -159,26 +150,25 @@ public abstract class AbstractContact implements Contact
      *
      * @return whether contact is mobile one.
      */
-    public boolean isMobile()
-    {
+    public boolean isMobile() {
         return false;
     }
 
     /**
      * Set the lastActivity for the contact
+     *
      * @param dateTime Date of the contact last seen online
      */
-    public void setLastActiveTime(long dateTime)
-    {
+    public void setLastActiveTime(long dateTime) {
         mLastSeen = dateTime;
     }
 
     /**
      * Get the contact last seen activityTime
+     *
      * @return contact last seen activityTime
      */
-    public long getLastActiveTime()
-    {
+    public long getLastActiveTime() {
         return mLastSeen;
     }
 }

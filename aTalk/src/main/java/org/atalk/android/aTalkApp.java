@@ -150,7 +150,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
      */
     @Override
     protected void attachBaseContext(Context base) {
-        // mInstance must be initialize before getProperty() for SQLiteConfigurationStore() init.
+        // mInstance must be initialized before getProperty() for SQLiteConfigurationStore() init.
         mInstance = base;
         String language = ConfigurationUtils.getProperty(P_KEY_LOCALE, "");
         // showToastMessage("aTalkApp reinit locale: " + language);

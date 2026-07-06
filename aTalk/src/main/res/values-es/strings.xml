@@ -1409,6 +1409,8 @@
     <string name="translation_sent">Traducir mensaje enviar</string>
     <string name="translation_sent_disable">Traducir enviar deshabilitar</string>
     <string name="translation_sent_enable">Traducir enviar habilitar</string>
+    <string name="translation_server_apikey">Clave API del servidor de traducción</string>
+    <string name="translation_server_apikey_hint">Introduzca solo si corresponde.</string>
     <string name="translation_server">URL del servidor de traducción</string>
 
     <!-- Advanced settings category -->

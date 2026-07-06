@@ -148,7 +148,7 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
                 break;
             }
         }
-        if (resources.size() > 0)
+        if (!resources.isEmpty())
             contact.setMobile(allMobile);
         else
             contact.setMobile(false);

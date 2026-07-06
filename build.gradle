@@ -7,7 +7,9 @@ buildscript {
 
     dependencies {
         // Otter | 2025.2.1	only compatible with 8.13
-        // Narwhal | 2025.1.1 only compatible with gradle-8.11.x
+        // Narwhal | 2025.1.1 only compatible with gradle-8.11.x;
+        // Do not change to 9.x.x; else "constant expression required" errors for the generated R.id.xxx;
+        // and gradle.properties#android.nonFinalResIds=false is ignored in AGP 9.x.x;
         classpath 'com.android.tools.build:gradle:8.11.2'
 
         // Required by android-youtube-player
@@ -31,8 +33,8 @@ project.ext {
 
     minSdk = 26
     // SDE Eel is not compatible with API-34+; missing dx, dx.jar and aapt2 not compatible
-    compileSdk = 36
-    buildTools = '36.0.0'
+    compileSdk = 37
+    buildTools = '37.0.0'
 }
 
 tasks.register('clean' , Delete) {

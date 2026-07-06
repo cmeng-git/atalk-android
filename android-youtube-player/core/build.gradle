@@ -39,7 +39,7 @@ android {
 }
 
 dependencies {
-    // v1.19.0 required API-37 or later
+    // v1.19.0 required API-37 or later; Do not upgrade as this will need AGP 9.x.x and causes problems.
     implementation 'androidx.core:core-ktx:1.18.0'
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation "androidx.test:runner:1.7.0"

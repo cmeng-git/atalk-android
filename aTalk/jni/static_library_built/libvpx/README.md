@@ -9,6 +9,7 @@
 
 ### Build For Android
 - Follow the instructions below to build libvpx for android
+- aTalk v6.4.0 release is compatible with libvpx-1.16.0 (use ndk 22.1.7171670) <br/>
 - aTalk v4.5.0 release is compatible with libvpx-1.15.2 (use ndk 22.1.7171670) <br/>
 - aTalk v3.2.2 release is compatible with libvpx-1.13.1 (use ndk 22.1.7171670) <br/>
 - aTalk v2.9.4 release is compatible with libvpx-1.11.0 (use android-ndk-r18b) <br/>
@@ -30,7 +31,7 @@
   
 
 The ./build-libvpx4android.sh script builds the static libvpx.a for the various architectures as defined in ./_settings.sh<br/>
-i.e. ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")<br/>
+i.e. ABIS=("armeabi-v7a" "arm64-v8a" "x86_64")<br/>
 All the built libvpx.a and *.h are installed in the ./jni/vpx/android/&lt;ABI>/lib and include respectively
 
 
@@ -55,7 +56,7 @@ The build installs the static libs and includes into the android project jni dir
 ```
 ```
 Note:
-## Standalone toolchains work for ABIS=("arm64-v8a" "x86" "x86_64")
+## Standalone toolchains work for ABIS=("arm64-v8a" "x86_64")
 ABIS "armeabi-v7a" has errors for libvpx-1.8.0 i.e.
 clang50: error: unsupported option '--defsym'
 clang50: error: no such file or directory: 'ARCHITECTURE=7'

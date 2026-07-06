@@ -8,6 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import java.util.Iterator;
 import java.util.List;
 
+import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.service.protocol.event.ChatRoomLocalUserRoleListener;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceListener;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPropertyChangeListener;
@@ -329,12 +330,12 @@ public interface ChatRoom {
      *
      * @param messageText the string content of the message.
      *
-     * @return IMessage the newly created message
+     * @return MessageJabberImpl the newly created message
      */
-    IMessage createMessage(String messageText);
+    MessageJabberImpl createMessage(String messageText);
 
     /**
-     * Create a IMessage instance for sending arbitrary MIME-encoding content.
+     * Create a MessageJabberImpl instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
@@ -343,7 +344,7 @@ public interface ChatRoom {
      *
      * @return the newly created message.
      */
-    IMessage createMessage(String content, int encType, String subject, String msgId);
+    MessageJabberImpl createMessage(String content, int encType, String subject, String msgId);
 
     /**
      * Sends the <code>message</code> to this chat room.
@@ -352,13 +353,13 @@ public interface ChatRoom {
      *
      * @throws OperationFailedException if sending the message fails for some reason.
      */
-    void sendMessage(IMessage message)
+    void sendMessage(MessageJabberImpl message)
             throws OperationFailedException;
 
-    void correctMessage(IMessage message, String correctionUid)
+    void correctMessage(MessageJabberImpl message, String correctionUid)
             throws OperationFailedException;
 
-    void sendMessage(IMessage message, String correctionUid, OmemoManager omemoManager);
+    void sendMessage(MessageJabberImpl message, String correctionUid, OmemoManager omemoManager);
 
     /**
      * Returns a reference to the provider that created this room.

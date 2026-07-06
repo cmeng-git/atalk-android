@@ -588,7 +588,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                     if (quotedMessage != null) {
                         textEdit = quotedMessage + textEdit;
                     }
-                    // Send http link as xhtml to avoid being interpreted by the receiver as http file download link
+                    // Send http link as xhtml to avoid being interpreted by the remote as http file download link
                     else if (textEdit.matches("(?s)^http[s]:.*") && !textEdit.contains("\\s")) {
                         textEdit = aTalkApp.getResString(R.string.chat_url_link, textEdit, textEdit);
                     }
@@ -616,7 +616,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             if (quotedMessage == null) {
                 break;
             }
-            // else continue to cleanup quotedMessage after sending
+            // else continue to clean up quotedMessage after sending
 
         case R.id.chatReplyCancel:
             quotedMessage = null;

@@ -16,27 +16,27 @@
  */
 package org.atalk.android.gui.util;
 
+import java.util.List;
+
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
-
-import java.util.List;
 
 /**
  * Utility class that implements <code>XHtml</code> utility
  *
  * @author Eng Chong Meng
  */
-public class XhtmlUtil
-{
+public class XhtmlUtil {
     /**
      * return the extracted content of the XHTMLExtension for the given message
      *
-     * @param xhtmlExt XHTMLExtension extension
+     * @param message containing XHTMLExtension extension
+     *
      * @return XHTML String of the given message
      */
-    public static String getXhtmlExtension(Message message)
-    {
+    public static String getXhtmlExtension(Message message) {
         String xhtmlString = null;
         if (XHTMLManager.isXHTMLMessage(message)) {
             XHTMLExtension xhtmlExt = message.getExtension(XHTMLExtension.class);

@@ -16,8 +16,8 @@ package net.java.sip.communicator.service.protocol.event;
 import java.util.Date;
 import java.util.EventObject;
 
+import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.IMessage;
 
 /**
  * <code>MessageDeliveredEvent</code>s confirm successful delivery of an instant message.
@@ -45,7 +45,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject {
     /**
      * The received <code>IMessage</code>.
      */
-    private final IMessage mMessage;
+    private final MessageJabberImpl mMessage;
 
     /**
      * The type of message event that this instance represents.
@@ -57,8 +57,6 @@ public class ChatRoomMessageDeliveredEvent extends EventObject {
      */
     private boolean mHistoryMessage = false;
 
-    private boolean isRetractMessage = false;
-
     /**
      * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code> message
      * to the specified <code>to</code> contact.
@@ -69,7 +67,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject {
      * @param eventType indicating the type of the delivered event.
      * i.e. It is either an ACTION_MESSAGE_DELIVERED or a CONVERSATION_MESSAGE_DELIVERED.
      */
-    public ChatRoomMessageDeliveredEvent(ChatRoom source, Date timestamp, IMessage message, String correctionUid, int eventType) {
+    public ChatRoomMessageDeliveredEvent(ChatRoom source, Date timestamp, MessageJabberImpl message, String correctionUid, int eventType) {
         super(source);
         mTimestamp = timestamp;
         mMessage = message;
@@ -82,7 +80,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject {
      *
      * @return the <code>IMessage</code> that triggered this event.
      */
-    public IMessage getMessage() {
+    public MessageJabberImpl getMessage() {
         return mMessage;
     }
 
@@ -141,13 +139,5 @@ public class ChatRoomMessageDeliveredEvent extends EventObject {
      */
     public String getCorrectedMessageUid() {
         return mCorrectionUid;
-    }
-
-    public void setRetractMessage(boolean state) {
-        isRetractMessage = state;
-    }
-
-    public boolean isRetractMessage() {
-        return isRetractMessage;
     }
 }

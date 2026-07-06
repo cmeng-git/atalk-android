@@ -47,8 +47,11 @@ public class AdHocConferenceChatTransport implements ChatTransport {
     private final ChatSession chatSession;
 
     private final AdHocChatRoom adHocChatRoom;
+    private boolean isChatStateSupported = false;
     private final ProtocolProviderService mPPS;
-    private final HttpFileUploadManager httpFileUploadManager;
+    private final OperationSetBasicInstantMessaging imOpSet;
+    private final OperationSetChatStateNotifications csOperationSet;
+    private HttpFileUploadManager httpFileUploadManager;
 
     private static URL mURL = null;
 
@@ -61,9 +64,15 @@ public class AdHocConferenceChatTransport implements ChatTransport {
      */
     public AdHocConferenceChatTransport(ChatSession chatSession, AdHocChatRoom chatRoom) {
         this.chatSession = chatSession;
-        this.adHocChatRoom = chatRoom;
-        mPPS = adHocChatRoom.getParentProvider();
-        httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
+        adHocChatRoom = chatRoom;
+        mPPS = chatRoom.getParentProvider();
+        imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
+        csOperationSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
+        isChatStateSupported = csOperationSet != null;
+
+        if (mPPS.getConnection() != null) {
+            httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
+        }
     }
 
     /**
@@ -160,15 +169,12 @@ public class AdHocConferenceChatTransport implements ChatTransport {
      */
     @Override
     public boolean allowChatStateNotifications() {
-        Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
-        // isJoined as one of the condition???
-        return tnOpSet != null;
-
+        return isChatStateSupported;
     }
 
     /**
      * Sends the given instant message trough this chat transport, by specifying the mime type
-     * (html or plain text).
+     * (HTML or plain text).
      *
      * @param messageText The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
@@ -196,7 +202,7 @@ public class AdHocConferenceChatTransport implements ChatTransport {
      * Sends <code>message</code> as a message correction through this transport, specifying the
      * mime type (html or plain text) and the id of the message to replace.
      *
-     * @param message The message to send.
+     * @param messageText The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param correctionUid The ID of the message being corrected by this message.
      *
@@ -235,6 +241,7 @@ public class AdHocConferenceChatTransport implements ChatTransport {
      *
      * @throws Exception if anything goes wrong
      */
+    @Override
     public Object sendSticker(File file, int chatType, FileSendConversation xferCon)
             throws Exception {
         return sendFile(file, chatType, xferCon);
@@ -321,7 +328,7 @@ public class AdHocConferenceChatTransport implements ChatTransport {
      */
     @Override
     public long getMaximumFileLength() {
-        return httpFileUploadManager.getDefaultUploadService().getMaxFileSize();
+        return (allowsFileTransfer()) ? httpFileUploadManager.getDefaultUploadService().getMaxFileSize() : 0;
     }
 
     /**
@@ -354,11 +361,9 @@ public class AdHocConferenceChatTransport implements ChatTransport {
     @Override
     public void addInstantMessageListener(MessageListener l) {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowInstantMessage())
-            return;
-
-        OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
-        imOpSet.addMessageListener(l);
+        if (allowInstantMessage()) {
+            imOpSet.addMessageListener(l);
+        }
     }
 
     /**
@@ -369,11 +374,9 @@ public class AdHocConferenceChatTransport implements ChatTransport {
     @Override
     public void removeInstantMessageListener(MessageListener l) {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowInstantMessage())
-            return;
-
-        OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
-        imOpSet.removeMessageListener(l);
+        if (allowInstantMessage()) {
+            imOpSet.removeMessageListener(l);
+        }
     }
 
     @Override

@@ -1343,6 +1343,8 @@
     <string name="translation_sent">Käännä viesti lähetettynä</string>
     <string name="translation_sent_disable">Käännä lähetys pois käytöstä</string>
     <string name="translation_sent_enable">Käännä lähetystoiminto</string>
+    <string name="translation_server_apikey">Käännöspalvelimen API-avain</string>
+    <string name="translation_server_apikey_hint">Syötä vain, jos sovellettavissa</string>
     <string name="translation_server">Käännöspalvelimen URL-osoite</string>
 
     <!-- Advanced settings category -->

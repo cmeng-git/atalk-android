@@ -52,7 +52,7 @@ include $(CLEAR_VARS)
 # include $(LOCAL_PATH)/libvpx/build/make/Android_ndk.mk
 
 # ================================= LibVPX (VP8 / VP9) ================================
-### VPX shared library build using static libraries pre-built from source (v1.15.2) on Ubuntu
+### VPX shared library build using static libraries pre-built from source (v1.16.0) on Ubuntu
 LOCAL_PATH := $(ROOT)
 include $(CLEAR_VARS)
 VPX_DIR   := vpx

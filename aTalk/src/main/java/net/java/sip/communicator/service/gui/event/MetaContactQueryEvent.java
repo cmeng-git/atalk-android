@@ -6,9 +6,9 @@
  */
 package net.java.sip.communicator.service.gui.event;
 
-import net.java.sip.communicator.service.contactlist.MetaContact;
-
 import java.util.EventObject;
+
+import net.java.sip.communicator.service.contactlist.MetaContact;
 
 /**
  * The <code>MetaContactQueryEvent</code> is triggered each time a
@@ -16,8 +16,7 @@ import java.util.EventObject;
  *
  * @author Yana Stamcheva
  */
-public class MetaContactQueryEvent extends EventObject
-{
+public class MetaContactQueryEvent extends EventObject {
     /**
      * The <code>MetaContact</code> this event is about.
      */
@@ -30,27 +29,26 @@ public class MetaContactQueryEvent extends EventObject
      * @param source the <code>MetaContactQuery</code> that triggered this event
      * @param metaContact the <code>MetaContact</code> this event is about
      */
-    public MetaContactQueryEvent(MetaContactQuery source, MetaContact metaContact)
-    {
+    public MetaContactQueryEvent(MetaContactQuery source, MetaContact metaContact) {
         super(source);
         this.metaContact = metaContact;
     }
 
     /**
      * Returns the <code>MetaContactQuery</code> that triggered this event.
+     *
      * @return the <code>MetaContactQuery</code> that triggered this event
      */
-    public MetaContactQuery getQuerySource()
-    {
+    public MetaContactQuery getQuerySource() {
         return (MetaContactQuery) source;
     }
 
     /**
      * Returns the <code>MetaContact</code> this event is about.
+     *
      * @return the <code>MetaContact</code> this event is about
      */
-    public MetaContact getMetaContact()
-    {
+    public MetaContact getMetaContact() {
         return metaContact;
     }
 }

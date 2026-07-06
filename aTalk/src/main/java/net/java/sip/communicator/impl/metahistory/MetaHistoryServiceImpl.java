@@ -299,7 +299,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param services the services classNames we will query
      * @param descriptor CallPeer address(String), MetaContact or ChatRoom.
      * @param keywords keyword
-     * @param caseSensitive is keywords search case sensitive
+     * @param caseSensitive is keywords search case-sensitive
      *
      * @return Collection sorted result that consists of records returned from the services we wrap
      */

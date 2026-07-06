@@ -5,14 +5,13 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.ContactResource;
-import net.java.sip.communicator.service.protocol.IMessage;
-
-import org.atalk.android.gui.chat.ChatMessage;
-
 import java.util.Date;
 import java.util.EventObject;
+
+import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
+import net.java.sip.communicator.service.protocol.Contact;
+
+import org.atalk.android.gui.chat.ChatMessage;
 
 /**
  * <code>MessageDeliveredEvent</code>s confirm successful delivery of an instant message.
@@ -30,11 +29,6 @@ public class MessageDeliveredEvent extends EventObject {
      * The contact that has sent this message.
      */
     private final Contact mContact;
-
-    /**
-     * The <code>ContactResource</code>, from which the message was sent.
-     */
-    private final ContactResource mContactResource;
 
     /**
      * Message sender full jid
@@ -56,8 +50,6 @@ public class MessageDeliveredEvent extends EventObject {
      */
     private boolean isMessageEncrypted = false;
 
-    private boolean isRetractMessage = false;
-
     /**
      * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code>
      * message to the specified <code>to</code> contact.
@@ -66,9 +58,8 @@ public class MessageDeliveredEvent extends EventObject {
      * @param contact the <code>Contact</code> that this message was sent to.
      * @param correctionUid The ID of the message being corrected.
      */
-    public MessageDeliveredEvent(IMessage source, Contact contact, ContactResource contactResource,
-            String sender, String correctionUid) {
-        this(source, contact, contactResource, sender, new Date());
+    public MessageDeliveredEvent(MessageJabberImpl source, Contact contact, String sender, String correctionUid) {
+        this(source, contact, sender, new Date());
         this.correctionUid = correctionUid;
     }
 
@@ -78,15 +69,12 @@ public class MessageDeliveredEvent extends EventObject {
      *
      * @param source the <code>IMessage</code> whose delivery this event represents.
      * @param contact the <code>Contact</code> that this message was sent to.
-     * @param contactResource the <code>Contact</code> resource that this message was sent to
      * @param sender the fullJid from which this message was sent
      * @param timestamp a date indicating the exact moment when the event occurred
      */
-    public MessageDeliveredEvent(IMessage source, Contact contact, ContactResource contactResource,
-            String sender, Date timestamp) {
+    public MessageDeliveredEvent(MessageJabberImpl source, Contact contact, String sender, Date timestamp) {
         super(source);
         mContact = contact;
-        mContactResource = contactResource;
         mSender = sender;
         mTimestamp = timestamp;
     }
@@ -99,17 +87,6 @@ public class MessageDeliveredEvent extends EventObject {
      */
     public Contact getContact() {
         return mContact;
-    }
-
-    /**
-     * Returns a reference to the <code>ContactResource</code> that has sent the <code>IMessage</code>
-     * whose reception this event represents.
-     *
-     * @return a reference to the <code>ContactResource</code> that has sent the <code>IMessage</code>
-     * whose reception this event represents.
-     */
-    public ContactResource getContactResource() {
-        return mContactResource;
     }
 
     /**
@@ -126,8 +103,8 @@ public class MessageDeliveredEvent extends EventObject {
      *
      * @return the <code>IMessage</code> that triggered this event.
      */
-    public IMessage getSourceMessage() {
-        return (IMessage) getSource();
+    public MessageJabberImpl getMessage() {
+        return (MessageJabberImpl) getSource();
     }
 
     /**
@@ -184,13 +161,5 @@ public class MessageDeliveredEvent extends EventObject {
      */
     public void setMessageEncrypted(boolean isMessageEncrypted) {
         this.isMessageEncrypted = isMessageEncrypted;
-    }
-
-    public void setRetractMessage(boolean state) {
-        isRetractMessage = state;
-    }
-
-    public boolean isRetractMessage() {
-        return isRetractMessage;
     }
 }

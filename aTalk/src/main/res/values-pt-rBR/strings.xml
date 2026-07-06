@@ -1398,6 +1398,8 @@
     <string name="translation_sent">Enviar mensagem</string>
     <string name="translation_sent_disable">Desativar envio de tradução</string>
     <string name="translation_sent_enable">Traduzir enviar habilitar</string>
+    <string name="translation_server_apikey">Chave da API do servidor de tradução</string>
+    <string name="translation_server_apikey_hint">Preencha apenas se aplicável.</string>
     <string name="translation_server">URL do servidor de tradução</string>
 
     <!-- Advanced settings category -->

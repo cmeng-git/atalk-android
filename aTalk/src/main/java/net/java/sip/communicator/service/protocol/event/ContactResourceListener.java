@@ -20,8 +20,7 @@ package net.java.sip.communicator.service.protocol.event;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public interface ContactResourceListener
-{
+public interface ContactResourceListener {
     /**
      * Called when a new <code>ContactResource</code> has been added to the list of available <code>Contact</code> resources.
      *

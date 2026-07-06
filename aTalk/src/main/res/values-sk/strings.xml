@@ -1396,6 +1396,8 @@
     <string name="translation_sent">Preložiť odoslanú správu</string>
     <string name="translation_sent_disable">Zakázať odoslanie prekladu</string>
     <string name="translation_sent_enable">Povoliť odoslanie prekladu</string>
+    <string name="translation_server_apikey">Kľúč API prekladového servera</string>
+    <string name="translation_server_apikey_hint">Zadajte iba v prípade potreby</string>
     <string name="translation_server">URL adresa prekladového servera</string>
 
     <!-- Advanced settings category -->

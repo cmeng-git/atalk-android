@@ -18,10 +18,10 @@ import java.util.EventObject;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
+import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.ChatRoomMember;
-import net.java.sip.communicator.service.protocol.IMessage;
 
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.persistance.FileBackend;
@@ -52,7 +52,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject {
     /**
      * The received <code>IMessage</code>.
      */
-    private final IMessage mMessage;
+    private final MessageJabberImpl mMessage;
 
     /**
      * The type of message event that this instance represents.
@@ -71,8 +71,6 @@ public class ChatRoomMessageReceivedEvent extends EventObject {
 
     private final boolean isAutoJoin;
 
-    private boolean isRetractMessage = false;
-
     /**
      * Indicates whether the message is important or not.
      */
@@ -90,7 +88,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject {
      * (one of the XXX_MESSAGE_RECEIVED static fields).
      */
     public ChatRoomMessageReceivedEvent(ChatRoom source, ChatRoomMember from, Date timestamp,
-            IMessage message, String correctionUid, int eventType) {
+            MessageJabberImpl message, String correctionUid, int eventType) {
         super(source);
         // Convert to MESSAGE_HTTP_FILE_DOWNLOAD if it is http download link
         if (FileBackend.isHttpFileDnLink(message.getContent())) {
@@ -109,10 +107,10 @@ public class ChatRoomMessageReceivedEvent extends EventObject {
     }
 
     /**
-     * Returns a reference to the <code>ChatRoomMember</code> that has send the <code>IMessage</code>
+     * Returns a reference to the <code>ChatRoomMember</code> that has sent the <code>IMessage</code>
      * whose reception this event represents.
      *
-     * @return a reference to the <code>ChatRoomMember</code> that has send the <code>IMessage</code>
+     * @return a reference to the <code>ChatRoomMember</code> that has sent the <code>IMessage</code>
      * whose reception this event represents.
      */
     public ChatRoomMember getSourceChatRoomMember() {
@@ -124,7 +122,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject {
      *
      * @return the <code>IMessage</code> that triggered this event.
      */
-    public IMessage getMessage() {
+    public MessageJabberImpl getMessage() {
         return mMessage;
     }
 
@@ -210,13 +208,5 @@ public class ChatRoomMessageReceivedEvent extends EventObject {
      */
     public String getCorrectedMessageUid() {
         return mCorrectionUid;
-    }
-
-    public void setRetractMessage(boolean state) {
-        isRetractMessage = state;
-    }
-
-    public boolean isRetractMessage() {
-        return isRetractMessage;
     }
 }

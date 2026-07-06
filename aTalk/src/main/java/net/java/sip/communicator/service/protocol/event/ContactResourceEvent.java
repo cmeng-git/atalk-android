@@ -13,10 +13,10 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
+import java.util.EventObject;
+
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ContactResource;
-
-import java.util.EventObject;
 
 /**
  * The <code>ContactResourceEvent</code> is the event that notifies for any changes in the
@@ -24,8 +24,7 @@ import java.util.EventObject;
  *
  * @author Yana Stamcheva
  */
-public class ContactResourceEvent extends EventObject
-{
+public class ContactResourceEvent extends EventObject {
     /**
      * The <code>ContactResource</code> that is concerned by the change.
      */
@@ -61,8 +60,7 @@ public class ContactResourceEvent extends EventObject
      * @param eventType an integer representing the type of this event. One of the types defined in this
      * class: RESOURCE_ADDED, RESOURCE_REMOVED, RESOURCE_MODIFIED.
      */
-    public ContactResourceEvent(Contact source, ContactResource contactResource, int eventType)
-    {
+    public ContactResourceEvent(Contact source, ContactResource contactResource, int eventType) {
         super(source);
 
         this.contactResource = contactResource;
@@ -74,8 +72,7 @@ public class ContactResourceEvent extends EventObject
      *
      * @return the <code>Contact</code>, which is the source of this event
      */
-    public Contact getContact()
-    {
+    public Contact getContact() {
         return (Contact) getSource();
     }
 
@@ -84,8 +81,7 @@ public class ContactResourceEvent extends EventObject
      *
      * @return the <code>ContactResource</code> that is concerned by the change
      */
-    public ContactResource getContactResource()
-    {
+    public ContactResource getContactResource() {
         return contactResource;
     }
 
@@ -97,8 +93,7 @@ public class ContactResourceEvent extends EventObject
      *
      * @return an int representing the type of the event
      */
-    public int getEventType()
-    {
+    public int getEventType() {
         return eventType;
     }
 }

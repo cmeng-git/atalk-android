@@ -35,10 +35,10 @@ ANDROID_API=24
 
 # Do not change naming convention of the ABIS; see:
 # https://developer.android.com/ndk/guides/abis.html#Native code in app packages
-# ABIS=("armeabi" "armeabi-v7a" "arm64-v8a" "x86" "x86_64" "mips" "mips64")
+# ABIS=("armeabi" "armeabi-v7a" "arm64-v8a" "x86_64" "mips" "mips64")
 
 # Android recommended architecture support; others are deprecated
-ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")
+ABIS=("arm64-v8a" "x86_64")
 
 BASEDIR=`pwd`
 HOST_NUM_CORES=$(nproc)

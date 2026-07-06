@@ -61,50 +61,6 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
         }
     }
 
-    /**
-     * Create a IMessage instance for sending arbitrary MIME-encoding content.
-     *
-     * @param content content value
-     * @param encType the MIME-type for <code>content</code>
-     * @param subject a <code>String</code> subject or <code>null</code> for now subject.
-     *
-     * @return the newly created message.
-     */
-    public IMessage createMessage(byte[] content, int encType, String subject) {
-        String contentAsString;
-        contentAsString = new String(content);
-        return createMessage(contentAsString, encType, subject);
-    }
-
-    /**
-     * Create a IMessage instance for sending a simple text messages with default (text/plain)
-     * content type and encoding.
-     *
-     * @param messageText the string content of the message.
-     *
-     * @return IMessage the newly created message
-     */
-    public IMessage createMessage(String messageText) {
-        return createMessage(messageText, IMessage.ENCODE_PLAIN, null);
-    }
-
-    public abstract IMessage createMessage(String content, int encType, String subject);
-
-    /**
-     * Create a IMessage instance with the specified UID, content type and a default encoding.
-     * This method can be useful when message correction is required. One can construct
-     * the corrected message to have the same UID as the message before correction.
-     *
-     * @param messageText the string content of the message.
-     * @param encType the mime and encryption type for the <code>content</code>
-     * @param messageUid the unique identifier of this message.
-     *
-     * @return IMessage the newly created message
-     */
-    public IMessage createMessageWithUid(String messageText, int encType, String messageUid) {
-        return createMessage(messageText);
-    }
-
     protected enum MessageEventType {
         None, MessageDelivered, MessageReceived, MessageDeliveryFailed, MessageDeliveryPending,
     }
@@ -146,21 +102,22 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
 
                 for (MessageListener listener : listeners) {
                     switch (eventType) {
-                        case MessageDelivered:
-                            listener.messageDelivered((MessageDeliveredEvent) event);
-                            break;
-                        case MessageDeliveryFailed:
-                            listener.messageDeliveryFailed((MessageDeliveryFailedEvent) event);
-                            break;
-                        case MessageReceived:
-                            listener.messageReceived((MessageReceivedEvent) event);
-                            break;
-                        default:
-                            // We either have nothing to do or we do not know what to do. Just silence the compiler.
-                            break;
+                    case MessageDelivered:
+                        listener.messageDelivered((MessageDeliveredEvent) event);
+                        break;
+                    case MessageDeliveryFailed:
+                        listener.messageDeliveryFailed((MessageDeliveryFailedEvent) event);
+                        break;
+                    case MessageReceived:
+                        listener.messageReceived((MessageReceivedEvent) event);
+                        break;
+                    default:
+                        // We either have nothing to do or we do not know what to do. Just silence the compiler.
+                        break;
                     }
                 }
-            } catch (Throwable e) {
+            }
+            catch (Throwable e) {
                 Timber.e(e, "Error delivering message");
             }
         }
@@ -196,25 +153,25 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
         }
         ProtocolProviderService protocolProvider;
         switch (eventType) {
-            case MessageDelivered:
-            case MessageDeliveryPending:
-                protocolProvider = ((MessageDeliveredEvent) evt).getContact().getProtocolProvider();
-                break;
-            case MessageReceived:
-                protocolProvider = ((MessageReceivedEvent) evt).getSourceContact().getProtocolProvider();
-                break;
-            case MessageDeliveryFailed:
-                protocolProvider = ((MessageDeliveryFailedEvent) evt).getDestinationContact().getProtocolProvider();
-                break;
-            default:
-                return new EventObject[]{evt};
+        case MessageDelivered:
+        case MessageDeliveryPending:
+            protocolProvider = ((MessageDeliveredEvent) evt).getContact().getProtocolProvider();
+            break;
+        case MessageReceived:
+            protocolProvider = ((MessageReceivedEvent) evt).getSourceContact().getProtocolProvider();
+            break;
+        case MessageDeliveryFailed:
+            protocolProvider = ((MessageDeliveryFailedEvent) evt).getDestinationContact().getProtocolProvider();
+            break;
+        default:
+            return new EventObject[] {evt};
         }
 
         OperationSetInstantMessageTransformImpl opSetMessageTransform = (OperationSetInstantMessageTransformImpl)
                 protocolProvider.getOperationSet(OperationSetInstantMessageTransform.class);
 
         if (opSetMessageTransform == null)
-            return new EventObject[]{evt};
+            return new EventObject[] {evt};
 
         // 'current' contains the events that need to be transformed. It should not contain null values.
         final LinkedList<EventObject> current = new LinkedList<>();
@@ -229,40 +186,40 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
                 while (!current.isEmpty()) {
                     final EventObject event = current.remove();
                     switch (eventType) {
-                        case MessageDelivered:
-                            MessageDeliveredEvent transformedDelivered
-                                    = transformLayer.messageDelivered((MessageDeliveredEvent) event);
-                            if (transformedDelivered != null) {
-                                next.add(transformedDelivered);
+                    case MessageDelivered:
+                        MessageDeliveredEvent transformedDelivered
+                                = transformLayer.messageDelivered((MessageDeliveredEvent) event);
+                        if (transformedDelivered != null) {
+                            next.add(transformedDelivered);
+                        }
+                        break;
+                    case MessageDeliveryPending:
+                        MessageDeliveredEvent[] evts
+                                = transformLayer.messageDeliveryPending((MessageDeliveredEvent) event);
+                        for (MessageDeliveredEvent mde : evts) {
+                            if (mde != null) {
+                                next.add(mde);
                             }
-                            break;
-                        case MessageDeliveryPending:
-                            MessageDeliveredEvent[] evts
-                                    = transformLayer.messageDeliveryPending((MessageDeliveredEvent) event);
-                            for (MessageDeliveredEvent mde : evts) {
-                                if (mde != null) {
-                                    next.add(mde);
-                                }
-                            }
-                            break;
-                        case MessageDeliveryFailed:
-                            MessageDeliveryFailedEvent transformedDeliveryFailed
-                                    = transformLayer.messageDeliveryFailed((MessageDeliveryFailedEvent) event);
-                            if (transformedDeliveryFailed != null) {
-                                next.add(transformedDeliveryFailed);
-                            }
-                            break;
-                        case MessageReceived:
-                            MessageReceivedEvent transformedReceived
-                                    = transformLayer.messageReceived((MessageReceivedEvent) event);
-                            if (transformedReceived != null) {
-                                next.add(transformedReceived);
-                            }
-                            break;
-                        default:
-                            next.add(event);
-                            /* We either have nothing to do or we do not know what to do. */
-                            break;
+                        }
+                        break;
+                    case MessageDeliveryFailed:
+                        MessageDeliveryFailedEvent transformedDeliveryFailed
+                                = transformLayer.messageDeliveryFailed((MessageDeliveryFailedEvent) event);
+                        if (transformedDeliveryFailed != null) {
+                            next.add(transformedDeliveryFailed);
+                        }
+                        break;
+                    case MessageReceived:
+                        MessageReceivedEvent transformedReceived
+                                = transformLayer.messageReceived((MessageReceivedEvent) event);
+                        if (transformedReceived != null) {
+                            next.add(transformedReceived);
+                        }
+                        break;
+                    default:
+                        next.add(event);
+                        /* We either have nothing to do or we do not know what to do. */
+                        break;
                     }
                 }
                 // Set events for next round of transformations.
@@ -281,20 +238,8 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      * @return <code>true</code> if the contact supports it and <code>false</code> otherwise.
      */
     public boolean isContentTypeSupported(int mimeType, Contact contact) {
-        // by default we support default mime type, for other mime-types method must be overridden
+        // By default, we support default mime type, for other mime-types method must be overridden
         return (IMessage.ENCODE_PLAIN == mimeType);
-    }
-
-    /**
-     * Sends the <code>message</code> to the destination indicated by the <code>to</code>. Provides a
-     * default implementation of this method.
-     *
-     * @param to the <code>Contact</code> to send <code>message</code> to
-     * @param toResource the resource to which the message should be send
-     * @param message the <code>IMessage</code> to send.
-     */
-    public void sendInstantMessage(Contact to, ContactResource toResource, IMessage message) {
-        sendInstantMessage(to, message);
     }
 
     /**

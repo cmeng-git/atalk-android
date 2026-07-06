@@ -66,8 +66,9 @@ public interface ChatMessage {
     /* STATUS: chat message status or File transfer status - @see FileRecord.STATUS_XXX */
     int STATUS_SEND = 0;
     int STATUS_RECEIVED = 1;
+    int STATUS_MSG_OL = 5;  // Message Offline use for contact chat only.
     int STATUS_EDITED = 8;
-    int STATUS_DELETED = 9;  // to be deleted
+    int STATUS_RETRACTED = 9;
     int STATUS_UNKNOWN = FileRecord.STATUS_UNKNOWN;
 
     /**

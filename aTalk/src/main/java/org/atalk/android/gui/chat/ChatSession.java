@@ -67,12 +67,7 @@ public abstract class ChatSession {
     public static final int MODE_MULTI = 1;
     public static final int MODE_NPE = 2;    // non-persistent entity
 
-    private JSONObject attributes = new JSONObject();
-    private static ChatSession chatSession;
     public final ArrayList<ChatMessageImpl> messages = new ArrayList<>();
-    private AccountID accountId = null;
-    private String nextMessage;
-    private transient MultiUserChat mucOptions = null;
 
     /**
      * The persistable address of the contact from the session.

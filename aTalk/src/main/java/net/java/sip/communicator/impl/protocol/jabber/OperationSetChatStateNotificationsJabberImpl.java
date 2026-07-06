@@ -217,7 +217,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
     /**
      * Listens for incoming request for chat state info
      */
-    private class JabberMessageEventRequestListener implements MessageEventRequestListener {
+    private static class JabberMessageEventRequestListener implements MessageEventRequestListener {
         public void deliveredNotificationRequested(Jid from, String packetID, MessageEventManager messageEventManager) {
             try {
                 messageEventManager.sendDeliveredNotification(from, packetID);

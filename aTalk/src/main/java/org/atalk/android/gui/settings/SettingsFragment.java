@@ -57,6 +57,7 @@ import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.service.configuration.ConfigurationService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -85,6 +86,7 @@ public class SettingsFragment extends BasePreferenceFragment
 
     // Translation Server
     public static final String P_KEY_TRANSLATE_SERVER = "translate_server";
+    public static final String P_KEY_TRANSLATE_SERVER_APIKEY = "translate_server_apikey";
 
     // Message section
     private static final String P_KEY_AUTO_START = "org.atalk.android.auto_start";
@@ -116,6 +118,11 @@ public class SettingsFragment extends BasePreferenceFragment
     private static ConfigurationService mConfigService;
     private PreferenceScreen mPreferenceScreen;
     private SharedPreferences shPrefs;
+
+    EditTextPreference webPagePref;
+    EditTextPreference translationUrlPref;
+    EditTextPreference translateApikeyPref;
+    Preference prefAdvance;
 
     private ListPreference resList;
     private AppCompatActivity mActivity;
@@ -152,12 +159,16 @@ public class SettingsFragment extends BasePreferenceFragment
         shPrefs.registerOnSharedPreferenceChangeListener(this);
         shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
 
+        webPagePref = findPreference(P_KEY_WEB_PAGE);
+        translationUrlPref = findPreference(P_KEY_TRANSLATE_SERVER);
+        translateApikeyPref = findPreference(P_KEY_TRANSLATE_SERVER_APIKEY);
+
         // init display locale and theme (not implemented)
         initLocale();
         initTheme();
         initWebPagePreference();
 
-        // Translation Server
+        // Translation Server parameters
         initTranslationPreference();
 
         // Messages section
@@ -168,8 +179,8 @@ public class SettingsFragment extends BasePreferenceFragment
         initAutoStart();
 
         // android OS cannot support removal of nested PreferenceCategory, so just disable all advance settings
+        prefAdvance = findPreference(P_KEY_ADVANCED);
         if (ConfigurationUtils.isExpertSettingDisabled()) {
-            Preference prefAdvance = findPreference(P_KEY_ADVANCED);
             if (prefAdvance != null)
                 prefAdvance.setVisible(false);
         }
@@ -223,13 +234,11 @@ public class SettingsFragment extends BasePreferenceFragment
      */
     private void initWebPagePreference() {
         // Updates displayed history size summary.
-        EditTextPreference webPagePref = findPreference(P_KEY_WEB_PAGE);
         webPagePref.setText(ConfigurationUtils.getWebPage());
         updateWebPageSummary();
     }
 
     private void updateWebPageSummary() {
-        EditTextPreference webPagePref = findPreference(P_KEY_WEB_PAGE);
         webPagePref.setSummary(ConfigurationUtils.getWebPage());
     }
 
@@ -237,14 +246,21 @@ public class SettingsFragment extends BasePreferenceFragment
      * Initialize Language Translation server.
      */
     private void initTranslationPreference() {
-        EditTextPreference translationUrlPref = findPreference(P_KEY_TRANSLATE_SERVER);
         translationUrlPref.setText(ConfigurationUtils.getTranslateServerUrl());
+        translateApikeyPref.setText(ConfigurationUtils.getTranslateServerApikey());
         updateTranslationSummary();
     }
 
     private void updateTranslationSummary() {
-        EditTextPreference translationUrlPref = findPreference(P_KEY_TRANSLATE_SERVER);
         translationUrlPref.setSummary(ConfigurationUtils.getTranslateServerUrl());
+
+        String apikey = ConfigurationUtils.getTranslateServerApikey();
+        if (StringUtils.isNotEmpty(apikey)) {
+            translateApikeyPref.setSummary(apikey);
+        }
+        else {
+            translateApikeyPref.setSummary(R.string.translation_server_apikey_hint);
+        }
     }
 
     /**
@@ -448,9 +464,8 @@ public class SettingsFragment extends BasePreferenceFragment
             mPreferenceScreen.removePreference(myPrefCat);
 
         // disable Expert setting if media call is disable
-        Preference myPref = findPreference(P_KEY_ADVANCED);
-        if (myPref != null) {
-            mPreferenceScreen.removePreference(myPref);
+        if (prefAdvance != null) {
+            mPreferenceScreen.removePreference(prefAdvance);
         }
     }
 
@@ -578,6 +593,12 @@ public class SettingsFragment extends BasePreferenceFragment
         case P_KEY_TRANSLATE_SERVER:
             String translateUrl = shPreferences.getString(P_KEY_TRANSLATE_SERVER, ConfigurationUtils.getTranslateServerUrl());
             ConfigurationUtils.setTranslateServerUrl(translateUrl);
+            updateTranslationSummary();
+            break;
+
+        case P_KEY_TRANSLATE_SERVER_APIKEY:
+            String translateApikey = shPreferences.getString(P_KEY_TRANSLATE_SERVER_APIKEY, ConfigurationUtils.getTranslateServerApikey());
+            ConfigurationUtils.setTranslateServerApikey(translateApikey);
             updateTranslationSummary();
             break;
 

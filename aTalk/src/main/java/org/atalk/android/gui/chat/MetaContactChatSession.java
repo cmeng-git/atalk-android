@@ -35,12 +35,11 @@ import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
 import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AppGUIActivator;
-import org.json.JSONArray;
-import org.json.JSONException;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * An implementation of the <code>ChatSession</code> interface that represents a user-to-user chat session.
@@ -528,7 +527,7 @@ public class MetaContactChatSession extends ChatSession
         MetaContactChatTransport chatTransport = null;
         Collection<ContactResource> contactResources = contact.getResources();
 
-        if (contact.supportResources() && (contactResources != null) && contactResources.size() > 0) {
+        if (contact.supportResources() && (contactResources != null) && !contactResources.isEmpty()) {
             if (contactResources.size() > 1) {
                 chatTransport = new MetaContactChatTransport(this, contact);
                 addChatTransport(chatTransport);
