@@ -38,6 +38,7 @@ import net.java.sip.communicator.service.protocol.event.SubscriptionEvent;
 
 import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
@@ -508,7 +509,7 @@ public class ServerStoredContactListJabberImpl {
          * update the roster with the subscription status.
          */
         try {
-            mRoster.createItemAndRequestSubscription(contactJid, contactJid.toString(), parentNames);
+            addContactToRoster(contactJid, contactJid.toString(), parentNames);
         } catch (XMPPErrorException ex) {
             String errTxt = "Error adding new jabber roster entry";
             Timber.e(ex, "%s", errTxt);
@@ -529,6 +530,17 @@ public class ServerStoredContactListJabberImpl {
             throw new OperationFailedException(errTxt, errorCode, ex);
         } catch (NotLoggedInException | NoResponseException | NotConnectedException | InterruptedException ex) {
             Timber.w("addContact: %s", ex.getMessage());
+        }
+    }
+
+    private void addContactToRoster(BareJid contactJid, String displayName, String[] parentNames) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        if (mRoster.isSubscriptionPreApprovalSupported()) {
+            try {
+                mRoster.preApproveAndCreateEntry(contactJid, displayName, parentNames);
+            } catch (SmackException.FeatureNotSupportedException ignored) {}
+        }
+        else {
+            mRoster.createItemAndRequestSubscription(contactJid, displayName, parentNames);
         }
     }
 
@@ -786,7 +798,7 @@ public class ServerStoredContactListJabberImpl {
         xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_30);
         try {
             // Do not use getSourceEntry() to getJid(); may be null if contact is not in roster.
-            mRoster.createItemAndRequestSubscription(contact.getJid().asBareJid(), contact.getDisplayName(),
+            addContactToRoster(contact.getJid().asBareJid(), contact.getDisplayName(),
                     new String[]{newParent.getGroupName()});
             newParent.addContact(contact);
         } catch (XMPPException ex) {
