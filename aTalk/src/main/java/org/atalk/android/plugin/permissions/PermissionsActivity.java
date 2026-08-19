@@ -318,7 +318,7 @@ public class PermissionsActivity extends BaseActivity {
 
     public static void onAppInfoButtonClicked(Context context) {
         Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                Uri.parse("package:" + context.getPackageName()));
+                Uri.fromParts("package", context.getPackageName(), null));
         myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
         myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(myAppSettings);
@@ -376,7 +376,8 @@ public class PermissionsActivity extends BaseActivity {
                         }
                     }
                 }
-            } catch (PackageManager.NameNotFoundException e) {
+            }
+            catch (PackageManager.NameNotFoundException e) {
                 Timber.e("NameNotFoundException: %s", e.getMessage());
             }
         }
@@ -547,43 +548,43 @@ public class PermissionsActivity extends BaseActivity {
         TextView feedbackView;
 
         switch (name) {
-            case Manifest.permission.POST_NOTIFICATIONS:
-                feedbackView = mBinding.notificationsPermissionFeedback;
-                break;
+        case Manifest.permission.POST_NOTIFICATIONS:
+            feedbackView = mBinding.notificationsPermissionFeedback;
+            break;
 
-            case Manifest.permission.READ_CONTACTS:
-                feedbackView = mBinding.contactsPermissionFeedback;
-                break;
+        case Manifest.permission.READ_CONTACTS:
+            feedbackView = mBinding.contactsPermissionFeedback;
+            break;
 
-            case Manifest.permission.ACCESS_FINE_LOCATION:
-                feedbackView = mBinding.locationPermissionFeedback;
-                break;
+        case Manifest.permission.ACCESS_FINE_LOCATION:
+            feedbackView = mBinding.locationPermissionFeedback;
+            break;
 
-            case Manifest.permission.RECORD_AUDIO:
-                feedbackView = mBinding.micPermissionFeedback;
-                break;
+        case Manifest.permission.RECORD_AUDIO:
+            feedbackView = mBinding.micPermissionFeedback;
+            break;
 
-            case Manifest.permission.CAMERA:
-                feedbackView = mBinding.cameraPermissionFeedback;
-                break;
+        case Manifest.permission.CAMERA:
+            feedbackView = mBinding.cameraPermissionFeedback;
+            break;
 
-            case Manifest.permission.READ_MEDIA_AUDIO:
-                feedbackView = mBinding.musicPermissionFeedback;
-                break;
+        case Manifest.permission.READ_MEDIA_AUDIO:
+            feedbackView = mBinding.musicPermissionFeedback;
+            break;
 
-            case Manifest.permission.READ_MEDIA_IMAGES:
-            case Manifest.permission.READ_MEDIA_VIDEO:
-            case Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED:
-                feedbackView = mBinding.videoPermissionFeedback;
-                break;
+        case Manifest.permission.READ_MEDIA_IMAGES:
+        case Manifest.permission.READ_MEDIA_VIDEO:
+        case Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED:
+            feedbackView = mBinding.videoPermissionFeedback;
+            break;
 
-            case Manifest.permission.READ_EXTERNAL_STORAGE:
-            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                feedbackView = mBinding.storagePermissionFeedback;
-                break;
+        case Manifest.permission.READ_EXTERNAL_STORAGE:
+        case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+            feedbackView = mBinding.storagePermissionFeedback;
+            break;
 
-            default:
-                feedbackView = null;
+        default:
+            feedbackView = null;
         }
         return feedbackView;
     }

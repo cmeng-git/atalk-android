@@ -10,7 +10,7 @@ buildscript {
         // Narwhal | 2025.1.1 only compatible with gradle-8.11.x;
         // Do not change to 9.x.x; else "constant expression required" errors for the generated R.id.xxx;
         // and gradle.properties#android.nonFinalResIds=false is ignored in AGP 9.x.x;
-        classpath 'com.android.tools.build:gradle:8.11.2'
+        classpath 'com.android.tools.build:gradle:8.13.2'
 
         // Required by android-youtube-player
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21'

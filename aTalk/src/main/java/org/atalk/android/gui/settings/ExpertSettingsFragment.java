@@ -230,78 +230,78 @@ public class ExpertSettingsFragment extends BasePreferenceFragment
     public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key) {
         // Echo cancellation
         switch (Objects.requireNonNull(key)) {
-            case P_KEY_AUDIO_ECHO_CANCEL:
-                mAudioSystem.setEchoCancel(shPreferences.getBoolean(P_KEY_AUDIO_ECHO_CANCEL, true));
-                break;
-            // Auto gain control
-            case P_KEY_AUDIO_AGC:
-                mAudioSystem.setAutomaticGainControl(shPreferences.getBoolean(P_KEY_AUDIO_AGC, true));
-                break;
-            // Noise reduction
-            case P_KEY_AUDIO_DENOISE:
-                mAudioSystem.setDenoise(shPreferences.getBoolean(P_KEY_AUDIO_DENOISE, true));
-                break;
-            // Frame rate
-            case P_KEY_VIDEO_LIMIT_FPS:
-            case P_KEY_VIDEO_TARGET_FPS:
-                boolean isLimitOn = shPreferences.getBoolean(P_KEY_VIDEO_LIMIT_FPS, false);
-                if (isLimitOn) {
-                    EditTextPreference fpsPref = findPreference(P_KEY_VIDEO_TARGET_FPS);
-                    String fpsStr = fpsPref.getText();
-                    if (!TextUtils.isEmpty(fpsStr)) {
-                        int fps = Integer.parseInt(fpsStr);
-                        if (fps > 30) {
-                            fps = 30;
-                        }
-                        else if (fps < 5) {
-                            fps = 5;
-                        }
-                        mDeviceConfig.setFrameRate(fps);
-                        fpsPref.setText(Integer.toString(fps));
+        case P_KEY_AUDIO_ECHO_CANCEL:
+            mAudioSystem.setEchoCancel(shPreferences.getBoolean(P_KEY_AUDIO_ECHO_CANCEL, true));
+            break;
+        // Auto gain control
+        case P_KEY_AUDIO_AGC:
+            mAudioSystem.setAutomaticGainControl(shPreferences.getBoolean(P_KEY_AUDIO_AGC, true));
+            break;
+        // Noise reduction
+        case P_KEY_AUDIO_DENOISE:
+            mAudioSystem.setDenoise(shPreferences.getBoolean(P_KEY_AUDIO_DENOISE, true));
+            break;
+        // Frame rate
+        case P_KEY_VIDEO_LIMIT_FPS:
+        case P_KEY_VIDEO_TARGET_FPS:
+            boolean isLimitOn = shPreferences.getBoolean(P_KEY_VIDEO_LIMIT_FPS, false);
+            if (isLimitOn) {
+                EditTextPreference fpsPref = findPreference(P_KEY_VIDEO_TARGET_FPS);
+                String fpsStr = fpsPref.getText();
+                if (!TextUtils.isEmpty(fpsStr)) {
+                    int fps = Integer.parseInt(fpsStr);
+                    if (fps > 30) {
+                        fps = 30;
                     }
-                }
-                else {
-                    mDeviceConfig.setFrameRate(DeviceConfiguration.DEFAULT_VIDEO_FRAMERATE);
-                }
-                break;
-            // Max bandwidth
-            case P_KEY_VIDEO_MAX_BANDWIDTH:
-                String resStr = shPreferences.getString(P_KEY_VIDEO_MAX_BANDWIDTH, null);
-                if (!TextUtils.isEmpty(resStr)) {
-                    int maxBw = Integer.parseInt(resStr);
-                    if (maxBw > 999) {
-                        maxBw = 999;
+                    else if (fps < 5) {
+                        fps = 5;
                     }
-                    else if (maxBw < 1) {
-                        maxBw = 1;
-                    }
-                    mDeviceConfig.setVideoRTPPacingThreshold(maxBw);
+                    mDeviceConfig.setFrameRate(fps);
+                    fpsPref.setText(Integer.toString(fps));
                 }
-                else {
-                    mDeviceConfig.setVideoRTPPacingThreshold(DeviceConfiguration.DEFAULT_VIDEO_RTP_PACING_THRESHOLD);
+            }
+            else {
+                mDeviceConfig.setFrameRate(DeviceConfiguration.DEFAULT_VIDEO_FRAMERATE);
+            }
+            break;
+        // Max bandwidth
+        case P_KEY_VIDEO_MAX_BANDWIDTH:
+            String resStr = shPreferences.getString(P_KEY_VIDEO_MAX_BANDWIDTH, null);
+            if (!TextUtils.isEmpty(resStr)) {
+                int maxBw = Integer.parseInt(resStr);
+                if (maxBw > 999) {
+                    maxBw = 999;
                 }
-                ((EditTextPreference) findPreference(P_KEY_VIDEO_MAX_BANDWIDTH))
-                        .setText(Integer.toString(mDeviceConfig.getVideoRTPPacingThreshold()));
-                break;
-            // Video bit rate
-            case P_KEY_VIDEO_BITRATE:
-                String bitrateStr = shPreferences.getString(P_KEY_VIDEO_BITRATE, "");
-                int bitrate = 0;
-                if (bitrateStr != null) {
-                    bitrate = !TextUtils.isEmpty(bitrateStr)
-                            ? Integer.parseInt(bitrateStr) : DeviceConfiguration.DEFAULT_VIDEO_BITRATE;
+                else if (maxBw < 1) {
+                    maxBw = 1;
                 }
-                if (bitrate < 1) {
-                    bitrate = 1;
-                }
-                mDeviceConfig.setVideoBitrate(bitrate);
-                ((EditTextPreference) findPreference(P_KEY_VIDEO_BITRATE)).setText(Integer.toString(bitrate));
-                break;
-            case P_KEY_VIDEO_HW_DECODE:
-            case P_KEY_VIDEO_HW_ENCODE:
-                // must get aTalk to restart onResume to make HW codec change effective
-                aTalk.setPrefChange(aTalk.HW_Codec_Change);
-                break;
+                mDeviceConfig.setVideoRTPPacingThreshold(maxBw);
+            }
+            else {
+                mDeviceConfig.setVideoRTPPacingThreshold(DeviceConfiguration.DEFAULT_VIDEO_RTP_PACING_THRESHOLD);
+            }
+            ((EditTextPreference) findPreference(P_KEY_VIDEO_MAX_BANDWIDTH))
+                    .setText(Integer.toString(mDeviceConfig.getVideoRTPPacingThreshold()));
+            break;
+        // Video bit rate
+        case P_KEY_VIDEO_BITRATE:
+            String bitrateStr = shPreferences.getString(P_KEY_VIDEO_BITRATE, "");
+            int bitrate = 0;
+            if (bitrateStr != null) {
+                bitrate = !TextUtils.isEmpty(bitrateStr)
+                        ? Integer.parseInt(bitrateStr) : DeviceConfiguration.DEFAULT_VIDEO_BITRATE;
+            }
+            if (bitrate < 1) {
+                bitrate = 1;
+            }
+            mDeviceConfig.setVideoBitrate(bitrate);
+            ((EditTextPreference) findPreference(P_KEY_VIDEO_BITRATE)).setText(Integer.toString(bitrate));
+            break;
+        case P_KEY_VIDEO_HW_DECODE:
+        case P_KEY_VIDEO_HW_ENCODE:
+            // must get aTalk to restart onResume to make HW codec change effective
+            aTalk.setPrefChange(aTalk.HW_Codec_Change);
+            break;
         }
     }
 }

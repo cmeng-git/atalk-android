@@ -21,6 +21,8 @@ import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.Menu;
@@ -41,6 +43,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.AccountsListActivity;
@@ -191,11 +194,8 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
             ChatRoomBookmarksDialog chatRoomBookmarksDialog = new ChatRoomBookmarksDialog(this);
             chatRoomBookmarksDialog.show();
             break;
-        case R.id.add_contact:
-            startActivity(AddContactActivity.class);
-            break;
-        case R.id.block_list:
-            startActivity(ContactBlockListActivity.class);
+        case R.id.app_info:
+            PermissionsActivity.onAppInfoButtonClicked(this);
             break;
         case R.id.main_settings:
             startActivity(SettingsActivity.class);
@@ -203,12 +203,15 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         case R.id.account_settings:
             startActivity(AccountsListActivity.class);
             break;
-        case R.id.app_info:
-            PermissionsActivity.onAppInfoButtonClicked(this);
-            break;
         case R.id.tts_settings:
             Intent ttsIntent = new Intent(this, TTSActivity.class);
             startActivity(ttsIntent);
+            break;
+        case R.id.block_list:
+            startActivity(ContactBlockListActivity.class);
+            break;
+        case R.id.add_contact:
+            startActivity(AddContactActivity.class);
             break;
 
         case R.id.show_hide_offline:
@@ -251,6 +254,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     private void openNotificationSettings() {
         Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
         intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 

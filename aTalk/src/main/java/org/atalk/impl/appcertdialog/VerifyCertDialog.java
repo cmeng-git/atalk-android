@@ -8,11 +8,11 @@ package org.atalk.impl.appcertdialog;
 import android.content.Context;
 import android.content.Intent;
 
+import java.security.cert.Certificate;
+
 import net.java.sip.communicator.service.certificate.VerifyCertificateDialogService;
 
 import org.atalk.android.aTalkApp;
-
-import java.security.cert.Certificate;
 
 /**
  * Implementation of <code>VerifyCertificateDialog</code>. Serves as dialog data model for GUI components.

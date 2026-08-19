@@ -73,12 +73,12 @@ public class CallTransferDialog extends Dialog
      * Constructs the <code>CallTransferDialog</code>.
      * aTalk callPeers contains at most one callPeer for attended call transfer
      *
-     * @param mContext android Context
+     * @param context android Context
      * @param initialPeer the callPeer that launches this dialog, and to which the call transfer request is sent
      * @param callPeers contains callPeer for attended call transfer, empty otherwise
      */
-    public CallTransferDialog(Context mContext, CallPeer initialPeer, Collection<CallPeer> callPeers) {
-        super(mContext);
+    public CallTransferDialog(Context context, CallPeer initialPeer, Collection<CallPeer> callPeers) {
+        super(context);
         mInitialPeer = initialPeer;
         if (!callPeers.isEmpty()) {
             mCallPeer = callPeers.iterator().next();

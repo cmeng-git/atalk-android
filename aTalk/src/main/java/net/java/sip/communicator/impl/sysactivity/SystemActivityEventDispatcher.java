@@ -15,15 +15,15 @@
  */
 package net.java.sip.communicator.impl.sysactivity;
 
-import net.java.sip.communicator.service.sysactivity.SystemActivityChangeListener;
-import net.java.sip.communicator.service.sysactivity.event.SystemActivityEvent;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import net.java.sip.communicator.service.sysactivity.SystemActivityChangeListener;
+import net.java.sip.communicator.service.sysactivity.event.SystemActivityEvent;
 
 import timber.log.Timber;
 
@@ -120,10 +120,8 @@ public class SystemActivityEventDispatcher implements Runnable {
      */
     protected void fireSystemActivityEventCurrentThread(SystemActivityEvent evt) {
         List<SystemActivityChangeListener> listenersCopy = new ArrayList<>(listeners);
-        for (int i = 0; i < listenersCopy.size(); i++) {
-            fireSystemActivityEvent(
-                    evt,
-                    listenersCopy.get(i));
+        for (SystemActivityChangeListener systemActivityChangeListener : listenersCopy) {
+            fireSystemActivityEvent(evt, systemActivityChangeListener);
         }
     }
 
@@ -164,7 +162,8 @@ public class SystemActivityEventDispatcher implements Runnable {
 
         try {
             listener.activityChanged(evt);
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             Timber.e(e, "Error delivering event");
         }
     }
@@ -184,7 +183,8 @@ public class SystemActivityEventDispatcher implements Runnable {
                     if (eventsToDispatch.isEmpty()) {
                         try {
                             eventsToDispatch.wait();
-                        } catch (InterruptedException ignore) {
+                        }
+                        catch (InterruptedException ignore) {
                         }
                     }
 
@@ -209,16 +209,18 @@ public class SystemActivityEventDispatcher implements Runnable {
                         synchronized (this) {
                             try {
                                 wait(eventToProcess.getValue());
-                            } catch (Throwable ignore) {
+                            }
+                            catch (Throwable ignore) {
                             }
                         }
 
-                    for (int i = 0; i < listenersCopy.size(); i++) {
-                        fireSystemActivityEvent(eventToProcess.getKey(), listenersCopy.get(i));
+                    for (SystemActivityChangeListener systemActivityChangeListener : listenersCopy) {
+                        fireSystemActivityEvent(eventToProcess.getKey(), systemActivityChangeListener);
                     }
                 }
             }
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             Timber.e(t, "Error dispatching thread ended unexpectedly");
         }
     }

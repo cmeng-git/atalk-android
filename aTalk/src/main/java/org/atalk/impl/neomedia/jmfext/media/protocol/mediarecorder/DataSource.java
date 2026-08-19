@@ -171,12 +171,12 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     private VideoFormat mVideoFormat = null;
 
     /**
-     * The {@link android.util.Size} of video recording.
+     * The size of video recording.
      */
     private Dimension mVideoSize;
 
     /**
-     * The {@link android.util.Size} of camera preview.
+     * The size of camera preview.
      */
     private Dimension mPreviewSize;
 
@@ -446,6 +446,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
 
     /**
      * Must use H264/RTP for video encoder
+     *
      * After API 23, android doesn't allow non seekable file descriptors i.e. mOutputFile = null
      * org.atalk.android E/(DataSource.java:294)#startVideoRecording: IllegalStateException (media recorder) in configuring data source: : null
      *     java.lang.IllegalStateException

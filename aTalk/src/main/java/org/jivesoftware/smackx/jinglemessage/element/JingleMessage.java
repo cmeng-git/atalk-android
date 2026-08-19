@@ -69,6 +69,7 @@ public class JingleMessage implements XmlElement {
      * @param reason Jingle reason.
      * @param namedElement child Named element to be included.
      */
+    @SuppressWarnings("this-escape")
     public JingleMessage(String action, String id, JingleReason reason, NamedElement namedElement) {
         mAction = action;
         assert id != null;
@@ -80,6 +81,7 @@ public class JingleMessage implements XmlElement {
         QNAME = new QName(NAMESPACE, ELEMENT);
     }
 
+    @SuppressWarnings("this-escape")
     public JingleMessage(String action, String id) {
         this(action, id, null, null);
     }

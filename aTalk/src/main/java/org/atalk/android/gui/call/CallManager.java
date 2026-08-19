@@ -813,7 +813,8 @@ public class CallManager {
                         JingleMessageSessionImpl.sendJingleMessageRetract(peer.getPeerJid().asBareJid(), peer.getCall().getCallId());
                         String reasonText = aTalkApp.getResString(R.string.call_retracted, "Caller");
                         basicTelephony.hangupCallPeer(peer, OperationSetBasicTelephony.HANGUP_REASON_CALL_RETRACT, reasonText);
-                    } else {
+                    }
+                    else {
                         basicTelephony.hangupCallPeer(peer);
                     }
                 }

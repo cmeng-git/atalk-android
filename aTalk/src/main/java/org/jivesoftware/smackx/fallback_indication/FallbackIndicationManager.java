@@ -133,6 +133,7 @@ public final class FallbackIndicationManager extends Manager {
      * Set the body of the message to the provided fallback message and add a {@link FallbackIndicationElement}.
      *
      * @param messageBuilder message builder
+     * @param fallbackFor the element to which the fallback is for
      * @param fallbackMessageBody fallback message body
      * @return builder with set body and added fallback element
      */
@@ -144,6 +145,7 @@ public final class FallbackIndicationManager extends Manager {
      * Add a {@link FallbackIndicationElement} to the provided message builder.
      *
      * @param messageBuilder message builder
+     * @param fallbackFor the element to which the fallback is for
      * @return message builder with added fallback element
      */
     public static MessageBuilder addFallbackIndication(MessageBuilder messageBuilder, String fallbackFor) {

@@ -35,20 +35,6 @@ import android.widget.Spinner;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
-import net.java.sip.communicator.impl.certificate.CertificateVerificationActivator;
-import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
-import net.java.sip.communicator.service.certificate.CertificateService;
-import net.java.sip.communicator.service.certificate.KeyStoreType;
-import net.java.sip.communicator.service.gui.AuthenticationWindowService;
-
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.impl.appcertdialog.X509CertificateView;
-import org.atalk.persistance.FilePathHelper;
-import org.atalk.android.gui.dialogs.BaseDialogFragment;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -68,6 +54,21 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
+import net.java.sip.communicator.impl.certificate.CertificateVerificationActivator;
+import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
+import net.java.sip.communicator.service.certificate.CertificateService;
+import net.java.sip.communicator.service.certificate.KeyStoreType;
+import net.java.sip.communicator.service.gui.AuthenticationWindowService;
+
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.dialogs.BaseDialogFragment;
+import org.atalk.android.gui.util.ViewUtil;
+import org.atalk.impl.appcertdialog.X509CertificateView;
+import org.atalk.persistance.FilePathHelper;
+
+import org.jetbrains.annotations.NotNull;
+
 import timber.log.Timber;
 
 /**
@@ -81,7 +82,7 @@ public class CertConfigEntryDialog extends BaseDialogFragment
     // Fields and services
     // ------------------------------------------------------------------------
     private static final KeyStoreType KS_NONE =
-            new KeyStoreType(aTalkApp.getResString(R.string.none), new String[]{""}, false);
+            new KeyStoreType(aTalkApp.getResString(R.string.none), new String[] {""}, false);
 
     private static final String PKCS11 = "PKCS11";
 
@@ -219,7 +220,8 @@ public class CertConfigEntryDialog extends BaseDialogFragment
             try {
                 mKeyStore = loadKeyStore();
                 runOnUiThread(this::loadAliases);
-            } catch (KeyStoreException | UnrecoverableEntryException ex) {
+            }
+            catch (KeyStoreException | UnrecoverableEntryException ex) {
                 Timber.e(ex, "Load KeyStore Exception");
                 aTalkApp.showGenericError(R.string.certconfig_invalid_keystore_type, ex.getMessage());
             }
@@ -254,7 +256,8 @@ public class CertConfigEntryDialog extends BaseDialogFragment
                 Constructor<?> c = pkcs11c.getConstructor(InputStream.class);
                 Provider p = (Provider) c.newInstance(new ByteArrayInputStream(config.getBytes()));
                 Security.insertProviderAt(p, 0);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Timber.e("Tried to access the PKCS11 provider on an unsupported platform or the load : %s", e.getMessage());
             }
         }
@@ -313,7 +316,8 @@ public class CertConfigEntryDialog extends BaseDialogFragment
                 mAliasList.add(e.nextElement());
             }
             aliasAdapter.notifyDataSetChanged();
-        } catch (KeyStoreException e) {
+        }
+        catch (KeyStoreException e) {
             aTalkApp.showGenericError(R.string.certconfig_alias_load_exception, e.getMessage());
         }
     }
@@ -357,70 +361,70 @@ public class CertConfigEntryDialog extends BaseDialogFragment
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.showCert:
-                showSelectedCertificate();
-                break;
+        case R.id.showCert:
+            showSelectedCertificate();
+            break;
 
-            case R.id.button_OK:
-                if ((cboAlias.getSelectedItem() == null)
-                        || (ViewUtil.toString(txtDisplayName) == null)
-                        || (ViewUtil.toString(txtKeyStore) == null)) {
-                    aTalkApp.showGenericError(R.string.certconfig_incomplete);
-                    return;
-                }
-                mEntry.setDisplayName(ViewUtil.toString(txtDisplayName));
-                mEntry.setKeyStore(ViewUtil.toString(txtKeyStore));
-                mEntry.setKeyStoreType((KeyStoreType) cboKeyStoreType.getSelectedItem());
-                mEntry.setAlias(cboAlias.getSelectedItem().toString());
+        case R.id.button_OK:
+            if ((cboAlias.getSelectedItem() == null)
+                    || (ViewUtil.toString(txtDisplayName) == null)
+                    || (ViewUtil.toString(txtKeyStore) == null)) {
+                aTalkApp.showGenericError(R.string.certconfig_incomplete);
+                return;
+            }
+            mEntry.setDisplayName(ViewUtil.toString(txtDisplayName));
+            mEntry.setKeyStore(ViewUtil.toString(txtKeyStore));
+            mEntry.setKeyStoreType((KeyStoreType) cboKeyStoreType.getSelectedItem());
+            mEntry.setAlias(cboAlias.getSelectedItem().toString());
 
-                if (chkSavePassword.isChecked()) {
-                    mEntry.setSavePassword(true);
-                    mEntry.setKeyStorePassword(ViewUtil.toString(txtKeyStorePassword));
-                }
-                else {
-                    mEntry.setSavePassword(false);
-                    mEntry.setKeyStorePassword(null);
-                }
+            if (chkSavePassword.isChecked()) {
+                mEntry.setSavePassword(true);
+                mEntry.setKeyStorePassword(ViewUtil.toString(txtKeyStorePassword));
+            }
+            else {
+                mEntry.setSavePassword(false);
+                mEntry.setKeyStorePassword(null);
+            }
 
-                closeDialog(true);
-                break;
-            case R.id.button_Cancel:
-                closeDialog(false);
-                break;
+            closeDialog(true);
+            break;
+        case R.id.button_Cancel:
+            closeDialog(false);
+            break;
         }
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
-            case R.id.show_password:
-                ViewUtil.showPassword(txtKeyStorePassword, isChecked);
-                break;
+        case R.id.show_password:
+            ViewUtil.showPassword(txtKeyStorePassword, isChecked);
+            break;
 
-            case R.id.chkSavePassword:
-                txtKeyStorePassword.setEnabled(chkSavePassword.isChecked()
-                        && ((KeyStoreType) cboKeyStoreType.getSelectedItem()).hasKeyStorePassword()
-                );
-                break;
+        case R.id.chkSavePassword:
+            txtKeyStorePassword.setEnabled(chkSavePassword.isChecked()
+                    && ((KeyStoreType) cboKeyStoreType.getSelectedItem()).hasKeyStorePassword()
+            );
+            break;
         }
     }
 
     @Override
     public void onItemSelected(AdapterView<?> adapter, View view, int position, long id) {
         switch (adapter.getId()) {
-            case R.id.cboKeyStoreType:
-                // Proceed if new install or != NONE. First item always get selected onEntry
-                KeyStoreType kt = (KeyStoreType) cboKeyStoreType.getSelectedItem();
-                if ((!newInstall) || KS_NONE.equals(kt)) {
-                    return;
-                }
-                if (!PKCS11.equals(kt.getName()))
-                    chkSavePassword.setEnabled(true);
-                txtKeyStorePassword.setEnabled(kt.hasKeyStorePassword() && chkSavePassword.isChecked());
-                initKeyStoreAlias();
-                break;
-            case R.id.cboAlias:
-                cmdShowCert.setEnabled(cboAlias.getSelectedItem() != null);
+        case R.id.cboKeyStoreType:
+            // Proceed if new install or != NONE. First item always get selected onEntry
+            KeyStoreType kt = (KeyStoreType) cboKeyStoreType.getSelectedItem();
+            if ((!newInstall) || KS_NONE.equals(kt)) {
+                return;
+            }
+            if (!PKCS11.equals(kt.getName()))
+                chkSavePassword.setEnabled(true);
+            txtKeyStorePassword.setEnabled(kt.hasKeyStorePassword() && chkSavePassword.isChecked());
+            initKeyStoreAlias();
+            break;
+        case R.id.cboAlias:
+            cmdShowCert.setEnabled(cboAlias.getSelectedItem() != null);
         }
     }
 
@@ -434,7 +438,8 @@ public class CertConfigEntryDialog extends BaseDialogFragment
             // must use getActivity: otherwise -> token null is not valid; is your activity running?
             X509CertificateView viewCertDialog = new X509CertificateView(getActivity(), chain);
             viewCertDialog.show();
-        } catch (KeyStoreException e1) {
+        }
+        catch (KeyStoreException e1) {
             aTalkApp.showGenericError(R.string.certconfig_show_cert_exception, e1.getMessage());
         }
     }

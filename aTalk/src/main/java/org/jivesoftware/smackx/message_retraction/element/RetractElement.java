@@ -41,6 +41,7 @@ public class RetractElement implements ExtensionElement {
     public String getId() {
         return mId;
     }
+
     @Override
     public String getNamespace() {
         return NAMESPACE;
@@ -54,7 +55,7 @@ public class RetractElement implements ExtensionElement {
     @Override
     public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
         return new XmlStringBuilder(this)
-        .attribute(ATTR_ID, mId)
-        .closeEmptyElement();
+                .attribute(ATTR_ID, mId)
+                .closeEmptyElement();
     }
 }

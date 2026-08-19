@@ -63,6 +63,6 @@ public class RetractedElement implements ExtensionElement {
         return new XmlStringBuilder(this)
                 .attribute(ATTR_STAMP, getTimeStamp())
                 .attribute(ATTR_ID, getId())
-                .closeElement(this);
+                .closeEmptyElement();
     }
 }

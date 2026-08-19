@@ -27,13 +27,19 @@
             android:summary="@string/settings_webView_summary"
             android:title="@string/settings_webview_page" />
 
+        <Preference
+            android:key="pref.key.language"
+            android:title="@string/settings_locale"
+            app:isPreferenceVisible="false" />
+
         <ListPreference
             android:dialogTitle="@string/settings_locale"
             android:entries="@array/settings_language_entries"
             android:entryValues="@array/settings_language_values"
             android:key="pref.key.locale"
             android:persistent="false"
-            android:title="@string/settings_locale" />
+            android:title="@string/settings_locale"
+            app:isPreferenceVisible="false" />
 
         <ListPreference
             android:dialogTitle="@string/settings_theme"

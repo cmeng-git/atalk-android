@@ -26,16 +26,16 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.atalk.android.MyGlideApp;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.databinding.MediaPreviewBinding;
 import org.atalk.android.gui.chat.ChatActivity;
 import org.atalk.persistance.FilePathHelper;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapter.MediaPreviewViewHolder> {
     private final ArrayList<Attachment> mediaPreviews = new ArrayList<>();

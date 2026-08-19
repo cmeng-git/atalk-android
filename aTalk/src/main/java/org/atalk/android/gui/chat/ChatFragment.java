@@ -523,14 +523,15 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 AppGUIActivator.getLoginRenderer().removeGlobalStatusListener(globalStatusListener);
             }
             else if (chatListView != null) {
+                // Init the history & ChatType background color
+                // Complete the loadHistoryTask before init the chatController; avoid crashes with send message cache update.
+                chatStateView.setVisibility(View.INVISIBLE);
+                initAdapter();
+
                 // Timber.d("Init controller: %s", hashCode());
                 mChatController.onShow();
                 // Also register global status listener
                 AppGUIActivator.getLoginRenderer().addGlobalStatusListener(globalStatusListener);
-
-                // Init the history & ChatType background color
-                chatStateView.setVisibility(View.INVISIBLE);
-                initAdapter();
 
                 // Seem mCFView changes on re-entry into chatFragment, so update the listener
                 mCryptoFragment.addCryptoModeListener(currentChatTransport.getDescriptor(), this);

@@ -66,7 +66,6 @@ import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenc
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.sf.fmj.utility.IOUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.BaseActivity;
 import org.atalk.android.MyGlideApp;
 import org.atalk.android.R;
@@ -94,14 +93,19 @@ import org.atalk.android.plugin.mediaplayer.YoutubePlayerFragment;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.json.JSONException;
-import org.json.JSONObject;
+
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 
@@ -402,8 +406,9 @@ public class ChatActivity extends BaseActivity
         ChatSession chatSession = mChatPanel.getChatSession();
         if (chatSession instanceof MetaContactChatSession) {
             return mRecipient;
-        } else {
-           return chatSession.getDescriptor();
+        }
+        else {
+            return chatSession.getDescriptor();
         }
     }
 
@@ -689,7 +694,7 @@ public class ChatActivity extends BaseActivity
             if (connection != null && !isDomainJid) {
                 OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
                 String reason;
-                if((reason = getEditText()) == null) {
+                if ((reason = getEditText()) == null) {
                     reason = getString(R.string.omemo2_optout_reason);
                 }
                 omemoManager.sendOmemoOptOut(mRecipient.getJid().asBareJid(), reason);

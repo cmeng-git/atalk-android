@@ -282,7 +282,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         // If this was the first peer we added in this call, then the call is new,
         // and we need to notify everyone of its creation.
         if (getCallPeerCount() == 1) {
-		    // CALL_RECEIVED_JM stpps the firing of incoming call a second time on session-init
+            // CALL_RECEIVED_JM stpps the firing of incoming call a second time on session-init
             int callEventId = JingleMessageSessionImpl.isJingleMessageSession(jingle.getSid()) ?
                     CallEvent.CALL_RECEIVED_JM : CallEvent.CALL_RECEIVED;
             parentOpSet.fireCallEvent(callEventId, this, directions);

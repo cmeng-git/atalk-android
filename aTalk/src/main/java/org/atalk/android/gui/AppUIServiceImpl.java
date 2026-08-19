@@ -112,7 +112,7 @@ public class AppUIServiceImpl implements UIService {
      */
     @Override
     public Dimension getSize() {
-        return aTalkApp.getDisplaySize();
+        return aTalkApp.mDisplaySize;
     }
 
     /**

@@ -19,6 +19,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
@@ -528,28 +533,39 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
     public void sendInstantMessage(Contact to, MessageJabberImpl message,
             String correctionUid, final OmemoManager omemoManager) {
-        BareJid bareJid = to.getJid().asBareJid();
-        String msgContent = message.getContent();
+        final BareJid bareJid = to.getJid().asBareJid();
+        final String msgContent = message.getContent();
         String errMessage = null;
 
+        OmemoMessage.Sent encryptedMessage;
         try {
-            OmemoMessage.Sent encryptedMessage = omemoManager.encrypt(bareJid, msgContent);
+            Callable<OmemoMessage.Sent> encryptTask = () -> omemoManager.encrypt(bareJid, msgContent);
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            Future<OmemoMessage.Sent> future = eService.submit(encryptTask);
+            encryptedMessage = future.get();
+            eService.shutdown();
 
             MessageBuilder messageBuilder = StanzaBuilder.buildMessage(message.getMessageUid());
-            if (correctionUid != null)
+            if (correctionUid != null) {
                 messageBuilder.addExtension(new MessageCorrectExtension(correctionUid));
+            }
             Message sendMessage = encryptedMessage.buildMessage(messageBuilder, bareJid, omemoManager.isOmemo2Enable());
 
             if (IMessage.ENCODE_HTML == message.getMimeType()) {
+                // OMEMO body message content will strip off any xhtml tags info
+                final String msgHtml = Html.fromHtml(msgContent, Html.FROM_HTML_MODE_LEGACY).toString();
+
+                Callable<OmemoMessage.Sent> encryptHtmlTask = () -> omemoManager.encrypt(bareJid, msgHtml);
+                eService = Executors.newSingleThreadExecutor();
+                future = eService.submit(encryptHtmlTask);
+                encryptedMessage = future.get();
+                eService.shutdown();
+
                 // Make this into encrypted xhtmlText for inclusion
                 String xhtmlEncrypted = encryptedMessage.getElement().toXML().toString();
                 XHTMLText xhtmlText = new XHTMLText("", "us")
                         .append(xhtmlEncrypted)
                         .appendCloseBodyTag();
-
-                // OMEMO body message content will strip off any xhtml tags info
-                msgContent = Html.fromHtml(msgContent, Html.FROM_HTML_MODE_LEGACY).toString();
-                encryptedMessage = omemoManager.encrypt(bareJid, msgContent);
 
                 messageBuilder = StanzaBuilder.buildMessage(message.getMessageUid());
                 if (correctionUid != null)
@@ -570,19 +586,24 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                     = new MessageDeliveredEvent(message, to, mUserJid, correctionUid);
             fireMessageEvent(msgDelivered);
         }
-        catch (UndecidedOmemoIdentityException e) {
-            OmemoAuthenticateListener omemoAuthListener
-                    = new OmemoAuthenticateListener(to, message, correctionUid, omemoManager);
-            Context ctx = aTalkApp.getInstance();
-            ctx.startActivity(OmemoAuthenticateDialog.createIntent(ctx, omemoManager, e.getUndecidedDevices(), omemoAuthListener));
-            return;
+        catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof UndecidedOmemoIdentityException) {
+                UndecidedOmemoIdentityException eOmemo = (UndecidedOmemoIdentityException) cause;
+                OmemoAuthenticateListener omemoAuthListener = new OmemoAuthenticateListener(to, message, correctionUid, omemoManager);
+                Context ctx = aTalkApp.getInstance();
+                ctx.startActivity(OmemoAuthenticateDialog.createIntent(ctx, omemoManager, eOmemo.getUndecidedDevices(), omemoAuthListener));
+                return;
+            }
+            else if (cause instanceof SmackException.NotLoggedInException) {
+                errMessage = aTalkApp.getResString(R.string.message_delivery_not_registered);
+            }
+            else {
+                errMessage = aTalkApp.getResString(R.string.crypto_msg_omemo_session_setup_failed, e.getMessage());
+            }
         }
-        catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException
-               | IOException e) {
+        catch (InterruptedException | NotConnectedException e) {
             errMessage = aTalkApp.getResString(R.string.crypto_msg_omemo_session_setup_failed, e.getMessage());
-        }
-        catch (SmackException.NotLoggedInException e) {
-            errMessage = aTalkApp.getResString(R.string.message_delivery_not_registered);
         }
 
         if (!TextUtils.isEmpty(errMessage)) {
@@ -704,9 +725,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * The listener to handle incoming server messages currently not supported by smack
      * Handles incoming messages and dispatches whatever events that are necessary.
-     * @see #INCOMING_SVR_MESSAGE_FILTER filter settings
      *
      * @param stanza the packet that we need to handle (if it is a message).
+     *
+     * @see #INCOMING_SVR_MESSAGE_FILTER filter settings
      */
     @Override
     public void processStanza(Stanza stanza)
@@ -737,7 +759,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         Contact sourceContact = opSetPersPresence.createVolatileContact(message.getFrom());
         String sender = message.getFrom().toString();
         Date timeStamp = mMHS.getTimeStamp(message);
-        MessageReceivedEvent msgEvt = new MessageReceivedEvent(newMessage, sourceContact, sender,timeStamp, null);
+        MessageReceivedEvent msgEvt = new MessageReceivedEvent(newMessage, sourceContact, sender, timeStamp, null);
         fireMessageEvent(msgEvt);
     }
 
@@ -1024,7 +1046,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         return prefix + id++;
     }
 
-    // =============== OMEMO message received =============== //
+// =============== OMEMO message received =============== //
 
     public void registerOmemoListener(OmemoManager omemoManager) {
         mOmemoManager = omemoManager;

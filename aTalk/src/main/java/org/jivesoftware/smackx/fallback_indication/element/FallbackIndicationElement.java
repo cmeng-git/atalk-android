@@ -23,14 +23,12 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-import org.jivesoftware.smackx.message_retraction.element.RetractElement;
-
 public class FallbackIndicationElement implements ExtensionElement {
 
-    public static final String NAMESPACE = "urn:xmpp:fallback:0";
     public static final String ELEMENT = "fallback";
+    public static final String NAMESPACE = "urn:xmpp:fallback:0";
 
-    public static final QName QNAME = new QName(RetractElement.NAMESPACE, ELEMENT);
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
     public static final String ATTR_FOR = "for";
 
     private final String mNsFor;

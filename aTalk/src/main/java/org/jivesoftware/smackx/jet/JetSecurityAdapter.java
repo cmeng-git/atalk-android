@@ -15,11 +15,6 @@
  * limitations under the License.
  */
 
-/**
- *
- * @author Paul Schaub
- * @author Eng Chong Meng
- */
 package org.jivesoftware.smackx.jet;
 
 import org.jivesoftware.smackx.jet.component.JetSecurityImpl;
@@ -27,6 +22,12 @@ import org.jivesoftware.smackx.jet.element.JetSecurity;
 import org.jivesoftware.smackx.jingle.adapter.JingleSecurityAdapter;
 import org.jivesoftware.smackx.jingle.element.JingleContentSecurity;
 
+/**
+ * Implementation of the Jingle security element as specified in XEP-0391.
+ *
+ * @author Paul Schaub
+ * @author Eng Chong Meng
+ */
 public class JetSecurityAdapter implements JingleSecurityAdapter<JetSecurityImpl> {
 
     @Override

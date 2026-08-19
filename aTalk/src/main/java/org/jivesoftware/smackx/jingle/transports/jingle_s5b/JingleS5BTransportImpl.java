@@ -157,6 +157,7 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
      * Copy constructor.
      * @param original which will be copied.
      */
+    @SuppressWarnings("this-escape")
     public JingleS5BTransportImpl(JingleS5BTransportImpl original) {
         this.sid = original.sid;
         this.mode = original.mode;

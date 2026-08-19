@@ -83,7 +83,8 @@ public class MyWebViewClient extends WebViewClient {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             viewFragment.startActivity(intent);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             // catch ActivityNotFoundException for xmpp:info@example.com. so let own webView load and display the error
             Timber.w("Failed to load url '%s' : %s", url, e.getMessage());
             String origin = Uri.parse(webView.getUrl()).getHost();

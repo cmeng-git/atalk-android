@@ -23,13 +23,14 @@ import net.java.sip.communicator.service.provisioning.ProvisioningService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.OrderedProperties;
 
-import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.impl.appversion.VersionActivator;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.httputil.OkHttpUtils;
+
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osgi.framework.Bundle;
@@ -364,7 +365,8 @@ public class ProvisioningServiceImpl implements ProvisioningService {
                                         continue;
                                     }
                                     b.stop();
-                                } catch (BundleException ex) {
+                                }
+                                catch (BundleException ex) {
                                     Timber.e(ex, "Failed to being gentle stop %s", b.getLocation());
                                 }
                             }
@@ -376,12 +378,14 @@ public class ProvisioningServiceImpl implements ProvisioningService {
                 else {
                     return responseBody.byteStream();
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 errorMsg = e.getLocalizedMessage();
                 Timber.e("Provisioning failed posting form: %s", errorMsg);
                 aTalkApp.showToastMessage(R.string.provisioning_failed_message, errorMsg);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             String errMsg = aTalkApp.getResString(R.string.provisioning_failed_message, e.getMessage());
             Timber.d(errMsg);
             aTalkApp.showToastMessage(errMsg);
@@ -403,7 +407,8 @@ public class ProvisioningServiceImpl implements ProvisioningService {
 
         try {
             return jsonObject.get(paramName).toString();
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             Timber.e("JSONObject exception: %s", e.getMessage());
         }
         return null;
@@ -451,10 +456,12 @@ public class ProvisioningServiceImpl implements ProvisioningService {
                 /* save and reload the "new" configuration */
                 configService.storeConfiguration();
                 configService.reloadConfiguration();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Timber.e("Cannot reload configuration");
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Timber.w("Error during load of provisioning file");
         }
     }

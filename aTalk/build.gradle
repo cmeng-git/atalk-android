@@ -36,9 +36,18 @@ configurations {
     fdroidImplementation
     playstoreImplementation
 
-    // dependency libraries duplication conflict cause by smack-xmlparser-xpp3
+    // Exclude the redundant variants from pulling into the project
     all*.exclude group: 'xpp3', module: 'xpp3_min'
     all*.exclude group: 'xpp3', module: 'xpp3'
+    all*.exclude group: 'org.codelibs', module: 'xpp3'
+
+    // Force Gradle to resolve all xpp3 requests to a single package
+//    resolutionStrategy {
+//        dependencySubstitution {
+//            substitute module('xpp3:xpp3') using module('org.codelibs:xpp3:1.1.4c.0')
+//            substitute module('xpp3:xpp3_min') using module('org.codelibs:xpp3:1.1.4c.0')
+//        }
+//    }
 }
 
 configurations.implementation {
@@ -61,8 +70,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 604000
-        versionName "6.4.0"
+        versionCode 605000
+        versionName "6.5.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -94,6 +103,10 @@ android {
         ndkBuild {
             path file("jni/Android.mk")
         }
+    }
+
+    androidResources {
+        generateLocaleConfig true
     }
 
     compileOptions {
@@ -189,6 +202,7 @@ android {
         exclude 'LICENSE.txt'
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/NOTICE.txt'
@@ -221,15 +235,15 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.18.0'
 
     implementation 'androidx.activity:activity-ktx:1.13.0'
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'androidx.fragment:fragment-ktx:1.8.9'
+    implementation 'androidx.appcompat:appcompat:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
+    implementation 'androidx.fragment:fragment-ktx:1.9.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.media3:media3-exoplayer:1.10.1'
-    implementation 'androidx.media3:media3-ui:1.10.1'
+    implementation 'androidx.media3:media3-exoplayer:1.11.0'
+    implementation 'androidx.media3:media3-ui:1.11.0'
     // implementation "androidx.webkit:webkit:1.14.0"
 
     implementation('com.jakewharton.timber:timber:5.0.1') {
@@ -237,8 +251,8 @@ dependencies {
     }
     implementation 'com.karumi:dexter:6.2.3'
 
-    annotationProcessor 'com.github.bumptech.glide:compiler:5.0.7'
-    implementation 'com.github.bumptech.glide:glide:5.0.7'
+    annotationProcessor 'com.github.bumptech.glide:compiler:5.0.9'
+    implementation 'com.github.bumptech.glide:glide:5.0.9'
     implementation 'com.github.seancfoley:ipaddress:5.6.2'
     implementation 'com.github.evgenyneu:js-evaluator-for-android:v6.0.0'
 
@@ -246,7 +260,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.14.0'
 
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta05'
-    implementation 'com.squareup.okhttp3:okhttp:5.4.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.5.0'
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
     // implementation 'com.github.cketti:ckchangelog-core:2.0.0-beta02'
 
@@ -255,7 +269,7 @@ dependencies {
 
     // commons-codec:1.16.x not compatible with Note10, crashes with No static method isEmpty([B)Z in class org/apache/commons/codec/binary/BinaryCodec;
     // or its super classes (declaration of 'org.apache.commons.codec.binary.BinaryCodec' appears in /system/framework/org.apache.http.legacy.jar)
-    implementation 'commons-codec:commons-codec:1.22.0'
+    implementation 'commons-codec:commons-codec:1.22.1'
     implementation 'org.apache.commons:commons-text:1.15.0'
     implementation 'org.apache.james:apache-mime4j-core:0.8.14'
     implementation 'org.bitlet:weupnp:0.1.4'
@@ -271,10 +285,10 @@ dependencies {
 
     // Need to add android.jetifier.ignorelist in gradle.properties when using 1.83
     // see https://issuetracker.google.com/issues/294342862
-    implementation 'org.bouncycastle:bcpg-jdk18on:1.84'   // zrtp
-    implementation 'org.bouncycastle:bcpkix-jdk18on:1.84' // CertificateServiceImpl jcajce
+    implementation 'org.bouncycastle:bcpg-jdk18on:1.85'   // zrtp
+    implementation 'org.bouncycastle:bcpkix-jdk18on:1.85' // CertificateServiceImpl jcajce
     // implementation 'org.bouncycastle:bcprov-jdk18on:1.81' // SHA3-256 - auto included.
-    implementation 'org.bouncycastle:bctls-jdk18on:1.84'  // dtls-srtp
+    implementation 'org.bouncycastle:bctls-jdk18on:1.85'  // dtls-srtp
 
     // For debug and tracing for bouncycastle - AS allows direct copy and replacement of bc source for debug
 //    implementation jarjar.repackage {
@@ -302,7 +316,7 @@ dependencies {
     implementation "org.igniterealtime.smack:smack-android-extensions:$smackVersion"
     implementation "org.igniterealtime.jbosh:jbosh:0.9.2"
 
-    // implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
     implementation "org.igniterealtime.smack:smack-core:$smackVersion"
     // implementation "org.igniterealtime.smack:smack-experimental:$smackVersion"
     // implementation "org.igniterealtime.smack:smack-extensions:$smackVersion"
@@ -317,14 +331,25 @@ dependencies {
 
     // 1.1.0: Method entityFullFrom(CharSequence) cannot accept String. Ok for 4.5.0
     implementation 'org.jxmpp:jxmpp-jid:1.1.0'
+    // implementation 'org.minidns:minidns-core:1.1.1'
+    // implementation 'org.minidns:minidns-hla:1.1.1'
+    // implementation 'org.minidns:minidns-android21:1.1.0-alpha3'
     implementation 'org.osgi:osgi.core:8.0.0'
 
-    // implementation 'org.projectlombok:lombok:1.18.46'
     implementation 'org.whispersystems:signal-protocol-java:2.8.1'
 
-    // implementation "space.dynomake:libretranslate-java:1.0.7"
+    implementation 'com.google.code.gson:gson:2.14.0'
+    implementation 'org.projectlombok:lombok:1.18.46'
     // implementation 'net.clojars.dulouser:libretranslate-java:1.0.7'
-    implementation 'com.github.stokito:libretranslate-java:v1.2.2'
+    // implementation "space.dynomake:libretranslate-java:1.0.9" // inaccessible
+    // implementation 'com.github.stokito:libretranslate-java:v1.2.2'
+    implementation jarjar.repackage("libretranslate-java-v1.2.2.jar") {
+        from('com.github.stokito:libretranslate-java:v1.2.2') {
+            transitive = false
+        }
+        // remove extracted modules for changes
+        classDelete 'space.dynomake.libretranslate.Translator**'
+    }
 
     // playStore version use google map services
     playstoreImplementation "com.google.android.gms:play-services-maps:20.0.0"
@@ -405,16 +430,6 @@ dependencies {
         classDelete 'org.ice4j.message.Message' // (#1)
         // throw SocketNotFoundException instead of IllegalArgumentException in sendMessage()
         classDelete 'org.ice4j.stack.NetAccessManager**'
-    }
-
-    // smack-bosh
-    implementation jarjar.repackage("smack-bosh-${smackVersion}.jar") {
-        from("org.igniterealtime.smack:smack-bosh:${smackVersion}") {
-            transitive = false
-        }
-
-        // Fix XMPP-Bosh reconnection failure on network changed
-        classDelete 'org.jivesoftware.smack.bosh.XMPPBOSHConnection**'
     }
 
     // smack-experimental
@@ -588,7 +603,7 @@ tasks.register('initJniLibs', Exec) {
  * This task needs to be executed at least once before the actual aTalk apk build process.
  * Refer to all README files in .jni/static_library_built for more detail.
  */
-tasks.register('buildJniStaticLibs' , Exec) {
+tasks.register('buildJniStaticLibs', Exec) {
     group = 'Custom Tasks'
     workingDir "${projectDir}/jni/static_library_built"
     executable './build-jnilibs4atalk.sh'

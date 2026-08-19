@@ -35,14 +35,12 @@ public class FileTransferRequest {
     private final FileTransferManager manager;
 
     /**
-     * A receive request is constructed from the Stream Initiation request
+     * A receipt request is constructed from the Stream Initiation request
      * received from the initiator.
      *
-     * @param manager TODO javadoc me please
-     *            The manager handling this file transfer
+     * @param manager The manager handling this file transfer
      *
-     * @param si TODO javadoc me please
-     *            The Stream initiation received from the initiator.
+     * @param si The Stream initiation received from the initiator.
      */
     public FileTransferRequest(FileTransferManager manager, StreamInitiation si) {
         this.streamInitiation = si;

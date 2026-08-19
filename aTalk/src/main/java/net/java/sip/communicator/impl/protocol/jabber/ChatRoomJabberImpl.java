@@ -2071,7 +2071,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
             String msgId = correctionUid != null ? correctionUid : stanzaId;
 
             DelayInformation delayInfo = message.getExtension(DelayInformation.class);
-            if (delayInfo != null &&  correctionUid == null) {
+            if (delayInfo != null && correctionUid == null) {
                 // This is a delayed chat room message, a history message for the room coming from server.
                 // Let's check have we already shown this message and if this is the case,
                 // skip it otherwise save it as last seen delayed message

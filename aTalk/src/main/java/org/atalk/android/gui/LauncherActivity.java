@@ -22,6 +22,7 @@ import org.atalk.impl.appnotification.NotificationHelper;
 import org.atalk.service.SystemEventReceiver;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiService;
+
 import org.osgi.framework.BundleContext;
 
 /**

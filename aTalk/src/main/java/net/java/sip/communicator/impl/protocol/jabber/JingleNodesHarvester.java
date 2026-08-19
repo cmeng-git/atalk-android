@@ -5,20 +5,22 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
 import org.ice4j.ice.Component;
 import org.ice4j.ice.LocalCandidate;
 import org.ice4j.ice.harvest.AbstractCandidateHarvester;
 import org.ice4j.socket.IceSocketWrapper;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
+
 import org.jivesoftware.smackx.jinglenodes.SmackServiceNode;
 import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
 import org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ;
-
-import java.util.Collection;
-import java.util.HashSet;
 
 import timber.log.Timber;
 
@@ -29,12 +31,11 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  **/
-public class JingleNodesHarvester extends AbstractCandidateHarvester
-{
+public class JingleNodesHarvester extends AbstractCandidateHarvester {
     /**
      * XMPPTCPConnection
      */
-    private SmackServiceNode serviceNode;
+    private final SmackServiceNode serviceNode;
 
     /**
      * JingleNodes relay allocate two address/port couple for us. Due to the architecture of Ice4j
@@ -53,8 +54,7 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
      *
      * @param serviceNode the <code>SmackServiceNode</code>
      */
-    public JingleNodesHarvester(SmackServiceNode serviceNode)
-    {
+    public JingleNodesHarvester(SmackServiceNode serviceNode) {
         this.serviceNode = serviceNode;
     }
 
@@ -65,11 +65,11 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
      *
      * @param component the {@link Component} that we'd like to gather candidate Jingle Nodes
      * <code>Candidate</code>s for
+     *
      * @return the <code>LocalCandidate</code>s gathered by this <code>CandidateHarvester</code>
      */
     @Override
-    public synchronized Collection<LocalCandidate> harvest(Component component)
-    {
+    public synchronized Collection<LocalCandidate> harvest(Component component) {
         Timber.i("Jingle Nodes harvest start!");
         Collection<LocalCandidate> candidates = new HashSet<>();
         String ip;
@@ -97,7 +97,8 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
             if (preferred != null) {
                 try {
                     ciq = SmackServiceNode.getChannel(conn, preferred.getJid());
-                } catch (SmackException.NotConnectedException | InterruptedException e) {
+                }
+                catch (SmackException.NotConnectedException | InterruptedException e) {
                     Timber.e("Could not get JingleNodes channel: %s", e.getMessage());
                 }
             }
@@ -148,12 +149,12 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
      * @param transportAddress the <code>TransportAddress</code> allocated by the relay
      * @param component the <code>Component</code> for which the candidate will be added
      * @param localEndPoint <code>TransportAddress</code> of the Jingle Nodes relay where we will send our packet.
+     *
      * @return a new <code>JingleNodesRelayedCandidate</code> instance which represents the specified
      * <code>TransportAddress</code>
      */
     protected JingleNodesCandidate createJingleNodesCandidate(TransportAddress transportAddress,
-            Component component, TransportAddress localEndPoint)
-    {
+            Component component, TransportAddress localEndPoint) {
         JingleNodesCandidate candidate = null;
         try {
             candidate = new JingleNodesCandidate(transportAddress, component, localEndPoint);
@@ -161,7 +162,8 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
             candidate.getStunStack().addSocket(stunSocket);
             // cmeng ice4j-v2.0
             component.getComponentSocket().add(candidate.getCandidateIceSocketWrapper());
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             Timber.i("Exception occurred when creating JingleNodesCandidate: %s", e.getMessage());
         }
         return candidate;

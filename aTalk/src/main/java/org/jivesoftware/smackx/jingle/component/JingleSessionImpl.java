@@ -89,6 +89,7 @@ public class JingleSessionImpl extends JingleSession {
      * @param connection XMPPConnection
      * @param recipient The remote file-recipient
      */
+    @SuppressWarnings("this-escape")
     public JingleSessionImpl(XMPPConnection connection, FullJid recipient) {
         this(connection, connection.getUser(), recipient, Role.initiator, JingleManager.randomUuid(), null);
     }
@@ -100,6 +101,7 @@ public class JingleSessionImpl extends JingleSession {
      * @param initiator JingleSI initiator; conversations excludes initiator attribute in session-initiate
      * @param jingleSI The received JingleIQ for session-initiate
      */
+    @SuppressWarnings("this-escape")
     public JingleSessionImpl(XMPPConnection connection, FullJid initiator, Jingle jingleSI) {
         this(connection, initiator, connection.getUser(), Role.responder, jingleSI.getSid(), jingleSI.getContents());
         for (JingleContent content : getContents()) {
@@ -114,10 +116,11 @@ public class JingleSessionImpl extends JingleSession {
      * @param connection XMPPConnection
      * @param initiator JingleSI initiator
      * @param responder JingleSI responder
-     * @param role Acting role for the this session-initial
+     * @param role Acting role for this session-initial
      * @param sid Jingle session Id
      * @param contents Jingle contents
      */
+    @SuppressWarnings("this-escape")
     public JingleSessionImpl(XMPPConnection connection, FullJid initiator, FullJid responder, Role role, String sid, List<JingleContent> contents) {
         super(initiator, responder, role, sid, contents);
         updateSessionState(SessionState.fresh);

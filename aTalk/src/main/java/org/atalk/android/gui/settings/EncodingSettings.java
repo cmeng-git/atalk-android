@@ -6,7 +6,6 @@
 package org.atalk.android.gui.settings;
 
 import android.os.Bundle;
-import android.view.KeyEvent;
 
 import androidx.activity.OnBackPressedCallback;
 

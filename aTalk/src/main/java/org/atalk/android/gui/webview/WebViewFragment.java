@@ -28,12 +28,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
-
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-
 import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -51,6 +49,7 @@ import org.atalk.android.BaseFragment;
 import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+
 import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
@@ -199,7 +198,8 @@ public class WebViewFragment extends BaseFragment implements OnKeyListener {
             connection.connect();
             InputStream input = connection.getInputStream();
             return BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Timber.w("Exception %s", e.getMessage());
             return null;
         }

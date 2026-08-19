@@ -73,10 +73,12 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
     // Just for handling Unused Variable warning
     private XMPPConnection mConnection;
 
+    @SuppressWarnings("this-escape")
     public JingleContentImpl(XMPPConnection connection, JingleContent.Creator creator, JingleContent.Senders senders) {
         this(connection, null, null, null, randomName(), null, creator, senders);
     }
 
+    @SuppressWarnings("this-escape")
     public JingleContentImpl(XMPPConnection connection, JingleDescription<?> description, JingleTransport<?> transport, JingleSecurity<?> security, String name, String disposition, JingleContent.Creator creator, JingleContent.Senders senders) {
         setDescription(description);
         setTransport(transport);

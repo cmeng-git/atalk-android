@@ -45,6 +45,7 @@ import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.persistance.migrations.MigrationTo2;
 import org.atalk.service.fileaccess.FileCategory;
 import org.atalk.service.libjitsi.LibJitsi;
+
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.OmemoStore;
@@ -144,7 +145,8 @@ public class ServerPersistentStoresRefreshDialog extends BaseFragment {
             if ((rosterStoreDirectory != null) && rosterStoreDirectory.exists()) {
                 try {
                     FileBackend.deleteRecursive(rosterStoreDirectory);
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     Timber.e("Failed to purge store for: %s", R.string.refresh_store_roster);
                 }
                 jabberProvider.initRosterStore();
@@ -198,7 +200,8 @@ public class ServerPersistentStoresRefreshDialog extends BaseFragment {
             if (omemoDir.exists()) {
                 try {
                     FileBackend.deleteRecursive(omemoDir);
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     Timber.w("Exception %s", e.getMessage());
                 }
             }
@@ -244,7 +247,8 @@ public class ServerPersistentStoresRefreshDialog extends BaseFragment {
             if (appXmlFP.exists()) {
                 FileBackend.copyRecursive(appXmlFP, atalkExportDir, clFileName);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Timber.w("Export database exception: %s", e.getMessage());
         }
     }
@@ -273,7 +277,8 @@ public class ServerPersistentStoresRefreshDialog extends BaseFragment {
                         Timber.w("Couldn't delete log file: %s", file.getName());
                 }
             }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             Timber.e(ex, "Couldn't delete log file directory.");
         }
     }

@@ -84,7 +84,8 @@ public class ShareUtil {
                         activity.startActivity(Intent.createChooser(shareIntent,
                                 activity.getString(R.string.share_text)));
                     }
-                } catch (ActivityNotFoundException e) {
+                }
+                catch (ActivityNotFoundException e) {
                     Timber.w("%s", aTalkApp.getResString(R.string.open_file_no_application));
                 }
             }
@@ -95,7 +96,8 @@ public class ShareUtil {
                     Intent intent = share(activity, imageUris);
                     try {
                         activity.startActivity(Intent.createChooser(intent, activity.getText(R.string.share_file)));
-                    } catch (ActivityNotFoundException e) {
+                    }
+                    catch (ActivityNotFoundException e) {
                         Timber.w("No application found to open file");
                     }
                 }, timeDelay);
@@ -237,7 +239,8 @@ public class ShareUtil {
                 try {
                     context.startActivity(mediaIntent);
                     mediaIntent = null;
-                } catch (ActivityNotFoundException e) {
+                }
+                catch (ActivityNotFoundException e) {
                     Timber.w("No application found to open file");
                 }
             }, TIME_DELAY / 2);

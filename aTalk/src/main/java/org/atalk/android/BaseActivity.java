@@ -85,7 +85,10 @@ public class BaseActivity extends AppCompatActivity {
      */
     @Override
     protected void attachBaseContext(Context base) {
-        Context context = LocaleHelper.setLocale(base);
+        Context context = base;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            context = LocaleHelper.setLocale(base);
+        }
         super.attachBaseContext(context);
     }
 

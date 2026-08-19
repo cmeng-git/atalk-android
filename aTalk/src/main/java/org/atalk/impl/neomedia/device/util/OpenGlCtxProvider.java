@@ -5,7 +5,6 @@
  */
 package org.atalk.impl.neomedia.device.util;
 
-import android.app.Activity;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;

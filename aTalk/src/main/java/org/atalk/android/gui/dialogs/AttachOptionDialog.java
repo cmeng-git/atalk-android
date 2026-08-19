@@ -11,12 +11,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.atalk.android.R;
-import org.atalk.android.gui.chat.ChatActivity;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.atalk.android.R;
+import org.atalk.android.gui.chat.ChatActivity;
 
 /**
  * The <code>AttachOptionDialog</code> provides user with optional attachments.

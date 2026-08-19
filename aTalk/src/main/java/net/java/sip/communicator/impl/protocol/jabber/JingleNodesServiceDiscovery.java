@@ -5,7 +5,12 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.commons.lang3.StringUtils;
+
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaCollector;
@@ -13,17 +18,15 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
+
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.jinglenodes.SmackServiceNode;
 import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
 import org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import timber.log.Timber;
 
@@ -33,8 +36,7 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class JingleNodesServiceDiscovery implements Runnable
-{
+public class JingleNodesServiceDiscovery implements Runnable {
     /**
      * Property containing jingle nodes prefix to search for.
      */
@@ -75,8 +77,7 @@ public class JingleNodesServiceDiscovery implements Runnable
      * @param syncRoot the synchronization object while discovering.
      */
     JingleNodesServiceDiscovery(SmackServiceNode service, XMPPConnection connection,
-            JabberAccountIDImpl accountID, Object syncRoot)
-    {
+            JabberAccountIDImpl accountID, Object syncRoot) {
         this.jingleNodesSyncRoot = syncRoot;
         this.service = service;
         this.connection = connection;
@@ -86,20 +87,20 @@ public class JingleNodesServiceDiscovery implements Runnable
     /**
      * The actual discovery.
      */
-    public void run()
-    {
+    public void run() {
         synchronized (jingleNodesSyncRoot) {
             long start = System.currentTimeMillis();
             Timber.i("Start Jingle Nodes discovery!");
 
             SmackServiceNode.MappedNodes nodes = null;
             String searchNodesWithPrefix = JabberActivator.getResources().getSettingsString(JINGLE_NODES_SEARCH_PREFIX_PROP);
-            if (searchNodesWithPrefix == null || searchNodesWithPrefix.length() == 0)
+            if (StringUtils.isEmpty(searchNodesWithPrefix)) {
                 searchNodesWithPrefix = JabberActivator.getConfigurationService().getString(JINGLE_NODES_SEARCH_PREFIX_PROP);
+            }
 
             // if there are no default prefix settings or this option is turned off, just process
             // with default service discovery making list empty.
-            if (searchNodesWithPrefix == null || searchNodesWithPrefix.length() == 0
+            if (StringUtils.isEmpty(searchNodesWithPrefix)
                     || searchNodesWithPrefix.equalsIgnoreCase("off")) {
                 searchNodesWithPrefix = "";
             }
@@ -108,7 +109,8 @@ public class JingleNodesServiceDiscovery implements Runnable
                 nodes = searchServicesWithPrefix(service, connection, 6, 3, 20, JingleChannelIQ.UDP,
                         accountID.isJingleNodesSearchBuddiesEnabled(),
                         accountID.isJingleNodesAutoDiscoveryEnabled(), searchNodesWithPrefix);
-            } catch (NotConnectedException | InterruptedException e) {
+            }
+            catch (NotConnectedException | InterruptedException e) {
                 Timber.e(e, "Search failed");
             }
 
@@ -133,13 +135,13 @@ public class JingleNodesServiceDiscovery implements Runnable
      * @param searchBuddies should we search our buddies in contactlist.
      * @param autoDiscover is auto discover turned on
      * @param prefix the coma separated list of prefixes to be searched first.
+     *
      * @return
      */
     private SmackServiceNode.MappedNodes searchServicesWithPrefix(SmackServiceNode service,
             XMPPConnection xmppConnection, int maxEntries, int maxDepth, int maxSearchNodes,
             String protocol, boolean searchBuddies, boolean autoDiscover, String prefix)
-            throws NotConnectedException, InterruptedException
-    {
+            throws NotConnectedException, InterruptedException {
         if (xmppConnection == null || !xmppConnection.isConnected()) {
             return null;
         }
@@ -164,7 +166,8 @@ public class JingleNodesServiceDiscovery implements Runnable
                 try {
                     SmackServiceNode.deepSearch(xmppConnection, maxEntries, JidCreate.from(xmppConnection.getHost()),
                             mappedNodes, maxDepth - 1, maxSearchNodes, protocol, visited);
-                } catch (XmppStringprepException | IllegalArgumentException e) {
+                }
+                catch (XmppStringprepException | IllegalArgumentException e) {
                     e.printStackTrace();
                 }
 
@@ -199,14 +202,14 @@ public class JingleNodesServiceDiscovery implements Runnable
      * @param protocol the protocol
      * @param visited nodes already visited
      * @param prefix the coma separated list of prefixes to be searched first.
+     *
      * @return
      */
     private static boolean searchDiscoItems(SmackServiceNode service,
             XMPPConnection xmppConnection, int maxEntries, Jid startPoint,
             SmackServiceNode.MappedNodes mappedNodes, int maxDepth, int maxSearchNodes,
             String protocol, ConcurrentHashMap<Jid, Jid> visited, String prefix)
-            throws InterruptedException, NotConnectedException
-    {
+            throws InterruptedException, NotConnectedException {
         String[] prefixes = prefix.split(",");
 
         // default is to stop when first one is found
@@ -227,7 +230,8 @@ public class JingleNodesServiceDiscovery implements Runnable
         StanzaCollector collector = xmppConnection.createStanzaCollectorAndSend(items);
         try {
             result = collector.nextResult(Math.round(SmackConfiguration.getDefaultReplyTimeout() * 1.5));
-        } finally {
+        }
+        finally {
             collector.cancel();
         }
 

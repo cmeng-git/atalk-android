@@ -15,13 +15,11 @@ import org.atalk.persistance.DatabaseBackend;
 
 import timber.log.Timber;
 
-public class SystemEventReceiver extends BroadcastReceiver
-{
+public class SystemEventReceiver extends BroadcastReceiver {
     public static final String AUTO_START_ONBOOT = "org.atalk.start_boot";
 
     @Override
-    public void onReceive(Context context, Intent intent)
-    {
+    public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             if (isAutoStartEnable(context)) {
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
@@ -36,9 +34,10 @@ public class SystemEventReceiver extends BroadcastReceiver
                     context.startActivity(i);
                 }
             }
-            else {
-                System.exit(0);
-            }
+            // API-37 broadcasts ACTION_BOOT_COMPLETED on aTalk boot start up, causing aTalk to exit immediately.
+            // else {
+                // System.exit(0);
+            // }
         }
     }
 
@@ -46,11 +45,11 @@ public class SystemEventReceiver extends BroadcastReceiver
      * Check if the aTalk auto start on reboot is enabled
      *
      * @param context Application context
+     *
      * @return true if aTalk Auto Start Option is enabled by user. false otherwise
      */
 
-    private boolean isAutoStartEnable(Context context)
-    {
+    private boolean isAutoStartEnable(Context context) {
         DatabaseBackend.getInstance(context);
 
         SQLiteConfigurationStore store = new SQLiteConfigurationStore(context);

@@ -85,6 +85,7 @@ public class JingleCallSessionImpl extends JingleSession {
      * @param sid Jingle session Id
      * @param basicTelephony a reference of the Basic Telephony implementation
      */
+    @SuppressWarnings("this-escape")
     public JingleCallSessionImpl(XMPPConnection connection, FullJid recipient, String sid, BasicTelephony basicTelephony) {
         this(connection, connection.getUser(), recipient, Role.initiator, sid, null, basicTelephony);
         updateSessionState(SessionState.fresh);
@@ -100,6 +101,7 @@ public class JingleCallSessionImpl extends JingleSession {
      * @param contents Jingle contents list; may be null when call via <code>JingleMessage</code>
      * @param basicTelephony a reference of the Basic Telephony implementation
      */
+    @SuppressWarnings("this-escape")
     public JingleCallSessionImpl(XMPPConnection connection, FullJid initiator, String sid,
             List<JingleContent> contents, BasicTelephony basicTelephony) {
         this(connection, initiator, connection.getUser(), Role.responder, sid, contents, basicTelephony);
@@ -117,6 +119,7 @@ public class JingleCallSessionImpl extends JingleSession {
      * @param contents Jingle contents list
      * @param basicTelephony a reference of the Basic Telephony implementation
      */
+    @SuppressWarnings("this-escape")
     public JingleCallSessionImpl(XMPPConnection connection, FullJid initiator, FullJid responder, Role role,
             String sessionId, List<JingleContent> contents, BasicTelephony basicTelephony) {
         super(initiator, responder, role, sessionId, contents);

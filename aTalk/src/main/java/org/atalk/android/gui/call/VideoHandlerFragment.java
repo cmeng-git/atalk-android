@@ -789,7 +789,7 @@ public class VideoHandlerFragment extends BaseFragment implements MenuProvider, 
         int marginBottom = 0;
         // If we have remote video
         if (remoteVideoContainer.getChildCount() > 0) {
-            Dimension displaySize = aTalkApp.getDisplaySize();
+            Dimension displaySize = aTalkApp.mDisplaySize;
 
             int ctrlButtonsHeight = ctrlButtonsGroup.getHeight();
             marginBottom = (int) (0.10 * displaySize.height);

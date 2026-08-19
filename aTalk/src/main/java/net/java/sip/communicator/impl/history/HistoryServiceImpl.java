@@ -49,6 +49,7 @@ import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.fileaccess.FileCategory;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.w3c.dom.Document;
@@ -87,7 +88,7 @@ public class HistoryServiceImpl implements HistoryService {
     /**
      * Characters and their replacement in created folder names
      */
-    private final static String[][] ESCAPE_SEQUENCES = new String[][]{
+    private final static String[][] ESCAPE_SEQUENCES = new String[][] {
             {"&", "&_amp"}, {"/", "&_sl"}, {"\\\\", "&_bs"}, // the char \
             {":", "&_co"}, {"\\*", "&_as"}, // the char *
             {"\\?", "&_qm"}, // the char ?
@@ -119,7 +120,8 @@ public class HistoryServiceImpl implements HistoryService {
                     ? DATA_DIRECTORY : userSetDataDirectory, FileCategory.PROFILE);
 
             findDatFiles(vect, histDir);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Timber.e(e, "Error opening directory");
         }
 
@@ -131,7 +133,8 @@ public class HistoryServiceImpl implements HistoryService {
                     if (!this.histories.containsKey(hist.getID())) {
                         this.histories.put(hist.getID(), hist);
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     Timber.e(e, "Could not load history from file: %s", f.getAbsolutePath());
                 }
             }
@@ -258,7 +261,8 @@ public class HistoryServiceImpl implements HistoryService {
         try {
             directory = getFileAccessService().getPrivatePersistentDirectory(dir.toString(),
                     FileCategory.PROFILE);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             IOException ioe = new IOException("Could not create history due to file system error");
             ioe.initCause(e);
             throw ioe;
@@ -458,7 +462,8 @@ public class HistoryServiceImpl implements HistoryService {
             histDir = getFileAccessService().getPrivatePersistentDirectory(
                     (userSetDataDirectory == null) ? DATA_DIRECTORY : userSetDataDirectory,
                     FileCategory.PROFILE);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Timber.e(e, "Error opening directory");
         }
 
@@ -491,7 +496,8 @@ public class HistoryServiceImpl implements HistoryService {
         try {
             histDir = getFileAccessService().getPrivatePersistentDirectory(DATA_DIRECTORY,
                     FileCategory.PROFILE);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Timber.e(e, "Error opening directory");
         }
 

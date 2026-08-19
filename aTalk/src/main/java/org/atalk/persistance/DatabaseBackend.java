@@ -46,7 +46,6 @@ import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
-import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -57,20 +56,24 @@ import org.atalk.crypto.omemo.FingerprintStatus;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.persistance.migrations.Migrations;
 import org.atalk.persistance.migrations.MigrationsHelper;
-import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.jivesoftware.smackx.omemo.element.OmemoDeviceElement;
-import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
-import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
-import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
-import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringprepException;
+
+import org.apache.commons.lang3.StringUtils;
 import org.whispersystems.libsignal.IdentityKey;
 import org.whispersystems.libsignal.IdentityKeyPair;
 import org.whispersystems.libsignal.InvalidKeyException;
 import org.whispersystems.libsignal.state.PreKeyRecord;
 import org.whispersystems.libsignal.state.SessionRecord;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
+
+import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceElement;
+import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
+import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
+import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
+
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 import timber.log.Timber;
 
@@ -214,7 +217,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
             RealMigrationsHelper migrationsHelper = new RealMigrationsHelper(mProvider);
             Migrations.upgradeDatabase(db, migrationsHelper);
             db.setTransactionSuccessful();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Timber.e("Exception while upgrading database. Resetting the DB to original: %s", e.getMessage());
             db.setVersion(oldVersion);
 
@@ -222,7 +226,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 db.endTransaction();
                 throw new Error("Database upgrade failed! Exception: ", e);
             }
-        } finally {
+        }
+        finally {
             db.endTransaction();
         }
     }
@@ -410,7 +415,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         try {
             db.setTransactionSuccessful();
             Timber.i("### Completed SQLite DataBase migration successfully! ###");
-        } finally {
+        }
+        finally {
             db.endTransaction();
         }
     }
@@ -636,7 +642,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
             try {
                 preKeyRecord = new PreKeyRecord(Base64.decode(cursor.getString(1), Base64.DEFAULT));
                 PreKeyRecords.put(preKeyId, preKeyRecord);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Timber.w("Failed to deserialize preKey from store preky: %s: %s", preKeyId, e.getMessage());
             }
         }
@@ -652,7 +659,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
             try {
                 record = new PreKeyRecord(Base64.decode(
                         cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.PRE_KEYS)), Base64.DEFAULT));
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Timber.w("Failed to deserialize preKey from store. %s", e.getMessage());
             }
         }
@@ -724,7 +732,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
             try {
                 record = new SignedPreKeyRecord(Base64.decode(
                         cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.SIGNED_PRE_KEYS)), Base64.DEFAULT));
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Timber.w("Could not deserialize signed preKey for %s: %s", userDevice, e.getMessage());
             }
         }
@@ -750,7 +759,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 signedPreKeysRecord = new SignedPreKeyRecord(Base64.decode(cursor.getString(
                         cursor.getColumnIndex(SQLiteOmemoStore.SIGNED_PRE_KEYS)), Base64.DEFAULT));
                 preKeys.put(preKeyId, signedPreKeysRecord);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Timber.w("Could not deserialize signed preKey for %s: %s", device, e.getMessage());
             }
         }
@@ -861,7 +871,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 if (StringUtils.isNotEmpty(identityKP)) {
                     identityKeyPair = new IdentityKeyPair(Base64.decode(identityKP, Base64.DEFAULT));
                 }
-            } catch (InvalidKeyException e) {
+            }
+            catch (InvalidKeyException e) {
                 // deleteIdentityKey(device); // may corrupt DB and out of sync with other data
                 String msg = aTalkApp.getResString(R.string.omemo_identity_keypairs_invalid, device, e.getMessage());
                 throw new CorruptedOmemoKeyException(msg);
@@ -882,7 +893,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 if (StringUtils.isNotEmpty(key)) {
                     identityKey = new IdentityKey(Base64.decode(key, Base64.DEFAULT), 0);
                 }
-            } catch (InvalidKeyException e) {
+            }
+            catch (InvalidKeyException e) {
                 // Delete corrupted identityKey, let omemo rebuilt this
                 deleteIdentityKey(device);
                 String msg = aTalkApp.getResString(R.string.omemo_identity_key_invalid, device, e.getMessage());
@@ -956,7 +968,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 else {
                     Timber.d("Missing key (possibly pre-verified) in database for account: %s", device.getJid());
                 }
-            } catch (InvalidKeyException e) {
+            }
+            catch (InvalidKeyException e) {
                 Timber.d("Encountered invalid IdentityKey in DB for omemoDevice: %s", device);
             }
         }
@@ -1189,7 +1202,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
             try {
                 sessionRecord = new SessionRecord(Base64.decode(
                         cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.SESSION_KEY)), Base64.DEFAULT));
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Timber.w("Could not deserialize raw session. %s", e.getMessage());
             }
         }
@@ -1214,7 +1228,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
             if (StringUtils.isNotEmpty(sessionKey)) {
                 try {
                     session = new SessionRecord(Base64.decode(sessionKey, Base64.DEFAULT));
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     Timber.w("Could not deserialize raw session. %s", e.getMessage());
                 }
                 deviceSessions.put(deviceId, session);
@@ -1243,7 +1258,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
             if (StringUtils.isNotEmpty(sessionKey)) {
                 try {
                     session = new SessionRecord(Base64.decode(sessionKey, Base64.DEFAULT));
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     Timber.w("Could not deserialize raw session! %s", e.getMessage());
                     continue;
                 }
@@ -1254,7 +1270,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                     bareJid = JidCreate.bareFrom(sJid);
                     omemoDevice = new OmemoDevice(bareJid, deviceId);
                     deviceSessions.put(omemoDevice, session);
-                } catch (XmppStringprepException e) {
+                }
+                catch (XmppStringprepException e) {
                     Timber.w("Jid creation error for: %s", sJid);
                 }
             }
@@ -1318,7 +1335,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         List<String> identityJids = getContactsForAccount(accountId.getAccountUuid());
         identityJids.add(0, accountJid); // first item to be deleted
         for (String identityJid : identityJids) {
-            args = new String[]{identityJid};
+            args = new String[] {identityJid};
             db.delete(SQLiteOmemoStore.SESSION_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", args);
             db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", args);
         }
@@ -1363,7 +1380,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         List<String> childContacts = new ArrayList<>();
 
         String[] columns = {MetaContactGroup.CONTACT_JID};
-        String[] args = new String[]{accountUuid};
+        String[] args = new String[] {accountUuid};
         Cursor cursor = db.query(MetaContactGroup.TBL_CHILD_CONTACTS, columns,
                 MetaContactGroup.ACCOUNT_UUID + "=?", args, null, null, null);
 

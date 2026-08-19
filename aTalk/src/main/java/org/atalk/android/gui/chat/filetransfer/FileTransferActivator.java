@@ -29,6 +29,7 @@ import net.java.sip.communicator.service.protocol.event.ScFileTransferListener;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.impl.timberlog.TimberLog;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -69,7 +70,8 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
         ServiceReference[] ppsRefs = null;
         try {
             ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
-        } catch (InvalidSyntaxException ex) {
+        }
+        catch (InvalidSyntaxException ex) {
             Timber.e("Exception: %s", ex.getMessage());
         }
         if (ppsRefs != null) {
@@ -93,7 +95,8 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
         ServiceReference[] ppsRefs = null;
         try {
             ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
-        } catch (InvalidSyntaxException e) {
+        }
+        catch (InvalidSyntaxException e) {
             Timber.e("Exception: %s", e.getMessage());
         }
 
@@ -121,13 +124,13 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
         // we don't care if the source service is not a protocol provider
         if (sService instanceof ProtocolProviderService) {
             switch (event.getType()) {
-                case ServiceEvent.REGISTERED:
-                    this.handleProviderAdded((ProtocolProviderService) sService);
-                    break;
+            case ServiceEvent.REGISTERED:
+                this.handleProviderAdded((ProtocolProviderService) sService);
+                break;
 
-                case ServiceEvent.UNREGISTERING:
-                    this.handleProviderRemoved((ProtocolProviderService) sService);
-                    break;
+            case ServiceEvent.UNREGISTERING:
+                this.handleProviderRemoved((ProtocolProviderService) sService);
+                break;
             }
         }
     }

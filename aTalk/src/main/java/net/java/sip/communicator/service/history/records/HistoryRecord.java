@@ -79,13 +79,6 @@ public class HistoryRecord {
      * @param timestamp
      */
     public HistoryRecord(String[] propertyNames, String[] propertyValues, Date timestamp) {
-        // TODO: Validate: Assert.assertNonNull(propertyNames, "The property names should be
-        // non-null.");
-        // TODO: Validate: Assert.assertNonNull(mPropertyValues, "The property values should be
-        // non-null.");
-        // TODO: Validate: Assert.assertNonNull(timestamp, "The timestamp should be non-null.");
-
-        // TODO: Validate Assert.assertTrue(propertyNames.length == mPropertyValues.length,
         // "The length of the property names and property values should be equal.");
 
         mPropertyNames = propertyNames;

@@ -43,13 +43,14 @@ import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent
 import net.java.sip.communicator.service.protocol.event.ScFileTransferListener;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.filetransfer.FileReceiveConversation;
 import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
+
+import org.apache.commons.lang3.StringUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;

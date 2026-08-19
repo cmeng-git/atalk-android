@@ -329,9 +329,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
         else {
             stringResources = (languagePack == null) ? null : languagePack.getResources(locale);
         }
-
-        String resourceString = (stringResources == null) ? null : stringResources.get(key);
-        return resourceString;
+        return (stringResources == null) ? null : stringResources.get(key);
     }
 
     /**
@@ -563,12 +561,12 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     /**
      * Loads an image from a given image identifier.
      *
-     * @param imageID The identifier of the image.
+     * @param imageId The identifier of the image.
      *
      * @return The image for the given identifier.
      */
-    public ImageIcon getImage(String imageID) {
-        URL imageURL = getImageURL(imageID);
+    public ImageIcon getImage(String imageId) {
+        URL imageURL = getImageURL(imageId);
         return (imageURL == null) ? null : new ImageIcon(imageURL);
     }
 

@@ -5,7 +5,6 @@
  */
 package org.atalk.impl.neomedia.device.util;
 
-import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 

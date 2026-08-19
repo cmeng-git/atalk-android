@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.james.mime4j.codec.EncoderUtil;
+
 import org.jivesoftware.smack.util.StringUtils;
 
 import timber.log.Timber;
@@ -196,7 +197,7 @@ public class Address implements Serializable {
      */
     public static Address[] unpack(String addressList) {
         if (addressList == null) {
-            return new Address[]{};
+            return new Address[] {};
         }
         List<Address> addresses = new ArrayList<>();
         int length = addressList.length();

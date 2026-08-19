@@ -21,6 +21,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 /**
  * Represents a request to retract a node item.
  *
+ * @author Robin Collier
  * @author Eng Chong Meng
  */
 public class RetractItem extends NodeExtension {

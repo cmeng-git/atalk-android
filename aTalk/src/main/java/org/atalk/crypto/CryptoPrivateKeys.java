@@ -42,14 +42,17 @@ import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.util.CryptoHelper;
+
+import org.apache.commons.lang3.StringUtils;
+
 import org.jivesoftware.smack.SmackException;
+
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.OmemoStore;
@@ -120,7 +123,8 @@ public class CryptoPrivateKeys extends BaseActivity {
                 OmemoFingerprint omemoFingerprint = omemoManager.getOwnFingerprint();
                 if (omemoFingerprint != null)
                     fingerprint = omemoFingerprint.toString();
-            } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException | IOException e) {
+            }
+            catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException | IOException e) {
                 Timber.w("Get own fingerprint Exception: %s", e.getMessage());
             }
             deviceFingerprints.put(deviceJid, fingerprint);
@@ -159,22 +163,22 @@ public class CryptoPrivateKeys extends BaseActivity {
 
         int id = item.getItemId();
         switch (id) {
-            case R.id.generate:
-                showGenerateKeyAlert(bareJid, false);
-                accountsAdapter.notifyDataSetChanged();
-                return true;
+        case R.id.generate:
+            showGenerateKeyAlert(bareJid, false);
+            accountsAdapter.notifyDataSetChanged();
+            return true;
 
-            case R.id.regenerate:
-                showGenerateKeyAlert(bareJid, true);
-                accountsAdapter.notifyDataSetChanged();
-                return true;
+        case R.id.regenerate:
+            showGenerateKeyAlert(bareJid, true);
+            accountsAdapter.notifyDataSetChanged();
+            return true;
 
-            case R.id.copy:
-                String privateKey = accountsAdapter.getOwnKeyFromRow(pos);
-                ClipboardManager cbManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                cbManager.setPrimaryClip(ClipData.newPlainText(null, CryptoHelper.prettifyFingerprint(privateKey)));
-                Toast.makeText(this, R.string.crypto_fingerprint_copy, Toast.LENGTH_SHORT).show();
-                return true;
+        case R.id.copy:
+            String privateKey = accountsAdapter.getOwnKeyFromRow(pos);
+            ClipboardManager cbManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            cbManager.setPrimaryClip(ClipData.newPlainText(null, CryptoHelper.prettifyFingerprint(privateKey)));
+            Toast.makeText(this, R.string.crypto_fingerprint_copy, Toast.LENGTH_SHORT).show();
+            return true;
         }
         return super.onContextItemSelected(item);
     }

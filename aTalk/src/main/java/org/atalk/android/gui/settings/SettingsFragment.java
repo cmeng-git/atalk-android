@@ -8,8 +8,10 @@ package org.atalk.android.gui.settings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -80,6 +82,7 @@ public class SettingsFragment extends BasePreferenceFragment
     private static final String P_KEY_PROVISIONING = "pref.key.provisioning";
 
     // Interface Display settings
+    public static final String P_KEY_LANGUAGE = "pref.key.language";
     public static final String P_KEY_LOCALE = "pref.key.locale";
     public static final String P_KEY_THEME = "pref.key.theme";
     private static final String P_KEY_WEB_PAGE = "gui.WEB_PAGE_ACCESS";
@@ -164,7 +167,7 @@ public class SettingsFragment extends BasePreferenceFragment
         translateApikeyPref = findPreference(P_KEY_TRANSLATE_SERVER_APIKEY);
 
         // init display locale and theme (not implemented)
-        initLocale();
+        initLanguage();
         initTheme();
         initWebPagePreference();
 
@@ -270,8 +273,9 @@ public class SettingsFragment extends BasePreferenceFragment
         // Immutable empty {@link CharSequence} array
         CharSequence[] EMPTY_CHAR_SEQUENCE_ARRAY = new CharSequence[0];
         final ListPreference pLocale = findPreference(P_KEY_LOCALE);
-
         assert pLocale != null;
+        pLocale.setVisible(true);
+
         List<CharSequence> entryVector = new ArrayList<>(Arrays.asList(pLocale.getEntries()));
         List<CharSequence> entryValueVector = new ArrayList<>(Arrays.asList(pLocale.getEntryValues()));
         String[] supportedLanguages = getResources().getStringArray(R.array.supported_languages);
@@ -315,6 +319,27 @@ public class SettingsFragment extends BasePreferenceFragment
             }
             return true;
         });
+    }
+
+    protected void initLanguage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Preference pLanguage = findPreference(P_KEY_LANGUAGE);
+            assert pLanguage != null;
+            pLanguage.setVisible(true);
+            pLanguage.setSummary(LocaleHelper.getAppLanguage());
+
+            pLanguage.setOnPreferenceClickListener(preference -> {
+                Intent mLangIntent = new Intent(Settings.ACTION_APP_LOCALE_SETTINGS,
+                        Uri.fromParts("package", aTalkApp.getInstance().getPackageName(), null));
+                mLangIntent.addCategory(Intent.CATEGORY_DEFAULT);
+                mLangIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(mLangIntent);
+                return true;
+            });
+        }
+        else {
+            initLocale();
+        }
     }
 
     /**

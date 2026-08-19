@@ -1,7 +1,5 @@
 package org.atalk.service.httputil;
 
-import android.text.TextUtils;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -16,6 +14,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.conn.ssl.StrictHostnameVerifier;
+import org.apache.http.util.TextUtils;
 import org.atalk.android.BuildConfig;
 import org.json.JSONObject;
 
@@ -116,7 +115,7 @@ public class OkHttpUtils {
     }
 
     /**
-     * Posting form to <tt>url</tt>. For submission we use POST method i.e. "application/x-www-form-urlencoded" encoded.
+     * Posting form to <tt>url</tt>. For submission, we use POST method i.e. "application/x-www-form-urlencoded" encoded.
      * By default, OkHttp automatically follows redirects, including 307s. This means that if you send a POST request
      * and get a 307 response, OkHttp will automatically resend the POST request to the new location.
      *

@@ -12,16 +12,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactlist.MetaContactListService;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.util.CollectionAdapter;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * This adapter displays all <code>MetaContactGroup</code> items. If in the constructor <code>AdapterView</code> id

@@ -5,7 +5,6 @@
  */
 package org.atalk.impl.neomedia.device.util;
 
-import android.app.Activity;
 import android.hardware.camera2.CameraDevice;
 import android.view.Display;
 import android.view.Surface;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import org.atalk.android.BaseActivity;
 

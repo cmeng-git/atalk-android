@@ -195,7 +195,8 @@ public class SurfaceStream extends CameraStreamBase {
             // mCaptureBuilder.addTarget(mEncoderSurface.getSurface());
             // mCameraDevice.createCaptureSession(Arrays.asList(mEncoderSurface.getSurface(), mPreviewSurface), //Collections.singletonList(mPreviewSurface),
             mCameraDevice.createCaptureSession(Collections.singletonList(mPreviewSurface), mSessionStateCallBack, mBackgroundHandler);
-        } catch (CameraAccessException e) {
+        }
+        catch (CameraAccessException e) {
             Timber.w("Surface stream onInitPreview exception: %s", e.getMessage());
         }
     }
@@ -268,7 +269,8 @@ public class SurfaceStream extends CameraStreamBase {
                     if (!frameAvailable) {
                         throw new RuntimeException("Camera frame wait timed out");
                     }
-                } catch (InterruptedException ie) {
+                }
+                catch (InterruptedException ie) {
                     throw new RuntimeException(ie);
                 }
             }
@@ -313,7 +315,8 @@ public class SurfaceStream extends CameraStreamBase {
                     // mDisplayTV.releaseEGLSurfaceContext();
                     myCtxProvider.textureUpdated = false;
                 }
-            } finally {
+            }
+            finally {
                 synchronized (paintLock) {
                     paintDone = true;
                     paintLock.notifyAll();
@@ -326,7 +329,8 @@ public class SurfaceStream extends CameraStreamBase {
             if (!paintDone) {
                 try {
                     paintLock.wait();
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -385,7 +389,8 @@ public class SurfaceStream extends CameraStreamBase {
             try {
                 captureThread.join();
                 captureThread = null;
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }

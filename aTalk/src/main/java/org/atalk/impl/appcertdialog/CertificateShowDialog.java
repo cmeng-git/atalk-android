@@ -16,7 +16,6 @@
  */
 package org.atalk.impl.appcertdialog;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -28,10 +27,10 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import java.security.cert.Certificate;
+
 import org.atalk.android.R;
 import org.atalk.android.gui.dialogs.BaseDialogFragment;
-
-import java.security.cert.Certificate;
 
 /**
  * The dialog that displays certificate details. It allows user to mark the certificate as "always trusted".
@@ -125,6 +124,7 @@ public class CertificateShowDialog extends BaseDialogFragment {
      * Creates new instance of <code>CertificateInfoDialog</code> parametrized with given <code>requestId</code>.
      *
      * @param requestId identifier of dialog model managed by <code>CertificateDialogServiceImpl</code>
+     *
      * @return new instance of <code>CertificateInfoDialog</code> parametrized with given <code>requestId</code>.
      */
     static public CertificateShowDialog createFragment(long requestId) {

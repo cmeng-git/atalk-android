@@ -5,7 +5,6 @@
  */
 package org.atalk.android.gui.call;
 
-import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.widget.Toast;

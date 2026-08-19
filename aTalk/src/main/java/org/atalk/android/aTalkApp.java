@@ -66,6 +66,7 @@ import org.atalk.impl.timberlog.TimberLogImpl;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
+
 import org.osgi.framework.BundleContext;
 
 import timber.log.Timber;
@@ -124,7 +125,8 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
         // chromium-Monochrome.aab-stable-424011020:5 throw NPE at org.chromium.ui.base.Clipboard.<init>
         try {
             new WebView(this).destroy();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Timber.e("WebView init exception: %s", e.getMessage());
         }
 
@@ -147,14 +149,18 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
 
     /**
      * setLocale for Application class to work properly with PBContext class.
+     * Locale is handled by Per Language preference for TIRAMISU.
+     * Must keep attachBaseContext, else aTalk crashes on start; due to ContextWrapper mBase not init.
      */
     @Override
     protected void attachBaseContext(Context base) {
         // mInstance must be initialized before getProperty() for SQLiteConfigurationStore() init.
         mInstance = base;
-        String language = ConfigurationUtils.getProperty(P_KEY_LOCALE, "");
-        // showToastMessage("aTalkApp reinit locale: " + language);
-        mInstance = LocaleHelper.setLocale(base, language);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            String language = ConfigurationUtils.getProperty(P_KEY_LOCALE, "");
+            showToastMessage("aTalkApp reinit locale: " + language);
+            mInstance = LocaleHelper.setLocale(base, language);
+        }
         super.attachBaseContext(mInstance);
     }
 
@@ -217,7 +223,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
      *
      * @return the size of the main application display window.
      */
-    public static Dimension getDisplaySize() {
+    public Dimension getDisplaySize() {
         // Get android device screen display size
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             Point size = new Point();
@@ -516,7 +522,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
         String defaultEmail = getConfig().getString("org.atalk.android.LOG_REPORT_EMAIL");
 
         if (logUpload != null) {
-            logUpload.sendLogs(new String[]{defaultEmail},
+            logUpload.sendLogs(new String[] {defaultEmail},
                     getResString(R.string.send_log_subject),
                     getResString(R.string.send_log_title));
         }
@@ -534,7 +540,8 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
             while (wait-- > 0) {
                 try {
                     currentActivityMonitor.wait(1000);
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     Timber.e("%s", e.getMessage());
                 }
 

@@ -106,43 +106,43 @@ public class AppPopup {
 
         // set separate notification icon for each group of notification
         switch (group) {
-            case AppNotifications.MESSAGE_GROUP:
-            case AppNotifications.SILENT_GROUP:
-                mSmallIcon = R.drawable.incoming_message;
+        case AppNotifications.MESSAGE_GROUP:
+        case AppNotifications.SILENT_GROUP:
+            mSmallIcon = R.drawable.incoming_message;
+            break;
+
+        case AppNotifications.FILE_GROUP:
+            mSmallIcon = R.drawable.ic_attach_dark;
+            break;
+
+        case AppNotifications.CALL_GROUP:
+            switch (popupMessage.getMessageType()) {
+            case SystrayService.WARNING_MESSAGE_TYPE:
+                mSmallIcon = R.drawable.ic_alert_dark;
                 break;
 
-            case AppNotifications.FILE_GROUP:
-                mSmallIcon = R.drawable.ic_attach_dark;
+            case SystrayService.JINGLE_INCOMING_CALL:
+            case SystrayService.JINGLE_MESSAGE_PROPOSE:
+                mSmallIcon = R.drawable.call_incoming;
                 break;
 
-            case AppNotifications.CALL_GROUP:
-                switch (popupMessage.getMessageType()) {
-                    case SystrayService.WARNING_MESSAGE_TYPE:
-                        mSmallIcon = R.drawable.ic_alert_dark;
-                        break;
-
-                    case SystrayService.JINGLE_INCOMING_CALL:
-                    case SystrayService.JINGLE_MESSAGE_PROPOSE:
-                        mSmallIcon = R.drawable.call_incoming;
-                        break;
-
-                    case SystrayService.MISSED_CALL_MESSAGE_TYPE:
-                        mSmallIcon = R.drawable.call_incoming_missed;
-                        break;
-
-                    default:
-                        mSmallIcon = R.drawable.ic_info_dark;
-                        break;
-                }
+            case SystrayService.MISSED_CALL_MESSAGE_TYPE:
+                mSmallIcon = R.drawable.call_incoming_missed;
                 break;
 
-            // default group is sharing general notification icon
-            // By default all notifications share aTalk icon
-            case AppNotifications.DEFAULT_GROUP:
             default:
-                nId = SystrayServiceImpl.getGeneralNotificationId();
-                mSmallIcon = R.drawable.ic_notification;
+                mSmallIcon = R.drawable.ic_info_dark;
                 break;
+            }
+            break;
+
+        // default group is sharing general notification icon
+        // By default all notifications share aTalk icon
+        case AppNotifications.DEFAULT_GROUP:
+        default:
+            nId = SystrayServiceImpl.getGeneralNotificationId();
+            mSmallIcon = R.drawable.ic_notification;
+            break;
         }
         // Extract contained chat descriptor if any
         mDescriptor = popupMessage.getTag();
@@ -302,7 +302,7 @@ public class AppPopup {
                 .setContentTitle(popupMessage.getMessageTitle())
                 .setContentText(getMessage())
                 .setAutoCancel(true)        // will be cancelled once clicked
-                .setVibrate(new long[]{})   // no vibration
+                .setVibrate(new long[] {})   // no vibration
                 .setSound(null);            // no sound
 
         Resources res = aTalkApp.getAppResources();

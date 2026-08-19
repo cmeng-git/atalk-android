@@ -26,8 +26,7 @@ import org.atalk.android.aTalkApp;
  * @author Lyubomir Marinov
  * @author Adam Netocny
  */
-public class GuiUtils
-{
+public class GuiUtils {
     private static final Calendar c1 = Calendar.getInstance();
 
     private static final Calendar c2 = Calendar.getInstance();
@@ -114,10 +113,10 @@ public class GuiUtils
      * Replaces some chars that are special in a regular expression.
      *
      * @param text The initial text.
+     *
      * @return the formatted text
      */
-    public static String replaceSpecialRegExpChars(String text)
-    {
+    public static String replaceSpecialRegExpChars(String text) {
         return text.replaceAll("([.()^&$*|])", "\\\\$1");
     }
 
@@ -126,10 +125,10 @@ public class GuiUtils
      *
      * @param text the text in which we search
      * @param needle the character we're looking for
+     *
      * @return the count of occurrences of the <code>needle</code> chat in the given <code>text</code>
      */
-    public static int countOccurrences(String text, char needle)
-    {
+    public static int countOccurrences(String text, char needle) {
         int count = 0;
 
         for (char c : text.toCharArray()) {
@@ -147,12 +146,12 @@ public class GuiUtils
      *
      * @param date1 the first date to compare
      * @param date2 the second date to compare with
+     *
      * @return Returns 0 if the two dates are equals, a value < 0 if
      * the first date is before the second one and > 0 if the first date is after
      * the second one
      */
-    public static int compareDates(Date date1, Date date2)
-    {
+    public static int compareDates(Date date1, Date date2) {
         return date1.compareTo(date2);
     }
 
@@ -164,12 +163,12 @@ public class GuiUtils
      *
      * @param date1 the first date to compare
      * @param date2 the second date to compare with
+     *
      * @return Returns 0 if the two dates are equals, a value < 0 if
      * the first date is before the second one and > 0 if the first date is after
      * the second one
      */
-    public static int compareDates(long date1, long date2)
-    {
+    public static int compareDates(long date1, long date2) {
         return (Long.compare(date1, date2));
     }
 
@@ -181,12 +180,12 @@ public class GuiUtils
      *
      * @param date1 the first date to compare
      * @param date2 the second date to compare with
+     *
      * @return Returns 0 if the two dates are equals, a value < 0 if
      * the first date is before the second one and > 0 if the first date is
      * after the second one
      */
-    public static int compareDatesOnly(long date1, long date2)
-    {
+    public static int compareDatesOnly(long date1, long date2) {
         c1.setTimeInMillis(date1);
         c2.setTimeInMillis(date2);
 
@@ -228,12 +227,12 @@ public class GuiUtils
      *
      * @param date1 the first date to compare
      * @param date2 the second date to compare with
+     *
      * @return Returns 0 if the two dates are equals, a value < 0 if
      * the first date is before the second one and > 0 if the first date is
      * after the second one
      */
-    public static int compareDatesOnly(Date date1, Date date2)
-    {
+    public static int compareDatesOnly(Date date1, Date date2) {
         return compareDatesOnly(date1.getTime(), date2.getTime());
     }
 
@@ -242,10 +241,10 @@ public class GuiUtils
      * For example: Tue 29 Oct 2019 04:37:55 FMT+08:00
      *
      * @param date the date to format
+     *
      * @return the formatted date string
      */
-    public static String formatDateTime(Date date)
-    {
+    public static String formatDateTime(Date date) {
         if (date == null)
             date = new Date();
 
@@ -264,8 +263,7 @@ public class GuiUtils
         // return strBuf.append(" ").append(formatTime(dateTime)).toString();
     }
 
-    public static String formatDateTimeShort(Date date)
-    {
+    public static String formatDateTimeShort(Date date) {
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
         return df.format(date);
     }
@@ -275,10 +273,10 @@ public class GuiUtils
      * [Month] [Day], [Year]. For example: Dec 24, 2000.
      *
      * @param date the date to format
+     *
      * @return the formatted date string
      */
-    public static String formatDate(Date date)
-    {
+    public static String formatDate(Date date) {
         return formatDate(date.getTime());
     }
 
@@ -287,10 +285,10 @@ public class GuiUtils
      * [Month] [Day], [Year]. For example: Dec 24, 2000.
      *
      * @param date the date to format
+     *
      * @return the formatted date string
      */
-    public static String formatDate(final long date)
-    {
+    public static String formatDate(final long date) {
         StringBuffer strBuf = new StringBuffer();
 
         formatDate(date, strBuf);
@@ -305,8 +303,7 @@ public class GuiUtils
      * @param dateStrBuf the <code>StringBuffer</code>, where to append the
      * formatted date
      */
-    public static void formatDate(long date, StringBuffer dateStrBuf)
-    {
+    public static void formatDate(long date, StringBuffer dateStrBuf) {
         c1.setTimeInMillis(date);
 
         dateStrBuf.append(GuiUtils.processMonth(c1.get(Calendar.MONTH)));
@@ -322,8 +319,7 @@ public class GuiUtils
      * @param date the date to format
      * @param dateStrBuf the <code>StringBuffer</code>, where to append the formatted date
      */
-    public static void formatDate(Date date, StringBuffer dateStrBuf)
-    {
+    public static void formatDate(Date date, StringBuffer dateStrBuf) {
         c1.setTime(date);
 
         dateStrBuf.append(GuiUtils.processMonth(c1.get(Calendar.MONTH)));
@@ -338,10 +334,10 @@ public class GuiUtils
      * [Hour]:[Minute]:[Second]. For example: 12:25:30.
      *
      * @param date the date to format
+     *
      * @return the formatted hour string
      */
-    public static String formatTime(Date date)
-    {
+    public static String formatTime(Date date) {
         return formatTime(date.getTime());
     }
 
@@ -350,10 +346,10 @@ public class GuiUtils
      * [Hour]:[Minute]:[Second]. For example: 12:25:30.
      *
      * @param time the date to format
+     *
      * @return the formatted hour string
      */
-    public static String formatTime(long time)
-    {
+    public static String formatTime(long time) {
         c1.setTimeInMillis(time);
 
         StringBuffer timeStrBuf = new StringBuffer();
@@ -373,10 +369,10 @@ public class GuiUtils
      *
      * @param startDate the start date
      * @param endDate the end date
+     *
      * @return the formatted hour string
      */
-    public static String formatTime(Date startDate, Date endDate)
-    {
+    public static String formatTime(Date startDate, Date endDate) {
         return formatTime(startDate.getTime(), endDate.getTime());
     }
 
@@ -387,10 +383,10 @@ public class GuiUtils
      *
      * @param start the start date in milliseconds
      * @param end the end date in milliseconds
+     *
      * @return the formatted hour string
      */
-    public static String formatTime(long start, long end)
-    {
+    public static String formatTime(long start, long end) {
         long duration = end - start;
 
         long milPerSec = 1000;
@@ -408,51 +404,51 @@ public class GuiUtils
      * the specified zero-based month number.
      *
      * @param month the zero-based month number
+     *
      * @return the corresponding month abbreviation
      */
-    private static String processMonth(int month)
-    {
+    private static String processMonth(int month) {
         int monthStringKey;
 
         switch (month) {
-            case 0:
-                monthStringKey = R.string.jan;
-                break;
-            case 1:
-                monthStringKey = R.string.feb;
-                break;
-            case 2:
-                monthStringKey = R.string.mar;
-                break;
-            case 3:
-                monthStringKey = R.string.apr;
-                break;
-            case 4:
-                monthStringKey = R.string.may;
-                break;
-            case 5:
-                monthStringKey = R.string.jun;
-                break;
-            case 6:
-                monthStringKey = R.string.jul;
-                break;
-            case 7:
-                monthStringKey = R.string.aug;
-                break;
-            case 8:
-                monthStringKey = R.string.sep;
-                break;
-            case 9:
-                monthStringKey = R.string.oct;
-                break;
-            case 10:
-                monthStringKey = R.string.nov;
-                break;
-            case 11:
-                monthStringKey = R.string.dec;
-                break;
-            default:
-                return "";
+        case 0:
+            monthStringKey = R.string.jan;
+            break;
+        case 1:
+            monthStringKey = R.string.feb;
+            break;
+        case 2:
+            monthStringKey = R.string.mar;
+            break;
+        case 3:
+            monthStringKey = R.string.apr;
+            break;
+        case 4:
+            monthStringKey = R.string.may;
+            break;
+        case 5:
+            monthStringKey = R.string.jun;
+            break;
+        case 6:
+            monthStringKey = R.string.jul;
+            break;
+        case 7:
+            monthStringKey = R.string.aug;
+            break;
+        case 8:
+            monthStringKey = R.string.sep;
+            break;
+        case 9:
+            monthStringKey = R.string.oct;
+            break;
+        case 10:
+            monthStringKey = R.string.nov;
+            break;
+        case 11:
+            monthStringKey = R.string.dec;
+            break;
+        default:
+            return "";
         }
         return aTalkApp.getResString(monthStringKey);
     }
@@ -464,8 +460,7 @@ public class GuiUtils
      * @param timeStrBuf the <code>StringBuffer</code> to which the formatted
      * minutes string is to be appended
      */
-    private static void formatTime(int time, StringBuffer timeStrBuf)
-    {
+    private static void formatTime(int time, StringBuffer timeStrBuf) {
         String timeString = Integer.toString(time);
 
         if (timeString.length() < 2)
@@ -477,10 +472,10 @@ public class GuiUtils
      * Formats the given long to X hour, Y min, Z sec.
      *
      * @param millis the time in milliseconds to format
+     *
      * @return the formatted seconds
      */
-    public static String formatSeconds(long millis)
-    {
+    public static String formatSeconds(long millis) {
         long[] values = new long[4];
         values[0] = millis / MILLIS_PER_DAY;
         values[1] = (millis / MILLIS_PER_HOUR) % 24;
@@ -513,11 +508,11 @@ public class GuiUtils
      * filename.
      *
      * @param string the <code>String</code> which is to have its characters escaped
+     *
      * @return a <code>String</code> derived from the specified <code>id</code> by
      * escaping characters
      */
-    public static String escapeFileNameSpecialCharacters(String string)
-    {
+    public static String escapeFileNameSpecialCharacters(String string) {
         String resultId = string;
 
         for (int j = 0; j < ESCAPE_SEQUENCES.length; j++) {
@@ -530,10 +525,10 @@ public class GuiUtils
      * Escapes special HTML characters such as &lt;, &gt;, &amp; and &quot; in the specified message.
      *
      * @param message the message to be processed
+     *
      * @return the processed message with escaped special HTML characters
      */
-    public static String escapeHTMLChars(String message)
-    {
+    public static String escapeHTMLChars(String message) {
         return message
                 .replace("&", "&amp;")
                 .replace("<", "&lt;")

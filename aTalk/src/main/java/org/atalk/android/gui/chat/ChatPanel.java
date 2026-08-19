@@ -6,6 +6,7 @@
 package org.atalk.android.gui.chat;
 
 import android.content.Intent;
+import android.text.Html;
 import android.text.TextUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -885,8 +886,8 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
                 String err = "Translation error: " + e.getMessage();
                 if (e instanceof BadTranslatorResponseException) {
                     String host = ((BadTranslatorResponseException) e).getHost();
-                    int code = ((BadTranslatorResponseException) e).getCode();
-                    err = "Translation error: (" + code + ") " + host;
+                    // int code = ((BadTranslatorResponseException) e).getCode();
+                    err = Html.fromHtml(host, Html.FROM_HTML_MODE_LEGACY).toString();
                 }
                 aTalkApp.showToastMessage(err);
             }

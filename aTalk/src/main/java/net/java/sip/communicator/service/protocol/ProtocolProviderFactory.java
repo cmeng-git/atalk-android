@@ -5,16 +5,6 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
-import net.java.sip.communicator.util.ServiceUtils;
-
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.service.configuration.ConfigurationService;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
-
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -22,6 +12,17 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+
+import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
+import net.java.sip.communicator.util.ServiceUtils;
+
+import org.atalk.impl.timberlog.TimberLog;
+import org.atalk.service.configuration.ConfigurationService;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 import timber.log.Timber;
 
@@ -38,8 +39,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  * @author MilanKral
  */
-public abstract class ProtocolProviderFactory
-{
+public abstract class ProtocolProviderFactory {
     /**
      * The name of a property which represents a password.
      */
@@ -619,8 +619,7 @@ public abstract class ProtocolProviderFactory
      * @param bundleContext the bundle context reference of the service
      * @param protocolName the name of the protocol
      */
-    protected ProtocolProviderFactory(BundleContext bundleContext, String protocolName)
-    {
+    protected ProtocolProviderFactory(BundleContext bundleContext, String protocolName) {
         this.bundleContext = bundleContext;
         this.protocolName = protocolName;
         configurationService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
@@ -631,8 +630,7 @@ public abstract class ProtocolProviderFactory
      *
      * @return the {@code BundleContext} containing (or to contain) the service registration of this factory
      */
-    public BundleContext getBundleContext()
-    {
+    public BundleContext getBundleContext() {
         return bundleContext;
     }
 
@@ -645,7 +643,9 @@ public abstract class ProtocolProviderFactory
      *
      * @param userID the user identifier uniquely representing the newly created account within the protocol namespace.
      * @param accountProperties a set of protocol (or implementation) specific properties defining the new account.
+     *
      * @return the AccountID of the newly created account.
+     *
      * @throws java.lang.IllegalArgumentException if userID does not correspond to an identifier in the context of the
      * underlying protocol or if accountProperties does not contain a complete set of account installation properties.
      * @throws java.lang.IllegalStateException if the account has already been installed.
@@ -661,6 +661,7 @@ public abstract class ProtocolProviderFactory
      *
      * @param protocolProvider the protocol provider service corresponding to the modified account.
      * @param accountProperties a set of protocol (or implementation) specific properties defining the new account.
+     *
      * @throws java.lang.IllegalArgumentException if userID does not correspond to an identifier in the context of the
      * underlying protocol or if accountProperties does not contain a complete set of account installation properties.
      * @throws java.lang.NullPointerException if any of the arguments is null.
@@ -675,8 +676,7 @@ public abstract class ProtocolProviderFactory
      * @return a copy of the list containing the <code>AccountID</code>s of all accounts currently
      * registered in this protocol provider.
      */
-    public ArrayList<AccountID> getRegisteredAccounts()
-    {
+    public ArrayList<AccountID> getRegisteredAccounts() {
         synchronized (registeredAccounts) {
             return new ArrayList<>(registeredAccounts.keySet());
         }
@@ -687,11 +687,11 @@ public abstract class ProtocolProviderFactory
      * accountID or null if the accountID is unknown.
      *
      * @param accountID the accountID of the protocol provider we'd like to get
+     *
      * @return a ServiceReference object to the protocol provider with the specified account id and
      * null if the account id is unknown to the provider factory.
      */
-    public ServiceReference<ProtocolProviderService> getProviderForAccount(AccountID accountID)
-    {
+    public ServiceReference<ProtocolProviderService> getProviderForAccount(AccountID accountID) {
         ServiceRegistration<ProtocolProviderService> registration;
         synchronized (registeredAccounts) {
             registration = registeredAccounts.get(accountID);
@@ -700,7 +700,8 @@ public abstract class ProtocolProviderFactory
         try {
             if (registration != null)
                 return registration.getReference();
-        } catch (IllegalStateException ise) {
+        }
+        catch (IllegalStateException ise) {
             synchronized (registeredAccounts) {
                 registeredAccounts.remove(accountID);
             }
@@ -715,10 +716,10 @@ public abstract class ProtocolProviderFactory
      * account corresponding to the specified ID will not be loaded during future runs of the project.
      *
      * @param accountID the ID of the account to remove.
+     *
      * @return true if an account with the specified ID existed and was removed and false otherwise.
      */
-    public boolean uninstallAccount(AccountID accountID)
-    {
+    public boolean uninstallAccount(AccountID accountID) {
         // If the protocol provider service is registered, first unregister the service.
         ServiceReference<ProtocolProviderService> serRef = getProviderForAccount(accountID);
         if (serRef != null) {
@@ -726,7 +727,8 @@ public abstract class ProtocolProviderFactory
             ProtocolProviderService protocolProvider = bundleContext.getService(serRef);
             try {
                 protocolProvider.unregister();
-            } catch (OperationFailedException ex) {
+            }
+            catch (OperationFailedException ex) {
                 Timber.e("Failed to unregister protocol provider for account: %s caused by: %s",
                         accountID, ex.getMessage());
             }
@@ -758,8 +760,7 @@ public abstract class ProtocolProviderFactory
      *
      * @param accountID the AccountID corresponding to the account that we would like to store.
      */
-    protected void storeAccount(AccountID accountID)
-    {
+    protected void storeAccount(AccountID accountID) {
         this.storeAccount(accountID, true);
     }
 
@@ -778,14 +779,14 @@ public abstract class ProtocolProviderFactory
      * method installAccount and with <code>true</code> or the overridden method in method
      * modifyAccount.
      */
-    protected void storeAccount(AccountID accountID, boolean isModification)
-    {
+    protected void storeAccount(AccountID accountID, boolean isModification) {
         if (!isModification && getAccountManager().getStoredAccounts().contains(accountID)) {
             throw new IllegalStateException("An account for id " + accountID.getUserID() + " was already loaded!");
         }
         try {
             getAccountManager().storeAccount(this, accountID);
-        } catch (OperationFailedException ofex) {
+        }
+        catch (OperationFailedException ofex) {
             throw new UndeclaredThrowableException(ofex);
         }
     }
@@ -796,14 +797,15 @@ public abstract class ProtocolProviderFactory
      *
      * @param accountID the AccountID for the account whose password we're storing
      * @param password the password itself
+     *
      * @throws IllegalArgumentException if no account corresponding to {@code accountID} has been previously stored
      */
     public void storePassword(AccountID accountID, String password)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         try {
             storePassword(getBundleContext(), accountID, password);
-        } catch (OperationFailedException ofex) {
+        }
+        catch (OperationFailedException ofex) {
             throw new UndeclaredThrowableException(ofex);
         }
     }
@@ -818,12 +820,12 @@ public abstract class ProtocolProviderFactory
      * @param bundleContext a currently valid bundle context.
      * @param accountID the <code>AccountID</code> of the account whose password is to be stored
      * @param password the password to be stored
+     *
      * @throws IllegalArgumentException if no account corresponding to <code>accountID</code> has been previously stored.
      * @throws OperationFailedException if anything goes wrong while storing the specified <code>password</code>
      */
     protected void storePassword(BundleContext bundleContext, AccountID accountID, String password)
-            throws IllegalArgumentException, OperationFailedException
-    {
+            throws IllegalArgumentException, OperationFailedException {
         String accountUuid = accountID.getAccountUuid();
         if (accountUuid == null) {
             throw new IllegalArgumentException("No previous records found for account ID: "
@@ -846,14 +848,15 @@ public abstract class ProtocolProviderFactory
      *
      * @param accountID the AccountID for the account whose password we're storing
      * @param dnssecMode see DNSSEC_MODE definition
+     *
      * @throws IllegalArgumentException if no account corresponding to {@code accountID} has been previously stored
      */
     public void storeDnssecMode(AccountID accountID, String dnssecMode)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         try {
             storeDnssecMode(getBundleContext(), accountID, dnssecMode);
-        } catch (OperationFailedException ofex) {
+        }
+        catch (OperationFailedException ofex) {
             throw new UndeclaredThrowableException(ofex);
         }
     }
@@ -868,12 +871,12 @@ public abstract class ProtocolProviderFactory
      * @param bundleContext a currently valid bundle context.
      * @param accountID the <code>AccountID</code> of the account whose password is to be stored
      * @param dnssecMode the dnssecMode to be stored
+     *
      * @throws IllegalArgumentException if no account corresponding to <code>accountID</code> has been previously stored.
      * @throws OperationFailedException if anything goes wrong while storing the specified <code>password</code>
      */
     protected void storeDnssecMode(BundleContext bundleContext, AccountID accountID, String dnssecMode)
-            throws IllegalArgumentException, OperationFailedException
-    {
+            throws IllegalArgumentException, OperationFailedException {
         String accountUuid = accountID.getAccountUuid();
         if (accountUuid == null) {
             throw new IllegalArgumentException("No previous records found for account ID: "
@@ -891,10 +894,10 @@ public abstract class ProtocolProviderFactory
      * Returns the password last saved for the specified account.
      *
      * @param accountID the AccountID for the account whose password we're looking for
+     *
      * @return a String containing the password for the specified accountID
      */
-    public String loadPassword(AccountID accountID)
-    {
+    public String loadPassword(AccountID accountID) {
         return loadPassword(getBundleContext(), accountID);
     }
 
@@ -906,10 +909,10 @@ public abstract class ProtocolProviderFactory
      *
      * @param bundleContext a currently valid bundle context.
      * @param accountID the AccountID for the account whose password we're looking for..
+     *
      * @return a String containing the password for the specified accountID.
      */
-    protected String loadPassword(BundleContext bundleContext, AccountID accountID)
-    {
+    protected String loadPassword(BundleContext bundleContext, AccountID accountID) {
         CredentialsStorageService credentialsStorage
                 = ServiceUtils.getService(bundleContext, CredentialsStorageService.class);
         return credentialsStorage.loadPassword(accountID.getAccountUuid());
@@ -922,10 +925,10 @@ public abstract class ProtocolProviderFactory
      * installed until removed through the uninstallAccount method.
      *
      * @param accountProperties a set of protocol (or implementation) specific properties defining the new account.
+     *
      * @return the AccountID of the newly loaded account
      */
-    public AccountID loadAccount(Map<String, String> accountProperties)
-    {
+    public AccountID loadAccount(Map<String, String> accountProperties) {
         AccountID accountID = createAccount(accountProperties);
         loadAccount(accountID);
         return accountID;
@@ -937,11 +940,11 @@ public abstract class ProtocolProviderFactory
      * installed until removed through the uninstallAccount method.
      *
      * @param accountID the account identifier
+     *
      * @return <code>true</code> if the account with the given <code>accountID</code> is successfully
      * loaded, otherwise returns <code>false</code>
      */
-    public boolean loadAccount(AccountID accountID)
-    {
+    public boolean loadAccount(AccountID accountID) {
         // Need to obtain the original user id property, instead of calling accountID.getUserID(),
         // because this method could return a modified version of the user id property.
         String userID = accountID.getAccountPropertyString(ProtocolProviderFactory.USER_ID);
@@ -972,10 +975,10 @@ public abstract class ProtocolProviderFactory
      * protocol provider, but keeps the account in contrast to the uninstallAccount method.
      *
      * @param accountID the account identifier
+     *
      * @return true if an account with the specified ID existed and was unloaded and false otherwise.
      */
-    public boolean unloadAccount(AccountID accountID)
-    {
+    public boolean unloadAccount(AccountID accountID) {
         // Unregister the protocol provider.
         ServiceReference<ProtocolProviderService> serRef = getProviderForAccount(accountID);
         if (serRef == null) {
@@ -985,7 +988,8 @@ public abstract class ProtocolProviderFactory
         ProtocolProviderService protocolProvider = bundleContext.getService(serRef);
         try {
             protocolProvider.unregister();
-        } catch (OperationFailedException ex) {
+        }
+        catch (OperationFailedException ex) {
             Timber.e("Failed to unregister protocol provider for account: %s caused by: %s",
                     accountID, ex.getMessage());
         }
@@ -1001,7 +1005,8 @@ public abstract class ProtocolProviderFactory
         // Kill the service. // Catch based on Field Failure
         try {
             registration.unregister();
-        } catch (IllegalStateException ex) {
+        }
+        catch (IllegalStateException ex) {
             return false;
         }
         return true;
@@ -1011,10 +1016,10 @@ public abstract class ProtocolProviderFactory
      * Initializes and creates an account corresponding to the specified accountProperties.
      *
      * @param accountProperties a set of protocol (or implementation) specific properties defining the new account.
+     *
      * @return the AccountID of the newly created account
      */
-    public AccountID createAccount(Map<String, String> accountProperties)
-    {
+    public AccountID createAccount(Map<String, String> accountProperties) {
         BundleContext bundleContext = getBundleContext();
         if (bundleContext == null)
             throw new NullPointerException("The specified BundleContext was null");
@@ -1044,6 +1049,7 @@ public abstract class ProtocolProviderFactory
      *
      * @param userID the user ID of the new instance
      * @param accountProperties the set of properties to be represented by the new instance
+     *
      * @return a new {@code AccountID} instance with the specified user ID representing the
      * given set of account properties
      */
@@ -1057,8 +1063,7 @@ public abstract class ProtocolProviderFactory
      * {@code ProtocolProviderService}s with and to be placed in the properties of the
      * accounts created by this factory
      */
-    public String getProtocolName()
-    {
+    public String getProtocolName() {
         return protocolName;
     }
 
@@ -1072,6 +1077,7 @@ public abstract class ProtocolProviderFactory
      *
      * @param userID the user ID to initialize the new instance with
      * @param accountID the {@code AccountID} to be represented by the new instance
+     *
      * @return a new {@code ProtocolProviderService} instance with the specific user ID
      * representing the specified {@code AccountID}
      */
@@ -1082,10 +1088,10 @@ public abstract class ProtocolProviderFactory
      * stored inside the configuration service.
      *
      * @param accountID the AccountID of the account to remove.
+     *
      * @return true if an account has been removed and false otherwise.
      */
-    protected boolean removeStoredAccount(AccountID accountID)
-    {
+    protected boolean removeStoredAccount(AccountID accountID) {
         return getAccountManager().removeStoredAccount(this, accountID);
     }
 
@@ -1095,11 +1101,11 @@ public abstract class ProtocolProviderFactory
      * @param bundleContext a currently valid bundle context.
      * @param accountID the AccountID of the account whose properties we're looking for.
      * @param sourcePackageName a String containing the package name of the concrete factory class that extends us.
+     *
      * @return a String indicating the ConfigurationService property name prefix under which all
      * account properties are stored or null if no account corresponding to the specified id was found.
      */
-    public static String findAccountPrefix(BundleContext bundleContext, AccountID accountID, String sourcePackageName)
-    {
+    public static String findAccountPrefix(BundleContext bundleContext, AccountID accountID, String sourcePackageName) {
         ServiceReference<ConfigurationService> confReference = bundleContext.getServiceReference(ConfigurationService.class);
         ConfigurationService configurationService = bundleContext.getService(confReference);
 
@@ -1127,8 +1133,7 @@ public abstract class ProtocolProviderFactory
      *
      * @return a String containing the package name of the concrete factory class that extends us.
      */
-    private String getFactoryImplPackageName()
-    {
+    private String getFactoryImplPackageName() {
         String className = getClass().getName();
         return className.substring(0, className.lastIndexOf('.'));
     }
@@ -1136,8 +1141,7 @@ public abstract class ProtocolProviderFactory
     /**
      * Prepares the factory for bundle shutdown.
      */
-    public void stop()
-    {
+    public void stop() {
         Timber.log(TimberLog.FINER, "Preparing to stop all protocol providers of: %s", this);
         synchronized (registeredAccounts) {
             for (ServiceRegistration<ProtocolProviderService> reg : registeredAccounts.values()) {
@@ -1155,8 +1159,7 @@ public abstract class ProtocolProviderFactory
      * @param registeredAccount the {@code ServiceRegistration} of the {@code ProtocolProviderService}
      * representing an account registered with this factory
      */
-    protected void stop(ServiceRegistration<ProtocolProviderService> registeredAccount)
-    {
+    protected void stop(ServiceRegistration<ProtocolProviderService> registeredAccount) {
         ProtocolProviderService protocolProviderService = getBundleContext().getService(registeredAccount.getReference());
         protocolProviderService.shutdown();
     }
@@ -1166,8 +1169,7 @@ public abstract class ProtocolProviderFactory
      *
      * @return <code>AccountManager</code> of the protocol
      */
-    public AccountManager getAccountManager()
-    {
+    public AccountManager getAccountManager() {
         BundleContext bundleContext = getBundleContext();
         ServiceReference<AccountManager> serviceReference = bundleContext.getServiceReference(AccountManager.class);
 
@@ -1179,16 +1181,17 @@ public abstract class ProtocolProviderFactory
      *
      * @param bundleContext the OSGI bundle context that will be used.
      * @param protocolName the protocol name.
+     *
      * @return Registered <code>ProtocolProviderFactory</code> for given protocol name or <code>null</code>
      * if no provider was found.
      */
-    public static ProtocolProviderFactory getProtocolProviderFactory(BundleContext bundleContext, String protocolName)
-    {
+    public static ProtocolProviderFactory getProtocolProviderFactory(BundleContext bundleContext, String protocolName) {
         ServiceReference<?>[] serRefs;
         String osgiFilter = "(PROTOCOL_NAME=" + protocolName + ")";
         try {
             serRefs = bundleContext.getServiceReferences(ProtocolProviderFactory.class.getName(), osgiFilter);
-        } catch (InvalidSyntaxException ex) {
+        }
+        catch (InvalidSyntaxException ex) {
             Timber.e(ex);
             return null;
         }

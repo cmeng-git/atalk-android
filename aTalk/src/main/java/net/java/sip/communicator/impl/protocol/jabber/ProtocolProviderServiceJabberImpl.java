@@ -2419,7 +2419,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                         ProtocolProviderFactory.IS_VIDEO_CALLING_DISABLED_FOR_ACCOUNT, aTalk.disableMediaServiceOnFault);
 
                 if (!isVideoCallingDisabledForAccount) {
-                    // initialize video telephony OperationSet
+                    // initialize videoTelephony OperationSet
                     addSupportedOperationSet(OperationSetVideoTelephony.class,
                             new OperationSetVideoTelephonyJabberImpl(basicTelephony));
                 }

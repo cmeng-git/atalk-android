@@ -103,6 +103,7 @@ import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 import org.atalk.util.swing.VideoContainer;
+
 import org.json.JSONObject;
 
 import timber.log.Timber;
@@ -389,12 +390,12 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
             throw new IllegalArgumentException("device");
 
         switch (mediaType) {
-            case AUDIO:
-                return new AudioMediaStreamImpl(connector, device, srtpControl);
-            case VIDEO:
-                return new VideoMediaStreamImpl(connector, device, srtpControl);
-            default:
-                return null;
+        case AUDIO:
+            return new AudioMediaStreamImpl(connector, device, srtpControl);
+        case VIDEO:
+            return new VideoMediaStreamImpl(connector, device, srtpControl);
+        default:
+            return null;
         }
     }
 
@@ -416,16 +417,16 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      */
     public MediaDevice createMixer(MediaDevice device) {
         switch (device.getMediaType()) {
-            case AUDIO:
-                return new AudioMixerMediaDevice((AudioMediaDeviceImpl) device);
-            case VIDEO:
-                return new VideoTranslatorMediaDevice((MediaDeviceImpl) device);
-            default:
-                /*
-                 * TODO If we do not support mixing, should we return null or rather a MediaDevice
-                 * with INACTIVE MediaDirection?
-                 */
-                return null;
+        case AUDIO:
+            return new AudioMixerMediaDevice((AudioMediaDeviceImpl) device);
+        case VIDEO:
+            return new VideoTranslatorMediaDevice((MediaDeviceImpl) device);
+        default:
+            /*
+             * TODO If we do not support mixing, should we return null or rather a MediaDevice
+             * with INACTIVE MediaDirection?
+             */
+            return null;
         }
     }
 
@@ -444,15 +445,15 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     public MediaDevice getDefaultDevice(MediaType mediaType, @NonNull MediaUseCase useCase) {
         CaptureDeviceInfo captureDeviceInfo;
         switch (mediaType) {
-            case AUDIO:
-                captureDeviceInfo = getDeviceConfiguration().getAudioCaptureDevice();
-                break;
-            case VIDEO:
-                captureDeviceInfo = getDeviceConfiguration().getVideoCaptureDevice(useCase);
-                break;
-            default:
-                captureDeviceInfo = null;
-                break;
+        case AUDIO:
+            captureDeviceInfo = getDeviceConfiguration().getAudioCaptureDevice();
+            break;
+        case VIDEO:
+            captureDeviceInfo = getDeviceConfiguration().getVideoCaptureDevice(useCase);
+            break;
+        default:
+            captureDeviceInfo = null;
+            break;
         }
 
         MediaDevice defaultDevice = null;
@@ -467,18 +468,18 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
         }
         if (defaultDevice == null) {
             switch (mediaType) {
-                case AUDIO:
-                    defaultDevice = getNonSendAudioDevice();
-                    break;
-                case VIDEO:
-                    defaultDevice = getNonSendVideoDevice();
-                    break;
-                default:
-                    /*
-                     * There is no MediaDevice with direction which does not allow sending and
-                     * mediaType other than AUDIO and VIDEO.
-                     */
-                    break;
+            case AUDIO:
+                defaultDevice = getNonSendAudioDevice();
+                break;
+            case VIDEO:
+                defaultDevice = getNonSendVideoDevice();
+                break;
+            default:
+                /*
+                 * There is no MediaDevice with direction which does not allow sending and
+                 * mediaType other than AUDIO and VIDEO.
+                 */
+                break;
             }
         }
         return defaultDevice;
@@ -522,19 +523,19 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
         }
 
         switch (mediaType) {
-            case AUDIO:
-                cdis = getDeviceConfiguration().getAvailableAudioCaptureDevices();
-                privateDevices = audioDevices;
-                break;
-            case VIDEO:
-                cdis = getDeviceConfiguration().getAvailableVideoCaptureDevices(useCase);
-                privateDevices = videoDevices;
-                break;
-            default:
-                /*
-                 * MediaService does not understand MediaTypes other than AUDIO and VIDEO.
-                 */
-                return EMPTY_DEVICES;
+        case AUDIO:
+            cdis = getDeviceConfiguration().getAvailableAudioCaptureDevices();
+            privateDevices = audioDevices;
+            break;
+        case VIDEO:
+            cdis = getDeviceConfiguration().getAvailableVideoCaptureDevices(useCase);
+            privateDevices = videoDevices;
+            break;
+        default:
+            /*
+             * MediaService does not understand MediaTypes other than AUDIO and VIDEO.
+             */
+            return EMPTY_DEVICES;
         }
 
         List<MediaDevice> publicDevices;
@@ -567,15 +568,15 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
                     MediaDeviceImpl device;
 
                     switch (mediaType) {
-                        case AUDIO:
-                            device = new AudioMediaDeviceImpl(cdi);
-                            break;
-                        case VIDEO:
-                            device = new MediaDeviceImpl(cdi, mediaType);
-                            break;
-                        default:
-                            device = null;
-                            break;
+                    case AUDIO:
+                        device = new AudioMediaDeviceImpl(cdi);
+                        break;
+                    case VIDEO:
+                        device = new MediaDeviceImpl(cdi, mediaType);
+                        break;
+                    default:
+                        device = null;
+                        break;
                     }
                     if (device != null)
                         privateDevices.add(device);
@@ -591,19 +592,19 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
         if (publicDevices.isEmpty()) {
             MediaDevice nonSendDevice;
             switch (mediaType) {
-                case AUDIO:
-                    nonSendDevice = getNonSendAudioDevice();
-                    break;
-                case VIDEO:
-                    nonSendDevice = getNonSendVideoDevice();
-                    break;
-                default:
-                    /*
-                     * There is no MediaDevice with direction not allowing sending and mediaType
-                     * other than AUDIO and VIDEO.
-                     */
-                    nonSendDevice = null;
-                    break;
+            case AUDIO:
+                nonSendDevice = getNonSendAudioDevice();
+                break;
+            case VIDEO:
+                nonSendDevice = getNonSendVideoDevice();
+                break;
+            default:
+                /*
+                 * There is no MediaDevice with direction not allowing sending and mediaType
+                 * other than AUDIO and VIDEO.
+                 */
+                nonSendDevice = null;
+                break;
             }
             if (nonSendDevice != null)
                 publicDevices.add(nonSendDevice);
@@ -667,14 +668,14 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      */
     public SrtpControl createSrtpControl(SrtpControlType srtpControlType, final byte[] myZid) {
         switch (srtpControlType) {
-            case DTLS_SRTP:
-                return new DtlsControlImpl();
-            case SDES:
-                return new SDesControlImpl();
-            case ZRTP:
-                return new ZrtpControlImpl(myZid);
-            default:
-                return null;
+        case DTLS_SRTP:
+            return new DtlsControlImpl();
+        case SDES:
+            return new SDesControlImpl();
+        case ZRTP:
+            return new ZrtpControlImpl(myZid);
+        default:
+            return null;
         }
     }
 
@@ -705,7 +706,8 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
             try {
                 inputVolumeControl
                         = new HardwareVolumeControl(this, VolumeControl.CAPTURE_VOLUME_LEVEL_PROPERTY_NAME);
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 if (t instanceof ThreadDeath)
                     throw (ThreadDeath) t;
                 else if (t instanceof InterruptedException)
@@ -817,7 +819,8 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
 
                     try {
                         dynamicPayloadTypePreference = Byte.parseByte(propertyName.substring(prefix.length() + 1));
-                    } catch (IndexOutOfBoundsException | NumberFormatException ioobe) {
+                    }
+                    catch (IndexOutOfBoundsException | NumberFormatException ioobe) {
                         exception = ioobe;
                     }
                     if (exception != null) {
@@ -848,7 +851,8 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
                             if (mediaFormat != null) {
                                 dynamicPayloadTypePreferences.put(mediaFormat, dynamicPayloadTypePreference);
                             }
-                        } catch (Throwable jsone) {
+                        }
+                        catch (Throwable jsone) {
                             Timber.w(jsone, "Ignoring dynamic payload type preference which could not be parsed: %s", source);
                         }
                     }
@@ -912,7 +916,8 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
                 });
                 player.configure();
             }
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else
@@ -948,21 +953,23 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
 
                         // do not flip desktop
                         if (DeviceSystem.LOCATOR_PROTOCOL_IMGSTREAMING.equals(locator.getProtocol()))
-                            codecs = new Codec[]{scaler};
+                            codecs = new Codec[] {scaler};
                         else
-                            codecs = new Codec[]{new HFlip(), scaler};
+                            codecs = new Codec[] {new HFlip(), scaler};
 
                         trackControl.setCodecChain(codecs);
                         break;
                     }
-                } catch (UnsupportedPlugInException upiex) {
+                }
+                catch (UnsupportedPlugInException upiex) {
                     Timber.w(upiex, "Failed to add SwScale/VideoFlipEffect to codec chain");
                 }
 
             // Turn the Processor into a Player.
             try {
                 player.setContentDescriptor(null);
-            } catch (NotConfiguredError nce) {
+            }
+            catch (NotConfiguredError nce) {
                 Timber.e(nce, "Failed to set ContentDescriptor of Processor");
             }
             player.realize();
@@ -1062,7 +1069,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
 
         size = new Dimension(width, height);
 
-        Format[] formats = new Format[]{
+        Format[] formats = new Format[] {
                 new AVFrameFormat(
                         size,
                         Format.NOT_SPECIFIED,
@@ -1348,14 +1355,14 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
         String propertyName;
 
         switch (mediaType) {
-            case AUDIO:
-                propertyName = DISABLE_AUDIO_SUPPORT_PNAME;
-                break;
-            case VIDEO:
-                propertyName = DISABLE_VIDEO_SUPPORT_PNAME;
-                break;
-            default:
-                return true;
+        case AUDIO:
+            propertyName = DISABLE_AUDIO_SUPPORT_PNAME;
+            break;
+        case VIDEO:
+            propertyName = DISABLE_VIDEO_SUPPORT_PNAME;
+            break;
+        default:
+            return true;
         }
         ConfigurationService cfg = LibJitsi.getConfigurationService();
         return ((cfg == null) || !cfg.getBoolean(propertyName, false)) && !Boolean.getBoolean(propertyName);

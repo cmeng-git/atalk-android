@@ -1,5 +1,35 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        6.5.0 (605000)
+Release Date:   08/20/2026
+Author:         cmeng
+- Add per-app language preferences support for android >= API-33 (TIRAMISU).
+- Android API-37 broadcast ACTION_BOOT_COMPLETED on aTalk start-up, leading to aTalk SystemEventReceiver() to exit app,
+  and restart. This causes aTalk hangs in endless loop.
+- Update libretranslate-java to work with LibreTranslate v1.9.6.
+  Home server installed with LibreTranslate for verfication.
+- aTalk default 'https://translate.fedilab.app/translate' has been denied access.
+  User can purchase an API-Key from 'https://libretranslate.com/translate' OR
+  Install and run the software yourself for free on your own local machine or private server:
+  see https://docs.libretranslate.com/guides/installation/
+- When adding a new contact, pre-approve subscription for it.
+  See https://github.com/cmeng-git/atalk-android/pull/257.
+- Incorrect QNAME specified for FallbackIndicationElement.class.
+- Fix RetractedElement toXML() do not close the element properly.
+- Replace OmemoManager #contactSupportsOmemo() with #getDevicesOf() in local DB;
+  Proceed to #requestDeviceListUpdateFor() if contact identity is not found.
+  This avoids online check, and fetch missing omemoDevice if not found in identities table.
+  Found ejabberd 26.04 server does not send pubsub#event notifications for all the sr_user omemo devices.
+- Execute all omemo message encryption in background task to avoid ANR.
+- Android device with API-29 is not compatible with aTalk. InetAddress.getByName(hostname) returns null i.e. DNS not supported.
+- Remove XMPP-Bosh patch for reconnection failure on network changed - implemented in smack 4.5.0-rc1.
+- Included 'XMPP Messaging Server Setup' document in the aTalk repository/resources for home server setup reference.
+
+*** Observation ***
+- aTalk cannot run on android AVD API-29 due to null returns; DNS not working?
+  * InetAddress addr = InetAddress.getByName(hostname);
+
+=========================================================================
 Version:        6.4.0 (604000)
 Release Date:   07/06/2026
 Author:         cmeng
@@ -251,7 +281,7 @@ Version:        5.0.0 (500000)
 Release Date:   12/27/2025
 Author:         cmeng
 - Remove feature support for XEP-0364: Current Off-the-Record Messaging Usage partial implementation
-- Must set YT parameter 'origin' to other than YT site i.e.'https://www.youtube.com'; else embed video player has error
+- Must set YT parameter 'ORIGIN' to other than YT site i.e.'https://www.youtube.com'; else embed video player has error
 - Incorrect extraction of youtube video Id e.g. https://youtu.be/qwlnX6YJrt8?si=sgdxTEb7kccLplx-
 - Support YT playback of playlist i.e. url contains 'list=' or playlist without 'PL' prefix
 - Display new changes since version installed on device to user in apk update dialog prompt.
@@ -278,7 +308,8 @@ Author:         cmeng
   OSGiService makes direct call to smack SecurityUtil.ensureProviderAtFirstPosition(BouncyCastleProvider.class);
   Smack 4.5.0 exclude openpgp in build, causing FileNoFound during smack init. hence 'BC' order is not set.
   See Smack 4.5.0-beta9: JingleFile function call HashManager.getMessageDigest(algorithm) throws NoSuchAlgorithmException: SHA3-256
-  https://discourse.igniterealtime.org/t/smack-4-5-0-beta9-jinglefile-function-call-hashmanager-getmessagedigest-algorithm-throws-nosuchalgorithmexception-sha3-256/96162- Remove XMPP-Bosh patch for reconnection failure on network changed - implemented in smack 4.5.0.
+  https://discourse.igniterealtime.org/t/smack-4-5-0-beta9-jinglefile-function-call-hashmanager-getmessagedigest-algorithm-throws-nosuchalgorithmexception-sha3-256/96162
+- Remove XMPP-Bosh patch for reconnection failure on network changed - implemented in smack 4.5.0.
 - Change aTalk smack classes to extends XmlElement in place of ExtensionElement where possible.
 - Need to add configuration {all*.exclude group: 'xpp3', module: 'xpp3' and 'xpp3_min'} to resolve duplicate class during build.
 - Do not crash the aTalk app when creating account over insecure connection; show error message instead.

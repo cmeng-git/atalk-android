@@ -15,8 +15,7 @@ package org.atalk.service.audionotifier;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public interface AudioNotifierService
-{
+public interface AudioNotifierService {
     /**
      * Checks whether the playback and notification configuration share the same device.
      *
@@ -28,6 +27,7 @@ public interface AudioNotifierService
      * Creates an SCAudioClip and returns it. By default using notification device.
      *
      * @param uri the uri, which will be the source of the audio
+     *
      * @return the created SCAudioClip, that could be played.
      */
     SCAudioClip createAudio(String uri);
@@ -37,6 +37,7 @@ public interface AudioNotifierService
      *
      * @param uri the uri, which will be the source of the audio
      * @param playback use or not the playback device.
+     *
      * @return the created SCAudioClip, that could be played.
      */
     SCAudioClip createAudio(String uri, boolean playback);

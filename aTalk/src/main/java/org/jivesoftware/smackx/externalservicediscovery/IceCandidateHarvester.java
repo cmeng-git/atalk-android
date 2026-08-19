@@ -34,9 +34,9 @@ import org.jivesoftware.smack.util.StringUtils;
 /**
  * An implementation that extracts the services found in external service discovery
  * and convert all services to a list of StunCandidateHarvester's access via IceUdpTransportManager.
+ * @see <a href="https://xmpp.org/extensions/xep-0215.html">XEP-0215: External Service Discovery</a>
  *
  * @author Eng Chong Meng
- * @see <a href="https://xmpp.org/extensions/xep-0215.html">XEP-0215: External Service Discovery</a>
  */
 public class IceCandidateHarvester {
     public static List<StunCandidateHarvester> getExtServiceHarvester(XMPPConnection connection, String protocol) {

@@ -179,43 +179,43 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_single_fix:
-                mLocationFetchMode = GeoConstants.SINGLE_FIX;
-                if (isFollowMe) {
-                    updateSendButton(true);
-                    stopLocationUpdates();
-                }
+        case R.id.btn_single_fix:
+            mLocationFetchMode = GeoConstants.SINGLE_FIX;
+            if (isFollowMe) {
+                updateSendButton(true);
+                stopLocationUpdates();
+            }
+            mShowMap = true;
+            GeoLocationRequest geoLocationRequest = new GeoLocationRequest.GeoLocationRequestBuilder()
+                    .setLocationFetchMode(mLocationFetchMode)
+                    .setAddressRequest(true)
+                    .setLocationUpdateMinTime(0L)
+                    .setLocationUpdateMinDistance(0.0f)
+                    .setFallBackToLastLocationTime(3000)
+                    .build();
+
+            requestLocationUpdates(geoLocationRequest);
+            break;
+
+        case R.id.btn_follow_me:
+            mLocationFetchMode = (mDemo) ? GeoConstants.ZERO_FIX : GeoConstants.FOLLOW_ME_FIX;
+            if (isFollowMe) {
+                updateSendButton(true);
+                stopLocationUpdates();
+            }
+            else {
+                updateSendButton(false);
                 mShowMap = true;
-                GeoLocationRequest geoLocationRequest = new GeoLocationRequest.GeoLocationRequestBuilder()
+                geoLocationRequest = new GeoLocationRequest.GeoLocationRequestBuilder()
                         .setLocationFetchMode(mLocationFetchMode)
                         .setAddressRequest(true)
-                        .setLocationUpdateMinTime(0L)
-                        .setLocationUpdateMinDistance(0.0f)
-                        .setFallBackToLastLocationTime(3000)
+                        .setLocationUpdateMinTime(sendTimeInterval * 1000L)
+                        .setLocationUpdateMinDistance(gpsMinDistance)
+                        .setFallBackToLastLocationTime(sendTimeInterval * 500L)
                         .build();
 
                 requestLocationUpdates(geoLocationRequest);
-                break;
-
-            case R.id.btn_follow_me:
-                mLocationFetchMode = (mDemo) ? GeoConstants.ZERO_FIX : GeoConstants.FOLLOW_ME_FIX;
-                if (isFollowMe) {
-                    updateSendButton(true);
-                    stopLocationUpdates();
-                }
-                else {
-                    updateSendButton(false);
-                    mShowMap = true;
-                    geoLocationRequest = new GeoLocationRequest.GeoLocationRequestBuilder()
-                            .setLocationFetchMode(mLocationFetchMode)
-                            .setAddressRequest(true)
-                            .setLocationUpdateMinTime(sendTimeInterval * 1000L)
-                            .setLocationUpdateMinDistance(gpsMinDistance)
-                            .setFallBackToLastLocationTime(sendTimeInterval * 500L)
-                            .build();
-
-                    requestLocationUpdates(geoLocationRequest);
-                }
+            }
         }
     }
 

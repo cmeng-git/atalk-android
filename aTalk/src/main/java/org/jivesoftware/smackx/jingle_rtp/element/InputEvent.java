@@ -21,7 +21,7 @@ import javax.xml.namespace.QName;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
- * Represents the content <code>inputevt</code> element that may be find in <code>content</code> part of a Jingle media negotiation.
+ * Represents the content <code>inputevt</code> element that may be found in <code>content</code> part of a Jingle media negotiation.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng

@@ -30,6 +30,7 @@ import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.resources.ResourceManagementService;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -167,7 +168,8 @@ public class NeomediaActivator implements BundleActivator {
                     deviceConfigurationPropertyChangeListener = null;
                 }
             }
-        } finally {
+        }
+        finally {
             configurationService = null;
             fileAccessService = null;
             mediaServiceImpl = null;

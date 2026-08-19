@@ -19,7 +19,12 @@ package org.atalk.android.gui.util;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Build;
 import android.text.TextUtils;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 
 import java.util.Locale;
 
@@ -93,6 +98,9 @@ public class LocaleHelper {
             if (idx != -1) {
                 // language is in the form: en_US
                 locale = new Locale(language.substring(0, idx), language.substring(idx + 1));
+//                locale = new Locale.Builder().setLanguage(language.substring(0, idx))
+//                        .setRegion(language.substring(idx + 1))
+//                        .build();
             }
             else {
                 locale = new Locale(language);
@@ -105,5 +113,32 @@ public class LocaleHelper {
 
         // Timber.d(new Exception(), "set locale: %s: %s", language, context);
         return context.createConfigurationContext(config);
+    }
+
+    /**
+     * Set the application's per-language preference.
+     * @param languageCode The BCP-47 tag of the language (e.g., "en", "es", "fr")
+     */
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    public static void setAppLanguage(String languageCode) {
+        // Create a locale list containing your selected language
+        LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(languageCode);
+
+        // Apply the locales to the framework
+        // This automatically saves the preference and updates the UI resources
+        AppCompatDelegate.setApplicationLocales(appLocale);
+    }
+
+    /**
+     * Get the currently active app language code.
+     */
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    public static String getAppLanguage() {
+        LocaleListCompat currentLocales = AppCompatDelegate.getApplicationLocales();
+        if (!currentLocales.isEmpty()) {
+            return currentLocales.get(0).getDisplayName();
+        }
+        // Falls back to system language if not explicitly set
+        return  Locale.getDefault().toLanguageTag();
     }
 }

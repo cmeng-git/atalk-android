@@ -122,7 +122,8 @@ public class PreviewStream extends CameraStreamBase {
             // For picture taking only
             // mPreviewRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, mSensorOrientation);
             mCameraDevice.createCaptureSession(Arrays.asList(previewSurface, mImageReader.getSurface()), mSessionStateCallBack, null);
-        } catch (CameraAccessException e) {
+        }
+        catch (CameraAccessException e) {
             Timber.e("Camera capture session create exception: %s", e.getMessage());
         }
     }
@@ -156,7 +157,8 @@ public class PreviewStream extends CameraStreamBase {
                 }
                 transferHandler.transferData(this);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Timber.e(e, "OnImage available exception: %s", e.getMessage());
         }
     };
@@ -199,7 +201,8 @@ public class PreviewStream extends CameraStreamBase {
             byte[] copy = AbstractCodec2.validateByteArraySize(buffer, outLen, false);
             try {
                 YUV420PlanarRotate(image, copy, w, h);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Timber.w("YUV420Planar Rotate exception: %s", e.getMessage());
                 buffer.setDiscard(true);
             }

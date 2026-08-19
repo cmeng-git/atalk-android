@@ -8,7 +8,6 @@ package org.atalk.android.gui.account.settings;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.Menu;
 
 import androidx.activity.OnBackPressedCallback;
@@ -35,6 +34,7 @@ import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.MediaType;
+
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -139,7 +139,7 @@ public class MediaEncodingActivity extends BaseActivity
     private void loadEncodings(Bundle savedInstanceState) {
         Intent intent = getIntent();
         if (savedInstanceState == null) {
-            mEncReg =  IntentCompat.getSerializableExtra(intent, EXTRA_KEY_ENC_REG, EncodingsRegistration.class);
+            mEncReg = IntentCompat.getSerializableExtra(intent, EXTRA_KEY_ENC_REG, EncodingsRegistration.class);
         }
         else {
             mEncReg = BundleCompat.getSerializable(savedInstanceState, STATE_ENC_REG, EncodingsRegistration.class);

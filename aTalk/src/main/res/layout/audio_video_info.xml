@@ -264,7 +264,7 @@
         android:text="xx" />
 
     <TextView
-        android:id="@+id/discarderPercentLabel"
+        android:id="@+id/discardedPercentLabel"
         style="@style/CallInfo.Header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -277,15 +277,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/decodedWithFecLabel"
-        android:layout_toEndOf="@id/discarderPercentLabel"
+        android:layout_toEndOf="@id/discardedPercentLabel"
         android:text="xx%" />
 
     <TextView
-        android:id="@+id/discarderTotalLabel"
+        android:id="@+id/discardedTotalLabel"
         style="@style/CallInfo.Header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/discarderPercentLabel"
+        android:layout_below="@id/discardedPercentLabel"
         android:text="@string/callinfo_discarded_total" />
 
     <TextView
@@ -293,7 +293,7 @@
         style="@style/CallInfo.ValueSingleLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/discarderTotalLabel"
+        android:layout_below="@id/discardedTotalLabel"
         android:text="xx (xx late, xx full, xx shrink, xx reset)" />
 
     <TextView

@@ -37,9 +37,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import org.atalk.android.R;
-
 import java.util.List;
+
+import org.atalk.android.R;
 
 /**
  * Custom ComboBox for Android
@@ -105,8 +105,8 @@ public class ComboBox extends LinearLayout {
      * @param column Which column from source to show.
      */
     public void setSuggestionSource(Cursor source, String column) {
-        String[] from = new String[]{column};
-        int[] to = new int[]{android.R.id.text1};
+        String[] from = new String[] {column};
+        int[] to = new int[] {android.R.id.text1};
         SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(getContext(),
                 R.layout.simple_spinner_dropdown_item, source, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 

@@ -214,13 +214,17 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
             Timber.d("Camera data stream format #2: %s=>%s", videoSize, mFormat);
             initPreviewOrientation(true);
             cameraManager.openCamera(mCameraId, mConfigStateCallback, mBackgroundHandler);
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
             Timber.e("openCamera: %s", e.getMessage());
-        } catch (CameraAccessException e) {
+        }
+        catch (CameraAccessException e) {
             Timber.e("openCamera: Cannot access the camera.");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             Timber.e("Camera2API is not supported on the device.");
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             // throw new RuntimeException("Interrupted while trying to lock camera opening.");
             Timber.e("Exception in start camera init: %s", e.getMessage());
         }
@@ -288,23 +292,23 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
         public void onError(@NonNull CameraDevice cameraDevice, int error) {
             String errMessage;
             switch (error) {
-                case ERROR_CAMERA_IN_USE:
-                    errMessage = "Camera in use";
-                    break;
-                case ERROR_MAX_CAMERAS_IN_USE:
-                    errMessage = "Maximum cameras in use";
-                    break;
-                case ERROR_CAMERA_DISABLED:
-                    errMessage = "Device policy";
-                    break;
-                case ERROR_CAMERA_DEVICE:
-                    errMessage = "Fatal (device)";
-                    break;
-                case ERROR_CAMERA_SERVICE:
-                    errMessage = "Fatal (service)";
-                    break;
-                default:
-                    errMessage = "UnKnown";
+            case ERROR_CAMERA_IN_USE:
+                errMessage = "Camera in use";
+                break;
+            case ERROR_MAX_CAMERAS_IN_USE:
+                errMessage = "Maximum cameras in use";
+                break;
+            case ERROR_CAMERA_DISABLED:
+                errMessage = "Device policy";
+                break;
+            case ERROR_CAMERA_DEVICE:
+                errMessage = "Fatal (device)";
+                break;
+            case ERROR_CAMERA_SERVICE:
+                errMessage = "Fatal (service)";
+                break;
+            default:
+                errMessage = "UnKnown";
             }
             Timber.e("Set camera preview failed: %s", errMessage);
             aTalkApp.showGenericError(R.string.video_format_not_supported, mPreviewSize, errMessage);
@@ -350,7 +354,8 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
             // Has sluggish video streaming performance, do not use
             // mCaptureSession.capture(mPreviewBuilder.build(), null, mBackgroundHandler);
             inTransition = false;
-        } catch (CameraAccessException e) {
+        }
+        catch (CameraAccessException e) {
             Timber.e("Update capture request exception: %s", e.getMessage());
         }
     }
@@ -429,9 +434,11 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
                     mImageReader.close();
                     mImageReader = null;
                 }
-            } catch (InterruptedException | CameraAccessException e) {
+            }
+            catch (InterruptedException | CameraAccessException e) {
                 throw new RuntimeException("Interrupted while trying to close camera.", e);
-            } finally {
+            }
+            finally {
                 mCameraOpenCloseLock.release();
             }
         }
@@ -458,7 +465,8 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
                 initPreviewOrientation(true);
                 updateCaptureRequest();
                 return;
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Timber.e("Close capture session exception: %s", e.getMessage());
             }
             reInitCamera();
@@ -475,7 +483,8 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
         if (videoFragment.isLocalVideoEnabled()) {
             try {
                 start();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 aTalkApp.showToastMessage(R.string.video_format_not_supported, mCameraId, e.getMessage());
             }
         }
@@ -499,7 +508,8 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
         if (isLocalVideoEnable) {
             try {
                 start();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 aTalkApp.showToastMessage(R.string.video_format_not_supported, cameraLocator, e.getMessage());
             }
         }
@@ -542,7 +552,8 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
                 backgroundThread.join();
                 backgroundThread = null;
                 mBackgroundHandler = null;
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 Timber.e(e, "Stop background thread exception: %s", e.getMessage());
             }
         }
