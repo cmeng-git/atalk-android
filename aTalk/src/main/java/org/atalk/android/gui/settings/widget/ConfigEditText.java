@@ -82,25 +82,26 @@ public class ConfigEditText extends EditTextPreference implements Preference.OnP
 
         for (int i = 0; i < attArray.getIndexCount(); i++) {
             int attribute = attArray.getIndex(i);
-            switch (attribute) {
-                case R.styleable.ConfigEditText_intMax:
-                    this.intMax = attArray.getInt(attribute, -1);
-                    break;
-                case R.styleable.ConfigEditText_intMin:
-                    this.intMin = attArray.getInt(attribute, -1);
-                    break;
-                case R.styleable.ConfigEditText_floatMax:
-                    this.floatMax = attArray.getFloat(attribute, -1);
-                    break;
-                case R.styleable.ConfigEditText_floatMin:
-                    this.floatMin = attArray.getFloat(attribute, -1);
-                    break;
-                case R.styleable.ConfigEditText_editable:
-                    this.editable = attArray.getBoolean(attribute, true);
-                    break;
-                case R.styleable.ConfigEditText_allowEmpty:
-                    this.allowEmpty = attArray.getBoolean(attribute, true);
-                    break;
+            if (attribute == R.styleable.ConfigEditText_intMax) {
+                this.intMax = attArray.getInt(attribute, -1);
+            }
+            else if (attribute == R.styleable.ConfigEditText_intMin) {
+                this.intMin = attArray.getInt(attribute, -1);
+            }
+            else if (attribute == R.styleable.ConfigEditText_floatMax) {
+                this.floatMax = attArray.getFloat(attribute, -1);
+            }
+            else if (attribute == R.styleable.ConfigEditText_floatMin) {
+                this.floatMin = attArray.getFloat(attribute, -1);
+            }
+            else if (attribute == R.styleable.ConfigEditText_editable) {
+                this.editable = attArray.getBoolean(attribute, true);
+            }
+            else if (attribute == R.styleable.ConfigEditText_allowEmpty) {
+                this.allowEmpty = attArray.getBoolean(attribute, true);
+            }
+            else {
+                throw new IllegalStateException("Unexpected value: " + attribute);
             }
         }
         // Register listener to perform checks before new value is accepted

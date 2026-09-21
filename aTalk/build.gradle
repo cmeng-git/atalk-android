@@ -35,25 +35,25 @@ repositories {
 configurations {
     fdroidImplementation
     playstoreImplementation
-
-    // Exclude the redundant variants from pulling into the project
-    all*.exclude group: 'xpp3', module: 'xpp3_min'
-    all*.exclude group: 'xpp3', module: 'xpp3'
-    all*.exclude group: 'org.codelibs', module: 'xpp3'
-
-    // Force Gradle to resolve all xpp3 requests to a single package
-//    resolutionStrategy {
-//        dependencySubstitution {
-//            substitute module('xpp3:xpp3') using module('org.codelibs:xpp3:1.1.4c.0')
-//            substitute module('xpp3:xpp3_min') using module('org.codelibs:xpp3:1.1.4c.0')
-//        }
-//    }
 }
 
 configurations.implementation {
     exclude group: "org.igniterealtime.smack", module: "smack-extensions"
     exclude group: "org.igniterealtime.smack", module: "smack-experimental"
     exclude group: "org.igniterealtime.smack", module: "smack-omemo"
+
+    // Exclude the redundant variants from pulling into the project
+    exclude group: 'xpp3', module: 'xpp3'
+    exclude group: 'xpp3', module: 'xpp3_min'
+    exclude group: 'org.codelibs', module: 'xpp3'
+
+    // Force Gradle to resolve all xpp3 requests to a single package
+    //    resolutionStrategy {
+    //        dependencySubstitution {
+    //            substitute module('xpp3:xpp3') using module('org.codelibs:xpp3:1.1.4c.0')
+    //            substitute module('xpp3:xpp3_min') using module('org.codelibs:xpp3:1.1.4c.0')
+    //        }
+    //    }
 }
 
 java {
@@ -70,8 +70,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 605000
-        versionName "6.5.0"
+        versionCode 605010
+        versionName "6.5.1"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -106,7 +106,7 @@ android {
     }
 
     androidResources {
-        generateLocaleConfig true
+        generateLocaleConfig = true
     }
 
     compileOptions {
@@ -214,7 +214,7 @@ android {
 }
 
 ext {
-    smackVersion = '4.5.0-rc1'
+    smackVersion = '4.5.0'
 
     // May need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
@@ -224,15 +224,8 @@ ext {
 dependencies {
     implementation project(':android-youtube-player:core')
 
-    // Fix Duplicate class
-    // implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
-
-    // Java compilation dependency: ndkBuild & jarRepackage (avoid class conflict)
-    // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
-    // implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    // v1.19.0 required API-37 or later; Do not upgrade as this will need AGP 9.x.x and causes problems.
-    implementation 'androidx.core:core-ktx:1.18.0'
+    // v1.19.0 required API-37; The upgrade will need AGP 9.x.x, dropping support for case R.id.xxx.
+    implementation 'androidx.core:core-ktx:1.19.0'
 
     implementation 'androidx.activity:activity-ktx:1.13.0'
     implementation 'androidx.appcompat:appcompat:1.8.0'
@@ -242,8 +235,8 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.media3:media3-exoplayer:1.11.0'
-    implementation 'androidx.media3:media3-ui:1.11.0'
+    implementation 'androidx.media3:media3-exoplayer:1.11.1'
+    implementation 'androidx.media3:media3-ui:1.11.1'
     // implementation "androidx.webkit:webkit:1.14.0"
 
     implementation('com.jakewharton.timber:timber:5.0.1') {
@@ -271,7 +264,7 @@ dependencies {
     // or its super classes (declaration of 'org.apache.commons.codec.binary.BinaryCodec' appears in /system/framework/org.apache.http.legacy.jar)
     implementation 'commons-codec:commons-codec:1.22.1'
     implementation 'org.apache.commons:commons-text:1.15.0'
-    implementation 'org.apache.james:apache-mime4j-core:0.8.14'
+    implementation 'org.apache.james:apache-mime4j-core:0.8.15'
     implementation 'org.bitlet:weupnp:0.1.4'
 
     // Do classRename sdes4j:1.1.5 import 'org.apache.commons.codec.binary.Base64' to '.binary.ApacheBase64'
@@ -285,10 +278,10 @@ dependencies {
 
     // Need to add android.jetifier.ignorelist in gradle.properties when using 1.83
     // see https://issuetracker.google.com/issues/294342862
-    implementation 'org.bouncycastle:bcpg-jdk18on:1.85'   // zrtp
-    implementation 'org.bouncycastle:bcpkix-jdk18on:1.85' // CertificateServiceImpl jcajce
+    implementation 'org.bouncycastle:bcpg-jdk18on:1.86'   // zrtp
+    implementation 'org.bouncycastle:bcpkix-jdk18on:1.86' // CertificateServiceImpl jcajce
     // implementation 'org.bouncycastle:bcprov-jdk18on:1.81' // SHA3-256 - auto included.
-    implementation 'org.bouncycastle:bctls-jdk18on:1.85'  // dtls-srtp
+    implementation 'org.bouncycastle:bctls-jdk18on:1.86'  // dtls-srtp
 
     // For debug and tracing for bouncycastle - AS allows direct copy and replacement of bc source for debug
 //    implementation jarjar.repackage {
@@ -339,7 +332,7 @@ dependencies {
     implementation 'org.whispersystems:signal-protocol-java:2.8.1'
 
     implementation 'com.google.code.gson:gson:2.14.0'
-    implementation 'org.projectlombok:lombok:1.18.46'
+    implementation 'org.projectlombok:lombok:1.18.48'
     // implementation 'net.clojars.dulouser:libretranslate-java:1.0.7'
     // implementation "space.dynomake:libretranslate-java:1.0.9" // inaccessible
     // implementation 'com.github.stokito:libretranslate-java:v1.2.2'
@@ -642,4 +635,6 @@ tasks.withType(JavaCompile).configureEach {
     // options.deprecation = true
 }
 
-build.dependsOn 'updateVersionFile'
+tasks.named("build") {
+    dependsOn "updateVersionFile"
+}

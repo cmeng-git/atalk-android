@@ -228,12 +228,11 @@ OpenSLESSystem_queryAudioInputCapabilitiesBySampleRate
          jdouble sampleRate, jint sampleRateIndex, jintArray sampleSizesInBits, jint channel,
          jint channelIndex, jintArray audioInputCapabilities, jint *audioInputCapabilitiesIndex) {
     SLint32 sampleFormatCount;
-    SLresult result
-            = (*engine_AudioIODeviceCapabilitiesItf)->QuerySampleFormatsSupported(
-                    engine_AudioIODeviceCapabilitiesItf,
-                    deviceID,
-                    sampleRate,
-                    NULL, &sampleFormatCount);
+    SLresult result = (*engine_AudioIODeviceCapabilitiesItf)->QuerySampleFormatsSupported(
+            engine_AudioIODeviceCapabilitiesItf,
+            deviceID,
+            sampleRate,
+            NULL, &sampleFormatCount);
     if ((SL_RESULT_SUCCESS == result) && sampleFormatCount) {
         SLint32 *sampleFormats = malloc(sizeof(SLint32) * sampleFormatCount);
         if (sampleFormats) {

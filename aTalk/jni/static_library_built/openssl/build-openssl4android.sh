@@ -19,7 +19,8 @@ set -u
 . _settings.sh
 
 LIB_OPENSSL="openssl"
-LIB_OPENSSL_GIT="openssl-3.5.2"
+# see https://github.com/openssl/openssl/commit/f869ff08b20d5a824e3535fbd1a7df3561e67536 for 4.0.2
+LIB_OPENSSL_GIT="openssl-3.6.4"
 
 # Auto fetch and unarchive libopenssl from online repository with the given version i.e. LIB_OPENSSL_GIT
 ./init_libopenssl.sh ${LIB_OPENSSL_GIT}
@@ -42,13 +43,13 @@ configure_make() {
       TARGET="android-arm"
     ;;
     arm64-v8a)
-      TARGET="android-arm64 no-ssl2 no-ssl3 no-hw "
+      TARGET="android-arm64 "
     ;;
     x86)
       TARGET="android-x86"
     ;;
     x86_64)
-      TARGET="android-x86_64 no-ssl2 no-ssl3 no-hw "
+      TARGET="android-x86_64 "
     ;;
   esac
 

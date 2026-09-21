@@ -66,7 +66,6 @@ import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusCha
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -79,8 +78,12 @@ import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.widgets.UnreadCountCustomView;
 import org.atalk.android.util.AppImageUtil;
+
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+
 import org.jivesoftware.smackx.avatar.AvatarManager;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.DomainJid;
@@ -585,27 +588,21 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
             if (contact != null) {
                 Jid jid = chatSessionRecord.getEntityBareJid();
 
-                switch (view.getId()) {
-                case R.id.chatSessionView:
+                int id = view.getId();
+                if (id == R.id.chatSessionView) {
                     startChat(metaContact);
-                    break;
-
-                case R.id.callButton:
+                }
+                else if (id == R.id.callButton) {
                     if (jid instanceof DomainBareJid) {
                         TelephonyFragment extPhone = TelephonyFragment.newInstance(contact.getAddress());
                         mFragmentActivity.getSupportFragmentManager().beginTransaction()
                                 .replace(android.R.id.content, extPhone, TelephonyFragment.TELEPHONY_TAG).commit();
-                        break;
+                        return;
                     }
-
-                case R.id.callVideoButton:
-                    boolean isVideoCall = viewHolder.callVideoButton.isPressed();
-                    AppCallUtil.createAndroidCall(aTalkApp.getInstance(), jid,
-                            viewHolder.callVideoButton, isVideoCall);
-                    break;
-
-                default:
-                    break;
+                    AppCallUtil.createCall(aTalkApp.getInstance(), metaContact, false, viewHolder.callButton);
+                }
+                else if (id == R.id.callVideoButton) {
+                    AppCallUtil.createCall(aTalkApp.getInstance(), metaContact, true, viewHolder.callVideoButton);
                 }
             }
         }
@@ -671,18 +668,15 @@ public class ChatSessionFragment extends BaseFragment implements View.OnClickLis
          */
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            switch (item.getItemId()) {
-            case R.id.erase_contact_chat_history:
-            case R.id.erase_chatroom_history:
+            int itemId = item.getItemId();
+            if (itemId == R.id.erase_contact_chat_history || itemId == R.id.erase_chatroom_history) {
                 EntityListHelper.eraseEntityChatHistory(ChatSessionFragment.this, mSessionRecord, null, null);
                 return true;
-
-            case R.id.ctx_menu_exit:
-                return true;
-
-            default:
-                return false;
             }
+            else if (itemId == R.id.ctx_menu_exit) {
+                return true;
+            }
+            return false;
         }
     }
 

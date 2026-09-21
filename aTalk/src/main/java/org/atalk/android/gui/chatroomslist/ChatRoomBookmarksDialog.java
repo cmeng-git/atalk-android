@@ -324,8 +324,8 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
 
     @Override
     public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
-        switch (adapter.getId()) {
-        case R.id.jid_Accounts_Spinner:
+        int adapterId = adapter.getId();
+        if (adapterId == R.id.jid_Accounts_Spinner) {
             String userId = (String) adapter.getItemAtPosition(pos);
             ChatRoomProviderWrapper protocol = mucRoomWrapperList.get(userId);
 
@@ -335,9 +335,8 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
                 String accountId = pps.getAccountID().getAccountJid();
                 initChatRoomSpinner(accountId);
             }
-            break;
-
-        case R.id.chatRoom_Spinner:
+        }
+        else if (adapterId == R.id.chatRoom_Spinner) {
             String oldChatRoom = (mBookmarkFocus != null) ? mBookmarkFocus.getJid().toString() : "";
             String chatRoom = (String) adapter.getItemAtPosition(pos);
             if (!initBookMarkForm(chatRoom)) {

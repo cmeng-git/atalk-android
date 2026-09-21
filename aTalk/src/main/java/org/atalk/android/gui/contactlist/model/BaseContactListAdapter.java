@@ -515,39 +515,32 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         if (object instanceof MetaContact) {
             MetaContact metaContact = (MetaContact) object;
             Contact contact = metaContact.getDefaultContact();
-            Boolean isAudioCall = null;
-
             if (contact != null) {
                 Jid jid = contact.getJid();
                 String JidAddress = contact.getAddress();
 
-                switch (view.getId()) {
-                    case R.id.contact_view:
-                        contactListFragment.startChat(metaContact);
-                        break;
-
-                    case R.id.contactCallButton:
-                        if (jid instanceof DomainBareJid) {
-                            TelephonyFragment extPhone = TelephonyFragment.newInstance(JidAddress);
-                            contactListFragment.getActivity().getSupportFragmentManager().beginTransaction()
-                                    .replace(android.R.id.content, extPhone, TelephonyFragment.TELEPHONY_TAG).commit();
-                            break;
-                        }
-                        isAudioCall = true;
-
-                    case R.id.contactCallVideoButton:
-                        if (viewHolder != null) {
-                            AppCallUtil.createCall(aTalkApp.getInstance(), metaContact,
-                                    (isAudioCall == null), viewHolder.callVideoButton);
-                        }
-                        break;
-
-                    case R.id.avatarIcon:
-                        aTalkApp.showToastMessage(JidAddress);
-                        break;
-
-                    default:
-                        break;
+                int id = view.getId();
+                if (id == R.id.contact_view) {
+                    contactListFragment.startChat(metaContact);
+                }
+                else if (id == R.id.contactCallButton) {
+                    if (jid instanceof DomainBareJid) {
+                        TelephonyFragment extPhone = TelephonyFragment.newInstance(JidAddress);
+                        contactListFragment.getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(android.R.id.content, extPhone, TelephonyFragment.TELEPHONY_TAG).commit();
+                        return;
+                    }
+                    if (viewHolder != null) {
+                        AppCallUtil.createCall(aTalkApp.getInstance(), metaContact, false, viewHolder.callButton);
+                    }
+                }
+                else if (id == R.id.contactCallVideoButton) {
+                    if (viewHolder != null) {
+                        AppCallUtil.createCall(aTalkApp.getInstance(), metaContact, true, viewHolder.callVideoButton);
+                    }
+                }
+                else if (id == R.id.avatarIcon) {
+                    aTalkApp.showToastMessage(JidAddress);
                 }
             }
         }
@@ -567,24 +560,24 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         // proceed to retrieve avatar for the clicked contact
         if (clicked instanceof MetaContact) {
             MetaContact metaContact = (MetaContact) clicked;
-            switch (view.getId()) {
-                case R.id.contact_view:
-                    contactListFragment.showPopupMenuContact(view, metaContact);
-                    return true;
-
-                case R.id.avatarIcon:
-                    Contact contact = metaContact.getDefaultContact();
-                    if (contact != null) {
-                        Jid contactJid = contact.getJid();
-                        if (!(contactJid instanceof DomainBareJid)) {
-                            ((ContactJabberImpl) contact).getAvatar(true);
-                            aTalkApp.showToastMessage(R.string.avatar_retrieving, contactJid);
-                        }
-                        else {
-                            aTalkApp.showToastMessage(R.string.contact_invalid, contactJid);
-                        }
+            int id = view.getId();
+            if (id == R.id.contact_view) {
+                contactListFragment.showPopupMenuContact(view, metaContact);
+                return true;
+            }
+            else if (id == R.id.avatarIcon) {
+                Contact contact = metaContact.getDefaultContact();
+                if (contact != null) {
+                    Jid contactJid = contact.getJid();
+                    if (!(contactJid instanceof DomainBareJid)) {
+                        ((ContactJabberImpl) contact).getAvatar(true);
+                        aTalkApp.showToastMessage(R.string.avatar_retrieving, contactJid);
                     }
-                    return true;
+                    else {
+                        aTalkApp.showToastMessage(R.string.contact_invalid, contactJid);
+                    }
+                }
+                return true;
             }
         }
         else if (clicked instanceof MetaContactGroup) {

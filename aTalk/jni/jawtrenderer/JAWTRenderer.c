@@ -15,8 +15,7 @@
  */
 JNIEXPORT void JNICALL
 Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_addNotify
-    (JNIEnv *env, jclass clazz, jlong handle, jobject component)
-{
+        (JNIEnv *env, jclass clazz, jlong handle, jobject component) {
 #ifdef __APPLE__
     JAWTRenderer_addNotify(env, clazz, handle, component);
 #endif /* #ifdef __APPLE__ */
@@ -29,8 +28,7 @@ Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_addNotify
  */
 JNIEXPORT void JNICALL
 Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_close
-    (JNIEnv *env, jclass clazz, jlong handle, jobject component)
-{
+        (JNIEnv *env, jclass clazz, jlong handle, jobject component) {
     JAWTRenderer_close(env, clazz, handle, component);
 }
 
@@ -41,8 +39,7 @@ Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_close
  */
 JNIEXPORT jlong JNICALL
 Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_open
-    (JNIEnv *env, jclass clazz, jobject component)
-{
+        (JNIEnv *env, jclass clazz, jobject component) {
     return JAWTRenderer_open(env, clazz, component);
 }
 
@@ -53,9 +50,8 @@ Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_open
  */
 JNIEXPORT jboolean JNICALL
 Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_paint
-    (JNIEnv *env, jclass clazz, jlong handle, jobject component, jobject g,
-        jint zOrder)
-{
+        (JNIEnv *env, jclass clazz, jlong handle, jobject component, jobject g,
+         jint zOrder) {
 #ifdef __ANDROID__
     return JAWTRenderer_paint(0, NULL, clazz, handle, g, zOrder);
 #else /* #ifdef __ANDROID__ */
@@ -135,27 +131,24 @@ Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_paint
  */
 JNIEXPORT jboolean JNICALL
 Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_process
-    (JNIEnv *env, jclass clazz, jlong handle, jobject component, jintArray data,
-        jint offset, jint length, jint width, jint height)
-{
+        (JNIEnv *env, jclass clazz, jlong handle, jobject component, jintArray data,
+         jint offset, jint length, jint width, jint height) {
     jint *dataPtr;
     jboolean processed;
 
     dataPtr = (*env)->GetPrimitiveArrayCritical(env, data, NULL);
-    if (dataPtr)
-    {
+    if (dataPtr) {
         processed
-            = JAWTRenderer_process(
-                    env, clazz,
-                    handle, component,
-                    dataPtr + offset, length,
-                    width, height);
+                = JAWTRenderer_process(
+                env, clazz,
+                handle, component,
+                dataPtr + offset, length,
+                width, height);
         (*env)->ReleasePrimitiveArrayCritical(
                 env,
                 data, dataPtr,
                 JNI_ABORT);
-    }
-    else
+    } else
         processed = JNI_FALSE;
     return processed;
 }
@@ -167,8 +160,7 @@ Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_process
  */
 JNIEXPORT void JNICALL
 Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_removeNotify
-    (JNIEnv *env, jclass clazz, jlong handle, jobject component)
-{
+        (JNIEnv *env, jclass clazz, jlong handle, jobject component) {
 #ifdef __APPLE__
     JAWTRenderer_removeNotify(env, clazz, handle, component);
 #endif /* #ifdef __APPLE__ */
@@ -181,8 +173,7 @@ Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_removeNoti
  */
 JNIEXPORT jstring JNICALL
 Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_sysctlbyname
-    (JNIEnv *env, jclass clazz, jstring name)
-{
+        (JNIEnv *env, jclass clazz, jstring name) {
 #ifdef __APPLE__
     return JAWTRenderer_sysctlbyname(env, name);
 #else /* #ifdef __APPLE__ */

@@ -496,36 +496,28 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
      */
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-        case R.id.button_call_back_to_chat:
+        int id = v.getId();
+        if (id == R.id.button_call_back_to_chat) {
             finish();
-            break;
-
-        case R.id.button_speakerphone:
+        }
+        else if (id == R.id.button_speakerphone) {
             AudioManager audioManager = aTalkApp.getAudioManager();
             audioManager.setSpeakerphoneOn(!audioManager.isSpeakerphoneOn());
             updateSpeakerphoneStatus();
-            break;
-
-        case R.id.button_call_microphone:
+        }
+        else if (id == R.id.button_call_microphone) {
             if (micEnabled)
                 CallManager.setMute(mCall, !isMuted());
-            break;
-
-        case R.id.button_call_hold:
-            // call == null if call setup failed
+        }
+        else if (id == R.id.button_call_hold) {// call == null if call setup failed
             if (mCall != null)
                 CallManager.putOnHold(mCall, !isOnHold());
-            break;
-
-        case R.id.button_call_transfer:
-            // call == null if call setup failed
+        }
+        else if (id == R.id.button_call_transfer) {// call == null if call setup failed
             if (mCall != null)
                 transferCall();
-            break;
-
-        case R.id.button_call_hangup:
-            // Start the hang up Thread, Activity will be closed later on call ended event
+        }
+        else if (id == R.id.button_call_hangup) {// Start the hang up Thread, Activity will be closed later on call ended event
             if (mCall == null || CallState.CALL_ENDED == mCall.getCallState()) {
                 finish();
             }
@@ -533,16 +525,13 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
                 CallManager.hangupCall(mCall);
                 setErrorReason(callState.errorReason);
             }
-            break;
-
-        case R.id.security_group:
+        }
+        else if (id == R.id.security_group) {
             showZrtpInfoDialog();
-            break;
-
-        case R.id.clickable_toast:
+        }
+        else if (id == R.id.clickable_toast) {
             showZrtpInfoDialog();
             sasToastControl.hideToast(true);
-            break;
         }
     }
 
@@ -552,16 +541,16 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
     @Override
     public boolean onLongClick(View v) {
         DialogFragment newFragment;
-        switch (v.getId()) {
+        int id = v.getId();
         // Create and show the volume control dialog.
-        case R.id.button_speakerphone:
-            // Create and show the dialog.
+        if (id == R.id.button_speakerphone) {
             newFragment = VolumeControlDialog.createOutputVolCtrlDialog();
             newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
             return true;
 
+        }
         // Create and show the mic gain control dialog.
-        case R.id.button_call_microphone:
+        else if (id == R.id.button_call_microphone) {
             if (micEnabled) {
                 newFragment = VolumeControlDialog.createInputVolCtrlDialog();
                 newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
@@ -862,19 +851,20 @@ public class VideoCallActivity extends BaseActivity implements CallPeerRenderer,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.video_dimension:
+        int itemId = item.getItemId();
+        if (itemId == R.id.video_dimension) {
             aTalkApp.showToastMessage("Not implemented!");
             return true;
-        case R.id.call_info_item:
+        }
+        else if (itemId == R.id.call_info_item) {
             showCallInfoDialog();
             return true;
-        case R.id.call_zrtp_info_item:
+        }
+        else if (itemId == R.id.call_zrtp_info_item) {
             showZrtpInfoDialog();
             return true;
-        default:
-            return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

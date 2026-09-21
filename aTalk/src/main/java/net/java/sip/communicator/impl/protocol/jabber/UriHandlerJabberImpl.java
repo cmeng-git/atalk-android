@@ -145,7 +145,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
     }
 
     /**
-     * Sets up (if not set up already) listening for the loading of the stored accounts of
+     * Setup (if not setup already) listening for the loading of the stored accounts of
      * {@link #protoFactory} in order to make it possible to discover when the prerequisites for handling URIs are met.
      */
     private void hookStoredAccounts()

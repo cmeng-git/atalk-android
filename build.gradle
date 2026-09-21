@@ -6,11 +6,11 @@ buildscript {
     }
 
     dependencies {
-        // Otter | 2025.2.1	only compatible with 8.13
-        // Narwhal | 2025.1.1 only compatible with gradle-8.11.x;
-        // Do not change to 9.x.x; else "constant expression required" errors for the generated R.id.xxx;
-        // and gradle.properties#android.nonFinalResIds=false is ignored in AGP 9.x.x;
-        classpath 'com.android.tools.build:gradle:8.13.2'
+        // Narwhal | 2025.1.1 only compatible with gradle-8.11.x (allow Jni debug);
+        // Gradle build-tools 9.3.2; neew tp change all case R.id.xxx to if-else to resolve "Constant expression required" error
+        // Note: gradle.properties#android.nonFinalResIds=false is ignored in AGP 9.x.x;
+        // classpath 'com.android.tools.build:gradle:8.13.2' and 9.x jni debug not working.
+        classpath 'com.android.tools.build:gradle:9.3.2'
 
         // Required by android-youtube-player
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21'
@@ -37,6 +37,6 @@ project.ext {
     buildTools = '37.0.0'
 }
 
-tasks.register('clean' , Delete) {
-    delete rootProject.buildDir
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
 }

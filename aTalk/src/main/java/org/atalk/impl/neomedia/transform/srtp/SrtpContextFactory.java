@@ -23,8 +23,7 @@ import java.util.Arrays;
  *
  * @author Bing SU (nova.su@gmail.com)
  */
-public class SrtpContextFactory
-{
+public class SrtpContextFactory {
     /**
      * Master encryption key
      */
@@ -62,8 +61,7 @@ public class SrtpContextFactory
      * @param srtcpPolicy SRTCP policy
      */
     public SrtpContextFactory(boolean sender, byte[] masterKey, byte[] masterSalt, SrtpPolicy srtpPolicy,
-            SrtpPolicy srtcpPolicy)
-    {
+            SrtpPolicy srtcpPolicy) {
         int encKeyLength = srtpPolicy.getEncKeyLength();
         if (encKeyLength != srtcpPolicy.getEncKeyLength()) {
             throw new IllegalArgumentException("srtpPolicy.getEncKeyLength() != srtcpPolicy.getEncKeyLength()");
@@ -71,7 +69,7 @@ public class SrtpContextFactory
 
         if (masterKey != null) {
             if (masterKey.length != encKeyLength) {
-                throw new IllegalArgumentException("masterK.length != encKeyLength (" + masterKey.length + " : " + encKeyLength +")");
+                throw new IllegalArgumentException("masterK.length != encKeyLength (" + masterKey.length + " : " + encKeyLength + ")");
             }
 
             this.masterKey = new byte[encKeyLength];
@@ -91,7 +89,7 @@ public class SrtpContextFactory
 
         if (masterSalt != null) {
             if (masterSalt.length != saltKeyLength) {
-                throw new IllegalArgumentException("masterS.length != saltKeyLength (" + masterSalt.length + " : " + saltKeyLength +")");
+                throw new IllegalArgumentException("masterS.length != saltKeyLength (" + masterSalt.length + " : " + saltKeyLength + ")");
             }
 
             this.masterSalt = new byte[saltKeyLength];
@@ -114,8 +112,7 @@ public class SrtpContextFactory
      *
      * The close functions closes all stored default crypto state.
      */
-    public void close()
-    {
+    public void close() {
         Arrays.fill(masterKey, (byte) 0);
         Arrays.fill(masterSalt, (byte) 0);
     }
@@ -127,10 +124,10 @@ public class SrtpContextFactory
      *
      * @param ssrc The SSRC for this context
      * @param roc The Roll-Over-Counter for this context
+     *
      * @return a new SrtpCryptoContext with all relevant data set.
      */
-    public SrtpCryptoContext deriveContext(int ssrc, int roc)
-    {
+    public SrtpCryptoContext deriveContext(int ssrc, int roc) {
         return new SrtpCryptoContext(sender, ssrc, roc, masterKey, masterSalt, srtpPolicy);
     }
 
@@ -140,10 +137,10 @@ public class SrtpContextFactory
      * Before the application can use this SrtpCryptoContext it must call the deriveSrtcpKeys method.
      *
      * @param ssrc The sender SSRC for this context
+     *
      * @return a new SrtcpCryptoContext with all relevant data set.
      */
-    public SrtcpCryptoContext deriveControlContext(int ssrc)
-    {
+    public SrtcpCryptoContext deriveControlContext(int ssrc) {
         return new SrtcpCryptoContext(ssrc, masterKey, masterSalt, srtcpPolicy);
     }
 }

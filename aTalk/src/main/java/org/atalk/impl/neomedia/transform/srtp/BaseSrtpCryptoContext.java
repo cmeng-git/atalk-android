@@ -31,6 +31,7 @@ import org.atalk.impl.neomedia.transform.srtp.crypto.SrtpCipherCtrJava;
 import org.atalk.impl.neomedia.transform.srtp.crypto.SrtpCipherCtrOpenSsl;
 import org.atalk.impl.neomedia.transform.srtp.crypto.SrtpCipherF8;
 import org.atalk.util.ByteArrayBuffer;
+
 import org.bouncycastle.crypto.Mac;
 import org.bouncycastle.crypto.engines.TwofishEngine;
 import org.bouncycastle.crypto.macs.SkeinMac;
@@ -57,8 +58,7 @@ import org.bouncycastle.crypto.macs.SkeinMac;
  * @author Eng Chong Meng
  * @author MilanKral
  */
-public class BaseSrtpCryptoContext
-{
+public class BaseSrtpCryptoContext {
     /**
      * The replay check windows size.
      */
@@ -120,8 +120,7 @@ public class BaseSrtpCryptoContext
      */
     protected final byte[] tempStore = new byte[100];
 
-    protected BaseSrtpCryptoContext(int ssrc)
-    {
+    protected BaseSrtpCryptoContext(int ssrc) {
         this.ssrc = ssrc;
 
         cipherCtr = null;
@@ -133,8 +132,7 @@ public class BaseSrtpCryptoContext
     }
 
     @SuppressWarnings("fallthrough")
-    protected BaseSrtpCryptoContext(int ssrc, byte[] masterK, byte[] masterS, SrtpPolicy policy)
-    {
+    protected BaseSrtpCryptoContext(int ssrc, byte[] masterK, byte[] masterS, SrtpPolicy policy) {
         this.ssrc = ssrc;
         this.policy = policy;
 
@@ -168,33 +166,33 @@ public class BaseSrtpCryptoContext
         byte[] saltKey = null;
 
         switch (policy.getEncType()) {
-            case SrtpPolicy.NULL_ENCRYPTION:
-                break;
+        case SrtpPolicy.NULL_ENCRYPTION:
+            break;
 
-            case SrtpPolicy.AESF8_ENCRYPTION:
-                cipherF8 = new SrtpCipherF8(Aes.createBlockCipher(encKeyLength));
-                //$FALL-THROUGH$
+        case SrtpPolicy.AESF8_ENCRYPTION:
+            cipherF8 = new SrtpCipherF8(Aes.createBlockCipher(encKeyLength));
+            //$FALL-THROUGH$
 
-            case SrtpPolicy.AESCM_ENCRYPTION:
-                // use OpenSSL if available and AES128 is in use
-                if (OpenSslWrapperLoader.isLoaded()
-                        && (encKeyLength == 16 || encKeyLength == 24 || encKeyLength == 32)) {
-                    cipherCtr = new SrtpCipherCtrOpenSsl();
-                }
-                else {
-                    cipherCtr = new SrtpCipherCtrJava(Aes.createBlockCipher(encKeyLength));
-                }
-                saltKey = new byte[saltKeyLength];
-                break;
+        case SrtpPolicy.AESCM_ENCRYPTION:
+            // use OpenSSL if available and AES128 is in use
+            if (OpenSslWrapperLoader.isLoaded()
+                    && (encKeyLength == 16 || encKeyLength == 24 || encKeyLength == 32)) {
+                cipherCtr = new SrtpCipherCtrOpenSsl();
+            }
+            else {
+                cipherCtr = new SrtpCipherCtrJava(Aes.createBlockCipher(encKeyLength));
+            }
+            saltKey = new byte[saltKeyLength];
+            break;
 
-            case SrtpPolicy.TWOFISHF8_ENCRYPTION:
-                cipherF8 = new SrtpCipherF8(new TwofishEngine());
-                //$FALL-THROUGH$
+        case SrtpPolicy.TWOFISHF8_ENCRYPTION:
+            cipherF8 = new SrtpCipherF8(new TwofishEngine());
+            //$FALL-THROUGH$
 
-            case SrtpPolicy.TWOFISH_ENCRYPTION:
-                cipherCtr = new SrtpCipherCtrJava(new TwofishEngine());
-                saltKey = new byte[saltKeyLength];
-                break;
+        case SrtpPolicy.TWOFISH_ENCRYPTION:
+            cipherCtr = new SrtpCipherCtrJava(new TwofishEngine());
+            saltKey = new byte[saltKeyLength];
+            break;
         }
         this.cipherCtr = cipherCtr;
         this.cipherF8 = cipherF8;
@@ -204,35 +202,33 @@ public class BaseSrtpCryptoContext
         byte[] tagStore;
 
         switch (policy.getAuthType()) {
-            case SrtpPolicy.HMACSHA1_AUTHENTICATION:
-                mac = HmacSha1.createMac();
-                tagStore = new byte[mac.getMacSize()];
-                break;
+        case SrtpPolicy.HMACSHA1_AUTHENTICATION:
+            mac = HmacSha1.createMac();
+            tagStore = new byte[mac.getMacSize()];
+            break;
 
-            case SrtpPolicy.SKEIN_AUTHENTICATION:
-                tagStore = new byte[policy.getAuthTagLength()];
-                mac = new SkeinMac(SkeinMac.SKEIN_512, tagStore.length * 8);
-                break;
+        case SrtpPolicy.SKEIN_AUTHENTICATION:
+            tagStore = new byte[policy.getAuthTagLength()];
+            mac = new SkeinMac(SkeinMac.SKEIN_512, tagStore.length * 8);
+            break;
 
-            case SrtpPolicy.NULL_AUTHENTICATION:
-            default:
-                mac = null;
-                tagStore = null;
-                break;
+        case SrtpPolicy.NULL_AUTHENTICATION:
+        default:
+            mac = null;
+            tagStore = null;
+            break;
         }
         this.mac = mac;
         this.tagStore = tagStore;
     }
 
     /**
-     * Authenticates a packet. Calculated authentication tag is returned/stored in {@link #tagStore}
-     * .
+     * Authenticates a packet. Calculated authentication tag is returned/stored in {@link #tagStore}.
      *
      * @param pkt the RTP packet to be authenticated
      * @param rocIn Roll-Over-Counter
      */
-    synchronized protected void authenticatePacketHmac(ByteArrayBuffer pkt, int rocIn)
-    {
+    synchronized protected void authenticatePacketHmac(ByteArrayBuffer pkt, int rocIn) {
         mac.update(pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
         rbStore[0] = (byte) (rocIn >> 24);
         rbStore[1] = (byte) (rocIn >> 16);
@@ -247,8 +243,7 @@ public class BaseSrtpCryptoContext
      * this crypto context. Clean up key data, maybe this is the second time. However, sometimes we
      * cannot know if the CryptoContext was used and the application called deriveSrtpKeys(...).
      */
-    synchronized public void close()
-    {
+    synchronized public void close() {
         /* TODO, clean up ciphers and mac. */
     }
 
@@ -257,8 +252,7 @@ public class BaseSrtpCryptoContext
      *
      * @return the authentication tag length of this SRTP cryptographic context
      */
-    public int getAuthTagLength()
-    {
+    public int getAuthTagLength() {
         return policy.getAuthTagLength();
     }
 
@@ -267,8 +261,7 @@ public class BaseSrtpCryptoContext
      *
      * @return the SSRC of this SRTP cryptographic context
      */
-    public int getSsrc()
-    {
+    public int getSsrc() {
         return ssrc;
     }
 }

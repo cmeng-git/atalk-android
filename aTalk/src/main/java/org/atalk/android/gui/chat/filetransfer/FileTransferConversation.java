@@ -709,28 +709,24 @@ public abstract class FileTransferConversation extends BaseFragment
      */
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_file:
-            case R.id.sticker:
-                if (mChatActivity != null)
-                    mChatActivity.openDownloadable(mXferFile, view);
-                break;
-
-            case R.id.playback_play:
-                playStart();
-                break;
-
-            case R.id.buttonCancel:
-                messageViewHolder.retryButton.setVisibility(View.GONE);
-                messageViewHolder.cancelButton.setVisibility(View.GONE);
-                // Let file transport event call back to handle updateStatus() if mFileTransfer not null.
-                if (mFileTransfer != null) {
-                    mFileTransfer.cancel();
-                }
-                else {
-                    updateStatus(FileTransferStatusChangeEvent.CANCELED, null);
-                }
-                break;
+        int id = view.getId();
+        if (id == R.id.button_file || id == R.id.sticker) {
+            if (mChatActivity != null)
+                mChatActivity.openDownloadable(mXferFile, view);
+        }
+        else if (id == R.id.playback_play) {
+            playStart();
+        }
+        else if (id == R.id.buttonCancel) {
+            messageViewHolder.retryButton.setVisibility(View.GONE);
+            messageViewHolder.cancelButton.setVisibility(View.GONE);
+            // Let file transport event call back to handle updateStatus() if mFileTransfer not null.
+            if (mFileTransfer != null) {
+                mFileTransfer.cancel();
+            }
+            else {
+                updateStatus(FileTransferStatusChangeEvent.CANCELED, null);
+            }
         }
     }
 

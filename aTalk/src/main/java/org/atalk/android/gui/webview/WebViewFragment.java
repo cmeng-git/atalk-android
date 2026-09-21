@@ -17,19 +17,15 @@
 package org.atalk.android.gui.webview;
 
 import android.annotation.SuppressLint;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
@@ -49,6 +45,7 @@ import org.atalk.android.BaseFragment;
 import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -61,14 +58,9 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 @SuppressLint("SetJavaScriptEnabled")
-public class WebViewFragment extends BaseFragment implements OnKeyListener {
-    private WebView webview;
-    private ProgressBar progressbar;
+public class WebViewFragment extends BaseFragment implements aTalk.OnBackPressedListener {
+    private WebView webView;
     private static final Stack<String> urlStack = new Stack<>();
-
-    // stop webView.goBack() once we have started reload from urlStack
-    private boolean isLoadFromStack = false;
-
     private String webUrl = null;
     private ValueCallback<Uri[]> mUploadMessageArray;
 
@@ -76,51 +68,36 @@ public class WebViewFragment extends BaseFragment implements OnKeyListener {
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.webview_main, container, false);
-        progressbar = contentView.findViewById(R.id.progress);
+        final ProgressBar progressbar = contentView.findViewById(R.id.progress);
         progressbar.setIndeterminate(true);
 
-        webview = contentView.findViewById(R.id.webview);
-        final WebSettings webSettings = webview.getSettings();
+        webView = contentView.findViewById(R.id.webview);
+        final WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 
         // https://developer.android.com/guide/webapps/webview#BindingJavaScript
-        webview.addJavascriptInterface(aTalkApp.getInstance(), "Android");
+        webView.addJavascriptInterface(aTalkApp.getInstance(), "Android");
         if (BuildConfig.DEBUG) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
         webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
 
-        ActivityResultLauncher<String> mGetContents = getFileUris();
-        webview.setWebChromeClient(new WebChromeClient() {
+        webView.setWebViewClient(new MyWebViewClient(this) {
             @Override
-            public void onProgressChanged(WebView view, int progress) {
-                progressbar.setProgress(progress);
-                if (progress < 100 && progress > 0 && progressbar.getVisibility() == ProgressBar.GONE) {
-                    progressbar.setIndeterminate(true);
-                    progressbar.setVisibility(ProgressBar.VISIBLE);
-                }
-                if (progress == 100) {
-                    progressbar.setVisibility(ProgressBar.GONE);
-                }
-            }
-
-            @Override
-            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> uploadMessageArray,
-                    FileChooserParams fileChooserParams) {
-                if (mUploadMessageArray != null)
-                    mUploadMessageArray.onReceiveValue(null);
-
-                mUploadMessageArray = uploadMessageArray;
-                mGetContents.launch("*/*");
-                return true;
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                progressbar.setVisibility(View.INVISIBLE);
             }
         });
+        return contentView;
+    }
 
-        // https://developer.android.com/guide/webapps/webview#HandlingNavigation
-        webview.setWebViewClient(new MyWebViewClient(this));
+    @Override
+    public void onResume() {
+        super.onResume();
 
         // init webUrl with urlStack.pop() if non-empty, else load from default in DB
         if (urlStack.isEmpty()) {
@@ -130,19 +107,12 @@ public class WebViewFragment extends BaseFragment implements OnKeyListener {
         else {
             webUrl = urlStack.pop();
         }
+
         if (!TextUtils.isEmpty(webUrl))
-            webview.loadUrl(webUrl);
-        return contentView;
-    }
+            webView.loadUrl(webUrl);
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // setup keyPress listener - must re-enable every time on resume
-        webview.setFocusableInTouchMode(true);
-        webview.requestFocus();
-        webview.setOnKeyListener(this);
+        webView.setFocusableInTouchMode(true);
+        webView.requestFocus();
     }
 
     /**
@@ -151,18 +121,6 @@ public class WebViewFragment extends BaseFragment implements OnKeyListener {
     public static void initWebView() {
         urlStack.clear();
     }
-
-    /**
-     * Push the last loaded/user clicked url page to the urlStack for later retrieval in onCreateView(),
-     * allow same web page to be shown when user slides and returns to the webView
-     *
-     * @param url loaded/user clicked url
-     */
-    public void addLastUrl(String url) {
-        urlStack.push(url);
-        isLoadFromStack = false;
-    }
-
     /**
      * Opens a FileChooserDialog to let the user pick files for upload
      */
@@ -184,12 +142,6 @@ public class WebViewFragment extends BaseFragment implements OnKeyListener {
         });
     }
 
-    // Prevent the webView from reloading on device rotation
-    @Override
-    public void onConfigurationChanged(@NotNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
     public static Bitmap getBitmapFromURL(String src) {
         try {
             URL url = new URL(src);
@@ -206,42 +158,18 @@ public class WebViewFragment extends BaseFragment implements OnKeyListener {
     }
 
     /**
-     * Handler for user enter Back Key
-     * User Back Key entry will return to previous web access pages until root; before return to caller
+     * Handler for user enter Back Key in current webView.
+     * If not consumed, user Back Key entry will return to previous fragment until root.
      *
-     * @param v view
-     * @param keyCode the entered key keycode
-     * @param event the key Event
-     *
-     * @return true if process
+     * @return true if consumed.
      */
     @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            // android OS will not pass in KEYCODE_MENU???
-            if (keyCode == KeyEvent.KEYCODE_MENU) {
-                webview.loadUrl("javascript:MovimTpl.toggleMenu()");
-                return true;
-            }
-
-            if (keyCode == KeyEvent.KEYCODE_BACK) {
-                if (!isLoadFromStack && webview.canGoBack()) {
-                    // Remove the last saved/displayed url push in addLastUrl, so an actual previous page is shown
-                    if (!urlStack.isEmpty())
-                        urlStack.pop();
-                    webview.goBack();
-                    return true;
-                }
-                // else continue to reload url from urlStack if non-empty.
-                else if (!urlStack.isEmpty()) {
-                    isLoadFromStack = true;
-                    webUrl = urlStack.pop();
-                    Timber.w("urlStack pop(): %s", webUrl);
-                    webview.loadUrl(webUrl);
-                    return true;
-                }
-            }
+    public boolean onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+            return true;
         }
+        // Return false to let the activity or next handler handle it
         return false;
     }
 }

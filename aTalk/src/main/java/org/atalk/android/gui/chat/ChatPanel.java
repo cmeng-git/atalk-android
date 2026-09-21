@@ -1536,7 +1536,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
          * Runs in a different thread.
          */
         public void run() {
-            ChatMessageImpl chatMessage = null;
+            ChatMessageImpl chatMessage;
             stopped = false;
             while (!stopped) {
                 synchronized (translateQueue) {

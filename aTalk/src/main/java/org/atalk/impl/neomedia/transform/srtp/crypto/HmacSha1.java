@@ -14,8 +14,7 @@ import org.bouncycastle.crypto.macs.HMac;
  *
  * @author Lyubomir Marinov
  */
-public class HmacSha1
-{
+public class HmacSha1 {
     /**
      * Initializes a new <code>org.bouncycastle.crypto.Mac</code> instance which
      * implements a keyed-hash message authentication code (HMAC) with SHA-1.
@@ -23,8 +22,7 @@ public class HmacSha1
      * @return a new <code>org.bouncycastle.crypto.Mac</code> instance which
      * implements a keyed-hash message authentication code (HMAC) with SHA-1
      */
-    public static Mac createMac()
-    {
+    public static Mac createMac() {
         if (OpenSslWrapperLoader.isLoaded()) {
             return new OpenSslHmac(OpenSslHmac.SHA1);
         }

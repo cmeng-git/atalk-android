@@ -13,7 +13,7 @@ extern "C" {
  * Signature: (I)Ljava.lang.String;
  */
 JNIEXPORT jstring JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_av_1strerror
-  (JNIEnv *, jclass, jint);
+        (JNIEnv *, jclass, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -21,7 +21,7 @@ JNIEXPORT jstring JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_av_1strerror
  * Signature: (Ljava.lang.String;)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_av_1get_1pix_1fmt
-  (JNIEnv *, jclass, jstring);
+        (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -29,7 +29,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_av_1get_1pix_1f
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_av_1free
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -37,7 +37,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_av_1free
  * Signature: (I)J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_av_1malloc
-  (JNIEnv *, jclass, jint);
+        (JNIEnv *, jclass, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -45,7 +45,7 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_av_1malloc
  * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1alloc_1context3
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -53,7 +53,7 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1alloc
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1alloc_1frame
-  (JNIEnv *, jclass);
+        (JNIEnv *, jclass);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -61,7 +61,7 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1alloc
  * Signature: (I)J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1alloc_1packet
-  (JNIEnv *, jclass, jint);
+        (JNIEnv *, jclass, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -69,7 +69,7 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1alloc
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1close
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -77,7 +77,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1close
  * Signature: (JJ[ZJ)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1decode_1audio4
-  (JNIEnv *, jclass, jlong, jlong, jbooleanArray, jlong);
+        (JNIEnv *, jclass, jlong, jlong, jbooleanArray, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -85,7 +85,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1decode
  * Signature: (JJ[Z[BI)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1decode_1video__JJ_3Z_3BI
-  (JNIEnv *, jclass, jlong, jlong, jbooleanArray, jbyteArray, jint);
+        (JNIEnv *, jclass, jlong, jlong, jbooleanArray, jbyteArray, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -93,7 +93,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1decode
  * Signature: (JJJI)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1decode_1video__JJJI
-  (JNIEnv *, jclass, jlong, jlong, jlong, jint);
+        (JNIEnv *, jclass, jlong, jlong, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -101,7 +101,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1decode
  * Signature: (J[BII[BI)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1encode_1audio
-  (JNIEnv *, jclass, jlong, jbyteArray, jint, jint, jbyteArray, jint);
+        (JNIEnv *, jclass, jlong, jbyteArray, jint, jint, jbyteArray, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -109,7 +109,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1encode
  * Signature: (J[BIJ)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1encode_1video
-  (JNIEnv *, jclass, jlong, jbyteArray, jint, jlong);
+        (JNIEnv *, jclass, jlong, jbyteArray, jint, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -117,7 +117,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1encode
  * Signature: (I)J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1find_1decoder
-  (JNIEnv *, jclass, jint);
+        (JNIEnv *, jclass, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -125,7 +125,7 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1find_
  * Signature: (I)J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1find_1encoder
-  (JNIEnv *, jclass, jint);
+        (JNIEnv *, jclass, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -133,7 +133,7 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1find_
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1free_1packet
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 
 /*
@@ -142,7 +142,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1free_1
  * Signature: (JJ[Ljava/lang/String;)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1open2
-  (JNIEnv *, jclass, jlong, jlong, jobjectArray);
+        (JNIEnv *, jclass, jlong, jlong, jobjectArray);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -150,7 +150,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1open2
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1add_1flags
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -158,7 +158,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1add_1flags2
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -166,7 +166,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1get_1frame_1size
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -174,7 +174,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1get_1height
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -182,7 +182,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1get_1pix_1fmt
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -190,7 +190,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1get_1width
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -198,7 +198,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1b_1frame_1strategy
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -206,7 +206,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1bit_1rate
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -214,7 +214,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1bit_1rate_1tolerance
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 ///*
 // * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -256,7 +256,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1chromaoffset
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -264,7 +264,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1gop_1size
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -272,7 +272,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JF)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1i_1quant_1factor
-  (JNIEnv *, jclass, jlong, jfloat);
+        (JNIEnv *, jclass, jlong, jfloat);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -280,7 +280,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1keyint_1min
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -288,7 +288,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1max_1b_1frames
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -296,7 +296,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1mb_1decision
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -304,7 +304,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1me_1cmp
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -312,7 +312,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1me_1method
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -320,7 +320,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1me_1range
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -328,7 +328,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1me_1subpel_1quality
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -336,7 +336,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1pix_1fmt
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -344,7 +344,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1profile
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -352,7 +352,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JF)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1qcompress
-  (JNIEnv *, jclass, jlong, jfloat);
+        (JNIEnv *, jclass, jlong, jfloat);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -360,7 +360,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JIII)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1quantizer
-  (JNIEnv *, jclass, jlong, jint, jint, jint);
+        (JNIEnv *, jclass, jlong, jint, jint, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -368,7 +368,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1rc_1buffer_1size
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -376,7 +376,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JLjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1rc_1eq
-  (JNIEnv *, jclass, jlong, jstring);
+        (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -384,7 +384,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1rc_1max_1rate
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -392,7 +392,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1refs
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -400,7 +400,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1rtp_1payload_1size
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -408,7 +408,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JII)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1sample_1aspect_1ratio
-  (JNIEnv *, jclass, jlong, jint, jint);
+        (JNIEnv *, jclass, jlong, jint, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -416,7 +416,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1sample_1fmt
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -424,7 +424,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1sample_1rate
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -432,7 +432,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1scenechange_1threshold
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -440,7 +440,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JII)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1size
-  (JNIEnv *, jclass, jlong, jint, jint);
+        (JNIEnv *, jclass, jlong, jint, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -448,7 +448,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1thread_1count
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -456,7 +456,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1ticks_1per_1frame
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -464,7 +464,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JII)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1time_1base
-  (JNIEnv *, jclass, jlong, jint, jint);
+        (JNIEnv *, jclass, jlong, jint, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -472,7 +472,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1trellis
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -480,7 +480,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1workaround_1bugs
-  (JNIEnv *, jclass, jlong, jint);
+        (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -488,7 +488,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avfilter_1graph_1alloc
-  (JNIEnv *, jclass);
+        (JNIEnv *, jclass);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -496,7 +496,7 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avfilter_1grap
  * Signature: (JJ)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avfilter_1graph_1config
-  (JNIEnv *, jclass, jlong, jlong);
+        (JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -504,7 +504,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avfilter_1graph
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avfilter_1graph_1free
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -512,7 +512,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avfilter_1graph
  * Signature: (JLjava/lang/String;)J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avfilter_1graph_1get_1filter
-  (JNIEnv *, jclass, jlong, jstring);
+        (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -520,7 +520,7 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avfilter_1grap
  * Signature: (JLjava/lang/String;JJJ)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avfilter_1graph_1parse
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong, jlong);
+        (JNIEnv *, jclass, jlong, jstring, jlong, jlong, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -528,7 +528,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avfilter_1graph
  * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1get_1data0
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -536,7 +536,7 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1get_1
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1get_1linesize0
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -544,7 +544,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1get_1l
  * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1get_1pts
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -552,7 +552,7 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1get_1
  * Signature: (JIII)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1set_1properties
-(JNIEnv *, jclass, jlong, jint, jint, jint);
+        (JNIEnv *, jclass, jlong, jint, jint, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -560,7 +560,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1set_1p
  * Signature: (JJJJ)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1set_1data
-  (JNIEnv *, jclass, jlong, jlong, jlong, jlong);
+        (JNIEnv *, jclass, jlong, jlong, jlong, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -568,7 +568,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1set_1d
  * Signature: (JZ)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1set_1key_1frame
-  (JNIEnv *, jclass, jlong, jboolean);
+        (JNIEnv *, jclass, jlong, jboolean);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -576,7 +576,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1set_1k
  * Signature: (JIII)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1set_1linesize
-  (JNIEnv *, jclass, jlong, jint, jint, jint);
+        (JNIEnv *, jclass, jlong, jint, jint, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -584,7 +584,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1set_1l
  * Signature: (J[BII)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avpacket_1set_1data
-  (JNIEnv *, jclass, jlong, jbyteArray, jint, jint);
+        (JNIEnv *, jclass, jlong, jbyteArray, jint, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -592,7 +592,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avpacket_1set_1
  * Signature: (JJIII)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avpicture_1fill
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint);
+        (JNIEnv *, jclass, jlong, jlong, jint, jint, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -600,7 +600,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avpicture_1fill
  * Signature: (JIIIJJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_get_1filtered_1video_1frame
-  (JNIEnv *, jclass, jlong, jint, jint, jint, jlong, jlong, jlong);
+        (JNIEnv *, jclass, jlong, jint, jint, jint, jlong, jlong, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -608,7 +608,7 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_get_1filtered_
  * Signature: ([BIIJ)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_memcpy___3BIIJ
-  (JNIEnv *, jclass, jbyteArray, jint, jint, jlong);
+        (JNIEnv *, jclass, jbyteArray, jint, jint, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -616,7 +616,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_memcpy___3BIIJ
  * Signature: ([IIIJ)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_memcpy___3IIIJ
-  (JNIEnv *, jclass, jintArray, jint, jint, jlong);
+        (JNIEnv *, jclass, jintArray, jint, jint, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -624,7 +624,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_memcpy___3IIIJ
  * Signature: (J[BII)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_memcpy__J_3BII
-  (JNIEnv *, jclass, jlong, jbyteArray, jint, jint);
+        (JNIEnv *, jclass, jlong, jbyteArray, jint, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -632,7 +632,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_memcpy__J_3BII
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_PIX_1FMT_1BGR32
-  (JNIEnv *, jclass);
+        (JNIEnv *, jclass);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -640,7 +640,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_PIX_1FMT_1BGR32
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_PIX_1FMT_1BGR32_11
-  (JNIEnv *, jclass);
+        (JNIEnv *, jclass);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -648,7 +648,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_PIX_1FMT_1BGR32
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_PIX_1FMT_1RGB24
-  (JNIEnv *, jclass);
+        (JNIEnv *, jclass);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -656,7 +656,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_PIX_1FMT_1RGB24
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_PIX_1FMT_1RGB32
-  (JNIEnv *, jclass);
+        (JNIEnv *, jclass);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -664,7 +664,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_PIX_1FMT_1RGB32
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_PIX_1FMT_1RGB32_11
-  (JNIEnv *, jclass);
+        (JNIEnv *, jclass);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -672,7 +672,7 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_PIX_1FMT_1RGB32
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_sws_1freeContext
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -680,7 +680,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_sws_1freeContex
  * Signature: (JIIIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_sws_1getCachedContext
-  (JNIEnv *, jclass, jlong, jint, jint, jint, jint, jint, jint, jint);
+        (JNIEnv *, jclass, jlong, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -688,15 +688,16 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_sws_1getCached
  * Signature: (JJIILjava/lang/Object;III)I
  */
 JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_sws_1scale__JJIILjava_lang_Object_2III
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jobject, jint, jint, jint);
+        (JNIEnv *, jclass, jlong, jlong, jint, jint, jobject, jint, jint, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
  * Method:    sws_scale
  * Signature: (JLjava/lang/Object;IIIIILjava/lang/Object;III)I
  */
-JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_sws_1scale__JLjava_lang_Object_2IIIIILjava_lang_Object_2III
-  (JNIEnv *, jclass, jlong, jobject, jint, jint, jint, jint, jint, jobject, jint, jint, jint);
+JNIEXPORT jint JNICALL
+Java_org_atalk_impl_neomedia_codec_FFmpeg_sws_1scale__JLjava_lang_Object_2IIIIILjava_lang_Object_2III
+        (JNIEnv *, jclass, jlong, jobject, jint, jint, jint, jint, jint, jobject, jint, jint, jint);
 
 #ifdef __cplusplus
 }

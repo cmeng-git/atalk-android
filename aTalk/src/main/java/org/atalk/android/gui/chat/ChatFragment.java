@@ -716,8 +716,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             ChatMessage chatMsg = chatListAdapter.getChatMessage(cPos);
             ArrayList<Uri> imageUris = new ArrayList<>();
 
-            switch (item.getItemId()) {
-            case R.id.select_all:
+            int itemId = item.getItemId();
+            if (itemId == R.id.select_all) {
                 int size = chatListAdapter.getCount();
                 if (size < 2)
                     return true;
@@ -731,9 +731,9 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 mode.invalidate();
                 mode.setTitle(String.valueOf(size));
                 return true;
-
-            case R.id.chat_message_copy:
-                // Get clicked message text and copy it to ClipBoard
+            }
+            // Get clicked message text and copy it to ClipBoard
+            else if (itemId == R.id.chat_message_copy) {
                 for (int i = 0; i < checkListSize; i++) {
                     if (checkedList.valueAt(i)) {
                         cPos = checkedList.keyAt(i) - headerCount;
@@ -751,15 +751,14 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                     cmgr.setPrimaryClip(ClipData.newPlainText(null, sBuilder));
                 mode.finish();
                 return true;
-
-            case R.id.chat_message_quote:
+            }
+            else if (itemId == R.id.chat_message_quote) {
                 if (chatMsg != null)
                     mChatController.setQuoteMessage(chatMsg);
                 mode.finish();
                 return true;
-
-            case R.id.chat_message_forward:
-            case R.id.chat_message_share:
+            }
+            else if (itemId == R.id.chat_message_forward || itemId == R.id.chat_message_share) {
                 for (int i = 0; i < checkListSize; i++) {
                     if (checkedList.valueAt(i)) {
                         cPos = checkedList.keyAt(i) - headerCount;
@@ -799,8 +798,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                     mode.finish();
                 }
                 return true;
-
-            case R.id.chat_message_del:
+            }
+            else if (itemId == R.id.chat_message_del) {
                 final List<String> msgUidDel = new ArrayList<>();
                 final List<File> msgFilesDel = new ArrayList<>();
 
@@ -868,15 +867,15 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                         mChatPanel.getChatSession().getDescriptor(), msgUidDel, msgFilesDel);
                 mode.finish();
                 return true;
-
-            case R.id.chat_message_edit:
+            }
+            else if (itemId == R.id.chat_message_edit) {
                 if ((mChatController != null) && (chatMsg != null)) {
                     mChatController.editText(chatListView, chatMsg, cPos);
                 }
                 mode.finish();
                 return true;
-
-            case R.id.chat_message_retract:
+            }
+            else if (itemId == R.id.chat_message_retract) {
                 final List<String> msgUidRetract = new ArrayList<>();
 
                 for (int i = 0; i < checkListSize; i++) {
@@ -899,8 +898,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 EntityListHelper.retractEntityChatHistory(mChatActivity, currentChatTransport, msgUidRetract);
                 mode.finish();
                 return true;
-
-            case R.id.chat_message_translate:
+            }
+            else if (itemId == R.id.chat_message_translate) {
                 for (int i = 0; i < checkListSize; i++) {
                     if (checkedList.valueAt(i)) {
                         cPos = checkedList.keyAt(i) - headerCount;
@@ -913,10 +912,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 }
                 mode.finish();
                 return true;
-
-            default:
-                return false;
             }
+            return false;
         }
 
         // Called when the action mActionMode is created; startActionMode() was called
@@ -1760,8 +1757,8 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
 
             ChatRoomMember finalOccupant = mOccupant;
             popup.setOnMenuItemClickListener(item -> {
-                switch (item.getItemId()) {
-                case R.id.chatroom_start_im:
+                int itemId = item.getItemId();
+                if (itemId == R.id.chatroom_start_im) {
                     Contact contact = getContact(contactJid);
                     Intent chatIntent = ChatSessionManager.getChatIntent(contact);
                     if (chatIntent != null) {
@@ -1774,18 +1771,16 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                         intent.setAction(Intent.ACTION_SENDTO);
                         startActivity(intent);
                     }
-                    break;
-
-                case R.id.chatroom_manage_privilege:
+                }
+                else if (itemId == R.id.chatroom_manage_privilege) {
                     if (ChatRoomMemberRole.OWNER == finalOccupant.getRole()) {
                         chatRoom.revokeAdmin(contactJid);
                     }
                     else {
                         chatRoom.grantOwnership(contactJid);
                     }
-                    break;
-
-                case R.id.chatroom_kick:
+                }
+                else if (itemId == R.id.chatroom_kick) {
                     try {
                         chatRoom.kickParticipant(finalOccupant, "");
                     }
@@ -1793,7 +1788,6 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                         // throw new RuntimeException(e);
                         aTalkApp.showToastMessage(e.getMessage());
                     }
-                    break;
                 }
                 return true;
             });

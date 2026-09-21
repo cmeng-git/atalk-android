@@ -162,18 +162,17 @@ public class CryptoPrivateKeys extends BaseActivity {
         String bareJid = accountsAdapter.getBareJidFromRow(pos);
 
         int id = item.getItemId();
-        switch (id) {
-        case R.id.generate:
+        if (id == R.id.generate) {
             showGenerateKeyAlert(bareJid, false);
             accountsAdapter.notifyDataSetChanged();
             return true;
-
-        case R.id.regenerate:
+        }
+        else if (id == R.id.regenerate) {
             showGenerateKeyAlert(bareJid, true);
             accountsAdapter.notifyDataSetChanged();
             return true;
-
-        case R.id.copy:
+        }
+        else if (id == R.id.copy) {
             String privateKey = accountsAdapter.getOwnKeyFromRow(pos);
             ClipboardManager cbManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             cbManager.setPrimaryClip(ClipData.newPlainText(null, CryptoHelper.prettifyFingerprint(privateKey)));

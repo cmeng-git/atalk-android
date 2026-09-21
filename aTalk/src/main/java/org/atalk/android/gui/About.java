@@ -138,38 +138,31 @@ public class About extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.check_new_version:
-                new Thread() {
-                    @Override
-                    public void run() {
-                        UpdateService updateService
-                                = ServiceUtils.getService(AppGUIActivator.bundleContext, UpdateService.class);
-                        if (updateService != null) {
-                            updateService.checkForUpdates();
-                        }
+        int id = view.getId();
+        if (id == R.id.check_new_version) {
+            new Thread() {
+                @Override
+                public void run() {
+                    UpdateService updateService
+                            = ServiceUtils.getService(AppGUIActivator.bundleContext, UpdateService.class);
+                    if (updateService != null) {
+                        updateService.checkForUpdates();
                     }
-                }.start();
-                break;
-
-            case R.id.submit_logs:
-                aTalkApp.showSendLogsDialog();
-                break;
-
-            case R.id.history_log:
-                ChangeLog cl = new ChangeLog(this);
-                cl.getFullLogDialog().show();
-                break;
-
-            case R.id.atalk_help:
-            case R.id.atalk_link:
-                atalkUrlAccess(this, getString(R.string.AboutDialog_Link));
-                break;
-
-            case R.id.ok_button:
-            default:
-                finish();
-                break;
+                }
+            }.start();
+        }
+        else if (id == R.id.submit_logs) {
+            aTalkApp.showSendLogsDialog();
+        }
+        else if (id == R.id.history_log) {
+            ChangeLog cl = new ChangeLog(this);
+            cl.getFullLogDialog().show();
+        }
+        else if (id == R.id.atalk_help || id == R.id.atalk_link) {
+            atalkUrlAccess(this, getString(R.string.AboutDialog_Link));
+        }
+        else {
+            finish();
         }
     }
 

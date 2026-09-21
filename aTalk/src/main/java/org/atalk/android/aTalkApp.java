@@ -158,7 +158,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
         mInstance = base;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             String language = ConfigurationUtils.getProperty(P_KEY_LOCALE, "");
-            showToastMessage("aTalkApp reinit locale: " + language);
+            // showToastMessage("aTalkApp reinit locale: " + language);
             mInstance = LocaleHelper.setLocale(base, language);
         }
         super.attachBaseContext(mInstance);

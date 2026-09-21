@@ -21,17 +21,18 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.atalk.util.xml.XMLException;
 import org.atalk.util.xml.XMLUtils;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import lombok.NonNull;
 import timber.log.Timber;
 
 /**
  * A class that represents a Conference Information XML document as defined in RFC4575. It wraps
  * around a DOM <code>Document</code> providing convenience functions.
- *
- * {@link "https://tools.ietf.org/html/rfc4575"}
+ * {@link "<a href="https://tools.ietf.org/html/rfc4575">A Session Initiation Protocol (SIP)Event Package for Conference State</a>"}
  *
  * @author Boris Grozev
  * @author Sebastien Vincent
@@ -126,17 +127,17 @@ public class ConferenceInfoDocument {
     /**
      * The <code>Document</code> object that we wrap around.
      */
-    private Document document;
+    private final Document document;
 
     /**
      * The single <code>conference-info</code> element of <code>document</code>
      */
-    private Element conferenceInfo;
+    private final Element conferenceInfo;
 
     /**
      * The <code>conference-description</code> child element of <code>conference-info</code>.
      */
-    private Element conferenceDescription;
+    private final Element conferenceDescription;
 
     /**
      * The <code>conference-state</code> child element of <code>conference-info</code>.
@@ -151,7 +152,7 @@ public class ConferenceInfoDocument {
     /**
      * The <code>users</code> child element of <code>conference-info</code>.
      */
-    private Element users;
+    private final Element users;
 
     /**
      * A list of <code>User</code>s representing the children of <code>users</code>
@@ -167,7 +168,8 @@ public class ConferenceInfoDocument {
             throws XMLException {
         try {
             document = XMLUtils.createDocument();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Timber.e(e, "Failed to create a new document.");
             throw (new XMLException(e.getMessage()));
         }
@@ -202,7 +204,8 @@ public class ConferenceInfoDocument {
         try {
             document = XMLUtils.newDocumentBuilderFactory().newDocumentBuilder()
                     .parse(new ByteArrayInputStream(bytes));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new XMLException(e.getMessage());
         }
 
@@ -237,8 +240,7 @@ public class ConferenceInfoDocument {
     }
 
     /**
-     * Creates a new <code>ConferenceInfoDocument</code> instance that represents a copy of
-     * <code>confInfo</code>
+     * Creates a new <code>ConferenceInfoDocument</code> instance that represents a copy of <code>confInfo</code>
      *
      * @param confInfo the document to copy
      *
@@ -278,7 +280,8 @@ public class ConferenceInfoDocument {
         int version = -1;
         try {
             version = Integer.parseInt(versionString);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             Timber.i("Failed to parse version string: %s", versionString);
         }
 
@@ -344,7 +347,7 @@ public class ConferenceInfoDocument {
      * to.
      */
     public void setSid(String sid) {
-        if (sid == null || sid.equals(""))
+        if (TextUtils.isEmpty(sid))
             conferenceInfo.removeAttribute("sid");
         else
             conferenceInfo.setAttribute("sid", sid);
@@ -366,7 +369,7 @@ public class ConferenceInfoDocument {
      * document to.
      */
     public void setEntity(String entity) {
-        if (entity == null || entity.equals(""))
+        if (TextUtils.isEmpty(entity))
             conferenceInfo.removeAttribute(ENTITY_ATTR_NAME);
         else
             conferenceInfo.setAttribute(ENTITY_ATTR_NAME, entity);
@@ -417,7 +420,8 @@ public class ConferenceInfoDocument {
         int ret = -1;
         try {
             ret = Integer.parseInt(userCount.getTextContent());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Timber.w("Could not parse user-count field");
         }
         return ret;
@@ -437,7 +441,8 @@ public class ConferenceInfoDocument {
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.transform(new DOMSource(conferenceInfo), new StreamResult(buffer));
             return buffer.toString();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return null;
         }
     }
@@ -449,7 +454,7 @@ public class ConferenceInfoDocument {
      * @return the XML representation of the document or an error string.
      */
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         String s = toXml(null);
         return s == null ? "Could not get conference-info XML" : s;
     }
@@ -572,11 +577,11 @@ public class ConferenceInfoDocument {
      * <code>null</code>, the child element is removed if present.
      *
      * @param element the <code>Element</code> for which to set the <code>status</code> child element.
-     * @param statusString the <code>String</code> to use for the text content of the <code>status</code> element
+     * @param status the <code>String</code> to use for the text content of the <code>status</code> element
      */
-    private void setStatus(Element element, String statusString) {
+    private void setStatus(Element element, String status) {
         Element statusElement = XMLUtils.findChild(element, STATUS_ELEMENT);
-        if (statusString == null || statusString.equals("")) {
+        if (TextUtils.isEmpty(status)) {
             if (statusElement != null)
                 element.removeChild(statusElement);
         }
@@ -585,7 +590,7 @@ public class ConferenceInfoDocument {
                 statusElement = document.createElement(STATUS_ELEMENT);
                 element.appendChild(statusElement);
             }
-            statusElement.setTextContent(statusString);
+            statusElement.setTextContent(status);
         }
     }
 
@@ -611,12 +616,12 @@ public class ConferenceInfoDocument {
         /**
          * The name of this <code>State</code>
          */
-        private String name;
+        private final String name;
 
         /**
          * Creates a <code>State</code> instance with the specified name.
          *
-         * @param name
+         * @param name State
          */
         State(String name) {
             this.name = name;
@@ -628,7 +633,7 @@ public class ConferenceInfoDocument {
          * @return the name of this <code>State</code>
          */
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return name;
         }
 
@@ -657,13 +662,13 @@ public class ConferenceInfoDocument {
         /**
          * The underlying <code>Element</code>.
          */
-        private Element userElement;
+        private final Element userElement;
 
         /**
          * The list of <code>Endpoint</code>s representing the <code>endpoint</code> children of this
          * <code>User</code>'s element.
          */
-        private List<Endpoint> endpointsList = new LinkedList<>();
+        private final List<Endpoint> endpointsList = new LinkedList<>();
 
         /**
          * Creates a new <code>User</code> instance with the specified <code>Element</code> as its
@@ -686,7 +691,7 @@ public class ConferenceInfoDocument {
          * @param entity the value to set for the <code>entity</code> attribute.
          */
         public void setEntity(String entity) {
-            if (entity == null || entity.equals(""))
+            if (TextUtils.isEmpty(entity))
                 userElement.removeAttribute(ENTITY_ATTR_NAME);
             else
                 userElement.setAttribute(ENTITY_ATTR_NAME, entity);
@@ -726,7 +731,7 @@ public class ConferenceInfoDocument {
          */
         public void setDisplayText(String text) {
             Element displayText = XMLUtils.findChild(userElement, DISPLAY_TEXT_ELEMENT);
-            if (text == null || text.equals("")) {
+            if (TextUtils.isEmpty(text)) {
                 if (displayText != null)
                     userElement.removeChild(displayText);
             }
@@ -837,13 +842,13 @@ public class ConferenceInfoDocument {
         /**
          * The underlying <code>Element</code>.
          */
-        private Element endpointElement;
+        private final Element endpointElement;
 
         /**
          * The list of <code>Media</code>s representing the <code>media</code> children elements of this
          * <code>Endpoint</code>'s element.
          */
-        private List<Media> mediasList = new LinkedList<>();
+        private final List<Media> mediasList = new LinkedList<>();
 
         /**
          * Creates a new <code>Endpoint</code> instance with the specified <code>Element</code> as its
@@ -866,7 +871,7 @@ public class ConferenceInfoDocument {
          * @param entity the value to set for the <code>entity</code> attribute.
          */
         public void setEntity(String entity) {
-            if (entity == null || entity.equals(""))
+            if (TextUtils.isEmpty(entity))
                 endpointElement.removeAttribute(ENTITY_ATTR_NAME);
             else
                 endpointElement.setAttribute(ENTITY_ATTR_NAME, entity);
@@ -918,8 +923,8 @@ public class ConferenceInfoDocument {
          */
         public EndpointStatusType getStatus() {
             Element statusElement = XMLUtils.findChild(endpointElement, STATUS_ELEMENT);
-            return statusElement == null ? null : EndpointStatusType.parseString(statusElement
-                    .getTextContent());
+            return statusElement == null ?
+                    null : EndpointStatusType.parseString(statusElement.getTextContent());
         }
 
         /**
@@ -1005,7 +1010,7 @@ public class ConferenceInfoDocument {
         /**
          * The underlying <code>Element</code>.
          */
-        private Element mediaElement;
+        private final Element mediaElement;
 
         /**
          * Creates a new <code>Media</code> instance with the specified <code>Element</code> as its
@@ -1023,7 +1028,7 @@ public class ConferenceInfoDocument {
          * @param id the value to set for the <code>id</code> attribute.
          */
         public void setId(String id) {
-            if (id == null || id.equals(""))
+            if (TextUtils.isEmpty(id))
                 mediaElement.removeAttribute(ID_ATTR_NAME);
             else
                 mediaElement.setAttribute(ID_ATTR_NAME, id);
@@ -1045,7 +1050,7 @@ public class ConferenceInfoDocument {
          */
         public void setSrcId(String srcId) {
             Element srcIdElement = XMLUtils.findChild(mediaElement, SRC_ID_ELEMENT);
-            if (srcId == null || srcId.equals("")) {
+            if (TextUtils.isEmpty(srcId)) {
                 if (srcIdElement != null)
                     mediaElement.removeChild(srcIdElement);
             }
@@ -1077,7 +1082,7 @@ public class ConferenceInfoDocument {
          */
         public void setType(String type) {
             Element typeElement = XMLUtils.findChild(mediaElement, TYPE_ELEMENT);
-            if (type == null || type.equals("")) {
+            if (TextUtils.isEmpty(type)) {
                 if (typeElement != null)
                     mediaElement.removeChild(typeElement);
             }
@@ -1195,7 +1200,7 @@ public class ConferenceInfoDocument {
          * @return type name
          */
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return type;
         }
 

@@ -13,8 +13,7 @@
 
 JNIEXPORT void JNICALL
 Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1decoder_1close
-    (JNIEnv *jniEnv, jclass clazz, jlong decoder)
-{
+        (JNIEnv *jniEnv, jclass clazz, jlong decoder) {
     g722_decode_state_t *d = (g722_decode_state_t *) (intptr_t) decoder;
 
     g722_decode_release(d);
@@ -23,25 +22,21 @@ Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1decoder_1close
 
 JNIEXPORT jlong JNICALL
 Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1decoder_1open
-    (JNIEnv *jniEnv, jclass clazz)
-{
+        (JNIEnv *jniEnv, jclass clazz) {
     return (jlong) (intptr_t) g722_decode_init(NULL, 64000, 0);
 }
 
 JNIEXPORT void JNICALL
 Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1decoder_1process
-    (JNIEnv *jniEnv, jclass clazz,
-    jlong decoder,
-    jbyteArray input, jint inputOffset,
-    jbyteArray output, jint outputOffset, jint outputLength)
-{
+        (JNIEnv *jniEnv, jclass clazz,
+         jlong decoder,
+         jbyteArray input, jint inputOffset,
+         jbyteArray output, jint outputOffset, jint outputLength) {
     jbyte *outputPtr = (*jniEnv)->GetByteArrayElements(jniEnv, output, NULL);
 
-    if (outputPtr)
-    {
+    if (outputPtr) {
         jbyte *inputPtr = (*jniEnv)->GetPrimitiveArrayCritical(jniEnv, input, NULL);
-        if (inputPtr)
-        {
+        if (inputPtr) {
             g722_decode(
                     (g722_decode_state_t *) (intptr_t) decoder,
                     (int16_t *) (outputPtr + outputOffset),

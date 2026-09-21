@@ -200,8 +200,8 @@ public class CryptoFragment extends BaseFragment
         boolean hasChange = false;
         menuItem.setChecked(true);
 
-        switch (menuItem.getItemId()) {
-        case R.id.crypto_choice:
+        int itemId = menuItem.getItemId();
+        if (itemId == R.id.crypto_choice) {
             Boolean isOmemoSupported = omemoCapable.get(mDescriptor);
             if (isOmemoSupported == null)
                 isOmemoSupported = false;
@@ -214,25 +214,20 @@ public class CryptoFragment extends BaseFragment
                 mItem.setChecked(true);
             }
             return true;
-
-        case R.id.encryption_none:
+        }
+        else if (itemId == R.id.encryption_none) {
             if (mDescriptor instanceof Contact)
-                mChatType = ChatFragment.MSGTYPE_NORMAL;
+                mChatType = MSGTYPE_NORMAL;
             else
-                mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
+                mChatType = MSGTYPE_MUC_NORMAL;
             hasChange = true;
             doHandleOmemoPressed(false);
-            break;
-
-        case R.id.encryption_omemo:
+        }
+        else if (itemId == R.id.encryption_omemo) {
             if (!activeChat.isOmemoChat())
                 mChatType = MSGTYPE_OMEMO;
             hasChange = true;
             doHandleOmemoPressed(true);
-            break;
-
-        default:
-            break;
         }
 
         if (hasChange) {
@@ -244,7 +239,7 @@ public class CryptoFragment extends BaseFragment
             mMHS.setSessionChatType(activeChat.getChatSession(), mChatType);
             return true;
         }
-        return super.onOptionsItemSelected(menuItem);
+        return false;
     }
 
     /**
@@ -421,12 +416,10 @@ public class CryptoFragment extends BaseFragment
                         allTrusted = mOmemoManager.isTrustedOmemoIdentity(recipientDevice, fingerPrint)
                                 && allTrusted;
                     }
-                    catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException e1) {
+                    catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException |
+                           SmackException.NotLoggedInException | SmackException.NotConnectedException |
+                           SmackException.NoResponseException | InterruptedException | IOException e1) {
                         Timber.w("AllTrusted check exception: %s", e1.getMessage());
-                    }
-                    catch (SmackException.NotLoggedInException | SmackException.NotConnectedException
-                           | SmackException.NoResponseException | InterruptedException | IOException e1) {
-                        e1.printStackTrace();
                     }
                 }
             }

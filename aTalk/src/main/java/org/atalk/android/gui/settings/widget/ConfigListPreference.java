@@ -53,13 +53,11 @@ public class ConfigListPreference extends ListPreference {
 
         for (int i = 0; i < attArray.getIndexCount(); i++) {
             int attrIdx = attArray.getIndex(i);
-            switch (attrIdx) {
-                case R.styleable.ConfigListPreference_disableDependentsValue:
-                    this.dependentValue = attArray.getString(attrIdx);
-                    break;
-                case R.styleable.ConfigListPreference_disableOnNotEqualValue:
-                    this.disableOnNotEqual = attArray.getBoolean(attrIdx, false);
-                    break;
+            if (attrIdx == R.styleable.ConfigListPreference_disableDependentsValue) {
+                this.dependentValue = attArray.getString(attrIdx);
+            }
+            else if (attrIdx == R.styleable.ConfigListPreference_disableOnNotEqualValue) {
+                this.disableOnNotEqual = attArray.getBoolean(attrIdx, false);
             }
         }
     }

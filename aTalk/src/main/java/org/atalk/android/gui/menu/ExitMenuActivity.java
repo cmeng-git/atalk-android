@@ -40,22 +40,22 @@ public abstract class ExitMenuActivity extends OSGiActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.online_help:
+        int itemId = item.getItemId();
+        if (itemId == R.id.online_help) {
             About.atalkUrlAccess(this, getString(R.string.FAQ_Link));
-            break;
-        case R.id.about:
+        }
+        else if (itemId == R.id.about) {
             startActivity(About.class);
-            break;
-        // Shutdown application
-        case R.id.menu_exit:
+        }
+        else if (itemId == R.id.menu_exit) {
+            // Shutdown application
             shutdownApplication();
-            break;
-        // delete database
-        case R.id.del_database:
+        }
+        else if (itemId == R.id.del_database) {
+            // delete database
             ServerPersistentStoresRefreshDialog.deleteDB();
-            break;
-        default:
+        }
+        else {
             return super.onOptionsItemSelected(item);
         }
         return true;

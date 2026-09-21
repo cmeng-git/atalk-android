@@ -21,17 +21,17 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-*/
+ */
 package org.atalk.impl.neomedia.transform.srtp;
-
-import org.atalk.impl.neomedia.transform.SinglePacketTransformer;
-import org.atalk.service.neomedia.RawPacket;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.media.Buffer;
+
+import org.atalk.impl.neomedia.transform.SinglePacketTransformer;
+import org.atalk.service.neomedia.RawPacket;
 
 /**
  * SRTPTransformer implements PacketTransformer and provides implementations for RTP packet to SRTP
@@ -43,8 +43,7 @@ import javax.media.Buffer;
  * @author Bing SU (nova.su@gmail.com)
  * @author Eng Chong Meng
  */
-public class SRTPTransformer extends SinglePacketTransformer
-{
+public class SRTPTransformer extends SinglePacketTransformer {
     SrtpContextFactory forwardFactory;
     SrtpContextFactory reverseFactory;
 
@@ -58,8 +57,7 @@ public class SRTPTransformer extends SinglePacketTransformer
      *
      * @param factory the context factory to be used by the new instance for both directions.
      */
-    public SRTPTransformer(SrtpContextFactory factory)
-    {
+    public SRTPTransformer(SrtpContextFactory factory) {
         this(factory, factory);
     }
 
@@ -69,8 +67,7 @@ public class SRTPTransformer extends SinglePacketTransformer
      * @param forwardFactory The associated context factory for forward transformations.
      * @param reverseFactory The associated context factory for reverse transformations.
      */
-    public SRTPTransformer(SrtpContextFactory forwardFactory, SrtpContextFactory reverseFactory)
-    {
+    public SRTPTransformer(SrtpContextFactory forwardFactory, SrtpContextFactory reverseFactory) {
         this.forwardFactory = forwardFactory;
         this.reverseFactory = reverseFactory;
         this.contexts = new HashMap<>();
@@ -83,8 +80,7 @@ public class SRTPTransformer extends SinglePacketTransformer
      * @param forward <code>true</code> if the supplied factory is for forward transformations,
      * <code>false</code> for the reverse transformation factory.
      */
-    public void setContextFactory(SrtpContextFactory factory, boolean forward)
-    {
+    public void setContextFactory(SrtpContextFactory factory, boolean forward) {
         synchronized (contexts) {
             if (forward) {
                 if (this.forwardFactory != null && this.forwardFactory != factory) {
@@ -105,8 +101,7 @@ public class SRTPTransformer extends SinglePacketTransformer
      * Closes this <code>SRTPTransformer</code> and the underlying transform engines.It closes all
      * stored crypto contexts. It deletes key data and forces a cleanup of the crypto contexts.
      */
-    public void close()
-    {
+    public void close() {
         synchronized (contexts) {
             forwardFactory.close();
             if (reverseFactory != forwardFactory)
@@ -121,8 +116,7 @@ public class SRTPTransformer extends SinglePacketTransformer
         }
     }
 
-    private SrtpCryptoContext getContext(int ssrc, SrtpContextFactory engine, int deriveSrtpKeysIndex)
-    {
+    private SrtpCryptoContext getContext(int ssrc, SrtpContextFactory engine, int deriveSrtpKeysIndex) {
         SrtpCryptoContext context;
 
         synchronized (contexts) {
@@ -139,23 +133,22 @@ public class SRTPTransformer extends SinglePacketTransformer
      * Reverse-transforms a specific packet (i.e. transforms a transformed packet back).
      *
      * @param pkt the transformed packet to be restored
+     *
      * @return the restored packet.
      */
     @Override
-    public RawPacket reverseTransform(RawPacket pkt)
-    {
+    public RawPacket reverseTransform(RawPacket pkt) {
         // only accept RTP version 2 (SNOM phones send weird packages when on
         // hold, ignore them with this check (RTP Version must be equal to 2)
         if ((pkt.readByte(0) & 0xC0) != 0x80)
             return null;
 
         SrtpCryptoContext context = getContext(pkt.getSSRC(), reverseFactory, pkt.getSequenceNumber());
-
-        boolean skipDecryption = (pkt.getFlags() & (Buffer.FLAG_DISCARD | Buffer.FLAG_SILENCE)) != 0;
-
         if (context == null) {
             return null;
         }
+
+        boolean skipDecryption = (pkt.getFlags() & (Buffer.FLAG_DISCARD | Buffer.FLAG_SILENCE)) != 0;
         return (context.reverseTransformPacket(pkt, skipDecryption) == SrtpErrorStatus.OK) ? pkt : null;
     }
 
@@ -163,11 +156,11 @@ public class SRTPTransformer extends SinglePacketTransformer
      * Transforms a specific packet.
      *
      * @param pkt the packet to be transformed
+     *
      * @return the transformed packet.
      */
     @Override
-    public RawPacket transform(RawPacket pkt)
-    {
+    public RawPacket transform(RawPacket pkt) {
         SrtpCryptoContext context = getContext(pkt.getSSRC(), forwardFactory, 0);
 
         if (context == null) {

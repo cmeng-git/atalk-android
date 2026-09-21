@@ -5,6 +5,7 @@
  */
 package org.atalk.android.gui.chat;
 
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -451,6 +452,7 @@ public class ChatActivity extends BaseActivity
     /**
      * {@inheritDoc}
      */
+    @SuppressLint("GestureBackNavigation")
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         // Close the activity when back button is pressed
@@ -665,29 +667,29 @@ public class ChatActivity extends BaseActivity
         Object descriptor = mChatPanel.getChatSession().getDescriptor();
 
         // Common handler for both the ChatRoomWrapper and MetaContact
-        switch (item.getItemId()) {
-        case R.id.send_file:
+        int id = item.getItemId();
+        if (id == R.id.send_file) {
             AttachOptionDialog attachOptionDialog = new AttachOptionDialog(this);
             attachOptionDialog.show();
             return true;
-
-        case R.id.muc_invite:
+        }
+        else if (id == R.id.muc_invite) {
             ChatInviteDialog inviteDialog = new ChatInviteDialog(this, mChatPanel);
             inviteDialog.show();
             return true;
-
-        case R.id.erase_chat_history:
+        }
+        else if (id == R.id.erase_chat_history) {
             eraseMode = EntityListHelper.SINGLE_ENTITY;
             EntityListHelper.eraseEntityChatHistory(this, descriptor, null, null);
             return true;
-
-        case R.id.share_location:
+        }
+        else if (id == R.id.share_location) {
             Intent intent = new Intent(this, GeoLocationActivity.class);
             intent.putExtra(GeoLocationActivity.SHARE_ALLOW, true);
             startActivity(intent);
             return true;
-
-        case R.id.send_optout:
+        }
+        else if (id == R.id.send_optout) {
             XMPPConnection connection = mChatPanel.getProtocolProvider().getConnection();
             boolean isDomainJid = (mRecipient == null) || (mRecipient.getJid() instanceof DomainBareJid);
 
@@ -708,29 +710,29 @@ public class ChatActivity extends BaseActivity
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.addToBackStack(null);
 
-            switch (item.getItemId()) {
-            case R.id.chat_tts_enable:
+            int itemId = item.getItemId();
+            if (itemId == R.id.chat_tts_enable) {
                 boolean isTtsEnable = chatRoomWrapper.isTtsEnable();
                 chatRoomWrapper.setTtsEnable(!isTtsEnable);
                 mTtsEnable.setTitle(isTtsEnable ? R.string.tts_enable : R.string.tts_disable);
                 mChatPanel.updateChatTtsOption();
                 return true;
-
-            case R.id.chat_translate_send:
+            }
+            else if (itemId == R.id.chat_translate_send) {
                 boolean isTranslateSend = chatRoomWrapper.isTranslateSend();
                 chatRoomWrapper.setTranslateSend(!isTranslateSend);
                 mTranslateSend.setTitle(isTranslateSend ?
                         R.string.translation_sent_enable : R.string.translation_sent_disable);
                 return true;
-
-            case R.id.chat_translate_receive:
+            }
+            else if (itemId == R.id.chat_translate_receive) {
                 boolean isTranslateReceive = chatRoomWrapper.isTranslateReceive();
                 chatRoomWrapper.setTranslateReceive(!isTranslateReceive);
                 mTranslateReceive.setTitle(isTranslateReceive ?
                         R.string.translation_receive_enable : R.string.translation_receive_disable);
                 return true;
-
-            case R.id.leave_chat_room:
+            }
+            else if (itemId == R.id.leave_chat_room) {
                 if (chatRoom != null) {
                     ChatRoomWrapper leavedRoomWrapped = MUCActivator.getMUCService().leaveChatRoom(chatRoomWrapper);
                     if (leavedRoomWrapped != null) {
@@ -742,28 +744,28 @@ public class ChatActivity extends BaseActivity
                 MUCActivator.getMUCService().removeChatRoom(chatRoomWrapper);
                 finish();
                 return true;
-
-            case R.id.destroy_chat_room:
+            }
+            else if (itemId == R.id.destroy_chat_room) {
                 new ChatRoomDestroyDialog().show(this, chatRoomWrapper, mChatPanel);
                 // It is safer to just finish. see case R.id.close_chat:
                 finish();
                 return true;
-
-            case R.id.chatroom_info:
+            }
+            else if (itemId == R.id.chatroom_info) {
                 ChatRoomInfoDialog chatRoomInfoDialog = ChatRoomInfoDialog.newInstance(chatRoomWrapper);
                 chatRoomInfoDialog.show(ft, "infoDialog");
                 return true;
-
-            case R.id.chatroom_info_change:
+            }
+            else if (itemId == R.id.chatroom_info_change) {
                 new ChatRoomInfoChangeDialog().show(chatRoomWrapper);
                 return true;
-
-            case R.id.chatroom_config:
+            }
+            else if (itemId == R.id.chatroom_config) {
                 chatRoomConfig = ChatRoomConfiguration.getInstance(chatRoomWrapper, this);
                 ft.replace(android.R.id.content, chatRoomConfig).commit();
                 return true;
-
-            case R.id.room_status_enable:
+            }
+            else if (itemId == R.id.room_status_enable) {
                 if (chatRoomWrapper.isRoomStatusEnable()) {
                     chatRoomWrapper.setRoomStatusEnable(false);
                     mStatusEnable.setTitle(R.string.chatroom_status_enable);
@@ -773,8 +775,8 @@ public class ChatActivity extends BaseActivity
                     mStatusEnable.setTitle(R.string.chatroom_status_disable);
                 }
                 return true;
-
-            case R.id.show_chatroom_occupant:
+            }
+            else if (itemId == R.id.show_chatroom_occupant) {
                 StringBuilder memberList = new StringBuilder();
                 List<ChatRoomMember> occupants = chatRoom.getMembers();
                 if (!occupants.isEmpty()) {
@@ -800,32 +802,31 @@ public class ChatActivity extends BaseActivity
         }
         // Handle item selection for mRecipient if non-null
         else if (mRecipient != null) {
-            Boolean isAudioCall = null;
-
-            switch (item.getItemId()) {
-            case R.id.chat_tts_enable:
+            int itemId = item.getItemId();
+            if (itemId == R.id.chat_tts_enable) {
                 boolean isTtsEnable = mRecipient.isTtsEnable();
                 mRecipient.setTtsEnable(!isTtsEnable);
                 mTtsEnable.setTitle(isTtsEnable ? R.string.tts_enable : R.string.tts_disable);
                 mChatPanel.updateChatTtsOption();
                 return true;
-
-            case R.id.chat_translate_send:
+            }
+            else if (itemId == R.id.chat_translate_send) {
                 boolean isTranslateSend = mRecipient.isTranslateSend();
                 mRecipient.setTranslateSend(!isTranslateSend);
                 mTranslateSend.setTitle(isTranslateSend ?
                         R.string.translation_sent_enable : R.string.translation_sent_disable);
                 // chatPanel.updateChatTtsOption();
                 return true;
-
-            case R.id.chat_translate_receive:
+            }
+            else if (itemId == R.id.chat_translate_receive) {
                 boolean isTranslateReceive = mRecipient.isTranslateReceive();
                 mRecipient.setTranslateReceive(!isTranslateReceive);
                 mTranslateReceive.setTitle(isTranslateReceive ?
                         R.string.translation_receive_enable : R.string.translation_receive_disable);
                 return true;
-
-            case R.id.call_contact_audio: // start audio call
+            }
+            else if (itemId == R.id.call_contact_audio) {
+                // start audio call
                 Jid jid = mRecipient.getJid();
                 if (jid instanceof DomainBareJid) {
                     TelephonyFragment extPhone = TelephonyFragment.newInstance(jid.toString());
@@ -833,10 +834,12 @@ public class ChatActivity extends BaseActivity
                             .replace(android.R.id.content, extPhone, TelephonyFragment.TELEPHONY_TAG).commit();
                     return true;
                 }
-                isAudioCall = true;  // fall through to start either audio / video call
-
-            case R.id.call_contact_video:
-                AppCallUtil.createCall(this, mChatPanel.getMetaContact(), (isAudioCall == null), null);
+                AppCallUtil.createCall(this, mChatPanel.getMetaContact(), false, null);
+                return true;
+            }
+            else if (itemId == R.id.call_contact_video) {
+                // start video call
+                AppCallUtil.createCall(this, mChatPanel.getMetaContact(), true, null);
                 return true;
             }
         }

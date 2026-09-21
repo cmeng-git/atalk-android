@@ -19,8 +19,7 @@
 #define PLUGIN_BUFFERPROCESSEDFAILED 1
 #define PLUGIN_BUFFERPROCESSEDOK 0
 
-typedef struct _OpenSLESRenderer
-{
+typedef struct _OpenSLESRenderer {
     jint bufferCapacity;
     SLuint32 bufferCount;
     SLuint32 *bufferPlayIndexes;
@@ -36,38 +35,36 @@ typedef struct _OpenSLESRenderer
     SLPlayItf player_PlayItf;
     SLuint32 playIndex;
 }
-OpenSLESRenderer;
+        OpenSLESRenderer;
 
 static SLresult OpenSLESRenderer_createAudioPlayer
-    (OpenSLESRenderer *thiz,
-     JNIEnv *jniEnv, jclass clazz,
-     jstring encoding, jdouble sampleRate, jint sampleSizeInBits, jint channels,
-     jint endian, jint zigned, jclass dataType);
+        (OpenSLESRenderer *thiz,
+         JNIEnv *jniEnv, jclass clazz,
+         jstring encoding, jdouble sampleRate, jint sampleSizeInBits, jint channels,
+         jint endian, jint zigned, jclass dataType);
+
 static void OpenSLESRenderer_player_BufferQueueItfCallback
-    (SLBufferQueueItf caller, void *context);
+        (SLBufferQueueItf caller, void *context);
 
 JNIEXPORT void JNICALL
 Java_org_atalk_impl_neomedia_jmfext_media_renderer_audio_OpenSLESRenderer_close
-    (JNIEnv *jniEnv, jclass clazz, jlong ptr)
-{
+        (JNIEnv *jniEnv, jclass clazz, jlong ptr) {
     OpenSLESRenderer *thiz = (OpenSLESRenderer *) (intptr_t) ptr;
     pthread_mutex_t *mutex = thiz->mutex;
 
-    if (mutex && (pthread_mutex_lock(mutex) == 0))
-    {
+    if (mutex && (pthread_mutex_lock(mutex) == 0)) {
         SLObjectItf player_ObjectItf = thiz->player_ObjectItf;
         SLObjectItf outputMix_ObjectItf = thiz->outputMix_ObjectItf;
         SLObjectItf engine_ObjectItf = thiz->engine_ObjectItf;
         pthread_cond_t *cond = thiz->cond;
 
-        if (player_ObjectItf)
-        {
+        if (player_ObjectItf) {
             SLPlayItf player_PlayItf = thiz->player_PlayItf;
 
             if (player_PlayItf)
                 (*player_PlayItf)->SetPlayState(
-                    player_PlayItf,
-                    SL_PLAYSTATE_STOPPED);
+                        player_PlayItf,
+                        SL_PLAYSTATE_STOPPED);
             (*player_ObjectItf)->Destroy(player_ObjectItf);
         }
         if (outputMix_ObjectItf)
@@ -79,16 +76,15 @@ Java_org_atalk_impl_neomedia_jmfext_media_renderer_audio_OpenSLESRenderer_close
         if (thiz->bufferPlayIndexes)
             free(thiz->bufferPlayIndexes);
 
-        if (cond)
-        {
+        if (cond) {
             thiz->cond = NULL;
             if ((pthread_cond_broadcast(cond) == 0)
-                    && (pthread_cond_destroy(cond) == 0))
+                && (pthread_cond_destroy(cond) == 0))
                 free(cond);
         }
         thiz->mutex = NULL;
         if ((pthread_mutex_unlock(mutex) == 0)
-                && (pthread_mutex_destroy(mutex) == 0))
+            && (pthread_mutex_destroy(mutex) == 0))
             free(mutex);
     }
     free(thiz);
@@ -96,89 +92,67 @@ Java_org_atalk_impl_neomedia_jmfext_media_renderer_audio_OpenSLESRenderer_close
 
 JNIEXPORT jlong JNICALL
 Java_org_atalk_impl_neomedia_jmfext_media_renderer_audio_OpenSLESRenderer_open
-    (JNIEnv *jniEnv, jclass clazz,
-     jstring encoding, jdouble sampleRate, jint sampleSizeInBits, jint channels,
-     jint endian, jint zigned, jclass dataType)
-{
+        (JNIEnv *jniEnv, jclass clazz,
+         jstring encoding, jdouble sampleRate, jint sampleSizeInBits, jint channels,
+         jint endian, jint zigned, jclass dataType) {
     OpenSLESRenderer *thiz = calloc(1, sizeof(OpenSLESRenderer));
 
-    if (thiz)
-    {
+    if (thiz) {
         SLresult SLresult_ = SL_RESULT_SUCCESS;
-
         {
             pthread_mutex_t *mutex = malloc(sizeof(pthread_mutex_t));
-
-            if (mutex)
-            {
+            if (mutex) {
                 pthread_mutexattr_t attr;
                 pthread_mutexattr_t *pattr = &attr;
 
                 if ((pthread_mutexattr_init(pattr) == 0)
                     && (pthread_mutexattr_settype(pattr, PTHREAD_MUTEX_RECURSIVE) == 0)
-                    && (pthread_mutex_init(mutex, pattr) == 0))
-                {
+                    && (pthread_mutex_init(mutex, pattr) == 0)) {
                     thiz->mutex = mutex;
 
-                    if (pthread_mutexattr_destroy(pattr) == 0)
-                    {
+                    if (pthread_mutexattr_destroy(pattr) == 0) {
                         pthread_cond_t *cond = malloc(sizeof(pthread_cond_t));
 
-                        if (cond)
-                        {
+                        if (cond) {
                             if (pthread_cond_init(cond, NULL) == 0)
                                 thiz->cond = cond;
-                            else
-                            {
+                            else {
                                 free(cond);
                                 SLresult_ = SL_RESULT_UNKNOWN_ERROR;
                             }
-                        }
-                        else
+                        } else
                             SLresult_ = SL_RESULT_MEMORY_FAILURE;
-                    }
-                    else
+                    } else
                         SLresult_ = SL_RESULT_UNKNOWN_ERROR;
-                }
-                else
-                {
+                } else {
                     free(mutex);
                     SLresult_ = SL_RESULT_UNKNOWN_ERROR;
                 }
-            }
-            else
+            } else
                 SLresult_ = SL_RESULT_MEMORY_FAILURE;
         }
 
-        if (SL_RESULT_SUCCESS == SLresult_)
-        {
+        if (SL_RESULT_SUCCESS == SLresult_) {
             SLObjectItf engine_ObjectItf;
 
-            SLresult_
-                = slCreateEngine(&engine_ObjectItf, 0, NULL, 0, NULL, NULL);
-            if (SL_RESULT_SUCCESS == SLresult_)
-            {
+            SLresult_ = slCreateEngine(&engine_ObjectItf, 0, NULL, 0, NULL, NULL);
+            if (SL_RESULT_SUCCESS == SLresult_) {
                 thiz->engine_ObjectItf = engine_ObjectItf;
 
-                SLresult_
-                    = (*engine_ObjectItf)->Realize(
+                SLresult_ = (*engine_ObjectItf)->Realize(
                         engine_ObjectItf,
                         SL_BOOLEAN_FALSE);
-                if (SL_RESULT_SUCCESS == SLresult_)
-                {
+                if (SL_RESULT_SUCCESS == SLresult_) {
                     SLEngineItf engine_EngineItf;
 
-                    SLresult_
-                        = (*engine_ObjectItf)->GetInterface(
+                    SLresult_ = (*engine_ObjectItf)->GetInterface(
                             engine_ObjectItf,
                             SL_IID_ENGINE,
                             &engine_EngineItf);
-                    if (SL_RESULT_SUCCESS == SLresult_)
-                    {
+                    if (SL_RESULT_SUCCESS == SLresult_) {
                         thiz->engine_EngineItf = engine_EngineItf;
 
-                        SLresult_
-                            = OpenSLESRenderer_createAudioPlayer(
+                        SLresult_ = OpenSLESRenderer_createAudioPlayer(
                                 thiz,
                                 jniEnv, clazz,
                                 encoding, sampleRate, sampleSizeInBits, channels,
@@ -188,11 +162,10 @@ Java_org_atalk_impl_neomedia_jmfext_media_renderer_audio_OpenSLESRenderer_open
             }
         }
 
-        if (SL_RESULT_SUCCESS != SLresult_)
-        {
+        if (SL_RESULT_SUCCESS != SLresult_) {
             Java_org_atalk_impl_neomedia_jmfext_media_renderer_audio_OpenSLESRenderer_close(
-                jniEnv, clazz,
-                (jlong) (intptr_t) thiz);
+                    jniEnv, clazz,
+                    (jlong) (intptr_t) thiz);
             thiz = NULL;
         }
     }
@@ -201,26 +174,22 @@ Java_org_atalk_impl_neomedia_jmfext_media_renderer_audio_OpenSLESRenderer_open
 
 JNIEXPORT jint JNICALL
 Java_org_atalk_impl_neomedia_jmfext_media_renderer_audio_OpenSLESRenderer_process
-    (JNIEnv *jniEnv, jclass clazz,
-     jlong ptr, jobject data, jint offset, jint length)
-{
+        (JNIEnv *jniEnv, jclass clazz,
+         jlong ptr, jobject data, jint offset, jint length) {
     OpenSLESRenderer *thiz = (OpenSLESRenderer *) (intptr_t) ptr;
     jint processed;
 
-    while (length)
-    {
+    while (length) {
         pthread_mutex_t *mutex = thiz->mutex;
 
-        if (mutex && (pthread_mutex_lock(mutex) == 0))
-        {
+        if (mutex && (pthread_mutex_lock(mutex) == 0)) {
             SLPlayItf player_PlayItf = thiz->player_PlayItf;
             SLuint32 playState;
 
             if (SL_RESULT_SUCCESS
-                        == (*player_PlayItf)->GetPlayState(
-                            player_PlayItf,
-                            &playState))
-            {
+                == (*player_PlayItf)->GetPlayState(
+                    player_PlayItf,
+                    &playState)) {
                 SLuint32 bufferIndex;
                 SLuint32 bufferCount = thiz->bufferCount;
                 SLuint32 *bufferPlayIndexes = thiz->bufferPlayIndexes;
@@ -228,107 +197,77 @@ Java_org_atalk_impl_neomedia_jmfext_media_renderer_audio_OpenSLESRenderer_proces
                 jboolean duplicatePlayIndex = JNI_FALSE;
 
                 processed = PLUGIN_BUFFERPROCESSEDOK;
-                for (bufferIndex = 0; bufferIndex < bufferCount; bufferIndex++)
-                {
-                    SLuint32 *bufferPlayIndexPtr
-                        = bufferPlayIndexes + bufferIndex;
+                for (bufferIndex = 0; bufferIndex < bufferCount; bufferIndex++) {
+                    SLuint32 *bufferPlayIndexPtr = bufferPlayIndexes + bufferIndex;
                     SLuint32 bufferPlayIndex = *bufferPlayIndexPtr;
 
                     if ((bufferPlayIndex < playIndex)
-                            || ((bufferPlayIndex == playIndex)
-                                    && ((duplicatePlayIndex = JNI_TRUE))))
-                    {
+                        || ((bufferPlayIndex == playIndex)
+                            && ((duplicatePlayIndex = JNI_TRUE)))) {
                         jint bufferCapacity = thiz->bufferCapacity;
-                        jbyte *buffer
-                            = thiz->buffers
-                                + (bufferIndex * bufferCapacity);
-                        SLuint32 size
-                            = (bufferCapacity < length)
-                                ? bufferCapacity
-                                : length;
+                        jbyte *buffer = thiz->buffers + (bufferIndex * bufferCapacity);
+                        SLuint32 size = (bufferCapacity < length)
+                                        ? bufferCapacity : length;
 
                         (*jniEnv)->GetByteArrayRegion(
-                            jniEnv,
-                            (jbyteArray) data, offset, size,
-                            buffer);
-                        if ((*jniEnv)->ExceptionCheck(jniEnv))
-                        {
+                                jniEnv,
+                                (jbyteArray) data, offset, size,
+                                buffer);
+                        if ((*jniEnv)->ExceptionCheck(jniEnv)) {
                             processed = PLUGIN_BUFFERPROCESSEDFAILED;
-                            LOGD(
-                                "%s:%d: PlugIn.BUFFER_PROCESSED_FAILED",
-                                __func__,
-                                (int) __LINE__);
-                        }
-                        else
-                        {
-                            SLBufferQueueItf player_BufferQueueItf
-                                = thiz->player_BufferQueueItf;
+                            LOGD("%s:%d: PlugIn.BUFFER_PROCESSED_FAILED",
+                                 __func__,
+                                 (int) __LINE__);
+                        } else {
+                            SLBufferQueueItf player_BufferQueueItf = thiz->player_BufferQueueItf;
 
                             if (SL_RESULT_SUCCESS
-                                    == (*player_BufferQueueItf)->Enqueue(
-                                            player_BufferQueueItf,
-                                            buffer, size))
-                            {
-                                *bufferPlayIndexPtr
-                                    = thiz->nextBufferPlayIndex++;
+                                == (*player_BufferQueueItf)->Enqueue(
+                                    player_BufferQueueItf,
+                                    buffer, size)) {
+                                *bufferPlayIndexPtr = thiz->nextBufferPlayIndex++;
                                 offset += size;
                                 length -= size;
-                            }
-                            else
-                            {
+                            } else {
                                 processed = PLUGIN_BUFFERPROCESSEDFAILED;
-                                LOGD(
-                                    "%s:%d: PlugIn.BUFFER_PROCESSED_FAILED",
-                                    __func__,
-                                    (int) __LINE__);
+                                LOGD("%s:%d: PlugIn.BUFFER_PROCESSED_FAILED",
+                                     __func__,
+                                     (int) __LINE__);
                             }
                         }
-
                         break;
                     }
                 }
                 if ((PLUGIN_BUFFERPROCESSEDOK == processed)
-                        && (bufferIndex == bufferCount)
-                        && (pthread_cond_wait(thiz->cond, mutex) != 0))
-                {
+                    && (bufferIndex == bufferCount)
+                    && (pthread_cond_wait(thiz->cond, mutex) != 0)) {
                     processed = PLUGIN_BUFFERPROCESSEDFAILED;
-                    LOGD(
-                        "%s:%d: PlugIn.BUFFER_PROCESSED_FAILED",
-                        __func__,
-                        (int) __LINE__);
+                    LOGD("%s:%d: PlugIn.BUFFER_PROCESSED_FAILED",
+                         __func__,
+                         (int) __LINE__);
                 }
-            }
-            else
-            {
+            } else {
                 processed = PLUGIN_BUFFERPROCESSEDFAILED;
-                LOGD(
-                    "%s:%d: PlugIn.BUFFER_PROCESSED_FAILED",
-                    __func__,
-                    (int) __LINE__);
+                LOGD("%s:%d: PlugIn.BUFFER_PROCESSED_FAILED",
+                     __func__,
+                     (int) __LINE__);
             }
 
-            if (pthread_mutex_unlock(mutex) == 0)
-            {
+            if (pthread_mutex_unlock(mutex) == 0) {
                 if (PLUGIN_BUFFERPROCESSEDFAILED == processed)
                     break;
-            }
-            else
-            {
+            } else {
                 processed = PLUGIN_BUFFERPROCESSEDFAILED;
-                LOGD(
-                    "%s:%d: PlugIn.BUFFER_PROCESSED_FAILED",
-                    __func__,
-                    (int) __LINE__);
+                LOGD("%s:%d: PlugIn.BUFFER_PROCESSED_FAILED",
+                     __func__,
+                     (int) __LINE__);
                 break;
             }
-        }
-        else
-        {
+        } else {
             processed = PLUGIN_BUFFERPROCESSEDFAILED;
-            LOGD(
-                "%s:%d: PlugIn.BUFFER_PROCESSED_FAILED",
-                __func__,
-                (int) __LINE__);
+            LOGD("%s:%d: PlugIn.BUFFER_PROCESSED_FAILED",
+                 __func__,
+                 (int) __LINE__);
             break;
         }
     }
@@ -337,46 +276,40 @@ Java_org_atalk_impl_neomedia_jmfext_media_renderer_audio_OpenSLESRenderer_proces
 
 JNIEXPORT void JNICALL
 Java_org_atalk_impl_neomedia_jmfext_media_renderer_audio_OpenSLESRenderer_start
-    (JNIEnv *jniEnv, jclass clazz, jlong ptr)
-{
+        (JNIEnv *jniEnv, jclass clazz, jlong ptr) {
     OpenSLESRenderer *thiz = (OpenSLESRenderer *) (intptr_t) ptr;
     SLPlayItf player_PlayItf = thiz->player_PlayItf;
 
-    if (player_PlayItf)
-    {
-        SLresult SLresult_
-            = (*player_PlayItf)->SetPlayState(
-                    player_PlayItf,
-                    SL_PLAYSTATE_PLAYING);
+    if (player_PlayItf) {
+        SLresult SLresult_ = (*player_PlayItf)->SetPlayState(
+                player_PlayItf,
+                SL_PLAYSTATE_PLAYING);
     }
 }
 
 JNIEXPORT void JNICALL
 Java_org_atalk_impl_neomedia_jmfext_media_renderer_audio_OpenSLESRenderer_stop
-    (JNIEnv *jniEnv, jclass clazz, jlong ptr)
-{
+        (JNIEnv *jniEnv, jclass clazz, jlong ptr) {
     OpenSLESRenderer *thiz = (OpenSLESRenderer *) (intptr_t) ptr;
     pthread_mutex_t *mutex = thiz->mutex;
 
-    if (mutex && (pthread_mutex_lock(mutex) == 0))
-    {
+    if (mutex && (pthread_mutex_lock(mutex) == 0)) {
         SLPlayItf player_PlayItf = thiz->player_PlayItf;
 
         if (player_PlayItf)
             (*player_PlayItf)->SetPlayState(
-                player_PlayItf,
-                SL_PLAYSTATE_STOPPED);
+                    player_PlayItf,
+                    SL_PLAYSTATE_STOPPED);
         pthread_mutex_unlock(mutex);
     }
 }
 
 static SLresult
 OpenSLESRenderer_createAudioPlayer
-    (OpenSLESRenderer *thiz,
-     JNIEnv *jniEnv, jclass clazz,
-     jstring encoding, jdouble sampleRate, jint sampleSizeInBits, jint channels,
-     jint endian, jint zigned, jclass dataType)
-{
+        (OpenSLESRenderer *thiz,
+         JNIEnv *jniEnv, jclass clazz,
+         jstring encoding, jdouble sampleRate, jint sampleSizeInBits, jint channels,
+         jint endian, jint zigned, jclass dataType) {
     SLDataLocator_BufferQueue bufferQueue;
     SLDataFormat_PCM pcm;
     SLDataSource audioSource;
@@ -389,106 +322,86 @@ OpenSLESRenderer_createAudioPlayer
     pcm.bitsPerSample = sampleSizeInBits;
     pcm.channelMask = 0;
     pcm.containerSize = sampleSizeInBits;
-    pcm.endianness
-        = (0 /* AudioFormat.LITTLE_ENDIAN */ == endian)
-            ? SL_BYTEORDER_LITTLEENDIAN
-            : SL_BYTEORDER_BIGENDIAN;
+    pcm.endianness = (0 /* AudioFormat.LITTLE_ENDIAN */ == endian)
+                     ? SL_BYTEORDER_LITTLEENDIAN : SL_BYTEORDER_BIGENDIAN;
     pcm.formatType = SL_DATAFORMAT_PCM;
     pcm.numChannels = channels;
     pcm.samplesPerSec = (SLuint32) (sampleRate * 1000);
     audioSource.pLocator = &bufferQueue;
     audioSource.pFormat = &pcm;
 
-    SLresult_
-        = (*engine_EngineItf)->CreateOutputMix(
+    SLresult_ = (*engine_EngineItf)->CreateOutputMix(
             engine_EngineItf,
             &outputMix_ObjectItf,
             0, NULL, NULL);
-    if (SL_RESULT_SUCCESS == SLresult_)
-    {
+    if (SL_RESULT_SUCCESS == SLresult_) {
         thiz->outputMix_ObjectItf = outputMix_ObjectItf;
 
-        SLresult_
-            = (*outputMix_ObjectItf)->Realize(
+        SLresult_ = (*outputMix_ObjectItf)->Realize(
                 outputMix_ObjectItf,
                 SL_BOOLEAN_FALSE);
-        if (SL_RESULT_SUCCESS == SLresult_)
-        {
+        if (SL_RESULT_SUCCESS == SLresult_) {
             SLDataLocator_OutputMix outputMix;
             SLDataSink audioSink;
             SLObjectItf player_ObjectItf;
-            SLInterfaceID interfaceIds[] = { SL_IID_BUFFERQUEUE, SL_IID_PLAY };
-            SLboolean interfaceRequired[]
-                = { SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE };
+            SLInterfaceID interfaceIds[] = {SL_IID_BUFFERQUEUE, SL_IID_PLAY};
+            SLboolean interfaceRequired[] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE};
 
             outputMix.locatorType = SL_DATALOCATOR_OUTPUTMIX;
             outputMix.outputMix = outputMix_ObjectItf;
             audioSink.pLocator = &outputMix;
             audioSink.pFormat = NULL;
 
-            SLresult_
-                = (*engine_EngineItf)->CreateAudioPlayer(
+            SLresult_ = (*engine_EngineItf)->CreateAudioPlayer(
                     engine_EngineItf,
                     &player_ObjectItf,
                     &audioSource, &audioSink,
                     sizeof(interfaceIds) / sizeof(SLInterfaceID),
                     interfaceIds, interfaceRequired);
-            if (SL_RESULT_SUCCESS == SLresult_)
-            {
+            if (SL_RESULT_SUCCESS == SLresult_) {
                 thiz->player_ObjectItf = player_ObjectItf;
 
-                SLresult_
-                    = (*player_ObjectItf)->Realize(
+                SLresult_ = (*player_ObjectItf)->Realize(
                         player_ObjectItf,
                         SL_BOOLEAN_FALSE);
-                if (SL_RESULT_SUCCESS == SLresult_)
-                {
+                if (SL_RESULT_SUCCESS == SLresult_) {
                     SLBufferQueueItf player_BufferQueueItf;
 
-                    SLresult_
-                        = (*player_ObjectItf)->GetInterface(
+                    SLresult_ = (*player_ObjectItf)->GetInterface(
                             player_ObjectItf,
                             SL_IID_BUFFERQUEUE,
                             &player_BufferQueueItf);
-                    if (SL_RESULT_SUCCESS == SLresult_)
-                    {
+                    if (SL_RESULT_SUCCESS == SLresult_) {
                         SLPlayItf player_PlayItf;
 
                         thiz->player_BufferQueueItf = player_BufferQueueItf;
 
-                        SLresult_
-                            = (*player_ObjectItf)->GetInterface(
+                        SLresult_ = (*player_ObjectItf)->GetInterface(
                                 player_ObjectItf,
                                 SL_IID_PLAY,
                                 &player_PlayItf);
-                        if (SL_RESULT_SUCCESS == SLresult_)
-                        {
+                        if (SL_RESULT_SUCCESS == SLresult_) {
                             thiz->player_PlayItf = player_PlayItf;
 
-                            thiz->bufferCapacity
-                                = (jint)
+                            thiz->bufferCapacity = (jint)
                                     ((sampleRate / 1000)
-                                        * BUFFER_CAPACITYINMILLIS
-                                        * channels
-                                        * (sampleSizeInBits / 8));
+                                     * BUFFER_CAPACITYINMILLIS
+                                     * channels
+                                     * (sampleSizeInBits / 8));
                             thiz->bufferCount = bufferQueue.numBuffers;
-                            thiz->buffers
-                                = malloc(
+                            thiz->buffers = malloc(
                                     thiz->bufferCapacity * thiz->bufferCount);
                             thiz->bufferPlayIndexes
-                                = calloc(thiz->bufferCount, sizeof(SLuint32));
-                            if (thiz->buffers && thiz->bufferPlayIndexes)
-                            {
+                                    = calloc(thiz->bufferCount, sizeof(SLuint32));
+                            if (thiz->buffers && thiz->bufferPlayIndexes) {
                                 thiz->nextBufferPlayIndex = 1;
 
-                                SLresult_
-                                    = (*player_BufferQueueItf)
+                                SLresult_ = (*player_BufferQueueItf)
                                         ->RegisterCallback(
-                                            player_BufferQueueItf,
-                                            OpenSLESRenderer_player_BufferQueueItfCallback,
-                                            thiz);
-                            }
-                            else
+                                                player_BufferQueueItf,
+                                                OpenSLESRenderer_player_BufferQueueItfCallback,
+                                                thiz);
+                            } else
                                 SLresult_ = SL_RESULT_MEMORY_FAILURE;
                         }
                     }
@@ -501,17 +414,14 @@ OpenSLESRenderer_createAudioPlayer
 
 static void
 OpenSLESRenderer_player_BufferQueueItfCallback
-    (SLBufferQueueItf caller, void *context)
-{
+        (SLBufferQueueItf caller, void *context) {
     OpenSLESRenderer *thiz = (OpenSLESRenderer *) context;
     pthread_mutex_t *mutex = thiz->mutex;
 
-    if (mutex && (pthread_mutex_lock(mutex) == 0))
-    {
+    if (mutex && (pthread_mutex_lock(mutex) == 0)) {
         SLBufferQueueState state;
 
-        if ((SL_RESULT_SUCCESS == (*caller)->GetState(caller, &state)))
-        {
+        if ((SL_RESULT_SUCCESS == (*caller)->GetState(caller, &state))) {
             thiz->playIndex = state.playIndex;
             if (0 == state.count)
                 *(thiz->bufferPlayIndexes) = 0;

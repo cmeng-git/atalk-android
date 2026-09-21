@@ -360,12 +360,11 @@ public class CertConfigEntryDialog extends BaseDialogFragment
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-        case R.id.showCert:
+        int id = v.getId();
+        if (id == R.id.showCert) {
             showSelectedCertificate();
-            break;
-
-        case R.id.button_OK:
+        }
+        else if (id == R.id.button_OK) {
             if ((cboAlias.getSelectedItem() == null)
                     || (ViewUtil.toString(txtDisplayName) == null)
                     || (ViewUtil.toString(txtKeyStore) == null)) {
@@ -387,32 +386,29 @@ public class CertConfigEntryDialog extends BaseDialogFragment
             }
 
             closeDialog(true);
-            break;
-        case R.id.button_Cancel:
+        }
+        else if (id == R.id.button_Cancel) {
             closeDialog(false);
-            break;
         }
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-        case R.id.show_password:
+        int id = buttonView.getId();
+        if (id == R.id.show_password) {
             ViewUtil.showPassword(txtKeyStorePassword, isChecked);
-            break;
-
-        case R.id.chkSavePassword:
+        }
+        else if (id == R.id.chkSavePassword) {
             txtKeyStorePassword.setEnabled(chkSavePassword.isChecked()
                     && ((KeyStoreType) cboKeyStoreType.getSelectedItem()).hasKeyStorePassword()
             );
-            break;
         }
     }
 
     @Override
     public void onItemSelected(AdapterView<?> adapter, View view, int position, long id) {
-        switch (adapter.getId()) {
-        case R.id.cboKeyStoreType:
+        int adapterId = adapter.getId();
+        if (adapterId == R.id.cboKeyStoreType) {
             // Proceed if new install or != NONE. First item always get selected onEntry
             KeyStoreType kt = (KeyStoreType) cboKeyStoreType.getSelectedItem();
             if ((!newInstall) || KS_NONE.equals(kt)) {
@@ -422,8 +418,8 @@ public class CertConfigEntryDialog extends BaseDialogFragment
                 chkSavePassword.setEnabled(true);
             txtKeyStorePassword.setEnabled(kt.hasKeyStorePassword() && chkSavePassword.isChecked());
             initKeyStoreAlias();
-            break;
-        case R.id.cboAlias:
+        }
+        else if (adapterId == R.id.cboAlias) {
             cmdShowCert.setEnabled(cboAlias.getSelectedItem() != null);
         }
     }

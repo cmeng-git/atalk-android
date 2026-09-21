@@ -778,6 +778,10 @@
 #define NID_id_smime_cti                195
 #define OBJ_id_smime_cti                OBJ_SMIME,6L
 
+#define SN_id_smime_ori         "id-smime-ori"
+#define NID_id_smime_ori                1499
+#define OBJ_id_smime_ori                OBJ_SMIME,13L
+
 #define SN_id_smime_mod_cms             "id-smime-mod-cms"
 #define NID_id_smime_mod_cms            196
 #define OBJ_id_smime_mod_cms            OBJ_id_smime_mod,1L
@@ -1062,6 +1066,21 @@
 #define NID_id_alg_PWRI_KEK             893
 #define OBJ_id_alg_PWRI_KEK             OBJ_id_smime_alg,9L
 
+#define SN_HKDF_SHA256          "id-alg-hkdf-with-sha256"
+#define LN_HKDF_SHA256          "HKDF-SHA256"
+#define NID_HKDF_SHA256         1496
+#define OBJ_HKDF_SHA256         OBJ_id_smime_alg,28L
+
+#define SN_HKDF_SHA384          "id-alg-hkdf-with-sha384"
+#define LN_HKDF_SHA384          "HKDF-SHA384"
+#define NID_HKDF_SHA384         1497
+#define OBJ_HKDF_SHA384         OBJ_id_smime_alg,29L
+
+#define SN_HKDF_SHA512          "id-alg-hkdf-with-sha512"
+#define LN_HKDF_SHA512          "HKDF-SHA512"
+#define NID_HKDF_SHA512         1498
+#define OBJ_HKDF_SHA512         OBJ_id_smime_alg,30L
+
 #define SN_id_smime_cd_ldap             "id-smime-cd-ldap"
 #define NID_id_smime_cd_ldap            248
 #define OBJ_id_smime_cd_ldap            OBJ_id_smime_cd,1L
@@ -1097,6 +1116,10 @@
 #define SN_id_smime_cti_ets_proofOfCreation             "id-smime-cti-ets-proofOfCreation"
 #define NID_id_smime_cti_ets_proofOfCreation            256
 #define OBJ_id_smime_cti_ets_proofOfCreation            OBJ_id_smime_cti,6L
+
+#define SN_id_smime_ori_kem             "id-smime-ori-kem"
+#define NID_id_smime_ori_kem            1500
+#define OBJ_id_smime_ori_kem            OBJ_id_smime_ori,3L
 
 #define LN_friendlyName         "friendlyName"
 #define NID_friendlyName                156
@@ -5458,6 +5481,42 @@
 #define LN_chacha20             "chacha20"
 #define NID_chacha20            1019
 
+#define SN_aes_128_cbc_hmac_sha1_etm            "AES-128-CBC-HMAC-SHA1-ETM"
+#define LN_aes_128_cbc_hmac_sha1_etm            "aes-128-cbc-hmac-sha1-etm"
+#define NID_aes_128_cbc_hmac_sha1_etm           1487
+
+#define SN_aes_192_cbc_hmac_sha1_etm            "AES-192-CBC-HMAC-SHA1-ETM"
+#define LN_aes_192_cbc_hmac_sha1_etm            "aes-192-cbc-hmac-sha1-etm"
+#define NID_aes_192_cbc_hmac_sha1_etm           1488
+
+#define SN_aes_256_cbc_hmac_sha1_etm            "AES-256-CBC-HMAC-SHA1-ETM"
+#define LN_aes_256_cbc_hmac_sha1_etm            "aes-256-cbc-hmac-sha1-etm"
+#define NID_aes_256_cbc_hmac_sha1_etm           1489
+
+#define SN_aes_128_cbc_hmac_sha256_etm          "AES-128-CBC-HMAC-SHA256-ETM"
+#define LN_aes_128_cbc_hmac_sha256_etm          "aes-128-cbc-hmac-sha256-etm"
+#define NID_aes_128_cbc_hmac_sha256_etm         1490
+
+#define SN_aes_192_cbc_hmac_sha256_etm          "AES-192-CBC-HMAC-SHA256-ETM"
+#define LN_aes_192_cbc_hmac_sha256_etm          "aes-192-cbc-hmac-sha256-etm"
+#define NID_aes_192_cbc_hmac_sha256_etm         1491
+
+#define SN_aes_256_cbc_hmac_sha256_etm          "AES-256-CBC-HMAC-SHA256-ETM"
+#define LN_aes_256_cbc_hmac_sha256_etm          "aes-256-cbc-hmac-sha256-etm"
+#define NID_aes_256_cbc_hmac_sha256_etm         1492
+
+#define SN_aes_128_cbc_hmac_sha512_etm          "AES-128-CBC-HMAC-SHA512-ETM"
+#define LN_aes_128_cbc_hmac_sha512_etm          "aes-128-cbc-hmac-sha512-etm"
+#define NID_aes_128_cbc_hmac_sha512_etm         1493
+
+#define SN_aes_192_cbc_hmac_sha512_etm          "AES-192-CBC-HMAC-SHA512-ETM"
+#define LN_aes_192_cbc_hmac_sha512_etm          "aes-192-cbc-hmac-sha512-etm"
+#define NID_aes_192_cbc_hmac_sha512_etm         1494
+
+#define SN_aes_256_cbc_hmac_sha512_etm          "AES-256-CBC-HMAC-SHA512-ETM"
+#define LN_aes_256_cbc_hmac_sha512_etm          "aes-256-cbc-hmac-sha512-etm"
+#define NID_aes_256_cbc_hmac_sha512_etm         1495
+
 #define SN_dhpublicnumber               "dhpublicnumber"
 #define LN_dhpublicnumber               "X9.42 DH"
 #define NID_dhpublicnumber              920
@@ -6591,46 +6650,46 @@
 
 #ifndef OPENSSL_NO_DEPRECATED_3_0
 
-#define SN_id_tc26_cipher_gostr3412_2015_magma_ctracpkm                 SN_magma_ctr_acpkm
-#define NID_id_tc26_cipher_gostr3412_2015_magma_ctracpkm                NID_magma_ctr_acpkm
-#define OBJ_id_tc26_cipher_gostr3412_2015_magma_ctracpkm                OBJ_magma_ctr_acpkm
+#define SN_id_tc26_cipher_gostr3412_2015_magma_ctracpkm SN_magma_ctr_acpkm
+#define NID_id_tc26_cipher_gostr3412_2015_magma_ctracpkm NID_magma_ctr_acpkm
+#define OBJ_id_tc26_cipher_gostr3412_2015_magma_ctracpkm OBJ_magma_ctr_acpkm
 
-#define SN_id_tc26_cipher_gostr3412_2015_magma_ctracpkm_omac            SN_magma_ctr_acpkm_omac
-#define NID_id_tc26_cipher_gostr3412_2015_magma_ctracpkm_omac           NID_magma_ctr_acpkm_omac
-#define OBJ_id_tc26_cipher_gostr3412_2015_magma_ctracpkm_omac           OBJ_magma_ctr_acpkm_omac
+#define SN_id_tc26_cipher_gostr3412_2015_magma_ctracpkm_omac SN_magma_ctr_acpkm_omac
+#define NID_id_tc26_cipher_gostr3412_2015_magma_ctracpkm_omac NID_magma_ctr_acpkm_omac
+#define OBJ_id_tc26_cipher_gostr3412_2015_magma_ctracpkm_omac OBJ_magma_ctr_acpkm_omac
 
-#define SN_id_tc26_cipher_gostr3412_2015_kuznyechik_ctracpkm            SN_kuznyechik_ctr_acpkm
-#define NID_id_tc26_cipher_gostr3412_2015_kuznyechik_ctracpkm           NID_kuznyechik_ctr_acpkm
-#define OBJ_id_tc26_cipher_gostr3412_2015_kuznyechik_ctracpkm           OBJ_kuznyechik_ctr_acpkm
+#define SN_id_tc26_cipher_gostr3412_2015_kuznyechik_ctracpkm SN_kuznyechik_ctr_acpkm
+#define NID_id_tc26_cipher_gostr3412_2015_kuznyechik_ctracpkm NID_kuznyechik_ctr_acpkm
+#define OBJ_id_tc26_cipher_gostr3412_2015_kuznyechik_ctracpkm OBJ_kuznyechik_ctr_acpkm
 
-#define SN_id_tc26_cipher_gostr3412_2015_kuznyechik_ctracpkm_omac               SN_kuznyechik_ctr_acpkm_omac
-#define NID_id_tc26_cipher_gostr3412_2015_kuznyechik_ctracpkm_omac              NID_kuznyechik_ctr_acpkm_omac
-#define OBJ_id_tc26_cipher_gostr3412_2015_kuznyechik_ctracpkm_omac              OBJ_kuznyechik_ctr_acpkm_omac
+#define SN_id_tc26_cipher_gostr3412_2015_kuznyechik_ctracpkm_omac SN_kuznyechik_ctr_acpkm_omac
+#define NID_id_tc26_cipher_gostr3412_2015_kuznyechik_ctracpkm_omac NID_kuznyechik_ctr_acpkm_omac
+#define OBJ_id_tc26_cipher_gostr3412_2015_kuznyechik_ctracpkm_omac OBJ_kuznyechik_ctr_acpkm_omac
 
-#define SN_id_tc26_wrap_gostr3412_2015_magma_kexp15             SN_magma_kexp15
-#define NID_id_tc26_wrap_gostr3412_2015_magma_kexp15            NID_magma_kexp15
-#define OBJ_id_tc26_wrap_gostr3412_2015_magma_kexp15            OBJ_magma_kexp15
+#define SN_id_tc26_wrap_gostr3412_2015_magma_kexp15 SN_magma_kexp15
+#define NID_id_tc26_wrap_gostr3412_2015_magma_kexp15 NID_magma_kexp15
+#define OBJ_id_tc26_wrap_gostr3412_2015_magma_kexp15 OBJ_magma_kexp15
 
-#define SN_id_tc26_wrap_gostr3412_2015_kuznyechik_kexp15                SN_kuznyechik_kexp15
-#define NID_id_tc26_wrap_gostr3412_2015_kuznyechik_kexp15               NID_kuznyechik_kexp15
-#define OBJ_id_tc26_wrap_gostr3412_2015_kuznyechik_kexp15               OBJ_kuznyechik_kexp15
+#define SN_id_tc26_wrap_gostr3412_2015_kuznyechik_kexp15 SN_kuznyechik_kexp15
+#define NID_id_tc26_wrap_gostr3412_2015_kuznyechik_kexp15 NID_kuznyechik_kexp15
+#define OBJ_id_tc26_wrap_gostr3412_2015_kuznyechik_kexp15 OBJ_kuznyechik_kexp15
 
-#define SN_grasshopper_ecb              SN_kuznyechik_ecb
-#define NID_grasshopper_ecb             NID_kuznyechik_ecb
+#define SN_grasshopper_ecb SN_kuznyechik_ecb
+#define NID_grasshopper_ecb NID_kuznyechik_ecb
 
-#define SN_grasshopper_ctr              SN_kuznyechik_ctr
-#define NID_grasshopper_ctr             NID_kuznyechik_ctr
+#define SN_grasshopper_ctr SN_kuznyechik_ctr
+#define NID_grasshopper_ctr NID_kuznyechik_ctr
 
-#define SN_grasshopper_ofb              SN_kuznyechik_ofb
-#define NID_grasshopper_ofb             NID_kuznyechik_ofb
+#define SN_grasshopper_ofb SN_kuznyechik_ofb
+#define NID_grasshopper_ofb NID_kuznyechik_ofb
 
-#define SN_grasshopper_cbc              SN_kuznyechik_cbc
-#define NID_grasshopper_cbc             NID_kuznyechik_cbc
+#define SN_grasshopper_cbc SN_kuznyechik_cbc
+#define NID_grasshopper_cbc NID_kuznyechik_cbc
 
-#define SN_grasshopper_cfb              SN_kuznyechik_cfb
-#define NID_grasshopper_cfb             NID_kuznyechik_cfb
+#define SN_grasshopper_cfb SN_kuznyechik_cfb
+#define NID_grasshopper_cfb NID_kuznyechik_cfb
 
-#define SN_grasshopper_mac              SN_kuznyechik_mac
-#define NID_grasshopper_mac             NID_kuznyechik_mac
+#define SN_grasshopper_mac SN_kuznyechik_mac
+#define NID_grasshopper_mac NID_kuznyechik_mac
 
-#endif  /* OPENSSL_NO_DEPRECATED_3_0 */
+#endif /* OPENSSL_NO_DEPRECATED_3_0 */

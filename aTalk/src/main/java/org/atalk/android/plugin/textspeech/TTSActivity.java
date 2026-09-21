@@ -191,24 +191,21 @@ public class TTSActivity extends BaseActivity implements TextToSpeech.OnInitList
     @Override
     public void onClick(View v) {
         String ttsText = ViewUtil.toString(mTtsText);
-        switch (v.getId()) {
-        case R.id.tts_play:
+        int id = v.getId();
+        if (id == R.id.tts_play) {
             if (ttsText != null) {
                 Intent spkIntent = new Intent(this, TTSService.class);
                 spkIntent.putExtra(TTSService.EXTRA_MESSAGE, ttsText);
                 spkIntent.putExtra(TTSService.EXTRA_QMODE, false);
                 startService(spkIntent);
             }
-            break;
-
-        case R.id.tts_save:
+        }
+        else if (id == R.id.tts_save) {
             if (ttsText != null)
                 saveToAudioFile(ttsText);
-            break;
-
-        case R.id.tts_ok:
+        }
+        else if (id == R.id.tts_ok) {
             finish();
-            break;
         }
     }
 

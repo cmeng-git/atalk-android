@@ -21,8 +21,6 @@ import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.Menu;
@@ -43,7 +41,6 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AppGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.AccountsListActivity;
@@ -173,48 +170,47 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-        switch (item.getItemId()) {
-        case R.id.search:
-            break;
-        case R.id.add_chat_room:
+        int id = item.getItemId();
+        if (id == R.id.search) {
+        }
+        else if (id == R.id.add_chat_room) {
             ChatRoomCreateDialog chatRoomCreateDialog = new ChatRoomCreateDialog(this);
             chatRoomCreateDialog.show();
-            break;
-        case R.id.show_location:
+        }
+        else if (id == R.id.show_location) {
             Intent intent = new Intent(this, GeoLocationActivity.class);
             intent.putExtra(GeoLocationActivity.SHARE_ALLOW, false);
             startActivity(intent);
-            break;
-        case R.id.telephony:
+        }
+        else if (id == R.id.telephony) {
             mTelephony = new TelephonyFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(android.R.id.content, mTelephony, TelephonyFragment.TELEPHONY_TAG).commit();
-            break;
-        case R.id.muc_bookmarks:
+        }
+        else if (id == R.id.muc_bookmarks) {
             ChatRoomBookmarksDialog chatRoomBookmarksDialog = new ChatRoomBookmarksDialog(this);
             chatRoomBookmarksDialog.show();
-            break;
-        case R.id.app_info:
+        }
+        else if (id == R.id.app_info) {
             PermissionsActivity.onAppInfoButtonClicked(this);
-            break;
-        case R.id.main_settings:
+        }
+        else if (id == R.id.main_settings) {
             startActivity(SettingsActivity.class);
-            break;
-        case R.id.account_settings:
+        }
+        else if (id == R.id.account_settings) {
             startActivity(AccountsListActivity.class);
-            break;
-        case R.id.tts_settings:
+        }
+        else if (id == R.id.tts_settings) {
             Intent ttsIntent = new Intent(this, TTSActivity.class);
             startActivity(ttsIntent);
-            break;
-        case R.id.block_list:
+        }
+        else if (id == R.id.block_list) {
             startActivity(ContactBlockListActivity.class);
-            break;
-        case R.id.add_contact:
+        }
+        else if (id == R.id.add_contact) {
             startActivity(AddContactActivity.class);
-            break;
-
-        case R.id.show_hide_offline:
+        }
+        else if (id == R.id.show_hide_offline) {
             boolean isShowOffline = !ConfigurationUtils.isShowOffline(); // toggle
             MetaContactListAdapter.presenceFilter.setShowOffline(isShowOffline);
             Fragment clf = aTalk.getFragment(aTalk.CL_FRAGMENT);
@@ -226,13 +222,11 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
                     ? R.string.contact_offline_hide
                     : R.string.contact_offline_show;
             mShowHideOffline.setTitle(itemId);
-            break;
-
-        case R.id.notification_setting:
+        }
+        else if (id == R.id.notification_setting) {
             openNotificationSettings();
-            break;
-
-        case R.id.sign_in_off:
+        }
+        else if (id == R.id.sign_in_off) {
             // Toggle current account presence status
             boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(ActionBarUtil.getStatus(this));
             GlobalStatusService globalStatusService = AppGUIActivator.getGlobalStatusService();
@@ -240,9 +234,8 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
                 globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
             else
                 globalStatusService.publishStatus(GlobalStatusEnum.OFFLINE);
-            break;
-
-        default:
+        }
+        else {
             return super.onOptionsItemSelected(item);
         }
         return true;
@@ -267,7 +260,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
      * @param event The <code>ServiceEvent</code> object.
      */
     public void serviceChanged(ServiceEvent event) {
-        ServiceReference serviceRef = event.getServiceReference();
+        ServiceReference<?> serviceRef = event.getServiceReference();
 
         // Timber.d("Bundle State: %s: ", serviceRef.getBundle().getState());
         // if the event is caused by a bundle being stopped, we don't want to know

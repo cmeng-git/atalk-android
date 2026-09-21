@@ -71,10 +71,10 @@ public class MyWebViewClient extends WebViewClient {
      */
     @Override
     public boolean shouldOverrideUrlLoading(WebView webView, WebResourceRequest request) {
-        // This user clicked url is from the same website, so do not override; let MyWebViewClient load the page
+        // If user clicked url is from the same website, then load using the same webView.
         String url = request.getUrl().toString();
         if (isDomainMatch(webView, url)) {
-            viewFragment.addLastUrl(url);
+            // Return false to tell Android to load the URL in the current WebView
             return false;
         }
 

@@ -21,17 +21,16 @@
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
 
 static const GLfloat vertexPointer[]
-    = {
-        -1.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        -1.0f, 1.0f, 0.0f,
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f
-    };
+        = {
+                -1.0f, 1.0f, 0.0f,
+                1.0f, 1.0f, 0.0f,
+                1.0f, -1.0f, 0.0f,
+                -1.0f, 1.0f, 0.0f,
+                -1.0f, -1.0f, 0.0f,
+                1.0f, -1.0f, 0.0f
+        };
 
-typedef struct _JAWTRenderer
-{
+typedef struct _JAWTRenderer {
     jint *data;
 
     /** The number of <tt>jint</tt> elements allocated in <tt>data</tt>. */
@@ -95,7 +94,7 @@ typedef struct _JAWTRenderer
      */
     jint texRealWidth;
 }
-JAWTRenderer;
+        JAWTRenderer;
 
 /**
  * Determines whether a specific GL error has occurred since the last call to
@@ -146,24 +145,35 @@ static GLsizei JAWTRenderer_roundUpToPowerOfTwo(GLsizei i);
  * was initialized; otherwise, <tt>GL_FALSE</tt>
  */
 static GLboolean
-JAWTRenderer_checkGLError(const char *func, int line, GLenum err)
-{
+JAWTRenderer_checkGLError(const char *func, int line, GLenum err) {
     GLenum e;
     GLboolean ret = (GL_NO_ERROR == err) ? GL_TRUE : GL_FALSE;
 
-    while ((e = glGetError()))
-    {
+    while ((e = glGetError())) {
         const char *s;
 
-        switch (e)
-        {
-        case GL_INVALID_ENUM: s = "GL_INVALID_ENUM"; break;
-        case GL_INVALID_OPERATION: s = "GL_INVALID_OPERATION"; break;
-        case GL_INVALID_VALUE: s = "GL_INVALID_VALUE"; break;
-        case GL_OUT_OF_MEMORY: s = "GL_OUT_OF_MEMORY"; break;
-        case GL_STACK_OVERFLOW: s = "GL_STACK_OVERFLOW"; break;
-        case GL_STACK_UNDERFLOW: s = "GL_STACK_UNDERFLOW"; break;
-        default: s = 0; break;
+        switch (e) {
+            case GL_INVALID_ENUM:
+                s = "GL_INVALID_ENUM";
+                break;
+            case GL_INVALID_OPERATION:
+                s = "GL_INVALID_OPERATION";
+                break;
+            case GL_INVALID_VALUE:
+                s = "GL_INVALID_VALUE";
+                break;
+            case GL_OUT_OF_MEMORY:
+                s = "GL_OUT_OF_MEMORY";
+                break;
+            case GL_STACK_OVERFLOW:
+                s = "GL_STACK_OVERFLOW";
+                break;
+            case GL_STACK_UNDERFLOW:
+                s = "GL_STACK_UNDERFLOW";
+                break;
+            default:
+                s = 0;
+                break;
         }
         if (s)
             LOGD("%s:%d: %s\n", func, line, s);
@@ -180,8 +190,7 @@ JAWTRenderer_checkGLError(const char *func, int line, GLenum err)
 }
 
 void
-JAWTRenderer_close(JNIEnv *env, jclass clazz, jlong handle, jobject component)
-{
+JAWTRenderer_close(JNIEnv *env, jclass clazz, jlong handle, jobject component) {
     JAWTRenderer *thiz = (JAWTRenderer *) (intptr_t) handle;
 
     if (thiz->data)
@@ -190,13 +199,11 @@ JAWTRenderer_close(JNIEnv *env, jclass clazz, jlong handle, jobject component)
 }
 
 jlong
-JAWTRenderer_open(JNIEnv *env, jclass clazz, jobject component)
-{
+JAWTRenderer_open(JNIEnv *env, jclass clazz, jobject component) {
     JAWTRenderer *thiz;
 
     thiz = calloc(1, sizeof(JAWTRenderer));
-    if (thiz)
-    {
+    if (thiz) {
         thiz->eglContext = EGL_NO_CONTEXT;
         thiz->prepareOpenGL = JNI_TRUE;
     }
@@ -205,9 +212,8 @@ JAWTRenderer_open(JNIEnv *env, jclass clazz, jobject component)
 
 jboolean
 JAWTRenderer_paint
-    (jint version, JAWT_DrawingSurfaceInfo *dsi, jclass clazz, jlong handle,
-        jobject g, jint zOrder)
-{
+        (jint version, JAWT_DrawingSurfaceInfo *dsi, jclass clazz, jlong handle,
+         jobject g, jint zOrder) {
     JAWTRenderer *thiz = (JAWTRenderer *) (intptr_t) handle;
     EGLContext eglContext;
 
@@ -219,8 +225,7 @@ JAWTRenderer_paint
      * recreate the texture of this JAWTRenderer after the current OpenGL
      * context has been changed.
      */
-    if (thiz->eglContext != (eglContext = eglGetCurrentContext()))
-    {
+    if (thiz->eglContext != (eglContext = eglGetCurrentContext())) {
         thiz->eglContext = eglContext;
         thiz->prepareOpenGL = JNI_TRUE;
         /*
@@ -230,15 +235,13 @@ JAWTRenderer_paint
         thiz->tex = 0;
     }
 
-    if (JNI_TRUE == thiz->prepareOpenGL)
-    {
+    if (JNI_TRUE == thiz->prepareOpenGL) {
         const char *extensions;
 
         thiz->prepareOpenGL = JNI_FALSE;
 
         /* For the purposes of debugging, log GL_EXTENSIONS. */
-        if ((extensions = (const char *) glGetString(GL_EXTENSIONS)))
-        {
+        if ((extensions = (const char *) glGetString(GL_EXTENSIONS))) {
             LOGD(
                     "%s:%d: GL_EXTENSIONS= %s\n",
                     __func__, (int) __LINE__,
@@ -258,8 +261,7 @@ JAWTRenderer_paint
      * the tex represents old data. Consequently, we have to reflect the new
      * data upon the tex.
      */
-    if (thiz->dataLength)
-    {
+    if (thiz->dataLength) {
         jint dataHeight = thiz->dataHeight;
         jint dataWidth = thiz->dataWidth;
         jboolean texCoordPointerIsOutOfDate = JNI_FALSE;
@@ -269,15 +271,13 @@ JAWTRenderer_paint
          * one will be initialized afterwards.
          */
         if (thiz->tex
-                && ((thiz->texRealHeight < dataHeight)
-                        || (thiz->texRealWidth < dataWidth)))
-        {
+            && ((thiz->texRealHeight < dataHeight)
+                || (thiz->texRealWidth < dataWidth))) {
             glDeleteTextures(1, &(thiz->tex));
             thiz->tex = 0;
         }
 
-        if (thiz->tex)
-        {
+        if (thiz->tex) {
             glBindTexture(JAWT_RENDERER_TEXTURE, thiz->tex);
             glTexSubImage2D(
                     JAWT_RENDERER_TEXTURE,
@@ -286,9 +286,7 @@ JAWTRenderer_paint
                     JAWT_RENDERER_TEXTURE_FORMAT,
                     JAWT_RENDERER_TEXTURE_TYPE,
                     thiz->data);
-        }
-        else
-        {
+        } else {
             GLsizei texRealHeight, texRealWidth;
 
             glGenTextures(1, &(thiz->tex));
@@ -340,10 +338,9 @@ JAWTRenderer_paint
                     JAWT_RENDERER_TEXTURE_TYPE,
                     thiz->data);
             if (GL_TRUE
-                    == JAWTRenderer_checkGLError(
-                            "glTexImage2D", __LINE__,
-                            GL_INVALID_VALUE))
-            {
+                == JAWTRenderer_checkGLError(
+                    "glTexImage2D", __LINE__,
+                    GL_INVALID_VALUE)) {
                 /*
                  * There is likely no support for non-power-of-two textures. Of
                  * course, if dataWidth and dataHeight are powers of two, there
@@ -352,8 +349,7 @@ JAWTRenderer_paint
                 texRealHeight = JAWTRenderer_roundUpToPowerOfTwo(dataHeight);
                 texRealWidth = JAWTRenderer_roundUpToPowerOfTwo(dataWidth);
                 if ((dataHeight != texRealHeight)
-                        || (dataWidth != texRealWidth))
-                {
+                    || (dataWidth != texRealWidth)) {
                     glTexImage2D(
                             JAWT_RENDERER_TEXTURE,
                             0,
@@ -364,10 +360,9 @@ JAWTRenderer_paint
                             JAWT_RENDERER_TEXTURE_TYPE,
                             0);
                     if (GL_TRUE
-                            == JAWTRenderer_checkGLError(
-                                    "glTexImage2D", __LINE__,
-                                    GL_NO_ERROR))
-                    {
+                        == JAWTRenderer_checkGLError(
+                            "glTexImage2D", __LINE__,
+                            GL_NO_ERROR)) {
                         glTexSubImage2D(
                                 JAWT_RENDERER_TEXTURE,
                                 0,
@@ -377,30 +372,24 @@ JAWTRenderer_paint
                                 thiz->data);
                     }
                 }
-            }
-            else
-            {
+            } else {
                 texRealHeight = dataHeight;
                 texRealWidth = dataWidth;
             }
-            if (thiz->texRealHeight != texRealHeight)
-            {
+            if (thiz->texRealHeight != texRealHeight) {
                 thiz->texRealHeight = texRealHeight;
                 texCoordPointerIsOutOfDate = JNI_TRUE;
             }
-            if (thiz->texRealWidth != texRealWidth)
-            {
+            if (thiz->texRealWidth != texRealWidth) {
                 thiz->texRealWidth = texRealWidth;
                 texCoordPointerIsOutOfDate = JNI_TRUE;
             }
         }
-        if (thiz->texEffectiveHeight != thiz->dataHeight)
-        {
+        if (thiz->texEffectiveHeight != thiz->dataHeight) {
             thiz->texEffectiveHeight = thiz->dataHeight;
             texCoordPointerIsOutOfDate = JNI_TRUE;
         }
-        if (thiz->texEffectiveWidth != thiz->dataWidth)
-        {
+        if (thiz->texEffectiveWidth != thiz->dataWidth) {
             thiz->texEffectiveWidth = thiz->dataWidth;
             texCoordPointerIsOutOfDate = JNI_TRUE;
         }
@@ -411,17 +400,16 @@ JAWTRenderer_paint
          * We may have just changed the effective and/or real sizes of tex. Such
          * a change affects texCoordPointer.
          */
-        if (JNI_TRUE == texCoordPointerIsOutOfDate)
-        {
+        if (JNI_TRUE == texCoordPointerIsOutOfDate) {
             GLfloat *texCoordPointer = thiz->texCoordPointer;
             GLfloat x
-                = (thiz->texEffectiveWidth == thiz->texRealWidth)
-                    ? 1.0f
-                    : ((GLfloat) thiz->texEffectiveWidth / (GLfloat) (thiz->texRealWidth));
+                    = (thiz->texEffectiveWidth == thiz->texRealWidth)
+                      ? 1.0f
+                      : ((GLfloat) thiz->texEffectiveWidth / (GLfloat) (thiz->texRealWidth));
             GLfloat y
-                = (thiz->texEffectiveHeight == thiz->texRealHeight)
-                    ? 1.0f
-                    : ((GLfloat) thiz->texEffectiveHeight / (GLfloat) (thiz->texRealHeight));
+                    = (thiz->texEffectiveHeight == thiz->texRealHeight)
+                      ? 1.0f
+                      : ((GLfloat) thiz->texEffectiveHeight / (GLfloat) (thiz->texRealHeight));
 
             texCoordPointer[2] = x;
             texCoordPointer[4] = x;
@@ -433,8 +421,7 @@ JAWTRenderer_paint
     }
 
     /* At long last, do paint this JAWTRenderer i.e. render the tex. */
-    if (thiz->tex)
-    {
+    if (thiz->tex) {
         glEnable(JAWT_RENDERER_TEXTURE);
 
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -455,37 +442,29 @@ JAWTRenderer_paint
 
 jboolean
 JAWTRenderer_process
-    (JNIEnv *env, jclass clazz, jlong handle, jobject component, jint *data,
-        jint length, jint width, jint height)
-{
-    if (data && length)
-    {
+        (JNIEnv *env, jclass clazz, jlong handle, jobject component, jint *data,
+         jint length, jint width, jint height) {
+    if (data && length) {
         JAWTRenderer *thiz = (JAWTRenderer *) (intptr_t) handle;
         jint *rendererData = thiz->data;
         size_t dataSize = length * sizeof(jint);
 
-        if (!rendererData || (thiz->dataCapacity < length))
-        {
+        if (!rendererData || (thiz->dataCapacity < length)) {
             jint *newData;
 
             newData = realloc(rendererData, dataSize);
-            if (newData)
-            {
+            if (newData) {
                 thiz->data = rendererData = newData;
                 thiz->dataCapacity = length;
-            }
-            else
+            } else
                 rendererData = NULL;
         }
-        if (rendererData)
-        {
+        if (rendererData) {
             memcpy(rendererData, data, dataSize);
             thiz->dataHeight = height;
             thiz->dataLength = length;
             thiz->dataWidth = width;
-        }
-        else
-        {
+        } else {
             /* We seem to have run out of memory. */
             return JNI_FALSE;
         }
@@ -502,8 +481,7 @@ JAWTRenderer_process
  * @see http://en.wikipedia.org/wiki/Power_of_two#Algorithm_to_round_up_to_power_of_two
  */
 static GLsizei
-JAWTRenderer_roundUpToPowerOfTwo(GLsizei i)
-{
+JAWTRenderer_roundUpToPowerOfTwo(GLsizei i) {
     i--;
     i |= i >> 1;
     i |= i >> 2;

@@ -132,30 +132,28 @@ public class AccountsListActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.add_account:
-                Intent intent = new Intent(this, AccountLoginActivity.class);
-                startActivity(intent);
-                return true;
-
-            case R.id.add_group:
-                AddGroupDialog.showCreateGroupDialog(this, null);
-                return true;
-
-            case R.id.TLS_Configuration:
-                TLS_Configuration tlsConfiguration = new TLS_Configuration();
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.addToBackStack(null);
-                ft.replace(android.R.id.content, tlsConfiguration).commit();
-                return true;
-
-            case R.id.refresh_database:
-                new ServerPersistentStoresRefreshDialog().show(this);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+        int itemId = item.getItemId();
+        if (itemId == R.id.add_account) {
+            Intent intent = new Intent(this, AccountLoginActivity.class);
+            startActivity(intent);
+            return true;
         }
+        else if (itemId == R.id.add_group) {
+            AddGroupDialog.showCreateGroupDialog(this, null);
+            return true;
+        }
+        else if (itemId == R.id.TLS_Configuration) {
+            TLS_Configuration tlsConfiguration = new TLS_Configuration();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.addToBackStack(null);
+            ft.replace(android.R.id.content, tlsConfiguration).commit();
+            return true;
+        }
+        else if (itemId == R.id.refresh_database) {
+            new ServerPersistentStoresRefreshDialog().show(this);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -194,25 +192,23 @@ public class AccountsListActivity extends BaseActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.remove:
-                AccountDeleteDialog.create(this, clickedAccount, account -> listAdapter.remove(account));
-                return true;
-
-            case R.id.account_settings:
-                startPreferenceActivity(clickedAccount);
-                return true;
-
-            case R.id.account_info:
-                startPresenceActivity(clickedAccount);
-                return true;
-
-            case R.id.account_cancel:
-                return true;
-
-            default:
-                return super.onContextItemSelected(item);
+        int itemId = item.getItemId();
+        if (itemId == R.id.remove) {
+            AccountDeleteDialog.create(this, clickedAccount, account -> listAdapter.remove(account));
+            return true;
         }
+        else if (itemId == R.id.account_settings) {
+            startPreferenceActivity(clickedAccount);
+            return true;
+        }
+        else if (itemId == R.id.account_info) {
+            startPresenceActivity(clickedAccount);
+            return true;
+        }
+        else if (itemId == R.id.account_cancel) {
+            return true;
+        }
+        return super.onContextItemSelected(item);
     }
 
     /**

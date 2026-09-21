@@ -427,29 +427,25 @@ public class CallHistoryFragment extends BaseFragment
         if (object instanceof MetaContact) {
             MetaContact metaContact = (MetaContact) object;
             Contact contact = metaContact.getDefaultContact();
-
             if (contact != null) {
                 Jid jid = contact.getJid();
 
-                switch (view.getId()) {
-                case R.id.callButton:
+                int id = view.getId();
+                if (id == R.id.callButton) {
                     if (jid instanceof DomainBareJid) {
                         TelephonyFragment extPhone = TelephonyFragment.newInstance(contact.getAddress());
                         ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
                                 .replace(android.R.id.content, extPhone, TelephonyFragment.TELEPHONY_TAG).commit();
-                        break;
+                        return;
                     }
-
-                case R.id.callVideoButton:
                     if (viewHolder != null) {
-                        boolean isVideoCall = viewHolder.callVideoButton.isPressed();
-                        AppCallUtil.createAndroidCall(aTalkApp.getInstance(), jid,
-                                viewHolder.callVideoButton, isVideoCall);
+                        AppCallUtil.createCall(aTalkApp.getInstance(), metaContact, false, viewHolder.callButton);
                     }
-                    break;
-
-                default:
-                    break;
+                }
+                else if (id == R.id.callVideoButton) {
+                    if (viewHolder != null) {
+                        AppCallUtil.createCall(aTalkApp.getInstance(), metaContact, true, viewHolder.callButton);
+                    }
                 }
             }
         }
@@ -488,8 +484,8 @@ public class CallHistoryFragment extends BaseFragment
             int cType;
             CallRecord callRecord;
 
-            switch (item.getItemId()) {
-            case R.id.cr_delete_older:
+            int itemId = item.getItemId();
+            if (itemId == R.id.cr_delete_older) {
                 if (checkedList.size() > 0 && checkedList.valueAt(0)) {
                     cPos = checkedList.keyAt(0) - headerCount;
                     cType = callHistoryAdapter.getItemViewType(cPos);
@@ -502,8 +498,8 @@ public class CallHistoryFragment extends BaseFragment
                     }
                 }
                 return true;
-
-            case R.id.cr_select_all:
+            }
+            else if (itemId == R.id.cr_select_all) {
                 int size = callHistoryAdapter.getCount();
                 if (size < 2)
                     return true;
@@ -517,8 +513,8 @@ public class CallHistoryFragment extends BaseFragment
                 mode.invalidate();
                 mode.setTitle(String.valueOf(size));
                 return true;
-
-            case R.id.cr_delete:
+            }
+            else if (itemId == R.id.cr_delete) {
                 if (checkedList.size() == 0) {
                     aTalkApp.showToastMessage(R.string.call_history_remove_none);
                     return true;
@@ -540,10 +536,8 @@ public class CallHistoryFragment extends BaseFragment
                 EntityListHelper.eraseEntityCallHistory(CallHistoryFragment.this, callUuidDel);
                 mode.finish();
                 return true;
-
-            default:
-                return false;
             }
+            return false;
         }
 
         // Called when the action ActionMode is created; startActionMode() was called

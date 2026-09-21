@@ -7,8 +7,19 @@
 -->
 
 <changelog>
-    <release version="6.5.0 (08/20/2026)" versioncode="605000">
+    <release version="6.5.1 (09/21/2026)" versioncode="605010">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>WebViewFragment will process user backKey to go back to previous webpage if allowed.</change>
+        <change>Ensure the webView reloads the user newly defined Web Access Page on return from Settings.</change>
+        <change>Execute encryption of omemo message in chatRoom in background to avoid ANR.</change>
+        <change>Make media call from recent conversion or call history call via JingleMessage protocol if supported.</change>
+        <change>Upgrade smack to v4.5.0 release.</change>
+        <change>Upgrade jni libraries: libvpx 1.17.0 &lt;= 1.16.0; openssl 3.6.4 &lt;= 3.5.2, and update all Hmac.c deprecated function calls.</change>
+        <change>Upgrade android Gradle build-tools to 9.3.2; change all case R.id.xxx to if-else to resolve "Constant expression required" error.</change>
+        <change>Bug fixes and enhancements.</change>
+    </release>
+
+    <release version="6.5.0 (08/20/2026)" versioncode="605000">
         <change>Add per-app language preferences support for android >= API-33 (TIRAMISU).</change>
         <change>Android API-37 broadcast ACTION_BOOT_COMPLETED on aTalk start-up, leading to aTalk SystemEventReceiver() to exit app,
             and restart. This causes aTalk hangs in endless loop.</change>

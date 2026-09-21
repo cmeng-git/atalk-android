@@ -14,21 +14,22 @@ import org.bouncycastle.crypto.params.KeyParameter;
  * Implements the interface <code>org.bouncycastle.crypto.Mac</code> using the OpenSSL Crypto library.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class OpenSslHmac implements Mac {
     private static native int EVP_MD_size(long md);
 
     private static native long EVP_sha1();
 
-    private static native long HMAC_CTX_create();
+    private static native long EVP_MAC_CTX_new();
 
-    private static native void HMAC_CTX_destroy(long ctx);
+    private static native void EVP_MAC_CTX_free(long ctx);
 
-    private static native int HMAC_Final(long ctx, byte[] md, int mdOff, int mdLen);
+    private static native boolean EVP_MAC_init(long ctx, byte[] key, int keyLen, long md);
 
-    private static native boolean HMAC_Init_ex(long ctx, byte[] key, int keyLen, long md, long impl);
+    private static native boolean EVP_MAC_update(long ctx, byte[] data, int off, int len);
 
-    private static native boolean HMAC_Update(long ctx, byte[] data, int off, int len);
+    private static native int EVP_MAC_final(long ctx, byte[] md, int mdOff, long mdLen);
 
     /**
      * The name of the algorithm implemented by this instance.
@@ -84,9 +85,9 @@ public class OpenSslHmac implements Mac {
         if (macSize == 0)
             throw new IllegalStateException("EVP_MD_size == 0");
 
-        ctx = HMAC_CTX_create();
+        ctx = EVP_MAC_CTX_new();
         if (ctx == 0)
-            throw new RuntimeException("HMAC_CTX_create == 0");
+            throw new RuntimeException("EVP_MAC_CTX_new == 0");
     }
 
     /**
@@ -113,13 +114,13 @@ public class OpenSslHmac implements Mac {
             throw new IllegalStateException("ctx");
         }
         else {
-            outLen = HMAC_Final(ctx, out, outOff, outLen);
+            outLen = EVP_MAC_final(ctx, out, outOff, outLen);
             if (outLen < 0) {
-                throw new RuntimeException("HMAC_Final");
+                throw new RuntimeException("EVP_MAC_final");
             }
             else {
-                // As the javadoc on interface method specifies, the doFinal
-                // call leaves this Digest reset.
+                // As the Javadoc on interface method specifies,
+                // the doFinal call leaves this Digest reset.
                 reset();
                 return outLen;
             }
@@ -133,14 +134,13 @@ public class OpenSslHmac implements Mac {
     protected void finalize()
             throws Throwable {
         try {
-            // Well, the destroying in the finalizer should exist as a backup
-            // anyway. There is no way to explicitly invoke the destroying at
-            // the time of this writing but it is a start.
+            // Well, the destroying in the finalizer should exist as a backup anyway. There is no way
+            // to explicitly invoke the destroying at the time of this writing, but it is a start.
             long ctx = this.ctx;
 
             if (ctx != 0) {
                 this.ctx = 0;
-                HMAC_CTX_destroy(ctx);
+                EVP_MAC_CTX_free(ctx);
             }
         }
         finally {
@@ -178,8 +178,8 @@ public class OpenSslHmac implements Mac {
         if (ctx == 0)
             throw new IllegalStateException("ctx == 0");
 
-        if (!HMAC_Init_ex(ctx, key, key.length, md, 0))
-            throw new RuntimeException("HMAC_Init_ex() init failed");
+        if (!EVP_MAC_init(ctx, key, key.length, md))
+            throw new RuntimeException("EVP_MAC_init() init failed");
     }
 
     /**
@@ -192,9 +192,11 @@ public class OpenSslHmac implements Mac {
         if (ctx == 0)
             throw new IllegalStateException("ctx == 0");
 
-        // just reset the ctx (keep same key and md)
-        if (!HMAC_Init_ex(ctx, null, 0, 0, 0))
-            throw new RuntimeException("HMAC_Init_ex() reset failed");
+        // RESET CTX KEEPING KEY & MD
+        // Passing NULL as key and NULL (or empty) as params tells OpenSSL to
+        // clear data states but reuse the previously loaded key and configuration.
+        if (!EVP_MAC_init(ctx, null, 0, 0))
+            throw new RuntimeException("EVP_MAC_init() reset failed");
     }
 
     /**
@@ -208,6 +210,7 @@ public class OpenSslHmac implements Mac {
 
     /**
      * {@inheritDoc}
+     * Buffer to hold the final MAC output (SHA1 output is 20 bytes)
      */
     @Override
     public void update(byte[] in, int off, int len)
@@ -224,8 +227,8 @@ public class OpenSslHmac implements Mac {
 
             if (ctx == 0)
                 throw new IllegalStateException("ctx");
-            else if (!HMAC_Update(ctx, in, off, len))
-                throw new RuntimeException("HMAC_Update");
+            else if (!EVP_MAC_update(ctx, in, off, len))
+                throw new RuntimeException("EVP_MAC_update");
         }
     }
 }

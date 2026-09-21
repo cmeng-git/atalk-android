@@ -127,46 +127,41 @@ public class TLS_Configuration extends BaseFragment
         FragmentTransaction ft = getParentFragmentManager().beginTransaction();
         ft.addToBackStack(null);
 
-        switch (v.getId()) {
-            case R.id.cmd_add:
-                dialog = CertConfigEntryDialog.getInstance(CertificateConfigEntry.CERT_NONE, this);
+        int id = v.getId();
+        if (id == R.id.cmd_add) {
+            dialog = CertConfigEntryDialog.getInstance(CertificateConfigEntry.CERT_NONE, this);
+            dialog.show(ft, "CertConfigEntry");
+        }
+        else if (id == R.id.cmd_remove) {
+            if (mCertEntry != null) {
+                Timber.d("Certificate Entry removed: %s", mCertEntry.getId());
+                CertConfigActivator.getCertService().removeClientAuthCertificateConfig(mCertEntry.getId());
+            }
+        }
+        else if (id == R.id.cmd_edit) {
+            if (mCertEntry != null) {
+                dialog = CertConfigEntryDialog.getInstance(mCertEntry, this);
                 dialog.show(ft, "CertConfigEntry");
-                break;
-
-            case R.id.cmd_remove:
-                if (mCertEntry != null) {
-                    Timber.d("Certificate Entry removed: %s", mCertEntry.getId());
-                    CertConfigActivator.getCertService().removeClientAuthCertificateConfig(mCertEntry.getId());
-                }
-                break;
-
-            case R.id.cmd_edit:
-                if (mCertEntry != null) {
-                    dialog = CertConfigEntryDialog.getInstance(mCertEntry, this);
-                    dialog.show(ft, "CertConfigEntry");
-                }
-                break;
+            }
         }
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         String enabled = Boolean.valueOf(isChecked).toString();
-        switch (buttonView.getId()) {
-            case R.id.cb_crl:
-                CertConfigActivator.getConfigService().setProperty(
-                        CertificateService.PNAME_REVOCATION_CHECK_ENABLED, isChecked);
+        int id = buttonView.getId();
+        if (id == R.id.cb_crl) {
+            CertConfigActivator.getConfigService().setProperty(
+                    CertificateService.PNAME_REVOCATION_CHECK_ENABLED, isChecked);
 
-                System.setProperty(CertificateService.SECURITY_CRLDP_ENABLE, enabled);
-                System.setProperty(CertificateService.SECURITY_SSL_CHECK_REVOCATION, enabled);
-                chkEnableOcsp.setEnabled(isChecked);
-                break;
-
-            case R.id.cb_ocsp:
-                CertConfigActivator.getConfigService().setProperty(
-                        CertificateService.PNAME_OCSP_ENABLED, isChecked);
-                Security.setProperty(CertificateService.SECURITY_OCSP_ENABLE, enabled);
-                break;
+            System.setProperty(CertificateService.SECURITY_CRLDP_ENABLE, enabled);
+            System.setProperty(CertificateService.SECURITY_SSL_CHECK_REVOCATION, enabled);
+            chkEnableOcsp.setEnabled(isChecked);
+        }
+        else if (id == R.id.cb_ocsp) {
+            CertConfigActivator.getConfigService().setProperty(
+                    CertificateService.PNAME_OCSP_ENABLED, isChecked);
+            Security.setProperty(CertificateService.SECURITY_OCSP_ENABLE, enabled);
         }
     }
 

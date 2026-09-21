@@ -22,6 +22,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
@@ -1081,28 +1086,38 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
 
     public void sendMessage(MessageJabberImpl message, String correctionUid, final OmemoManager omemoManager) {
         EntityBareJid entityBareJid = mMultiUserChat.getRoom();
-        String msgContent = message.getContent();
+        final String msgContent = message.getContent();
         String errMessage = null;
 
+        OmemoMessage.Sent encryptedMessage;
         try {
-            OmemoMessage.Sent encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
+            Callable<OmemoMessage.Sent> encryptTask = () -> omemoManager.encrypt(mMultiUserChat, msgContent);
+            ExecutorService eService = Executors.newSingleThreadExecutor();
+            Future<OmemoMessage.Sent> future = eService.submit(encryptTask);
+            encryptedMessage = future.get();
+            eService.shutdown();
 
-            MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
-            if (correctionUid != null)
+            MessageBuilder messageBuilder = StanzaBuilder.buildMessage(message.getMessageUid());
+            if (correctionUid != null) {
                 messageBuilder.addExtension(new MessageCorrectExtension(correctionUid));
+            }
             Message sendMessage = encryptedMessage.buildMessage(messageBuilder, entityBareJid, omemoManager.isOmemo2Enable());
 
             if (IMessage.ENCODE_HTML == message.getMimeType()) {
-                String xhtmlBody = encryptedMessage.getElement().toXML().toString();
+                // OMEMO normal body message content will strip off any html tags info
+                final String msgHtml = Html.fromHtml(msgContent, Html.FROM_HTML_MODE_LEGACY).toString();
+
+                Callable<OmemoMessage.Sent> encryptHtmlTask = () -> omemoManager.encrypt(mMultiUserChat, msgHtml);
+                eService = Executors.newSingleThreadExecutor();
+                future = eService.submit(encryptHtmlTask);
+                encryptedMessage = future.get();
+                eService.shutdown();
+
+                String xhtmlEncrypted = encryptedMessage.getElement().toXML().toString();
                 XHTMLText xhtmlText = new XHTMLText("", "us")
-                        .append(xhtmlBody)
+                        .append(xhtmlEncrypted)
                         .appendCloseBodyTag();
 
-                // OMEMO normal body message content will strip off any html tags info
-                msgContent = Html.fromHtml(msgContent, Html.FROM_HTML_MODE_LEGACY).toString();
-                encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
-
-                messageBuilder = StanzaBuilder.buildMessage();
                 messageBuilder = StanzaBuilder.buildMessage(message.getMessageUid());
                 if (correctionUid != null)
                     messageBuilder.addExtension(new MessageCorrectExtension(correctionUid));
@@ -1123,21 +1138,24 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
                     = new ChatRoomMessageDeliveredEvent(this, new Date(), message, correctionUid, ChatMessage.MESSAGE_MUC_OUT);
             fireMessageEvent(msgDeliveredEvt);
         }
-        catch (UndecidedOmemoIdentityException e) {
-            OmemoAuthenticateListener omemoAuthListener = new OmemoAuthenticateListener(message, correctionUid, omemoManager);
-            Context ctx = aTalkApp.getInstance();
-            ctx.startActivity(OmemoAuthenticateDialog.createIntent(ctx, omemoManager, e.getUndecidedDevices(), omemoAuthListener));
-            return;
+        catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof UndecidedOmemoIdentityException) {
+                UndecidedOmemoIdentityException eOmemo = (UndecidedOmemoIdentityException) cause;
+                OmemoAuthenticateListener omemoAuthListener = new OmemoAuthenticateListener(message, correctionUid, omemoManager);
+                Context ctx = aTalkApp.getInstance();
+                ctx.startActivity(OmemoAuthenticateDialog.createIntent(ctx, omemoManager, eOmemo.getUndecidedDevices(), omemoAuthListener));
+                return;
+            }
+            else if (cause instanceof SmackException.NotLoggedInException) {
+                errMessage = aTalkApp.getResString(R.string.message_delivery_not_registered);
+            }
+            else {
+                errMessage = aTalkApp.getResString(R.string.crypto_msg_omemo_session_setup_failed, e.getMessage());
+            }
         }
-        catch (NoOmemoSupportException e) {
-            errMessage = aTalkApp.getResString(R.string.crypto_msg_omemo_session_setup_failed, "NoOmemoSupportException");
-        }
-        catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException
-               | XMPPErrorException | IOException e) {
+        catch (InterruptedException | NotConnectedException e) {
             errMessage = aTalkApp.getResString(R.string.crypto_msg_omemo_session_setup_failed, e.getMessage());
-        }
-        catch (NotLoggedInException e) {
-            errMessage = aTalkApp.getResString(R.string.message_delivery_not_registered);
         }
 
         if (StringUtils.isNotEmpty(errMessage)) {
@@ -2127,7 +2145,7 @@ public class ChatRoomJabberImpl implements ChatRoom, CaptchaDialog.CaptchaDialog
             }
             Jid memberJid = member.getJabberId();
 
-            // set up default in case XHTMLExtension contains no message
+            // setup default in case XHTMLExtension contains no message
             // if msgBody contains markup text then set as ENCODE_HTML mode
             int encType = IMessage.ENCODE_PLAIN;
             if (msgBody.matches(ChatMessage.HTML_MARKUP)) {

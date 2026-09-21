@@ -1137,23 +1137,21 @@ public class AccountInfoPresenceActivity extends BaseActivity
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.avatar_ChoosePicture:
+        int itemId = item.getItemId();
+        if (itemId == R.id.avatar_ChoosePicture) {
             onAvatarClicked(avatarView);
             return true;
-
-        case R.id.avatar_RemovePicture:
+        }
+        else if (itemId == R.id.avatar_RemovePicture) {
             imageUrlField.setText(AVATAR_ICON_REMOVE);
             avatarView.setImageResource(R.drawable.person_photo);
             hasChanges = true;
             return true;
-
-        case R.id.avatar_Cancel:
-            return true;
-
-        default:
-            return super.onContextItemSelected(item);
         }
+        else if (itemId == R.id.avatar_Cancel) {
+            return true;
+        }
+        return super.onContextItemSelected(item);
     }
 
     /**

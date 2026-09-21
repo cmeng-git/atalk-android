@@ -1,5 +1,24 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        6.5.1 (605010)
+Release Date:   09/21/2026
+Author:         cmeng
+- WebViewFragment will process user backKey to go back to previous webpage if allowed.
+- Ensure the webView reloads the user newly defined Web Access Page on return from Settings.
+- Execute encryption of omemo message in chatRoom in background to avoid ANR.
+- Make media call from recent conversion or call history call via JingleMessage protocol if supported.
+- Upgrade smack to v4.5.0 release.
+- - Upgrade jni libraries:
+    * libvpx 1.17.0 <= 1.16.0
+    * openssl 3.6.4 <= 3.5.2; and update all Hmac.c deprecated function calls.
+- Upgrade android gradle build-tools to 9.3.2; change all case R.id.xxx to if-else to resolve "Constant expression required" error.
+
+*** Observation ***
+- openssl-4.0.2 has problem. Resolved in 4.1.0-alpha1 and fPIC is not the cause.
+# ld.lld: error: relocation R_AARCH64_ADR_PREL_PG_HI21 cannot be used against symbol 'poly1305_blocks_sve2'; recompile with -fPIC
+# see solution: https://github.com/openssl/openssl/commit/f869ff08b20d5a824e3535fbd1a7df3561e67536
+
+=========================================================================
 Version:        6.5.0 (605000)
 Release Date:   08/20/2026
 Author:         cmeng
@@ -20,7 +39,7 @@ Author:         cmeng
   Proceed to #requestDeviceListUpdateFor() if contact identity is not found.
   This avoids online check, and fetch missing omemoDevice if not found in identities table.
   Found ejabberd 26.04 server does not send pubsub#event notifications for all the sr_user omemo devices.
-- Execute all omemo message encryption in background task to avoid ANR.
+- Execute chat omemo message encryption in background task to avoid ANR.
 - Android device with API-29 is not compatible with aTalk. InetAddress.getByName(hostname) returns null i.e. DNS not supported.
 - Remove XMPP-Bosh patch for reconnection failure on network changed - implemented in smack 4.5.0-rc1.
 - Included 'XMPP Messaging Server Setup' document in the aTalk repository/resources for home server setup reference.

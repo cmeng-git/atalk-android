@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-// apply plugin: 'org.jetbrains.kotlin.android'
 
 ext.shard = 'core'
 ext.libVersion = '10.0.5'
@@ -27,20 +25,12 @@ android {
     }
 
     compileOptions {
-        // same as smack Java Version
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
-    }
-
-    // For Kotlin projects
-    kotlinOptions {
-        jvmTarget = '11'
     }
 }
 
 dependencies {
-    // v1.19.0 required API-37 or later; Do not upgrade as this will need AGP 9.x.x and causes problems.
-    implementation 'androidx.core:core-ktx:1.18.0'
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation "androidx.test:runner:1.7.0"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.7.0"

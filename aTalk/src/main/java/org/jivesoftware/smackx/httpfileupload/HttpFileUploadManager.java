@@ -43,6 +43,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
@@ -97,7 +98,12 @@ public final class HttpFileUploadManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(HttpFileUploadManager.class.getName());
 
     static {
-        XMPPConnectionRegistry.addConnectionCreationListener(connection -> getInstanceFor(connection));
+        XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
+            public void connectionCreated(XMPPConnection connection) {
+                getInstanceFor(connection);
+            }
+        });
     }
 
     private static final Map<XMPPConnection, HttpFileUploadManager> INSTANCES = new WeakHashMap<>();

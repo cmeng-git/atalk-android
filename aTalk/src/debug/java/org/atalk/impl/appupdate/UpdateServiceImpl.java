@@ -374,7 +374,6 @@ public class UpdateServiceImpl implements UpdateService {
         catch (IOException e) {
             Timber.w("Package installation: %s", e.getMessage());
         }
-
         return true;
     }
 

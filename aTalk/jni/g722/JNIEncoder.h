@@ -13,7 +13,7 @@ extern "C" {
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1encoder_1close
-  (JNIEnv *, jclass, jlong);
+        (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_audio_g722_JNIEncoder
@@ -21,7 +21,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1encoder_1open
-  (JNIEnv *, jclass);
+        (JNIEnv *, jclass);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_audio_g722_JNIEncoder
@@ -29,7 +29,7 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_
  * Signature: (J[BI[BII)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1encoder_1process
-  (JNIEnv *, jclass, jlong, jbyteArray, jint, jbyteArray, jint, jint);
+        (JNIEnv *, jclass, jlong, jbyteArray, jint, jbyteArray, jint, jint);
 
 #ifdef __cplusplus
 }

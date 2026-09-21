@@ -46,12 +46,12 @@ public class AppCallUtil {
     private static Thread createCallThread;
 
     /**
-     * Creates an android call.
+     * Creates an android call via legacy jingle call.
      *
      * @param context the android context
      * @param contact the contact address to call
      * @param callButtonView the button view that generated the call
-     * @param isVideoCall true to setup video call
+     * @param isVideoCall true to set up video call
      */
     public static void createAndroidCall(Context context, Jid contact, View callButtonView, boolean isVideoCall) {
         showCallViaMenu(context, contact, callButtonView, isVideoCall);

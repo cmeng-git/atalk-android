@@ -232,33 +232,6 @@ public class aTalk extends MainMenuActivity {
         }
     }
 
-    /*
-     * If the user is currently looking at the first page, allow the system to handle the
-     * Back button. If Telephony fragment is shown, backKey closes the fragment only.
-     * The call finish() on this activity and pops the back stack.
-     */
-    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
-        @Override
-        public void handleOnBackPressed() {
-            if (mPager.getCurrentItem() == 0) {
-                // mTelephony is not null if Telephony is closed by Cancel button.
-                if (mTelephony != null) {
-                    if (!mTelephony.closeFragment()) {
-                        finish();
-                    }
-                    mTelephony = null;
-                }
-                else {
-                    finish();
-                }
-            }
-            else {
-                // Otherwise, select the previous page.
-                mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-            }
-        }
-    };
-
     /**
      * Called when an activity is destroyed.
      */
@@ -346,6 +319,50 @@ public class aTalk extends MainMenuActivity {
 
     public static aTalk getInstance() {
         return mInstances.isEmpty() ? null : mInstances.get(0);
+    }
+
+    /*
+     * If the user is currently looking at the first page, allow the system to handle the
+     * Back button. If Telephony fragment is shown, backKey closes the fragment only.
+     * The call finish() on this activity and pops the back stack.
+     */
+    OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            int currentItem = mPager.getCurrentItem();
+            Fragment currentFragment = mFragments.get(currentItem);
+
+            if (currentItem == 0) {
+                // mTelephony is not null if Telephony is closed by Cancel button.
+                if (mTelephony != null) {
+                    if (!mTelephony.closeFragment()) {
+                        finish();
+                    }
+                    mTelephony = null;
+                }
+                else {
+                    finish();
+                }
+            }
+            else if (currentFragment instanceof OnBackPressedListener) {
+                boolean consumed = ((OnBackPressedListener) currentFragment).onBackPressed();
+                if (!consumed) {
+                    // Otherwise, select the previous page.
+                    mPager.setCurrentItem(currentItem - 1);
+                }
+            }
+            else {
+                // Otherwise, select the previous page.
+                mPager.setCurrentItem(currentItem - 1);
+            }
+        }
+    };
+
+    public interface OnBackPressedListener {
+        /**
+         * @return true if the fragment consumed the back press, false otherwise.
+         */
+        boolean onBackPressed();
     }
 
     // =========== Runtime permission handlers ==========

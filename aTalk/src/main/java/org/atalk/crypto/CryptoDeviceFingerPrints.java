@@ -173,8 +173,7 @@ public class CryptoDeviceFingerPrints extends BaseActivity {
         contact = contactList.get(bareJid);
 
         int id = item.getItemId();
-        switch (id) {
-        case R.id.trust:
+        if (id == R.id.trust) {
             if (bareJid.startsWith(OMEMO)) {
                 trustOmemoFingerPrint(bareJid, remoteFingerprint);
                 String msg = getString(R.string.crypto_omemo_trust_messaging_resume, bareJid);
@@ -182,8 +181,8 @@ public class CryptoDeviceFingerPrints extends BaseActivity {
             }
             fpListAdapter.notifyDataSetChanged();
             return true;
-
-        case R.id.distrust:
+        }
+        else if (id == R.id.distrust) {
             if (bareJid.startsWith(OMEMO)) {
                 distrustOmemoFingerPrint(bareJid, remoteFingerprint);
                 String msg = getString(R.string.crypto_omemo_distrust_messaging_stop, bareJid);
@@ -191,8 +190,8 @@ public class CryptoDeviceFingerPrints extends BaseActivity {
             }
             fpListAdapter.notifyDataSetChanged();
             return true;
-
-        case R.id.copy:
+        }
+        else if (id == R.id.copy) {
             ClipboardManager cbManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             if (cbManager != null) {
                 cbManager.setPrimaryClip(ClipData.newPlainText(null,
@@ -200,7 +199,8 @@ public class CryptoDeviceFingerPrints extends BaseActivity {
                 Toast.makeText(this, R.string.crypto_fingerprint_copy, Toast.LENGTH_SHORT).show();
             }
             return true;
-        case R.id.cancel:
+        }
+        else if (id == R.id.cancel) {
             return true;
         }
         return super.onContextItemSelected(item);

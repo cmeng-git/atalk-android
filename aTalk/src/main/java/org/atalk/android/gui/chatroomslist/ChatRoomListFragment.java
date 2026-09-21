@@ -364,72 +364,70 @@ public class ChatRoomListFragment extends BaseFragment
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             ChatPanel chatPanel = ChatSessionManager.getMultiChat(mClickedChatRoom, true);
-            switch (item.getItemId()) {
-                case R.id.chatroom_tts_enable:
-                    if (mClickedChatRoom != null && chatPanel != null) {
-                        if (mClickedChatRoom.isTtsEnable()) {
-                            mClickedChatRoom.setTtsEnable(false);
-                            mChatroomTtsEnable.setTitle(R.string.tts_enable);
-                        }
-                        else {
-                            mClickedChatRoom.setTtsEnable(true);
-                            mChatroomTtsEnable.setTitle(R.string.tts_disable);
-                        }
-                        chatPanel.updateChatTtsOption();
+            int itemId = item.getItemId();
+            if (itemId == R.id.chatroom_tts_enable) {
+                if (mClickedChatRoom != null && chatPanel != null) {
+                    if (mClickedChatRoom.isTtsEnable()) {
+                        mClickedChatRoom.setTtsEnable(false);
+                        mChatroomTtsEnable.setTitle(R.string.tts_enable);
                     }
-                    return true;
-
-            case R.id.chatroom_translate_send:
+                    else {
+                        mClickedChatRoom.setTtsEnable(true);
+                        mChatroomTtsEnable.setTitle(R.string.tts_disable);
+                    }
+                    chatPanel.updateChatTtsOption();
+                }
+                return true;
+            }
+            else if (itemId == R.id.chatroom_translate_send) {
                 boolean isTranslateSend = mClickedChatRoom.isTranslateSend();
                 mClickedChatRoom.setTranslateSend(!isTranslateSend);
                 mChatroomTranslateSend.setTitle(isTranslateSend ?
                         R.string.translation_sent_enable : R.string.translation_sent_disable);
                 return true;
-
-            case R.id.chatroom_translate_receive:
+            }
+            else if (itemId == R.id.chatroom_translate_receive) {
                 boolean isTranslateReceive = mClickedChatRoom.isTranslateReceive();
                 mClickedChatRoom.setTranslateReceive(!isTranslateReceive);
                 mChatroomTranslateReceive.setTitle(isTranslateReceive ?
                         R.string.translation_receive_enable : R.string.translation_receive_disable);
                 return true;
-
-            case R.id.close_current_chat:
-                    if (chatPanel != null)
-                        onCloseChat(chatPanel);
-                    return true;
-
-                case R.id.close_all_active_chats:
-                    onCloseAllChats();
-                    return true;
-
-                case R.id.erase_chatroom_history:
-                    eraseMode = EntityListHelper.SINGLE_ENTITY;
-                    EntityListHelper.eraseEntityChatHistory(ChatRoomListFragment.this, mClickedChatRoom, null, null);
-                    return true;
-
-                case R.id.erase_all_chatroom_history:
-                    // This option is currently being disabled - not offer to user
-                    eraseMode = EntityListHelper.ALL_ENTITY;
-                    EntityListHelper.eraseAllEntityHistory(ChatRoomListFragment.this);
-                    return true;
-
-                case R.id.destroy_chatroom:
-                    new ChatRoomDestroyDialog().show(mContext, mClickedChatRoom, chatPanel);
-                    return true;
-
-                case R.id.chatroom_info:
-                    ChatRoomInfoDialog chatRoomInfoDialog = ChatRoomInfoDialog.newInstance(mClickedChatRoom);
-                    FragmentTransaction ft = getParentFragmentManager().beginTransaction();
-                    ft.addToBackStack(null);
-                    chatRoomInfoDialog.show(ft, "infoDialog");
-                    return true;
-
-                case R.id.chatroom_ctx_menu_exit:
-                    return true;
-
-                default:
-                    return false;
             }
+            else if (itemId == R.id.close_current_chat) {
+                if (chatPanel != null)
+                    onCloseChat(chatPanel);
+                return true;
+            }
+            else if (itemId == R.id.close_all_active_chats) {
+                onCloseAllChats();
+                return true;
+            }
+            else if (itemId == R.id.erase_chatroom_history) {
+                eraseMode = EntityListHelper.SINGLE_ENTITY;
+                EntityListHelper.eraseEntityChatHistory(ChatRoomListFragment.this, mClickedChatRoom, null, null);
+                return true;
+            }
+            else if (itemId == R.id.erase_all_chatroom_history) {
+			    // This option is currently being disabled - not offer to user
+                eraseMode = EntityListHelper.ALL_ENTITY;
+                EntityListHelper.eraseAllEntityHistory(ChatRoomListFragment.this);
+                return true;
+            }
+            else if (itemId == R.id.destroy_chatroom) {
+                new ChatRoomDestroyDialog().show(mContext, mClickedChatRoom, chatPanel);
+                return true;
+            }
+            else if (itemId == R.id.chatroom_info) {
+                ChatRoomInfoDialog chatRoomInfoDialog = ChatRoomInfoDialog.newInstance(mClickedChatRoom);
+                FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+                ft.addToBackStack(null);
+                chatRoomInfoDialog.show(ft, "infoDialog");
+                return true;
+            }
+            else if (itemId == R.id.chatroom_ctx_menu_exit) {
+                return true;
+            }
+            return false;
         }
     }
 

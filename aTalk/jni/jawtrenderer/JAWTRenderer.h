@@ -13,7 +13,7 @@ extern "C" {
  * Signature: (JLjava/awt/Component;)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_addNotify
-  (JNIEnv *, jclass, jlong, jobject);
+        (JNIEnv *, jclass, jlong, jobject);
 
 /*
  * Class:     org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer
@@ -21,7 +21,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_
  * Signature: (JLjava/awt/Component;)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_close
-  (JNIEnv *, jclass, jlong, jobject);
+        (JNIEnv *, jclass, jlong, jobject);
 
 /*
  * Class:     org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer
@@ -29,7 +29,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_
  * Signature: (Ljava/awt/Component;)J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_open
-  (JNIEnv *, jclass, jobject);
+        (JNIEnv *, jclass, jobject);
 
 /*
  * Class:     org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer
@@ -37,7 +37,7 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_jmfext_media_renderer_video
  * Signature: (JLjava/awt/Component;Ljava/awt/Graphics;I)Z
  */
 JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_paint
-  (JNIEnv *, jclass, jlong, jobject, jobject, jint);
+        (JNIEnv *, jclass, jlong, jobject, jobject, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer
@@ -45,7 +45,7 @@ JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_jmfext_media_renderer_vi
  * Signature: (JLjava/awt/Component;[IIIII)Z
  */
 JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_process
-  (JNIEnv *, jclass, jlong, jobject, jintArray, jint, jint, jint, jint);
+        (JNIEnv *, jclass, jlong, jobject, jintArray, jint, jint, jint, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer
@@ -53,7 +53,7 @@ JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_jmfext_media_renderer_vi
  * Signature: (JLjava/awt/Component;)V
  */
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_removeNotify
-  (JNIEnv *, jclass, jlong, jobject);
+        (JNIEnv *, jclass, jlong, jobject);
 
 /*
  * Class:     org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer
@@ -61,7 +61,7 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_
  * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_org_atalk_impl_neomedia_jmfext_media_renderer_video_JAWTRenderer_sysctlbyname
-  (JNIEnv *, jclass, jstring);
+        (JNIEnv *, jclass, jstring);
 
 #ifdef __cplusplus
 }

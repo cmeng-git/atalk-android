@@ -461,96 +461,94 @@ public class ContactListFragment extends BaseFragment
                 return false;
             }
 
-            switch (item.getItemId()) {
-            case R.id.close_chat:
+            int itemId = item.getItemId();
+            if (itemId == R.id.close_chat) {
                 onCloseChat(chatPanel);
                 return true;
-
-            case R.id.close_all_chats:
+            }
+            else if (itemId == R.id.close_all_chats) {
                 onCloseAllChats();
                 return true;
-
-            case R.id.erase_contact_chat_history:
+            }
+            else if (itemId == R.id.erase_contact_chat_history) {
                 eraseMode = EntityListHelper.SINGLE_ENTITY;
                 EntityListHelper.eraseEntityChatHistory(ContactListFragment.this, mClickedContact, null, null);
                 return true;
-
-            case R.id.erase_all_contact_chat_history:
+            }
+            else if (itemId == R.id.erase_all_contact_chat_history) {
                 eraseMode = EntityListHelper.ALL_ENTITY;
                 EntityListHelper.eraseAllEntityHistory(ContactListFragment.this);
                 return true;
-
-            case R.id.contact_tts_enable:
+            }
+            else if (itemId == R.id.contact_tts_enable) {
                 boolean isTtsEnable = mRecipient.isTtsEnable();
                 mRecipient.setTtsEnable(!isTtsEnable);
                 mChatTtsEnable.setTitle(isTtsEnable ? R.string.tts_enable : R.string.tts_disable);
                 chatPanel.updateChatTtsOption();
                 return true;
-
-            case R.id.chat_translate_send:
+            }
+            else if (itemId == R.id.chat_translate_send) {
                 boolean isTranslateSend = mRecipient.isTranslateSend();
                 mRecipient.setTranslateSend(!isTranslateSend);
                 mChatTranslateSend.setTitle(isTranslateSend ?
                         R.string.translation_sent_enable : R.string.translation_sent_disable);
                 return true;
-
-            case R.id.chat_translate_receive:
+            }
+            else if (itemId == R.id.chat_translate_receive) {
                 boolean isTranslateReceive = mRecipient.isTranslateReceive();
                 mRecipient.setTranslateReceive(!isTranslateReceive);
                 mChatTranslateReceive.setTitle(isTranslateReceive ?
                         R.string.translation_receive_enable : R.string.translation_receive_disable);
                 return true;
-
-            case R.id.rename_contact:
+            }
+            else if (itemId == R.id.rename_contact) {
                 // Show rename contact dialog
                 ft = getParentFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
                 DialogFragment renameFragment = ContactRenameDialog.getInstance(mClickedContact);
                 renameFragment.show(ft, "renameDialog");
                 return true;
-
-            case R.id.contact_blocking:
+            }
+            else if (itemId == R.id.contact_blocking) {
                 EntityListHelper.setEntityBlockState(mContext, mRecipient, !mRecipient.isContactBlock());
                 return true;
-
-            case R.id.remove_contact:
+            }
+            else if (itemId == R.id.remove_contact) {
                 eraseMode = EntityListHelper.SINGLE_ENTITY;
                 EntityListHelper.removeEntity(ContactListFragment.this, mClickedContact, chatPanel);
                 return true;
-
-            case R.id.move_contact:
+            }
+            else if (itemId == R.id.move_contact) {
                 // Show move contact dialog
                 ft = getParentFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
                 DialogFragment newFragment = MoveToGroupDialog.getInstance(mClickedContact);
                 newFragment.show(ft, "moveDialog");
                 return true;
-
-            case R.id.re_request_auth:
+            }
+            else if (itemId == R.id.re_request_auth) {
                 requestAuthorization(mClickedContact.getDefaultContact());
                 return true;
-
-            case R.id.send_contact_file:
+            }
+            else if (itemId == R.id.send_contact_file) {
                 // ChatPanel clickedChat = ChatSessionManager.getActiveChat(clickedContact);
                 // AttachOptionDialog attachOptionDialog = new AttachOptionDialog(mActivity,
                 // clickedContact);
                 // attachOptionDialog.show();
                 return true;
-
-            case R.id.remove_group:
+            }
+            else if (itemId == R.id.remove_group) {
                 EntityListHelper.removeMetaContactGroup(mClickedGroup);
                 return true;
-
-            case R.id.contact_info:
+            }
+            else if (itemId == R.id.contact_info) {
                 startContactInfoActivity(mClickedContact);
                 return true;
-
-            case R.id.contact_ctx_menu_exit:
-                return true;
-
-            default:
-                return false;
             }
+            else if (itemId == R.id.contact_ctx_menu_exit) {
+                return true;
+            }
+            return false;
         }
     }
 

@@ -420,50 +420,45 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
         if (object instanceof ChatRoomWrapper) {
             ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
 
-            switch (view.getId()) {
-                case R.id.room_view:
-                    chatRoomListFragment.joinChatRoom(chatRoomWrapper);
-                    break;
+            int id = view.getId();
+            if (id == R.id.room_view) {
+                chatRoomListFragment.joinChatRoom(chatRoomWrapper);
+            }
+            else if (id == R.id.cb_autojoin) {
+                // Set chatRoom autoJoin on first login
+                chatRoomWrapper.setAutoJoin(mViewHolder.autojoin.isChecked());
+                if (chatRoomWrapper.isAutoJoin()) {
+                    MUCActivator.getMUCService().joinChatRoom(chatRoomWrapper);
+                }
 
-                case R.id.cb_autojoin:
-                    // Set chatRoom autoJoin on first login
-                    chatRoomWrapper.setAutoJoin(mViewHolder.autojoin.isChecked());
-                    if (chatRoomWrapper.isAutoJoin()) {
-                        MUCActivator.getMUCService().joinChatRoom(chatRoomWrapper);
-                    }
-
-                    // Continue to update server BookMarkConference data if bookmark is checked
-                    if (mViewHolder.bookmark.isChecked()) {
-                        ProtocolProviderService pps = chatRoomWrapper.getProtocolProvider();
-                        BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());
-                        EntityBareJid entityBareJid = chatRoomWrapper.getEntityBareJid();
-                        chatRoomWrapper.setBookmark(mViewHolder.bookmark.isChecked());
-                        try {
-                            if (mViewHolder.bookmark.isChecked()) {
-                                bookmarkManager.addBookmarkedConference(chatRoomWrapper.getBookmarkName(), entityBareJid,
-                                        chatRoomWrapper.isAutoJoin(), chatRoomWrapper.getNickResource(),
-                                        chatRoomWrapper.loadPassword());
-                            }
-                            else {
-                                bookmarkManager.removeBookmarkedConference(entityBareJid);
-                            }
-                        } catch (SmackException.NoResponseException | SmackException.NotConnectedException
-                                 | XMPPException.XMPPErrorException | InterruptedException e) {
-                            Timber.w("Failed to update Bookmarks: %s", e.getMessage());
+                // Continue to update server BookMarkConference data if bookmark is checked
+                if (mViewHolder.bookmark.isChecked()) {
+                    ProtocolProviderService pps = chatRoomWrapper.getProtocolProvider();
+                    BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());
+                    EntityBareJid entityBareJid = chatRoomWrapper.getEntityBareJid();
+                    chatRoomWrapper.setBookmark(mViewHolder.bookmark.isChecked());
+                    try {
+                        if (mViewHolder.bookmark.isChecked()) {
+                            bookmarkManager.addBookmarkedConference(chatRoomWrapper.getBookmarkName(), entityBareJid,
+                                    chatRoomWrapper.isAutoJoin(), chatRoomWrapper.getNickResource(),
+                                    chatRoomWrapper.loadPassword());
+                        }
+                        else {
+                            bookmarkManager.removeBookmarkedConference(entityBareJid);
                         }
                     }
-                    break;
-
-                case R.id.room_icon:
-                case R.id.cb_bookmark:
-                    FragmentTransaction ft = chatRoomListFragment.getParentFragmentManager().beginTransaction();
-                    ft.addToBackStack(null);
-                    ChatRoomBookmarkDialog chatRoomBookmarkFragment
-                            = ChatRoomBookmarkDialog.getInstance(chatRoomWrapper, this);
-                    chatRoomBookmarkFragment.show(ft, "bmDdialog");
-                    break;
-                default:
-                    break;
+                    catch (SmackException.NoResponseException | SmackException.NotConnectedException
+                           | XMPPException.XMPPErrorException | InterruptedException e) {
+                        Timber.w("Failed to update Bookmarks: %s", e.getMessage());
+                    }
+                }
+            }
+            else if (id == R.id.room_icon || id == R.id.cb_bookmark) {
+                FragmentTransaction ft = chatRoomListFragment.getParentFragmentManager().beginTransaction();
+                ft.addToBackStack(null);
+                ChatRoomBookmarkDialog chatRoomBookmarkFragment
+                        = ChatRoomBookmarkDialog.getInstance(chatRoomWrapper, this);
+                chatRoomBookmarkFragment.show(ft, "bmDdialog");
             }
         }
         else {
