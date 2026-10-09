@@ -1,5 +1,25 @@
 Project aTalk-Android Release Notes:
 =========================================================================
+Version:        6.5.2 (605020)
+Release Date:   10/09/2026
+Author:         cmeng
+- Must request user to grant UseFullScreenIntent for Android API >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE if denied;
+  otherwise call receive alert UI is not shown when device is in sleep mode.
+- Improve and add permission UI for Ignore Battery Optimization and UseFullScreenIntent requests.
+- Default Telephony VoIP-PBX domain to registered user domain prefixed with "pbx."
+- When READ_CONTACTS permission is not granted. Telephony VoIP-PBX will not load Android Contacts for user selection,
+  nor it shows any error message.
+- Must initialize with a valid userId during AccountRegistrationImpl#loadAccount(); else getOverridePhoneSuffix() will have NPR exception in account setting.
+- Upgrade jni library: ffmpeg 9.0.2 <= 5.1.4
+
+*** Observation ***
+- Audio SILK/xxx Codec are not working: ControllerErrorEvent: Internal module net.sf.fmj.media.BasicFilterModule@bca52af failed!
+  audio hear briefly then goes silent.
+- Use of G722/8000 codec in media call, background is noisy.
+- Attempted: Implemented jni G722 codec using FFMpeg#adpcm_g722; flow graph creation is successful;
+  encdoer working, but only noise is heard in decoder. So keep the old G722 implementation.
+
+=========================================================================
 Version:        6.5.1 (605010)
 Release Date:   09/21/2026
 Author:         cmeng

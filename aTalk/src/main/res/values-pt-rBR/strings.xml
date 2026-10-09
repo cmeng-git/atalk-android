@@ -1150,7 +1150,7 @@
     <string name="jbr_user_name_password">Nome de usuário e senha</string>
 
     <!-- Telephony -->
-    <string name="contact_phone">Nome/Telefone/Jid de Contato:</string>
+    <string name="contact_phone">Nome/Telefone/Jid de Contato</string>
     <string name="call_via">Ligar via:</string>
     <string name="contact_phone_empty">O número de telefone de contato não pode estar em branco!</string>
     <string name="recipient_error_non_ascii">Carateres especiais não são suportados!</string>
@@ -1430,12 +1430,12 @@
     <string name="silk_fec_advertise">Anunciar o suporte de FEC no SDP</string>
 
     <!-- Android Battery Usage Optimization -->
-    <string name="battery_optimizations">Otimização da bateria</string>
-    <string name="battery_optimizations_dialog">Seu aparelho tem otimização da bateria implementada para o aTalk; isto pode provocar atrasos de notificações ou perda de mensagens.\n\nRecomenda-se que você desative esta otimização para o aTalk.</string>
-    <string name="battery_optimization_on">aTalk será suspenso quando o aparelho entrar em modo de suspensão. Reinicie manualmente aTalk para receber novas mensagens.</string>
-    <string name="device_does_not_support_battery_op">Seu aparelho não suporta a opção de não otimização da bateria</string>
-    <string name="disable">Desativar</string>
-    <string name="next">Próximo</string>
+    <string name="battery_optimization">Otimização da bateria</string>
+    <string name="battery_optimization_summary">Quando a otimização da utilização da bateria está ativada no dispositivo, isto pode resultar num atraso nas notificações ou na perda de mensagens. \n\nRecomenda-se a desativação desta otimização para o aTalk.</string>
+
+    <string name="fullscreen">Tela cheia</string>
+    <string name="fullscreen_info_title">Intenção de ecrã completo necessária</string>
+    <string name="fullscreen_info_summary">O aTalk precisa de apresentar alertas de ecrã inteiro para que não perca chamadas recebidas de alta prioridade quando o telefone está bloqueado.</string>
 
     <!-- Android Permissions -->
     <string name="app_info">Detalhes do app…</string>
@@ -1463,7 +1463,7 @@
     <string name="camera_permission_denied_feedback">Todas as atividades associadas à câmera não serão disponíveis até que você conceda a permissão necessária</string>
 
     <string name="contacts_permission_denied_dialog_title">Pedido de permissão de contatos</string>
-    <string name="contacts_permission_denied_feedback">É necessária permissão de contatos para acesso ao estado de telefone e configuração de ligações</string>
+    <string name="contacts_permission_denied_feedback">A permissão de acesso aos contactos é necessária para aceder aos números de telefone na configuração de telefonia VoIP-PBX.</string>
 
     <string name="music_permission_denied_dialog_title">Pedido de permissão de música e áudio</string>
     <string name="music_permission_denied_feedback">O arquivo de áudio de mídia não estará acessível até que você conceda a solicitação de permissão</string>

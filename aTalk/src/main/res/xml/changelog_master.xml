@@ -7,8 +7,20 @@
 -->
 
 <changelog>
-    <release version="6.5.1 (09/21/2026)" versioncode="605010">
+    <release version="6.5.2 (10/09/2026)" versioncode="605020">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>Must request user to grant UseFullScreenIntent for Android API >= VERSION_CODES.UPSIDE_DOWN_CAKE if denied;
+            otherwise call receive alert UI is not shown when device is in sleep mode.</change>
+        <change>Improve and add permission UI for Ignore Battery Optimization and UseFullScreenIntent requests.</change>
+        <change>Default Telephony VoIP-PBX domain to registered user domain prefixed with "pbx."</change>
+        <change>When READ_CONTACTS permission is not granted. Telephony VoIP-PBX will not load Android Contacts for user selection,
+            nor it shows any error message.</change>
+        <change>Must initialize with a valid userId during AccountRegistrationImpl#loadAccount(); else getOverridePhoneSuffix() will have NPR in account setting.</change>
+        <change>Upgrade jni library: ffmpeg 9.0.2 &lt;= 5.1.4</change>
+        <change>Bug fixes and enhancements.</change>
+    </release>
+
+    <release version="6.5.1 (09/21/2026)" versioncode="605010">
         <change>WebViewFragment will process user backKey to go back to previous webpage if allowed.</change>
         <change>Ensure the webView reloads the user newly defined Web Access Page on return from Settings.</change>
         <change>Execute encryption of omemo message in chatRoom in background to avoid ANR.</change>

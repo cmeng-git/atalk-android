@@ -92,6 +92,10 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
         mLoaderManager = LoaderManager.getInstance(aTalk.getFragment(aTalk.CL_FRAGMENT));
     }
 
+    public void disableRecipientLoader() {
+        mLoaderManager = null;
+    }
+
     @Override
     protected View getViewForObject(@NonNull Recipient recipient) {
         View view = inflateLayout();

@@ -524,12 +524,11 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
             }
             else if (chatListView != null) {
                 // Init the history & ChatType background color
-                // Complete the loadHistoryTask before init the chatController; avoid crashes with send message cache update.
+                // Start the loadHistoryTask, leave init the chatController.onShow at the end;
+                // minimize ANR with send message cache update.
                 chatStateView.setVisibility(View.INVISIBLE);
                 initAdapter();
 
-                // Timber.d("Init controller: %s", hashCode());
-                mChatController.onShow();
                 // Also register global status listener
                 AppGUIActivator.getLoginRenderer().addGlobalStatusListener(globalStatusListener);
 
@@ -537,6 +536,9 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
                 mCryptoFragment.addCryptoModeListener(currentChatTransport.getDescriptor(), this);
                 // initBackgroundColor();
                 changeBackground(mCFView, mChatPanel.getChatType());
+
+                // Timber.d("Init controller: %s", hashCode());
+                mChatController.onShow();
             }
         }
         else {
@@ -557,7 +559,7 @@ public class ChatFragment extends BaseFragment implements ChatSessionManager.Cur
         if (!historyLoaded) {
             /*
              * chatListAdapter.isEmpty() is used as init flag, chatPanel.msgCache must be
-             * cleared. Otherwise it will cause chatPanel.getHistory to return old data when the
+             * cleared. Otherwise, it will cause chatPanel.getHistory to return old data when the
              * underlying data changed or adapter has been cleared
              */
             loadHistoryTask = new LoadHistoryTask(chatListAdapter.isEmpty());

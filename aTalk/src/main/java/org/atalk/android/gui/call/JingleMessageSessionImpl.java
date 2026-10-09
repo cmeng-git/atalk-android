@@ -511,7 +511,8 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
         String sid = jingleMessage.getId();
         Jid jidFrom = message.getFrom();
         boolean failed = false;
-        String reasonText = aTalkApp.getResString(R.string.call_ended_by_remote, mRemote.asBareJid());
+        BareJid jid = mRemote != null ? mRemote.asBareJid() : null;
+        String reasonText = aTalkApp.getResString(R.string.call_ended_by_remote, jid);
 
         // Do not response with finish if it is a call migration.
         if (jingleMessage.getElements(MigratedElement.ELEMENT).isEmpty()) {

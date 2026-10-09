@@ -23,8 +23,7 @@ import javax.media.format.AudioFormat;
  * @author Emil Ivov
  * @author Lyubomir Marinov
  */
-public class AudioLevelEffect extends ControlsAdapter
-        implements Effect {
+public class AudioLevelEffect extends ControlsAdapter implements Effect {
     /**
      * The indicator which determines whether <code>AudioLevelEffect</code> instances are to perform
      * the copying of the data from input <code>Buffer</code>s to output <code>Buffer</code>s themselves

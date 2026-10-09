@@ -159,6 +159,48 @@
                     style="@style/PermissionFeedback"
                     android:text="@string/permission_unknown" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_height="2dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:color/darker_gray" />
+
+            <LinearLayout
+                android:id="@+id/fullscreen_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/fullscreen_permission_button"
+                    style="@style/PermissionButton"
+                    android:text="@string/fullscreen" />
+
+                <TextView
+                    android:id="@+id/fullscreen_permission_feedback"
+                    style="@style/PermissionFeedback"
+                    android:text="@string/permission_unknown" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/batteryOpt_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/batteryOpt_permission_button"
+                    style="@style/PermissionButton"
+                    android:text="@string/battery_optimization" />
+
+                <TextView
+                    android:id="@+id/batteryOpt_permission_feedback"
+                    style="@style/PermissionFeedback"
+                    android:text="@string/permission_unknown" />
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

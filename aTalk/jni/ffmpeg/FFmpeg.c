@@ -134,13 +134,16 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1alloc_1packet
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
- * Method:    avcodec_close
- * Signature: (J)I
+ * Method:    avcodec_free_context
+ * Signature: (J)V
  */
-JNIEXPORT jint JNICALL
-Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1close
+JNIEXPORT void JNICALL
+Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1free_1context
         (JNIEnv *env, jclass clazz, jlong avctx) {
-    return (jint) avcodec_close((AVCodecContext *) (intptr_t) avctx);
+    AVCodecContext *ctx = (AVCodecContext *) (intptr_t) avctx;
+    if (ctx) {
+        avcodec_free_context(&ctx);
+    }
 }
 
 /*
@@ -755,7 +758,11 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1size
  */
 DEFINE_AVCODECCONTEXT_I_PROPERTY_SETTER(thread_1count, thread_count)
 
-DEFINE_AVCODECCONTEXT_I_PROPERTY_SETTER(ticks_1per_1frame, ticks_per_frame)
+JNIEXPORT void JNICALL
+Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1ticks_1per_1frame
+        (JNIEnv *env, jclass clazz, jlong avctx, jint ticks_per_frame) {
+    // ticks_per_frame removed in modern FFmpeg AVCodecContext
+}
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
@@ -948,10 +955,10 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1set_1key_1frame
     AVFrame *frame_ = (AVFrame *) (intptr_t) frame;
 
     if (JNI_TRUE == key_frame) {
-        frame_->key_frame = 1;
+        frame_->flags |= AV_FRAME_FLAG_KEY;
         frame_->pict_type = AV_PICTURE_TYPE_I;
     } else {
-        frame_->key_frame = 0;
+        frame_->flags &= ~AV_FRAME_FLAG_KEY;
         frame_->pict_type = 0;
     }
 }

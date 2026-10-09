@@ -1161,7 +1161,7 @@
     <string name="jbr_user_name_password">Nombre de usuario y contraseña</string>
 
     <!-- Telephony -->
-    <string name="contact_phone">Nombre/teléfono/Jid de contacto:</string>
+    <string name="contact_phone">Nombre/teléfono/Jid de contacto</string>
     <string name="call_via">Llamar por:</string>
     <string name="contact_phone_empty">¡El número de teléfono de contacto no puede estar vacío!</string>
     <string name="recipient_error_non_ascii">¡Los caracteres especiales no son compatibles actualmente!</string>
@@ -1441,12 +1441,12 @@
     <string name="silk_fec_advertise">Anunciar el soporte de FEC en SDP</string>
 
     <!-- Android Battery Usage Optimization -->
-    <string name="battery_optimizations">Optimización de la batería</string>
-    <string name="battery_optimizations_dialog">Su dispositivo tiene una optimización del uso de la batería en aTalk; esto puede ocasionar que se pierdan las notificaciones o que se pierda el mensaje.\n\nSe recomienda deshabilitar esta optimización para aTalk.</string>
-    <string name="battery_optimization_on">aTalk se pondrá en suspensión cuando el dispositivo entre en modo de espera. Reinicie manualmente aTalk para recibir nuevos mensajes.</string>
-    <string name="device_does_not_support_battery_op">Su dispositivo no admite optar por la optimización de la batería</string>
-    <string name="disable">Inhabilitar</string>
-    <string name="next">Siguiente</string>
+    <string name="battery_optimization">Optimización de la batería</string>
+    <string name="battery_optimization_summary">Cuando la optimización del uso de la batería está activada en el dispositivo, esto puede provocar retrasos en las notificaciones o la pérdida de mensajes. \n\nSe recomienda desactivar esta optimización para aTalk.</string>
+
+    <string name="fullscreen">Pantalla completa</string>
+    <string name="fullscreen_info_title">Se requiere intención de pantalla completa</string>
+    <string name="fullscreen_info_summary">aTalk necesita mostrar alertas a pantalla completa para que no te pierdas las llamadas entrantes de alta prioridad cuando el teléfono está bloqueado.</string>
 
     <!-- Android Permissions -->
     <string name="app_info">Información de la App</string>
@@ -1474,7 +1474,7 @@
     <string name="camera_permission_denied_feedback">Ninguna actividad asociada a la cámara estará disponible hasta que otorgues la solicitud de permiso</string>
 
     <string name="contacts_permission_denied_dialog_title">Solicitud de permiso de contactos</string>
-    <string name="contacts_permission_denied_feedback">El permiso de los contactos es necesario para el acceso al estado del teléfono y la configuración de llamadas.</string>
+    <string name="contacts_permission_denied_feedback">Se requiere el permiso de contactos para acceder a los números de teléfono en la configuración de telefonía VoIP-PBX.</string>
 
     <string name="music_permission_denied_dialog_title">Solicitud de permiso de música y audio.</string>
     <string name="music_permission_denied_feedback">No se puede acceder al archivo de audio multimedia hasta que usted conceda la solicitud de permiso</string>

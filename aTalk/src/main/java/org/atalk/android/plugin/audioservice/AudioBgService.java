@@ -44,7 +44,7 @@ import org.atalk.persistance.FileBackend;
 import timber.log.Timber;
 
 public class AudioBgService extends Service implements MediaPlayer.OnCompletionListener {
-    // Media player actions
+    // ==== Media player actions ====
     public static final String ACTION_PLAYER_INIT = "player_init";
     public static final String ACTION_PLAYER_START = "player_start";
     public static final String ACTION_PLAYER_PAUSE = "player_pause";

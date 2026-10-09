@@ -16,8 +16,11 @@
  */
 package org.atalk.android.plugin.permissions;
 
+import static android.view.View.GONE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -31,10 +34,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
@@ -77,16 +76,14 @@ public class PermissionsActivity extends BaseActivity {
 
     private PermissionListener notificationsPermissionListener;
     private PermissionListener contactsPermissionListener;
-    private PermissionListener phonePermissionListener;
     private PermissionListener locationPermissionListener;
     private PermissionListener micPermissionListener;
     private PermissionListener cameraPermissionListener;
     private PermissionListener musicPermissionListener;
-    private MultiplePermissionsListener videoPermissionListener;
     private PermissionListener storagePermissionListener;
-    private PermissionRequestErrorListener errorListener;
 
-    private ActivityResultLauncher<Void> mBatteryOptimization;
+    private MultiplePermissionsListener videoPermissionListener;
+    private PermissionRequestErrorListener errorListener;
 
     protected static List<PermissionGrantedResponse> grantedPermissionResponses = new LinkedList<>();
     protected static List<PermissionDeniedResponse> deniedPermissionResponses = new LinkedList<>();
@@ -123,7 +120,7 @@ public class PermissionsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Always request permission on first apk launch for android.M
+        // Always request permission on first apk launch for android
         if (aTalkApp.permissionFirstRequest) {
             // see if we should show the splash screen and wait for it to complete before continue
             if (Splash.isFirstRun()) {
@@ -139,16 +136,16 @@ public class PermissionsActivity extends BaseActivity {
             Timber.i("Launching dynamic permission request for aTalk.");
             aTalkApp.permissionFirstRequest = false;
 
-            // Request user to add aTalk to BatteryOptimization whitelist
-            // Otherwise, aTalk will be put to sleep on system doze-standby
-            mBatteryOptimization = requestBatteryOptimization();
-            boolean showBatteryOptimizationDialog = openBatteryOptimizationDialogIfNeeded();
+            // Request to Ignore BatteryOptimization; else, aTalk will be put to sleep on system doze-standby.
+            boolean areSettingGranted = isIgnoreBatteryOptimize();
+            // Need FullScreen alert for incoming call when device is locked.
+            areSettingGranted &= canUseFullScreenIntent();
 
             createPermissionListeners();
             boolean permissionRequest = getPackagePermissionsStatus();
             permissionsStatusUpdate();
 
-            if ((!permissionRequest) && !showBatteryOptimizationDialog) {
+            if ((!permissionRequest) && areSettingGranted) {
                 startLauncher();
             }
         }
@@ -172,13 +169,15 @@ public class PermissionsActivity extends BaseActivity {
         mBinding.locationPermissionButton.setOnClickListener(v -> onLocationPermissionButtonClicked());
         mBinding.micPermissionButton.setOnClickListener(v -> onMicPermissionButtonClicked());
         mBinding.cameraPermissionButton.setOnClickListener(v -> onCameraPermissionButtonClicked());
+        mBinding.batteryOptPermissionButton.setOnClickListener(v -> onBatteryOptPermissionButtonClicked());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             mBinding.notificationsPermissionButton.setOnClickListener(v -> onNotificationsPermissionButtonClicked());
             mBinding.musicPermissionButton.setOnClickListener(v -> onMusicPermissionButtonClicked());
-            mBinding.storageView.setVisibility(View.GONE);
+            mBinding.storageView.setVisibility(GONE);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                mBinding.fullscreenPermissionButton.setOnClickListener(v -> onFullScreenPermissionButtonClicked());
                 mBinding.videoPermissionButton.setOnClickListener(v -> onMediaUserSelectedPermissionButtonClicked());
             }
             else {
@@ -192,13 +191,21 @@ public class PermissionsActivity extends BaseActivity {
             else {
                 mBinding.storagePermissionButton.setOnClickListener(v -> onReadStoragePermissionButtonClicked());
             }
-            mBinding.notificationsView.setVisibility(View.GONE);
-            mBinding.musicView.setVisibility(View.GONE);
-            mBinding.videoView.setVisibility(View.GONE);
+            mBinding.notificationsView.setVisibility(GONE);
+            mBinding.musicView.setVisibility(GONE);
+            mBinding.videoView.setVisibility(GONE);
+            // mBinding.fullscreenView.setVisibility(GONE); Just show - no harm
         }
         mBinding.allPermissionsButton.setOnClickListener(v -> onAllPermissionsButtonClicked());
         mBinding.appInfoPermissionsButton.setOnClickListener(v -> onAppInfoButtonClicked(this));
         mBinding.buttonDone.setOnClickListener(v -> onDoneButtonClicked());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isIgnoreBatteryOptimize();
+        canUseFullScreenIntent();
     }
 
     public void onDoneButtonClicked() {
@@ -316,6 +323,15 @@ public class PermissionsActivity extends BaseActivity {
                 .check();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    public void onFullScreenPermissionButtonClicked() {
+        checkAndRequestFullScreenIntentIfNecessary();
+    }
+
+    public void onBatteryOptPermissionButtonClicked() {
+        checkAndRequestBatteryOptimizationIfNecessary();
+    }
+
     public static void onAppInfoButtonClicked(Context context) {
         Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts("package", context.getPackageName(), null));
@@ -381,19 +397,19 @@ public class PermissionsActivity extends BaseActivity {
                 Timber.e("NameNotFoundException: %s", e.getMessage());
             }
         }
+
         // Proceed to request user for permissions if not all are permanently denied
-        for (PermissionDeniedResponse response : deniedPermissionResponses) {
-            if (!response.isPermanentlyDenied())
-                return true;
-        }
+        // for (PermissionDeniedResponse response : deniedPermissionResponses) {
+        //    if (!response.isPermanentlyDenied())
+        //        return true;
+        // }
+
         /*
          * It seems that some android devices have init all requested permissions to permanently denied states
          * i.e. incorrect return value for: ActivityCompat.shouldShowRequestPermissionRationale == false
          * Must prompt user if < 3 permission has been granted to aTalk - will not work in most cases;
-         *
-         * Do not disturb user, if he has chosen partially granted the permissions.
          */
-        return grantedPermissionResponses.size() < 3;
+        return !deniedPermissionResponses.isEmpty() || grantedPermissionResponses.size() < 3;
     }
 
     /**
@@ -583,6 +599,14 @@ public class PermissionsActivity extends BaseActivity {
             feedbackView = mBinding.storagePermissionFeedback;
             break;
 
+        case Manifest.permission.USE_FULL_SCREEN_INTENT:
+            feedbackView = mBinding.fullscreenPermissionFeedback;
+            break;
+
+        case Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS:
+            feedbackView = mBinding.batteryOptPermissionFeedback;
+            break;
+
         default:
             feedbackView = null;
         }
@@ -590,67 +614,104 @@ public class PermissionsActivity extends BaseActivity {
     }
 
     /**********************************************************************************************
-     * Android Battery Usage Optimization Request; Will only be called if >= Build.VERSION_CODES.M
+     * Android Battery Usage Optimization; Will only be called if >= Build.VERSION_CODES.M
      ***********************************************************************************************/
-    private boolean openBatteryOptimizationDialogIfNeeded() {
-        // Will always request for battery optimization disable for aTalk on every aTalk new launch, if not disabled
-        if (isOptimizingBattery()) {
-            // Do not launch this within a dialog, else result return on dialog user click
-            mBatteryOptimization.launch(null);
-
-//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//            builder.setTitle(R.string.battery_optimizations);
-//            builder.setMessage(R.string.battery_optimizations_dialog);
-//
-//            builder.setPositiveButton(R.string.next, (dialog, which) -> {
-//                dialog.dismiss();
-//                mBatteryOptimization.launch(null);
-//            });
-//
-//            AlertDialog dialog = builder.create();
-//            dialog.setCanceledOnTouchOutside(false);
-//            dialog.show();
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    protected boolean isOptimizingBattery() {
-        final PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-        return (pm != null) && !pm.isIgnoringBatteryOptimizations(getPackageName());
+    public void checkAndRequestBatteryOptimizationIfNecessary() {
+        // Build the dialog box using standard AlertDialog with an optional custom explanation
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.battery_optimization)
+                .setMessage(R.string.battery_optimization_summary)
+                .setCancelable(false)
+                .setPositiveButton("OK", (dialog, which) -> {
+                    // Permission not granted; proceed to show request
+                    if (!isIgnoreBatteryOptimize()) {
+                        requestIgnoreBatteryOptimization();
+                    }
+                    dialog.dismiss();
+                })
+                .show();
     }
 
     /**
-     * GetBatteryOptimization class ActivityResultContract implementation.
+     * Checks if if app is currently isIgnoreBatteryOptimize.
      */
-    @SuppressLint("BatteryLife")
-    public class GetBatteryOptimization extends ActivityResultContract<Void, Boolean> {
-        @NonNull
-        @Override
-        public Intent createIntent(@NonNull Context context, @Nullable Void input) {
-            Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Uri uri = Uri.parse("package:" + getPackageName());
-            intent.setData(uri);
-            return intent;
-        }
-
-        @Override
-        public Boolean parseResult(int resultCode, @Nullable Intent result) {
-            return isOptimizingBattery();
-        }
+    public boolean isIgnoreBatteryOptimize() {
+        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+        // Check if the app is already ignoring battery optimizations
+        boolean ignore = pm != null && pm.isIgnoringBatteryOptimizations(getPackageName());
+        if (ignore)
+            showPermissionGranted(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+        else
+            showPermissionDenied(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, false);
+        return ignore;
     }
 
     /**
-     * Return success == true if disable battery optimization for aTalk is allowed
+     * Redirects the user specifically to IgnoreBatteryOptimization for this app.
      */
-    private ActivityResultLauncher<Void> requestBatteryOptimization() {
-        return registerForActivityResult(new GetBatteryOptimization(), isOptimizingBattery -> {
-            if (isOptimizingBattery) {
-                aTalkApp.showToastMessage(R.string.battery_optimization_on);
+    private void requestIgnoreBatteryOptimization() {
+        // Redirect the user to the Special App Access settings page
+        Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+        intent.setData(Uri.parse("package:" + getPackageName()));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    /* *********************************************************************************************
+     * Android FullScreen Intent Request; Will only be called if >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+     ***********************************************************************************************/
+
+    /**
+     * Shows a custom educational dialog prior to redirecting the user to Settings.
+     */
+    public void checkAndRequestFullScreenIntentIfNecessary() {
+        // Build the dialog box using standard AlertDialog with an optional custom explanation
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.fullscreen_info_title)
+                .setMessage(R.string.fullscreen_info_summary)
+                .setCancelable(false)
+                .setPositiveButton("OK", (dialog, which) -> {
+                    // Permission not granted; proceed to show your request
+                    if (!canUseFullScreenIntent()) {
+                        launchFullScreenRequest();
+                    }
+                    dialog.dismiss();
+                })
+                .show();
+    }
+
+    /**
+     * Checks if the app can currently send Full Screen Intents.
+     */
+    @SuppressLint("InlinedApi")
+    public boolean canUseFullScreenIntent() {
+        // Always returns true on Android 13 or lower as it is granted by default
+        // Full screen intent limits were introduced in Android 14 (API 34)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            if (manager != null) {
+                boolean useFSI = manager.canUseFullScreenIntent();
+                if (useFSI)
+                    showPermissionGranted(Manifest.permission.USE_FULL_SCREEN_INTENT);
+                else
+                    showPermissionDenied(Manifest.permission.USE_FULL_SCREEN_INTENT, false);
+                return useFSI;
             }
-        });
+        }
+        showPermissionGranted(Manifest.permission.USE_FULL_SCREEN_INTENT);
+        return true;
+    }
+
+    /**
+     * Redirects the user specifically to the Full Screen Intent settings screen for this app.
+     */
+    private void launchFullScreenRequest() {
+        // Redirect the user to the Special App Access settings page
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 }

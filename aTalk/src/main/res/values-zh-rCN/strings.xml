@@ -1150,7 +1150,7 @@
     <string name="jbr_user_name_password">用户名和密码</string>
 
     <!-- Telephony -->
-    <string name="contact_phone">联系人姓名/电话/Jid：</string>
+    <string name="contact_phone">联系人姓名/电话/Jid</string>
     <string name="call_via">调用方式：</string>
     <string name="contact_phone_empty">联系电话不能为空！</string>
     <string name="recipient_error_non_ascii">目前不支持特殊字符！</string>
@@ -1430,12 +1430,12 @@
     <string name="silk_fec_advertise">在 SDP 中通告 FEC 支持</string>
 
     <!-- Android Battery Usage Optimization -->
-    <string name="battery_optimizations">电池优化</string>
-    <string name="battery_optimizations_dialog">您的设备在 aTalk 上有电池使用优化； 这可能会导致通知延迟或信息丢失。\n\n建议您为 aTalk 禁用此优化。</string>
-    <string name="battery_optimization_on">当设备进入休眠待机时，aTalk 将进入睡眠状态。手动重启 aTalk 以接收新信息。</string>
-    <string name="device_does_not_support_battery_op">您的设备不支持选择退出电池优化</string>
-    <string name="disable">禁用</string>
-    <string name="next">下一步</string>
+    <string name="battery_optimization">电池优化</string>
+    <string name="battery_optimization_summary">如果设备开启了电池使用优化功能，可能会导致通知延迟或信息丢失。\n\n建议您针对 aTalk 禁用此优化功能。</string>
+
+    <string name="fullscreen">全屏</string>
+    <string name="fullscreen_info_title">需要全屏意图</string>
+    <string name="fullscreen_info_summary">aTalk 需要显示全屏提醒，以确保您在手机锁定时不会错过高优先级的来电。</string>
 
     <!-- Android Permissions -->
     <string name="app_info">应用信息…</string>
@@ -1463,7 +1463,7 @@
     <string name="camera_permission_denied_feedback">在您授予权限请求之前，所有与相机相关的活动都将不可用</string>
 
     <string name="contacts_permission_denied_dialog_title">联系人权限请求</string>
-    <string name="contacts_permission_denied_feedback">电话状态访问和通话设置需要联系人权限</string>
+    <string name="contacts_permission_denied_feedback">在配置电话 VoIP-PBX 时，需要“联系人”权限以访问电话号码。</string>
 
     <string name="music_permission_denied_dialog_title">音乐和音频许可请求</string>
     <string name="music_permission_denied_feedback">在您授予权限请求之前，无法访问媒体音频文件</string>

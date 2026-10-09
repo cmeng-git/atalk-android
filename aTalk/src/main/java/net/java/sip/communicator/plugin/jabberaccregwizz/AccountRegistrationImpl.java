@@ -220,8 +220,9 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard {
     public void loadAccount(ProtocolProviderService protocolProvider) {
         setModification(true);
         this.protocolProvider = protocolProvider;
-        registration = new JabberAccountRegistration();
         AccountID accountID = protocolProvider.getAccountID();
+        // Initialize with valid userId; else getOverridePhoneSuffix() will have NPR exception in account setting.
+        registration = new JabberAccountRegistration(accountID.getAccountJid());
 
         // Loads account properties into registration object
         registration.loadAccount(accountID, JabberAccountRegistrationActivator.bundleContext);

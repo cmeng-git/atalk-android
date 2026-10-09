@@ -19,6 +19,7 @@ import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.EncodingsRegistration;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
+import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
@@ -101,7 +102,7 @@ public abstract class AccountPreferenceFragment extends BasePreferenceFragment
     /**
      * Edited {@link AccountID}
      */
-    private AccountID mAccountID;
+    private JabberAccountID mAccountID;
 
     /**
      * Parent Activity of the Account Preference Fragment.
@@ -153,7 +154,7 @@ public abstract class AccountPreferenceFragment extends BasePreferenceFragment
      *
      * @return currently edited {@link AccountID}.
      */
-    protected AccountID getAccountID() {
+    protected JabberAccountID getAccountID() {
         return mAccountID;
     }
 
@@ -234,7 +235,7 @@ public abstract class AccountPreferenceFragment extends BasePreferenceFragment
      * @param account the {@link AccountID} that will be edited
      */
     public void loadAccount(AccountID account) {
-        mAccountID = account;
+        mAccountID = (JabberAccountID) account;
         wizard = findRegistrationService(account.getProtocolName());
         if (wizard == null)
             throw new NullPointerException();

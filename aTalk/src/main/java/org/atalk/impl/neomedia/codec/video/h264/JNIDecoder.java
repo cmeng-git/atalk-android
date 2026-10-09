@@ -120,9 +120,10 @@ public class JNIDecoder extends AbstractCodec2 {
     @Override
     protected void doClose() {
         Timber.d("Closing decoder");
-        FFmpeg.avcodec_close(avctx);
-        FFmpeg.av_free(avctx);
-        avctx = 0;
+        if (avctx != 0) {
+            FFmpeg.avcodec_free_context(avctx);
+            avctx = 0;
+        }
 
         if (avframe != null) {
             avframe.free();

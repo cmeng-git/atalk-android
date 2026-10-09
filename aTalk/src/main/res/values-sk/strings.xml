@@ -1148,7 +1148,7 @@
     <string name="jbr_user_name_password">Používateľské meno a heslo</string>
 
     <!-- Telephony -->
-    <string name="contact_phone">Meno kontaktu / Telefón / Jid:</string>
+    <string name="contact_phone">Meno kontaktu/Telefón/Jid</string>
     <string name="call_via">Volať prostredníctvom:</string>
     <string name="contact_phone_empty">Kontaktné telefónne číslo nemôže byť prázdne!</string>
     <string name="recipient_error_non_ascii">Špeciálne znaky momentálne nie sú podporované!</string>
@@ -1428,12 +1428,12 @@
     <string name="silk_fec_advertise">Propagujte podporu FEC v SDP</string>
 
     <!-- Android Battery Usage Optimization -->
-    <string name="battery_optimizations">Optimalizácia batérie</string>
-    <string name="battery_optimizations_dialog">Vaše zariadenie má zapnutú optimalizáciu využitia batérie; to môže viesť k oneskoreným správam.\n\nOdporúča sa deaktivovať túto optimalizáciu pre aTalk.</string>
-    <string name="battery_optimization_on">Keď sa vaše zariadenie uspí, nebude aTalk prijímať správy. Budete musieť aTalk znovu spustiť, aby ste dostali nové správy.</string>
-    <string name="device_does_not_support_battery_op">Vaše zariadenie nepodporuje deaktiváciu optimalizácie batérie</string>
-    <string name="disable">Zakázať</string>
-    <string name="next">Ďalšie</string>
+    <string name="battery_optimization">Optimalizácia batérie</string>
+    <string name="battery_optimization_summary">Ak je na zariadení zapnutá optimalizácia spotreby batérie, môže to viesť k oneskoreniu upozornení alebo strate správ. \n\nOdporúča sa túto optimalizáciu pre aplikáciu aTalk vypnúť.</string>
+
+    <string name="fullscreen">Celá obrazovkan</string>
+    <string name="fullscreen_info_title">Vyžaduje sa zámer pre celú obrazovku</string>
+    <string name="fullscreen_info_summary">Aplikácia aTalk potrebuje zobrazovať upozornenia na celú obrazovku, aby ste nezmeškali prichádzajúce hovory s vysokou prioritou, keď je telefón uzamknutý.</string>
 
     <!-- Android Permissions -->
     <string name="app_info">Info o aplikácii…</string>
@@ -1461,7 +1461,7 @@
     <string name="camera_permission_denied_feedback">Všetky aktivity súvisiace s kamerou nebudú k dispozícii, kým nevydáte žiadosť o povolenie</string>
 
     <string name="contacts_permission_denied_dialog_title">Žiadosť o povolenie kontaktov</string>
-    <string name="contacts_permission_denied_feedback">Na prístup do stavu telefónu a nastavenie hovoru je potrebné povolenie kontaktov</string>
+    <string name="contacts_permission_denied_feedback">Povolenie na prístup ku kontaktom je potrebné na získanie prístupu k telefónnym číslam pri nastavovaní telefónie VoIP-PBX.</string>
 
     <string name="music_permission_denied_dialog_title">Žiadosť o povolenie pre hudbu a zvuk</string>
     <string name="music_permission_denied_feedback">Mediálny zvukový súbor nebude prístupný, kým neschválite žiadosť o povolenie</string>

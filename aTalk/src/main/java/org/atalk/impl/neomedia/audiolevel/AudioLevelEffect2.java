@@ -5,13 +5,13 @@
  */
 package org.atalk.impl.neomedia.audiolevel;
 
-import org.atalk.impl.neomedia.control.ControlsAdapter;
-
 import javax.media.Buffer;
 import javax.media.Effect;
 import javax.media.Format;
 import javax.media.PlugIn;
 import javax.media.format.AudioFormat;
+
+import org.atalk.impl.neomedia.control.ControlsAdapter;
 
 /**
  * An {@link javax.media.Effect} implementation which calculates audio levels based on the samples
@@ -27,8 +27,7 @@ import javax.media.format.AudioFormat;
  * @author Emil Ivov
  * @author Lyubomir Marinov
  */
-public class AudioLevelEffect2 extends ControlsAdapter implements Effect
-{
+public class AudioLevelEffect2 extends ControlsAdapter implements Effect {
     /**
      * The indicator which determines whether <code>AudioLevelEffect</code> instances are to perform
      * the copying of the data from input <code>Buffer</code>s to output <code>Buffer</code>s themselves
@@ -55,9 +54,8 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
     /**
      * Initializes a new <code>AudioLevelEffect2</code>.
      */
-    public AudioLevelEffect2()
-    {
-        supportedAudioFormats = new Format[]{new AudioFormat(
+    public AudioLevelEffect2() {
+        supportedAudioFormats = new Format[] {new AudioFormat(
                 AudioFormat.LINEAR,
                 Format.NOT_SPECIFIED,
                 16,
@@ -71,12 +69,11 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
     }
 
     /**
-     * Lists all of the input formats that this codec accepts.
+     * Lists all the input formats that this codec accepts.
      *
      * @return An array that contains the supported input <code>Formats</code>.
      */
-    public Format[] getSupportedInputFormats()
-    {
+    public Format[] getSupportedInputFormats() {
         return supportedAudioFormats;
     }
 
@@ -84,11 +81,11 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
      * Lists the output formats that this codec can generate.
      *
      * @param input The <code>Format</code> of the data to be used as input to the plug-in.
+     *
      * @return An array that contains the supported output <code>Formats</code>.
      */
-    public Format[] getSupportedOutputFormats(Format input)
-    {
-        return new Format[]{new AudioFormat(
+    public Format[] getSupportedOutputFormats(Format input) {
+        return new Format[] {new AudioFormat(
                 AudioFormat.LINEAR,
                 ((AudioFormat) input).getSampleRate(),
                 16,
@@ -105,10 +102,10 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
      * Sets the format of the data to be input to this codec.
      *
      * @param format The <code>Format</code> to be set.
+     *
      * @return The <code>Format</code> that was set.
      */
-    public Format setInputFormat(Format format)
-    {
+    public Format setInputFormat(Format format) {
         return (format instanceof AudioFormat) ? (AudioFormat) format : null;
     }
 
@@ -116,10 +113,10 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
      * Sets the format for the data this codec outputs.
      *
      * @param format The <code>Format</code> to be set.
+     *
      * @return The <code>Format</code> that was set.
      */
-    public Format setOutputFormat(Format format)
-    {
+    public Format setOutputFormat(Format format) {
         return (format instanceof AudioFormat) ? (AudioFormat) format : null;
     }
 
@@ -128,11 +125,12 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
      *
      * @param inputBuffer The <code>Buffer</code> that contains the media data to be processed.
      * @param outputBuffer The <code>Buffer</code> in which to store the processed media data.
+     *
      * @return <code>BUFFER_PROCESSED_OK</code> if the processing is successful.
+     *
      * @see PlugIn
      */
-    public int process(Buffer inputBuffer, Buffer outputBuffer)
-    {
+    public int process(Buffer inputBuffer, Buffer outputBuffer) {
         if (COPY_DATA_FROM_INPUT_TO_OUTPUT) {
             // Copy the actual data from the input to the output.
             Object data = outputBuffer.getData();
@@ -196,8 +194,7 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
      *
      * @return A <code>String</code> that contains the descriptive name of the plug-in.
      */
-    public String getName()
-    {
+    public String getName() {
         return "Audio Level Effect2";
     }
 
@@ -205,28 +202,24 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
      * {@inheritDoc}
      */
     @Override
-    public void open()
-    {
+    public void open() {
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void close()
-    {
+    public void close() {
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void reset()
-    {
+    public void reset() {
     }
 
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         return enabled;
     }
 
@@ -235,8 +228,7 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
      *
      * @param enabled whether to enable or disabled this <code>Effect</code>.
      */
-    public void setEnabled(boolean enabled)
-    {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -245,8 +237,7 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
      *
      * @param rtpHeaderExtensionId the ID to set.
      */
-    public void setRtpHeaderExtensionId(byte rtpHeaderExtensionId)
-    {
+    public void setRtpHeaderExtensionId(byte rtpHeaderExtensionId) {
         this.rtpHeaderExtensionId = rtpHeaderExtensionId;
     }
 }

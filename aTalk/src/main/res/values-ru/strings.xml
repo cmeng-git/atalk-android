@@ -1136,7 +1136,7 @@
     <string name="jbr_user_name_password">Имя пользователя и пароль</string>
 
     <!-- Telephony -->
-    <string name="contact_phone">Имя, телефон или XMPP-адрес (JID):</string>
+    <string name="contact_phone">Имя, телефон или XMPP-адрес (JID)</string>
     <string name="call_via">Позвоните через:</string>
     <string name="contact_phone_empty">Контактный номер телефона не может быть пустым!</string>
     <string name="recipient_error_non_ascii">Специальные символы в настоящее время не поддерживаются!</string>
@@ -1413,12 +1413,12 @@
     <string name="silk_fec_advertise">Рекламировать поддержку FEC в SDP</string>
 
     <!-- Android Battery Usage Optimization -->
-    <string name="battery_optimizations">Оптимизация аккумулятора</string>
-    <string name="battery_optimizations_dialog">У вашего устройства оптимизация использования аккумулятора на aTalk; это может привести к задержке уведомлений или потерям сообщения.\n\nРекомендуется отключить эту оптимизацию для aTalk.</string>
-    <string name="battery_optimization_on">aTalk будет переведён в режим сна, когда устройство перейдёт в режим ожидания. Перезапустите aTalk вручную, чтобы получать новые сообщения.</string>
-    <string name="device_does_not_support_battery_op">Ваше устройство не поддерживает отказ от оптимизации батареи</string>
-    <string name="disable">Отключить</string>
-    <string name="next">Далее</string>
+    <string name="battery_optimization">Оптимизация аккумулятора</string>
+    <string name="battery_optimization_summary">Если на устройстве включена оптимизация расхода заряда аккумулятора, это может привести к задержке уведомлений или потере сообщений. \n\nРекомендуется отключить эту оптимизацию для приложения aTalk.</string>
+
+    <string name="fullscreen">Полноэкранный</string>
+    <string name="fullscreen_info_title">Требуется намерение для полноэкранного режима</string>
+    <string name="fullscreen_info_summary">Приложению aTalk необходимо отображать полноэкранные оповещения, чтобы вы не пропустили входящие вызовы с высоким приоритетом, когда телефон заблокирован.</string>
 
     <!-- Android Permissions -->
     <string name="app_info">Информация о приложении…</string>
@@ -1445,7 +1445,7 @@
     <string name="camera_permission_denied_feedback">все связанные с камерой действия не будут доступны, пока вы не предоставите запрос на разрешение</string>
 
     <string name="contacts_permission_denied_dialog_title">Запрос на доступ к контактам</string>
-    <string name="contacts_permission_denied_feedback">Требуется разрешение для доступа к телефону и настройки вызова</string>
+    <string name="contacts_permission_denied_feedback">A permissão de acesso aos contactos é necessária para aceder aos números de telefone na configuração de telefonia VoIP-PBX.</string>
 
     <string name="music_permission_denied_dialog_title">Запрос разрешения на музыку и аудио</string>
     <string name="music_permission_denied_feedback">Мультимедийный аудиофайл недоступен, пока вы не предоставите разрешение</string>

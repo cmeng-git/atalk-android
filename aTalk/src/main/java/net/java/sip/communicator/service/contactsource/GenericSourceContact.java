@@ -29,8 +29,7 @@ import net.java.sip.communicator.util.DataObject;
  *
  * @author Lyubomir Marinov
  */
-public class GenericSourceContact extends DataObject
-        implements SourceContact {
+public class GenericSourceContact extends DataObject implements SourceContact {
     /**
      * The <code>ContactDetail</code>s of this <code>SourceContact</code>.
      */
@@ -180,8 +179,8 @@ public class GenericSourceContact extends DataObject
      *
      * @param displayDetails the display details of this <code>SourceContact</code>
      */
-    public String setDisplayDetails(String displayDetails) {
-        return this.displayDetails = displayDetails;
+    public void setDisplayDetails(String displayDetails) {
+        this.displayDetails = displayDetails;
     }
 
     /**

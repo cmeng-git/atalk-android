@@ -43,8 +43,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
             ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
     };
 
-    private static final String SORT_ORDER = "" +
-            Phone.TIMES_CONTACTED + " DESC, " + ContactsContract.Contacts.SORT_KEY_PRIMARY;
+    private static final String SORT_ORDER = Phone.TIMES_CONTACTED + " DESC, " + ContactsContract.Contacts.SORT_KEY_PRIMARY;
 
     private static final String[] PROJECTION_NICKNAME = {
             ContactsContract.Data.CONTACT_ID, ContactsContract.CommonDataKinds.Nickname.NAME
@@ -109,10 +108,6 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
         else {
             throw new IllegalStateException("loader must be initialized with query or list of addresses!");
         }
-
-        if (recipients.isEmpty()) {
-            return recipients;
-        }
         return recipients;
     }
 
@@ -169,7 +164,7 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
                     new String[]{nickname, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE},
                     null);
         } catch (Exception e) {
-            aTalkApp.showToastMessage("Ccontact Access Exception:\n" + e.getMessage());
+            aTalkApp.showToastMessage("Contact Access Exception:\n" + e.getMessage());
         }
         return null;
     }
@@ -200,22 +195,20 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
         Uri queryUri = Phone.CONTENT_URI;
         Cursor nicknameCursor = getNicknameCursor(nickname);
 
-        if (nicknameCursor == null) {
-            return hasContact;
-        }
-        try {
+        try (nicknameCursor) {
+            if (nicknameCursor == null) {
+                return hasContact;
+            }
             while (nicknameCursor.moveToNext()) {
                 String id = nicknameCursor.getString(INDEX_CONTACT_ID_FOR_NICKNAME);
                 String selection = ContactsContract.Data.CONTACT_ID + " = ?";
                 Cursor cursor = contentResolver
-                        .query(queryUri, PROJECTION, selection, new String[]{id}, SORT_ORDER);
+                        .query(queryUri, PROJECTION, selection, new String[] {id}, SORT_ORDER);
 
                 String contactNickname = nicknameCursor.getString(INDEX_NICKNAME);
                 fillContactDataFromCursor(cursor, recipients, recipientMap, contactNickname);
                 hasContact = true;
             }
-        } finally {
-            nicknameCursor.close();
         }
         return hasContact;
     }

@@ -91,7 +91,7 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
         if (queryThread != null)
             return;
 
-        queryThread = new Thread(() -> doQuery());
+        queryThread = new Thread(this::doQuery);
         queryThread.start();
     }
 
@@ -100,10 +100,8 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
      */
     private void doQuery() {
         ContentResolver contentResolver = aTalkApp.getInstance().getContentResolver();
-        Cursor cursor = null;
 
-        try {
-            cursor = contentResolver.query(CONTACTS_URI, PROJECTION, SELECTION, new String[] {queryString}, null);
+        try (Cursor cursor = contentResolver.query(CONTACTS_URI, PROJECTION, SELECTION, new String[] {queryString}, null)) {
             if (cancel)
                 return;
 
@@ -130,13 +128,11 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
                 String photoId = cursor.getString(PHOTO_ID);
 
                 // Loop on all phones
-                Cursor result = null;
-                try {
-                    result = contentResolver.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            new String[] {ContactsContract.CommonDataKinds.Phone.DATA},
-                            ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY + "=?",
-                            new String[] {String.valueOf(lookUp)}, null);
+                try (Cursor result = contentResolver.query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        new String[] {ContactsContract.CommonDataKinds.Phone.DATA},
+                        ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY + "=?",
+                        new String[] {String.valueOf(lookUp)}, null)) {
 
                     if (result != null) {
                         while (result.moveToNext() && !cancel) {
@@ -147,10 +143,6 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
                         }
                     }
                 }
-                finally {
-                    if (result != null)
-                        result.close();
-                }
             }
             if (!cancel) {
                 setStatus(ContactQuery.QUERY_COMPLETED);
@@ -159,10 +151,6 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
         catch (SecurityException e) {
             aTalkApp.showToastMessage(aTalkApp.getResString(R.string.contacts_permission_denied_feedback)
                     + "\n" + e.getMessage());
-        }
-        finally {
-            if (cursor != null)
-                cursor.close();
         }
     }
 

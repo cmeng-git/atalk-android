@@ -8,7 +8,7 @@ package org.atalk.impl.neomedia.audiolevel;
 /**
  * The class implements a basic mapping utility that allows binding <code>long</code> CSRC ID-s to
  * <code>int</code> audio levels. The class does not implement any synchronization for neither read nor
- * write operations but it is still intended to handle concurrent access in a manner that can be
+ * write operations, but it is still intended to handle concurrent access in a manner that can be
  * considered graceful for the audio level use case. The class uses a bi-dimensional
  * <code>long[][]</code> matrix that is recreated every time a new CSRC is added or an existing one is
  * removed. Iterating through the matrix is only possible after obtaining a direct reference to it.
@@ -128,13 +128,12 @@ public class AudioLevelMap {
         long[][] newLevels = new long[newLength][];
 
         // put the new level.
-        newLevels[0] = new long[]{csrc, level};
+        newLevels[0] = new long[] {csrc, level};
 
         if (newLength == 1)
             return newLevels;
 
         System.arraycopy(levels, 0, newLevels, 1, levels.length);
-
         return newLevels;
     }
 }

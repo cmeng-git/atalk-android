@@ -5,20 +5,6 @@
  */
 package org.atalk.impl.neomedia.codec.video.h264;
 
-import org.atalk.impl.timberlog.TimberLog;
-import org.atalk.impl.neomedia.NeomediaServiceUtils;
-import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.impl.neomedia.codec.FFmpeg;
-import org.atalk.impl.neomedia.device.DeviceConfiguration;
-import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
-import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
-import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.codec.Constants;
-import org.atalk.service.neomedia.control.KeyFrameControl;
-import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
-import org.atalk.service.neomedia.event.RTCPFeedbackMessageListener;
-
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +14,20 @@ import javax.media.Format;
 import javax.media.ResourceUnavailableException;
 import javax.media.format.VideoFormat;
 import javax.media.format.YUVFormat;
+
+import org.atalk.impl.neomedia.NeomediaServiceUtils;
+import org.atalk.impl.neomedia.codec.AbstractCodec2;
+import org.atalk.impl.neomedia.codec.FFmpeg;
+import org.atalk.impl.neomedia.device.DeviceConfiguration;
+import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
+import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
+import org.atalk.impl.timberlog.TimberLog;
+import org.atalk.service.configuration.ConfigurationService;
+import org.atalk.service.libjitsi.LibJitsi;
+import org.atalk.service.neomedia.codec.Constants;
+import org.atalk.service.neomedia.control.KeyFrameControl;
+import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
+import org.atalk.service.neomedia.event.RTCPFeedbackMessageListener;
 
 import timber.log.Timber;
 
@@ -245,7 +245,7 @@ public class JNIEncoder extends AbstractCodec2 implements RTCPFeedbackMessageLis
     public JNIEncoder() {
         super("H.264 Encoder", VideoFormat.class, SUPPORTED_OUTPUT_FORMATS);
 
-        inputFormats = new Format[]{new YUVFormat(
+        inputFormats = new Format[] {new YUVFormat(
                 null, /* size */
                 Format.NOT_SPECIFIED, /* maxDataLength */
                 Format.byteArray,
@@ -265,8 +265,7 @@ public class JNIEncoder extends AbstractCodec2 implements RTCPFeedbackMessageLis
     @Override
     protected void doClose() {
         if (avctx != 0) {
-            FFmpeg.avcodec_close(avctx);
-            FFmpeg.av_free(avctx);
+            FFmpeg.avcodec_free_context(avctx);
             avctx = 0;
         }
 
@@ -404,7 +403,8 @@ public class JNIEncoder extends AbstractCodec2 implements RTCPFeedbackMessageLis
 
         try {
             FFmpeg.avcodeccontext_set_profile(avctx, getProfileForConfig(profile));
-        } catch (UnsatisfiedLinkError ule) {
+        }
+        catch (UnsatisfiedLinkError ule) {
             Timber.w("The FFmpeg JNI library is out-of-date.");
         }
 
@@ -477,7 +477,8 @@ public class JNIEncoder extends AbstractCodec2 implements RTCPFeedbackMessageLis
             doClose();
             try {
                 doOpen();
-            } catch (ResourceUnavailableException e) {
+            }
+            catch (ResourceUnavailableException e) {
                 Timber.e("Could not find H.264 encoder.");
             }
         }
@@ -524,7 +525,7 @@ public class JNIEncoder extends AbstractCodec2 implements RTCPFeedbackMessageLis
         VideoFormat inputVideoFormat = (VideoFormat) inputFormat;
 
         String[] packetizationModes = (this.packetizationMode == null)
-                ? new String[]{"0", "1"} : new String[]{this.packetizationMode};
+                ? new String[] {"0", "1"} : new String[] {this.packetizationMode};
         Format[] matchingOutputFormats = new Format[packetizationModes.length];
         Dimension size = inputVideoFormat.getSize();
         float frameRate = inputVideoFormat.getFrameRate();
@@ -608,13 +609,13 @@ public class JNIEncoder extends AbstractCodec2 implements RTCPFeedbackMessageLis
          */
         if (ev.getPayloadType() == RTCPFeedbackMessageEvent.PT_PS) {
             switch (ev.getFeedbackMessageType()) {
-                case RTCPFeedbackMessageEvent.FMT_PLI:
-                case RTCPFeedbackMessageEvent.FMT_FIR:
-                    Timber.log(TimberLog.FINER, "Scheduling a key-frame, because we received an RTCP PLI or FIR.");
-                    keyFrameRequest();
-                    break;
-                default:
-                    break;
+            case RTCPFeedbackMessageEvent.FMT_PLI:
+            case RTCPFeedbackMessageEvent.FMT_FIR:
+                Timber.log(TimberLog.FINER, "Scheduling a key-frame, because we received an RTCP PLI or FIR.");
+                keyFrameRequest();
+                break;
+            default:
+                break;
             }
         }
     }

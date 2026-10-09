@@ -1142,7 +1142,7 @@
     <string name="jbr_user_name_password">Nama pengguna dan kata sandi</string>
 
     <!-- Telephony -->
-    <string name="contact_phone">Nama/Telepon/Jid Kontak:</string>
+    <string name="contact_phone">Nama/Telepon/Jid Kontak</string>
     <string name="call_via">Panggilan melalui:</string>
     <string name="contact_phone_empty">Nomor telepon kontak tidak boleh kosong!</string>
     <string name="recipient_error_non_ascii">Karakter khusus saat ini tidak didukung!</string>
@@ -1422,12 +1422,12 @@
     <string name="silk_fec_advertise">Adakan dukungan FEC dalam SDP</string>
 
     <!-- Android Battery Usage Optimization -->
-    <string name="battery_optimizations">Optimasi Baterai</string>
-    <string name="battery_optimizations_dialog">Perangkat anda memiliki optimalisasi penggunaan baterai pada aTalk;ini dapat menyebabkan pemberitahuan tertunda atau pesan hilang.\n\nSebaiknya anda menonaktifkan pengoptimalan ini untuk aTalk.</string>
-    <string name="battery_optimization_on">aTalk akan dimatikan ketika perangkat masuk ke mode siaga-tidur. Restart aTalk secara manual untuk menerima pesan baru.</string>
-    <string name="device_does_not_support_battery_op">Perangkat anda tidak mendukung memilih keluar dari optimalisasi baterai</string>
-    <string name="disable">Nonaktifkan</string>
-    <string name="next">Next</string>
+    <string name="battery_optimization">Optimasi Baterai</string>
+    <string name="battery_optimization_summary">Jika fitur optimalisasi penggunaan baterai pada perangkat aktif, hal ini dapat menyebabkan notifikasi tertunda atau pesan hilang. \n\nAnda disarankan untuk menonaktifkan optimalisasi ini untuk aTalk.</string>
+
+    <string name="fullscreen">Layar Penuh</string>
+    <string name="fullscreen_info_title">Intent Layar Penuh Diperlukan</string>
+    <string name="fullscreen_info_summary">aTalk perlu menampilkan peringatan layar penuh agar Anda tidak melewatkan panggilan masuk berprioritas tinggi saat ponsel terkunci.</string>
 
     <!-- Android Permissions -->
     <string name="app_info">Info Aplikasi…</string>
@@ -1455,7 +1455,7 @@
     <string name="camera_permission_denied_feedback">Semua kegiatan yang terkait dengan kamera tidak akan tersedia sampai Anda mengabulkan permintaan izin</string>
 
     <string name="contacts_permission_denied_dialog_title">Permintaan izin kontak</string>
-    <string name="contacts_permission_denied_feedback">Izin kontak diperlukan untuk akses status ponsel dan pengaturan panggilan</string>
+    <string name="contacts_permission_denied_feedback">Izin akses kontak diperlukan untuk mengakses nomor telepon dalam pengaturan Telephony VoIP-PBX.</string>
 
     <string name="music_permission_denied_dialog_title">Permintaan izin musik dan audio</string>
     <string name="music_permission_denied_feedback">File audio media tidak dapat diakses sampai Anda memberikan permintaan izin</string>

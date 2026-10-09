@@ -85,18 +85,18 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory {
         accountProperties.put(USER_ID, userID);
 
         // Create new accountID
-        AccountID accountID = new JabberAccountIDImpl(userID, accountProperties);
+        AccountID accountId = new JabberAccountIDImpl(userID, accountProperties);
 
         // make sure we haven't seen this accountID before.
-        if (registeredAccounts.containsKey(accountID))
+        if (registeredAccounts.containsKey(accountId))
             throw new IllegalStateException("Attempt to install an existing account: " + userID);
 
         // first store the account and only then load it as the load generates an osgi event, the
         // osgi event triggers (through the UI) a call to the register() method and it needs to
         // access the configuration service and check for a password.
-        this.storeAccount(accountID, false);
-        loadAccount(accountID);
-        return accountID;
+        this.storeAccount(accountId, false);
+        loadAccount(accountId);
+        return accountId;
     }
 
     /**

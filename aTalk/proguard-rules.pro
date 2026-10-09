@@ -20,6 +20,8 @@
 -keep public class * extends android.content.ContentProvider
 -keep public class * extends android.app.backup.BackupAgentHelper
 -keep public class * extends android.preference.Preference
+-keep public class * extends android.app.AppComponentFactory
+-keep class androidx.core.app.CoreComponentFactory { *; }
 
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule

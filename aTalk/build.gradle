@@ -46,14 +46,6 @@ configurations.implementation {
     exclude group: 'xpp3', module: 'xpp3'
     exclude group: 'xpp3', module: 'xpp3_min'
     exclude group: 'org.codelibs', module: 'xpp3'
-
-    // Force Gradle to resolve all xpp3 requests to a single package
-    //    resolutionStrategy {
-    //        dependencySubstitution {
-    //            substitute module('xpp3:xpp3') using module('org.codelibs:xpp3:1.1.4c.0')
-    //            substitute module('xpp3:xpp3_min') using module('org.codelibs:xpp3:1.1.4c.0')
-    //        }
-    //    }
 }
 
 java {
@@ -70,8 +62,8 @@ android {
         namespace = 'org.atalk.android'
         applicationId = 'org.atalk.android'
 
-        versionCode 605010
-        versionName "6.5.1"
+        versionCode 605020
+        versionName "6.5.2"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -225,12 +217,12 @@ dependencies {
     implementation project(':android-youtube-player:core')
 
     // v1.19.0 required API-37; The upgrade will need AGP 9.x.x, dropping support for case R.id.xxx.
-    implementation 'androidx.core:core-ktx:1.19.0'
+    implementation 'androidx.core:core-ktx:1.19.1'
 
     implementation 'androidx.activity:activity-ktx:1.13.0'
     implementation 'androidx.appcompat:appcompat:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
-    implementation 'androidx.fragment:fragment-ktx:1.9.0'
+    implementation 'androidx.fragment:fragment-ktx:1.9.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
@@ -281,7 +273,7 @@ dependencies {
     implementation 'org.bouncycastle:bcpg-jdk18on:1.86'   // zrtp
     implementation 'org.bouncycastle:bcpkix-jdk18on:1.86' // CertificateServiceImpl jcajce
     // implementation 'org.bouncycastle:bcprov-jdk18on:1.81' // SHA3-256 - auto included.
-    implementation 'org.bouncycastle:bctls-jdk18on:1.86'  // dtls-srtp
+    implementation 'org.bouncycastle:bctls-jdk18on:1.86.1'  // dtls-srtp
 
     // For debug and tracing for bouncycastle - AS allows direct copy and replacement of bc source for debug
 //    implementation jarjar.repackage {

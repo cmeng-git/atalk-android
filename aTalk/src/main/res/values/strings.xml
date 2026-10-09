@@ -1149,7 +1149,7 @@
     <string name="jbr_user_name_password">User name and password</string>
 
     <!-- Telephony -->
-    <string name="contact_phone">Contact Name/Phone/Jid:</string>
+    <string name="contact_phone">Contact Name/Phone/Jid</string>
     <string name="call_via">Call via:</string>
     <string name="contact_phone_empty">Contact phone number cannot be empty!</string>
     <string name="recipient_error_non_ascii">Special characters are currently not supported!</string>
@@ -1427,13 +1427,13 @@
     <string name="silk_fec_sat">Speech activity threshold (0–1)</string>
     <string name="silk_fec_advertise">Advertise FEC support in SDP</string>
 
-    <!-- Android Battery Usage Optimization -->
-    <string name="battery_optimizations">Battery Optimization</string>
-    <string name="battery_optimizations_dialog">Your device has battery usage optimization on aTalk; this may lead to delayed notifications or message lost.\n\nIt is recommended that you disable this optimization for aTalk.</string>
-    <string name="battery_optimization_on">aTalk will be put to sleep when device goes into doze-standby. Manually restart aTalk to receive new messages.</string>
-    <string name="device_does_not_support_battery_op">Your device does not support opting out of battery optimization</string>
-    <string name="disable">Disable</string>
-    <string name="next">Next</string>
+    <!-- Android Battery Usage Optimization and Full Screen Alert -->
+    <string name="battery_optimization">Ignore Battery Optimization</string>
+    <string name="battery_optimization_summary">When device has battery usage optimization on; this may lead to delayed notifications or message lost.\n\nIt is recommended that you disable this optimization for aTalk.</string>
+
+    <string name="fullscreen">Full Screen</string>
+    <string name="fullscreen_info_title">Full-Screen Intent Required</string>
+    <string name="fullscreen_info_summary">aTalk needs to show full-screen alerts so you don\'t miss incoming high-priority calls when your phone is locked.</string>
 
     <!-- Android Permissions -->
     <string name="app_info">App Info…</string>
@@ -1460,7 +1460,7 @@
     <string name="camera_permission_denied_feedback">All camera associated activities will not be available until you grant the permission request</string>
 
     <string name="contacts_permission_denied_dialog_title">Contacts permission request</string>
-    <string name="contacts_permission_denied_feedback">Contacts permission is needed for phone state access and call setup</string>
+    <string name="contacts_permission_denied_feedback">Contacts permission is needed for phone numbers access in Telephony VoIP-PBX setup.</string>
 
     <string name="music_permission_denied_dialog_title">Music and audio permission request</string>
     <string name="music_permission_denied_feedback">Media audio file is not accessible until you grant the permission request</string>

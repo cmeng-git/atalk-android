@@ -100,7 +100,7 @@ public class JabberAccountID extends AccountID {
     /**
      * Creates an account id from the specified id and account properties.
      *
-     * @param userId the id identifying this account i.e hawk@example.org
+     * @param userId the id identifying this account i.e. hawk@example.org
      * @param accountProperties any other properties necessary for the account.
      */
     public JabberAccountID(String userId, Map<String, String> accountProperties)
@@ -120,7 +120,7 @@ public class JabberAccountID extends AccountID {
     }
 
     /**
-     * Default constructor for serialization purposes. Do not removed - required by serialization
+     * Default constructor for serialization purposes. Do not remove - required by serialization
      */
     public JabberAccountID() {
         this(null, new HashMap<>());
@@ -198,7 +198,8 @@ public class JabberAccountID extends AccountID {
      * @return the phone suffix
      */
     public String getOverridePhoneSuffix() {
-        return getAccountPropertyString(OVERRIDE_PHONE_SUFFIX);
+        String pbxDomain = "pbx." + getXmppDomain();
+        return getAccountPropertyString(OVERRIDE_PHONE_SUFFIX, pbxDomain);
     }
 
     /**

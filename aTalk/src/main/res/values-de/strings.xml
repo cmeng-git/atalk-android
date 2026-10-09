@@ -1128,7 +1128,7 @@
     <string name="jbr_user_name_password">Benutzername und Passwort</string>
 
     <!-- Telephony -->
-    <string name="contact_phone">Kontakt Name/Telefon/Jid:</string>
+    <string name="contact_phone">Kontakt Name/Telefon/Jid</string>
     <string name="call_via">Anruf über:</string>
     <string name="contact_phone_empty">Kontakttelefonnummer kann nicht leer sein!</string>
     <string name="recipient_error_non_ascii">Sonderzeichen werden derzeit nicht unterstützt!</string>
@@ -1407,12 +1407,12 @@
     <string name="silk_fec_advertise">FEC-Unterstützung in SDP anzeigen</string>
 
     <!-- Android Battery Usage Optimization -->
-    <string name="battery_optimizations">Batterieoptimierung</string>
-    <string name="battery_optimizations_dialog">Dein Gerät hat eine Optimierung der Akkuauslastung für aTalk aktiviert. Dies kann zu verzögerten Benachrichtigungen oder Nachrichtenverlust führen.\n\nEs wird empfohlen, diese Optimierung für aTalk zu deaktivieren.</string>
-    <string name="battery_optimization_on">aTalk wird in den Ruhezustand versetzt, wenn das Gerät in den Ruhezustand wechselt. Starten Sie aTalk manuell neu, um neue Nachrichten zu erhalten.</string>
-    <string name="device_does_not_support_battery_op">Dein Gerät unterstützt das Deaktivieren der Batterieoptimierung nicht</string>
-    <string name="disable">Deaktivieren</string>
-    <string name="next">Weiter</string>
+    <string name="battery_optimization">Batterieoptimierung</string>
+    <string name="battery_optimization_summary">Wenn die Akku-Optimierung für das Gerät aktiviert ist, kann dies zu verzögerten Benachrichtigungen oder zum Verlust von Nachrichten führen. \n\nEs wird empfohlen, diese Optimierung für aTalk zu deaktivieren.</string>
+
+    <string name="fullscreen">Vollbild</string>
+    <string name="fullscreen_info_title">Vollbild-Intent erforderlich</string>
+    <string name="fullscreen_info_summary">aTalk muss Vollbild-Benachrichtigungen anzeigen, damit Sie bei gesperrtem Telefon keine eingehenden Anrufe mit hoher Priorität verpassen.</string>
 
     <!-- Android Permissions -->
     <string name="app_info">App Zugriffsrechte…</string>
@@ -1440,7 +1440,7 @@
     <string name="camera_permission_denied_feedback">Alle mit der Kamera verbundenen Aktivitäten sind erst verfügbar, wenn Sie die Berechtigungsanforderung erteilen</string>
 
     <string name="contacts_permission_denied_dialog_title">Kontaktberechtigungsanforderung</string>
-    <string name="contacts_permission_denied_feedback">Die Zugriffsrechte für Kontakte sind für den Zugriff auf den Telefonstatus und die Anrufkonfiguration erforderlich</string>
+    <string name="contacts_permission_denied_feedback">Die Berechtigung für den Zugriff auf Kontakte ist erforderlich, um bei der Einrichtung der VoIP-Telefonanlage (VoIP-PBX) auf Telefonnummern zugreifen zu können.</string>
 
     <string name="music_permission_denied_dialog_title">Bitte um Genehmigung für Musik und Audio</string>
     <string name="music_permission_denied_feedback">Auf die Medien-Audiodatei kann erst zugegriffen werden, wenn Sie der Berechtigungsanfrage stattgeben</string>

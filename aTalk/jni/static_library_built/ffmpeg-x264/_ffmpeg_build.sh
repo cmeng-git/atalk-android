@@ -131,7 +131,6 @@ make clean
   --disable-runtime-cpudetect \
   --enable-hardcoded-tables \
   --disable-avdevice \
-  --disable-postproc \
   --disable-programs \
   --disable-ffmpeg \
   --disable-ffplay \
@@ -144,6 +143,8 @@ make clean
   --enable-decoder=h264 \
   --enable-encoder=libx264 \
   --enable-libvpx \
+  --enable-encoder=adpcm_g722 \
+  --enable-decoder=adpcm_g722 \
   --enable-decoder=mjpeg \
   --enable-parser=mjpeg \
   --enable-filter=format \
@@ -158,10 +159,6 @@ make clean
   --extra-cxxflags="$CXXFLAGS" \
   --extra-libs="-lgcc -lstdc++" \
   --pkg-config=${FFMPEG_PKG_CONFIG} || exit 1
-
-# need libopencore_amrwb
-#  --enable-libopencore-amrwb \
-#  --enable-libvo-amrwbenc \
 
 make -j${HOST_NUM_CORES} install || exit 1
 popd || exit

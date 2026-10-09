@@ -260,7 +260,7 @@ public class FFmpeg {
     /**
      * Allocates a new <code>AVCodecContext</code>.
      *
-     * @param codec
+     * @param codec pointer to Codec
      *
      * @return native pointer to the new <code>AVCodecContext</code>
      */
@@ -278,13 +278,11 @@ public class FFmpeg {
     public static native long avcodec_alloc_packet(int size);
 
     /**
-     * Close an AVCodecContext
+     * Free an AVCodecContext
      *
-     * @param ctx pointer to AVCodecContex
-     *
-     * @return 0 if success, -1 otherwise
+     * @param ctx pointer to AVCodecContext
      */
-    public static native int avcodec_close(long ctx);
+    public static native void avcodec_free_context(long ctx);
 
     public static native int avcodec_decode_audio4(long avctx, long frame, boolean[] got_frame, long avpkt);
 

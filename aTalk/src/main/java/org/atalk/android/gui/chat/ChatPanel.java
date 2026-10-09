@@ -234,7 +234,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      */
     private static String chatSubject = "";
 
-    private TranslateProcess mTranslator = new TranslateProcess();
+    private final TranslateProcess mTranslator = new TranslateProcess();
 
     /**
      * Creates a chat session with the given MetaContact or ChatRoomWrapper.
@@ -750,7 +750,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
 
     /**
      * Handle reply message via notification on messaged received.
-     * Must cached the send message,
+     * Must cache the send message,
      *
      * @param message the text string to be sent
      * @param encType The encType of the message to be sent: RemoteOnly | 1=text/html or 0=text/plain.

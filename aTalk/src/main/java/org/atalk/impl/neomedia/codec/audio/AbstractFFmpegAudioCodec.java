@@ -5,33 +5,33 @@
  */
 package org.atalk.impl.neomedia.codec.audio;
 
-import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.impl.neomedia.codec.FFmpeg;
-
 import javax.media.Format;
 import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
+
+import org.atalk.impl.neomedia.codec.AbstractCodec2;
+import org.atalk.impl.neomedia.codec.FFmpeg;
 
 /**
  * Implements an audio <code>Codec</code> using the FFmpeg library.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
-public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
-{
+public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2 {
     /**
      * Returns a <code>String</code> representation of a specific <code>AVCodecID</code>.
      *
      * @param codecID the <code>AVCodecID</code> to represent as a <code>String</code>
+     *
      * @return a <code>String</code> representation of the specified <code>codecID</code>
      */
-    public static String codecIDToString(int codecID)
-    {
+    public static String codecIDToString(int codecID) {
         switch (codecID) {
-            case FFmpeg.CODEC_ID_MP3:
-                return "CODEC_ID_MP3";
-            default:
-                return "0x" + Long.toHexString(codecID & 0xFFFFFFFFL);
+        case FFmpeg.CODEC_ID_MP3:
+            return "CODEC_ID_MP3";
+        default:
+            return "0x" + Long.toHexString(codecID & 0xFFFFFFFFL);
         }
     }
 
@@ -61,8 +61,7 @@ public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
      * @param codecID the <code>AVCodecID</code> of the FFmpeg codec to be represented by the new instance
      * @param supportedOutputFormats the list of <code>Format</code>s supported by the new instance as output
      */
-    protected AbstractFFmpegAudioCodec(String name, int codecID, Format[] supportedOutputFormats)
-    {
+    protected AbstractFFmpegAudioCodec(String name, int codecID, Format[] supportedOutputFormats) {
         super(name, AudioFormat.class, supportedOutputFormats);
         this.codecID = codecID;
     }
@@ -75,19 +74,16 @@ public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
      * @param avctx the <code>AVCodecContext</code> to configure
      * @param format the <code>AudioFormat</code> with which <code>avctx</code> is being configured
      */
-    protected void configureAVCodecContext(long avctx, AudioFormat format)
-    {
+    protected void configureAVCodecContext(long avctx, AudioFormat format) {
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected synchronized void doClose()
-    {
+    protected synchronized void doClose() {
         if (avctx != 0) {
-            FFmpeg.avcodec_close(avctx);
-            FFmpeg.av_free(avctx);
+            FFmpeg.avcodec_free_context(avctx);
             avctx = 0;
         }
     }
@@ -97,8 +93,7 @@ public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
      */
     @Override
     protected synchronized void doOpen()
-            throws ResourceUnavailableException
-    {
+            throws ResourceUnavailableException {
         int codecID = this.codecID;
         long codec = findAVCodec(codecID);
 
@@ -145,7 +140,8 @@ public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
             int frameSize = FFmpeg.avcodeccontext_get_frame_size(avctx);
 
             frameSizeInBytes = frameSize * (format.getSampleSizeInBits() / 8) * channels;
-        } finally {
+        }
+        finally {
             if (avcodec_open < 0) {
                 FFmpeg.av_free(avctx);
                 avctx = 0;
@@ -162,6 +158,7 @@ public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
      * {@link #doOpen()} in order to (eventually) open a new <code>AVCodecContext</code>.
      *
      * @param codecID the <code>AVCodecID</code> of the <code>AVCodec</code> to find
+     *
      * @return an <code>AVCodec</code> with the specified <code>codecID</code> or <code>0</code>
      */
     protected abstract long findAVCodec(int codecID);

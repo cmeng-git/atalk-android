@@ -1097,7 +1097,7 @@
     <string name="jbr_user_name_password">Käyttäjätunnus ja salasana</string>
 
     <!-- Telephony -->
-    <string name="contact_phone">Yhteystiedon Nimi/Puhelin/Jid:</string>
+    <string name="contact_phone">Yhteystiedon Nimi/Puhelin/Jid</string>
     <string name="call_via">Soita käyttäen:</string>
     <string name="contact_phone_empty">Yhteystiedon puhelinnumero ei voi olla tyhjä!</string>
     <string name="recipient_error_non_ascii">Erikoismerkkejä ei tällä hetkellä tueta!</string>
@@ -1375,12 +1375,12 @@
     <string name="silk_fec_advertise">Mainosta FEC-tukea SDP:ssä</string>
 
     <!-- Android Battery Usage Optimization -->
-    <string name="battery_optimizations">Akunkäytön optimointi</string>
-    <string name="battery_optimizations_dialog">Laitteellasi on akunkäytön optimointi käytössä aTalk sovellukselle, mikä voi johtaa viivästyneisiin ilmoituksiin tai viestien katoamiseen.\n\nOn suositeltavaa, että poistat tämän optimoinnin käytöstä aTalkille.</string>
-    <string name="battery_optimization_on">aTalk laitetaan lepotilaan, kun laite menee torkkuvalmiustilaan. Manuaalisesti käynnistä aTalk uudelleen uusien viestien saamiseksi.</string>
-    <string name="device_does_not_support_battery_op">Laitteesi ei tue akunkäytön optimoinnin pois jättämistä</string>
-    <string name="disable">Poista käytöstä</string>
-    <string name="next">Seuraava</string>
+    <string name="battery_optimization">Akunkäytön optimointi</string>
+    <string name="battery_optimization_summary">Jos laitteessa on käytössä akun käytön optimointi, seurauksena voi olla ilmoitusten viivästyminen tai viestien katoaminen. \n\nOn suositeltavaa poistaa tämä optimointi käytöstä aTalk-sovelluksen kohdalla.</string>
+
+    <string name="fullscreen">Koko näyttö</string>
+    <string name="fullscreen_info_title">Vaatii koko näytön ilmoituksen</string>
+    <string name="fullscreen_info_summary">aTalkin täytyy näyttää koko näytön hälytyksiä, jotta et missaa saapuvia korkean prioriteetin puheluita puhelimen ollessa lukittuna.</string>
 
     <!-- Android Permissions -->
     <string name="app_info">Sovelluksen tiedot…</string>
@@ -1407,7 +1407,7 @@
     <string name="camera_permission_denied_feedback">Kaikki kameraan liittyvät toiminnot eivät ole käytettävissä ennen kuin hyväksyt lupapyynnön</string>
 
     <string name="contacts_permission_denied_dialog_title">Lupapyyntö yhteystietoihin</string>
-    <string name="contacts_permission_denied_feedback">Lupa yhteystietoihin vaaditaan puhelimen tilan hallintaan ja puheluiden määrittämiseen</string>
+    <string name="contacts_permission_denied_feedback">Yhteystietojen käyttöoikeutta tarvitaan puhelinnumeroiden käyttämiseen VoIP-PBX-puhelinjärjestelmän määrityksissä.</string>
 
     <string name="music_permission_denied_dialog_title">Musiikin ja äänen käytön lupapyyntö</string>
     <string name="music_permission_denied_feedback">Mediaäänitiedostot eivät ole käytettävissä, ennen kuin hyväksyt lupapyynnön</string>

@@ -1093,7 +1093,7 @@
     <string name="jbr_user_name_password">اسم المستخدم وكلمة المرور</string>
 
     <!-- Telephony -->
-    <string name="contact_phone">اسم الاتصال/الهاتف/Jid:</string>
+    <string name="contact_phone">اسم الاتصال/الهاتف/Jid</string>
     <string name="call_via">الاتصال عبر:</string>
     <string name="contact_phone_empty">لا يمكن أن يكون رقم هاتف الاتصال فارغًا!</string>
     <string name="recipient_error_non_ascii">الأحرف الخاصة غير مدعومة حاليًا!</string>
@@ -1367,12 +1367,12 @@
     <string name="silk_fec_advertise">الإعلان عن دعم FEC في SDP</string>
 
     <!-- Android Battery Usage Optimization -->
-    <string name="battery_optimization_on">سيتم وضع aTalk في وضع السكون عندما يدخل الجهاز في وضع الاستعداد. أعد تشغيل aTalk يدويًا لاستقبال الرسائل الجديدة.</string>
-    <string name="battery_optimizations">تحسين استهلاك البطارية</string>
-    <string name="battery_optimizations_dialog">جهازك يحتوي على تحسين استهلاك البطارية لـ aTalk؛ قد يؤدي ذلك إلى تأخير الإشعارات أو فقدان الرسائل.\n\nيُوصى بتعطيل هذا التحسين لـ aTalk.</string>
-    <string name="device_does_not_support_battery_op">جهازك لا يدعم إلغاء تحسين استهلاك البطارية</string>
-    <string name="disable">تعطيل</string>
-    <string name="next">التالي</string>
+    <string name="battery_optimization">تحسين استهلاك البطارية</string>
+    <string name="battery_optimization_summary">عند تفعيل ميزة تحسين استهلاك البطارية على الجهاز، قد يؤدي ذلك إلى تأخر الإشعارات أو فقدان الرسائل. \nيُوصى بإيقاف تشغيل هذا التحسين لتطبيق aTalk.</string>
+
+    <string name="fullscreen">ملء الشاشة</string>
+    <string name="fullscreen_info_title">مطلوب نية ملء الشاشة</string>
+    <string name="fullscreen_info_summary">يحتاج تطبيق aTalk إلى عرض تنبيهات بملء الشاشة حتى لا تفوتك المكالمات الواردة ذات الأولوية العالية أثناء قفل هاتفك.</string>
 
     <!-- Android Permissions -->
     <string name="app_info">معلومات التطبيق…</string>
@@ -1399,7 +1399,7 @@
     <string name="camera_permission_denied_feedback">جميع الأنشطة المرتبطة بالكاميرا لن تكون متاحة حتى تمنح إذن الكاميرا</string>
 
     <string name="contacts_permission_denied_dialog_title">طلب إذن جهات الاتصال</string>
-    <string name="contacts_permission_denied_feedback">إذن جهات الاتصال مطلوب للوصول إلى حالة الهاتف وإعداد المكالمات</string>
+    <string name="contacts_permission_denied_feedback">يلزم الحصول على إذن الوصول إلى جهات الاتصال للتمكن من الوصول إلى أرقام الهواتف في إعدادات نظام الهاتف عبر بروتوكول الإنترنت (VoIP-PBX).</string>
 
     <string name="music_permission_denied_dialog_title">طلب إذن الموسيقى والصوت</string>
     <string name="music_permission_denied_feedback">ملفات الصوت الوسائط لن تكون متاحة حتى تمنح إذن الوصول</string>

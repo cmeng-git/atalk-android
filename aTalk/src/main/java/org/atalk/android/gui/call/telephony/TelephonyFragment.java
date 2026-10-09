@@ -18,7 +18,8 @@ package org.atalk.android.gui.call.telephony;
 
 import static net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTelephonyJabberImpl.GOOGLE_VOICE_DOMAIN;
 
-import android.content.Context;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -31,9 +32,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -122,21 +122,21 @@ public class TelephonyFragment extends BaseFragment {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 Account selectedAcc = (Account) accountsSpinner.getSelectedItem();
                 mPPS = selectedAcc.getProtocolProvider();
-                JabberAccountID accountJID = (JabberAccountID) mPPS.getAccountID();
-                String telephonyDomain = accountJID.getOverridePhoneSuffix();
+                JabberAccountID accountJid = (JabberAccountID) mPPS.getAccountID();
+                String telephonyDomain = accountJid.getOverridePhoneSuffix();
                 if (TextUtils.isEmpty(telephonyDomain)) {
                     // StrictMode$AndroidBlockGuardPolicy.onNetwork(StrictMode.java:1448); so a simple check only instead of SRV
                     // boolean isGoogle =  mPPS.isGmailOrGoogleAppsAccount();
-                    boolean isGoogle = accountJID.toString().contains("google.com");
+                    boolean isGoogle = accountJid.toString().contains("google.com");
                     if (isGoogle) {
-                        String bypassDomain = accountJID.getTelephonyDomainBypassCaps();
+                        String bypassDomain = accountJid.getTelephonyDomainBypassCaps();
                         if (!TextUtils.isEmpty(bypassDomain))
                             telephonyDomain = bypassDomain;
                         else
                             telephonyDomain = GOOGLE_VOICE_DOMAIN;
                     }
                     else
-                        telephonyDomain = accountJID.getService();
+                        telephonyDomain = accountJid.getService();
                 }
                 mDomainJid = telephonyDomain;
                 vTelephonyDomain.setText(telephonyDomain);
@@ -147,6 +147,12 @@ public class TelephonyFragment extends BaseFragment {
                 // your code here
             }
         });
+
+       boolean isReadContactAllow = ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_CONTACTS)
+                == PackageManager.PERMISSION_GRANTED;
+       if (!isReadContactAllow) {
+           vRecipient.disableRecipientLoader();
+       }
 
         initAccountSpinner();
         initButton(content);

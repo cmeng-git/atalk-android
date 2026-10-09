@@ -65,10 +65,10 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1alloc
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
- * Method:    avcodec_close
- * Signature: (J)I
+ * Method:    avcodec_free_context
+ * Signature: (J)V
  */
-JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1close
+JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1free_1context
         (JNIEnv *, jclass, jlong);
 
 /*

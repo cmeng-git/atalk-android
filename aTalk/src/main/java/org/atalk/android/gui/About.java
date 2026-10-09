@@ -26,8 +26,6 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
 
-import androidx.media3.exoplayer.ExoPlayer;
-
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 
@@ -45,54 +43,54 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class About extends BaseActivity implements View.OnClickListener {
-    private static final String[][] USED_LIBRARIES = new String[][]{
-            new String[]{"Android Support Library", "https://developer.android.com/topic/libraries/support-library/index.html"},
-            new String[]{"Android-EasyLocation", "https://github.com/akhgupta/Android-EasyLocation"},
-            new String[]{"android-youtube-player","https://github.com/PierfrancescoSoffritti/android-youtube-player"},
-            new String[]{"apache-mime4j-core", "https://james.apache.org/mime4j/"},
-            new String[]{"Argos Translate", "https://github.com/argosopentech/argos-translate"},
-            new String[]{"bouncycastle", "https://github.com/bcgit/bc-java"},
-            new String[]{"ckChangeLog", "https://github.com/cketti/ckChangeLog"},
-            new String[]{"commons-codec", "https://github.com/apache/commons-codec"},
-            new String[]{"commons-text", "https://github.com/apache/commons-text"},
-            new String[]{"Dexter", "https://github.com/Karumi/Dexter"},
-            new String[]{"ExoPlayer","https://github.com/google/ExoPlayer"},
-            new String[]{"dhcp4java", "https://github.com/ggrandes-clones/dhcp4java"},
-            new String[]{"FFmpeg", "https://github.com/FFmpeg/FFmpeg"},
-            new String[]{"fmj-jitsi", "https://github.com/jitsi/fmj"},
-            new String[]{"glide", "https://github.com/bumptech/glide"},
-            new String[]{"Google Play Services", "https://developers.google.com/android/guides/overview"},
-            new String[]{"httpcore","https://hc.apache.org/httpcomponents-client-4.5.x/"},
-            new String[]{"IPAddress", "https://github.com/seancfoley/IPAddress"},
-            new String[]{"ice4j", "https://github.com/jitsi/ice4j"},
-            new String[]{"jbosh", "https://github.com/igniterealtime/jbosh"},
-            new String[]{"jitsi", "https://github.com/jitsi/jitsi"},
-            new String[]{"jitsi-android", "https://github.com/jitsi/jitsi-android"},
-            new String[]{"jmdns", "https://github.com/jmdns/jmdns"},
-            new String[]{"jxmpp-jid", "https://github.com/igniterealtime/jxmpp"},
-            new String[]{"libjitsi", "https://github.com/jitsi/libjitsi"},
-            new String[]{"LibreTranslate Java Restful Client", "https://github.com/stokito/libretranslate-java"},
-            new String[]{"libvpx", "https://github.com/webmproject/libvpx"},
-            new String[]{"media3-exoplayer", "https://github.com/androidx/media"},
-            new String[]{"Mime4j", "https://james.apache.org/mime4j/"},
-            new String[]{"miniDNS", "https://github.com/MiniDNS/minidns"},
-            new String[]{"Noembed", "https://noembed.com/"},
-            new String[]{"okhttp", "https://github.com/square/okhttp"},
-            new String[]{"opensles", "https://github.com/openssl/openssl "},
-            new String[]{"opus", "https://ftp.osuosl.org/pub/xiph/releases/opus/"},
-            new String[]{"osgi.core", "http://grepcode.com/snapshot/repo1.maven.org/maven2/org.osgi/org.osgi.core/6.0.0"},
-            new String[]{"osmdroid", "https://github.com/osmdroid/osmdroid"},
-            new String[]{"sdes4j", "https://github.com/ibauersachs/sdes4j"},
-            new String[]{"sdp-api", "https://mvnrepository.com/artifact/org.opentelecoms.sdp/sdp-api"},
-            new String[]{"signal-protocol-java", "https://github.com/signalapp/libsignal-protocol-java"},
-            new String[]{"smack", "https://github.com/igniterealtime/Smack"},
-            new String[]{"speex", "https://github.com/xiph/speex"},
-            new String[]{"Timber", "https://github.com/JakeWharton/timber"},
-            new String[]{"TokenAutoComplete", "https://github.com/splitwise/TokenAutoComplete"},
-            new String[]{"uCrop", "https://github.com/Yalantis/uCrop"},
-            new String[]{"weupnp", "https://github.com/bitletorg/weupnp"},
-            new String[]{"x264", "https://git.videolan.org/git/x264.git"},
-            new String[]{"zrtp4j-light", "https://github.com/jitsi/zrtp4j"},
+    private static final String[][] USED_LIBRARIES = new String[][] {
+            new String[] {"Android Support Library", "https://developer.android.com/topic/libraries/support-library/index.html"},
+            new String[] {"Android-EasyLocation", "https://github.com/akhgupta/Android-EasyLocation"},
+            new String[] {"android-youtube-player", "https://github.com/PierfrancescoSoffritti/android-youtube-player"},
+            new String[] {"apache-mime4j-core", "https://james.apache.org/mime4j/"},
+            new String[] {"Argos Translate", "https://github.com/argosopentech/argos-translate"},
+            new String[] {"bouncycastle", "https://github.com/bcgit/bc-java"},
+            new String[] {"ckChangeLog", "https://github.com/cketti/ckChangeLog"},
+            new String[] {"commons-codec", "https://github.com/apache/commons-codec"},
+            new String[] {"commons-text", "https://github.com/apache/commons-text"},
+            new String[] {"Dexter", "https://github.com/Karumi/Dexter"},
+            new String[] {"ExoPlayer", "https://github.com/google/ExoPlayer"},
+            new String[] {"dhcp4java", "https://github.com/ggrandes-clones/dhcp4java"},
+            new String[] {"FFmpeg", "https://github.com/FFmpeg/FFmpeg"},
+            new String[] {"fmj-jitsi", "https://github.com/jitsi/fmj"},
+            new String[] {"glide", "https://github.com/bumptech/glide"},
+            new String[] {"Google Play Services", "https://developers.google.com/android/guides/overview"},
+            new String[] {"httpcore", "https://hc.apache.org/httpcomponents-client-4.5.x/"},
+            new String[] {"IPAddress", "https://github.com/seancfoley/IPAddress"},
+            new String[] {"ice4j", "https://github.com/jitsi/ice4j"},
+            new String[] {"jbosh", "https://github.com/igniterealtime/jbosh"},
+            new String[] {"jitsi", "https://github.com/jitsi/jitsi"},
+            new String[] {"jitsi-android", "https://github.com/jitsi/jitsi-android"},
+            new String[] {"jmdns", "https://github.com/jmdns/jmdns"},
+            new String[] {"jxmpp-jid", "https://github.com/igniterealtime/jxmpp"},
+            new String[] {"libjitsi", "https://github.com/jitsi/libjitsi"},
+            new String[] {"LibreTranslate Java Restful Client", "https://github.com/stokito/libretranslate-java"},
+            new String[] {"libvpx", "https://github.com/webmproject/libvpx"},
+            new String[] {"media3-exoplayer", "https://github.com/androidx/media"},
+            new String[] {"Mime4j", "https://james.apache.org/mime4j/"},
+            new String[] {"miniDNS", "https://github.com/MiniDNS/minidns"},
+            new String[] {"Noembed", "https://noembed.com/"},
+            new String[] {"okhttp", "https://github.com/square/okhttp"},
+            new String[] {"opensles", "https://github.com/openssl/openssl "},
+            new String[] {"opus", "https://ftp.osuosl.org/pub/xiph/releases/opus/"},
+            new String[] {"osgi.core", "http://grepcode.com/snapshot/repo1.maven.org/maven2/org.osgi/org.osgi.core/6.0.0"},
+            new String[] {"osmdroid", "https://github.com/osmdroid/osmdroid"},
+            new String[] {"sdes4j", "https://github.com/ibauersachs/sdes4j"},
+            new String[] {"sdp-api", "https://mvnrepository.com/artifact/org.opentelecoms.sdp/sdp-api"},
+            new String[] {"signal-protocol-java", "https://github.com/signalapp/libsignal-protocol-java"},
+            new String[] {"smack", "https://github.com/igniterealtime/Smack"},
+            new String[] {"speex", "https://github.com/xiph/speex"},
+            new String[] {"Timber", "https://github.com/JakeWharton/timber"},
+            new String[] {"TokenAutoComplete", "https://github.com/splitwise/TokenAutoComplete"},
+            new String[] {"uCrop", "https://github.com/Yalantis/uCrop"},
+            new String[] {"weupnp", "https://github.com/bitletorg/weupnp"},
+            new String[] {"x264", "https://git.videolan.org/git/x264.git"},
+            new String[] {"zrtp4j-light", "https://github.com/jitsi/zrtp4j"},
     };
 
     public void onCreate(Bundle savedInstanceState) {
@@ -131,7 +129,8 @@ public class About extends BaseActivity implements View.OnClickListener {
 
             TextView textView = findViewById(R.id.AboutDialog_Version);
             textView.setText(String.format(getString(R.string.version_), pi.versionName));
-        } catch (PackageManager.NameNotFoundException e) {
+        }
+        catch (PackageManager.NameNotFoundException e) {
             Timber.d("Name Not Found Exception: %s", e.getMessage());
         }
     }

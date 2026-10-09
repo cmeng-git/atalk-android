@@ -10,10 +10,7 @@ buildscript {
         // Gradle build-tools 9.3.2; neew tp change all case R.id.xxx to if-else to resolve "Constant expression required" error
         // Note: gradle.properties#android.nonFinalResIds=false is ignored in AGP 9.x.x;
         // classpath 'com.android.tools.build:gradle:8.13.2' and 9.x jni debug not working.
-        classpath 'com.android.tools.build:gradle:9.3.2'
-
-        // Required by android-youtube-player
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21'
+        classpath 'com.android.tools.build:gradle:9.3.3'
 
         // NOTE: Do not place your application dependencies here;
         // they belong in the individual module build.gradle files
@@ -32,7 +29,6 @@ project.ext {
     testCoverage = project.hasProperty('testCoverage')
 
     minSdk = 26
-    // SDE Eel is not compatible with API-34+; missing dx, dx.jar and aapt2 not compatible
     compileSdk = 37
     buildTools = '37.0.0'
 }

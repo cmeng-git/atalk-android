@@ -48,6 +48,7 @@ import java.util.ArrayList;
 
 import org.atalk.android.BaseFragment;
 import org.atalk.android.R;
+
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.CopyrightOverlay;
@@ -201,9 +202,11 @@ public class OsmFragment extends BaseFragment implements MenuProvider, LocationL
                     .setQuality(LocationRequestCompat.QUALITY_BALANCED_POWER_ACCURACY)
                     .build();
             LocationManagerCompat.requestLocationUpdates(mLocationManager, mProvider, mLocationRequest, this, Looper.myLooper());
-        } catch (SecurityException unlikely) {
+        }
+        catch (SecurityException unlikely) {
             Timber.e("Lost location permission. Could not request updates:%s", unlikely.getMessage());
-        } catch (Throwable ex) {
+        }
+        catch (Throwable ex) {
             Timber.e("Unable to attach listener for location provider %s; check permissions? %s", mProvider, ex.getMessage());
         }
 
@@ -244,7 +247,8 @@ public class OsmFragment extends BaseFragment implements MenuProvider, LocationL
 
         try {
             mLocationManager.removeUpdates(this);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             Timber.d("Unexpected exception: %s", ex.getMessage());
         }
 
@@ -287,7 +291,8 @@ public class OsmFragment extends BaseFragment implements MenuProvider, LocationL
     public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         try {
             mMapView.getOverlayManager().onCreateOptionsMenu(menu, MENU_LAST_ID, mMapView);
-        } catch (NullPointerException npe) {
+        }
+        catch (NullPointerException npe) {
             // can happen during CI tests and very rapid fragment switching
         }
     }
@@ -322,26 +327,26 @@ public class OsmFragment extends BaseFragment implements MenuProvider, LocationL
         int orientation;
         int rotation = mActivity.getDisplayRotation();
         switch (rotation) {
-            case Surface.ROTATION_0:
-                orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-                mDeviceOrientation = 0;
-                break;
+        case Surface.ROTATION_0:
+            orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+            mDeviceOrientation = 0;
+            break;
 
-            case Surface.ROTATION_90:
-                mDeviceOrientation = 90;
-                orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-                break;
+        case Surface.ROTATION_90:
+            mDeviceOrientation = 90;
+            orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+            break;
 
-            case Surface.ROTATION_180:
-                mDeviceOrientation = 180;
-                orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
-                break;
+        case Surface.ROTATION_180:
+            mDeviceOrientation = 180;
+            orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
+            break;
 
-            case Surface.ROTATION_270:
-            default:
-                mDeviceOrientation = 270;
-                orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
-                break;
+        case Surface.ROTATION_270:
+        default:
+            mDeviceOrientation = 270;
+            orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+            break;
         }
 
         // Lock the device in current screen orientation
@@ -376,15 +381,13 @@ public class OsmFragment extends BaseFragment implements MenuProvider, LocationL
         // if (gpsSpeed < gpsSpeedThreshold || !mHasBearing) {
         if (mOrientationSupported) {
             GeomagneticField gmField = new GeomagneticField(lat, lon, alt, timeOfFix);
-            Float trueNorth = orientationToMagneticNorth + gmField.getDeclination();
+            float trueNorth = orientationToMagneticNorth + gmField.getDeclination();
 
-            synchronized (trueNorth) {
-                if (trueNorth > 360.0f) {
-                    trueNorth = trueNorth - 360.0f;
-                }
-                setMapOrientation(trueNorth);
-                // Timber.d("Bearing compass: %s (%s)", trueNorth, gpsSpeed);
+            if (trueNorth > 360.0f) {
+                trueNorth = trueNorth - 360.0f;
             }
+            setMapOrientation(trueNorth);
+            // Timber.d("Bearing compass: %s (%s)", trueNorth, gpsSpeed);
         }
     }
 
@@ -436,9 +439,11 @@ public class OsmFragment extends BaseFragment implements MenuProvider, LocationL
                 try {
                     Thread.sleep(2000);
                     runOnUiThread(() -> showLocation(xLocation));
-                } catch (InterruptedException ex) {
+                }
+                catch (InterruptedException ex) {
                     break;
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     Timber.e("Exception: %s", ex.getMessage());
                 }
             }

@@ -98,7 +98,11 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      * Initializes a new JabberAccountRegistration.
      */
     public JabberAccountRegistration() {
-        super(null, new HashMap<>());
+        this(null);
+    }
+
+    public JabberAccountRegistration(String userId) {
+        super(userId, new HashMap<>());
     }
 
     /**

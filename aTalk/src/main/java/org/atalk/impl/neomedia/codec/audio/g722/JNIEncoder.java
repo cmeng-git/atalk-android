@@ -15,36 +15,32 @@
  */
 package org.atalk.impl.neomedia.codec.audio.g722;
 
-import org.atalk.impl.neomedia.codec.AbstractCodec2;
-
 import javax.media.Buffer;
 import javax.media.Format;
 import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
+import org.atalk.impl.neomedia.codec.AbstractCodec2;
+
 /**
  *
  * @author Lyubomir Marinov
  */
-public class JNIEncoder extends AbstractCodec2
-{
+public class JNIEncoder extends AbstractCodec2 {
     private long encoder;
 
     /**
      * Initializes a new {@code JNIEncoderImpl} instance.
      */
-    public JNIEncoder()
-    {
-        super(
-            "G.722 JNI Encoder",
-            AudioFormat.class,
-            JNIDecoder.SUPPORTED_INPUT_FORMATS);
+    public JNIEncoder() {
+        super("G.722 JNI Encoder",
+                AudioFormat.class,
+                JNIDecoder.SUPPORTED_INPUT_FORMATS);
 
         inputFormats = JNIDecoder.SUPPORTED_OUTPUT_FORMATS;
     }
 
-    private long computeDuration(long length)
-    {
+    private long computeDuration(long length) {
         return (length * 1000000L) / 8L;
     }
 
@@ -53,8 +49,7 @@ public class JNIEncoder extends AbstractCodec2
      * @see AbstractCodec2#doClose()
      */
     @Override
-    protected void doClose()
-    {
+    protected void doClose() {
         G722.g722_encoder_close(encoder);
     }
 
@@ -63,8 +58,7 @@ public class JNIEncoder extends AbstractCodec2
      */
     @Override
     protected void doOpen()
-        throws ResourceUnavailableException
-    {
+            throws ResourceUnavailableException {
         encoder = G722.g722_encoder_open();
         if (encoder == 0)
             throw new ResourceUnavailableException("g722_encoder_open");
@@ -74,19 +68,17 @@ public class JNIEncoder extends AbstractCodec2
      * @see AbstractCodec2#doProcess(Buffer, Buffer)
      */
     @Override
-    protected int doProcess(Buffer inputBuffer, Buffer outputBuffer)
-    {
+    protected int doProcess(Buffer inputBuffer, Buffer outputBuffer) {
         int inputOffset = inputBuffer.getOffset();
         int inputLength = inputBuffer.getLength();
         byte[] input = (byte[]) inputBuffer.getData();
 
         int outputOffset = outputBuffer.getOffset();
         int outputLength = inputLength / 4;
-        byte[] output
-            = validateByteArraySize(
-                    outputBuffer,
-                    outputOffset + outputLength,
-                    true);
+        byte[] output = validateByteArraySize(
+                outputBuffer,
+                outputOffset + outputLength,
+                true);
 
         G722.g722_encoder_process(
                 encoder,
@@ -102,20 +94,19 @@ public class JNIEncoder extends AbstractCodec2
      * Get the output <tt>Format</tt>.
      *
      * @return output <tt>Format</tt> configured for this <tt>Codec</tt>
+     *
      * @see net.sf.fmj.media.AbstractCodec#getOutputFormat()
      */
     @Override
-    public Format getOutputFormat()
-    {
+    public Format getOutputFormat() {
         Format outputFormat = super.getOutputFormat();
 
         if ((outputFormat != null)
-                && (outputFormat.getClass() == AudioFormat.class))
-        {
+                && (outputFormat.getClass() == AudioFormat.class)) {
             AudioFormat outputAudioFormat = (AudioFormat) outputFormat;
 
             outputFormat = setOutputFormat(
-                new AudioFormat(
+                    new AudioFormat(
                             outputAudioFormat.getEncoding(),
                             outputAudioFormat.getSampleRate(),
                             outputAudioFormat.getSampleSizeInBits(),
@@ -124,17 +115,15 @@ public class JNIEncoder extends AbstractCodec2
                             outputAudioFormat.getSigned(),
                             outputAudioFormat.getFrameSizeInBits(),
                             outputAudioFormat.getFrameRate(),
-                            outputAudioFormat.getDataType())
-                        {
-                            private static final long serialVersionUID = 0L;
+                            outputAudioFormat.getDataType()) {
+                        private static final long serialVersionUID = 0L;
 
-                            @Override
-                            public long computeDuration(long length)
-                            {
-                                return
+                        @Override
+                        public long computeDuration(long length) {
+                            return
                                     JNIEncoder.this.computeDuration(length);
-                            }
-                        });
+                        }
+                    });
         }
         return outputFormat;
     }
